@@ -52,9 +52,19 @@ clean-test: ## remove test and coverage artifacts
 
 lint: ## check style with flake8
 	flake8 fhub_core tests
+	isort -c --recursive fhub_core tests
+
+fix-lint: ## fix lint issues using autoflake, autopep8, and isort
+	find fhub_core -name '*.py' | xargs autoflake --in-place --remove-all-unused-imports --remove-unused-variables
+	autopep8 --in-place --recursive --aggressive fhub_core
+	isort --apply --atomic --recursive fhub_core
+
+	find tests -name '*.py' | xargs autoflake --in-place --remove-all-unused-imports --remove-unused-variables
+	autopep8 --in-place --recursive --aggressive tests
+	isort --apply --atomic --recursive tests
 
 test: ## run tests quickly with the default Python
-	py.test
+	pytest
 
 test-all: ## run tests on every Python version with tox
 	tox
