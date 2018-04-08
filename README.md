@@ -1,37 +1,20 @@
-=========
-fhub_core
-=========
+[![][pypi-img]][pypi-url] [![][travis-img]][travis-url] [![][docs-img]][docs-url]
 
-
-.. image:: https://img.shields.io/pypi/v/fhub_core.svg
-        :target: https://pypi.python.org/pypi/fhub_core
-
-.. image:: https://img.shields.io/travis/HDI-Project/fhub_core.svg
-        :target: https://travis-ci.org/HDI-Project/fhub_core
-
-.. image:: https://readthedocs.org/projects/fhub-core/badge/?version=latest
-        :target: https://fhub-core.readthedocs.io/en/latest/?badge=latest
-        :alt: Documentation Status
-
-
-
+# fhub_core
 
 fhub_core
 
+- Free software: MIT license
+- Documentation: https://fhub-core.readthedocs.io.
 
-* Free software: MIT license
-* Documentation: https://fhub-core.readthedocs.io.
 
+## Features
 
-Features
---------
+- TODO
 
-* TODO
-
-Credits
--------
-
-This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
-
-.. _Cookiecutter: https://github.com/audreyr/cookiecutter
-.. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
+[travis-img]: https://travis-ci.org/micahjsmith/FredData.jl.svg?branch=master
+[travis-url]: https://travis-ci.org/micahjsmith/FredData.jl
+[pypi-img]: https://img.shields.io/pypi/v/fhub_core.svg
+[pypi-url]: https://pypi.python.org/pypi/fhub_core
+[docs-img]: https://readthedocs.org/projects/fhub-core/badge/?version=latest
+[docs-url]: https://fhub-core.readthedocs.io/en/latest/?badge=latest
