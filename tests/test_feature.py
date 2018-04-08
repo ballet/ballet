@@ -6,8 +6,8 @@ import pandas as pd
 import sklearn.preprocessing
 from sklearn.base import BaseEstimator, TransformerMixin
 
-from fhub_core.feature import (Feature, FeatureValidator,
-                               make_robust_transformer)
+from fhub_core.feature import (
+    Feature, FeatureValidator, make_robust_transformer)
 from fhub_core.tmp import IdentityTransformer, NoFitMixin
 from fhub_core.util import asarray2d
 
