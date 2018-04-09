@@ -5,3 +5,5 @@
 __author__ = """Micah Smith"""
 __email__ = 'micahs@mit.edu'
 __version__ = '0.1.0'
+
+from .feature import *  # noqa

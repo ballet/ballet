@@ -13,8 +13,8 @@ from fhub_core.util import asarray2d, indent
 logger = logging.getLogger(__name__)
 
 
-__all__ = ['Feature', 'FeatureValidator', 'RobustTransformerPipeline',
-           'make_robust_transformer_pipeline']
+__all__ = ['Feature', 'FeatureValidator', 'make_robust_transformer',
+           'RobustTransformerPipeline', 'make_robust_transformer_pipeline']
 
 
 class RobustTransformerPipeline(TransformerPipeline):
