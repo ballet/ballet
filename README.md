@@ -10,7 +10,7 @@ alongside the `sklearn_pandas` project.
 - Free software: MIT license
 - Documentation: https://hdi-project.github.io/fhub_core
 
-[travis-img]: https://travis-ci.org/micahjsmith/FredData.jl.svg?branch=master
-[travis-url]: https://travis-ci.org/micahjsmith/FredData.jl
+[travis-img]: https://travis-ci.org/HDI-Project/fhub_core.svg?branch=master
+[travis-url]: https://travis-ci.org/HDI-Project/fhub_core
 [pypi-img]: https://img.shields.io/pypi/v/fhub_core.svg
 [pypi-url]: https://pypi.python.org/pypi/fhub_core
