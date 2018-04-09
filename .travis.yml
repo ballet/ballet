@@ -4,7 +4,9 @@ python:
 - 3.5
 - 3.4
 install: pip install -U tox-travis
-script: tox
+script:
+  - tox
+  - make docs
 deploy:
   - provider: pypi
     distributions: sdist bdist_wheel
@@ -15,9 +17,12 @@ deploy:
       tags: true
       repo: HDI-Project/fhub_core
       python: 3.6
-      #  - provider: pages
-      #    skip-cleanup: true
-      #    github-token: "$GITHUB_TOKEN"
-      #    keep-history: true
-      #    on:
-      #      branch: master
+ - provider: pages
+   skip-cleanup: true
+   github-token: "$GITHUB_TOKEN"
+   keep-history: true
+   local-dir: docs/_build/html
+   target-branch: gh-pages
+   on:
+     branch: master
+     python: 3.6
