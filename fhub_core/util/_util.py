@@ -1,4 +1,3 @@
-
 import numpy as np
 
 RANDOM_STATE = 1754
