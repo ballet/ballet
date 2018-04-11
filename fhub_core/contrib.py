@@ -40,12 +40,6 @@ def get_contrib_features(contrib):
                     onerror=logger.error):
                 try:
                     mod = importer.find_module(modname).load_module(modname)
-                    logging.debug('Module file: {}'.format(mod.__file__))
-                    with open(mod.__file__, 'r') as f:
-                        contents = f.read()
-                    logging.debug('Module contents: {}'.format(contents))
-                    names = dir(mod)
-                    logging.debug('Module names: {}'.format(names))
                 except ImportError:
                     logger.exception(
                         'Failed to import module {modname}'
@@ -65,7 +59,7 @@ def _get_contrib_features_from_module(mod):
     contrib_features = []
 
     logger.debug(
-        'Trying to importing contributed feature(s) from module {modname}...'
+        'Trying to import contributed feature(s) from module {modname}...'
         .format(modname=mod.__name__))
 
     # case 1: file defines `features` variable
@@ -111,6 +105,8 @@ def _import_contrib_feature_from_collection(mod):
     required_vars, _ = _import_names_from_module(
         mod, required, optional)
     features = required_vars['features']
+    for feature in features:
+        feature.source = mod.__name__
     return features
 
 

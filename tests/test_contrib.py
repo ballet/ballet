@@ -34,11 +34,11 @@ def create_contrib_modules_at_dir(dirname, modcontent, n=1):
 
         try:
             modcontent_i = modcontent.format(i=i)
-        except:
-            raise ValueError
+        except KeyError:
+            # shouldn't happen
             modcontent_i = modcontent
         with open(root.joinpath('mod{i}'.format(i=i),
-                'foo{i}.py'.format(i=i)), 'w') as f:
+                                'foo{i}.py'.format(i=i)), 'w') as f:
             f.write(modcontent_i)
 
 
@@ -55,24 +55,21 @@ def import_module_at_path(modname, modpath):
 class TestContrib(unittest.TestCase):
 
     def test_get_contrib_features_stdlib(self):
-
-        # give a nonsense module, shouldn't import anything
-        # TODO bad test because relies on module not defining certain names
+        # give a nonsense *module*, shouldn't import anything. this is a bad
+        # test because it relies on module not defining certain names
         import math
         features = get_contrib_features(math)
 
         # features should be an empty list
         self.assertEqual(len(features), 0)
 
-        # give a nonsense package, shouldn't import anything
-        # TODO bad test because relies on module not defining certain names
+        # give a nonsense *package*, shouldn't import anything. this is a bad
+        # test because it relies on module not defining certain names
         import funcy
         features = get_contrib_features(funcy)
         self.assertEqual(len(features), 0)
 
-    @unittest.expectedFailure
     def test_get_contrib_features_generated_modules_components(self):
-
         n = 4
         modcontent = dedent(
             '''\
@@ -81,12 +78,10 @@ class TestContrib(unittest.TestCase):
             transformer = StandardScaler()
             ''')
         with tempfile.TemporaryDirectory() as tmpdirname:
-            #moddirname = pathlib.Path(tmpdirname) / 'contrib_components'
-            moddirname = pathlib.Path(tmpdirname) / 'contrib'
+            moddirname = pathlib.Path(tmpdirname) / 'contrib_components'
             moddirname.mkdir()
             create_contrib_modules_at_dir(moddirname, modcontent, n=n)
-            mod = import_module_at_path('contrib', moddirname)
-            print()
+            mod = import_module_at_path('contrib_components', moddirname)
             features = get_contrib_features(mod)
 
         self.assertEqual(len(features), n)
@@ -94,7 +89,7 @@ class TestContrib(unittest.TestCase):
     def test_get_contrib_features_generated_modules_collection(self):
         n = 4
         k = 2
-        f = 'Feature(input=input, transformer=transformer),\n'*k
+        f = 'Feature(input=input, transformer=transformer),\n' * k
         modcontent = dedent(
             '''\
             from fhub_core import Feature
@@ -104,13 +99,12 @@ class TestContrib(unittest.TestCase):
             features = [
                 {f}
             ]
-            ''').format(f=f, i='i')  # hack
+            ''').format(f=f, i='i')
         with tempfile.TemporaryDirectory() as tmpdirname:
-            #moddirname = pathlib.Path(tmpdirname) / 'contrib_collection'
-            moddirname = pathlib.Path(tmpdirname) / 'contrib'
+            moddirname = pathlib.Path(tmpdirname) / 'contrib_collection'
             moddirname.mkdir()
             create_contrib_modules_at_dir(moddirname, modcontent, n=n)
-            mod = import_module_at_path('contrib', moddirname)
+            mod = import_module_at_path('contrib_collection', moddirname)
             features = get_contrib_features(mod)
 
-        self.assertEqual(len(features), n*k)
+        self.assertEqual(len(features), n * k)
