@@ -14,7 +14,7 @@ class ArrayLikeEqualityTestingMixin:
             npt.assert_array_equal(first, second, verbose=False)
         except AssertionError:
             standardMsg = '{} != {}'.format(
-                _common_shorten_repr(first, second))
+                *_common_shorten_repr(first, second))
             msg = self._formatMessage(msg, standardMsg)
             raise self.failureException(msg)
 
@@ -35,7 +35,7 @@ class ArrayLikeEqualityTestingMixin:
                 first, second, decimal=places, verbose=False)
         except AssertionError:
             standardMsg = '{} != {}'.format(
-                _common_shorten_repr(first, second))
+                *_common_shorten_repr(first, second))
             msg = self._formatMessage(msg, standardMsg)
             raise self.failureException(msg)
 
@@ -44,7 +44,7 @@ class ArrayLikeEqualityTestingMixin:
             func(first, second, **kwargs)
         except AssertionError:
             standardMsg = '{} != {}'.format(
-                _common_shorten_repr(first, second))
+                *_common_shorten_repr(first, second))
             msg = self._formatMessage(msg, standardMsg)
             raise self.failureException(msg)
 
@@ -75,6 +75,6 @@ class ArrayLikeEqualityTestingMixin:
                     pass
         else:
             standardMsg = '{} and {} are uncomparable types'.format(
-                _common_shorten_repr(first, second))
+                *_common_shorten_repr(first, second))
             msg = self._formatMessage(msg, standardMsg)
             raise self.failureException(msg)
