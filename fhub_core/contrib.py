@@ -40,6 +40,12 @@ def get_contrib_features(contrib):
                     onerror=logger.error):
                 try:
                     mod = importer.find_module(modname).load_module(modname)
+                    logging.debug('Module file: {}'.format(mod.__file__))
+                    with open(mod.__file__, 'r') as f:
+                        contents = f.read()
+                    logging.debug('Module contents: {}'.format(contents))
+                    names = dir(mod)
+                    logging.debug('Module names: {}'.format(names))
                 except ImportError:
                     logger.exception(
                         'Failed to import module {modname}'
