@@ -11,7 +11,7 @@ class ArrayLikeEqualityTestingMixin:
 
     def assertArrayEqual(self, first, second, msg=None):
         try:
-            npt.assert_arr_equal(first, second, verbose=False)
+            npt.assert_array_equal(first, second, verbose=False)
         except AssertionError:
             standardMsg = '{} != {}'.format(
                 _common_shorten_repr(first, second))
