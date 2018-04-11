@@ -44,7 +44,7 @@ setup(
     include_package_data=True,
     keywords='fhub_core',
     name='fhub_core',
-    packages=find_packages(include=['fhub_core']),
+    packages=find_packages(include=['fhub_core', 'fhub_core.*']),
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
