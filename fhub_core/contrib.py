@@ -1,3 +1,4 @@
+import importlib
 import logging
 import pkgutil
 import types
@@ -25,13 +26,18 @@ def get_contrib_features(contrib):
     if isinstance(contrib, types.ModuleType):
         contrib_features = []
 
+        # fuuuuu
+        importlib.invalidate_caches()
+
         # any module that has a __path__ attribute is a package
         if hasattr(contrib, '__path__'):
+            logger.debug(
+                'Walking package path {path} to detect modules...'
+                .format(path=contrib.__path__))
             for importer, modname, _ in pkgutil.walk_packages(
                     path=contrib.__path__,
                     prefix=contrib.__name__ + '.',
-                    onerror=logger.error,
-            ):
+                    onerror=logger.error):
                 try:
                     mod = importer.find_module(modname).load_module(modname)
                 except ImportError:
@@ -53,7 +59,7 @@ def _get_contrib_features_from_module(mod):
     contrib_features = []
 
     logger.debug(
-        'Importing contributed feature from module {modname}'
+        'Trying to importing contributed feature(s) from module {modname}...'
         .format(modname=mod.__name__))
 
     # case 1: file defines `features` variable
@@ -72,6 +78,7 @@ def _get_contrib_features_from_module(mod):
                 'Imported 1 feature from {modname} from components'
                 .format(modname=mod.__name__))
         except ImportError:
+            # case 3: nothing useful in file
             logger.debug(
                 'Failed to import anything useful from module {modname}'
                 .format(modname=mod.__name__))

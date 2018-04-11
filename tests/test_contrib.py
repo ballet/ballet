@@ -1,50 +1,60 @@
+import logging
 import pathlib
-import sys
+import pkgutil
 import tempfile
 import unittest
+from textwrap import dedent
 
 from fhub_core.contrib import get_contrib_features
 
+logging.basicConfig(level=logging.DEBUG)
 
-def create_contrib_modules_at_dir(dirname, n=1):
+
+def create_contrib_modules_at_dir(dirname, modcontent, n=1):
+    '''Create the a "contrib" directory structure at dirname
+
+    Creates up to mod{n}:
+
+        dirname/
+        ├── __init__.py
+        ├── mod1/
+        |   ├── __init__.py
+        |   └── foo1.py
+        ├── mod2/
+        |   ├── __init__.py
+        |   └── foo2.py
+        etc.
+    '''
+
     root = pathlib.Path(dirname)
     root.joinpath('__init__.py').touch()
-    root.joinpath('mod1').mkdir()
-    root.joinpath('mod1', '__init__.py').touch()
     for i in range(n):
-        with open(root.joinpath('mod1', 'foo{}.py'.format(i)), 'w') as f:
-            f.write('''
-            from sklearn.preprocessing import StandardScaler
-            input = 'col1'
-            transformer = StandardScaler()
-            ''')
+        root.joinpath('mod{i}'.format(i=i)).mkdir()
+        root.joinpath('mod{i}'.format(i=i), '__init__.py').touch()
+
+        try:
+            modcontent_i = modcontent.format(i=i)
+        except:
+            raise ValueError
+            modcontent_i = modcontent
+        with open(root.joinpath('mod{i}'.format(i=i),
+                'foo{i}.py'.format(i=i)), 'w') as f:
+            f.write(modcontent_i)
 
 
-def import_module_compat(modname, modpath):
-    '''Import module from path
-
-    Source: https://stackoverflow.com/a/67692/2514228
-    '''
+def import_module_at_path(modname, modpath):
+    '''Import module from path'''
     modpath = pathlib.Path(modpath)
-    if not modpath.parts[-1].endswith('.py'):
-        raise ValueError("This won't work")
-    if sys.version_info > (3, 5):
-        import importlib.util
-        spec = importlib.util.spec_from_file_location(modname, modpath)
-        mod = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(mod)
-        return mod
-    elif sys.version_info > (3, 3):
-        from importlib.machinery import SourceFileLoader
-        mod = SourceFileLoader(modname, modpath).load_module()
-        return mod
-    else:
-        raise NotImplementedError
+    parentpath = str(modpath.parent)
+    modpath = str(modpath)
+    importer = pkgutil.get_importer(parentpath)
+    mod = importer.find_module(modname).load_module(modname)
+    return mod
 
 
 class TestContrib(unittest.TestCase):
 
-    def test_get_contrib_features_stdlib_modules(self):
+    def test_get_contrib_features_stdlib(self):
 
         # give a nonsense module, shouldn't import anything
         # TODO bad test because relies on module not defining certain names
@@ -63,38 +73,44 @@ class TestContrib(unittest.TestCase):
     @unittest.expectedFailure
     def test_get_contrib_features_generated_modules_components(self):
 
+        n = 4
+        modcontent = dedent(
+            '''\
+            from sklearn.preprocessing import StandardScaler
+            input = 'col{i}'
+            transformer = StandardScaler()
+            ''')
         with tempfile.TemporaryDirectory() as tmpdirname:
+            #moddirname = pathlib.Path(tmpdirname) / 'contrib_components'
             moddirname = pathlib.Path(tmpdirname) / 'contrib'
             moddirname.mkdir()
-            n = 1
-            create_contrib_modules_at_dir(moddirname, n=n)
-
-            # TODO this s*** is wh***
-            mod = import_module_compat('contrib', moddirname / '__init__.py')
+            create_contrib_modules_at_dir(moddirname, modcontent, n=n)
+            mod = import_module_at_path('contrib', moddirname)
+            print()
             features = get_contrib_features(mod)
 
-            self.assertEqual(len(features), n)
+        self.assertEqual(len(features), n)
 
-    @unittest.expectedFailure
     def test_get_contrib_features_generated_modules_collection(self):
-
+        n = 4
+        k = 2
+        f = 'Feature(input=input, transformer=transformer),\n'*k
+        modcontent = dedent(
+            '''\
+            from fhub_core import Feature
+            from sklearn.preprocessing import StandardScaler
+            input = 'col{{i}}'
+            transformer = StandardScaler()
+            features = [
+                {f}
+            ]
+            ''').format(f=f, i='i')  # hack
         with tempfile.TemporaryDirectory() as tmpdirname:
+            #moddirname = pathlib.Path(tmpdirname) / 'contrib_collection'
             moddirname = pathlib.Path(tmpdirname) / 'contrib'
             moddirname.mkdir()
-            n = 1
-            create_contrib_modules_at_dir(moddirname, n=n)
+            create_contrib_modules_at_dir(moddirname, modcontent, n=n)
+            mod = import_module_at_path('contrib', moddirname)
+            features = get_contrib_features(mod)
 
-            # TODO
-            raise AssertionError
-
-    @unittest.expectedFailure
-    def test_get_contrib_features_generated_modules_mixed(self):
-
-        with tempfile.TemporaryDirectory() as tmpdirname:
-            moddirname = pathlib.Path(tmpdirname) / 'contrib'
-            moddirname.mkdir()
-            n = 1
-            create_contrib_modules_at_dir(moddirname, n=n)
-
-            # TODO
-            raise AssertionError
+        self.assertEqual(len(features), n*k)
