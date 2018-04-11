@@ -37,8 +37,9 @@ def create_contrib_modules_at_dir(dirname, modcontent, n=1):
         except KeyError:
             # shouldn't happen
             modcontent_i = modcontent
-        with open(root.joinpath('mod{i}'.format(i=i),
-                                'foo{i}.py'.format(i=i)), 'w') as f:
+        modpath_i = str(root.joinpath(
+            'mod{i}'.format(i=i), 'foo{i}.py'.format(i=i)))
+        with open(modpath_i, 'w') as f:
             f.write(modcontent_i)
 
 
