@@ -14,7 +14,8 @@ with open('HISTORY.md') as history_file:
 requirements = [
     'funcy',
     'numpy',
-    'pandas',
+    'pandas;python_version>="3.5"',  # hack
+    'pandas<0.21;python_version<"3.5"',  # hack
     'scikit_learn',
     'sklearn_pandas',
 ]
