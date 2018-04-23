@@ -1,11 +1,11 @@
 import logging
 import pathlib
-import pkgutil
 import tempfile
 import unittest
 from textwrap import dedent
 
 from fhub_core.contrib import get_contrib_features
+from fhub_core.util import import_module_at_path
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -41,16 +41,6 @@ def create_contrib_modules_at_dir(dirname, modcontent, n=1):
             'mod{i}'.format(i=i), 'foo{i}.py'.format(i=i)))
         with open(modpath_i, 'w') as f:
             f.write(modcontent_i)
-
-
-def import_module_at_path(modname, modpath):
-    '''Import module from path'''
-    modpath = pathlib.Path(modpath)
-    parentpath = str(modpath.parent)
-    modpath = str(modpath)
-    importer = pkgutil.get_importer(parentpath)
-    mod = importer.find_module(modname).load_module(modname)
-    return mod
 
 
 class TestContrib(unittest.TestCase):
