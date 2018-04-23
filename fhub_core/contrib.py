@@ -17,10 +17,16 @@ logger = logging.getLogger(__name__)
 def get_contrib_features(contrib):
     '''Get contributed features from within given module
 
-    NOTE: Be very careful with untrusted code. The module/package will be
+    Be very careful with untrusted code. The module/package will be
     walked, every submodule will be imported, and all the code therein will be
     executed. But why would you be trying to import from an untrusted package
     anyway?
+
+    Args:
+        contrib (module): module (standalone or package) that contains feature definitions
+
+    Returns:
+        List of Feature
     '''
 
     if isinstance(contrib, types.ModuleType):
