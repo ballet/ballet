@@ -37,28 +37,34 @@ def get_contrib_features(contrib):
 
         # any module that has a __path__ attribute is a package
         if hasattr(contrib, '__path__'):
-            logger.debug(
-                'Walking package path {path} to detect modules...'
-                .format(path=contrib.__path__))
-            for importer, modname, _ in pkgutil.walk_packages(
-                    path=contrib.__path__,
-                    prefix=contrib.__name__ + '.',
-                    onerror=logger.error):
-                try:
-                    mod = importer.find_module(modname).load_module(modname)
-                except ImportError:
-                    logger.exception(
-                        'Failed to import module {modname}'
-                        .format(modname=modname))
-                    continue
-                features = get_contrib_features_from_module(mod)
-                contrib_features.extend(features)
+            features = get_contrib_features_from_package(contrib)
+            contrib_features.extend(features)
         else:
             features = get_contrib_features_from_module(contrib)
             contrib_features.extend(features)
         return contrib_features
     else:
         raise ValueError('Input is not a module')
+
+def get_contrib_features_from_package(package):
+    contrib_features = []
+
+    logger.debug(
+        'Walking package path {path} to detect modules...'
+        .format(path=package.__path__))
+    for importer, modname, _ in pkgutil.walk_packages(
+            path=package.__path__,
+            prefix=package.__name__ + '.',
+            onerror=logger.error):
+        try:
+            mod = importer.find_module(modname).load_module(modname)
+        except ImportError:
+            logger.exception(
+                'Failed to import module {modname}'
+                .format(modname=modname))
+            continue
+        features = get_package_features_from_module(mod)
+        contrib_features.extend(features)
 
 
 def get_contrib_features_from_module(mod):
