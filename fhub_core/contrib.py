@@ -51,17 +51,17 @@ def get_contrib_features(contrib):
                         'Failed to import module {modname}'
                         .format(modname=modname))
                     continue
-                features = _get_contrib_features_from_module(mod)
+                features = get_contrib_features_from_module(mod)
                 contrib_features.extend(features)
         else:
-            features = _get_contrib_features_from_module(contrib)
+            features = get_contrib_features_from_module(contrib)
             contrib_features.extend(features)
         return contrib_features
     else:
         raise ValueError('Input is not a module')
 
 
-def _get_contrib_features_from_module(mod):
+def get_contrib_features_from_module(mod):
     contrib_features = []
 
     logger.debug(
@@ -70,7 +70,7 @@ def _get_contrib_features_from_module(mod):
 
     # case 1: file defines `features` variable
     try:
-        features = _import_contrib_feature_from_collection(mod)
+        features = import_contrib_feature_from_collection(mod)
         contrib_features.extend(features)
         logger.debug(
             'Imported {n} feature(s) from {modname} from collection'
@@ -78,7 +78,7 @@ def _get_contrib_features_from_module(mod):
     except ImportError:
         # case 2: file has at least `input` and `transformer` defined
         try:
-            feature = _import_contrib_feature_from_components(mod)
+            feature = import_contrib_feature_from_components(mod)
             contrib_features.append(feature)
             logger.debug(
                 'Imported 1 feature from {modname} from components'
@@ -92,10 +92,10 @@ def _get_contrib_features_from_module(mod):
     return contrib_features
 
 
-def _import_contrib_feature_from_components(mod):
+def import_contrib_feature_from_components(mod):
     required = ['input', 'transformer']
     optional = ['name', 'description', 'output', 'options']
-    required_vars, optional_vars = _import_names_from_module(
+    required_vars, optional_vars = import_names_from_module(
         mod, required, optional)
     feature = Feature(
         input=required_vars['input'],
@@ -105,10 +105,10 @@ def _import_contrib_feature_from_components(mod):
     return feature
 
 
-def _import_contrib_feature_from_collection(mod):
+def import_contrib_feature_from_collection(mod):
     required = 'features'
     optional = None
-    required_vars, _ = _import_names_from_module(
+    required_vars, _ = import_names_from_module(
         mod, required, optional)
     features = required_vars['features']
     for feature in features:
@@ -116,7 +116,7 @@ def _import_contrib_feature_from_collection(mod):
     return features
 
 
-def _import_names_from_module(mod, required, optional):
+def import_names_from_module(mod, required, optional):
 
     msg = funcy.partial(
         'Required variable {varname} not found in module {modname}'
