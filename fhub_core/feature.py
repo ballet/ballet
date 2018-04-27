@@ -64,20 +64,28 @@ def make_robust_transformer(transformer):
 
 
 class Feature:
-    def __init__(self, input, transformer,
-                 source=None,
-                 name=None, description=None, output=None,
-                 options={}):
+    def __init__(self, input, transformer, name=None, description=None,
+            output=None, source=None, options=None):
         self.input = input
-        self.name = name
-        self.source = source
-        self.description = description
-        self.output = output
-        self.options = options
-
         if funcy.is_seqcont(transformer):
             transformer = make_robust_transformer_pipeline(*transformer)
         self.transformer = make_robust_transformer(transformer)
+        self.name = name
+        self.description = description
+        self.output = output  # unused
+        self.source = source
+        self.options = options if options is not None else {}
+
+    def __repr__(self):
+        # TODO use self.__dict__ directly, which respects insertion order
+        attr_list = ['input', 'transformer', 'name', 'description', 'output',
+            'source', 'options']
+        attrs_str = ', '.join(
+            '{attr_name}={attr_val}'.format(
+                attr_name=attr, attr_val = getattr(self, attr)
+            ) for attr in attr_list
+        )
+        return self.__class__.__name__ + '(' + attrs_str + ')'
 
     def as_sklearn_pandas_tuple(self):
         return (self.input, self.transformer)
