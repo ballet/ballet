@@ -23,7 +23,8 @@ def get_contrib_features(contrib):
     anyway?
 
     Args:
-        contrib (module): module (standalone or package) that contains feature definitions
+        contrib (module): module (standalone or package) that contains feature
+            definitions
 
     Returns:
         List of Feature
@@ -45,6 +46,7 @@ def get_contrib_features(contrib):
         return contrib_features
     else:
         raise ValueError('Input is not a module')
+
 
 def get_contrib_features_from_package(package):
     contrib_features = []

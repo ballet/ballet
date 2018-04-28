@@ -66,7 +66,7 @@ def make_robust_transformer(transformer):
 
 class Feature:
     def __init__(self, input, transformer, name=None, description=None,
-            output=None, source=None, options=None):
+                 output=None, source=None, options=None):
         self.input = input
         if funcy.is_seqcont(transformer):
             transformer = make_robust_transformer_pipeline(*transformer)
@@ -80,10 +80,10 @@ class Feature:
     def __repr__(self):
         # TODO use self.__dict__ directly, which respects insertion order
         attr_list = ['input', 'transformer', 'name', 'description', 'output',
-            'source', 'options']
+                     'source', 'options']
         attrs_str = ', '.join(
             '{attr_name}={attr_val}'.format(
-                attr_name=attr, attr_val = getattr(self, attr)
+                attr_name=attr, attr_val=getattr(self, attr)
             ) for attr in attr_list
         )
         return self.__class__.__name__ + '(' + attrs_str + ')'
@@ -137,7 +137,7 @@ class FeatureValidator:
     @check
     def can_make_mapper(self, feature):
         try:
-            mapper = feature.as_dataframe_mapper()
+            feature.as_dataframe_mapper()
         except Exception:
             raise AssertionError
 
