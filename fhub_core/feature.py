@@ -145,7 +145,7 @@ class FeatureValidator:
     def can_fit(self, feature):
         try:
             mapper = feature.as_dataframe_mapper()
-            mapper.fit(X, y)
+            mapper.fit(self.X, self.y)
         except Exception:
             raise AssertionError
 
