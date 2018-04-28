@@ -144,9 +144,9 @@ class TestFeature(unittest.TestCase):
         self._test_robust_transformer_pipeline(
             input_types, bad_input_checks, catches)
 
-    def test_feature_as_sklearn_pandas_tuple(self):
+    def test_feature_as_input_transformer_tuple(self):
         feature = Feature(self.input, self.transformer)
-        tup = feature.as_sklearn_pandas_tuple()
+        tup = feature.as_input_transformer_tuple()
         self.assertIsInstance(tup, tuple)
         self.assertEqual(len(tup), 2)
 

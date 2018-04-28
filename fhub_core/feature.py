@@ -6,6 +6,7 @@ import funcy
 import numpy as np
 import pandas as pd
 from sklearn.pipeline import _name_estimators
+from sklearn_pandas import DataFrameMapper
 from sklearn_pandas.pipeline import TransformerPipeline
 
 from fhub_core.util import asarray2d, indent
@@ -87,12 +88,12 @@ class Feature:
         )
         return self.__class__.__name__ + '(' + attrs_str + ')'
 
-    def as_sklearn_pandas_tuple(self):
+    def as_input_transformer_tuple(self):
         return (self.input, self.transformer)
 
     def as_dataframe_mapper(self):
-        return sklearn_pandas.DataFrameMapper([
-            self.as_sklearn_pandas_tuple()
+        return DataFrameMapper([
+            self.as_input_transformer_tuple()
         ], input_df=True)
 
 
