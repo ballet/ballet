@@ -188,6 +188,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="k">import</span> <span class="n">_name_estimators</span>
+<span class="kn">from</span> <span class="nn">sklearn_pandas</span> <span class="k">import</span> <span class="n">DataFrameMapper</span>
 <span class="kn">from</span> <span class="nn">sklearn_pandas.pipeline</span> <span class="k">import</span> <span class="n">TransformerPipeline</span>
 
 <span class="kn">from</span> <span class="nn">fhub_core.util</span> <span class="k">import</span> <span class="n">asarray2d</span><span class="p">,</span> <span class="n">indent</span>
@@ -246,23 +247,36 @@
 
 
 <div class="viewcode-block" id="Feature"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.feature.Feature">[docs]</a><span class="k">class</span> <span class="nc">Feature</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="p">,</span>
-                 <span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">options</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="nb">input</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="n">source</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">output</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">options</span>
-
         <span class="k">if</span> <span class="n">funcy</span><span class="o">.</span><span class="n">is_seqcont</span><span class="p">(</span><span class="n">transformer</span><span class="p">):</span>
             <span class="n">transformer</span> <span class="o">=</span> <span class="n">make_robust_transformer_pipeline</span><span class="p">(</span><span class="o">*</span><span class="n">transformer</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span> <span class="o">=</span> <span class="n">make_robust_transformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">output</span>  <span class="c1"># unused</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="n">source</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">options</span> <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
 
-<div class="viewcode-block" id="Feature.as_sklearn_pandas_tuple"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.feature.Feature.as_sklearn_pandas_tuple">[docs]</a>    <span class="k">def</span> <span class="nf">as_sklearn_pandas_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">)</span></div></div>
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># TODO use self.__dict__ directly, which respects insertion order</span>
+        <span class="n">attr_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;input&#39;</span><span class="p">,</span> <span class="s1">&#39;transformer&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="s1">&#39;output&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;source&#39;</span><span class="p">,</span> <span class="s1">&#39;options&#39;</span><span class="p">]</span>
+        <span class="n">attrs_str</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{attr_name}</span><span class="s1">=</span><span class="si">{attr_val}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">attr_name</span><span class="o">=</span><span class="n">attr</span><span class="p">,</span> <span class="n">attr_val</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+            <span class="p">)</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">attr_list</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;(&#39;</span> <span class="o">+</span> <span class="n">attrs_str</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
+
+<div class="viewcode-block" id="Feature.as_input_transformer_tuple"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.feature.Feature.as_input_transformer_tuple">[docs]</a>    <span class="k">def</span> <span class="nf">as_input_transformer_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Feature.as_dataframe_mapper"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.feature.Feature.as_dataframe_mapper">[docs]</a>    <span class="k">def</span> <span class="nf">as_dataframe_mapper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">DataFrameMapper</span><span class="p">([</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">as_input_transformer_tuple</span><span class="p">()</span>
+        <span class="p">],</span> <span class="n">input_df</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div></div>
 
 
 <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
@@ -302,32 +316,43 @@
         <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">transformer</span><span class="p">,</span> <span class="s1">&#39;fit&#39;</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">transformer</span><span class="p">,</span> <span class="s1">&#39;transform&#39;</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="FeatureValidator.can_make_mapper"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.feature.FeatureValidator.can_make_mapper">[docs]</a>    <span class="nd">@check</span>
+    <span class="k">def</span> <span class="nf">can_make_mapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span></div>
+
 <div class="viewcode-block" id="FeatureValidator.can_fit"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.feature.FeatureValidator.can_fit">[docs]</a>    <span class="nd">@check</span>
     <span class="k">def</span> <span class="nf">can_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">feature</span><span class="o">.</span><span class="n">transformer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+            <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
+            <span class="n">mapper</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AssertionError</span></div>
 
 <div class="viewcode-block" id="FeatureValidator.can_transform"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.feature.FeatureValidator.can_transform">[docs]</a>    <span class="nd">@check</span>
     <span class="k">def</span> <span class="nf">can_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">feature</span><span class="o">.</span><span class="n">transformer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
-            <span class="n">feature</span><span class="o">.</span><span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">)</span>
+            <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
+            <span class="n">mapper</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+            <span class="n">mapper</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AssertionError</span></div>
 
 <div class="viewcode-block" id="FeatureValidator.can_fit_transform"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.feature.FeatureValidator.can_fit_transform">[docs]</a>    <span class="nd">@check</span>
     <span class="k">def</span> <span class="nf">can_fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">feature</span><span class="o">.</span><span class="n">transformer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+            <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
+            <span class="n">mapper</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AssertionError</span></div>
 
 <div class="viewcode-block" id="FeatureValidator.has_correct_output_dimensions"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.feature.FeatureValidator.has_correct_output_dimensions">[docs]</a>    <span class="nd">@check</span>
     <span class="k">def</span> <span class="nf">has_correct_output_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">X</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">transformer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+            <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="n">mapper</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AssertionError</span>
 

@@ -199,10 +199,17 @@
 <div class="viewcode-block" id="get_contrib_features"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.contrib.get_contrib_features">[docs]</a><span class="k">def</span> <span class="nf">get_contrib_features</span><span class="p">(</span><span class="n">contrib</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Get contributed features from within given module</span>
 
-<span class="sd">    NOTE: Be very careful with untrusted code. The module/package will be</span>
+<span class="sd">    Be very careful with untrusted code. The module/package will be</span>
 <span class="sd">    walked, every submodule will be imported, and all the code therein will be</span>
 <span class="sd">    executed. But why would you be trying to import from an untrusted package</span>
 <span class="sd">    anyway?</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        contrib (module): module (standalone or package) that contains feature</span>
+<span class="sd">            definitions</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of Feature</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">contrib</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">ModuleType</span><span class="p">):</span>
@@ -213,31 +220,40 @@
 
         <span class="c1"># any module that has a __path__ attribute is a package</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">contrib</span><span class="p">,</span> <span class="s1">&#39;__path__&#39;</span><span class="p">):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="s1">&#39;Walking package path </span><span class="si">{path}</span><span class="s1"> to detect modules...&#39;</span>
-                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">contrib</span><span class="o">.</span><span class="n">__path__</span><span class="p">))</span>
-            <span class="k">for</span> <span class="n">importer</span><span class="p">,</span> <span class="n">modname</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">walk_packages</span><span class="p">(</span>
-                    <span class="n">path</span><span class="o">=</span><span class="n">contrib</span><span class="o">.</span><span class="n">__path__</span><span class="p">,</span>
-                    <span class="n">prefix</span><span class="o">=</span><span class="n">contrib</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span>
-                    <span class="n">onerror</span><span class="o">=</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">):</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">mod</span> <span class="o">=</span> <span class="n">importer</span><span class="o">.</span><span class="n">find_module</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span><span class="o">.</span><span class="n">load_module</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
-                        <span class="s1">&#39;Failed to import module </span><span class="si">{modname}</span><span class="s1">&#39;</span>
-                        <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modname</span><span class="o">=</span><span class="n">modname</span><span class="p">))</span>
-                    <span class="k">continue</span>
-                <span class="n">features</span> <span class="o">=</span> <span class="n">_get_contrib_features_from_module</span><span class="p">(</span><span class="n">mod</span><span class="p">)</span>
-                <span class="n">contrib_features</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+            <span class="n">features</span> <span class="o">=</span> <span class="n">get_contrib_features_from_package</span><span class="p">(</span><span class="n">contrib</span><span class="p">)</span>
+            <span class="n">contrib_features</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">features</span> <span class="o">=</span> <span class="n">_get_contrib_features_from_module</span><span class="p">(</span><span class="n">contrib</span><span class="p">)</span>
+            <span class="n">features</span> <span class="o">=</span> <span class="n">get_contrib_features_from_module</span><span class="p">(</span><span class="n">contrib</span><span class="p">)</span>
             <span class="n">contrib_features</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">contrib_features</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Input is not a module&#39;</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">_get_contrib_features_from_module</span><span class="p">(</span><span class="n">mod</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_contrib_features_from_package</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
+    <span class="n">contrib_features</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="s1">&#39;Walking package path </span><span class="si">{path}</span><span class="s1"> to detect modules...&#39;</span>
+        <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">package</span><span class="o">.</span><span class="n">__path__</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">importer</span><span class="p">,</span> <span class="n">modname</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">walk_packages</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">package</span><span class="o">.</span><span class="n">__path__</span><span class="p">,</span>
+            <span class="n">prefix</span><span class="o">=</span><span class="n">package</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span>
+            <span class="n">onerror</span><span class="o">=</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mod</span> <span class="o">=</span> <span class="n">importer</span><span class="o">.</span><span class="n">find_module</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span><span class="o">.</span><span class="n">load_module</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
+                <span class="s1">&#39;Failed to import module </span><span class="si">{modname}</span><span class="s1">&#39;</span>
+                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modname</span><span class="o">=</span><span class="n">modname</span><span class="p">))</span>
+            <span class="k">continue</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="n">get_contrib_features_from_module</span><span class="p">(</span><span class="n">mod</span><span class="p">)</span>
+        <span class="n">contrib_features</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">contrib_features</span>
+
+
+<span class="k">def</span> <span class="nf">get_contrib_features_from_module</span><span class="p">(</span><span class="n">mod</span><span class="p">):</span>
     <span class="n">contrib_features</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
@@ -246,7 +262,7 @@
 
     <span class="c1"># case 1: file defines `features` variable</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">features</span> <span class="o">=</span> <span class="n">_import_contrib_feature_from_collection</span><span class="p">(</span><span class="n">mod</span><span class="p">)</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="n">import_contrib_feature_from_collection</span><span class="p">(</span><span class="n">mod</span><span class="p">)</span>
         <span class="n">contrib_features</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
             <span class="s1">&#39;Imported </span><span class="si">{n}</span><span class="s1"> feature(s) from </span><span class="si">{modname}</span><span class="s1"> from collection&#39;</span>
@@ -254,7 +270,7 @@
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
         <span class="c1"># case 2: file has at least `input` and `transformer` defined</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">feature</span> <span class="o">=</span> <span class="n">_import_contrib_feature_from_components</span><span class="p">(</span><span class="n">mod</span><span class="p">)</span>
+            <span class="n">feature</span> <span class="o">=</span> <span class="n">import_contrib_feature_from_components</span><span class="p">(</span><span class="n">mod</span><span class="p">)</span>
             <span class="n">contrib_features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                 <span class="s1">&#39;Imported 1 feature from </span><span class="si">{modname}</span><span class="s1"> from components&#39;</span>
@@ -268,10 +284,10 @@
     <span class="k">return</span> <span class="n">contrib_features</span>
 
 
-<span class="k">def</span> <span class="nf">_import_contrib_feature_from_components</span><span class="p">(</span><span class="n">mod</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">import_contrib_feature_from_components</span><span class="p">(</span><span class="n">mod</span><span class="p">):</span>
     <span class="n">required</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;input&#39;</span><span class="p">,</span> <span class="s1">&#39;transformer&#39;</span><span class="p">]</span>
     <span class="n">optional</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="s1">&#39;output&#39;</span><span class="p">,</span> <span class="s1">&#39;options&#39;</span><span class="p">]</span>
-    <span class="n">required_vars</span><span class="p">,</span> <span class="n">optional_vars</span> <span class="o">=</span> <span class="n">_import_names_from_module</span><span class="p">(</span>
+    <span class="n">required_vars</span><span class="p">,</span> <span class="n">optional_vars</span> <span class="o">=</span> <span class="n">import_names_from_module</span><span class="p">(</span>
         <span class="n">mod</span><span class="p">,</span> <span class="n">required</span><span class="p">,</span> <span class="n">optional</span><span class="p">)</span>
     <span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span>
         <span class="nb">input</span><span class="o">=</span><span class="n">required_vars</span><span class="p">[</span><span class="s1">&#39;input&#39;</span><span class="p">],</span>
@@ -281,10 +297,10 @@
     <span class="k">return</span> <span class="n">feature</span>
 
 
-<span class="k">def</span> <span class="nf">_import_contrib_feature_from_collection</span><span class="p">(</span><span class="n">mod</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">import_contrib_feature_from_collection</span><span class="p">(</span><span class="n">mod</span><span class="p">):</span>
     <span class="n">required</span> <span class="o">=</span> <span class="s1">&#39;features&#39;</span>
     <span class="n">optional</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">required_vars</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_import_names_from_module</span><span class="p">(</span>
+    <span class="n">required_vars</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">import_names_from_module</span><span class="p">(</span>
         <span class="n">mod</span><span class="p">,</span> <span class="n">required</span><span class="p">,</span> <span class="n">optional</span><span class="p">)</span>
     <span class="n">features</span> <span class="o">=</span> <span class="n">required_vars</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
@@ -292,7 +308,7 @@
     <span class="k">return</span> <span class="n">features</span>
 
 
-<span class="k">def</span> <span class="nf">_import_names_from_module</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">required</span><span class="p">,</span> <span class="n">optional</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">import_names_from_module</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">required</span><span class="p">,</span> <span class="n">optional</span><span class="p">):</span>
 
     <span class="n">msg</span> <span class="o">=</span> <span class="n">funcy</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
         <span class="s1">&#39;Required variable </span><span class="si">{varname}</span><span class="s1"> not found in module </span><span class="si">{modname}</span><span class="s1">&#39;</span>

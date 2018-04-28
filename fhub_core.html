@@ -211,10 +211,21 @@
 <dt id="fhub_core.contrib.get_contrib_features">
 <code class="descclassname">fhub_core.contrib.</code><code class="descname">get_contrib_features</code><span class="sig-paren">(</span><em>contrib</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fhub_core/contrib.html#get_contrib_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fhub_core.contrib.get_contrib_features" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get contributed features from within given module</p>
-<p>NOTE: Be very careful with untrusted code. The module/package will be
+<p>Be very careful with untrusted code. The module/package will be
 walked, every submodule will be imported, and all the code therein will be
 executed. But why would you be trying to import from an untrusted package
 anyway?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>contrib</strong> (<em>module</em>) – module (standalone or package) that contains feature
+definitions</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of Feature</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -222,11 +233,16 @@ anyway?</p>
 <span id="fhub-core-feature-module"></span><h2>fhub_core.feature module<a class="headerlink" href="#module-fhub_core.feature" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="fhub_core.feature.Feature">
-<em class="property">class </em><code class="descclassname">fhub_core.feature.</code><code class="descname">Feature</code><span class="sig-paren">(</span><em>input</em>, <em>transformer</em>, <em>source=None</em>, <em>name=None</em>, <em>description=None</em>, <em>output=None</em>, <em>options={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fhub_core/feature.html#Feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fhub_core.feature.Feature" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fhub_core.feature.</code><code class="descname">Feature</code><span class="sig-paren">(</span><em>input</em>, <em>transformer</em>, <em>name=None</em>, <em>description=None</em>, <em>output=None</em>, <em>source=None</em>, <em>options=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fhub_core/feature.html#Feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fhub_core.feature.Feature" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
-<dt id="fhub_core.feature.Feature.as_sklearn_pandas_tuple">
-<code class="descname">as_sklearn_pandas_tuple</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fhub_core/feature.html#Feature.as_sklearn_pandas_tuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fhub_core.feature.Feature.as_sklearn_pandas_tuple" title="Permalink to this definition">¶</a></dt>
+<dt id="fhub_core.feature.Feature.as_dataframe_mapper">
+<code class="descname">as_dataframe_mapper</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fhub_core/feature.html#Feature.as_dataframe_mapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fhub_core.feature.Feature.as_dataframe_mapper" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fhub_core.feature.Feature.as_input_transformer_tuple">
+<code class="descname">as_input_transformer_tuple</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fhub_core/feature.html#Feature.as_input_transformer_tuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fhub_core.feature.Feature.as_input_transformer_tuple" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -248,6 +264,11 @@ anyway?</p>
 <dl class="method">
 <dt id="fhub_core.feature.FeatureValidator.can_fit_transform">
 <code class="descname">can_fit_transform</code><span class="sig-paren">(</span><em>feature</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fhub_core/feature.html#FeatureValidator.can_fit_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fhub_core.feature.FeatureValidator.can_fit_transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fhub_core.feature.FeatureValidator.can_make_mapper">
+<code class="descname">can_make_mapper</code><span class="sig-paren">(</span><em>feature</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fhub_core/feature.html#FeatureValidator.can_make_mapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fhub_core.feature.FeatureValidator.can_make_mapper" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -303,12 +324,19 @@ anyway?</p>
 <dd><p>Apply transforms, and transform with the final estimator</p>
 <p>This also works where final estimator is <code class="docutils literal notranslate"><span class="pre">None</span></code>: all prior
 transformations are applied.</p>
-<dl class="docutils">
-<dt>X <span class="classifier-delimiter">:</span> <span class="classifier">iterable</span></dt>
-<dd>Data to transform. Must fulfill input requirements of first step
-of the pipeline.</dd>
-</dl>
-<p>Xt : array-like, shape = [n_samples, n_transformed_features]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> (<em>iterable</em>) – Data to transform. Must fulfill input requirements of first step
+of the pipeline.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>Xt</strong></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">array-like, shape = [n_samples, n_transformed_features]</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
