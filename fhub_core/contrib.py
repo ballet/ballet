@@ -63,8 +63,10 @@ def get_contrib_features_from_package(package):
                 'Failed to import module {modname}'
                 .format(modname=modname))
             continue
-        features = get_package_features_from_module(mod)
+        features = get_contrib_features_from_module(mod)
         contrib_features.extend(features)
+
+    return contrib_features
 
 
 def get_contrib_features_from_module(mod):
