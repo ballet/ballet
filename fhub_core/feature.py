@@ -90,6 +90,11 @@ class Feature:
     def as_sklearn_pandas_tuple(self):
         return (self.input, self.transformer)
 
+    def as_dataframe_mapper(self):
+        return sklearn_pandas.DataFrameMapper([
+            self.as_sklearn_pandas_tuple()
+        ], input_df=True)
+
 
 def check(func):
     '''Evaluate func, returning T if no errors and F if AssertionError'''
@@ -129,31 +134,42 @@ class FeatureValidator:
         assert hasattr(feature.transformer, 'transform')
 
     @check
+    def can_make_mapper(self, feature):
+        try:
+            mapper = feature.as_dataframe_mapper()
+        except Exception:
+            raise AssertionError
+
+    @check
     def can_fit(self, feature):
         try:
-            feature.transformer.fit(self.X, self.y)
+            mapper = feature.as_dataframe_mapper()
+            mapper.fit(X, y)
         except Exception:
             raise AssertionError
 
     @check
     def can_transform(self, feature):
         try:
-            feature.transformer.fit(self.X, self.y)
-            feature.transformer.transform(self.X)
+            mapper = feature.as_dataframe_mapper()
+            mapper.fit(self.X, self.y)
+            mapper.transform(self.X)
         except Exception:
             raise AssertionError
 
     @check
     def can_fit_transform(self, feature):
         try:
-            feature.transformer.fit_transform(self.X, self.y)
+            mapper = feature.as_dataframe_mapper()
+            mapper.fit_transform(self.X, self.y)
         except Exception:
             raise AssertionError
 
     @check
     def has_correct_output_dimensions(self, feature):
         try:
-            X = feature.transformer.fit_transform(self.X, self.y)
+            mapper = feature.as_dataframe_mapper()
+            X = mapper.fit_transform(self.X, self.y)
         except Exception:
             raise AssertionError
 
