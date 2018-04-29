@@ -73,7 +73,7 @@ class TestModutil(unittest.TestCase):
         # from the actual project root, the relpath *should* be a dir
         cwd = os.getcwd()
         try:
-            os.chdir(project_root)
+            os.chdir(str(project_root))
             actual_relpath = modname_to_relpath(modname)
             expected_relpath = 'fhub_core/util/__init__.py'
             self.assertEqual(actual_relpath, expected_relpath)
