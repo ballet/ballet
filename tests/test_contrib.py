@@ -5,7 +5,7 @@ import unittest
 from textwrap import dedent
 
 from fhub_core.contrib import get_contrib_features
-from fhub_core.util import import_module_at_path
+from fhub_core.util.modutil import import_module_at_path
 
 logging.basicConfig(level=logging.DEBUG)
 
