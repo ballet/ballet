@@ -262,16 +262,33 @@
 
 <dl class="function">
 <dt id="fhub_core.util.modutil.import_module_from_relpath">
-<code class="descclassname">fhub_core.util.modutil.</code><code class="descname">import_module_from_relpath</code><span class="sig-paren">(</span><em>project_root</em>, <em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fhub_core/util/modutil.html#import_module_from_relpath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fhub_core.util.modutil.import_module_from_relpath" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fhub_core.util.modutil.</code><code class="descname">import_module_from_relpath</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fhub_core/util/modutil.html#import_module_from_relpath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fhub_core.util.modutil.import_module_from_relpath" title="Permalink to this definition">¶</a></dt>
 <dd><p>Import module at relative path to project root</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="fhub_core.util.modutil.modname_to_relpath">
-<code class="descclassname">fhub_core.util.modutil.</code><code class="descname">modname_to_relpath</code><span class="sig-paren">(</span><em>project_root</em>, <em>modname</em>, <em>add_init=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fhub_core/util/modutil.html#modname_to_relpath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fhub_core.util.modutil.modname_to_relpath" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert module name to relative path</p>
+<code class="descclassname">fhub_core.util.modutil.</code><code class="descname">modname_to_relpath</code><span class="sig-paren">(</span><em>modname</em>, <em>project_root=None</em>, <em>add_init=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fhub_core/util/modutil.html#modname_to_relpath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fhub_core.util.modutil.modname_to_relpath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert module name to relative path.</p>
+<p>The project root is usually needed to detect if the module is a package, in
+which case the relevant file is the <cite>__init__.py</cite> within the subdirectory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>modname</strong> (<em>str</em>) – Module name, e.g. <cite>os.path</cite></li>
+<li><strong>project_root</strong> (<em>str</em>) – Path to project root</li>
+<li><strong>add_init</strong> (<em>bool</em>) – Whether to add <cite>__init__.py</cite> to the path of modules
+that are packages. Defaults to True</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <p class="rubric">Example</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">modname_to_relpath</span><span class="p">(</span><span class="s1">&#39;dengue_prediction.features&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">modname_to_relpath</span><span class="p">(</span>
+<span class="go">        &#39;/path/to/project&#39;, &#39;dengue_prediction.features&#39;)</span>
 <span class="go">&#39;dengue_prediction/features/__init__.py&#39;</span>
 </pre></div>
 </div>
@@ -280,7 +297,25 @@
 <dl class="function">
 <dt id="fhub_core.util.modutil.relpath_to_modname">
 <code class="descclassname">fhub_core.util.modutil.</code><code class="descname">relpath_to_modname</code><span class="sig-paren">(</span><em>relpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fhub_core/util/modutil.html#relpath_to_modname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fhub_core.util.modutil.relpath_to_modname" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Convert relative path to module name</p>
+<p>Within a project, a path to the source file is uniquely identified with a
+module name. Relative paths of the form ‘foo/bar’ are <em>not</em> converted to
+module names ‘foo.bar’, because (1) they identify directories, not regular
+files, and (2) already ‘foo/bar/__init__.py’ would claim that conversion.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>relpath</strong> (<em>str</em>) – Relative path from some location on sys.path</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">relpath_to_modname</span><span class="p">(</span><span class="s1">&#39;fhub_core/util/_util.py&#39;</span><span class="p">)</span>
+<span class="go">&#39;fhub_core.util._util&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
 
 </div>
 <div class="section" id="module-fhub_core.util.testing">
