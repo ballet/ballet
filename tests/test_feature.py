@@ -6,8 +6,7 @@ import pandas as pd
 import sklearn.preprocessing
 
 from fhub_core import Feature, make_robust_transformer
-from fhub_core.tmp import IdentityTransformer
-from fhub_core.util import asarray2d
+from fhub_core.util import IdentityTransformer, asarray2d
 
 from .util import FragileTransformer, FragileTransformerPipeline
 

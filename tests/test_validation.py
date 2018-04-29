@@ -6,7 +6,7 @@ import sklearn.preprocessing
 from sklearn.base import BaseEstimator, TransformerMixin
 
 from fhub_core.feature import Feature
-from fhub_core.tmp import IdentityTransformer, NoFitMixin
+from fhub_core.util import IdentityTransformer, NoFitMixin
 from fhub_core.validation import FeatureValidator
 
 from .util import FragileTransformer
