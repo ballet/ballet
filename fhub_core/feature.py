@@ -82,8 +82,8 @@ class Feature:
         attr_list = ['input', 'transformer', 'name', 'description', 'output',
                      'source', 'options']
         attrs_str = ', '.join(
-            '{attr_name}={attr_val}'.format(
-                attr_name=attr, attr_val=repr(getattr(self, attr))
+            '{attr_name}={attr_val!r}'.format(
+                attr_name=attr, attr_val=getattr(self, attr)
             ) for attr in attr_list
         )
         return self.__class__.__name__ + '(' + attrs_str + ')'

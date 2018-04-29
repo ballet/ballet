@@ -1,5 +1,3 @@
-import pathlib
-import pkgutil
 
 import numpy as np
 
@@ -23,13 +21,3 @@ def get_arr_desc(arr):
 def indent(text, n=4):
     _indent = ' ' * n
     return '\n'.join([_indent + line for line in text.split('\n')])
-
-
-def import_module_at_path(modname, modpath):
-    '''Import module from path'''
-    modpath = pathlib.Path(modpath)
-    parentpath = str(modpath.parent)
-    modpath = str(modpath)
-    importer = pkgutil.get_importer(parentpath)
-    mod = importer.find_module(modname).load_module(modname)
-    return mod
