@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>fhub_core.validation &mdash; fhub_core 0.3.2 documentation</title>
+  <title>fhub_core.validation &mdash; fhub_core 0.3.3 documentation</title>
   
 
   
@@ -440,11 +440,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">features_validation_result</span> <span class="o">=</span> <span class="n">overall_result</span>
 
     <span class="k">def</span> <span class="nf">_determine_validation_result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_validation_result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_changes_validation_result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;File changes have not been validated.&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_validation_result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Feature changes have not been validated.&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_validation_result</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_validation_result</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_changes_validation_result</span> <span class="ow">and</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">feature_validation_result</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PullRequestFeatureValidator.validate"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.validation.PullRequestFeatureValidator.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># check that we are *on* this PR&#39;s branch</span>
@@ -505,7 +506,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.3.2',
+            VERSION:'0.3.3',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
