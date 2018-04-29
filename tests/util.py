@@ -4,15 +4,9 @@ import funcy
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn_pandas.pipeline import TransformerPipeline
 
+from fhub_core.util import IdentityTransformer
+
 EPSILON = 1e-4
-
-
-class _IdentityTransformer(BaseEstimator, TransformerMixin):
-    def fit(self, X, y=None, **fit_kwargs):
-        return self
-
-    def transform(self, X, **transform_kwargs):
-        return X
 
 
 class FragileTransformer(BaseEstimator, TransformerMixin):
@@ -46,7 +40,7 @@ class FragileTransformer(BaseEstimator, TransformerMixin):
 class FragileTransformerPipeline(TransformerPipeline):
     def __init__(self, nsteps, bad_input_checks, errors, shuffle=True, seed=1):
         steps = [
-            ('IdentityTransformer{:02d}'.format(i), _IdentityTransformer())
+            ('IdentityTransformer{:02d}'.format(i), IdentityTransformer())
             for i in range(nsteps - 1)
         ]
         fragile_transformer = FragileTransformer(bad_input_checks, errors)
