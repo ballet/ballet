@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>fhub_core.feature &mdash; fhub_core 0.2.4 documentation</title>
+  <title>fhub_core.feature &mdash; fhub_core 0.3.0 documentation</title>
   
 
   
@@ -91,7 +91,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../fhub_core.html#submodules">Submodules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../fhub_core.html#module-fhub_core.contrib">fhub_core.contrib module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../fhub_core.html#module-fhub_core.feature">fhub_core.feature module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../fhub_core.html#module-fhub_core.tmp">fhub_core.tmp module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../fhub_core.html#module-fhub_core.validation">fhub_core.validation module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../fhub_core.html#module-fhub_core">Module contents</a></li>
 </ul>
@@ -181,8 +180,7 @@
            <div itemprop="articleBody">
             
   <h1>Source code for fhub_core.feature</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">logging</span>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 
 <span class="kn">import</span> <span class="nn">funcy</span>
@@ -197,7 +195,7 @@
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Feature&#39;</span><span class="p">,</span> <span class="s1">&#39;FeatureValidator&#39;</span><span class="p">,</span> <span class="s1">&#39;make_robust_transformer&#39;</span><span class="p">,</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Feature&#39;</span><span class="p">,</span> <span class="s1">&#39;make_robust_transformer&#39;</span><span class="p">,</span>
            <span class="s1">&#39;RobustTransformerPipeline&#39;</span><span class="p">,</span> <span class="s1">&#39;make_robust_transformer_pipeline&#39;</span><span class="p">]</span>
 
 
@@ -278,113 +276,6 @@
         <span class="k">return</span> <span class="n">DataFrameMapper</span><span class="p">([</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">as_input_transformer_tuple</span><span class="p">()</span>
         <span class="p">],</span> <span class="n">input_df</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div></div>
-
-
-<span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Evaluate func, returning T if no errors and F if AssertionError&#39;&#39;&#39;</span>
-    <span class="nd">@funcy</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">wrapped</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
-    <span class="n">wrapped</span><span class="o">.</span><span class="n">is_check</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="k">return</span> <span class="n">wrapped</span>
-
-
-<div class="viewcode-block" id="FeatureValidator"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.feature.FeatureValidator">[docs]</a><span class="k">class</span> <span class="nc">FeatureValidator</span><span class="p">:</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">X</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
-
-    <span class="nd">@check</span>
-    <span class="k">def</span> <span class="nf">_is_feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">Feature</span><span class="p">)</span>
-
-    <span class="nd">@check</span>
-    <span class="k">def</span> <span class="nf">_has_correct_input_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Check that `input` is a string or iterable of string&#39;&#39;&#39;</span>
-        <span class="nb">input</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">input</span>
-        <span class="n">is_str</span> <span class="o">=</span> <span class="n">funcy</span><span class="o">.</span><span class="n">isa</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
-        <span class="n">is_nested_str</span> <span class="o">=</span> <span class="n">funcy</span><span class="o">.</span><span class="n">all_fn</span><span class="p">(</span>
-            <span class="n">funcy</span><span class="o">.</span><span class="n">iterable</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">is_str</span><span class="p">,</span> <span class="n">x</span><span class="p">)))</span>
-        <span class="k">assert</span> <span class="n">is_str</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span> <span class="ow">or</span> <span class="n">is_nested_str</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
-
-    <span class="nd">@check</span>
-    <span class="k">def</span> <span class="nf">_has_transformer_interface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
-        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">transformer</span><span class="p">,</span> <span class="s1">&#39;fit&#39;</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">transformer</span><span class="p">,</span> <span class="s1">&#39;transform&#39;</span><span class="p">)</span>
-
-    <span class="nd">@check</span>
-    <span class="k">def</span> <span class="nf">_can_make_mapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AssertionError</span>
-
-    <span class="nd">@check</span>
-    <span class="k">def</span> <span class="nf">_can_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
-            <span class="n">mapper</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AssertionError</span>
-
-    <span class="nd">@check</span>
-    <span class="k">def</span> <span class="nf">_can_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
-            <span class="n">mapper</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
-            <span class="n">mapper</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AssertionError</span>
-
-    <span class="nd">@check</span>
-    <span class="k">def</span> <span class="nf">_can_fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
-            <span class="n">mapper</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AssertionError</span>
-
-    <span class="nd">@check</span>
-    <span class="k">def</span> <span class="nf">_has_correct_output_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
-            <span class="n">X</span> <span class="o">=</span> <span class="n">mapper</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AssertionError</span>
-
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-    <span class="nd">@check</span>
-    <span class="k">def</span> <span class="nf">_can_deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AssertionError</span>
-
-<div class="viewcode-block" id="FeatureValidator.get_all_checks"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.feature.FeatureValidator.get_all_checks">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_checks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">method_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__dir__</span><span class="p">():</span>
-            <span class="n">method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="s1">&#39;is_check&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">method</span><span class="o">.</span><span class="n">is_check</span><span class="p">:</span>
-                <span class="n">name</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="vm">__name__</span>
-                <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">):</span>
-                    <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-                <span class="k">yield</span> <span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="FeatureValidator.validate"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.feature.FeatureValidator.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
-        <span class="n">failures</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">for</span> <span class="n">check</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_checks</span><span class="p">():</span>
-            <span class="n">success</span> <span class="o">=</span> <span class="n">check</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
-                <span class="n">result</span> <span class="o">=</span> <span class="kc">False</span>
-                <span class="n">failures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">failures</span></div></div>
 </pre></div>
 
            </div>
@@ -419,7 +310,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.2.4',
+            VERSION:'0.3.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
