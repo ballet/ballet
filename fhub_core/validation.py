@@ -258,11 +258,12 @@ class PullRequestFeatureValidator:
         self.features_validation_result = overall_result
 
     def _determine_validation_result(self):
-        if self.file_validation_result is None:
+        if self.file_changes_validation_result is None:
             raise ValueError('File changes have not been validated.')
         if self.feature_validation_result is None:
             raise ValueError('Feature changes have not been validated.')
-        return self.file_validation_result and self.feature_validation_result
+        return (self.file_changes_validation_result and
+                self.feature_validation_result)
 
     def validate(self):
         # check that we are *on* this PR's branch
