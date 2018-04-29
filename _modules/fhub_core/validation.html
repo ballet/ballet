@@ -1,0 +1,418 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>fhub_core.validation &mdash; fhub_core 0.2.4 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> fhub_core
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#stable-release">Stable release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#from-sources">From sources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">fhub_core</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../fhub_core.html">fhub_core package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../fhub_core.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../fhub_core.util.html">fhub_core.util package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../fhub_core.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../fhub_core.html#module-fhub_core.contrib">fhub_core.contrib module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../fhub_core.html#module-fhub_core.feature">fhub_core.feature module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../fhub_core.html#module-fhub_core.tmp">fhub_core.tmp module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../fhub_core.html#module-fhub_core.validation">fhub_core.validation module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../fhub_core.html#module-fhub_core">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#types-of-contributions">Types of Contributions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#report-bugs">Report Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#fix-bugs">Fix Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#implement-features">Implement Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#write-documentation">Write Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#submit-feedback">Submit Feedback</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#get-started">Get Started!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#pull-request-guidelines">Pull Request Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#tips">Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#deploying">Deploying</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">Credits</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../authors.html#development-lead">Development Lead</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../authors.html#contributors">Contributors</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">fhub_core</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>fhub_core.validation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for fhub_core.validation</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">pathlib</span>
+
+<span class="kn">import</span> <span class="nn">funcy</span>
+
+<span class="kn">from</span> <span class="nn">fhub_core.contrib</span> <span class="k">import</span> <span class="n">get_contrib_features</span>
+<span class="kn">from</span> <span class="nn">fhub_core.feature</span> <span class="k">import</span> <span class="n">FeatureValidator</span>
+<span class="kn">from</span> <span class="nn">fhub_core.util.git</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">HeadInfo</span><span class="p">,</span> <span class="n">PullRequestInfo</span><span class="p">,</span> <span class="n">get_file_changes_by_revision</span><span class="p">,</span> <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">fhub_core.util.modutil</span> <span class="k">import</span> <span class="n">import_module_from_relpath</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;PullRequestFeatureValidator&#39;</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="PullRequestFeatureValidator"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.validation.PullRequestFeatureValidator">[docs]</a><span class="k">class</span> <span class="nc">PullRequestFeatureValidator</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pr_num</span><span class="p">,</span> <span class="n">repo</span><span class="p">,</span> <span class="n">comparison_ref</span><span class="p">,</span> <span class="n">contrib_module_path</span><span class="p">,</span>
+                 <span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Validate the features introduced in a proposed pull request</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pr_num (str): Pull request number</span>
+<span class="sd">            repo (git.Repo): Project repository</span>
+<span class="sd">            comparison_ref (str): Name of comparison ref, e.g. &#39;master&#39;</span>
+<span class="sd">            contrib_module_path (str): Relative path to contrib module</span>
+<span class="sd">            X_df (pd.DataFrame): Example X DataFrame</span>
+<span class="sd">            y_df (pd.DataFrame): Example y DataFrame</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span> <span class="o">=</span> <span class="n">pr_num</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">repo</span> <span class="o">=</span> <span class="n">repo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comparison_ref</span> <span class="o">=</span> <span class="n">comparison_ref</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contrib_module_path</span> <span class="o">=</span> <span class="n">contrib_module_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">X_df</span> <span class="o">=</span> <span class="n">X_df</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_df</span> <span class="o">=</span> <span class="n">y_df</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pr_info</span> <span class="o">=</span> <span class="n">PullRequestInfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">head_info</span> <span class="o">=</span> <span class="n">HeadInfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="p">)</span>
+
+        <span class="c1"># may be set by other methods</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_changes</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_changes_admissible</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_changes_inadmissible</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="PullRequestFeatureValidator.collect_file_changes"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.validation.PullRequestFeatureValidator.collect_file_changes">[docs]</a>    <span class="k">def</span> <span class="nf">collect_file_changes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Collecting file changes...&#39;</span><span class="p">)</span>
+
+        <span class="n">from_rev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">comparison_ref</span>
+        <span class="n">to_rev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pr_info</span><span class="o">.</span><span class="n">local_rev_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_changes</span> <span class="o">=</span> <span class="n">get_file_changes_by_revision</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="p">,</span> <span class="n">from_rev</span><span class="p">,</span> <span class="n">to_rev</span><span class="p">)</span>
+
+        <span class="c1"># log results</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_changes</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;File </span><span class="si">{i}</span><span class="s1">: </span><span class="si">{file}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Collected </span><span class="si">{}</span><span class="s1"> files&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_changes</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="PullRequestFeatureValidator.categorize_file_changes"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.validation.PullRequestFeatureValidator.categorize_file_changes">[docs]</a>    <span class="k">def</span> <span class="nf">categorize_file_changes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Partition file changes into admissible and inadmissible changes&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_changes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;File changes have not been collected.&#39;</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Categorizing file changes...&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_changes_admissible</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_changes_inadmissible</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># admissible:</span>
+        <span class="c1"># - within contrib subdirectory</span>
+        <span class="c1"># - is a .py file</span>
+        <span class="c1"># - TODO: is a .txt file</span>
+        <span class="c1"># - is an addition</span>
+        <span class="c1"># inadmissible:</span>
+        <span class="c1"># - otherwise (wrong directory, wrong filetype, wrong modification</span>
+        <span class="c1">#   type)</span>
+        <span class="k">def</span> <span class="nf">within_contrib_subdirectory</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+            <span class="n">contrib_relpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">contrib_module_path</span>
+            <span class="k">return</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">contrib_relpath</span><span class="p">)</span> <span class="ow">in</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">parents</span>
+
+        <span class="k">def</span> <span class="nf">is_appropriate_filetype</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.py&#39;</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">is_appropriate_modification_type</span><span class="p">(</span><span class="n">modification_type</span><span class="p">):</span>
+            <span class="c1"># TODO</span>
+            <span class="c1"># return modification_type == &#39;A&#39;</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="n">is_admissible</span> <span class="o">=</span> <span class="n">funcy</span><span class="o">.</span><span class="n">all_fn</span><span class="p">(</span>
+            <span class="n">within_contrib_subdirectory</span><span class="p">,</span> <span class="n">is_appropriate_filetype</span><span class="p">,</span>
+            <span class="n">is_appropriate_modification_type</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_changes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">is_admissible</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">file_changes_admissible</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="s1">&#39;Categorized </span><span class="si">{file}</span><span class="s1"> as ADMISSIBLE&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">file_changes_inadmissible</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="s1">&#39;Categorized </span><span class="si">{file}</span><span class="s1"> as INADMISSIBLE&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">))</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Admitted </span><span class="si">{}</span><span class="s1"> files and rejected </span><span class="si">{}</span><span class="s1"> files&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_changes_admissible</span><span class="p">),</span>
+            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_changes_inadmissible</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="PullRequestFeatureValidator.collect_features"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.validation.PullRequestFeatureValidator.collect_features">[docs]</a>    <span class="k">def</span> <span class="nf">collect_features</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_changes_admissible</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;File changes have not been collected.&#39;</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Collecting features...&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_changes_admissible</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">mod</span> <span class="o">=</span> <span class="n">import_module_from_relpath</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
+                    <span class="s1">&#39;Failed to import module from </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file</span><span class="p">))</span>
+                <span class="k">continue</span>
+
+            <span class="n">features</span> <span class="o">=</span> <span class="n">get_contrib_features</span><span class="p">(</span><span class="n">mod</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Collected </span><span class="si">{}</span><span class="s1"> features&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="PullRequestFeatureValidator.validate_features"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.validation.PullRequestFeatureValidator.validate_features">[docs]</a>    <span class="k">def</span> <span class="nf">validate_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">):</span>
+        <span class="c1"># get small subset?</span>
+        <span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span> <span class="o">=</span> <span class="n">subsample_data_for_validation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_df</span><span class="p">)</span>
+
+        <span class="c1"># validate</span>
+        <span class="n">feature_validator</span> <span class="o">=</span> <span class="n">FeatureValidator</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span><span class="p">)</span>
+        <span class="n">overall_result</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">,</span> <span class="n">failures</span> <span class="o">=</span> <span class="n">feature_validator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s1">&#39;Feature is valid: </span><span class="si">{feature}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feature</span><span class="o">=</span><span class="n">feature</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s1">&#39;Feature is NOT valid: </span><span class="si">{feature}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feature</span><span class="o">=</span><span class="n">feature</span><span class="p">))</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="s1">&#39;Failures in validation: </span><span class="si">{failures}</span><span class="s1">&#39;</span>
+                    <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">failures</span><span class="o">=</span><span class="n">failures</span><span class="p">))</span>
+                <span class="n">overall_result</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="n">overall_result</span></div>
+
+<div class="viewcode-block" id="PullRequestFeatureValidator.validate"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.validation.PullRequestFeatureValidator.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># check that we are *on* this PR&#39;s branch</span>
+        <span class="n">expected_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pr_info</span><span class="o">.</span><span class="n">local_rev_name</span>
+        <span class="n">current_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_info</span><span class="o">.</span><span class="n">path</span>
+        <span class="k">if</span> <span class="n">expected_ref</span> <span class="o">!=</span> <span class="n">current_ref</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="s1">&#39;Must validate PR while on that PR</span><span class="se">\&#39;</span><span class="s1">s branch&#39;</span><span class="p">)</span>
+
+        <span class="c1"># collect</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">collect_file_changes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">categorize_file_changes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">collect_features</span><span class="p">()</span>
+
+        <span class="c1"># validate</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_features</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div></div>
+
+
+<span class="k">def</span> <span class="nf">subsample_data_for_validation</span><span class="p">(</span><span class="n">X_df_tr</span><span class="p">,</span> <span class="n">y_df_tr</span><span class="p">):</span>
+    <span class="c1"># TODO</span>
+    <span class="k">return</span> <span class="n">X_df_tr</span><span class="p">,</span> <span class="n">y_df_tr</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Micah Smith.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.2.4',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
+      });
+  </script> 
+
+</body>
+</html>
