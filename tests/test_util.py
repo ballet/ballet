@@ -5,12 +5,9 @@ import unittest
 
 import fhub_core
 from fhub_core.util.modutil import (  # noqa F401
-    import_module_from_modname,
-    import_module_from_relpath,
-    import_module_at_path,
-    relpath_to_modname,
-    modname_to_relpath,
-)
+    import_module_at_path, import_module_from_modname,
+    import_module_from_relpath, modname_to_relpath, relpath_to_modname)
+
 
 class TestModutil(unittest.TestCase):
 
@@ -40,7 +37,6 @@ class TestModutil(unittest.TestCase):
         relpath = 'fhub_core/foo/bar/baz.zip'
         with self.assertRaises(ValueError):
             relpath_to_modname(relpath)
-
 
     def test_modname_to_relpath(self):
         modname = 'fhub_core.util._util'
