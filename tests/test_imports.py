@@ -4,7 +4,7 @@ import unittest
 class TestImports(unittest.TestCase):
     def test_feature_imports(self):
         from fhub_core.feature import (  # noqa
-            Feature, FeatureValidator, make_robust_transformer,
+            Feature, make_robust_transformer,
             RobustTransformerPipeline, make_robust_transformer_pipeline, )
 
     def test_contrib_imports(self):
@@ -29,11 +29,11 @@ class TestImports(unittest.TestCase):
 
     def test_validation_imports(self):
         from fhub_core.validation import (  # noqa
-            PullRequestFeatureValidator, )
+            FeatureValidator, PullRequestFeatureValidator, )
 
     def test_toplevel_imports(self):
         from fhub_core import (  # noqa
-            Feature, FeatureValidator, make_robust_transformer,
+            Feature, make_robust_transformer,
             RobustTransformerPipeline, make_robust_transformer_pipeline,
             get_contrib_features, )
 

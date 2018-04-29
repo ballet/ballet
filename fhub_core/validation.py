@@ -1,19 +1,116 @@
+import copy
 import logging
 import pathlib
 
 import funcy
 
 from fhub_core.contrib import get_contrib_features
-from fhub_core.feature import FeatureValidator
+from fhub_core.feature import Feature
+from fhub_core.util import assertion_method
 from fhub_core.util.git import (
-    HeadInfo, PullRequestInfo, get_file_changes_by_revision, )
+    HeadInfo, PullRequestInfo, get_file_changes_by_revision)
 from fhub_core.util.modutil import import_module_from_relpath
 
 logger = logging.getLogger(__name__)
 
 __all__ = [
+    'FeatureValidator',
     'PullRequestFeatureValidator'
 ]
+
+
+class FeatureValidator:
+
+    def __init__(self, X, y):
+        self.X = X
+        self.y = y
+
+    @assertion_method
+    def _is_feature(self, feature):
+        assert isinstance(feature, Feature)
+
+    @assertion_method
+    def _has_correct_input_type(self, feature):
+        '''Check that `input` is a string or iterable of string'''
+        input = feature.input
+        is_str = funcy.isa(str)
+        is_nested_str = funcy.all_fn(
+            funcy.iterable, lambda x: all(map(is_str, x)))
+        assert is_str(input) or is_nested_str(input)
+
+    @assertion_method
+    def _has_transformer_interface(self, feature):
+        assert hasattr(feature.transformer, 'fit')
+        assert hasattr(feature.transformer, 'transform')
+
+    @assertion_method
+    def _can_make_mapper(self, feature):
+        try:
+            feature.as_dataframe_mapper()
+        except Exception:
+            raise AssertionError
+
+    @assertion_method
+    def _can_fit(self, feature):
+        try:
+            mapper = feature.as_dataframe_mapper()
+            mapper.fit(self.X, self.y)
+        except Exception:
+            raise AssertionError
+
+    @assertion_method
+    def _can_transform(self, feature):
+        try:
+            mapper = feature.as_dataframe_mapper()
+            mapper.fit(self.X, self.y)
+            mapper.transform(self.X)
+        except Exception:
+            raise AssertionError
+
+    @assertion_method
+    def _can_fit_transform(self, feature):
+        try:
+            mapper = feature.as_dataframe_mapper()
+            mapper.fit_transform(self.X, self.y)
+        except Exception:
+            raise AssertionError
+
+    @assertion_method
+    def _has_correct_output_dimensions(self, feature):
+        try:
+            mapper = feature.as_dataframe_mapper()
+            X = mapper.fit_transform(self.X, self.y)
+        except Exception:
+            raise AssertionError
+
+        assert self.X.shape[0] == X.shape[0]
+
+    @assertion_method
+    def _can_deepcopy(self, feature):
+        try:
+            copy.deepcopy(feature)
+        except Exception:
+            raise AssertionError
+
+    def get_all_checks(self):
+        for method_name in self.__dir__():
+            method = getattr(self, method_name)
+            if hasattr(method, 'is_check') and method.is_check:
+                name = method.__name__
+                if name.startswith('_'):
+                    name = name[1:]
+                yield (method, name)
+
+    def validate(self, feature):
+        failures = []
+        result = True
+        for check, name in self.get_all_checks():
+            success = check(feature)
+            if not success:
+                result = False
+                failures.append(name)
+
+        return result, failures
 
 
 class PullRequestFeatureValidator:
