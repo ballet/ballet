@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>fhub_core.validation &mdash; fhub_core 0.3.1 documentation</title>
+  <title>fhub_core.validation &mdash; fhub_core 0.3.2 documentation</title>
   
 
   
@@ -274,19 +274,19 @@
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AssertionError</span>
 
-<div class="viewcode-block" id="FeatureValidator.get_all_checks"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.validation.FeatureValidator.get_all_checks">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_checks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_get_all_checks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">method_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__dir__</span><span class="p">():</span>
             <span class="n">method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="s1">&#39;is_check&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">method</span><span class="o">.</span><span class="n">is_check</span><span class="p">:</span>
                 <span class="n">name</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="vm">__name__</span>
                 <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">):</span>
                     <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-                <span class="k">yield</span> <span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
+                <span class="k">yield</span> <span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 
 <div class="viewcode-block" id="FeatureValidator.validate"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.validation.FeatureValidator.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
         <span class="n">failures</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">result</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">for</span> <span class="n">check</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_checks</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">check</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_all_checks</span><span class="p">():</span>
             <span class="n">success</span> <span class="o">=</span> <span class="n">check</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="kc">False</span>
@@ -318,13 +318,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">pr_info</span> <span class="o">=</span> <span class="n">PullRequestInfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">head_info</span> <span class="o">=</span> <span class="n">HeadInfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="p">)</span>
 
-        <span class="c1"># may be set by other methods</span>
+        <span class="c1"># will be set by other methods</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_changes</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_changes_admissible</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_changes_inadmissible</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_changes_validation_result</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">features_validation_result</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="PullRequestFeatureValidator.collect_file_changes"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.validation.PullRequestFeatureValidator.collect_file_changes">[docs]</a>    <span class="k">def</span> <span class="nf">collect_file_changes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_collect_file_changes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Collecting file changes...&#39;</span><span class="p">)</span>
 
         <span class="n">from_rev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">comparison_ref</span>
@@ -335,9 +337,9 @@
         <span class="c1"># log results</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_changes</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;File </span><span class="si">{i}</span><span class="s1">: </span><span class="si">{file}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">))</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Collected </span><span class="si">{}</span><span class="s1"> files&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_changes</span><span class="p">)))</span></div>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Collected </span><span class="si">{}</span><span class="s1"> files&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_changes</span><span class="p">)))</span>
 
-<div class="viewcode-block" id="PullRequestFeatureValidator.categorize_file_changes"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.validation.PullRequestFeatureValidator.categorize_file_changes">[docs]</a>    <span class="k">def</span> <span class="nf">categorize_file_changes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_categorize_file_changes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Partition file changes into admissible and inadmissible changes&#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_changes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;File changes have not been collected.&#39;</span><span class="p">)</span>
@@ -383,9 +385,16 @@
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Admitted </span><span class="si">{}</span><span class="s1"> files and rejected </span><span class="si">{}</span><span class="s1"> files&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_changes_admissible</span><span class="p">),</span>
-            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_changes_inadmissible</span><span class="p">)))</span></div>
+            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_changes_inadmissible</span><span class="p">)))</span>
 
-<div class="viewcode-block" id="PullRequestFeatureValidator.collect_features"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.validation.PullRequestFeatureValidator.collect_features">[docs]</a>    <span class="k">def</span> <span class="nf">collect_features</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_validate_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_changes_inadmissible</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;File changes have not been categorized.&#39;</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_changes_inadmissible</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_changes_validation_result</span> <span class="o">=</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">_collect_features</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_changes_admissible</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;File changes have not been collected.&#39;</span><span class="p">)</span>
 
@@ -403,16 +412,19 @@
             <span class="n">features</span> <span class="o">=</span> <span class="n">get_contrib_features</span><span class="p">(</span><span class="n">mod</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Collected </span><span class="si">{}</span><span class="s1"> features&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)))</span></div>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Collected </span><span class="si">{}</span><span class="s1"> features&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)))</span>
 
-<div class="viewcode-block" id="PullRequestFeatureValidator.validate_features"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.validation.PullRequestFeatureValidator.validate_features">[docs]</a>    <span class="k">def</span> <span class="nf">validate_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_validate_features</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Features have not been collected.&#39;</span><span class="p">)</span>
+
         <span class="c1"># get small subset?</span>
         <span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span> <span class="o">=</span> <span class="n">subsample_data_for_validation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_df</span><span class="p">)</span>
 
         <span class="c1"># validate</span>
         <span class="n">feature_validator</span> <span class="o">=</span> <span class="n">FeatureValidator</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span><span class="p">)</span>
         <span class="n">overall_result</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
             <span class="n">result</span><span class="p">,</span> <span class="n">failures</span> <span class="o">=</span> <span class="n">feature_validator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
@@ -425,7 +437,14 @@
                     <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">failures</span><span class="o">=</span><span class="n">failures</span><span class="p">))</span>
                 <span class="n">overall_result</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="k">return</span> <span class="n">overall_result</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">features_validation_result</span> <span class="o">=</span> <span class="n">overall_result</span>
+
+    <span class="k">def</span> <span class="nf">_determine_validation_result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_validation_result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;File changes have not been validated.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_validation_result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Feature changes have not been validated.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_validation_result</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_validation_result</span>
 
 <div class="viewcode-block" id="PullRequestFeatureValidator.validate"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.validation.PullRequestFeatureValidator.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># check that we are *on* this PR&#39;s branch</span>
@@ -435,15 +454,18 @@
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
                 <span class="s1">&#39;Must validate PR while on that PR</span><span class="se">\&#39;</span><span class="s1">s branch&#39;</span><span class="p">)</span>
 
-        <span class="c1"># collect</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">collect_file_changes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">categorize_file_changes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">collect_features</span><span class="p">()</span>
+        <span class="c1"># collect, categorize, and validate file changes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_collect_file_changes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_categorize_file_changes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_files</span><span class="p">()</span>
 
-        <span class="c1"># validate</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_features</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
+        <span class="c1"># collect and validate new features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_collect_features</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_features</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="n">result</span></div></div>
+        <span class="c1"># determine overall result</span>
+        <span class="n">overall_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_determine_validation_result</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">overall_result</span></div></div>
 
 
 <span class="k">def</span> <span class="nf">subsample_data_for_validation</span><span class="p">(</span><span class="n">X_df_tr</span><span class="p">,</span> <span class="n">y_df_tr</span><span class="p">):</span>
@@ -483,7 +505,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.3.1',
+            VERSION:'0.3.2',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
