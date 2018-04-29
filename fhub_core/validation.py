@@ -92,7 +92,7 @@ class FeatureValidator:
         except Exception:
             raise AssertionError
 
-    def get_all_checks(self):
+    def _get_all_checks(self):
         for method_name in self.__dir__():
             method = getattr(self, method_name)
             if hasattr(method, 'is_check') and method.is_check:
@@ -104,7 +104,7 @@ class FeatureValidator:
     def validate(self, feature):
         failures = []
         result = True
-        for check, name in self.get_all_checks():
+        for check, name in self._get_all_checks():
             success = check(feature)
             if not success:
                 result = False
@@ -136,13 +136,15 @@ class PullRequestFeatureValidator:
         self.pr_info = PullRequestInfo(self.pr_num)
         self.head_info = HeadInfo(self.repo)
 
-        # may be set by other methods
+        # will be set by other methods
         self.file_changes = None
         self.file_changes_admissible = None
         self.file_changes_inadmissible = None
+        self.file_changes_validation_result = None
         self.features = None
+        self.features_validation_result = None
 
-    def collect_file_changes(self):
+    def _collect_file_changes(self):
         logger.info('Collecting file changes...')
 
         from_rev = self.comparison_ref
@@ -155,7 +157,7 @@ class PullRequestFeatureValidator:
             logger.debug('File {i}: {file}'.format(i=i, file=file))
         logger.info('Collected {} files'.format(len(self.file_changes)))
 
-    def categorize_file_changes(self):
+    def _categorize_file_changes(self):
         '''Partition file changes into admissible and inadmissible changes'''
         if self.file_changes is None:
             raise ValueError('File changes have not been collected.')
@@ -203,7 +205,14 @@ class PullRequestFeatureValidator:
             len(self.file_changes_admissible),
             len(self.file_changes_inadmissible)))
 
-    def collect_features(self):
+    def _validate_files(self):
+        if self.file_changes_inadmissible is None:
+            raise ValueError('File changes have not been categorized.')
+
+        result = len(self.file_changes_inadmissible) == 0
+        self.file_changes_validation_result = result
+
+    def _collect_features(self):
         if self.file_changes_admissible is None:
             raise ValueError('File changes have not been collected.')
 
@@ -223,14 +232,17 @@ class PullRequestFeatureValidator:
 
         logger.info('Collected {} features'.format(len(self.features)))
 
-    def validate_features(self, features):
+    def _validate_features(self):
+        if self.features is None:
+            raise ValueError('Features have not been collected.')
+
         # get small subset?
         X_df, y_df = subsample_data_for_validation(self.X_df, self.y_df)
 
         # validate
         feature_validator = FeatureValidator(X_df, y_df)
         overall_result = True
-        for feature in features:
+        for feature in self.features:
             result, failures = feature_validator.validate(feature)
             if result is True:
                 logger.info(
@@ -243,7 +255,14 @@ class PullRequestFeatureValidator:
                     .format(failures=failures))
                 overall_result = False
 
-        return overall_result
+        self.features_validation_result = overall_result
+
+    def _determine_validation_result(self):
+        if self.file_validation_result is None:
+            raise ValueError('File changes have not been validated.')
+        if self.feature_validation_result is None:
+            raise ValueError('Feature changes have not been validated.')
+        return self.file_validation_result and self.feature_validation_result
 
     def validate(self):
         # check that we are *on* this PR's branch
@@ -253,15 +272,18 @@ class PullRequestFeatureValidator:
             raise NotImplementedError(
                 'Must validate PR while on that PR\'s branch')
 
-        # collect
-        self.collect_file_changes()
-        self.categorize_file_changes()
-        self.collect_features()
+        # collect, categorize, and validate file changes
+        self._collect_file_changes()
+        self._categorize_file_changes()
+        self._validate_files()
 
-        # validate
-        result = self.validate_features(self.features)
+        # collect and validate new features
+        self._collect_features()
+        self._validate_features()
 
-        return result
+        # determine overall result
+        overall_result = self._determine_validation_result()
+        return overall_result
 
 
 def subsample_data_for_validation(X_df_tr, y_df_tr):
