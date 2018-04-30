@@ -2,8 +2,11 @@ import os
 import pathlib
 import tempfile
 import unittest
+from unittest.mock import patch
 
 import fhub_core
+from fhub_core.util.travisutil import (
+    get_travis_pr_num, is_travis_pr, TravisPullRequestBuildDiffer)
 from fhub_core.util.modutil import (  # noqa F401
     import_module_at_path, import_module_from_modname,
     import_module_from_relpath, modname_to_relpath, relpath_to_modname)
@@ -83,3 +86,46 @@ class TestModutil(unittest.TestCase):
         actual_relpath = modname_to_relpath(
             modname, project_root=project_root, add_init=add_init)
         self.assertEqual(actual_relpath, expected_relpath)
+
+
+class TestTravis(unittest.TestCase):
+    def setUp(self):
+        self.pr_num = 7
+        self.commit_range = 'HEAD^..HEAD'
+        self.travis_vars = {
+            'TRAVIS_PULL_REQUEST': str(self.pr_num),
+            'TRAVIS_COMMIT_RANGE': self.commit_range,
+        }
+
+    def test_get_travis_pr_num(self):
+        # matrix of env name, setting for env, expected result
+        matrix = (
+            ('TRAVIS_PULL_REQUEST', str(self.pr_num), self.pr_num),
+            ('TRAVIS_PULL_REQUEST', 'true', None),
+            ('TRAVIS_PULL_REQUEST', 'FALSE', None),
+            ('TRAVIS_PULL_REQUEST', 'false', None),
+            ('TRAVIS_PULL_REQUEST', 'abcd', None),
+            ('UNRELATED_VAR', '', None),
+        )
+        for env_name, env_value, expected_result in matrix:
+            with patch.dict('os.environ', {env_name: env_value}):
+                actual_result = get_travis_pr_num()
+                self.assertEqual(actual_result, expected_result)
+
+    def test_is_travis_pr(self):
+        matrix = (
+            ('TRAVIS_PULL_REQUEST', str(self.pr_num), True),
+            ('TRAVIS_PULL_REQUEST', 'true', False),
+            ('TRAVIS_PULL_REQUEST', 'FALSE', False),
+            ('TRAVIS_PULL_REQUEST', 'false', False),
+            ('TRAVIS_PULL_REQUEST', 'abcd', False),
+            ('UNRELATED_VAR', '', False),
+        )
+        for env_name, env_value, expected_result in matrix:
+            with patch.dict('os.environ', {env_name: env_value}):
+                actual_result = is_travis_pr()
+                self.assertEqual(actual_result, expected_result)
+
+    def test_travis_pull_request_build_differ(self):
+        #travis_pr_differ = TravisPullRequestBuildDiffer(pr_num, repo)
+        pass
