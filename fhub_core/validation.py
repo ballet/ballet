@@ -155,7 +155,7 @@ class PullRequestFeatureValidator:
         # log results
         for i, file in enumerate(self.file_changes):
             logger.debug('File {i}: {file}'.format(i=i, file=file))
-        logger.info('Collected {} files'.format(len(self.file_changes)))
+        logger.info('Collected {} file(s)'.format(len(self.file_changes)))
 
     def _categorize_file_changes(self):
         '''Partition file changes into admissible and inadmissible changes'''
@@ -230,7 +230,7 @@ class PullRequestFeatureValidator:
             features = get_contrib_features(mod)
             self.features.extend(features)
 
-        logger.info('Collected {} features'.format(len(self.features)))
+        logger.info('Collected {} feature(s)'.format(len(self.features)))
 
     def _validate_features(self):
         if self.features is None:
