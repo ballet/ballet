@@ -90,6 +90,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../fhub_core.html#submodules">Submodules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../fhub_core.html#module-fhub_core.contrib">fhub_core.contrib module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../fhub_core.html#module-fhub_core.exc">fhub_core.exc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../fhub_core.html#module-fhub_core.feature">fhub_core.feature module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../fhub_core.html#module-fhub_core.validation">fhub_core.validation module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../fhub_core.html#module-fhub_core">Module contents</a></li>
@@ -189,7 +190,7 @@
 <span class="kn">from</span> <span class="nn">fhub_core.contrib</span> <span class="k">import</span> <span class="n">get_contrib_features</span>
 <span class="kn">from</span> <span class="nn">fhub_core.feature</span> <span class="k">import</span> <span class="n">Feature</span>
 <span class="kn">from</span> <span class="nn">fhub_core.util</span> <span class="k">import</span> <span class="n">assertion_method</span>
-<span class="kn">from</span> <span class="nn">fhub_core.util.git</span> <span class="k">import</span> <span class="n">get_file_changes_by_revision</span>
+<span class="kn">from</span> <span class="nn">fhub_core.util.gitutil</span> <span class="k">import</span> <span class="n">get_file_changes_by_revision</span>
 <span class="kn">from</span> <span class="nn">fhub_core.util.modutil</span> <span class="k">import</span> <span class="n">import_module_from_relpath</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -337,7 +338,7 @@
         <span class="c1"># log results</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_changes</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;File </span><span class="si">{i}</span><span class="s1">: </span><span class="si">{file}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">))</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Collected </span><span class="si">{}</span><span class="s1"> files&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_changes</span><span class="p">)))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Collected </span><span class="si">{}</span><span class="s1"> file(s)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_changes</span><span class="p">)))</span>
 
     <span class="k">def</span> <span class="nf">_categorize_file_changes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Partition file changes into admissible and inadmissible changes&#39;&#39;&#39;</span>
@@ -412,7 +413,7 @@
             <span class="n">features</span> <span class="o">=</span> <span class="n">get_contrib_features</span><span class="p">(</span><span class="n">mod</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Collected </span><span class="si">{}</span><span class="s1"> features&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Collected </span><span class="si">{}</span><span class="s1"> feature(s)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)))</span>
 
     <span class="k">def</span> <span class="nf">_validate_features</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>fhub_core.util.git &mdash; fhub_core 0.3.5 documentation</title>
+  <title>fhub_core.util.gitutil &mdash; fhub_core 0.3.5 documentation</title>
   
 
   
@@ -90,6 +90,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../fhub_core.html#submodules">Submodules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../fhub_core.html#module-fhub_core.contrib">fhub_core.contrib module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../fhub_core.html#module-fhub_core.exc">fhub_core.exc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../fhub_core.html#module-fhub_core.feature">fhub_core.feature module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../fhub_core.html#module-fhub_core.validation">fhub_core.validation module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../fhub_core.html#module-fhub_core">Module contents</a></li>
@@ -164,7 +165,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>fhub_core.util.git</li>
+      <li>fhub_core.util.gitutil</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -179,8 +180,43 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for fhub_core.util.git</h1><div class="highlight"><pre>
-<div class="viewcode-block" id="PullRequestInfo"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.git.PullRequestInfo">[docs]</a><span></span><span class="k">class</span> <span class="nc">PullRequestInfo</span><span class="p">:</span>
+  <h1>Source code for fhub_core.util.gitutil</h1><div class="highlight"><pre>
+<div class="viewcode-block" id="PullRequestBuildDiffer"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.gitutil.PullRequestBuildDiffer">[docs]</a><span></span><span class="k">class</span> <span class="nc">PullRequestBuildDiffer</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pr_num</span><span class="p">,</span> <span class="n">repo</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span> <span class="o">=</span> <span class="n">pr_num</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">repo</span> <span class="o">=</span> <span class="n">repo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_environment</span><span class="p">()</span>
+
+<div class="viewcode-block" id="PullRequestBuildDiffer.check_environment"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.gitutil.PullRequestBuildDiffer.check_environment">[docs]</a>    <span class="k">def</span> <span class="nf">check_environment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="PullRequestBuildDiffer.get_diff_str"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.gitutil.PullRequestBuildDiffer.get_diff_str">[docs]</a>    <span class="k">def</span> <span class="nf">get_diff_str</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="PullRequestBuildDiffer.diff"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.gitutil.PullRequestBuildDiffer.diff">[docs]</a>    <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">diff_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_diff_str</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">get_file_changes_by_diff_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="p">,</span> <span class="n">diff_str</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="get_file_changes_by_revision"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.gitutil.get_file_changes_by_revision">[docs]</a><span class="k">def</span> <span class="nf">get_file_changes_by_revision</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">from_revision</span><span class="p">,</span> <span class="n">to_revision</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Get file changes between two revisions</span>
+
+<span class="sd">    For details on specifying revisions, see</span>
+
+<span class="sd">        git help revisions</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">diff_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{from_revision}</span><span class="s1">..</span><span class="si">{to_revision}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">from_revision</span><span class="o">=</span><span class="n">from_revision</span><span class="p">,</span> <span class="n">to_revision</span><span class="o">=</span><span class="n">to_revision</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">get_file_changes_by_diff_str</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">diff_str</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_file_changes_by_diff_str"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.gitutil.get_file_changes_by_diff_str">[docs]</a><span class="k">def</span> <span class="nf">get_file_changes_by_diff_str</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">diff_str</span><span class="p">):</span>
+    <span class="c1"># TODO implement name_status=True keyword</span>
+    <span class="k">return</span> <span class="n">repo</span><span class="o">.</span><span class="n">git</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">diff_str</span><span class="p">,</span> <span class="n">name_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<span class="c1"># deprecated for now</span>
+<div class="viewcode-block" id="PullRequestInfo"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.gitutil.PullRequestInfo">[docs]</a><span class="k">class</span> <span class="nc">PullRequestInfo</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pr_num</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span> <span class="o">=</span> <span class="n">pr_num</span>
 
@@ -203,30 +239,13 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format</span><span class="p">(</span><span class="s1">&#39;refs/pull/</span><span class="si">{pr_num}</span><span class="s1">/head&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="HeadInfo"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.git.HeadInfo">[docs]</a><span class="k">class</span> <span class="nc">HeadInfo</span><span class="p">:</span>
+<div class="viewcode-block" id="HeadInfo"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.gitutil.HeadInfo">[docs]</a><span class="k">class</span> <span class="nc">HeadInfo</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repo</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">head</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">ref</span><span class="o">.</span><span class="n">path</span></div>
-
-
-<div class="viewcode-block" id="get_file_changes_by_revision"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.git.get_file_changes_by_revision">[docs]</a><span class="k">def</span> <span class="nf">get_file_changes_by_revision</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">from_revision</span><span class="p">,</span> <span class="n">to_revision</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Get file changes between two revisions</span>
-
-<span class="sd">    For details on specifying revisions, see</span>
-
-<span class="sd">        git help revisions</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">diff_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{from_revision}</span><span class="s1">..</span><span class="si">{to_revision}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-        <span class="n">from_revision</span><span class="o">=</span><span class="n">from_revision</span><span class="p">,</span> <span class="n">to_revision</span><span class="o">=</span><span class="n">to_revision</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">get_file_changes_by_diff_str</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">diff_str</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="get_file_changes_by_diff_str"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.git.get_file_changes_by_diff_str">[docs]</a><span class="k">def</span> <span class="nf">get_file_changes_by_diff_str</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">diff_str</span><span class="p">):</span>
-    <span class="c1"># TODO implement name_status=True keyword</span>
-    <span class="k">return</span> <span class="n">repo</span><span class="o">.</span><span class="n">git</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">diff_str</span><span class="p">,</span> <span class="n">name_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

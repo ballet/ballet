@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>fhub_core.util.travis &mdash; fhub_core 0.3.5 documentation</title>
+  <title>fhub_core.util.travisutil &mdash; fhub_core 0.3.5 documentation</title>
   
 
   
@@ -90,6 +90,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../fhub_core.html#submodules">Submodules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../fhub_core.html#module-fhub_core.contrib">fhub_core.contrib module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../fhub_core.html#module-fhub_core.exc">fhub_core.exc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../fhub_core.html#module-fhub_core.feature">fhub_core.feature module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../fhub_core.html#module-fhub_core.validation">fhub_core.validation module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../fhub_core.html#module-fhub_core">Module contents</a></li>
@@ -164,7 +165,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>fhub_core.util.travis</li>
+      <li>fhub_core.util.travisutil</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -179,19 +180,48 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for fhub_core.util.travis</h1><div class="highlight"><pre>
+  <h1>Source code for fhub_core.util.travisutil</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">funcy</span>
+<span class="kn">import</span> <span class="nn">git</span>
+
+<span class="kn">from</span> <span class="nn">fhub_core.exc</span> <span class="k">import</span> <span class="n">UnexpectedTravisEnvironmentError</span>
+<span class="kn">from</span> <span class="nn">fhub_core.util.gitutil</span> <span class="k">import</span> <span class="n">PullRequestBuildDiffer</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="get_travis_pr_num"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.travis.get_travis_pr_num">[docs]</a><span class="k">def</span> <span class="nf">get_travis_pr_num</span><span class="p">():</span>
-    <span class="c1"># The pull request number if the current job is a pull request, &quot;false&quot; if</span>
-    <span class="c1"># it&#39;s not a pull request.</span>
-    <span class="c1"># See  https://docs.travis-ci.com/user/environment-variables/#Default-Environment-Variables  # noqa</span>
-    <span class="k">if</span> <span class="s1">&#39;TRAVIS_PULL_REQUEST&#39;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
-        <span class="n">travis_pull_request</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;TRAVIS_PULL_REQUEST&#39;</span><span class="p">]</span>
+<div class="viewcode-block" id="get_travis_env_or_fail"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.travisutil.get_travis_env_or_fail">[docs]</a><span class="k">def</span> <span class="nf">get_travis_env_or_fail</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># dump_travis_env_vars()</span>
+        <span class="k">raise</span> <span class="n">UnexpectedTravisEnvironmentError</span></div>
+
+
+<div class="viewcode-block" id="ensure_expected_travis_env_vars"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.travisutil.ensure_expected_travis_env_vars">[docs]</a><span class="k">def</span> <span class="nf">ensure_expected_travis_env_vars</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="n">names</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">keys</span><span class="p">())):</span>
+        <span class="k">raise</span> <span class="n">UnexpectedTravisEnvironmentError</span></div>
+
+
+<div class="viewcode-block" id="dump_travis_env_vars"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.travisutil.dump_travis_env_vars">[docs]</a><span class="k">def</span> <span class="nf">dump_travis_env_vars</span><span class="p">():</span>
+    <span class="n">travis_env_vars</span> <span class="o">=</span> <span class="n">funcy</span><span class="o">.</span><span class="n">select_keys</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">key</span><span class="p">:</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;TRAVIS&#39;</span><span class="p">),</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">travis_env_vars</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_travis_pr_num"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.travisutil.get_travis_pr_num">[docs]</a><span class="k">def</span> <span class="nf">get_travis_pr_num</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;Return the PR number if the job is a pull request, None otherwise</span>
+
+<span class="sd">    See also:</span>
+<span class="sd">        - &lt;https://docs.travis-ci.com/user/environment-variables</span>
+<span class="sd">          /#Default-Environment-Variables&gt;</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">travis_pull_request</span> <span class="o">=</span> <span class="n">get_travis_env_or_fail</span><span class="p">(</span><span class="s1">&#39;TRAVIS_PULL_REQUEST&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">travis_pull_request</span> <span class="o">==</span> <span class="s1">&#39;false&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
@@ -200,12 +230,37 @@
                 <span class="k">return</span> <span class="n">pr_num</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">None</span>
-    <span class="k">else</span><span class="p">:</span>
+    <span class="k">except</span> <span class="n">UnexpectedTravisEnvironmentError</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="is_travis_pr"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.travis.is_travis_pr">[docs]</a><span class="k">def</span> <span class="nf">is_travis_pr</span><span class="p">():</span>
+<div class="viewcode-block" id="is_travis_pr"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.travisutil.is_travis_pr">[docs]</a><span class="k">def</span> <span class="nf">is_travis_pr</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;Check if the current job is a pull request build&#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">get_travis_pr_num</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="TravisPullRequestBuildDiffer"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.travisutil.TravisPullRequestBuildDiffer">[docs]</a><span class="k">class</span> <span class="nc">TravisPullRequestBuildDiffer</span><span class="p">(</span><span class="n">PullRequestBuildDiffer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pr_num</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">pr_num</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">repo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_detect_repo</span>
+
+<div class="viewcode-block" id="TravisPullRequestBuildDiffer.check_environment"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.travisutil.TravisPullRequestBuildDiffer.check_environment">[docs]</a>    <span class="k">def</span> <span class="nf">check_environment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">ensure_expected_travis_env_vars</span><span class="p">([</span>
+            <span class="s1">&#39;TRAVIS_BUILD_DIR&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;TRAVIS_PULL_REQUEST&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;TRAVIS_COMMIT_RANGE&#39;</span><span class="p">,</span>
+        <span class="p">])</span>
+
+        <span class="n">travis_pr_num</span> <span class="o">=</span> <span class="n">get_travis_pr_num</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">travis_pr_num</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UnexpectedTravisEnvironmentError</span></div>
+
+<div class="viewcode-block" id="TravisPullRequestBuildDiffer.get_diff_str"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.travisutil.TravisPullRequestBuildDiffer.get_diff_str">[docs]</a>    <span class="k">def</span> <span class="nf">get_diff_str</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">get_travis_env_or_fail</span><span class="p">(</span><span class="s1">&#39;TRAVIS_COMMIT_RANGE&#39;</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_detect_repo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">build_dir</span> <span class="o">=</span> <span class="n">get_travis_env_or_fail</span><span class="p">(</span><span class="s1">&#39;TRAVIS_BUILD_DIR&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">(</span><span class="n">build_dir</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
