@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>fhub_core.validation &mdash; fhub_core 0.3.3 documentation</title>
+  <title>fhub_core.validation &mdash; fhub_core 0.3.4 documentation</title>
   
 
   
@@ -189,8 +189,7 @@
 <span class="kn">from</span> <span class="nn">fhub_core.contrib</span> <span class="k">import</span> <span class="n">get_contrib_features</span>
 <span class="kn">from</span> <span class="nn">fhub_core.feature</span> <span class="k">import</span> <span class="n">Feature</span>
 <span class="kn">from</span> <span class="nn">fhub_core.util</span> <span class="k">import</span> <span class="n">assertion_method</span>
-<span class="kn">from</span> <span class="nn">fhub_core.util.git</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">HeadInfo</span><span class="p">,</span> <span class="n">PullRequestInfo</span><span class="p">,</span> <span class="n">get_file_changes_by_revision</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">fhub_core.util.git</span> <span class="k">import</span> <span class="n">get_file_changes_by_revision</span>
 <span class="kn">from</span> <span class="nn">fhub_core.util.modutil</span> <span class="k">import</span> <span class="n">import_module_from_relpath</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -315,8 +314,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">X_df</span> <span class="o">=</span> <span class="n">X_df</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y_df</span> <span class="o">=</span> <span class="n">y_df</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">pr_info</span> <span class="o">=</span> <span class="n">PullRequestInfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">head_info</span> <span class="o">=</span> <span class="n">HeadInfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="p">)</span>
+        <span class="c1"># self.pr_info = PullRequestInfo(self.pr_num)</span>
+        <span class="c1"># self.head_info = HeadInfo(self.repo)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pr_head</span> <span class="o">=</span> <span class="s1">&#39;HEAD&#39;</span>
 
         <span class="c1"># will be set by other methods</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_changes</span> <span class="o">=</span> <span class="kc">None</span>
@@ -330,7 +330,7 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Collecting file changes...&#39;</span><span class="p">)</span>
 
         <span class="n">from_rev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">comparison_ref</span>
-        <span class="n">to_rev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pr_info</span><span class="o">.</span><span class="n">local_rev_name</span>
+        <span class="n">to_rev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pr_head</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_changes</span> <span class="o">=</span> <span class="n">get_file_changes_by_revision</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="p">,</span> <span class="n">from_rev</span><span class="p">,</span> <span class="n">to_rev</span><span class="p">)</span>
 
@@ -448,12 +448,12 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">feature_validation_result</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PullRequestFeatureValidator.validate"><a class="viewcode-back" href="../../fhub_core.html#fhub_core.validation.PullRequestFeatureValidator.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># check that we are *on* this PR&#39;s branch</span>
-        <span class="n">expected_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pr_info</span><span class="o">.</span><span class="n">local_rev_name</span>
-        <span class="n">current_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_info</span><span class="o">.</span><span class="n">path</span>
-        <span class="k">if</span> <span class="n">expected_ref</span> <span class="o">!=</span> <span class="n">current_ref</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-                <span class="s1">&#39;Must validate PR while on that PR</span><span class="se">\&#39;</span><span class="s1">s branch&#39;</span><span class="p">)</span>
+        <span class="c1"># # check that we are *on* this PR&#39;s branch</span>
+        <span class="c1"># expected_ref = self.pr_info.local_rev_name</span>
+        <span class="c1"># current_ref = self.head_info.path</span>
+        <span class="c1"># if expected_ref != current_ref:</span>
+        <span class="c1">#     raise NotImplementedError(</span>
+        <span class="c1">#         &#39;Must validate PR while on that PR\&#39;s branch&#39;)</span>
 
         <span class="c1"># collect, categorize, and validate file changes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_collect_file_changes</span><span class="p">()</span>
@@ -506,7 +506,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.3.3',
+            VERSION:'0.3.4',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
