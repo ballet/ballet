@@ -201,7 +201,7 @@ class PullRequestFeatureValidator:
                 logger.debug(
                     'Categorized {file} as INADMISSIBLE'.format(file=file))
 
-        logger.info('Admitted {} files and rejected {} files'.format(
+        logger.info('Admitted {} file(s) and rejected {} file(s)'.format(
             len(self.file_changes_admissible),
             len(self.file_changes_inadmissible)))
 
