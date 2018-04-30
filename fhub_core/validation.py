@@ -113,6 +113,9 @@ class FeatureValidator:
 
 
 class PullRequestFeatureValidator:
+    APPROPRIATE_CHANGE_TYPES = ['A']
+    APPROPRIATE_FILE_EXTS = ['.py']
+
     def __init__(self, pr_num, contrib_module_path, X_df, y_df):
         '''Validate the features introduced in a proposed pull request
 
@@ -161,7 +164,8 @@ class PullRequestFeatureValidator:
 
         def is_appropriate_change_type(diff):
             '''File change is an addition'''
-            return diff.change_type in ['A']
+            return diff.change_type in \
+                PullRequestFeatureValidator.APPROPRIATE_CHANGE_TYPES
 
         def within_contrib_subdirectory(diff):
             '''File addition is a subdirectory of project's contrib dir'''
@@ -173,18 +177,21 @@ class PullRequestFeatureValidator:
             except Exception:
                 return False
 
-        def is_appropriate_filetype(diff):
+        def is_appropriate_file_ext(diff):
             '''File change is a python file'''
             path = diff.b_path
             try:
-                return path.endswith('.py')
+                for ext in PullRequestFeatureValidator.APPROPRIATE_FILE_EXTS:
+                    if path.endswith(ext):
+                        return True
+                return False
             except Exception:
                 return False
 
         is_admissible = funcy.all_fn(
             is_appropriate_change_type,
             within_contrib_subdirectory,
-            is_appropriate_filetype,
+            is_appropriate_file_ext,
         )
 
         for diff in self.file_diffs:
