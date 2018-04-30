@@ -7,7 +7,7 @@ import funcy
 from fhub_core.contrib import get_contrib_features
 from fhub_core.feature import Feature
 from fhub_core.util import assertion_method
-from fhub_core.util.git import get_file_changes_by_revision
+from fhub_core.util.gitutil import get_file_changes_by_revision
 from fhub_core.util.modutil import import_module_from_relpath
 
 logger = logging.getLogger(__name__)

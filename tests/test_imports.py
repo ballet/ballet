@@ -15,17 +15,19 @@ class TestImports(unittest.TestCase):
         from fhub_core.util import (  # noqa
             asarray2d, get_arr_desc, indent, )
 
-        from fhub_core.util.travis import (  # noqa
-            get_travis_pr_num, is_travis_pr, )
+        from fhub_core.util.gitutil import (  # noqa
+            PullRequestInfo, HeadInfo, get_file_changes_by_revision,
+            get_file_changes_by_diff_str,
+            PullRequestBuildDiffer)
 
         from fhub_core.util.modutil import (  # noqa
             import_module_at_path, import_module_from_modname,
             import_module_from_relpath, modname_to_relpath,
             relpath_to_modname, )
 
-        from fhub_core.util.git import (  # noqa
-            PullRequestInfo, HeadInfo, get_file_changes_by_revision,
-            get_file_changes_by_diff_str, )
+        from fhub_core.util.travisutil import (  # noqa
+            get_travis_pr_num, is_travis_pr,
+            TravisPullRequestBuildDiffer)
 
     def test_validation_imports(self):
         from fhub_core.validation import (  # noqa
