@@ -16,7 +16,7 @@ class PullRequestBuildDiffer:
         return diffs
 
 
-def get_file_changes_by_revision(repo, from_revision, to_revision):
+def get_diffs_by_revision(repo, from_revision, to_revision):
     '''Get file changes between two revisions
 
     For details on specifying revisions, see

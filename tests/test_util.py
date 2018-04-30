@@ -4,12 +4,30 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+import funcy
+import git
+
 import fhub_core
-from fhub_core.util.travisutil import (
-    get_travis_pr_num, is_travis_pr, TravisPullRequestBuildDiffer)
 from fhub_core.util.modutil import (  # noqa F401
     import_module_at_path, import_module_from_modname,
     import_module_from_relpath, modname_to_relpath, relpath_to_modname)
+from fhub_core.util.travisutil import (
+    TravisPullRequestBuildDiffer, get_travis_pr_num, is_travis_pr)
+
+
+@funcy.contextmanager
+def mock_commits(dir, n=10):
+    '''Create a new repo and n sequential files/commits'''
+    dir = pathlib.Path(dir)
+    repo = git.Repo.init(dir)
+    commits = []
+    for i in range(n):
+        file = dir.joinpath('file{i}.py'.format(i=i))
+        file.touch()
+        repo.git.add(str(file))
+        repo.git.commit(m='Commit {i}'.format(i=i))
+        commits.append(repo.head.commit)
+    yield commits
 
 
 class TestModutil(unittest.TestCase):
@@ -127,20 +145,46 @@ class TestTravis(unittest.TestCase):
                 self.assertEqual(actual_result, expected_result)
 
     def test_travis_pull_request_build_differ(self):
-        pr_num = self.pr_num
         project_root = str(pathlib.Path(__file__).parent.parent)
+        pr_num = self.pr_num
         commit_range = 'HEAD^..HEAD'
+
         travis_env_vars = {
             'TRAVIS_BUILD_DIR': project_root,
             'TRAVIS_PULL_REQUEST': str(pr_num),
             'TRAVIS_COMMIT_RANGE': commit_range,
         }
         with patch.dict('os.environ', travis_env_vars):
-            travis_pr_differ = TravisPullRequestBuildDiffer(pr_num)
-            diff_str = travis_pr_differ.get_diff_str()
+            differ = TravisPullRequestBuildDiffer(pr_num)
+            diff_str = differ.get_diff_str()
             self.assertEqual(diff_str, commit_range)
 
+    def test_travis_pull_request_build_differ_on_mock_commits(self):
+        n = 10
+        i = 0
+        pr_num = self.pr_num
+        with tempfile.TemporaryDirectory() as project_root:
+            with mock_commits(project_root, n=n) as commits:
+                commit_range = '{a}..{b}'.format(
+                    a=commits[i].hexsha, b=commits[-1].hexsha)
 
-    @unittest.expectedFailure
-    def test_travis_pull_request_build_differ_on_fake_repo(self):
-        raise NotImplementedError
+                travis_env_vars = {
+                    'TRAVIS_BUILD_DIR': project_root,
+                    'TRAVIS_PULL_REQUEST': str(pr_num),
+                    'TRAVIS_COMMIT_RANGE': commit_range,
+                }
+                with patch.dict('os.environ', travis_env_vars):
+                    differ = TravisPullRequestBuildDiffer(pr_num)
+                    diff_str = differ.get_diff_str()
+                    self.assertEqual(diff_str, commit_range)
+
+                    diffs = differ.diff()
+
+                    # there should be n-1 diff objects, they should show files
+                    # 1 to n-1
+                    self.assertEqual(len(diffs), n-1)
+                    j = i+1
+                    for diff in diffs:
+                        self.assertEqual(diff.change_type, 'A')
+                        self.assertEqual(diff.b_path, 'file{j}.py'.format(j=j))
+                        j += 1
