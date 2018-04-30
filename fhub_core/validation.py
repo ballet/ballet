@@ -7,8 +7,8 @@ import funcy
 from fhub_core.contrib import get_contrib_features
 from fhub_core.feature import Feature
 from fhub_core.util import assertion_method
-from fhub_core.util.gitutil import get_file_changes_by_revision
 from fhub_core.util.modutil import import_module_from_relpath
+from fhub_core.util.travisutil import TravisPullRequestBuildDiffer
 
 logger = logging.getLogger(__name__)
 
@@ -113,8 +113,7 @@ class FeatureValidator:
 
 
 class PullRequestFeatureValidator:
-    def __init__(self, pr_num, repo, comparison_ref, contrib_module_path,
-                 X_df, y_df):
+    def __init__(self, pr_num, contrib_module_path, X_df, y_df):
         '''Validate the features introduced in a proposed pull request
 
         Args:
@@ -126,15 +125,11 @@ class PullRequestFeatureValidator:
             y_df (pd.DataFrame): Example y DataFrame
         '''
         self.pr_num = pr_num
-        self.repo = repo
-        self.comparison_ref = comparison_ref
         self.contrib_module_path = contrib_module_path
         self.X_df = X_df
         self.y_df = y_df
 
-        # self.pr_info = PullRequestInfo(self.pr_num)
-        # self.head_info = HeadInfo(self.repo)
-        self.pr_head = 'HEAD'
+        self.differ = TravisPullRequestBuildDiffer(self.pr_num)
 
         # will be set by other methods
         self.file_diffs = None
@@ -147,10 +142,7 @@ class PullRequestFeatureValidator:
     def _collect_file_changes(self):
         logger.info('Collecting file changes...')
 
-        from_rev = self.comparison_ref
-        to_rev = self.pr_head
-        self.file_diffs = get_file_changes_by_revision(
-            self.repo, from_rev, to_rev)
+        self.file_diffs = self.differ.diff()
 
         # log results
         for i, file in enumerate(self.file_diffs):
@@ -167,18 +159,12 @@ class PullRequestFeatureValidator:
         self.file_diffs_admissible = []
         self.file_diffs_inadmissible = []
 
-        # admissible:
-        # - within contrib subdirectory
-        # - is a .py file
-        # - TODO: is a .txt file
-        # - is an addition
-        # inadmissible:
-        # - otherwise (wrong directory, wrong filetype, wrong modification
-        #   type)
         def is_appropriate_change_type(diff):
+            '''File change is an addition'''
             return diff.change_type in ['A']
 
         def within_contrib_subdirectory(diff):
+            '''File addition is a subdirectory of project's contrib dir'''
             path = diff.b_path
             contrib_relpath = self.contrib_module_path
             try:
@@ -188,6 +174,7 @@ class PullRequestFeatureValidator:
                 return False
 
         def is_appropriate_filetype(diff):
+            '''File change is a python file'''
             path = diff.b_path
             try:
                 return path.endswith('.py')
