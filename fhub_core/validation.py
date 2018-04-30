@@ -137,10 +137,10 @@ class PullRequestFeatureValidator:
         self.pr_head = 'HEAD'
 
         # will be set by other methods
-        self.file_changes = None
-        self.file_changes_admissible = None
-        self.file_changes_inadmissible = None
-        self.file_changes_validation_result = None
+        self.file_diffs = None
+        self.file_diffs_admissible = None
+        self.file_diffs_inadmissible = None
+        self.file_diffs_validation_result = None
         self.features = None
         self.features_validation_result = None
 
@@ -149,23 +149,23 @@ class PullRequestFeatureValidator:
 
         from_rev = self.comparison_ref
         to_rev = self.pr_head
-        self.file_changes = get_file_changes_by_revision(
+        self.file_diffs = get_file_changes_by_revision(
             self.repo, from_rev, to_rev)
 
         # log results
-        for i, file in enumerate(self.file_changes):
+        for i, file in enumerate(self.file_diffs):
             logger.debug('File {i}: {file}'.format(i=i, file=file))
-        logger.info('Collected {} file(s)'.format(len(self.file_changes)))
+        logger.info('Collected {} file(s)'.format(len(self.file_diffs)))
 
     def _categorize_file_changes(self):
         '''Partition file changes into admissible and inadmissible changes'''
-        if self.file_changes is None:
+        if self.file_diffs is None:
             raise ValueError('File changes have not been collected.')
 
         logger.info('Categorizing file changes...')
 
-        self.file_changes_admissible = []
-        self.file_changes_inadmissible = []
+        self.file_diffs_admissible = []
+        self.file_diffs_inadmissible = []
 
         # admissible:
         # - within contrib subdirectory
@@ -175,51 +175,62 @@ class PullRequestFeatureValidator:
         # inadmissible:
         # - otherwise (wrong directory, wrong filetype, wrong modification
         #   type)
-        def within_contrib_subdirectory(file):
+        def is_appropriate_change_type(diff):
+            return diff.change_type in ['A']
+
+        def within_contrib_subdirectory(diff):
+            path = diff.b_path
             contrib_relpath = self.contrib_module_path
-            return pathlib.Path(contrib_relpath) in pathlib.Path(file).parents
+            try:
+                return pathlib.Path(contrib_relpath) in \
+                    pathlib.Path(path).parents
+            except Exception:
+                return False
 
-        def is_appropriate_filetype(file):
-            return file.endswith('.py')
-
-        def is_appropriate_modification_type(modification_type):
-            # TODO
-            # return modification_type == 'A'
-            return True
+        def is_appropriate_filetype(diff):
+            path = diff.b_path
+            try:
+                return path.endswith('.py')
+            except Exception:
+                return False
 
         is_admissible = funcy.all_fn(
-            within_contrib_subdirectory, is_appropriate_filetype,
-            is_appropriate_modification_type)
+            is_appropriate_change_type,
+            within_contrib_subdirectory,
+            is_appropriate_filetype,
+        )
 
-        for file in self.file_changes:
-            if is_admissible(file):
-                self.file_changes_admissible.append(file)
+        for diff in self.file_diffs:
+            if is_admissible(diff):
+                self.file_diffs_admissible.append(diff)
                 logger.debug(
-                    'Categorized {file} as ADMISSIBLE'.format(file=file))
+                    'Categorized {file} as ADMISSIBLE'
+                    .format(file=diff.b_path))
             else:
-                self.file_changes_inadmissible.append(file)
+                self.file_diffs_inadmissible.append(diff)
                 logger.debug(
-                    'Categorized {file} as INADMISSIBLE'.format(file=file))
+                    'Categorized {file} as INADMISSIBLE'
+                    .format(file=diff.b_path))
 
         logger.info('Admitted {} file(s) and rejected {} file(s)'.format(
-            len(self.file_changes_admissible),
-            len(self.file_changes_inadmissible)))
+            len(self.file_diffs_admissible),
+            len(self.file_diffs_inadmissible)))
 
     def _validate_files(self):
-        if self.file_changes_inadmissible is None:
-            raise ValueError('File changes have not been categorized.')
+        if self.file_diffs_inadmissible is None:
+            raise ValueError('File diffs have not been categorized.')
 
-        result = len(self.file_changes_inadmissible) == 0
-        self.file_changes_validation_result = result
+        result = len(self.file_diffs_inadmissible) == 0
+        self.file_diffs_validation_result = result
 
     def _collect_features(self):
-        if self.file_changes_admissible is None:
-            raise ValueError('File changes have not been collected.')
+        if self.file_diffs_admissible is None:
+            raise ValueError('File diffs have not been collected.')
 
         logger.info('Collecting features...')
 
         self.features = []
-        for file in self.file_changes_admissible:
+        for file in self.file_diffs_admissible:
             try:
                 mod = import_module_from_relpath(file)
             except ImportError:
@@ -264,11 +275,11 @@ class PullRequestFeatureValidator:
         self.features_validation_result = overall_result
 
     def _determine_validation_result(self):
-        if self.file_changes_validation_result is None:
-            raise ValueError('File changes have not been validated.')
+        if self.file_diffs_validation_result is None:
+            raise ValueError('File diffs have not been validated.')
         if self.features_validation_result is None:
             raise ValueError('Feature changes have not been validated.')
-        return (self.file_changes_validation_result and
+        return (self.file_diffs_validation_result and
                 self.features_validation_result)
 
     def validate(self):

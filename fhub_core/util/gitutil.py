@@ -12,7 +12,8 @@ class PullRequestBuildDiffer:
 
     def diff(self):
         diff_str = self.get_diff_str()
-        return get_file_changes_by_diff_str(self.repo, diff_str)
+        diffs = get_diffs_by_diff_str(self.repo, diff_str)
+        return diffs
 
 
 def get_file_changes_by_revision(repo, from_revision, to_revision):
@@ -24,12 +25,15 @@ def get_file_changes_by_revision(repo, from_revision, to_revision):
     '''
     diff_str = '{from_revision}..{to_revision}'.format(
         from_revision=from_revision, to_revision=to_revision)
-    return get_file_changes_by_diff_str(repo, diff_str)
+    return get_diffs_by_diff_str(repo, diff_str)
 
 
-def get_file_changes_by_diff_str(repo, diff_str):
-    # TODO implement name_status=True keyword
-    return repo.git.diff(diff_str, name_only=True).split('\n')
+def get_diffs_by_diff_str(repo, diff_str):
+    a, b = diff_str.split('..')
+    a_obj = repo.rev_parse(a)
+    b_obj = repo.rev_parse(b)
+    diffs = a_obj.diff(b_obj)
+    return diffs
 
 
 # deprecated for now
