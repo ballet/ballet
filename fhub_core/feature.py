@@ -8,7 +8,7 @@ from sklearn.pipeline import _name_estimators
 from sklearn_pandas import DataFrameMapper
 from sklearn_pandas.pipeline import TransformerPipeline
 
-from fhub_core.util import asarray2d, indent
+import fhub_core.util
 
 logger = logging.getLogger(__name__)
 
@@ -30,11 +30,12 @@ def make_robust_transformer_pipeline(*steps):
 
 
 def make_conversion_approaches():
-    funcs = (funcy.identity, pd.Series, pd.DataFrame, np.asarray, asarray2d)
+    conversions = (funcy.identity, pd.Series, pd.DataFrame, np.asarray,
+                   fhub_core.util.asarray2d)
     catch = (ValueError, TypeError)
-    for func in funcs[:-1]:
-        yield func, catch
-    yield funcs[-1], ()
+    for convert in conversions[:-1]:
+        yield convert, catch
+    yield conversions[-1], ()
 
 
 def make_robust_to_tabular_types(func):
@@ -43,16 +44,31 @@ def make_robust_to_tabular_types(func):
         for convert, catch in make_conversion_approaches():
             try:
                 logger.debug(
-                    "Converting using approach '{}'".format(convert.__name__))
-                if y is not None:
-                    return func(convert(X), y=convert(y), **kwargs)
-                else:
-                    return func(convert(X), **kwargs)
-            except catch as e:
-                formatted_exc = indent(traceback.format_exc(), n=8)
+                    '{}: Converting using approach \'{}\''
+                    .format(func.__name__, convert.__name__))
+                _X = convert(X)
+                _y = convert(y) if y is not None else y
+
                 logger.debug(
-                    "Application subsequently failed with exception '{}'\n\n{}"
+                    'Calling with X={X_desc}, y={y_desc}'
+                    .format(X_desc=fhub_core.util.get_arr_desc(X),
+                            y_desc=fhub_core.util.get_arr_desc(y)))
+                if y is not None:
+                    return func(_X, _y, **kwargs)
+                else:
+                    return func(_X, **kwargs)
+            except catch as e:
+                formatted_exc = fhub_core.util.indent(
+                    traceback.format_exc(), n=8)
+                logger.debug(
+                    'Subsequently failed with exception'
+                    ' \'{}\'\n\n{}'
                     .format(e.__class__.__name__, formatted_exc))
+
+        logger.debug(
+            'Failed on every conversion attempt. Giving up.')
+        raise ValueError
+
     return wrapped
 
 

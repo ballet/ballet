@@ -5,11 +5,11 @@ import unittest
 from unittest.mock import patch
 
 import fhub_core
-from fhub_core.util.travisutil import (
-    get_travis_pr_num, is_travis_pr, TravisPullRequestBuildDiffer)
 from fhub_core.util.modutil import (  # noqa F401
     import_module_at_path, import_module_from_modname,
     import_module_from_relpath, modname_to_relpath, relpath_to_modname)
+from fhub_core.util.travisutil import (
+    TravisPullRequestBuildDiffer, get_travis_pr_num, is_travis_pr)
 
 
 class TestModutil(unittest.TestCase):
@@ -139,7 +139,6 @@ class TestTravis(unittest.TestCase):
             travis_pr_differ = TravisPullRequestBuildDiffer(pr_num)
             diff_str = travis_pr_differ.get_diff_str()
             self.assertEqual(diff_str, commit_range)
-
 
     @unittest.expectedFailure
     def test_travis_pull_request_build_differ_on_fake_repo(self):

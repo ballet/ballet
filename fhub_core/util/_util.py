@@ -13,10 +13,11 @@ def asarray2d(a):
 
 
 def get_arr_desc(arr):
-    desc = '{typ} {shp}'
-    typ = type(arr)
-    shp = getattr(arr, 'shape', None)
-    return desc.format(typ=typ, shp=shp)
+    desc = repr(type(arr))
+    if hasattr(arr, 'shape'):
+        shp = getattr(arr, 'shape')
+        desc += ' ' + str(shp)
+    return desc
 
 
 def indent(text, n=4):
