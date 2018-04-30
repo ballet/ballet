@@ -7,8 +7,7 @@ import funcy
 from fhub_core.contrib import get_contrib_features
 from fhub_core.feature import Feature
 from fhub_core.util import assertion_method
-from fhub_core.util.git import (
-    HeadInfo, PullRequestInfo, get_file_changes_by_revision)
+from fhub_core.util.git import get_file_changes_by_revision
 from fhub_core.util.modutil import import_module_from_relpath
 
 logger = logging.getLogger(__name__)
@@ -133,8 +132,9 @@ class PullRequestFeatureValidator:
         self.X_df = X_df
         self.y_df = y_df
 
-        self.pr_info = PullRequestInfo(self.pr_num)
-        self.head_info = HeadInfo(self.repo)
+        # self.pr_info = PullRequestInfo(self.pr_num)
+        # self.head_info = HeadInfo(self.repo)
+        self.pr_head = 'HEAD'
 
         # will be set by other methods
         self.file_changes = None
@@ -148,7 +148,7 @@ class PullRequestFeatureValidator:
         logger.info('Collecting file changes...')
 
         from_rev = self.comparison_ref
-        to_rev = self.pr_info.local_rev_name
+        to_rev = self.pr_head
         self.file_changes = get_file_changes_by_revision(
             self.repo, from_rev, to_rev)
 
@@ -266,12 +266,12 @@ class PullRequestFeatureValidator:
                 self.feature_validation_result)
 
     def validate(self):
-        # check that we are *on* this PR's branch
-        expected_ref = self.pr_info.local_rev_name
-        current_ref = self.head_info.path
-        if expected_ref != current_ref:
-            raise NotImplementedError(
-                'Must validate PR while on that PR\'s branch')
+        # # check that we are *on* this PR's branch
+        # expected_ref = self.pr_info.local_rev_name
+        # current_ref = self.head_info.path
+        # if expected_ref != current_ref:
+        #     raise NotImplementedError(
+        #         'Must validate PR while on that PR\'s branch')
 
         # collect, categorize, and validate file changes
         self._collect_file_changes()

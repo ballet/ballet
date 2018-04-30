@@ -43,4 +43,5 @@ def get_file_changes_by_revision(repo, from_revision, to_revision):
 
 
 def get_file_changes_by_diff_str(repo, diff_str):
+    # TODO implement name_status=True keyword
     return repo.git.diff(diff_str, name_only=True).split('\n')
