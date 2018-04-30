@@ -58,7 +58,7 @@ def is_travis_pr():
 
 class TravisPullRequestBuildDiffer(PullRequestBuildDiffer):
     def __init__(self, pr_num):
-        super().__init__(pr_num, repo)
+        super().__init__(pr_num, None)
         self.repo = self._detect_repo
 
     def check_environment(self):

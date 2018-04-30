@@ -127,5 +127,20 @@ class TestTravis(unittest.TestCase):
                 self.assertEqual(actual_result, expected_result)
 
     def test_travis_pull_request_build_differ(self):
-        #travis_pr_differ = TravisPullRequestBuildDiffer(pr_num, repo)
-        pass
+        pr_num = self.pr_num
+        project_root = str(pathlib.Path(__file__).parent.parent)
+        commit_range = 'HEAD^..HEAD'
+        travis_env_vars = {
+            'TRAVIS_BUILD_DIR': project_root,
+            'TRAVIS_PULL_REQUEST': str(pr_num),
+            'TRAVIS_COMMIT_RANGE': commit_range,
+        }
+        with patch.dict('os.environ', travis_env_vars):
+            travis_pr_differ = TravisPullRequestBuildDiffer(pr_num)
+            diff_str = travis_pr_differ.get_diff_str()
+            self.assertEqual(diff_str, commit_range)
+
+
+    @unittest.expectedFailure
+    def test_travis_pull_request_build_differ_on_fake_repo(self):
+        raise NotImplementedError
