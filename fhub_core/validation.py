@@ -236,6 +236,12 @@ class PullRequestFeatureValidator:
         if self.features is None:
             raise ValueError('Features have not been collected.')
 
+        # if no features were added at all, reject
+        if self.features is not None and len(self.features) == 0:
+            logger.info('Failed to collect any new feature(s).')
+            self.features_validation_result = False
+            return
+
         # get small subset?
         X_df, y_df = subsample_data_for_validation(self.X_df, self.y_df)
 
