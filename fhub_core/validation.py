@@ -7,8 +7,10 @@ import funcy
 from fhub_core.contrib import get_contrib_features
 from fhub_core.feature import Feature
 from fhub_core.util import assertion_method
+from fhub_core.util.gitutil import LocalPullRequestBuildDiffer
 from fhub_core.util.modutil import import_module_from_relpath
-from fhub_core.util.travisutil import TravisPullRequestBuildDiffer
+from fhub_core.util.travisutil import (
+    TravisPullRequestBuildDiffer, can_use_travis_differ)
 
 logger = logging.getLogger(__name__)
 
@@ -132,7 +134,10 @@ class PullRequestFeatureValidator:
         self.X_df = X_df
         self.y_df = y_df
 
-        self.differ = TravisPullRequestBuildDiffer(self.pr_num)
+        if can_use_travis_differ():
+            self.differ = TravisPullRequestBuildDiffer(self.pr_num)
+        else:
+            self.differ = LocalPullRequestBuildDiffer()
 
         # will be set by other methods
         self.file_diffs = None

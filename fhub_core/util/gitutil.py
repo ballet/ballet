@@ -16,6 +16,11 @@ class PullRequestBuildDiffer:
         return diffs
 
 
+class LocalPullRequestBuildDiffer(PullRequestBuildDiffer):
+    def __init__(self):
+        raise NotImplementedError
+
+
 def get_diffs_by_revision(repo, from_revision, to_revision):
     '''Get file changes between two revisions
 
