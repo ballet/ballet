@@ -13,6 +13,7 @@ with open('HISTORY.md') as history_file:
 
 requirements = [
     'funcy',
+    'gitpython',
     'numpy',
     'pandas;python_version>="3.5"',  # hack
     'pandas<0.21;python_version<"3.5"',  # hack
