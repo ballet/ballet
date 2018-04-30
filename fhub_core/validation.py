@@ -142,6 +142,27 @@ class PullRequestFeatureValidator:
         self.features = None
         self.features_validation_result = None
 
+    def validate(self):
+        # # check that we are *on* this PR's branch
+        # expected_ref = self.pr_info.local_rev_name
+        # current_ref = self.head_info.path
+        # if expected_ref != current_ref:
+        #     raise NotImplementedError(
+        #         'Must validate PR while on that PR\'s branch')
+
+        # collect, categorize, and validate file changes
+        self._collect_file_changes()
+        self._categorize_file_changes()
+        self._validate_files()
+
+        # collect and validate new features
+        self._collect_features()
+        self._validate_features()
+
+        # determine overall result
+        overall_result = self._determine_validation_result()
+        return overall_result
+
     def _collect_file_changes(self):
         logger.info('Collecting file changes...')
 
@@ -275,27 +296,6 @@ class PullRequestFeatureValidator:
             raise ValueError('Feature changes have not been validated.')
         return (self.file_diffs_validation_result and
                 self.features_validation_result)
-
-    def validate(self):
-        # # check that we are *on* this PR's branch
-        # expected_ref = self.pr_info.local_rev_name
-        # current_ref = self.head_info.path
-        # if expected_ref != current_ref:
-        #     raise NotImplementedError(
-        #         'Must validate PR while on that PR\'s branch')
-
-        # collect, categorize, and validate file changes
-        self._collect_file_changes()
-        self._categorize_file_changes()
-        self._validate_files()
-
-        # collect and validate new features
-        self._collect_features()
-        self._validate_features()
-
-        # determine overall result
-        overall_result = self._determine_validation_result()
-        return overall_result
 
 
 def subsample_data_for_validation(X_df_tr, y_df_tr):

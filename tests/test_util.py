@@ -182,8 +182,8 @@ class TestTravis(unittest.TestCase):
 
                     # there should be n-1 diff objects, they should show files
                     # 1 to n-1
-                    self.assertEqual(len(diffs), n-1)
-                    j = i+1
+                    self.assertEqual(len(diffs), n - 1)
+                    j = i + 1
                     for diff in diffs:
                         self.assertEqual(diff.change_type, 'A')
                         self.assertEqual(diff.b_path, 'file{j}.py'.format(j=j))
