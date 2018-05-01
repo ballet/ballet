@@ -58,18 +58,46 @@ class FragileTransformerPipeline(TransformerPipeline):
         super().__init__(steps)
 
 
-@funcy.contextmanager
-def mock_commits(repo, n=10):
+def make_mock_commit(repo, kind='A', path=None, contents=None):
+    '''Commits one file to repo'''
+    if not path:
+        path = 'file{}'.format(random.randint(0, 999))
+
+    # TODO
+    # - check that path resolves to subdirectory to not escape repo
+    #   by accident
+
+    dir = repo.working_tree_dir
+    if kind == 'A':
+        abspath = pathlib.Path(dir).joinpath(path)
+
+        # TODO make robust
+        abspath.parent.mkdir(parents=True, exist_ok=True)
+
+        if abspath.exists():
+            # because this would be a kind=='M'
+            raise FileExistsError
+        else:
+            if contents is not None:
+                with abspath.open('w') as f:
+                    f.write(contents)
+            else:
+                abspath.touch()
+        repo.git.add(str(path))
+        repo.git.commit(m='Commit {}'.format(path))
+    else:
+        raise NotImplementedError
+
+    return repo.head.commit
+
+
+def make_mock_commits(repo, n=10):
     '''Create n sequential files/commits'''
-    dir = pathlib.Path(repo.working_tree_dir)
     commits = []
     for i in range(n):
-        file = dir.joinpath('file{i}.py'.format(i=i))
-        file.touch()
-        repo.git.add(str(file))
-        repo.git.commit(m='Commit {i}'.format(i=i))
-        commits.append(repo.head.commit)
-    yield commits
+        commit = make_mock_commit(repo, path='file{}.py'.format(i))
+        commits.append(commit)
+    return commits
 
 
 @funcy.contextmanager

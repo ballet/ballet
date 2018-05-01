@@ -11,7 +11,7 @@ from fhub_core.util.modutil import (  # noqa F401
 from fhub_core.util.travisutil import (
     TravisPullRequestBuildDiffer, get_travis_pr_num, is_travis_pr)
 
-from .util import mock_commits, mock_repo
+from .util import make_mock_commits, mock_repo
 
 
 class TestModutil(unittest.TestCase):
@@ -148,27 +148,26 @@ class TestTravis(unittest.TestCase):
         i = 0
         pr_num = self.pr_num
         with mock_repo() as repo:
-            with mock_commits(repo, n=n) as commits:
-                commit_range = '{a}..{b}'.format(
-                    a=commits[i].hexsha, b=commits[-1].hexsha)
+            commits = make_mock_commits(repo, n=n)
+            commit_range = get_diff_str_from_commits(commits[i], commits[-1])
 
-                travis_env_vars = {
-                    'TRAVIS_BUILD_DIR': repo.working_tree_dir,
-                    'TRAVIS_PULL_REQUEST': str(pr_num),
-                    'TRAVIS_COMMIT_RANGE': commit_range,
-                }
-                with patch.dict('os.environ', travis_env_vars):
-                    differ = TravisPullRequestBuildDiffer(pr_num)
-                    diff_str = differ._get_diff_str()
-                    self.assertEqual(diff_str, commit_range)
+            travis_env_vars = {
+                'TRAVIS_BUILD_DIR': repo.working_tree_dir,
+                'TRAVIS_PULL_REQUEST': str(pr_num),
+                'TRAVIS_COMMIT_RANGE': commit_range,
+            }
+            with patch.dict('os.environ', travis_env_vars):
+                differ = TravisPullRequestBuildDiffer(pr_num)
+                diff_str = differ._get_diff_str()
+                self.assertEqual(diff_str, commit_range)
 
-                    diffs = differ.diff()
+                diffs = differ.diff()
 
-                    # there should be n-1 diff objects, they should show files
-                    # 1 to n-1
-                    self.assertEqual(len(diffs), n - 1)
-                    j = i + 1
-                    for diff in diffs:
-                        self.assertEqual(diff.change_type, 'A')
-                        self.assertEqual(diff.b_path, 'file{j}.py'.format(j=j))
-                        j += 1
+                # there should be n-1 diff objects, they should show files
+                # 1 to n-1
+                self.assertEqual(len(diffs), n - 1)
+                j = i + 1
+                for diff in diffs:
+                    self.assertEqual(diff.change_type, 'A')
+                    self.assertEqual(diff.b_path, 'file{j}.py'.format(j=j))
+                    j += 1

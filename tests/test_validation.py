@@ -13,7 +13,8 @@ from fhub_core.util import IdentityTransformer, NoFitMixin
 from fhub_core.util.travisutil import TravisPullRequestBuildDiffer
 from fhub_core.validation import FeatureValidator, PullRequestFeatureValidator
 
-from .util import FragileTransformer, mock_commits, mock_repo
+from .util import (
+    FragileTransformer, make_mock_commit, make_mock_commits, mock_repo)
 
 
 class TestFeatureValidator(unittest.TestCase):
@@ -148,26 +149,26 @@ class TestPullRequestFeatureValidator(unittest.TestCase):
     def test_prfv_collect_file_diffs(self):
         n = 10
         with mock_repo() as repo:
-            with mock_commits(repo, n=n) as commits:
-                contrib_module_path = None
-                X = None
-                y = None
-                commit_range = '{a}..{b}'.format(
-                    a=commits[0].hexsha, b=commits[-1].hexsha)
+            commits = make_mock_commits(repo, n=n)
+            contrib_module_path = None
+            X = None
+            y = None
+            commit_range = get_diff_str_from_commits(
+                commits[0], commits[-1])
 
-                travis_env_vars = {
-                    'TRAVIS_BUILD_DIR': repo.working_tree_dir,
-                    'TRAVIS_PULL_REQUEST': str(self.pr_num),
-                    'TRAVIS_COMMIT_RANGE': commit_range,
-                }
-                with patch.dict('os.environ', travis_env_vars):
-                    validator = PullRequestFeatureValidator(
-                        self.pr_num, contrib_module_path, X, y)
-                    validator._collect_file_diffs()
+            travis_env_vars = {
+                'TRAVIS_BUILD_DIR': repo.working_tree_dir,
+                'TRAVIS_PULL_REQUEST': str(self.pr_num),
+                'TRAVIS_COMMIT_RANGE': commit_range,
+            }
+            with patch.dict('os.environ', travis_env_vars):
+                validator = PullRequestFeatureValidator(
+                    self.pr_num, contrib_module_path, X, y)
+                validator._collect_file_diffs()
 
-                    # checks on file_diffs
-                    self.assertEqual(len(validator.file_diffs), n-1)
-                    for diff in validator.file_diffs:
-                        self.assertEqual(diff.change_type, 'A')
-                        self.assertTrue(diff.b_path.startswith('file'))
-                        self.assertTrue(diff.b_path.endswith('.py'))
+                # checks on file_diffs
+                self.assertEqual(len(validator.file_diffs), n - 1)
+                for diff in validator.file_diffs:
+                    self.assertEqual(diff.change_type, 'A')
+                    self.assertTrue(diff.b_path.startswith('file'))
+                    self.assertTrue(diff.b_path.endswith('.py'))
