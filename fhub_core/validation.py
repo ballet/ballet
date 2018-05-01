@@ -26,6 +26,18 @@ class FeatureValidator:
         self.X = X
         self.y = y
 
+    def validate(self, feature):
+        '''Validate the feature'''
+        failures = []
+        result = True
+        for check, name in self._get_all_checks():
+            success = check(feature)
+            if not success:
+                result = False
+                failures.append(name)
+
+        return result, failures
+
     @assertion_method
     def _is_feature(self, feature):
         assert isinstance(feature, Feature)
@@ -102,37 +114,24 @@ class FeatureValidator:
                     name = name[1:]
                 yield (method, name)
 
-    def validate(self, feature):
-        failures = []
-        result = True
-        for check, name in self._get_all_checks():
-            success = check(feature)
-            if not success:
-                result = False
-                failures.append(name)
-
-        return result, failures
-
 
 class PullRequestFeatureValidator:
     APPROPRIATE_CHANGE_TYPES = ['A']
     APPROPRIATE_FILE_EXTS = ['.py']
 
-    def __init__(self, pr_num, contrib_module_path, X_df, y_df):
-        '''Validate the features introduced in a proposed pull request
+    def __init__(self, pr_num, contrib_module_path, X, y):
+        '''Validate the features introduced in a proposed pull request.
 
         Args:
             pr_num (str): Pull request number
-            repo (git.Repo): Project repository
-            comparison_ref (str): Name of comparison ref, e.g. 'master'
             contrib_module_path (str): Relative path to contrib module
-            X_df (pd.DataFrame): Example X DataFrame
-            y_df (pd.DataFrame): Example y DataFrame
+            X (array-like): Example X array-like
+            y (array-like): Example y array-like
         '''
         self.pr_num = pr_num
         self.contrib_module_path = contrib_module_path
-        self.X_df = X_df
-        self.y_df = y_df
+        self.X = X
+        self.y = y
 
         if can_use_travis_differ():
             self.differ = TravisPullRequestBuildDiffer(self.pr_num)
@@ -148,12 +147,17 @@ class PullRequestFeatureValidator:
         self.features_validation_result = None
 
     def validate(self):
-        # # check that we are *on* this PR's branch
-        # expected_ref = self.pr_info.local_rev_name
-        # current_ref = self.head_info.path
-        # if expected_ref != current_ref:
-        #     raise NotImplementedError(
-        #         'Must validate PR while on that PR\'s branch')
+        '''Validate pull request.
+
+        To do this, follows these steps:
+        1. Collects the files that have changed in this pull request as
+           compared to a comparison branch.
+        2. Categorize these file changes into admissible or inadmissible file changes. Admissible file changes solely contribute python files to the contrib subdirectory.
+        3. Collect features from admissible new files.
+        4. Validate each of these features using the FeatureValidator.
+        5. Report the overall validation results.
+        '''
+
 
         # collect, categorize, and validate file changes
         self._collect_file_changes()
@@ -274,10 +278,10 @@ class PullRequestFeatureValidator:
             return
 
         # get small subset?
-        X_df, y_df = subsample_data_for_validation(self.X_df, self.y_df)
+        X, y = subsample_data_for_validation(self.X, self.y)
 
         # validate
-        feature_validator = FeatureValidator(X_df, y_df)
+        feature_validator = FeatureValidator(X, y)
         overall_result = True
         for feature in self.features:
             result, failures = feature_validator.validate(feature)
@@ -303,6 +307,6 @@ class PullRequestFeatureValidator:
                 self.features_validation_result)
 
 
-def subsample_data_for_validation(X_df_tr, y_df_tr):
+def subsample_data_for_validation(X, y):
     # TODO
-    return X_df_tr, y_df_tr
+    return X, y
