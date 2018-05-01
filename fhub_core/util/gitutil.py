@@ -2,10 +2,10 @@ class PullRequestBuildDiffer:
     def __init__(self, pr_num, repo):
         self.pr_num = pr_num
         self.repo = repo
-        self.check_environment()
+        self._check_environment()
 
     def diff(self):
-        diff_str = self.get_diff_str()
+        diff_str = self._get_diff_str()
         diffs = get_diffs_by_diff_str(self.repo, diff_str)
         return diffs
 

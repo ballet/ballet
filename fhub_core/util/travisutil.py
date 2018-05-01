@@ -73,9 +73,10 @@ class TravisPullRequestBuildDiffer(PullRequestBuildDiffer):
         'TRAVIS_COMMIT_RANGE',
     ]
 
-    def __init__(self, pr_num):
-        super().__init__(pr_num, None)
-        self.repo = self._detect_repo()
+    def __init__(self, pr_num, repo=None):
+        if repo is None:
+            repo = self._detect_repo()
+        super().__init__(pr_num, repo)
 
     def _check_environment(self):
         ensure_expected_travis_env_vars(
