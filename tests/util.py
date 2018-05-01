@@ -1,6 +1,9 @@
+import pathlib
 import random
+import tempfile
 
 import funcy
+import git
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn_pandas.pipeline import TransformerPipeline
 
@@ -53,3 +56,26 @@ class FragileTransformerPipeline(TransformerPipeline):
             rand.shuffle(steps)
 
         super().__init__(steps)
+
+
+@funcy.contextmanager
+def mock_commits(repo, n=10):
+    '''Create n sequential files/commits'''
+    dir = pathlib.Path(repo.working_tree_dir)
+    commits = []
+    for i in range(n):
+        file = dir.joinpath('file{i}.py'.format(i=i))
+        file.touch()
+        repo.git.add(str(file))
+        repo.git.commit(m='Commit {i}'.format(i=i))
+        commits.append(repo.head.commit)
+    yield commits
+
+
+@funcy.contextmanager
+def mock_repo():
+    '''Create a new repo'''
+    with tempfile.TemporaryDirectory() as tmpdir:
+        dir = pathlib.Path(tmpdir)
+        repo = git.Repo.init(dir)
+        yield repo
