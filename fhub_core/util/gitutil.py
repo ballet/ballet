@@ -42,6 +42,10 @@ def get_diffs_by_revision(repo, from_revision, to_revision):
     return get_diffs_by_diff_str(repo, diff_str)
 
 
+def get_diff_str_from_commits(a, b):
+    return '{a}..{b}'.format(a=a.hexsha, b=b.hexsha)
+
+
 def get_diffs_by_diff_str(repo, diff_str):
     '''Get file changes via a diff string.
 

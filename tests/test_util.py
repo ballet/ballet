@@ -5,6 +5,7 @@ import unittest
 from unittest.mock import patch
 
 import fhub_core
+from fhub_core.util.gitutil import get_diff_str_from_commits
 from fhub_core.util.modutil import (  # noqa F401
     import_module_at_path, import_module_from_modname,
     import_module_from_relpath, modname_to_relpath, relpath_to_modname)
