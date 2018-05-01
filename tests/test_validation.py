@@ -178,3 +178,40 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
                     self.assertEqual(diff.change_type, 'A')
                     self.assertTrue(diff.b_path.startswith('file'))
                     self.assertTrue(diff.b_path.endswith('.py'))
+
+    @funcy.contextmanager
+    def mock_fhub_project(self):
+        contrib_module_path = 'contrib'
+        with mock_repo() as repo:
+            make_mock_commit(repo, path='readme.txt')
+            make_mock_commit(
+                repo, path='{}/foo.py'.format(contrib_module_path))
+            make_mock_commit(
+                repo, path='{}/user_123/bar.py'.format(contrib_module_path))
+            make_mock_commit(
+                repo, path='{}/baz.py'.format(contrib_module_path))
+            make_mock_commit(
+                repo, path='{}/baz1.py'.format(contrib_module_path))
+            make_mock_commit(
+                repo, path='{}/baz8.py'.format(contrib_module_path))
+            make_mock_commit(repo, path='a.py')
+            yield repo, contrib_module_path
+
+    def test_prfv_end_to_end(self):
+        with self.mock_fhub_project() as (repo, contrib_module_path):
+            travis_build_dir = repo.working_tree_dir
+            travis_pull_request = str(self.pr_num)
+            travis_commit_range = get_diff_str_from_commits(
+                repo.head.commit.parents[0], repo.head.commit)
+            X, y = self.X, self.y
+
+            travis_env_vars = {
+                'TRAVIS_BUILD_DIR': travis_build_dir,
+                'TRAVIS_PULL_REQUEST': travis_pull_request,
+                'TRAVIS_COMMIT_RANGE': travis_commit_range,
+            }
+            with patch.dict('os.environ', travis_env_vars):
+                validator = PullRequestFeatureValidator(
+                    self.pr_num, contrib_module_path, X, y)
+                result = validator.validate()
+                self.assertFalse(result)
