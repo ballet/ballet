@@ -5,6 +5,7 @@ import pathlib
 import funcy
 
 from fhub_core.contrib import get_contrib_features
+from fhub_core.exc import UnexpectedValidationStateError
 from fhub_core.feature import Feature
 from fhub_core.util import assertion_method
 from fhub_core.util.gitutil import LocalPullRequestBuildDiffer
@@ -152,12 +153,13 @@ class PullRequestFeatureValidator:
         To do this, follows these steps:
         1. Collects the files that have changed in this pull request as
            compared to a comparison branch.
-        2. Categorize these file changes into admissible or inadmissible file changes. Admissible file changes solely contribute python files to the contrib subdirectory.
+        2. Categorize these file changes into admissible or inadmissible file
+           changes. Admissible file changes solely contribute python files to
+           the contrib subdirectory.
         3. Collect features from admissible new files.
         4. Validate each of these features using the FeatureValidator.
         5. Report the overall validation results.
         '''
-
 
         # collect, categorize, and validate file changes
         self._collect_file_changes()
@@ -185,7 +187,8 @@ class PullRequestFeatureValidator:
     def _categorize_file_changes(self):
         '''Partition file changes into admissible and inadmissible changes'''
         if self.file_diffs is None:
-            raise ValueError('File changes have not been collected.')
+            raise UnexpectedValidationStateError(
+                'File changes have not been collected.')
 
         logger.info('Categorizing file changes...')
 
@@ -242,14 +245,16 @@ class PullRequestFeatureValidator:
 
     def _validate_files(self):
         if self.file_diffs_inadmissible is None:
-            raise ValueError('File diffs have not been categorized.')
+            raise UnexpectedValidationStateError(
+                'File diffs have not been categorized.')
 
         result = len(self.file_diffs_inadmissible) == 0
         self.file_diffs_validation_result = result
 
     def _collect_features(self):
         if self.file_diffs_admissible is None:
-            raise ValueError('File diffs have not been collected.')
+            raise UnexpectedValidationStateError(
+                'File diffs have not been collected.')
 
         logger.info('Collecting features...')
 
@@ -269,7 +274,8 @@ class PullRequestFeatureValidator:
 
     def _validate_features(self):
         if self.features is None:
-            raise ValueError('Features have not been collected.')
+            raise UnexpectedValidationStateError(
+                'Features have not been collected.')
 
         # if no features were added at all, reject
         if self.features is not None and len(self.features) == 0:
@@ -300,9 +306,11 @@ class PullRequestFeatureValidator:
 
     def _determine_validation_result(self):
         if self.file_diffs_validation_result is None:
-            raise ValueError('File diffs have not been validated.')
+            raise UnexpectedValidationStateError(
+                'File diffs have not been validated.')
         if self.features_validation_result is None:
-            raise ValueError('Feature changes have not been validated.')
+            raise UnexpectedValidationStateError(
+                'Feature changes have not been validated.')
         return (self.file_diffs_validation_result and
                 self.features_validation_result)
 
