@@ -18,7 +18,7 @@ from .util import (
     FragileTransformer, make_mock_commit, make_mock_commits, mock_repo)
 
 
-class TestFeatureValidator(unittest.TestCase):
+class TestDataMixin:
     def setUp(self):
         self.df = pd.DataFrame(
             data={
@@ -31,6 +31,10 @@ class TestFeatureValidator(unittest.TestCase):
         ).set_index(['country', 'year'])
         self.X = self.df[['size', 'strength']]
         self.y = self.df[['happy']]
+        super().setUp()
+
+
+class TestFeatureValidator(TestDataMixin, unittest.TestCase):
 
     def test_good_feature(self):
         feature = Feature(
@@ -99,9 +103,10 @@ class TestFeatureValidator(unittest.TestCase):
         self.assertIn('can_deepcopy', failures)
 
 
-class TestPullRequestFeatureValidator(unittest.TestCase):
+class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
 
     def setUp(self):
+        super().setUp()
         self.pr_num = 73
 
     @unittest.expectedFailure
