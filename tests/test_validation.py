@@ -1,15 +1,19 @@
 import unittest
+from unittest.mock import patch
 
+import funcy
 import numpy as np
 import pandas as pd
 import sklearn.preprocessing
 from sklearn.base import BaseEstimator, TransformerMixin
 
+from fhub_core.exc import UnexpectedValidationStateError
 from fhub_core.feature import Feature
 from fhub_core.util import IdentityTransformer, NoFitMixin
-from fhub_core.validation import FeatureValidator
+from fhub_core.util.travisutil import TravisPullRequestBuildDiffer
+from fhub_core.validation import FeatureValidator, PullRequestFeatureValidator
 
-from .util import FragileTransformer
+from .util import FragileTransformer, mock_repo
 
 
 class TestFeatureValidator(unittest.TestCase):
@@ -96,8 +100,48 @@ class TestFeatureValidator(unittest.TestCase):
 class TestPullRequestFeatureValidator(unittest.TestCase):
 
     def setUp(self):
-        pass
+        self.pr_num = 73
 
     @unittest.expectedFailure
     def test_todo(self):
         raise NotImplementedError
+
+    @funcy.contextmanager
+    def null_prfv(self):
+        with mock_repo() as repo:
+            pr_num = self.pr_num
+            commit_range = 'HEAD^..HEAD'
+            contrib_module_path = None
+            X = None
+            y = None
+
+            travis_env_vars = {
+                'TRAVIS_BUILD_DIR': repo.working_tree_dir,
+                'TRAVIS_PULL_REQUEST': str(pr_num),
+                'TRAVIS_COMMIT_RANGE': commit_range,
+            }
+            with patch.dict('os.environ', travis_env_vars):
+                yield PullRequestFeatureValidator(
+                    pr_num, contrib_module_path, X, y)
+
+    def test_prfv_init(self):
+        with self.null_prfv() as validator:
+            self.assertIsInstance(
+                validator.differ, TravisPullRequestBuildDiffer)
+
+    def test_prfv_required_method_ordering(self):
+        with self.null_prfv() as validator:
+            with self.assertRaises(UnexpectedValidationStateError):
+                validator._categorize_file_changes()
+
+            with self.assertRaises(UnexpectedValidationStateError):
+                validator._validate_files()
+
+            with self.assertRaises(UnexpectedValidationStateError):
+                validator._collect_features()
+
+            with self.assertRaises(UnexpectedValidationStateError):
+                validator._validate_features()
+
+            with self.assertRaises(UnexpectedValidationStateError):
+                validator._determine_validation_result()
