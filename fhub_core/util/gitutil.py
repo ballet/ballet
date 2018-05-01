@@ -4,29 +4,38 @@ class PullRequestBuildDiffer:
         self.repo = repo
         self.check_environment()
 
-    def check_environment(self):
-        raise NotImplementedError
-
-    def get_diff_str(self):
-        raise NotImplementedError
-
     def diff(self):
         diff_str = self.get_diff_str()
         diffs = get_diffs_by_diff_str(self.repo, diff_str)
         return diffs
 
+    def _check_environment(self):
+        raise NotImplementedError
+
+    def _get_diff_str(self):
+        raise NotImplementedError
+
 
 class LocalPullRequestBuildDiffer(PullRequestBuildDiffer):
+    # TODO
+
     def __init__(self):
         raise NotImplementedError
 
 
 def get_diffs_by_revision(repo, from_revision, to_revision):
-    '''Get file changes between two revisions
+    '''Get file changes between two revisions.
 
-    For details on specifying revisions, see
+    For details on specifying revisions, see `git help revisions`.
 
-        git help revisions
+    Args:
+        repo (git.Repo): Repo object initialized with project root
+        from_revision (str): revision identifier for the starting point of the
+            diff
+        to_revision (str): revision identifier for the ending point of the diff
+
+    Returns:
+        list of git.diff.Diff identifying changes between revisions
     '''
     diff_str = '{from_revision}..{to_revision}'.format(
         from_revision=from_revision, to_revision=to_revision)
@@ -34,6 +43,19 @@ def get_diffs_by_revision(repo, from_revision, to_revision):
 
 
 def get_diffs_by_diff_str(repo, diff_str):
+    '''Get file changes via a diff string.
+
+    For details on specifying revisions, see `git help revisions`.
+
+    Args:
+        repo (git.Repo): Repo object initialized with project root
+        diff_str (str): diff string identifying range of diff. For example,
+            `master..HEAD` diffs from master to HEAD, and `12345678..abcdef90`
+            compares to commits.
+
+    Returns:
+        list of git.diff.Diff identifying changes between revisions
+    '''
     a, b = diff_str.split('..')
     a_obj = repo.rev_parse(a)
     b_obj = repo.rev_parse(b)

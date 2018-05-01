@@ -77,7 +77,7 @@ class TravisPullRequestBuildDiffer(PullRequestBuildDiffer):
         super().__init__(pr_num, None)
         self.repo = self._detect_repo()
 
-    def check_environment(self):
+    def _check_environment(self):
         ensure_expected_travis_env_vars(
             TravisPullRequestBuildDiffer.EXPECTED_TRAVIS_ENV_VARS)
 
@@ -85,7 +85,7 @@ class TravisPullRequestBuildDiffer(PullRequestBuildDiffer):
         if travis_pr_num != self.pr_num:
             raise UnexpectedTravisEnvironmentError
 
-    def get_diff_str(self):
+    def _get_diff_str(self):
         return get_travis_env_or_fail('TRAVIS_COMMIT_RANGE')
 
     def _detect_repo(self):
