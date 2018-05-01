@@ -13,7 +13,7 @@ from fhub_core.util import IdentityTransformer, NoFitMixin
 from fhub_core.util.travisutil import TravisPullRequestBuildDiffer
 from fhub_core.validation import FeatureValidator, PullRequestFeatureValidator
 
-from .util import FragileTransformer, mock_repo
+from .util import FragileTransformer, mock_commits, mock_repo
 
 
 class TestFeatureValidator(unittest.TestCase):
@@ -109,7 +109,6 @@ class TestPullRequestFeatureValidator(unittest.TestCase):
     @funcy.contextmanager
     def null_prfv(self):
         with mock_repo() as repo:
-            pr_num = self.pr_num
             commit_range = 'HEAD^..HEAD'
             contrib_module_path = None
             X = None
@@ -117,12 +116,12 @@ class TestPullRequestFeatureValidator(unittest.TestCase):
 
             travis_env_vars = {
                 'TRAVIS_BUILD_DIR': repo.working_tree_dir,
-                'TRAVIS_PULL_REQUEST': str(pr_num),
+                'TRAVIS_PULL_REQUEST': str(self.pr_num),
                 'TRAVIS_COMMIT_RANGE': commit_range,
             }
             with patch.dict('os.environ', travis_env_vars):
                 yield PullRequestFeatureValidator(
-                    pr_num, contrib_module_path, X, y)
+                    self.pr_num, contrib_module_path, X, y)
 
     def test_prfv_init(self):
         with self.null_prfv() as validator:
@@ -132,7 +131,7 @@ class TestPullRequestFeatureValidator(unittest.TestCase):
     def test_prfv_required_method_ordering(self):
         with self.null_prfv() as validator:
             with self.assertRaises(UnexpectedValidationStateError):
-                validator._categorize_file_changes()
+                validator._categorize_file_diffs()
 
             with self.assertRaises(UnexpectedValidationStateError):
                 validator._validate_files()
@@ -145,3 +144,30 @@ class TestPullRequestFeatureValidator(unittest.TestCase):
 
             with self.assertRaises(UnexpectedValidationStateError):
                 validator._determine_validation_result()
+
+    def test_prfv_collect_file_diffs(self):
+        n = 10
+        with mock_repo() as repo:
+            with mock_commits(repo, n=n) as commits:
+                contrib_module_path = None
+                X = None
+                y = None
+                commit_range = '{a}..{b}'.format(
+                    a=commits[0].hexsha, b=commits[-1].hexsha)
+
+                travis_env_vars = {
+                    'TRAVIS_BUILD_DIR': repo.working_tree_dir,
+                    'TRAVIS_PULL_REQUEST': str(self.pr_num),
+                    'TRAVIS_COMMIT_RANGE': commit_range,
+                }
+                with patch.dict('os.environ', travis_env_vars):
+                    validator = PullRequestFeatureValidator(
+                        self.pr_num, contrib_module_path, X, y)
+                    validator._collect_file_diffs()
+
+                    # checks on file_diffs
+                    self.assertEqual(len(validator.file_diffs), n-1)
+                    for diff in validator.file_diffs:
+                        self.assertEqual(diff.change_type, 'A')
+                        self.assertTrue(diff.b_path.startswith('file'))
+                        self.assertTrue(diff.b_path.endswith('.py'))

@@ -162,8 +162,8 @@ class PullRequestFeatureValidator:
         '''
 
         # collect, categorize, and validate file changes
-        self._collect_file_changes()
-        self._categorize_file_changes()
+        self._collect_file_diffs()
+        self._categorize_file_diffs()
         self._validate_files()
 
         # collect and validate new features
@@ -174,7 +174,7 @@ class PullRequestFeatureValidator:
         overall_result = self._determine_validation_result()
         return overall_result
 
-    def _collect_file_changes(self):
+    def _collect_file_diffs(self):
         logger.info('Collecting file changes...')
 
         self.file_diffs = self.differ.diff()
@@ -184,7 +184,7 @@ class PullRequestFeatureValidator:
             logger.debug('File {i}: {file}'.format(i=i, file=file))
         logger.info('Collected {} file(s)'.format(len(self.file_diffs)))
 
-    def _categorize_file_changes(self):
+    def _categorize_file_diffs(self):
         '''Partition file changes into admissible and inadmissible changes'''
         if self.file_diffs is None:
             raise UnexpectedValidationStateError(
