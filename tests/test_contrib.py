@@ -4,6 +4,8 @@ import tempfile
 import unittest
 from textwrap import dedent
 
+import funcy
+
 from fhub_core.contrib import get_contrib_features
 from fhub_core.util.modutil import import_module_at_path
 
@@ -62,40 +64,41 @@ class TestContrib(unittest.TestCase):
 
     def test_get_contrib_features_generated_modules_components(self):
         n = 4
-        modcontent = dedent(
-            '''\
+        content = dedent(
+            '''
             from sklearn.preprocessing import StandardScaler
             input = 'col{i}'
             transformer = StandardScaler()
-            ''')
-        with tempfile.TemporaryDirectory() as tmpdirname:
-            moddirname = pathlib.Path(tmpdirname) / 'contrib_components'
-            moddirname.mkdir()
-            create_contrib_modules_at_dir(moddirname, modcontent, n=n)
-            mod = import_module_at_path('contrib_components', moddirname)
-            features = get_contrib_features(mod)
-
-        self.assertEqual(len(features), n)
+            '''
+        )
+        modname = 'contrib_features_generated_modules_components'
+        with self.mock_contrib_module(modname, content, n) as (mod, features):
+            self.assertEqual(len(features), n)
 
     def test_get_contrib_features_generated_modules_collection(self):
         n = 4
         k = 2
-        f = 'Feature(input=input, transformer=transformer),\n' * k
-        modcontent = dedent(
-            '''\
+        content = dedent(
+            '''
             from fhub_core import Feature
             from sklearn.preprocessing import StandardScaler
             input = 'col{{i}}'
             transformer = StandardScaler()
             features = [
-                {f}
-            ]
-            ''').format(f=f, i='i')
-        with tempfile.TemporaryDirectory() as tmpdirname:
-            moddirname = pathlib.Path(tmpdirname) / 'contrib_collection'
-            moddirname.mkdir()
-            create_contrib_modules_at_dir(moddirname, modcontent, n=n)
-            mod = import_module_at_path('contrib_collection', moddirname)
-            features = get_contrib_features(mod)
+                Feature(input=input, transformer=transformer),
+            ] * {k}
+            '''
+        ).format(k=k, i='i')
+        modname = 'contrib_features_generated_modules_collection'
+        with self.mock_contrib_module(modname, content, n) as (mod, features):
+            self.assertEqual(len(features), n * k)
 
-        self.assertEqual(len(features), n * k)
+    @funcy.contextmanager
+    def mock_contrib_module(self, modname, content, n):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            modpath = pathlib.Path(tmpdir).joinpath(modname)
+            modpath.mkdir()
+            create_contrib_modules_at_dir(modpath, content, n=n)
+            mod = import_module_at_path(modname, modpath)
+            features = get_contrib_features(mod)
+            yield mod, features
