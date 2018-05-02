@@ -1,3 +1,4 @@
+import os
 import pathlib
 import random
 import tempfile
@@ -107,6 +108,11 @@ def make_mock_commits(repo, n=10):
 def mock_repo():
     '''Create a new repo'''
     with tempfile.TemporaryDirectory() as tmpdir:
+        cwd = os.getcwd()
+        os.chdir(str(tmpdir))
         dir = pathlib.Path(tmpdir)
-        repo = git.Repo.init(dir)
-        yield repo
+        repo = git.Repo.init(str(dir))
+        try:
+            yield repo
+        finally:
+            os.chdir(cwd)
