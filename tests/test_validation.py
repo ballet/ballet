@@ -279,7 +279,7 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
             self.assertTrue(
                 validator.file_diffs_validation_result)
             self.assertEqual(
-                len(validator.features), 1)
+                len(validator.features), 0)
             self.assertFalse(
                 validator.features_validation_result)
 
