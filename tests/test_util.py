@@ -1,6 +1,7 @@
 import os
 import pathlib
 import tempfile
+import types
 import unittest
 from unittest.mock import patch
 
@@ -25,9 +26,30 @@ class TestModutil(unittest.TestCase):
     def test_import_module_from_relpath(self):
         raise NotImplementedError
 
-    @unittest.expectedFailure
     def test_import_module_at_path(self):
-        raise NotImplementedError
+        # TODO is it okay that foo doesn't have an __init__.py inside it?
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = pathlib.Path(tmpdir).joinpath('foo', 'bar.py')
+            path.parent.mkdir()
+            x = 1
+            with path.open('w') as f:
+                f.write('x={x}'.format(x=x))
+            modname = 'foo.bar'
+            modpath = str(path)  # e.g. /tmp/foo/bar.py'
+            mod = import_module_at_path(modname, modpath)
+            self.assertIsInstance(mod, types.ModuleType)
+            self.assertEqual(mod.__name__, modname)
+            self.assertEqual(mod.x, x)
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = pathlib.Path(tmpdir).joinpath('foo')
+            path.mkdir()
+            path.joinpath('__init__.py').touch()
+            modname = 'foo'
+            modpath = str(path)
+            mod = import_module_at_path(modname, modpath)
+            self.assertIsInstance(mod, types.ModuleType)
+            self.assertEqual(mod.__name__, modname)
 
     def test_relpath_to_modname(self):
         relpath = 'fhub_core/util/_util.py'

@@ -18,12 +18,41 @@ def import_module_from_relpath(path):
 
 
 def import_module_at_path(modname, modpath):
-    '''Import module from path that may not be on system path'''
-    modpath = pathlib.Path(modpath)
-    parentpath = str(modpath.parent)
-    modpath = str(modpath)
-    importer = pkgutil.get_importer(parentpath)
-    mod = importer.find_module(modname).load_module(modname)
+    '''Import module from path that may not be on system path
+
+    Args:
+        modname (str): module name from package root, e.g. foo.bar
+        modpath (str): absolute path to module itself,
+            e.g. /home/user/foo/bar.py. In the case of a module that is a
+            package, then the path should be specified as '/home/user/foo' and
+            a file '/home/user/foo/__init__.py' *must be present* or the import
+            will fail.
+
+    Examples:
+        >>> modname = 'foo.bar'
+        >>> modpath = '/home/user/foo/bar.py
+        >>> import_module_at_path(modname, modpath)
+        <module 'foo.bar' from '/home/user/foo/bar.py'>
+
+        >>> modname = 'foo'
+        >>> modpath = '/home/user/foo'
+        >>> import_module_at_path(modname, modpath)
+        <module 'foo' from '/home/user/foo/__init__.py'>
+    '''
+    # TODO just keep navigating up in the source tree until an __init__.py is
+    # not found
+    parentpath = str(pathlib.Path(modpath).parent)
+    finder = pkgutil.get_importer(parentpath)
+    loader = finder.find_module(modname)
+    if loader is None:
+        raise ModuleNotFoundError(
+            'Failed to find loader for module {} within dir {}'
+            .format(modname, parentpath))
+    mod = loader.load_module(modname)
+
+    # TODO figure out what to do about this
+    assert mod.__name__ == modname
+
     return mod
 
 
