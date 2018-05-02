@@ -197,6 +197,7 @@
 <li class="toctree-l1"><a class="reference internal" href="fhub_core.util.html">fhub_core.util package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="fhub_core.util.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fhub_core.util.html#module-fhub_core.util.gitutil">fhub_core.util.gitutil module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fhub_core.util.html#module-fhub_core.util.logutil">fhub_core.util.logutil module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fhub_core.util.html#module-fhub_core.util.modutil">fhub_core.util.modutil module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fhub_core.util.html#module-fhub_core.util.testing">fhub_core.util.testing module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fhub_core.util.html#module-fhub_core.util.travisutil">fhub_core.util.travisutil module</a></li>
@@ -244,6 +245,12 @@ definitions</td>
 <dl class="exception">
 <dt id="fhub_core.exc.UnexpectedTravisEnvironmentError">
 <em class="property">exception </em><code class="descclassname">fhub_core.exc.</code><code class="descname">UnexpectedTravisEnvironmentError</code><a class="reference internal" href="_modules/fhub_core/exc.html#UnexpectedTravisEnvironmentError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fhub_core.exc.UnexpectedTravisEnvironmentError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fhub_core.exc.Error" title="fhub_core.exc.Error"><code class="xref py py-class docutils literal notranslate"><span class="pre">fhub_core.exc.Error</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="fhub_core.exc.UnexpectedValidationStateError">
+<em class="property">exception </em><code class="descclassname">fhub_core.exc.</code><code class="descname">UnexpectedValidationStateError</code><a class="reference internal" href="_modules/fhub_core/exc.html#UnexpectedValidationStateError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fhub_core.exc.UnexpectedValidationStateError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fhub_core.exc.Error" title="fhub_core.exc.Error"><code class="xref py py-class docutils literal notranslate"><span class="pre">fhub_core.exc.Error</span></code></a></p>
 </dd></dl>
 
@@ -314,18 +321,42 @@ of the pipeline.</td>
 <dl class="method">
 <dt id="fhub_core.validation.FeatureValidator.validate">
 <code class="descname">validate</code><span class="sig-paren">(</span><em>feature</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fhub_core/validation.html#FeatureValidator.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fhub_core.validation.FeatureValidator.validate" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Validate the feature</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="fhub_core.validation.PullRequestFeatureValidator">
-<em class="property">class </em><code class="descclassname">fhub_core.validation.</code><code class="descname">PullRequestFeatureValidator</code><span class="sig-paren">(</span><em>pr_num</em>, <em>repo</em>, <em>comparison_ref</em>, <em>contrib_module_path</em>, <em>X_df</em>, <em>y_df</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fhub_core/validation.html#PullRequestFeatureValidator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fhub_core.validation.PullRequestFeatureValidator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fhub_core.validation.</code><code class="descname">PullRequestFeatureValidator</code><span class="sig-paren">(</span><em>repo</em>, <em>pr_num</em>, <em>contrib_module_path</em>, <em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fhub_core/validation.html#PullRequestFeatureValidator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fhub_core.validation.PullRequestFeatureValidator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="fhub_core.validation.PullRequestFeatureValidator.APPROPRIATE_CHANGE_TYPES">
+<code class="descname">APPROPRIATE_CHANGE_TYPES</code><em class="property"> = ['A']</em><a class="headerlink" href="#fhub_core.validation.PullRequestFeatureValidator.APPROPRIATE_CHANGE_TYPES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fhub_core.validation.PullRequestFeatureValidator.APPROPRIATE_FILE_EXTS">
+<code class="descname">APPROPRIATE_FILE_EXTS</code><em class="property"> = ['.py']</em><a class="headerlink" href="#fhub_core.validation.PullRequestFeatureValidator.APPROPRIATE_FILE_EXTS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="fhub_core.validation.PullRequestFeatureValidator.validate">
 <code class="descname">validate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fhub_core/validation.html#PullRequestFeatureValidator.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fhub_core.validation.PullRequestFeatureValidator.validate" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Validate pull request.</p>
+<p>To do this, follows these steps:
+1. Collects the files that have changed in this pull request as</p>
+<blockquote>
+<div>compared to a comparison branch.</div></blockquote>
+<ol class="arabic simple" start="2">
+<li>Categorize these file changes into admissible or inadmissible file
+changes. Admissible file changes solely contribute python files to
+the contrib subdirectory.</li>
+<li>Collect features from admissible new files.</li>
+<li>Validate each of these features using the FeatureValidator.</li>
+<li>Report the overall validation results.</li>
+</ol>
+</dd></dl>
 
 </dd></dl>
 

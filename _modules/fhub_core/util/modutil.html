@@ -201,12 +201,74 @@
 
 
 <div class="viewcode-block" id="import_module_at_path"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.modutil.import_module_at_path">[docs]</a><span class="k">def</span> <span class="nf">import_module_at_path</span><span class="p">(</span><span class="n">modname</span><span class="p">,</span> <span class="n">modpath</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Import module from path that may not be on system path&#39;&#39;&#39;</span>
+    <span class="sd">&#39;&#39;&#39;Import module from path that may not be on system path</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        modname (str): module name from package root, e.g. foo.bar</span>
+<span class="sd">        modpath (str): absolute path to module itself,</span>
+<span class="sd">            e.g. /home/user/foo/bar.py. In the case of a module that is a</span>
+<span class="sd">            package, then the path should be specified as &#39;/home/user/foo&#39; and</span>
+<span class="sd">            a file &#39;/home/user/foo/__init__.py&#39; *must be present* or the import</span>
+<span class="sd">            will fail.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; modname = &#39;foo.bar.baz&#39;</span>
+<span class="sd">        &gt;&gt;&gt; modpath = &#39;/home/user/foo/bar/baz.py</span>
+<span class="sd">        &gt;&gt;&gt; import_module_at_path(modname, modpath)</span>
+<span class="sd">        &lt;module &#39;foo.bar.baz&#39; from &#39;/home/user/foo/bar/baz.py&#39;&gt;</span>
+
+<span class="sd">        &gt;&gt;&gt; modname = &#39;foo.bar&#39;</span>
+<span class="sd">        &gt;&gt;&gt; modpath = &#39;/home/user/foo/bar&#39;</span>
+<span class="sd">        &gt;&gt;&gt; import_module_at_path(modname, modpath)</span>
+<span class="sd">        &lt;module &#39;foo.bar&#39; from &#39;/home/user/foo/bar/__init__.py&#39;&gt;</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># TODO just keep navigating up in the source tree until an __init__.py is</span>
+    <span class="c1"># not found?</span>
+    <span class="c1"># TODO resolve all paths before messing with parents</span>
+
     <span class="n">modpath</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">modpath</span><span class="p">)</span>
-    <span class="n">parentpath</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">modpath</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
-    <span class="n">modpath</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">modpath</span><span class="p">)</span>
-    <span class="n">importer</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_importer</span><span class="p">(</span><span class="n">parentpath</span><span class="p">)</span>
-    <span class="n">mod</span> <span class="o">=</span> <span class="n">importer</span><span class="o">.</span><span class="n">find_module</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span><span class="o">.</span><span class="n">load_module</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">modpath</span><span class="p">)</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;__init__.py&#39;</span><span class="p">):</span>
+        <span class="c1"># TODO use pathlib methods directly</span>
+        <span class="c1"># TODO improve debugging output with recommend change</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Don</span><span class="se">\&#39;</span><span class="s1">t provide the __init__.py!&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">is_package</span><span class="p">(</span><span class="n">modpath</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">modpath</span><span class="o">.</span><span class="n">suffix</span> <span class="o">!=</span> <span class="s1">&#39;.py&#39;</span>
+
+    <span class="k">def</span> <span class="nf">has_init</span><span class="p">(</span><span class="nb">dir</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">dir</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">&#39;__init__.py&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">has_package_structure</span><span class="p">(</span><span class="n">modname</span><span class="p">,</span> <span class="n">modpath</span><span class="p">):</span>
+        <span class="n">modparts</span> <span class="o">=</span> <span class="n">modname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">modparts</span><span class="p">)</span>
+        <span class="nb">dir</span> <span class="o">=</span> <span class="n">modpath</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_package</span><span class="p">(</span><span class="n">modpath</span><span class="p">):</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="nb">dir</span> <span class="o">=</span> <span class="nb">dir</span><span class="o">.</span><span class="n">parent</span>
+        <span class="k">while</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">has_init</span><span class="p">(</span><span class="nb">dir</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="nb">dir</span> <span class="o">=</span> <span class="nb">dir</span><span class="o">.</span><span class="n">parent</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">has_package_structure</span><span class="p">(</span><span class="n">modname</span><span class="p">,</span> <span class="n">modpath</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s1">&#39;Module does not have valid package structure.&#39;</span><span class="p">)</span>
+
+    <span class="n">parentpath</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">modpath</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+    <span class="n">finder</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_importer</span><span class="p">(</span><span class="n">parentpath</span><span class="p">)</span>
+    <span class="n">loader</span> <span class="o">=</span> <span class="n">finder</span><span class="o">.</span><span class="n">find_module</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">loader</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ModuleNotFoundError</span><span class="p">(</span>
+            <span class="s1">&#39;Failed to find loader for module </span><span class="si">{}</span><span class="s1"> within dir </span><span class="si">{}</span><span class="s1">&#39;</span>
+            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modname</span><span class="p">,</span> <span class="n">parentpath</span><span class="p">))</span>
+    <span class="n">mod</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load_module</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span>
+
+    <span class="c1"># TODO figure out what to do about this</span>
+    <span class="k">assert</span> <span class="n">mod</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="n">modname</span>
+
     <span class="k">return</span> <span class="n">mod</span></div>
 
 

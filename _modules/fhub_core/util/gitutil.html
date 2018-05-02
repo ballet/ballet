@@ -185,34 +185,69 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pr_num</span><span class="p">,</span> <span class="n">repo</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span> <span class="o">=</span> <span class="n">pr_num</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">repo</span> <span class="o">=</span> <span class="n">repo</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">check_environment</span><span class="p">()</span>
-
-<div class="viewcode-block" id="PullRequestBuildDiffer.check_environment"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.gitutil.PullRequestBuildDiffer.check_environment">[docs]</a>    <span class="k">def</span> <span class="nf">check_environment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
-
-<div class="viewcode-block" id="PullRequestBuildDiffer.get_diff_str"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.gitutil.PullRequestBuildDiffer.get_diff_str">[docs]</a>    <span class="k">def</span> <span class="nf">get_diff_str</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_environment</span><span class="p">()</span>
 
 <div class="viewcode-block" id="PullRequestBuildDiffer.diff"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.gitutil.PullRequestBuildDiffer.diff">[docs]</a>    <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">diff_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_diff_str</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">get_file_changes_by_diff_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="p">,</span> <span class="n">diff_str</span><span class="p">)</span></div></div>
+        <span class="n">diff_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_diff_str</span><span class="p">()</span>
+        <span class="n">diffs</span> <span class="o">=</span> <span class="n">get_diffs_by_diff_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="p">,</span> <span class="n">diff_str</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">diffs</span></div>
+
+    <span class="k">def</span> <span class="nf">_check_environment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_get_diff_str</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
-<div class="viewcode-block" id="get_file_changes_by_revision"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.gitutil.get_file_changes_by_revision">[docs]</a><span class="k">def</span> <span class="nf">get_file_changes_by_revision</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">from_revision</span><span class="p">,</span> <span class="n">to_revision</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Get file changes between two revisions</span>
+<div class="viewcode-block" id="LocalPullRequestBuildDiffer"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.gitutil.LocalPullRequestBuildDiffer">[docs]</a><span class="k">class</span> <span class="nc">LocalPullRequestBuildDiffer</span><span class="p">(</span><span class="n">PullRequestBuildDiffer</span><span class="p">):</span>
+    <span class="c1"># TODO</span>
 
-<span class="sd">    For details on specifying revisions, see</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<span class="sd">        git help revisions</span>
+
+<div class="viewcode-block" id="get_diffs_by_revision"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.gitutil.get_diffs_by_revision">[docs]</a><span class="k">def</span> <span class="nf">get_diffs_by_revision</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">from_revision</span><span class="p">,</span> <span class="n">to_revision</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Get file changes between two revisions.</span>
+
+<span class="sd">    For details on specifying revisions, see `git help revisions`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        repo (git.Repo): Repo object initialized with project root</span>
+<span class="sd">        from_revision (str): revision identifier for the starting point of the</span>
+<span class="sd">            diff</span>
+<span class="sd">        to_revision (str): revision identifier for the ending point of the diff</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list of git.diff.Diff identifying changes between revisions</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">diff_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{from_revision}</span><span class="s1">..</span><span class="si">{to_revision}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
         <span class="n">from_revision</span><span class="o">=</span><span class="n">from_revision</span><span class="p">,</span> <span class="n">to_revision</span><span class="o">=</span><span class="n">to_revision</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">get_file_changes_by_diff_str</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">diff_str</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">get_diffs_by_diff_str</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">diff_str</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_file_changes_by_diff_str"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.gitutil.get_file_changes_by_diff_str">[docs]</a><span class="k">def</span> <span class="nf">get_file_changes_by_diff_str</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">diff_str</span><span class="p">):</span>
-    <span class="c1"># TODO implement name_status=True keyword</span>
-    <span class="k">return</span> <span class="n">repo</span><span class="o">.</span><span class="n">git</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">diff_str</span><span class="p">,</span> <span class="n">name_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+<div class="viewcode-block" id="get_diff_str_from_commits"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.gitutil.get_diff_str_from_commits">[docs]</a><span class="k">def</span> <span class="nf">get_diff_str_from_commits</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{a}</span><span class="s1">..</span><span class="si">{b}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">hexsha</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="o">.</span><span class="n">hexsha</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_diffs_by_diff_str"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.gitutil.get_diffs_by_diff_str">[docs]</a><span class="k">def</span> <span class="nf">get_diffs_by_diff_str</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">diff_str</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Get file changes via a diff string.</span>
+
+<span class="sd">    For details on specifying revisions, see `git help revisions`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        repo (git.Repo): Repo object initialized with project root</span>
+<span class="sd">        diff_str (str): diff string identifying range of diff. For example,</span>
+<span class="sd">            `master..HEAD` diffs from master to HEAD, and `12345678..abcdef90`</span>
+<span class="sd">            compares to commits.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list of git.diff.Diff identifying changes between revisions</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">diff_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;..&#39;</span><span class="p">)</span>
+    <span class="n">a_obj</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">rev_parse</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">b_obj</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">rev_parse</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">diffs</span> <span class="o">=</span> <span class="n">a_obj</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">b_obj</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">diffs</span></div>
 
 
 <span class="c1"># deprecated for now</span>

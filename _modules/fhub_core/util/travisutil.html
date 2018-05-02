@@ -239,24 +239,38 @@
     <span class="k">return</span> <span class="n">get_travis_pr_num</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="TravisPullRequestBuildDiffer"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.travisutil.TravisPullRequestBuildDiffer">[docs]</a><span class="k">class</span> <span class="nc">TravisPullRequestBuildDiffer</span><span class="p">(</span><span class="n">PullRequestBuildDiffer</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pr_num</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">pr_num</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">repo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_detect_repo</span>
+<div class="viewcode-block" id="can_use_travis_differ"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.travisutil.can_use_travis_differ">[docs]</a><span class="k">def</span> <span class="nf">can_use_travis_differ</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;Check if the required travis env vars are set for the travis differ&#39;&#39;&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">ensure_expected_travis_env_vars</span><span class="p">(</span>
+            <span class="n">TravisPullRequestBuildDiffer</span><span class="o">.</span><span class="n">EXPECTED_TRAVIS_ENV_VARS</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="n">UnexpectedTravisEnvironmentError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="TravisPullRequestBuildDiffer.check_environment"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.travisutil.TravisPullRequestBuildDiffer.check_environment">[docs]</a>    <span class="k">def</span> <span class="nf">check_environment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">ensure_expected_travis_env_vars</span><span class="p">([</span>
-            <span class="s1">&#39;TRAVIS_BUILD_DIR&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;TRAVIS_PULL_REQUEST&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;TRAVIS_COMMIT_RANGE&#39;</span><span class="p">,</span>
-        <span class="p">])</span>
+
+<div class="viewcode-block" id="TravisPullRequestBuildDiffer"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.travisutil.TravisPullRequestBuildDiffer">[docs]</a><span class="k">class</span> <span class="nc">TravisPullRequestBuildDiffer</span><span class="p">(</span><span class="n">PullRequestBuildDiffer</span><span class="p">):</span>
+    <span class="n">EXPECTED_TRAVIS_ENV_VARS</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;TRAVIS_BUILD_DIR&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;TRAVIS_PULL_REQUEST&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;TRAVIS_COMMIT_RANGE&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pr_num</span><span class="p">,</span> <span class="n">repo</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">repo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">repo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_detect_repo</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">pr_num</span><span class="p">,</span> <span class="n">repo</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_check_environment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">ensure_expected_travis_env_vars</span><span class="p">(</span>
+            <span class="n">TravisPullRequestBuildDiffer</span><span class="o">.</span><span class="n">EXPECTED_TRAVIS_ENV_VARS</span><span class="p">)</span>
 
         <span class="n">travis_pr_num</span> <span class="o">=</span> <span class="n">get_travis_pr_num</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">travis_pr_num</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">UnexpectedTravisEnvironmentError</span></div>
+            <span class="k">raise</span> <span class="n">UnexpectedTravisEnvironmentError</span>
 
-<div class="viewcode-block" id="TravisPullRequestBuildDiffer.get_diff_str"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.travisutil.TravisPullRequestBuildDiffer.get_diff_str">[docs]</a>    <span class="k">def</span> <span class="nf">get_diff_str</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">get_travis_env_or_fail</span><span class="p">(</span><span class="s1">&#39;TRAVIS_COMMIT_RANGE&#39;</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">_get_diff_str</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">get_travis_env_or_fail</span><span class="p">(</span><span class="s1">&#39;TRAVIS_COMMIT_RANGE&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_detect_repo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">build_dir</span> <span class="o">=</span> <span class="n">get_travis_env_or_fail</span><span class="p">(</span><span class="s1">&#39;TRAVIS_BUILD_DIR&#39;</span><span class="p">)</span>
