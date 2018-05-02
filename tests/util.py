@@ -58,7 +58,7 @@ class FragileTransformerPipeline(TransformerPipeline):
         super().__init__(steps)
 
 
-def make_mock_commit(repo, kind='A', path=None, contents=None):
+def make_mock_commit(repo, kind='A', path=None, content=None):
     '''Commits one file to repo'''
     if not path:
         path = 'file{}'.format(random.randint(0, 999))
@@ -78,9 +78,9 @@ def make_mock_commit(repo, kind='A', path=None, contents=None):
             # because this would be a kind=='M'
             raise FileExistsError
         else:
-            if contents is not None:
+            if content is not None:
                 with abspath.open('w') as f:
-                    f.write(contents)
+                    f.write(content)
             else:
                 abspath.touch()
         repo.git.add(str(path))

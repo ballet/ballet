@@ -1,4 +1,5 @@
 import unittest
+from textwrap import dedent
 from unittest.mock import patch
 
 import funcy
@@ -180,25 +181,15 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
                     self.assertTrue(diff.b_path.endswith('.py'))
 
     @funcy.contextmanager
-    def mock_fhub_project(self):
-        contrib_module_path = 'contrib'
+    def mock_project(self, path_content):
         with mock_repo() as repo:
-            make_mock_commit(repo, path='readme.txt')
-            make_mock_commit(
-                repo, path='{}/foo.py'.format(contrib_module_path))
-            make_mock_commit(
-                repo, path='{}/user_123/bar.py'.format(contrib_module_path))
-            make_mock_commit(
-                repo, path='{}/baz.py'.format(contrib_module_path))
-            make_mock_commit(
-                repo, path='{}/baz1.py'.format(contrib_module_path))
-            make_mock_commit(
-                repo, path='{}/baz8.py'.format(contrib_module_path))
-            make_mock_commit(repo, path='a.py')
-            yield repo, contrib_module_path
+            for path, content in path_content:
+                make_mock_commit(repo, path=path, content=content)
+            yield repo
 
-    def test_prfv_end_to_end(self):
-        with self.mock_fhub_project() as (repo, contrib_module_path):
+    @funcy.contextmanager
+    def _test_prfv_end_to_end(self, path_content, contrib_module_path):
+        with self.mock_project(path_content) as repo:
             travis_build_dir = repo.working_tree_dir
             travis_pull_request = str(self.pr_num)
             travis_commit_range = get_diff_str_from_commits(
@@ -211,7 +202,101 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
                 'TRAVIS_COMMIT_RANGE': travis_commit_range,
             }
             with patch.dict('os.environ', travis_env_vars):
-                validator = PullRequestFeatureValidator(
+                yield PullRequestFeatureValidator(
                     self.pr_num, contrib_module_path, X, y)
-                result = validator.validate()
-                self.assertFalse(result)
+
+    def test_prfv_end_to_end_failure_no_features_found(self):
+        path_content = [
+            ('readme.txt', None),
+            ('contrib/foo.py', None),
+            ('contrib/baz.py', None),
+        ]
+        contrib_module_path = 'contrib/'
+        with self._test_prfv_end_to_end(path_content, contrib_module_path) \
+                as validator:
+            result = validator.validate()
+            self.assertFalse(result)
+
+    def test_prfv_end_to_end_failure_inadmissible_file_diffs(self):
+        path_content = [
+            ('readme.txt', None),
+            ('contrib/foo.py', None),
+            ('invalid.py', None),
+        ]
+        contrib_module_path = 'contrib/'
+        with self._test_prfv_end_to_end(path_content, contrib_module_path) \
+                as validator:
+            result = validator.validate()
+            self.assertFalse(result)
+            self.assertEqual(
+                len(validator.file_diffs), 1)
+            self.assertEqual(
+                len(validator.file_diffs_admissible), 0)
+            self.assertEqual(
+                len(validator.file_diffs_inadmissible), 1)
+            self.assertEqual(
+                validator.file_diffs_inadmissible[0].b_path, 'invalid.py')
+            self.assertFalse(
+                validator.file_diffs_validation_result)
+
+    def test_prfv_end_to_end_failure_invalid_feature(self):
+        path_content = [
+            ('foo.jpg', None),
+            (
+                'contrib/foo.py',
+                dedent(
+                    '''
+                    from sklearn.base import BaseEstimator, TransformerMixin
+                    class RaisingTransformer(BaseEstimator, TransformerMixin):
+                        def fit(self, X, y=None, **fit_kwargs):
+                            raise RuntimeError
+                        def transform(self, X, **transform_kwargs):
+                            raise RuntimeError
+                    input = 'size'
+                    transformer = RaisingTransformer()
+                    '''
+                )
+            ),
+        ]
+        contrib_module_path = 'contrib/'
+        with self._test_prfv_end_to_end(path_content, contrib_module_path) \
+                as validator:
+            result = validator.validate()
+            self.assertFalse(result)
+            self.assertEqual(
+                len(validator.file_diffs), 1)
+            self.assertEqual(
+                len(validator.file_diffs_admissible), 1)
+            self.assertEqual(
+                len(validator.file_diffs_inadmissible), 0)
+            self.assertTrue(
+                validator.file_diffs_validation_result)
+            self.assertEqual(
+                len(validator.features), 1)
+            self.assertFalse(
+                validator.features_validation_result)
+
+    def test_prfv_end_to_end_success(self):
+        path_content = [
+            ('bob.xml', '<><> :: :)'),
+            (
+                'contrib/bean.py',
+                dedent(
+                    '''
+                    from sklearn.base import BaseEstimator, TransformerMixin
+                    class IdentityTransformer(BaseEstimator, TransformerMixin:
+                        def fit(self, X, y=None, **fit_kwargs):
+                            raise RuntimeError
+                        def transform(self, X, **transform_kwargs):
+                            raise RuntimeError
+                    input = 'size'
+                    transformer = IdentityTransformer()
+                    '''
+                )
+            ),
+        ]
+        contrib_module_path = 'contrib/'
+        with self._test_prfv_end_to_end(path_content, contrib_module_path) \
+                as validator:
+            result = validator.validate()
+            self.assertTrue(result)
