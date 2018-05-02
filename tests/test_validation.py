@@ -260,6 +260,29 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
             self.assertFalse(
                 validator.file_diffs_validation_result)
 
+    def test_prfv_end_to_end_failure_bad_package_structure(self):
+        path_content = [
+            ('foo.jpg', None),
+            ('contrib/bar/baz.py', self.valid_feature_str),
+        ]
+        contrib_module_path = 'contrib/'
+        with self._test_prfv_end_to_end(path_content, contrib_module_path) \
+                as validator:
+            result = validator.validate()
+            self.assertFalse(result)
+            self.assertEqual(
+                len(validator.file_diffs), 1)
+            self.assertEqual(
+                len(validator.file_diffs_admissible), 1)
+            self.assertEqual(
+                len(validator.file_diffs_inadmissible), 0)
+            self.assertTrue(
+                validator.file_diffs_validation_result)
+            self.assertEqual(
+                len(validator.features), 1)
+            self.assertFalse(
+                validator.features_validation_result)
+
     def test_prfv_end_to_end_failure_invalid_feature(self):
         path_content = [
             ('foo.jpg', None),
