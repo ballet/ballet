@@ -58,7 +58,6 @@ def make_robust_to_tabular_types(func):
 
 def make_robust_transformer(transformer):
     transformer.fit = make_robust_to_tabular_types(transformer.fit)
-    # todo optionally catch all errors of transformer and return []
     transformer.transform = make_robust_to_tabular_types(transformer.transform)
     return transformer
 

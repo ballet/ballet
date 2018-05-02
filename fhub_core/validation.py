@@ -5,10 +5,13 @@ import pathlib
 import funcy
 
 from fhub_core.contrib import get_contrib_features
+from fhub_core.exc import UnexpectedValidationStateError
 from fhub_core.feature import Feature
 from fhub_core.util import assertion_method
-from fhub_core.util.gitutil import get_file_changes_by_revision
-from fhub_core.util.modutil import import_module_from_relpath
+from fhub_core.util.gitutil import LocalPullRequestBuildDiffer
+from fhub_core.util.modutil import import_module_at_path, relpath_to_modname
+from fhub_core.util.travisutil import (
+    TravisPullRequestBuildDiffer, can_use_travis_differ)
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +26,18 @@ class FeatureValidator:
     def __init__(self, X, y):
         self.X = X
         self.y = y
+
+    def validate(self, feature):
+        '''Validate the feature'''
+        failures = []
+        result = True
+        for check, name in self._get_all_checks():
+            success = check(feature)
+            if not success:
+                result = False
+                failures.append(name)
+
+        return result, failures
 
     @assertion_method
     def _is_feature(self, feature):
@@ -100,131 +115,163 @@ class FeatureValidator:
                     name = name[1:]
                 yield (method, name)
 
-    def validate(self, feature):
-        failures = []
-        result = True
-        for check, name in self._get_all_checks():
-            success = check(feature)
-            if not success:
-                result = False
-                failures.append(name)
-
-        return result, failures
-
 
 class PullRequestFeatureValidator:
-    def __init__(self, pr_num, repo, comparison_ref, contrib_module_path,
-                 X_df, y_df):
-        '''Validate the features introduced in a proposed pull request
+    APPROPRIATE_CHANGE_TYPES = ['A']
+    APPROPRIATE_FILE_EXTS = ['.py']
+
+    def __init__(self, repo, pr_num, contrib_module_path, X, y):
+        '''Validate the features introduced in a proposed pull request.
 
         Args:
+            repo (git.Repo): project repo
             pr_num (str): Pull request number
-            repo (git.Repo): Project repository
-            comparison_ref (str): Name of comparison ref, e.g. 'master'
             contrib_module_path (str): Relative path to contrib module
-            X_df (pd.DataFrame): Example X DataFrame
-            y_df (pd.DataFrame): Example y DataFrame
+            X (array-like): Example X array-like
+            y (array-like): Example y array-like
         '''
-        self.pr_num = pr_num
         self.repo = repo
-        self.comparison_ref = comparison_ref
+        self.pr_num = pr_num
         self.contrib_module_path = contrib_module_path
-        self.X_df = X_df
-        self.y_df = y_df
+        self.X = X
+        self.y = y
 
-        # self.pr_info = PullRequestInfo(self.pr_num)
-        # self.head_info = HeadInfo(self.repo)
-        self.pr_head = 'HEAD'
+        if can_use_travis_differ():
+            self.differ = TravisPullRequestBuildDiffer(self.pr_num)
+        else:
+            self.differ = LocalPullRequestBuildDiffer()
 
         # will be set by other methods
-        self.file_changes = None
-        self.file_changes_admissible = None
-        self.file_changes_inadmissible = None
-        self.file_changes_validation_result = None
+        self.file_diffs = None
+        self.file_diffs_admissible = None
+        self.file_diffs_inadmissible = None
+        self.file_diffs_validation_result = None
         self.features = None
         self.features_validation_result = None
 
-    def _collect_file_changes(self):
+    def validate(self):
+        '''Validate pull request.
+
+        To do this, follows these steps:
+        1. Collects the files that have changed in this pull request as
+           compared to a comparison branch.
+        2. Categorize these file changes into admissible or inadmissible file
+           changes. Admissible file changes solely contribute python files to
+           the contrib subdirectory.
+        3. Collect features from admissible new files.
+        4. Validate each of these features using the FeatureValidator.
+        5. Report the overall validation results.
+        '''
+
+        # collect, categorize, and validate file changes
+        self._collect_file_diffs()
+        self._categorize_file_diffs()
+        self._validate_files()
+
+        # collect and validate new features
+        self._collect_features()
+        self._validate_features()
+
+        # determine overall result
+        overall_result = self._determine_validation_result()
+        return overall_result
+
+    def _collect_file_diffs(self):
         logger.info('Collecting file changes...')
 
-        from_rev = self.comparison_ref
-        to_rev = self.pr_head
-        self.file_changes = get_file_changes_by_revision(
-            self.repo, from_rev, to_rev)
+        self.file_diffs = self.differ.diff()
 
         # log results
-        for i, file in enumerate(self.file_changes):
+        for i, file in enumerate(self.file_diffs):
             logger.debug('File {i}: {file}'.format(i=i, file=file))
-        logger.info('Collected {} file(s)'.format(len(self.file_changes)))
+        logger.info('Collected {} file(s)'.format(len(self.file_diffs)))
 
-    def _categorize_file_changes(self):
+    def _categorize_file_diffs(self):
         '''Partition file changes into admissible and inadmissible changes'''
-        if self.file_changes is None:
-            raise ValueError('File changes have not been collected.')
+        if self.file_diffs is None:
+            raise UnexpectedValidationStateError(
+                'File changes have not been collected.')
 
         logger.info('Categorizing file changes...')
 
-        self.file_changes_admissible = []
-        self.file_changes_inadmissible = []
+        self.file_diffs_admissible = []
+        self.file_diffs_inadmissible = []
 
-        # admissible:
-        # - within contrib subdirectory
-        # - is a .py file
-        # - TODO: is a .txt file
-        # - is an addition
-        # inadmissible:
-        # - otherwise (wrong directory, wrong filetype, wrong modification
-        #   type)
-        def within_contrib_subdirectory(file):
+        def is_appropriate_change_type(diff):
+            '''File change is an addition'''
+            return diff.change_type in \
+                PullRequestFeatureValidator.APPROPRIATE_CHANGE_TYPES
+
+        def within_contrib_subdirectory(diff):
+            '''File addition is a subdirectory of project's contrib dir'''
+            path = diff.b_path
             contrib_relpath = self.contrib_module_path
-            return pathlib.Path(contrib_relpath) in pathlib.Path(file).parents
+            try:
+                return pathlib.Path(contrib_relpath) in \
+                    pathlib.Path(path).parents
+            except Exception:
+                return False
 
-        def is_appropriate_filetype(file):
-            return file.endswith('.py')
-
-        def is_appropriate_modification_type(modification_type):
-            # TODO
-            # return modification_type == 'A'
-            return True
+        def is_appropriate_file_ext(diff):
+            '''File change is a python file'''
+            path = diff.b_path
+            try:
+                for ext in PullRequestFeatureValidator.APPROPRIATE_FILE_EXTS:
+                    if path.endswith(ext):
+                        return True
+                return False
+            except Exception:
+                return False
 
         is_admissible = funcy.all_fn(
-            within_contrib_subdirectory, is_appropriate_filetype,
-            is_appropriate_modification_type)
+            is_appropriate_change_type,
+            within_contrib_subdirectory,
+            is_appropriate_file_ext,
+        )
 
-        for file in self.file_changes:
-            if is_admissible(file):
-                self.file_changes_admissible.append(file)
+        for diff in self.file_diffs:
+            if is_admissible(diff):
+                self.file_diffs_admissible.append(diff)
                 logger.debug(
-                    'Categorized {file} as ADMISSIBLE'.format(file=file))
+                    'Categorized {file} as ADMISSIBLE'
+                    .format(file=diff.b_path))
             else:
-                self.file_changes_inadmissible.append(file)
+                self.file_diffs_inadmissible.append(diff)
                 logger.debug(
-                    'Categorized {file} as INADMISSIBLE'.format(file=file))
+                    'Categorized {file} as INADMISSIBLE'
+                    .format(file=diff.b_path))
 
         logger.info('Admitted {} file(s) and rejected {} file(s)'.format(
-            len(self.file_changes_admissible),
-            len(self.file_changes_inadmissible)))
+            len(self.file_diffs_admissible),
+            len(self.file_diffs_inadmissible)))
 
     def _validate_files(self):
-        if self.file_changes_inadmissible is None:
-            raise ValueError('File changes have not been categorized.')
+        if self.file_diffs_inadmissible is None:
+            raise UnexpectedValidationStateError(
+                'File diffs have not been categorized.')
 
-        result = len(self.file_changes_inadmissible) == 0
-        self.file_changes_validation_result = result
+        result = len(self.file_diffs_inadmissible) == 0
+        self.file_diffs_validation_result = result
 
     def _collect_features(self):
-        if self.file_changes_admissible is None:
-            raise ValueError('File changes have not been collected.')
+        if self.file_diffs_admissible is None:
+            raise UnexpectedValidationStateError(
+                'File diffs have not been collected.')
 
         logger.info('Collecting features...')
 
         self.features = []
-        for file in self.file_changes_admissible:
+        for diff in self.file_diffs_admissible:
+            path = diff.b_path
             try:
-                mod = import_module_from_relpath(file)
-            except ImportError:
-                logger.exception(
-                    'Failed to import module from {}'.format(file))
+                project_root = pathlib.Path(self.repo.working_tree_dir)
+                modname = relpath_to_modname(path)
+                modpath = str(project_root.joinpath(path))
+                mod = import_module_at_path(modname, modpath)
+            except (ModuleNotFoundError, ImportError):
+                logger.info('Validation failure: failed to import module at {}'.format(path))
+                logger.exception('Exception details: ')
+                self.features_validation_result = False
                 continue
 
             features = get_contrib_features(mod)
@@ -234,7 +281,8 @@ class PullRequestFeatureValidator:
 
     def _validate_features(self):
         if self.features is None:
-            raise ValueError('Features have not been collected.')
+            raise UnexpectedValidationStateError(
+                'Features have not been collected.')
 
         # if no features were added at all, reject
         if self.features is not None and len(self.features) == 0:
@@ -243,10 +291,10 @@ class PullRequestFeatureValidator:
             return
 
         # get small subset?
-        X_df, y_df = subsample_data_for_validation(self.X_df, self.y_df)
+        X, y = subsample_data_for_validation(self.X, self.y)
 
         # validate
-        feature_validator = FeatureValidator(X_df, y_df)
+        feature_validator = FeatureValidator(X, y)
         overall_result = True
         for feature in self.features:
             result, failures = feature_validator.validate(feature)
@@ -264,35 +312,16 @@ class PullRequestFeatureValidator:
         self.features_validation_result = overall_result
 
     def _determine_validation_result(self):
-        if self.file_changes_validation_result is None:
-            raise ValueError('File changes have not been validated.')
+        if self.file_diffs_validation_result is None:
+            raise UnexpectedValidationStateError(
+                'File diffs have not been validated.')
         if self.features_validation_result is None:
-            raise ValueError('Feature changes have not been validated.')
-        return (self.file_changes_validation_result and
+            raise UnexpectedValidationStateError(
+                'Feature changes have not been validated.')
+        return (self.file_diffs_validation_result and
                 self.features_validation_result)
 
-    def validate(self):
-        # # check that we are *on* this PR's branch
-        # expected_ref = self.pr_info.local_rev_name
-        # current_ref = self.head_info.path
-        # if expected_ref != current_ref:
-        #     raise NotImplementedError(
-        #         'Must validate PR while on that PR\'s branch')
 
-        # collect, categorize, and validate file changes
-        self._collect_file_changes()
-        self._categorize_file_changes()
-        self._validate_files()
-
-        # collect and validate new features
-        self._collect_features()
-        self._validate_features()
-
-        # determine overall result
-        overall_result = self._determine_validation_result()
-        return overall_result
-
-
-def subsample_data_for_validation(X_df_tr, y_df_tr):
+def subsample_data_for_validation(X, y):
     # TODO
-    return X_df_tr, y_df_tr
+    return X, y

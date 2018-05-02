@@ -1,6 +1,9 @@
+import pathlib
 import random
+import tempfile
 
 import funcy
+import git
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn_pandas.pipeline import TransformerPipeline
 
@@ -53,3 +56,58 @@ class FragileTransformerPipeline(TransformerPipeline):
             rand.shuffle(steps)
 
         super().__init__(steps)
+
+
+def make_mock_commit(repo, kind='A', path=None, content=None):
+    '''Commits one file to repo'''
+    if not path:
+        path = 'file{}'.format(random.randint(0, 999))
+
+    # TODO resolve relative to root, then delete root
+    # path = pathlib.Path(path).resolve()
+    # dir = pathlib.Path(repo.working_tree_dir).resolve()
+    # if dir not in path.parents:
+    #     raise ValueError(
+    #         'Path {} must be a relative path to a subdirectory of the '
+    #         'repo root.'.format(str(path))
+
+    dir = repo.working_tree_dir
+    if kind == 'A':
+        abspath = pathlib.Path(dir).joinpath(path)
+
+        # TODO make robust
+        abspath.parent.mkdir(parents=True, exist_ok=True)
+
+        if abspath.exists():
+            # because this would be a kind=='M'
+            raise FileExistsError
+        else:
+            if content is not None:
+                with abspath.open('w') as f:
+                    f.write(content)
+            else:
+                abspath.touch()
+        repo.git.add(str(path))
+        repo.git.commit(m='Commit {}'.format(path))
+    else:
+        raise NotImplementedError
+
+    return repo.head.commit
+
+
+def make_mock_commits(repo, n=10):
+    '''Create n sequential files/commits'''
+    commits = []
+    for i in range(n):
+        commit = make_mock_commit(repo, path='file{}.py'.format(i))
+        commits.append(commit)
+    return commits
+
+
+@funcy.contextmanager
+def mock_repo():
+    '''Create a new repo'''
+    with tempfile.TemporaryDirectory() as tmpdir:
+        dir = pathlib.Path(tmpdir)
+        repo = git.Repo.init(dir)
+        yield repo

@@ -16,8 +16,8 @@ class TestImports(unittest.TestCase):
             asarray2d, get_arr_desc, indent, )
 
         from fhub_core.util.gitutil import (  # noqa
-            PullRequestInfo, HeadInfo, get_file_changes_by_revision,
-            get_file_changes_by_diff_str,
+            PullRequestInfo, HeadInfo, get_diffs_by_revision,
+            get_diffs_by_diff_str,
             PullRequestBuildDiffer)
 
         from fhub_core.util.modutil import (  # noqa
