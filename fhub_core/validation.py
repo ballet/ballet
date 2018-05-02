@@ -259,12 +259,14 @@ class PullRequestFeatureValidator:
         logger.info('Collecting features...')
 
         self.features = []
-        for file in self.file_diffs_admissible:
+        for diff in self.file_diffs_admissible:
+            path = diff.b_path
             try:
-                mod = import_module_from_relpath(file)
+                mod = import_module_from_relpath(path)
             except ImportError:
                 logger.exception(
-                    'Failed to import module from {}'.format(file))
+                    'Failed to import module from {}'.format(path))
+                # TODO
                 continue
 
             features = get_contrib_features(mod)
