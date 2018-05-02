@@ -26,14 +26,15 @@ class TestModutil(unittest.TestCase):
     def test_import_module_from_relpath(self):
         raise NotImplementedError
 
-    def test_import_module_at_path(self):
-        # TODO is it okay that foo doesn't have an __init__.py inside it?
+    def test_import_module_at_path_module(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             path = pathlib.Path(tmpdir).joinpath('foo', 'bar.py')
-            path.parent.mkdir()
+            path.parent.mkdir(parents=True)
+            init = path.parent.joinpath('__init__.py')
+            init.touch()
             x = 1
             with path.open('w') as f:
-                f.write('x={x}'.format(x=x))
+                f.write('x={x!r}'.format(x=x))
             modname = 'foo.bar'
             modpath = str(path)  # e.g. /tmp/foo/bar.py'
             mod = import_module_at_path(modname, modpath)
@@ -43,13 +44,22 @@ class TestModutil(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as tmpdir:
             path = pathlib.Path(tmpdir).joinpath('foo')
-            path.mkdir()
-            path.joinpath('__init__.py').touch()
+            path.mkdir(parents=True)
+            init = path.joinpath('__init__.py')
+            init.touch()
+            x = 'hello'
+            with init.open('w') as f:
+                f.write('x={x!r}'.format(x=x))
             modname = 'foo'
             modpath = str(path)
             mod = import_module_at_path(modname, modpath)
             self.assertIsInstance(mod, types.ModuleType)
             self.assertEqual(mod.__name__, modname)
+            self.assertEqual(mod.x, x)
+
+    @unittest.expectedFailure
+    def test_import_module_at_path_bad_package_structure(self):
+        raise NotImplementedError
 
     def test_relpath_to_modname(self):
         relpath = 'fhub_core/util/_util.py'
