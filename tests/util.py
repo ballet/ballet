@@ -72,23 +72,22 @@ def make_mock_commit(repo, kind='A', path=None, content=None):
     #         'repo root.'.format(str(path))
 
     dir = repo.working_tree_dir
+    abspath = pathlib.Path(dir).joinpath(path)
     if kind == 'A':
-        abspath = pathlib.Path(dir).joinpath(path)
-
         # TODO make robust
         abspath.parent.mkdir(parents=True, exist_ok=True)
 
         if abspath.exists():
             # because this would be a kind=='M'
-            raise FileExistsError
+            raise FileExistsError(str(abspath))
         else:
             if content is not None:
                 with abspath.open('w') as f:
                     f.write(content)
             else:
                 abspath.touch()
-        repo.git.add(str(path))
-        repo.git.commit(m='Commit {}'.format(path))
+        repo.git.add(str(abspath))
+        repo.git.commit(m='Commit {}'.format(str(abspath)))
     else:
         raise NotImplementedError
 
