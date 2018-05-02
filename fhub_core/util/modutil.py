@@ -78,7 +78,7 @@ def import_module_at_path(modname, modpath):
     finder = pkgutil.get_importer(parentpath)
     loader = finder.find_module(modname)
     if loader is None:
-        raise ModuleNotFoundError(
+        raise ImportError(
             'Failed to find loader for module {} within dir {}'
             .format(modname, parentpath))
     mod = loader.load_module(modname)
