@@ -269,7 +269,9 @@ class PullRequestFeatureValidator:
                 modpath = str(project_root.joinpath(path))
                 mod = import_module_at_path(modname, modpath)
             except ImportError:
-                logger.info('Validation failure: failed to import module at {}'.format(path))
+                logger.info(
+                    'Validation failure: failed to import module at {}'
+                    .format(path))
                 logger.exception('Exception details: ')
                 self.features_validation_result = False
                 continue

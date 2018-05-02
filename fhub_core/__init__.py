@@ -11,7 +11,7 @@ import sys
 if sys.version_info < (3, 5, 0):
     import pathlib2 as pathlib
 else:
-    import pathlib
+    import pathlib  # noqa F401
 
 
 from fhub_core.feature import *  # noqa
