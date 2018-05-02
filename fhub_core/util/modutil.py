@@ -29,18 +29,48 @@ def import_module_at_path(modname, modpath):
             will fail.
 
     Examples:
-        >>> modname = 'foo.bar'
-        >>> modpath = '/home/user/foo/bar.py
+        >>> modname = 'foo.bar.baz'
+        >>> modpath = '/home/user/foo/bar/baz.py
         >>> import_module_at_path(modname, modpath)
-        <module 'foo.bar' from '/home/user/foo/bar.py'>
+        <module 'foo.bar.baz' from '/home/user/foo/bar/baz.py'>
 
-        >>> modname = 'foo'
-        >>> modpath = '/home/user/foo'
+        >>> modname = 'foo.bar'
+        >>> modpath = '/home/user/foo/bar'
         >>> import_module_at_path(modname, modpath)
-        <module 'foo' from '/home/user/foo/__init__.py'>
+        <module 'foo.bar' from '/home/user/foo/bar/__init__.py'>
     '''
     # TODO just keep navigating up in the source tree until an __init__.py is
-    # not found
+    # not found?
+    # TODO resolve all paths before messing with parents
+
+    if modpath.endswith('__init__.py'):
+        # TODO improve debugging output
+        raise ValueError('Don\'t provide the __init__.py!')
+
+    def is_package(modpath):
+        return modpath.suffix != '.py'
+
+    def has_init(dir):
+        return dir.joinpath('__init__.py').exists()
+
+    def check_package_structure(modname, modpath):
+        modpath = pathlib.Path(modpath)
+        modparts = modname.split('.')
+        n = len(modparts)
+        dir = modpath
+        if not is_package(modpath):
+            n = n - 1
+            dir = dir.parent
+        while n > 0:
+            if not has_init(dir):
+                return False
+            dir = dir.parent
+            n = n - 1
+
+    if not check_package_structure(modname, modpath):
+        # TODO improve debugging output
+        raise ImportError
+
     parentpath = str(pathlib.Path(modpath).parent)
     finder = pkgutil.get_importer(parentpath)
     loader = finder.find_module(modname)
