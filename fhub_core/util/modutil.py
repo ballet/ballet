@@ -43,7 +43,9 @@ def import_module_at_path(modname, modpath):
     # not found?
     # TODO resolve all paths before messing with parents
 
-    if modpath.endswith('__init__.py'):
+    modpath = pathlib.Path(modpath)
+
+    if modpath.suffix == '__init__.py':
         # TODO improve debugging output
         raise ValueError('Don\'t provide the __init__.py!')
 
@@ -53,8 +55,7 @@ def import_module_at_path(modname, modpath):
     def has_init(dir):
         return dir.joinpath('__init__.py').exists()
 
-    def check_package_structure(modname, modpath):
-        modpath = pathlib.Path(modpath)
+    def has_package_structure(modname, modpath):
         modparts = modname.split('.')
         n = len(modparts)
         dir = modpath
@@ -67,7 +68,9 @@ def import_module_at_path(modname, modpath):
             dir = dir.parent
             n = n - 1
 
-    if not check_package_structure(modname, modpath):
+        return True
+
+    if not has_package_structure(modname, modpath):
         # TODO improve debugging output
         raise ImportError
 
