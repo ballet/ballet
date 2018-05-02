@@ -9,7 +9,7 @@ from fhub_core.exc import UnexpectedValidationStateError
 from fhub_core.feature import Feature
 from fhub_core.util import assertion_method
 from fhub_core.util.gitutil import LocalPullRequestBuildDiffer
-from fhub_core.util.modutil import import_module_from_relpath
+from fhub_core.util.modutil import import_module_at_path, relpath_to_modname
 from fhub_core.util.travisutil import (
     TravisPullRequestBuildDiffer, can_use_travis_differ)
 
@@ -120,15 +120,17 @@ class PullRequestFeatureValidator:
     APPROPRIATE_CHANGE_TYPES = ['A']
     APPROPRIATE_FILE_EXTS = ['.py']
 
-    def __init__(self, pr_num, contrib_module_path, X, y):
+    def __init__(self, repo, pr_num, contrib_module_path, X, y):
         '''Validate the features introduced in a proposed pull request.
 
         Args:
+            repo (git.Repo): project repo
             pr_num (str): Pull request number
             contrib_module_path (str): Relative path to contrib module
             X (array-like): Example X array-like
             y (array-like): Example y array-like
         '''
+        self.repo = repo
         self.pr_num = pr_num
         self.contrib_module_path = contrib_module_path
         self.X = X
@@ -262,11 +264,14 @@ class PullRequestFeatureValidator:
         for diff in self.file_diffs_admissible:
             path = diff.b_path
             try:
-                mod = import_module_from_relpath(path)
-            except ImportError:
+                project_root = pathlib.Path(self.repo.working_tree_dir)
+                modname = relpath_to_modname(path)
+                modpath = str(project_root.joinpath(path))
+                mod = import_module_at_path(modname, modpath)
+            except (ModuleNotFoundError, ImportError):
                 logger.exception(
                     'Failed to import module from {}'.format(path))
-                # TODO
+                # TODO this should mark the entire test as a failure
                 continue
 
             features = get_contrib_features(mod)

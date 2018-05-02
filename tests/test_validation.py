@@ -154,7 +154,7 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
             }
             with patch.dict('os.environ', travis_env_vars):
                 yield PullRequestFeatureValidator(
-                    self.pr_num, contrib_module_path, X, y)
+                    repo, self.pr_num, contrib_module_path, X, y)
 
     def test_prfv_init(self):
         with self.null_prfv() as validator:
@@ -191,7 +191,7 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
             }
             with patch.dict('os.environ', travis_env_vars):
                 validator = PullRequestFeatureValidator(
-                    self.pr_num, contrib_module_path, X, y)
+                    repo, self.pr_num, contrib_module_path, X, y)
                 validator._collect_file_diffs()
 
                 # checks on file_diffs
@@ -224,15 +224,15 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
             }
             with patch.dict('os.environ', travis_env_vars):
                 yield PullRequestFeatureValidator(
-                    self.pr_num, contrib_module_path, X, y)
+                    repo, self.pr_num, contrib_module_path, X, y)
 
     def test_prfv_end_to_end_failure_no_features_found(self):
         path_content = [
             ('readme.txt', None),
-            ('contrib/foo.py', None),
-            ('contrib/baz.py', None),
+            ('src/contrib/foo.py', None),
+            ('src/contrib/baz.py', None),
         ]
-        contrib_module_path = 'contrib/'
+        contrib_module_path = 'src/contrib/'
         with self._test_prfv_end_to_end(path_content, contrib_module_path) \
                 as validator:
             result = validator.validate()
@@ -241,10 +241,10 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
     def test_prfv_end_to_end_failure_inadmissible_file_diffs(self):
         path_content = [
             ('readme.txt', None),
-            ('contrib/foo.py', None),
+            ('src/contrib/foo.py', None),
             ('invalid.py', None),
         ]
-        contrib_module_path = 'contrib/'
+        contrib_module_path = 'src/contrib/'
         with self._test_prfv_end_to_end(path_content, contrib_module_path) \
                 as validator:
             result = validator.validate()
@@ -263,9 +263,9 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
     def test_prfv_end_to_end_failure_bad_package_structure(self):
         path_content = [
             ('foo.jpg', None),
-            ('contrib/bar/baz.py', self.valid_feature_str),
+            ('src/contrib/bar/baz.py', self.valid_feature_str),
         ]
-        contrib_module_path = 'contrib/'
+        contrib_module_path = 'src/contrib/'
         with self._test_prfv_end_to_end(path_content, contrib_module_path) \
                 as validator:
             result = validator.validate()
@@ -286,10 +286,10 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
     def test_prfv_end_to_end_failure_invalid_feature(self):
         path_content = [
             ('foo.jpg', None),
-            ('contrib/__init__.py', None),
-            ('contrib/foo.py', self.invalid_feature_str),
+            ('src/contrib/__init__.py', None),
+            ('src/contrib/foo.py', self.invalid_feature_str),
         ]
-        contrib_module_path = 'contrib/'
+        contrib_module_path = 'src/contrib/'
         with self._test_prfv_end_to_end(path_content, contrib_module_path) \
                 as validator:
             result = validator.validate()
@@ -310,10 +310,11 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
     def test_prfv_end_to_end_success(self):
         path_content = [
             ('bob.xml', '<><> :: :)'),
-            ('contrib/__init__.py', None),
-            ('contrib/bean.py', self.valid_feature_str),
+            ('src/__init__.py', None),
+            ('src/contrib/__init__.py', None),
+            ('src/contrib/bean.py', self.valid_feature_str),
         ]
-        contrib_module_path = 'contrib/'
+        contrib_module_path = 'src/contrib/'
         with self._test_prfv_end_to_end(path_content, contrib_module_path) \
                 as validator:
             result = validator.validate()
