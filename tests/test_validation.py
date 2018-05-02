@@ -229,6 +229,8 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
     def test_prfv_end_to_end_failure_no_features_found(self):
         path_content = [
             ('readme.txt', None),
+            ('src/__init__.py', None),
+            ('src/contrib/__init__.py', None),
             ('src/contrib/foo.py', None),
             ('src/contrib/baz.py', None),
         ]
@@ -241,6 +243,8 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
     def test_prfv_end_to_end_failure_inadmissible_file_diffs(self):
         path_content = [
             ('readme.txt', None),
+            ('src/__init__.py', None),
+            ('src/contrib/__init__.py', None),
             ('src/contrib/foo.py', None),
             ('invalid.py', None),
         ]
@@ -286,6 +290,7 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
     def test_prfv_end_to_end_failure_invalid_feature(self):
         path_content = [
             ('foo.jpg', None),
+            ('src/__init__.py', None),
             ('src/contrib/__init__.py', None),
             ('src/contrib/foo.py', self.invalid_feature_str),
         ]
