@@ -2,34 +2,69 @@ class PullRequestBuildDiffer:
     def __init__(self, pr_num, repo):
         self.pr_num = pr_num
         self.repo = repo
-        self.check_environment()
-
-    def check_environment(self):
-        raise NotImplementedError
-
-    def get_diff_str(self):
-        raise NotImplementedError
+        self._check_environment()
 
     def diff(self):
-        diff_str = self.get_diff_str()
-        return get_file_changes_by_diff_str(self.repo, diff_str)
+        diff_str = self._get_diff_str()
+        diffs = get_diffs_by_diff_str(self.repo, diff_str)
+        return diffs
+
+    def _check_environment(self):
+        raise NotImplementedError
+
+    def _get_diff_str(self):
+        raise NotImplementedError
 
 
-def get_file_changes_by_revision(repo, from_revision, to_revision):
-    '''Get file changes between two revisions
+class LocalPullRequestBuildDiffer(PullRequestBuildDiffer):
+    # TODO
 
-    For details on specifying revisions, see
+    def __init__(self):
+        raise NotImplementedError
 
-        git help revisions
+
+def get_diffs_by_revision(repo, from_revision, to_revision):
+    '''Get file changes between two revisions.
+
+    For details on specifying revisions, see `git help revisions`.
+
+    Args:
+        repo (git.Repo): Repo object initialized with project root
+        from_revision (str): revision identifier for the starting point of the
+            diff
+        to_revision (str): revision identifier for the ending point of the diff
+
+    Returns:
+        list of git.diff.Diff identifying changes between revisions
     '''
     diff_str = '{from_revision}..{to_revision}'.format(
         from_revision=from_revision, to_revision=to_revision)
-    return get_file_changes_by_diff_str(repo, diff_str)
+    return get_diffs_by_diff_str(repo, diff_str)
 
 
-def get_file_changes_by_diff_str(repo, diff_str):
-    # TODO implement name_status=True keyword
-    return repo.git.diff(diff_str, name_only=True).split('\n')
+def get_diff_str_from_commits(a, b):
+    return '{a}..{b}'.format(a=a.hexsha, b=b.hexsha)
+
+
+def get_diffs_by_diff_str(repo, diff_str):
+    '''Get file changes via a diff string.
+
+    For details on specifying revisions, see `git help revisions`.
+
+    Args:
+        repo (git.Repo): Repo object initialized with project root
+        diff_str (str): diff string identifying range of diff. For example,
+            `master..HEAD` diffs from master to HEAD, and `12345678..abcdef90`
+            compares to commits.
+
+    Returns:
+        list of git.diff.Diff identifying changes between revisions
+    '''
+    a, b = diff_str.split('..')
+    a_obj = repo.rev_parse(a)
+    b_obj = repo.rev_parse(b)
+    diffs = a_obj.diff(b_obj)
+    return diffs
 
 
 # deprecated for now

@@ -1,15 +1,31 @@
 import os
 import pathlib
 import tempfile
+import types
 import unittest
 from unittest.mock import patch
 
 import fhub_core
+<<<<<<< HEAD
+||||||| merged common ancestors
+from fhub_core.util.travisutil import (
+    get_travis_pr_num, is_travis_pr, TravisPullRequestBuildDiffer)
+=======
+from fhub_core.util.gitutil import get_diff_str_from_commits
+>>>>>>> master
 from fhub_core.util.modutil import (  # noqa F401
     import_module_at_path, import_module_from_modname,
     import_module_from_relpath, modname_to_relpath, relpath_to_modname)
+<<<<<<< HEAD
 from fhub_core.util.travisutil import (
     TravisPullRequestBuildDiffer, get_travis_pr_num, is_travis_pr)
+||||||| merged common ancestors
+=======
+from fhub_core.util.travisutil import (
+    TravisPullRequestBuildDiffer, get_travis_pr_num, is_travis_pr)
+
+from .util import make_mock_commits, mock_repo
+>>>>>>> master
 
 
 class TestModutil(unittest.TestCase):
@@ -22,8 +38,39 @@ class TestModutil(unittest.TestCase):
     def test_import_module_from_relpath(self):
         raise NotImplementedError
 
+    def test_import_module_at_path_module(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = pathlib.Path(tmpdir).joinpath('foo', 'bar.py')
+            path.parent.mkdir(parents=True)
+            init = path.parent.joinpath('__init__.py')
+            init.touch()
+            x = 1
+            with path.open('w') as f:
+                f.write('x={x!r}'.format(x=x))
+            modname = 'foo.bar'
+            modpath = str(path)  # e.g. /tmp/foo/bar.py'
+            mod = import_module_at_path(modname, modpath)
+            self.assertIsInstance(mod, types.ModuleType)
+            self.assertEqual(mod.__name__, modname)
+            self.assertEqual(mod.x, x)
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = pathlib.Path(tmpdir).joinpath('foo')
+            path.mkdir(parents=True)
+            init = path.joinpath('__init__.py')
+            init.touch()
+            x = 'hello'
+            with init.open('w') as f:
+                f.write('x={x!r}'.format(x=x))
+            modname = 'foo'
+            modpath = str(path)
+            mod = import_module_at_path(modname, modpath)
+            self.assertIsInstance(mod, types.ModuleType)
+            self.assertEqual(mod.__name__, modname)
+            self.assertEqual(mod.x, x)
+
     @unittest.expectedFailure
-    def test_import_module_at_path(self):
+    def test_import_module_at_path_bad_package_structure(self):
         raise NotImplementedError
 
     def test_relpath_to_modname(self):
@@ -127,7 +174,25 @@ class TestTravis(unittest.TestCase):
                 self.assertEqual(actual_result, expected_result)
 
     def test_travis_pull_request_build_differ(self):
+        with mock_repo() as repo:
+            pr_num = self.pr_num
+            commit_range = 'HEAD^..HEAD'
+
+            travis_env_vars = {
+                'TRAVIS_BUILD_DIR': repo.working_tree_dir,
+                'TRAVIS_PULL_REQUEST': str(pr_num),
+                'TRAVIS_COMMIT_RANGE': commit_range,
+            }
+            with patch.dict('os.environ', travis_env_vars):
+                differ = TravisPullRequestBuildDiffer(pr_num)
+                diff_str = differ._get_diff_str()
+                self.assertEqual(diff_str, commit_range)
+
+    def test_travis_pull_request_build_differ_on_mock_commits(self):
+        n = 10
+        i = 0
         pr_num = self.pr_num
+<<<<<<< HEAD
         project_root = str(pathlib.Path(__file__).parent.parent)
         commit_range = 'HEAD^..HEAD'
         travis_env_vars = {
@@ -143,3 +208,46 @@ class TestTravis(unittest.TestCase):
     @unittest.expectedFailure
     def test_travis_pull_request_build_differ_on_fake_repo(self):
         raise NotImplementedError
+||||||| merged common ancestors
+        project_root = str(pathlib.Path(__file__).parent.parent)
+        commit_range = 'HEAD^..HEAD'
+        travis_env_vars = {
+            'TRAVIS_BUILD_DIR': project_root,
+            'TRAVIS_PULL_REQUEST': str(pr_num),
+            'TRAVIS_COMMIT_RANGE': commit_range,
+        }
+        with patch.dict('os.environ', travis_env_vars):
+            travis_pr_differ = TravisPullRequestBuildDiffer(pr_num)
+            diff_str = travis_pr_differ.get_diff_str()
+            self.assertEqual(diff_str, commit_range)
+
+
+    @unittest.expectedFailure
+    def test_travis_pull_request_build_differ_on_fake_repo(self):
+        raise NotImplementedError
+=======
+        with mock_repo() as repo:
+            commits = make_mock_commits(repo, n=n)
+            commit_range = get_diff_str_from_commits(commits[i], commits[-1])
+
+            travis_env_vars = {
+                'TRAVIS_BUILD_DIR': repo.working_tree_dir,
+                'TRAVIS_PULL_REQUEST': str(pr_num),
+                'TRAVIS_COMMIT_RANGE': commit_range,
+            }
+            with patch.dict('os.environ', travis_env_vars):
+                differ = TravisPullRequestBuildDiffer(pr_num)
+                diff_str = differ._get_diff_str()
+                self.assertEqual(diff_str, commit_range)
+
+                diffs = differ.diff()
+
+                # there should be n-1 diff objects, they should show files
+                # 1 to n-1
+                self.assertEqual(len(diffs), n - 1)
+                j = i + 1
+                for diff in diffs:
+                    self.assertEqual(diff.change_type, 'A')
+                    self.assertEqual(diff.b_path, 'file{j}.py'.format(j=j))
+                    j += 1
+>>>>>>> master

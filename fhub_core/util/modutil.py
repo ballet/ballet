@@ -18,12 +18,74 @@ def import_module_from_relpath(path):
 
 
 def import_module_at_path(modname, modpath):
-    '''Import module from path that may not be on system path'''
+    '''Import module from path that may not be on system path
+
+    Args:
+        modname (str): module name from package root, e.g. foo.bar
+        modpath (str): absolute path to module itself,
+            e.g. /home/user/foo/bar.py. In the case of a module that is a
+            package, then the path should be specified as '/home/user/foo' and
+            a file '/home/user/foo/__init__.py' *must be present* or the import
+            will fail.
+
+    Examples:
+        >>> modname = 'foo.bar.baz'
+        >>> modpath = '/home/user/foo/bar/baz.py
+        >>> import_module_at_path(modname, modpath)
+        <module 'foo.bar.baz' from '/home/user/foo/bar/baz.py'>
+
+        >>> modname = 'foo.bar'
+        >>> modpath = '/home/user/foo/bar'
+        >>> import_module_at_path(modname, modpath)
+        <module 'foo.bar' from '/home/user/foo/bar/__init__.py'>
+    '''
+    # TODO just keep navigating up in the source tree until an __init__.py is
+    # not found?
+    # TODO resolve all paths before messing with parents
+
     modpath = pathlib.Path(modpath)
-    parentpath = str(modpath.parent)
-    modpath = str(modpath)
-    importer = pkgutil.get_importer(parentpath)
-    mod = importer.find_module(modname).load_module(modname)
+
+    if str(modpath).endswith('__init__.py'):
+        # TODO use pathlib methods directly
+        # TODO improve debugging output with recommend change
+        raise ValueError('Don\'t provide the __init__.py!')
+
+    def is_package(modpath):
+        return modpath.suffix != '.py'
+
+    def has_init(dir):
+        return dir.joinpath('__init__.py').exists()
+
+    def has_package_structure(modname, modpath):
+        modparts = modname.split('.')
+        n = len(modparts)
+        dir = modpath
+        if not is_package(modpath):
+            n = n - 1
+            dir = dir.parent
+        while n > 0:
+            if not has_init(dir):
+                return False
+            dir = dir.parent
+            n = n - 1
+
+        return True
+
+    if not has_package_structure(modname, modpath):
+        raise ImportError('Module does not have valid package structure.')
+
+    parentpath = str(pathlib.Path(modpath).parent)
+    finder = pkgutil.get_importer(parentpath)
+    loader = finder.find_module(modname)
+    if loader is None:
+        raise ImportError(
+            'Failed to find loader for module {} within dir {}'
+            .format(modname, parentpath))
+    mod = loader.load_module(modname)
+
+    # TODO figure out what to do about this
+    assert mod.__name__ == modname
+
     return mod
 
 

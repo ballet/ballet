@@ -15,8 +15,9 @@ requirements = [
     'funcy',
     'gitpython',
     'numpy',
-    'pandas;python_version>="3.5"',  # hack
-    'pandas<0.21;python_version<"3.5"',  # hack
+    'pandas; python_version>="3.5"',  # hack
+    'pandas<0.21; python_version<"3.5"',  # hack
+    'pathlib2>=2.1.0; python_version<"3.5"',
     'scikit_learn',
     'sklearn_pandas',
 ]
@@ -47,10 +48,11 @@ setup(
     keywords='fhub_core',
     name='fhub_core',
     packages=find_packages(include=['fhub_core', 'fhub_core.*']),
+    python_requires='>=3.4',
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/HDI-Project/fhub_core',
-    version='0.3.5',
+    version='0.3.6',
     zip_safe=False,
 )
