@@ -135,10 +135,6 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
             '''
         )
 
-    @unittest.expectedFailure
-    def test_todo(self):
-        raise NotImplementedError
-
     @funcy.contextmanager
     def null_prfv(self):
         with mock_repo() as repo:

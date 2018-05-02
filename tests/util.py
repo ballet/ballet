@@ -63,9 +63,13 @@ def make_mock_commit(repo, kind='A', path=None, content=None):
     if not path:
         path = 'file{}'.format(random.randint(0, 999))
 
-    # TODO
-    # - check that path resolves to subdirectory to not escape repo
-    #   by accident
+    # TODO resolve relative to root, then delete root
+    # path = pathlib.Path(path).resolve()
+    # dir = pathlib.Path(repo.working_tree_dir).resolve()
+    # if dir not in path.parents:
+    #     raise ValueError(
+    #         'Path {} must be a relative path to a subdirectory of the '
+    #         'repo root.'.format(str(path))
 
     dir = repo.working_tree_dir
     if kind == 'A':
