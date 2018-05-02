@@ -45,8 +45,9 @@ def import_module_at_path(modname, modpath):
 
     modpath = pathlib.Path(modpath)
 
-    if modpath.suffix == '__init__.py':
-        # TODO improve debugging output
+    if str(modpath).endswith('__init__.py'):
+        # TODO use pathlib methods directly
+        # TODO improve debugging output with recommend change
         raise ValueError('Don\'t provide the __init__.py!')
 
     def is_package(modpath):
