@@ -15,8 +15,9 @@ requirements = [
     'funcy',
     'gitpython',
     'numpy',
-    'pandas;python_version>="3.5"',  # hack
-    'pandas<0.21;python_version<"3.5"',  # hack
+    'pandas; python_version>="3.5"',  # hack
+    'pandas<0.21; python_version<"3.5"',  # hack
+    'pathlib2>=2.1.0; python_version<"3.5"',
     'scikit_learn',
     'sklearn_pandas',
 ]

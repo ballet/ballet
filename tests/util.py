@@ -1,4 +1,4 @@
-import pathlib
+import os
 import random
 import tempfile
 
@@ -7,6 +7,7 @@ import git
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn_pandas.pipeline import TransformerPipeline
 
+from fhub_core import pathlib
 from fhub_core.util import IdentityTransformer
 
 EPSILON = 1e-4
@@ -72,23 +73,22 @@ def make_mock_commit(repo, kind='A', path=None, content=None):
     #         'repo root.'.format(str(path))
 
     dir = repo.working_tree_dir
+    abspath = pathlib.Path(dir).joinpath(path)
     if kind == 'A':
-        abspath = pathlib.Path(dir).joinpath(path)
-
         # TODO make robust
         abspath.parent.mkdir(parents=True, exist_ok=True)
 
         if abspath.exists():
             # because this would be a kind=='M'
-            raise FileExistsError
+            raise FileExistsError(str(abspath))
         else:
             if content is not None:
                 with abspath.open('w') as f:
                     f.write(content)
             else:
                 abspath.touch()
-        repo.git.add(str(path))
-        repo.git.commit(m='Commit {}'.format(path))
+        repo.git.add(str(abspath))
+        repo.git.commit(m='Commit {}'.format(str(abspath)))
     else:
         raise NotImplementedError
 
@@ -108,6 +108,11 @@ def make_mock_commits(repo, n=10):
 def mock_repo():
     '''Create a new repo'''
     with tempfile.TemporaryDirectory() as tmpdir:
+        cwd = os.getcwd()
+        os.chdir(str(tmpdir))
         dir = pathlib.Path(tmpdir)
-        repo = git.Repo.init(dir)
-        yield repo
+        repo = git.Repo.init(str(dir))
+        try:
+            yield repo
+        finally:
+            os.chdir(cwd)
