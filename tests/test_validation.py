@@ -115,9 +115,9 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
             from sklearn.base import BaseEstimator, TransformerMixin
             class IdentityTransformer(BaseEstimator, TransformerMixin):
                 def fit(self, X, y=None, **fit_kwargs):
-                    raise RuntimeError
+                    return self
                 def transform(self, X, **transform_kwargs):
-                    raise RuntimeError
+                    return X
             input = 'size'
             transformer = IdentityTransformer()
             '''
