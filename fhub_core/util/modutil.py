@@ -71,8 +71,7 @@ def import_module_at_path(modname, modpath):
         return True
 
     if not has_package_structure(modname, modpath):
-        # TODO improve debugging output
-        raise ImportError
+        raise ImportError('Module does not have valid package structure.')
 
     parentpath = str(pathlib.Path(modpath).parent)
     finder = pkgutil.get_importer(parentpath)
