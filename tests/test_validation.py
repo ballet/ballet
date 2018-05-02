@@ -110,6 +110,31 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
         super().setUp()
         self.pr_num = 73
 
+        self.valid_feature_str = dedent(
+            '''
+            from sklearn.base import BaseEstimator, TransformerMixin
+            class IdentityTransformer(BaseEstimator, TransformerMixin):
+                def fit(self, X, y=None, **fit_kwargs):
+                    raise RuntimeError
+                def transform(self, X, **transform_kwargs):
+                    raise RuntimeError
+            input = 'size'
+            transformer = IdentityTransformer()
+            '''
+        )
+        self.invalid_feature_str = dedent(
+            '''
+            from sklearn.base import BaseEstimator, TransformerMixin
+            class RaisingTransformer(BaseEstimator, TransformerMixin):
+                def fit(self, X, y=None, **fit_kwargs):
+                    raise RuntimeError
+                def transform(self, X, **transform_kwargs):
+                    raise RuntimeError
+            input = 'size'
+            transformer = RaisingTransformer()
+            '''
+        )
+
     @unittest.expectedFailure
     def test_todo(self):
         raise NotImplementedError
@@ -140,16 +165,12 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
         with self.null_prfv() as validator:
             with self.assertRaises(UnexpectedValidationStateError):
                 validator._categorize_file_diffs()
-
             with self.assertRaises(UnexpectedValidationStateError):
                 validator._validate_files()
-
             with self.assertRaises(UnexpectedValidationStateError):
                 validator._collect_features()
-
             with self.assertRaises(UnexpectedValidationStateError):
                 validator._validate_features()
-
             with self.assertRaises(UnexpectedValidationStateError):
                 validator._determine_validation_result()
 
@@ -242,21 +263,8 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
     def test_prfv_end_to_end_failure_invalid_feature(self):
         path_content = [
             ('foo.jpg', None),
-            (
-                'contrib/foo.py',
-                dedent(
-                    '''
-                    from sklearn.base import BaseEstimator, TransformerMixin
-                    class RaisingTransformer(BaseEstimator, TransformerMixin):
-                        def fit(self, X, y=None, **fit_kwargs):
-                            raise RuntimeError
-                        def transform(self, X, **transform_kwargs):
-                            raise RuntimeError
-                    input = 'size'
-                    transformer = RaisingTransformer()
-                    '''
-                )
-            ),
+            ('contrib/__init__.py', None),
+            ('contrib/foo.py', self.invalid_feature_str),
         ]
         contrib_module_path = 'contrib/'
         with self._test_prfv_end_to_end(path_content, contrib_module_path) \
@@ -279,21 +287,8 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
     def test_prfv_end_to_end_success(self):
         path_content = [
             ('bob.xml', '<><> :: :)'),
-            (
-                'contrib/bean.py',
-                dedent(
-                    '''
-                    from sklearn.base import BaseEstimator, TransformerMixin
-                    class IdentityTransformer(BaseEstimator, TransformerMixin:
-                        def fit(self, X, y=None, **fit_kwargs):
-                            raise RuntimeError
-                        def transform(self, X, **transform_kwargs):
-                            raise RuntimeError
-                    input = 'size'
-                    transformer = IdentityTransformer()
-                    '''
-                )
-            ),
+            ('contrib/__init__.py', None),
+            ('contrib/bean.py', self.valid_feature_str),
         ]
         contrib_module_path = 'contrib/'
         with self._test_prfv_end_to_end(path_content, contrib_module_path) \
