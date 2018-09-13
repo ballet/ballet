@@ -1,3 +1,4 @@
+import random
 from unittest.util import _common_shorten_repr
 
 import funcy
@@ -5,6 +6,9 @@ import numpy as np
 import numpy.testing as npt
 import pandas as pd
 import pandas.util.testing as pdt
+
+
+EPSILON = 1e-4
 
 
 class ArrayLikeEqualityTestingMixin:
@@ -145,3 +149,31 @@ class ArrayLikeEqualityTestingMixin:
         else:
             # it's great that they are uncomparable types :)
             pass
+
+
+@funcy.contextmanager
+def seeded(seed):
+    '''Set seed, run code, then restore rng state'''
+    if seed is not None:
+        np_random_state = np.random.get_state()
+        random_state = random.getstate()
+        np.random.seed(seed)
+        random.seed(seed)
+
+    yield
+
+    if seed is not None:
+        np.random.set_state(np_random_state)
+        random.setstate(random_state)
+
+
+@funcy.contextmanager
+def log_seed_on_error(logger, seed=None):
+    '''Store seed, run code, and report seed if error'''
+    if seed is None:
+        seed = random.randint(0, 2**32 - 1)
+    try:
+        with seeded(seed):
+            yield
+    except Exception:
+        logger.exception('Error was thrown using seed {}'.format(seed))
