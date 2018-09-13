@@ -1,9 +1,8 @@
 import importlib
-import logging
 import pathlib
 import pkgutil
 
-logger = logging.getLogger(__name__)
+from fhub_core.util.log import logger
 
 
 def import_module_from_modname(modname):

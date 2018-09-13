@@ -1,5 +1,4 @@
 import copy
-import logging
 import pathlib
 
 import funcy
@@ -9,11 +8,10 @@ from fhub_core.exc import UnexpectedValidationStateError
 from fhub_core.feature import Feature
 from fhub_core.util import assertion_method
 from fhub_core.util.gitutil import LocalPullRequestBuildDiffer
+from fhub_core.util.log import logger
 from fhub_core.util.modutil import import_module_at_path, relpath_to_modname
 from fhub_core.util.travisutil import (
     TravisPullRequestBuildDiffer, can_use_travis_differ)
-
-logger = logging.getLogger(__name__)
 
 __all__ = [
     'FeatureValidator',

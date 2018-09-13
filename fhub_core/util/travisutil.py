@@ -1,4 +1,3 @@
-import logging
 import os
 
 import funcy
@@ -6,8 +5,7 @@ import git
 
 from fhub_core.exc import UnexpectedTravisEnvironmentError
 from fhub_core.util.gitutil import PullRequestBuildDiffer
-
-logger = logging.getLogger(__name__)
+from fhub_core.util.log import logger
 
 
 def get_travis_env_or_fail(name):

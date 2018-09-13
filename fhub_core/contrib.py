@@ -1,17 +1,15 @@
 import importlib
-import logging
 import pkgutil
 import types
 
 import funcy
 
 from fhub_core.feature import Feature
+from fhub_core.util.log import logger
 
 __all__ = [
     'get_contrib_features',
 ]
-
-logger = logging.getLogger(__name__)
 
 
 def get_contrib_features(contrib):

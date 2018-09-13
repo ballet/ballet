@@ -1,4 +1,3 @@
-import logging
 import traceback
 
 import funcy
@@ -9,8 +8,7 @@ from sklearn_pandas import DataFrameMapper
 from sklearn_pandas.pipeline import TransformerPipeline
 
 from fhub_core.util import asarray2d, indent
-
-logger = logging.getLogger(__name__)
+from fhub_core.util.log import logger
 
 
 __all__ = ['Feature', 'make_robust_transformer',
