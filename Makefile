@@ -64,7 +64,7 @@ fixlint: ## fix lint issues using autoflake, autopep8, and isort
 	isort --apply --atomic --recursive tests
 
 test: ## run tests quickly with the default Python
-	pytest
+	python -m pytest
 
 test-all: ## run tests on every Python version with tox
 	tox

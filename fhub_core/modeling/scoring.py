@@ -1,5 +1,5 @@
 import sklearn.metrics
-from funcy import flip, partial, rcompose, select_values, suppress
+from funcy import fallback, flip, partial, raiser, rcompose, select_values
 
 from fhub_core.exc import Error
 from fhub_core.modeling.constants import CLASSIFICATION_SCORING, REGRESSION_SCORING, SCORING_NAME_MAPPER
@@ -16,29 +16,27 @@ class ScorerInfo:
 
     @property
     def scorer(self):
-        if self._scorer is None:
-            with suppress(ValueError):
-                self._scorer = sklearn.metrics.get_scorer(self.name)
+        def from_attr():
+            if self._scorer is not None:
+                return self._scorer
+            else:
+                raise ValueError
 
-            # try to import
-            try:
-                module_name, scorer_name = self.name.rsplit('.', maxsplit=1)
-            except ValueError:
-                raise ValueError(
-                    'Invalid scorer import path: {}'.format(self.name))
-            try:
-                mod = import_module_from_modname(module_name)
-                self._scorer = getattr(mod, scorer_name)
-            except (ImportError, ModuleNotFoundError):
-                logger.exception(
-                    'Failed to import scorer variable {scorer_name} from module {module_name}'
-                    .format(scorer_name=scorer_name, module_name=module_name))
+        def from_sklearn_metrics():
+            return sklearn.metrics.get_scorer(self.name)
 
-        if self._scorer is not None:
-            return self._scorer
-        else:
-            raise Error(
-                'Could not get a scorer with configuration {}'.format(self.name))
+        def from_import():
+            module_name, scorer_name = self.name.rsplit('.', maxsplit=1)
+            mod = import_module_from_modname(module_name)
+            return getattr(mod, scorer_name)
+
+        self._scorer = fallback(
+            from_attr,
+            from_sklearn_metrics,
+            from_import,
+            raiser(Error, 'Could not get a scorer with configuration {}'.format(self.name)),
+        )
+        return self._scorer
 
     @property
     def name(self):

@@ -6,7 +6,7 @@ import sklearn.datasets
 from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import LabelBinarizer
 
-from fhub_core.modeling.constants import ProblemTypes
+from fhub_core.modeling.problem import ProblemTypes
 from fhub_core.modeler import (
     DecisionTreeModeler, StratifiedKFoldMultiClassIndicator, TunedModeler,
     TunedRandomForestClassifier, TunedRandomForestRegressor)

@@ -12,6 +12,7 @@ with open('HISTORY.md') as history_file:
     history = history_file.read()
 
 requirements = [
+    'baytune>=0.2.1',
     'funcy',
     'gitpython',
     'numpy',
