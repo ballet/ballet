@@ -1,4 +1,4 @@
-import logging
+from abc import ABCMeta, abstractmethod
 import os
 
 import numpy as np
@@ -21,9 +21,9 @@ except ImportError:
     btb = None
 
 from fhub_core.modeling.constants import (
-    CLASSIFICATION_SCORING, ProblemTypes, RANDOM_STATE, REGRESSION_SCORING,
+    ProblemTypes, RANDOM_STATE,
 )
-from fhub_core.modeling.scoring import get_scorer, scoring_name_to_name
+from fhub_core.modeling.scoring import ScorerInfo, get_scorer_names_for_problem_type
 from fhub_core.util.log import logger
 
 
@@ -107,8 +107,9 @@ class FeatureTypeTransformer(BaseEstimator, TransformerMixin):
                     return X.ravel()
                 elif self.original_info_['ndim'] == 2:
                     return X
-            # should be unreachable
-            raise RuntimeError
+            else:
+                # unreachable
+                raise NotImplementedError
         else:
             raise NotFittedError
 
@@ -150,20 +151,22 @@ class Modeler:
         problem_type (ProblemType)
     '''
 
-    def __init__(self,
-                 problem_type=None,
-                 scorer=None,
-                 classification_type=None,
-                 ):
+    def __init__(self, problem_type=None, scorers=None, classification_type=None):
         self.problem_type = problem_type
-        self.scorer = get_scorer(scorer)
 
-        # just use to adapt problem_type
+        # just use `classification_type` to adapt problem_type
         if self.problem_type.is_classification():
             if classification_type == 'multiclass':
                 self.problem_type = ProblemTypes.MULTI_CLASSIFICATION
             else:
                 self.problem_type = ProblemTypes.BINARY_CLASSIFICATION
+
+        if scorers is None:
+            scorers = get_scorer_names_for_problem_type(self.problem_type)
+        self.scorers = [
+            ScorerInfo(scorer=scorer).scorer
+            for scorer in scorers
+        ]
 
         self.estimator = self._get_default_estimator()
         self.feature_type_transformer = FeatureTypeTransformer()
@@ -210,7 +213,7 @@ class Modeler:
         y (Union[np.array, pd.DataFrame, pd.Series]): labels
         '''
 
-        scoring_names = self._get_scoring_names()
+        scoring_names = get_scorer_names_for_problem_type(self.problem_type)
 
         # compute scores
         results = self.cv_score_mean(X, y, scoring_names)
@@ -224,10 +227,10 @@ class Modeler:
         # fit model on entire training set
         self.estimator.fit(X_tr, y_tr)
 
-        scoring_names = self._get_scoring_names()
+        scorer_names = get_scorer_names_for_problem_type(self.problem_type)
         scorers = {
             s: sklearn.metrics.get_scorer(s)
-            for s in scoring_names
+            for s in scorer_names
         }
         multimetric_score_results = _multimetric_score(
             self.estimator, X_te, y_te, scorers)
@@ -287,41 +290,22 @@ class Modeler:
         for key, val in cv_results.items():
             if filter_testing_keys:
                 if key.startswith('test_'):
-                    scoring_name = key[len('test_'):]
+                    scorer_name = key[len('test_'):]
                 else:
                     continue
             else:
-                scoring_name = key
-            name = scoring_name_to_name(scoring_name)
+                scorer_name = key
+            scorer_description = ScorerInfo(name=scorer_name).description
             val = np.nanmean(cv_results[key])
             if np.isnan(val):
                 val = None
             result.append({
-                'name': name,
-                'scoring_name': scoring_name,
+                'name': scorer_name,
+                'description': scorer_description,
                 'value': val,
             })
 
         return result
-
-    def _get_scoring_names(self):
-        '''Get scorings for this problem type.
-
-        Returns:
-            list: List of 'scoring' as defined in sklearn.metrics. This is a 'utility
-                variable' that can be used where we just need the names of the
-                scoring functions and not the more complete information.
-        '''
-        # scoring_types maps user-readable name to `scoring`, as argument to
-        # cross_val_score
-        # See also
-        # http://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter
-        if self.problem_type.is_classification():
-            return CLASSIFICATION_SCORING
-        elif self.problem_type.is_regression():
-            return REGRESSION_SCORING
-        else:
-            raise NotImplementedError
 
     def _format_inputs(self, X, y):
         return self._format_X(X), self._format_y(y)
@@ -356,9 +340,9 @@ class DecisionTreeModeler(Modeler):
         return DecisionTreeRegressor(random_state=RANDOM_STATE + 2)
 
 
-class SelfTuningMixin:
+class SelfTuningMixin(metaclass=ABCMeta):
 
-    # overwrite this to do anything
+    @abstractmethod
     def get_tunables(self):
         return None
 
@@ -437,7 +421,7 @@ class SelfTuningMixin:
                     'Cross val score changed from {:0.3f} to {:0.3f}.'
                     .format(original_score, best_score))
             else:
-                logging.warning('Tuning requested, but either btb not '
+                logger.warning('Tuning requested, but either btb not '
                                 'installed or tunable HyperParameters not '
                                 'specified.')
 
@@ -445,6 +429,7 @@ class SelfTuningMixin:
 
 
 class SelfTuningRandomForestMixin(SelfTuningMixin):
+
     def get_tunables(self):
         if btb is not None:
             return [
@@ -457,17 +442,16 @@ class SelfTuningRandomForestMixin(SelfTuningMixin):
             return None
 
 
-class TunedRandomForestRegressor(
-        SelfTuningRandomForestMixin, RandomForestRegressor):
+class TunedRandomForestRegressor(SelfTuningRandomForestMixin, RandomForestRegressor):
     pass
 
 
-class TunedRandomForestClassifier(
-        SelfTuningRandomForestMixin, RandomForestClassifier):
+class TunedRandomForestClassifier(SelfTuningRandomForestMixin, RandomForestClassifier):
     pass
 
 
 class TunedModeler(Modeler):
+
     def _get_default_classifier(self):
         return TunedRandomForestClassifier(random_state=RANDOM_STATE + 1)
 
@@ -476,10 +460,9 @@ class TunedModeler(Modeler):
 
 
 class StratifiedKFoldMultiClassIndicator(StratifiedKFold):
-    '''
-    Adaptation of StratifiedKFold to support multiclass-indicator format y
-    values. Note that this should not be used for multilabel, multiclass
-    dataself.
+    '''Adaptation of StratifiedKFold to support multiclass-indicator format y values.
+
+    Note that this should not be used for multilabel, multiclass dataself.
     '''
 
     def __init__(self, transformer, *args, **kwargs):

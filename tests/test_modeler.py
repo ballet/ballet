@@ -1,4 +1,3 @@
-import logging
 import unittest
 
 import numpy as np
@@ -11,9 +10,8 @@ from fhub_core.modeling.constants import ProblemTypes
 from fhub_core.modeler import (
     DecisionTreeModeler, StratifiedKFoldMultiClassIndicator, TunedModeler,
     TunedRandomForestClassifier, TunedRandomForestRegressor)
+from fhub_core.util.log import logger
 from fhub_core.util.testing import EPSILON, log_seed_on_error, seeded
-
-logger = logging.getLogger(__name__)
 
 
 class _CommonTesting:
@@ -81,7 +79,7 @@ class _CommonTesting:
 
     def _prepare_metrics_for_assertions(self, metrics):
         return {
-            metric['name']: metric['value']
+            metric['description']: metric['value']
             for metric in metrics
         }
 
