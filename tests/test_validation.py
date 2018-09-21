@@ -5,9 +5,9 @@ from unittest.mock import patch
 import funcy
 import numpy as np
 import pandas as pd
-import sklearn.impute
 from sklearn.base import BaseEstimator, TransformerMixin
 
+from fhub_core.compat import SimpleImputer
 from fhub_core.exc import UnexpectedValidationStateError
 from fhub_core.feature import Feature
 from fhub_core.util import IdentityTransformer, NoFitMixin
@@ -40,7 +40,7 @@ class TestFeatureValidator(TestDataMixin, unittest.TestCase):
     def test_good_feature(self):
         feature = Feature(
             input='size',
-            transformer=sklearn.impute.SimpleImputer(),
+            transformer=SimpleImputer(),
         )
 
         validator = FeatureValidator(self.X, self.y)
@@ -52,7 +52,7 @@ class TestFeatureValidator(TestDataMixin, unittest.TestCase):
         # bad input
         feature = Feature(
             input=3,
-            transformer=sklearn.impute.SimpleImputer(),
+            transformer=SimpleImputer(),
         )
         validator = FeatureValidator(self.X, self.y)
         result, failures = validator.validate(feature)

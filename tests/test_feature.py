@@ -3,10 +3,10 @@ import unittest
 import funcy
 import numpy as np
 import pandas as pd
-import sklearn.impute
 import sklearn.preprocessing
 
 from fhub_core import Feature, make_robust_transformer
+from fhub_core.compat import SimpleImputer
 from fhub_core.util import IdentityTransformer, asarray2d
 
 from .util import FragileTransformer, FragileTransformerPipeline
@@ -90,7 +90,7 @@ class TestFeature(unittest.TestCase):
 
     def test_robust_transformer_sklearn(self):
         Transformers = (
-            sklearn.impute.SimpleImputer,
+            SimpleImputer,
             sklearn.preprocessing.StandardScaler,
             sklearn.preprocessing.Binarizer,
             sklearn.preprocessing.PolynomialFeatures,
