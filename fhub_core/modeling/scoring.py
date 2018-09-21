@@ -106,9 +106,9 @@ def get_scorer_names_for_problem_type(problem_type):
     # cross_val_score
     # See also
     # http://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter
-    if problem_type.is_classification():
+    if problem_type.classification:
         return CLASSIFICATION_SCORING
-    elif problem_type.is_regression():
+    elif problem_type.regression:
         return REGRESSION_SCORING
     else:
         raise NotImplementedError

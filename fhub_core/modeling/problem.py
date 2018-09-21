@@ -1,40 +1,21 @@
-class Problem:
-
-    def is_classification(self):
-        return False
-
-    def is_binary_classification(self):
-        return False
-
-    def is_multi_classification(self):
-        return False
-
-    def is_regression(self):
-        return False
+class ProblemType:
+    classification = False
+    binary_classification = False
+    multi_classification = False
+    regression = False
 
 
-class ClassificationProblem(Problem):
-    def is_classification(self):
-        return True
+class ClassificationProblem(ProblemType):
+    classification = True
 
 
 class BinaryClassificationProblem(ClassificationProblem):
-    def is_binary_classification(self):
-        return True
+    binary_classification = True
 
 
 class MulticlassClassificationProblem(ClassificationProblem):
-    def is_multi_classification(self):
-        return True
+    multi_classification = True
 
 
-class RegressionProblem(Problem):
-    def is_regression(self):
-        return True
-
-
-class ProblemTypes:
-    CLASSIFICATION = ClassificationProblem()
-    REGRESSION = RegressionProblem()
-    BINARY_CLASSIFICATION = BinaryClassificationProblem()
-    MULTI_CLASSIFICATION = MulticlassClassificationProblem()
+class RegressionProblem(ProblemType):
+    regression = True

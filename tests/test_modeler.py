@@ -6,7 +6,7 @@ import sklearn.datasets
 from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import LabelBinarizer
 
-from fhub_core.modeling.problem import ProblemTypes
+from fhub_core.modeling.problem import MulticlassClassificationProblem, RegressionProblem
 from fhub_core.modeler import (
     DecisionTreeModeler, StratifiedKFoldMultiClassIndicator, TunedModeler,
     TunedRandomForestClassifier, TunedRandomForestRegressor)
@@ -23,23 +23,24 @@ class _CommonTesting:
         X_regression, y_regression = sklearn.datasets.load_boston(
             return_X_y=True)
 
+        # TODO: add test for BinaryClassificationProblem
         self.data = {
-            ProblemTypes.CLASSIFICATION: {
+            MulticlassClassificationProblem: {
                 "X": X_classification,
                 "y": y_classification,
             },
-            ProblemTypes.REGRESSION: {
+            RegressionProblem: {
                 "X": X_regression,
                 "y": y_regression,
             },
         }
 
         self.data_pd = {
-            ProblemTypes.CLASSIFICATION: {
+            MulticlassClassificationProblem: {
                 "X": pd.DataFrame(X_classification),
                 "y": pd.DataFrame(y_classification),
             },
-            ProblemTypes.REGRESSION: {
+            RegressionProblem: {
                 "X": pd.DataFrame(X_regression),
                 "y": pd.DataFrame(y_regression),
             },
@@ -48,14 +49,7 @@ class _CommonTesting:
     def _setup_modeler(self, problem_type, data):
         X = data[problem_type]["X"]
         y = data[problem_type]["y"]
-        if problem_type.is_classification():
-            k = len(np.unique(y))
-            classification_type = 'multiclass' if k > 2 else 'binary'
-        else:
-            classification_type = None
-        modeler = self.ModelerClass(
-            problem_type=problem_type,
-            classification_type=classification_type)
+        modeler = self.modeler_class(problem_type=problem_type)
         return modeler, X, y
 
     def _test_problem_type_cv(self, problem_type, data):
@@ -88,11 +82,11 @@ class TestModeler(_CommonTesting, unittest.TestCase):
 
     def setUp(self):
         super().setUp()
-        self.ModelerClass = DecisionTreeModeler
+        self.modeler_class = DecisionTreeModeler
 
     def test_classification_cv(self):
         metrics, metrics_pd = self._call_method(
-            '_test_problem_type_cv', ProblemTypes.CLASSIFICATION, seed=17)
+            '_test_problem_type_cv', MulticlassClassificationProblem, seed=17)
         self.assertEqual(metrics, metrics_pd)
         metrics = self._prepare_metrics_for_assertions(metrics)
         self.assertAlmostEqual(
@@ -108,7 +102,7 @@ class TestModeler(_CommonTesting, unittest.TestCase):
 
     def test_classification_train_test(self):
         metrics, metrics_pd = self._call_method(
-            '_test_problem_type_train_test', ProblemTypes.CLASSIFICATION,
+            '_test_problem_type_train_test', MulticlassClassificationProblem,
             seed=1093)
         self.assertEqual(metrics, metrics_pd)
         metrics = self._prepare_metrics_for_assertions(metrics)
@@ -125,7 +119,7 @@ class TestModeler(_CommonTesting, unittest.TestCase):
 
     def test_regression_cv(self):
         metrics, metrics_pd = self._call_method(
-            '_test_problem_type_cv', ProblemTypes.REGRESSION)
+            '_test_problem_type_cv', RegressionProblem)
         self.assertEqual(metrics, metrics_pd)
         metrics = self._prepare_metrics_for_assertions(metrics)
         self.assertAlmostEqual(
@@ -135,7 +129,7 @@ class TestModeler(_CommonTesting, unittest.TestCase):
 
     def test_regression_train_test(self):
         metrics, metrics_pd = self._call_method(
-            '_test_problem_type_train_test', ProblemTypes.REGRESSION, seed=4)
+            '_test_problem_type_train_test', RegressionProblem, seed=4)
         self.assertEqual(metrics, metrics_pd)
         metrics = self._prepare_metrics_for_assertions(metrics)
         self.assertAlmostEqual(
@@ -148,7 +142,7 @@ class TestTunedModelers(_CommonTesting, unittest.TestCase):
 
     def setUp(self):
         super().setUp()
-        self.ModelerClass = TunedModeler
+        self.modeler_class = TunedModeler
 
     def _setup_modeler(self, problem_type, data):
         modeler, X, y = super()._setup_modeler(problem_type, data)
@@ -156,22 +150,22 @@ class TestTunedModelers(_CommonTesting, unittest.TestCase):
 
     def test_classification_cv(self):
         metrics, metrics_pd = self._call_method(
-            '_test_problem_type_cv', ProblemTypes.CLASSIFICATION, seed=1)
+            '_test_problem_type_cv', MulticlassClassificationProblem, seed=1)
         self.assertEqual(metrics, metrics_pd)
 
     def test_classification_train_test(self):
         metrics, metrics_pd = self._call_method(
-            '_test_problem_type_train_test', ProblemTypes.CLASSIFICATION,
+            '_test_problem_type_train_test', MulticlassClassificationProblem,
             seed=2)
         self.assertEqual(metrics, metrics_pd)
 
     def test_regression_cv(self):
         metrics, metrics_pd = self._call_method(
-            '_test_problem_type_cv', ProblemTypes.REGRESSION, seed=3)
+            '_test_problem_type_cv', RegressionProblem, seed=3)
 
     def test_regression_train_test(self):
         metrics, metrics_pd = self._call_method(
-            '_test_problem_type_train_test', ProblemTypes.REGRESSION, seed=4)
+            '_test_problem_type_train_test', RegressionProblem, seed=4)
         self.assertEqual(metrics, metrics_pd)
 
     def _test_tuned_random_forest_estimator(self, Estimator, problem_type):
@@ -187,11 +181,11 @@ class TestTunedModelers(_CommonTesting, unittest.TestCase):
 
     def test_tuned_random_forest_regressor(self):
         self._test_tuned_random_forest_estimator(
-            TunedRandomForestRegressor, ProblemTypes.REGRESSION)
+            TunedRandomForestRegressor, RegressionProblem)
 
     def test_tuned_random_forest_classifier(self):
         self._test_tuned_random_forest_estimator(
-            TunedRandomForestClassifier, ProblemTypes.CLASSIFICATION)
+            TunedRandomForestClassifier, MulticlassClassificationProblem)
 
 
 class TestStratifiedKFoldMultiClassIndicator(unittest.TestCase):

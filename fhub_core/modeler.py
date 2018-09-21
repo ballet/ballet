@@ -14,7 +14,6 @@ from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 
 from fhub_core.modeling.constants import RANDOM_STATE
 from fhub_core.modeling.io_transformers import FeatureTypeTransformer, TargetTypeTransformer
-from fhub_core.modeling.problem import ProblemTypes
 from fhub_core.modeling.scoring import ScorerInfo, get_scorer_names_for_problem_type
 from fhub_core.util.log import logger
 
@@ -29,15 +28,8 @@ class Modeler:
         problem_type (ProblemType)
     '''
 
-    def __init__(self, problem_type=None, scorers=None, classification_type=None):
+    def __init__(self, problem_type=None, scorers=None):
         self.problem_type = problem_type
-
-        # just use `classification_type` to adapt problem_type
-        if self.problem_type.is_classification():
-            if classification_type == 'multiclass':
-                self.problem_type = ProblemTypes.MULTI_CLASSIFICATION
-            else:
-                self.problem_type = ProblemTypes.BINARY_CLASSIFICATION
 
         if scorers is None:
             names = get_scorer_names_for_problem_type(self.problem_type)
@@ -54,7 +46,7 @@ class Modeler:
         self.estimator = self._get_default_estimator()
         self.feature_type_transformer = FeatureTypeTransformer()
 
-        needs_label_binarizer = self.problem_type.is_multi_classification()
+        needs_label_binarizer = self.problem_type.multi_classification
         self.target_type_transformer = TargetTypeTransformer(
             needs_label_binarizer=needs_label_binarizer)
 
@@ -140,18 +132,15 @@ class Modeler:
 
         X, y = self._format_inputs(X, y)
 
-        if self.problem_type.is_classification():
-            if self.problem_type.is_binary_classification():
-                kf = StratifiedKFold(
-                    shuffle=True, random_state=RANDOM_STATE + 3)
-            elif self.problem_type.is_multi_classification():
-                self.target_type_transformer.inverse_transform(y)
-                transformer = self.target_type_transformer
-                kf = StratifiedKFoldMultiClassIndicator(
-                    transformer, shuffle=True, n_splits=3, random_state=RANDOM_STATE + 3)
-            else:
-                raise NotImplementedError
-        elif self.problem_type.is_regression():
+        if self.problem_type.binary_classification:
+            kf = StratifiedKFold(
+                shuffle=True, random_state=RANDOM_STATE + 3)
+        elif self.problem_type.multi_classification:
+            self.target_type_transformer.inverse_transform(y)
+            transformer = self.target_type_transformer
+            kf = StratifiedKFoldMultiClassIndicator(
+                transformer, shuffle=True, n_splits=3, random_state=RANDOM_STATE + 3)
+        elif self.problem_type.regression:
             kf = KFold(shuffle=True, n_splits=3, random_state=RANDOM_STATE + 4)
         else:
             raise NotImplementedError
@@ -200,9 +189,9 @@ class Modeler:
         return self.feature_type_transformer.fit_transform(X)
 
     def _get_default_estimator(self):
-        if self.problem_type.is_classification():
+        if self.problem_type.classification:
             return self._get_default_classifier()
-        elif self.problem_type.is_regression():
+        elif self.problem_type.regression:
             return self._get_default_regressor()
         else:
             raise NotImplementedError
