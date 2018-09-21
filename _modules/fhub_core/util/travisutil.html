@@ -24,8 +24,7 @@
 
   
 
-  
-    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -74,30 +73,18 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../readme.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../readme.html#basic-usage">Basic Usage</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../installation.html#stable-release">Stable release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../installation.html#from-sources">From sources</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">fhub_core</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../fhub_core.html">fhub_core package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../fhub_core.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../fhub_core.util.html">fhub_core.util package</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../../../fhub_core.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../fhub_core.html#module-fhub_core.contrib">fhub_core.contrib module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../fhub_core.html#module-fhub_core.exc">fhub_core.exc module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../fhub_core.html#module-fhub_core.feature">fhub_core.feature module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../fhub_core.html#module-fhub_core.validation">fhub_core.validation module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../fhub_core.html#module-fhub_core">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#types-of-contributions">Types of Contributions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../contributing.html#report-bugs">Report Bugs</a></li>
@@ -116,6 +103,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Credits</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../authors.html#development-lead">Development Lead</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../authors.html#contributors">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id1">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id2">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id3">0.1</a></li>
 </ul>
 </li>
 </ul>
@@ -181,19 +174,17 @@
            <div itemprop="articleBody">
             
   <h1>Source code for fhub_core.util.travisutil</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">import</span> <span class="nn">funcy</span>
 <span class="kn">import</span> <span class="nn">git</span>
 
 <span class="kn">from</span> <span class="nn">fhub_core.exc</span> <span class="k">import</span> <span class="n">UnexpectedTravisEnvironmentError</span>
 <span class="kn">from</span> <span class="nn">fhub_core.util.gitutil</span> <span class="k">import</span> <span class="n">PullRequestBuildDiffer</span>
+<span class="kn">from</span> <span class="nn">fhub_core.util.log</span> <span class="k">import</span> <span class="n">logger</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="get_travis_env_or_fail"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.travisutil.get_travis_env_or_fail">[docs]</a><span class="k">def</span> <span class="nf">get_travis_env_or_fail</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<div class="viewcode-block" id="get_travis_env_or_fail"><a class="viewcode-back" href="../../../api/fhub_core.util.travisutil.html#fhub_core.util.travisutil.get_travis_env_or_fail">[docs]</a><span class="k">def</span> <span class="nf">get_travis_env_or_fail</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
@@ -201,19 +192,19 @@
         <span class="k">raise</span> <span class="n">UnexpectedTravisEnvironmentError</span></div>
 
 
-<div class="viewcode-block" id="ensure_expected_travis_env_vars"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.travisutil.ensure_expected_travis_env_vars">[docs]</a><span class="k">def</span> <span class="nf">ensure_expected_travis_env_vars</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
+<div class="viewcode-block" id="ensure_expected_travis_env_vars"><a class="viewcode-back" href="../../../api/fhub_core.util.travisutil.html#fhub_core.util.travisutil.ensure_expected_travis_env_vars">[docs]</a><span class="k">def</span> <span class="nf">ensure_expected_travis_env_vars</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="n">names</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">keys</span><span class="p">())):</span>
         <span class="k">raise</span> <span class="n">UnexpectedTravisEnvironmentError</span></div>
 
 
-<div class="viewcode-block" id="dump_travis_env_vars"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.travisutil.dump_travis_env_vars">[docs]</a><span class="k">def</span> <span class="nf">dump_travis_env_vars</span><span class="p">():</span>
+<div class="viewcode-block" id="dump_travis_env_vars"><a class="viewcode-back" href="../../../api/fhub_core.util.travisutil.html#fhub_core.util.travisutil.dump_travis_env_vars">[docs]</a><span class="k">def</span> <span class="nf">dump_travis_env_vars</span><span class="p">():</span>
     <span class="n">travis_env_vars</span> <span class="o">=</span> <span class="n">funcy</span><span class="o">.</span><span class="n">select_keys</span><span class="p">(</span>
         <span class="k">lambda</span> <span class="n">key</span><span class="p">:</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;TRAVIS&#39;</span><span class="p">),</span>
         <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">travis_env_vars</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_travis_pr_num"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.travisutil.get_travis_pr_num">[docs]</a><span class="k">def</span> <span class="nf">get_travis_pr_num</span><span class="p">():</span>
+<div class="viewcode-block" id="get_travis_pr_num"><a class="viewcode-back" href="../../../api/fhub_core.util.travisutil.html#fhub_core.util.travisutil.get_travis_pr_num">[docs]</a><span class="k">def</span> <span class="nf">get_travis_pr_num</span><span class="p">():</span>
     <span class="sd">&#39;&#39;&#39;Return the PR number if the job is a pull request, None otherwise</span>
 
 <span class="sd">    See also:</span>
@@ -234,12 +225,12 @@
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="is_travis_pr"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.travisutil.is_travis_pr">[docs]</a><span class="k">def</span> <span class="nf">is_travis_pr</span><span class="p">():</span>
+<div class="viewcode-block" id="is_travis_pr"><a class="viewcode-back" href="../../../api/fhub_core.util.travisutil.html#fhub_core.util.travisutil.is_travis_pr">[docs]</a><span class="k">def</span> <span class="nf">is_travis_pr</span><span class="p">():</span>
     <span class="sd">&#39;&#39;&#39;Check if the current job is a pull request build&#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">get_travis_pr_num</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="can_use_travis_differ"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.travisutil.can_use_travis_differ">[docs]</a><span class="k">def</span> <span class="nf">can_use_travis_differ</span><span class="p">():</span>
+<div class="viewcode-block" id="can_use_travis_differ"><a class="viewcode-back" href="../../../api/fhub_core.util.travisutil.html#fhub_core.util.travisutil.can_use_travis_differ">[docs]</a><span class="k">def</span> <span class="nf">can_use_travis_differ</span><span class="p">():</span>
     <span class="sd">&#39;&#39;&#39;Check if the required travis env vars are set for the travis differ&#39;&#39;&#39;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">ensure_expected_travis_env_vars</span><span class="p">(</span>
@@ -249,7 +240,7 @@
         <span class="k">return</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="TravisPullRequestBuildDiffer"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.travisutil.TravisPullRequestBuildDiffer">[docs]</a><span class="k">class</span> <span class="nc">TravisPullRequestBuildDiffer</span><span class="p">(</span><span class="n">PullRequestBuildDiffer</span><span class="p">):</span>
+<div class="viewcode-block" id="TravisPullRequestBuildDiffer"><a class="viewcode-back" href="../../../api/fhub_core.util.travisutil.html#fhub_core.util.travisutil.TravisPullRequestBuildDiffer">[docs]</a><span class="k">class</span> <span class="nc">TravisPullRequestBuildDiffer</span><span class="p">(</span><span class="n">PullRequestBuildDiffer</span><span class="p">):</span>
     <span class="n">EXPECTED_TRAVIS_ENV_VARS</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s1">&#39;TRAVIS_BUILD_DIR&#39;</span><span class="p">,</span>
         <span class="s1">&#39;TRAVIS_PULL_REQUEST&#39;</span><span class="p">,</span>
@@ -320,19 +311,15 @@
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
-  
-  
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {
-          
-          SphinxRtdTheme.Navigation.enableSticky();
-          
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script> 
 

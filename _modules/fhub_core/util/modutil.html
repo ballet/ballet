@@ -24,8 +24,7 @@
 
   
 
-  
-    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -74,30 +73,18 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../readme.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../readme.html#basic-usage">Basic Usage</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../installation.html#stable-release">Stable release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../installation.html#from-sources">From sources</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">fhub_core</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../fhub_core.html">fhub_core package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../fhub_core.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../fhub_core.util.html">fhub_core.util package</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../../../fhub_core.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../fhub_core.html#module-fhub_core.contrib">fhub_core.contrib module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../fhub_core.html#module-fhub_core.exc">fhub_core.exc module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../fhub_core.html#module-fhub_core.feature">fhub_core.feature module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../fhub_core.html#module-fhub_core.validation">fhub_core.validation module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../fhub_core.html#module-fhub_core">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#types-of-contributions">Types of Contributions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../contributing.html#report-bugs">Report Bugs</a></li>
@@ -116,6 +103,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Credits</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../authors.html#development-lead">Development Lead</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../authors.html#contributors">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id1">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id2">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id3">0.1</a></li>
 </ul>
 </li>
 </ul>
@@ -182,25 +175,24 @@
             
   <h1>Source code for fhub_core.util.modutil</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">importlib</span>
-<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">import</span> <span class="nn">pkgutil</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">fhub_core.util.log</span> <span class="k">import</span> <span class="n">logger</span>
 
 
-<div class="viewcode-block" id="import_module_from_modname"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.modutil.import_module_from_modname">[docs]</a><span class="k">def</span> <span class="nf">import_module_from_modname</span><span class="p">(</span><span class="n">modname</span><span class="p">):</span>
+<div class="viewcode-block" id="import_module_from_modname"><a class="viewcode-back" href="../../../api/fhub_core.util.modutil.html#fhub_core.util.modutil.import_module_from_modname">[docs]</a><span class="k">def</span> <span class="nf">import_module_from_modname</span><span class="p">(</span><span class="n">modname</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Import module&#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="import_module_from_relpath"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.modutil.import_module_from_relpath">[docs]</a><span class="k">def</span> <span class="nf">import_module_from_relpath</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<div class="viewcode-block" id="import_module_from_relpath"><a class="viewcode-back" href="../../../api/fhub_core.util.modutil.html#fhub_core.util.modutil.import_module_from_relpath">[docs]</a><span class="k">def</span> <span class="nf">import_module_from_relpath</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Import module at relative path to project root&#39;&#39;&#39;</span>
     <span class="n">modname</span> <span class="o">=</span> <span class="n">relpath_to_modname</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">import_module_from_modname</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="import_module_at_path"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.modutil.import_module_at_path">[docs]</a><span class="k">def</span> <span class="nf">import_module_at_path</span><span class="p">(</span><span class="n">modname</span><span class="p">,</span> <span class="n">modpath</span><span class="p">):</span>
+<div class="viewcode-block" id="import_module_at_path"><a class="viewcode-back" href="../../../api/fhub_core.util.modutil.html#fhub_core.util.modutil.import_module_at_path">[docs]</a><span class="k">def</span> <span class="nf">import_module_at_path</span><span class="p">(</span><span class="n">modname</span><span class="p">,</span> <span class="n">modpath</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Import module from path that may not be on system path</span>
 
 <span class="sd">    Args:</span>
@@ -272,7 +264,7 @@
     <span class="k">return</span> <span class="n">mod</span></div>
 
 
-<div class="viewcode-block" id="relpath_to_modname"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.modutil.relpath_to_modname">[docs]</a><span class="k">def</span> <span class="nf">relpath_to_modname</span><span class="p">(</span><span class="n">relpath</span><span class="p">):</span>
+<div class="viewcode-block" id="relpath_to_modname"><a class="viewcode-back" href="../../../api/fhub_core.util.modutil.html#fhub_core.util.modutil.relpath_to_modname">[docs]</a><span class="k">def</span> <span class="nf">relpath_to_modname</span><span class="p">(</span><span class="n">relpath</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Convert relative path to module name</span>
 
 <span class="sd">    Within a project, a path to the source file is uniquely identified with a</span>
@@ -302,7 +294,7 @@
     <span class="k">return</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="modname_to_relpath"><a class="viewcode-back" href="../../../fhub_core.util.html#fhub_core.util.modutil.modname_to_relpath">[docs]</a><span class="k">def</span> <span class="nf">modname_to_relpath</span><span class="p">(</span><span class="n">modname</span><span class="p">,</span> <span class="n">project_root</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">add_init</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="modname_to_relpath"><a class="viewcode-back" href="../../../api/fhub_core.util.modutil.html#fhub_core.util.modutil.modname_to_relpath">[docs]</a><span class="k">def</span> <span class="nf">modname_to_relpath</span><span class="p">(</span><span class="n">modname</span><span class="p">,</span> <span class="n">project_root</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">add_init</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Convert module name to relative path.</span>
 
 <span class="sd">    The project root is usually needed to detect if the module is a package, in</span>
@@ -382,19 +374,15 @@
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
-  
-  
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {
-          
-          SphinxRtdTheme.Navigation.enableSticky();
-          
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script> 
 
