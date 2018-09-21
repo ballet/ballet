@@ -1,5 +1,10 @@
 # History
 
+## 0.4 (2018-09-21)
+
+* Implement `Modeler` for versatile modeling and evaluation
+* Change project name
+
 ## 0.3 (2018-04-28)
 
 * Implement `PullRequestFeatureValidator`
