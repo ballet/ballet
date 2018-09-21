@@ -5,7 +5,7 @@ from unittest.mock import patch
 import funcy
 import numpy as np
 import pandas as pd
-import sklearn.preprocessing
+import sklearn.impute
 from sklearn.base import BaseEstimator, TransformerMixin
 
 from fhub_core.exc import UnexpectedValidationStateError
@@ -40,7 +40,7 @@ class TestFeatureValidator(TestDataMixin, unittest.TestCase):
     def test_good_feature(self):
         feature = Feature(
             input='size',
-            transformer=sklearn.preprocessing.Imputer(),
+            transformer=sklearn.impute.SimpleImputer(),
         )
 
         validator = FeatureValidator(self.X, self.y)
@@ -52,7 +52,7 @@ class TestFeatureValidator(TestDataMixin, unittest.TestCase):
         # bad input
         feature = Feature(
             input=3,
-            transformer=sklearn.preprocessing.Imputer(),
+            transformer=sklearn.impute.SimpleImputer(),
         )
         validator = FeatureValidator(self.X, self.y)
         result, failures = validator.validate(feature)

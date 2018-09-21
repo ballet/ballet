@@ -200,7 +200,7 @@ class TestStratifiedKFoldMultiClassIndicator(unittest.TestCase):
         transformer = LabelBinarizer()
         ym = transformer.fit_transform(y)
 
-        params = {'random_state': 1}
+        params = {'random_state': 1, 'n_splits': 3}
         kf = StratifiedKFold(**params)
         kfm = StratifiedKFoldMultiClassIndicator(transformer, **params)
 

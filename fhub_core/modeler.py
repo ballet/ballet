@@ -148,11 +148,11 @@ class Modeler:
                 self.target_type_transformer.inverse_transform(y)
                 transformer = self.target_type_transformer
                 kf = StratifiedKFoldMultiClassIndicator(
-                    transformer, shuffle=True, random_state=RANDOM_STATE + 3)
+                    transformer, shuffle=True, n_splits=3, random_state=RANDOM_STATE + 3)
             else:
                 raise NotImplementedError
         elif self.problem_type.is_regression():
-            kf = KFold(shuffle=True, random_state=RANDOM_STATE + 4)
+            kf = KFold(shuffle=True, n_splits=3, random_state=RANDOM_STATE + 4)
         else:
             raise NotImplementedError
 
@@ -208,10 +208,10 @@ class Modeler:
             raise NotImplementedError
 
     def _get_default_classifier(self):
-        return RandomForestClassifier(random_state=RANDOM_STATE + 1)
+        return RandomForestClassifier(n_estimators=10, random_state=RANDOM_STATE + 1)
 
     def _get_default_regressor(self):
-        return RandomForestRegressor(random_state=RANDOM_STATE + 2)
+        return RandomForestRegressor(n_estimators=10, random_state=RANDOM_STATE + 2)
 
 
 class DecisionTreeModeler(Modeler):
