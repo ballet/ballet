@@ -8,13 +8,13 @@ Installation
 Stable release
 --------------
 
-To install fhub_core, run this command in your terminal:
+To install ballet, run this command in your terminal:
 
 .. code-block:: console
 
-    $ pip install fhub_core
+    $ pip install ballet
 
-This is the preferred method to install fhub_core, as it will always install the most recent stable release.
+This is the preferred method to install ballet, as it will always install the most recent stable release.
 
 If you don't have `pip`_ installed, this `Python installation guide`_ can guide
 you through the process.
@@ -26,19 +26,19 @@ you through the process.
 From sources
 ------------
 
-The sources for fhub_core can be downloaded from the `Github repo`_.
+The sources for ballet can be downloaded from the `Github repo`_.
 
 You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/HDI-Project/fhub_core
+    $ git clone git://github.com/HDI-Project/ballet
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl  -OL https://github.com/HDI-Project/fhub_core/tarball/master
+    $ curl  -OL https://github.com/HDI-Project/ballet/tarball/master
 
 Once you have a copy of the source, you can install it with:
 
@@ -47,5 +47,5 @@ Once you have a copy of the source, you can install it with:
     $ python setup.py install
 
 
-.. _Github repo: https://github.com/HDI-Project/fhub_core
-.. _tarball: https://github.com/HDI-Project/fhub_core/tarball/master
+.. _Github repo: https://github.com/HDI-Project/ballet
+.. _tarball: https://github.com/HDI-Project/ballet/tarball/master

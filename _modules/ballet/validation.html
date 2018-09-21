@@ -1,0 +1,562 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ballet.validation &mdash; ballet 0.3.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> ballet
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../readme.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../readme.html#basic-usage">Basic Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#stable-release">Stable release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#from-sources">From sources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#types-of-contributions">Types of Contributions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#report-bugs">Report Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#fix-bugs">Fix Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#implement-features">Implement Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#write-documentation">Write Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#submit-feedback">Submit Feedback</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#get-started">Get Started!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#pull-request-guidelines">Pull Request Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#tips">Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#deploying">Deploying</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">Credits</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../authors.html#development-lead">Development Lead</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../authors.html#contributors">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id1">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id2">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id3">0.1</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ballet</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>ballet.validation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ballet.validation</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">pathlib</span>
+
+<span class="kn">import</span> <span class="nn">funcy</span>
+
+<span class="kn">from</span> <span class="nn">ballet.contrib</span> <span class="k">import</span> <span class="n">get_contrib_features</span>
+<span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">UnexpectedValidationStateError</span>
+<span class="kn">from</span> <span class="nn">ballet.feature</span> <span class="k">import</span> <span class="n">Feature</span>
+<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">assertion_method</span>
+<span class="kn">from</span> <span class="nn">ballet.util.gitutil</span> <span class="k">import</span> <span class="n">LocalPullRequestBuildDiffer</span>
+<span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">ballet.util.modutil</span> <span class="k">import</span> <span class="n">import_module_at_path</span><span class="p">,</span> <span class="n">relpath_to_modname</span>
+<span class="kn">from</span> <span class="nn">ballet.util.travisutil</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">TravisPullRequestBuildDiffer</span><span class="p">,</span> <span class="n">can_use_travis_differ</span><span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;FeatureValidator&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;PullRequestFeatureValidator&#39;</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="FeatureValidator"><a class="viewcode-back" href="../../api/ballet.validation.html#ballet.validation.FeatureValidator">[docs]</a><span class="k">class</span> <span class="nc">FeatureValidator</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">X</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+
+<div class="viewcode-block" id="FeatureValidator.validate"><a class="viewcode-back" href="../../api/ballet.validation.html#ballet.validation.FeatureValidator.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Validate the feature&#39;&#39;&#39;</span>
+        <span class="n">failures</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">check</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_all_checks</span><span class="p">():</span>
+            <span class="n">success</span> <span class="o">=</span> <span class="n">check</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">failures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">failures</span></div>
+
+    <span class="nd">@assertion_method</span>
+    <span class="k">def</span> <span class="nf">_is_feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">Feature</span><span class="p">)</span>
+
+    <span class="nd">@assertion_method</span>
+    <span class="k">def</span> <span class="nf">_has_correct_input_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Check that `input` is a string or iterable of string&#39;&#39;&#39;</span>
+        <span class="nb">input</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">input</span>
+        <span class="n">is_str</span> <span class="o">=</span> <span class="n">funcy</span><span class="o">.</span><span class="n">isa</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+        <span class="n">is_nested_str</span> <span class="o">=</span> <span class="n">funcy</span><span class="o">.</span><span class="n">all_fn</span><span class="p">(</span>
+            <span class="n">funcy</span><span class="o">.</span><span class="n">iterable</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">is_str</span><span class="p">,</span> <span class="n">x</span><span class="p">)))</span>
+        <span class="k">assert</span> <span class="n">is_str</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span> <span class="ow">or</span> <span class="n">is_nested_str</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+
+    <span class="nd">@assertion_method</span>
+    <span class="k">def</span> <span class="nf">_has_transformer_interface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">transformer</span><span class="p">,</span> <span class="s1">&#39;fit&#39;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">transformer</span><span class="p">,</span> <span class="s1">&#39;transform&#39;</span><span class="p">)</span>
+
+    <span class="nd">@assertion_method</span>
+    <span class="k">def</span> <span class="nf">_can_make_mapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span>
+
+    <span class="nd">@assertion_method</span>
+    <span class="k">def</span> <span class="nf">_can_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
+            <span class="n">mapper</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span>
+
+    <span class="nd">@assertion_method</span>
+    <span class="k">def</span> <span class="nf">_can_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
+            <span class="n">mapper</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+            <span class="n">mapper</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span>
+
+    <span class="nd">@assertion_method</span>
+    <span class="k">def</span> <span class="nf">_can_fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
+            <span class="n">mapper</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span>
+
+    <span class="nd">@assertion_method</span>
+    <span class="k">def</span> <span class="nf">_has_correct_output_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="n">mapper</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span>
+
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@assertion_method</span>
+    <span class="k">def</span> <span class="nf">_can_deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span>
+
+    <span class="k">def</span> <span class="nf">_get_all_checks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">method_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__dir__</span><span class="p">():</span>
+            <span class="n">method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="s1">&#39;is_check&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">method</span><span class="o">.</span><span class="n">is_check</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="vm">__name__</span>
+                <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">):</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+                <span class="k">yield</span> <span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PullRequestFeatureValidator"><a class="viewcode-back" href="../../api/ballet.validation.html#ballet.validation.PullRequestFeatureValidator">[docs]</a><span class="k">class</span> <span class="nc">PullRequestFeatureValidator</span><span class="p">:</span>
+    <span class="n">APPROPRIATE_CHANGE_TYPES</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">]</span>
+    <span class="n">APPROPRIATE_FILE_EXTS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;.py&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repo</span><span class="p">,</span> <span class="n">pr_num</span><span class="p">,</span> <span class="n">contrib_module_path</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Validate the features introduced in a proposed pull request.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            repo (git.Repo): project repo</span>
+<span class="sd">            pr_num (str): Pull request number</span>
+<span class="sd">            contrib_module_path (str): Relative path to contrib module</span>
+<span class="sd">            X (array-like): Example X array-like</span>
+<span class="sd">            y (array-like): Example y array-like</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">repo</span> <span class="o">=</span> <span class="n">repo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span> <span class="o">=</span> <span class="n">pr_num</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contrib_module_path</span> <span class="o">=</span> <span class="n">contrib_module_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">X</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+
+        <span class="k">if</span> <span class="n">can_use_travis_differ</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">differ</span> <span class="o">=</span> <span class="n">TravisPullRequestBuildDiffer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">differ</span> <span class="o">=</span> <span class="n">LocalPullRequestBuildDiffer</span><span class="p">()</span>
+
+        <span class="c1"># will be set by other methods</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_diffs</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_diffs_admissible</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_diffs_inadmissible</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_diffs_validation_result</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">features_validation_result</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="PullRequestFeatureValidator.validate"><a class="viewcode-back" href="../../api/ballet.validation.html#ballet.validation.PullRequestFeatureValidator.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Validate pull request.</span>
+
+<span class="sd">        To do this, follows these steps:</span>
+<span class="sd">        1. Collects the files that have changed in this pull request as</span>
+<span class="sd">           compared to a comparison branch.</span>
+<span class="sd">        2. Categorize these file changes into admissible or inadmissible file</span>
+<span class="sd">           changes. Admissible file changes solely contribute python files to</span>
+<span class="sd">           the contrib subdirectory.</span>
+<span class="sd">        3. Collect features from admissible new files.</span>
+<span class="sd">        4. Validate each of these features using the FeatureValidator.</span>
+<span class="sd">        5. Report the overall validation results.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1"># collect, categorize, and validate file changes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_collect_file_diffs</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_categorize_file_diffs</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_files</span><span class="p">()</span>
+
+        <span class="c1"># collect and validate new features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_collect_features</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_features</span><span class="p">()</span>
+
+        <span class="c1"># determine overall result</span>
+        <span class="n">overall_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_determine_validation_result</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">overall_result</span></div>
+
+    <span class="k">def</span> <span class="nf">_collect_file_diffs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Collecting file changes...&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_diffs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">differ</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span>
+
+        <span class="c1"># log results</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_diffs</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;File </span><span class="si">{i}</span><span class="s1">: </span><span class="si">{file}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Collected </span><span class="si">{}</span><span class="s1"> file(s)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_diffs</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">_categorize_file_diffs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Partition file changes into admissible and inadmissible changes&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_diffs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UnexpectedValidationStateError</span><span class="p">(</span>
+                <span class="s1">&#39;File changes have not been collected.&#39;</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Categorizing file changes...&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_diffs_admissible</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_diffs_inadmissible</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">def</span> <span class="nf">is_appropriate_change_type</span><span class="p">(</span><span class="n">diff</span><span class="p">):</span>
+            <span class="sd">&#39;&#39;&#39;File change is an addition&#39;&#39;&#39;</span>
+            <span class="k">return</span> <span class="n">diff</span><span class="o">.</span><span class="n">change_type</span> <span class="ow">in</span> \
+                <span class="n">PullRequestFeatureValidator</span><span class="o">.</span><span class="n">APPROPRIATE_CHANGE_TYPES</span>
+
+        <span class="k">def</span> <span class="nf">within_contrib_subdirectory</span><span class="p">(</span><span class="n">diff</span><span class="p">):</span>
+            <span class="sd">&#39;&#39;&#39;File addition is a subdirectory of project&#39;s contrib dir&#39;&#39;&#39;</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">diff</span><span class="o">.</span><span class="n">b_path</span>
+            <span class="n">contrib_relpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">contrib_module_path</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">contrib_relpath</span><span class="p">)</span> <span class="ow">in</span> \
+                    <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">parents</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">def</span> <span class="nf">is_appropriate_file_ext</span><span class="p">(</span><span class="n">diff</span><span class="p">):</span>
+            <span class="sd">&#39;&#39;&#39;File change is a python file&#39;&#39;&#39;</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">diff</span><span class="o">.</span><span class="n">b_path</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">PullRequestFeatureValidator</span><span class="o">.</span><span class="n">APPROPRIATE_FILE_EXTS</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">ext</span><span class="p">):</span>
+                        <span class="k">return</span> <span class="kc">True</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">is_admissible</span> <span class="o">=</span> <span class="n">funcy</span><span class="o">.</span><span class="n">all_fn</span><span class="p">(</span>
+            <span class="n">is_appropriate_change_type</span><span class="p">,</span>
+            <span class="n">within_contrib_subdirectory</span><span class="p">,</span>
+            <span class="n">is_appropriate_file_ext</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">diff</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_diffs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">is_admissible</span><span class="p">(</span><span class="n">diff</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">file_diffs_admissible</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="s1">&#39;Categorized </span><span class="si">{file}</span><span class="s1"> as ADMISSIBLE&#39;</span>
+                    <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">diff</span><span class="o">.</span><span class="n">b_path</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">file_diffs_inadmissible</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="s1">&#39;Categorized </span><span class="si">{file}</span><span class="s1"> as INADMISSIBLE&#39;</span>
+                    <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">diff</span><span class="o">.</span><span class="n">b_path</span><span class="p">))</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Admitted </span><span class="si">{}</span><span class="s1"> file(s) and rejected </span><span class="si">{}</span><span class="s1"> file(s)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_diffs_admissible</span><span class="p">),</span>
+            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_diffs_inadmissible</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">_validate_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_diffs_inadmissible</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UnexpectedValidationStateError</span><span class="p">(</span>
+                <span class="s1">&#39;File diffs have not been categorized.&#39;</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_diffs_inadmissible</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_diffs_validation_result</span> <span class="o">=</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">_collect_features</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_diffs_admissible</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UnexpectedValidationStateError</span><span class="p">(</span>
+                <span class="s1">&#39;File diffs have not been collected.&#39;</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Collecting features...&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">diff</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_diffs_admissible</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">diff</span><span class="o">.</span><span class="n">b_path</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">project_root</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="o">.</span><span class="n">working_tree_dir</span><span class="p">)</span>
+                <span class="n">modname</span> <span class="o">=</span> <span class="n">relpath_to_modname</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                <span class="n">modpath</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">project_root</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+                <span class="n">mod</span> <span class="o">=</span> <span class="n">import_module_at_path</span><span class="p">(</span><span class="n">modname</span><span class="p">,</span> <span class="n">modpath</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s1">&#39;Validation failure: failed to import module at </span><span class="si">{}</span><span class="s1">&#39;</span>
+                    <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Exception details: &#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">features_validation_result</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">continue</span>
+
+            <span class="n">features</span> <span class="o">=</span> <span class="n">get_contrib_features</span><span class="p">(</span><span class="n">mod</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Collected </span><span class="si">{}</span><span class="s1"> feature(s)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">_validate_features</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UnexpectedValidationStateError</span><span class="p">(</span>
+                <span class="s1">&#39;Features have not been collected.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># if no features were added at all, reject</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Failed to collect any new feature(s).&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">features_validation_result</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">return</span>
+
+        <span class="c1"># get small subset?</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">subsample_data_for_validation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="c1"># validate</span>
+        <span class="n">feature_validator</span> <span class="o">=</span> <span class="n">FeatureValidator</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">overall_result</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">,</span> <span class="n">failures</span> <span class="o">=</span> <span class="n">feature_validator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s1">&#39;Feature is valid: </span><span class="si">{feature}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feature</span><span class="o">=</span><span class="n">feature</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s1">&#39;Feature is NOT valid: </span><span class="si">{feature}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feature</span><span class="o">=</span><span class="n">feature</span><span class="p">))</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="s1">&#39;Failures in validation: </span><span class="si">{failures}</span><span class="s1">&#39;</span>
+                    <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">failures</span><span class="o">=</span><span class="n">failures</span><span class="p">))</span>
+                <span class="n">overall_result</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">features_validation_result</span> <span class="o">=</span> <span class="n">overall_result</span>
+
+    <span class="k">def</span> <span class="nf">_determine_validation_result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_diffs_validation_result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UnexpectedValidationStateError</span><span class="p">(</span>
+                <span class="s1">&#39;File diffs have not been validated.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_validation_result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UnexpectedValidationStateError</span><span class="p">(</span>
+                <span class="s1">&#39;Feature changes have not been validated.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_diffs_validation_result</span> <span class="ow">and</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">features_validation_result</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">subsample_data_for_validation</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="c1"># TODO</span>
+    <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Micah Smith.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.3.6',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

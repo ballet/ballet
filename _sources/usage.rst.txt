@@ -2,6 +2,6 @@
 Usage
 =====
 
-To use fhub_core in a project::
+To use ballet in a project::
 
-    import fhub_core
+    import ballet
