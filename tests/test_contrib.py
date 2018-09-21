@@ -6,8 +6,8 @@ from textwrap import dedent
 
 import funcy
 
-from fhub_core.contrib import get_contrib_features
-from fhub_core.util.modutil import import_module_at_path
+from ballet.contrib import get_contrib_features
+from ballet.util.modutil import import_module_at_path
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -80,7 +80,7 @@ class TestContrib(unittest.TestCase):
         k = 2
         content = dedent(
             '''
-            from fhub_core import Feature
+            from ballet import Feature
             from sklearn.preprocessing import StandardScaler
             input = 'col{{i}}'
             transformer = StandardScaler()

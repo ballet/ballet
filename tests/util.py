@@ -7,8 +7,8 @@ import git
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn_pandas.pipeline import TransformerPipeline
 
-from fhub_core import pathlib
-from fhub_core.util import IdentityTransformer
+from ballet import pathlib
+from ballet.util import IdentityTransformer
 
 EPSILON = 1e-4
 

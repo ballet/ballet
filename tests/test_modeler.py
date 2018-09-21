@@ -6,12 +6,12 @@ import sklearn.datasets
 from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import LabelBinarizer
 
-from fhub_core.modeling.problem import MulticlassClassificationProblem, RegressionProblem
-from fhub_core.modeler import (
+from ballet.modeling.problem import MulticlassClassificationProblem, RegressionProblem
+from ballet.modeler import (
     DecisionTreeModeler, StratifiedKFoldMultiClassIndicator, TunedModeler,
     TunedRandomForestClassifier, TunedRandomForestRegressor)
-from fhub_core.util.log import logger
-from fhub_core.util.testing import EPSILON, log_seed_on_error, seeded
+from ballet.util.log import logger
+from ballet.util.testing import EPSILON, log_seed_on_error, seeded
 
 
 class _CommonTesting:

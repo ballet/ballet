@@ -2,7 +2,7 @@ import importlib
 import pathlib
 import pkgutil
 
-from fhub_core.util.log import logger
+from ballet.util.log import logger
 
 
 def import_module_from_modname(modname):
@@ -100,8 +100,8 @@ def relpath_to_modname(relpath):
         relpath (str): Relative path from some location on sys.path
 
     Example:
-        >>> relpath_to_modname('fhub_core/util/_util.py')
-        'fhub_core.util._util'
+        >>> relpath_to_modname('ballet/util/_util.py')
+        'ballet.util._util'
     '''
     parts = pathlib.Path(relpath).parts
     if parts[-1] == '__init__.py':

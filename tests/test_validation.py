@@ -7,13 +7,13 @@ import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator, TransformerMixin
 
-from fhub_core.compat import SimpleImputer
-from fhub_core.exc import UnexpectedValidationStateError
-from fhub_core.feature import Feature
-from fhub_core.util import IdentityTransformer, NoFitMixin
-from fhub_core.util.gitutil import get_diff_str_from_commits
-from fhub_core.util.travisutil import TravisPullRequestBuildDiffer
-from fhub_core.validation import FeatureValidator, PullRequestFeatureValidator
+from ballet.compat import SimpleImputer
+from ballet.exc import UnexpectedValidationStateError
+from ballet.feature import Feature
+from ballet.util import IdentityTransformer, NoFitMixin
+from ballet.util.gitutil import get_diff_str_from_commits
+from ballet.util.travisutil import TravisPullRequestBuildDiffer
+from ballet.validation import FeatureValidator, PullRequestFeatureValidator
 
 from .util import (
     FragileTransformer, make_mock_commit, make_mock_commits, mock_repo)

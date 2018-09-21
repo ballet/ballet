@@ -4,8 +4,8 @@ import types
 
 import funcy
 
-from fhub_core.feature import Feature
-from fhub_core.util.log import logger
+from ballet.feature import Feature
+from ballet.util.log import logger
 
 __all__ = [
     'get_contrib_features',

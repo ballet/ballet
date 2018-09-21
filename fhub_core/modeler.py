@@ -12,10 +12,10 @@ from sklearn.model_selection import (
 from sklearn.model_selection._validation import _multimetric_score
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 
-from fhub_core.modeling.constants import RANDOM_STATE
-from fhub_core.modeling.io_transformers import FeatureTypeTransformer, TargetTypeTransformer
-from fhub_core.modeling.scoring import ScorerInfo, get_scorer_names_for_problem_type
-from fhub_core.util.log import logger
+from ballet.modeling.constants import RANDOM_STATE
+from ballet.modeling.io_transformers import FeatureTypeTransformer, TargetTypeTransformer
+from ballet.modeling.scoring import ScorerInfo, get_scorer_names_for_problem_type
+from ballet.util.log import logger
 
 
 class Modeler:

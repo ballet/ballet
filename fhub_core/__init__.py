@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Top-level package for fhub_core."""
+"""Top-level package for ballet."""
 
 __author__ = """Micah Smith"""
 __email__ = 'micahs@mit.edu'
@@ -14,5 +14,5 @@ else:
     import pathlib  # noqa F401
 
 
-from fhub_core.feature import *  # noqa
-from fhub_core.contrib import *  # noqa
+from ballet.feature import *  # noqa
+from ballet.contrib import *  # noqa

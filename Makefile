@@ -56,14 +56,14 @@ clean-test: ## remove test and coverage artifacts
 
 .PHONY: lint
 lint: ## check style with flake8 and isort
-	flake8 fhub_core tests
-	isort -c --recursive fhub_core tests
+	flake8 ballet tests
+	isort -c --recursive ballet tests
 
 .PHONY: fix-lint
 fix-lint: ## fix lint issues using autoflake, autopep8, and isort
-	find fhub_core -name '*.py' | xargs autoflake --in-place --remove-all-unused-imports --remove-unused-variables
-	autopep8 --in-place --recursive --aggressive fhub_core
-	isort --apply --atomic --recursive fhub_core
+	find ballet -name '*.py' | xargs autoflake --in-place --remove-all-unused-imports --remove-unused-variables
+	autopep8 --in-place --recursive --aggressive ballet
+	isort --apply --atomic --recursive ballet
 
 	find tests -name '*.py' | xargs autoflake --in-place --remove-all-unused-imports --remove-unused-variables
 	autopep8 --in-place --recursive --aggressive tests
@@ -79,7 +79,7 @@ test-all: ## run tests on every Python version with tox
 
 .PHONY: coverage
 coverage: ## check code coverage quickly with the default Python
-	coverage run --source fhub_core -m pytest
+	coverage run --source ballet -m pytest
 	coverage report -m
 	coverage html
 	$(BROWSER) htmlcov/index.html
@@ -91,7 +91,7 @@ clean-docs: ## remove previously built docs
 
 .PHONY: docs
 docs: clean-docs ## generate Sphinx HTML documentation, including API docs
-	sphinx-apidoc --module-first --separate -o docs/api/ fhub_core
+	sphinx-apidoc --module-first --separate -o docs/api/ ballet
 	$(MAKE) -C docs html
 
 .PHONY: view-docs

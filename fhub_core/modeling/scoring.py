@@ -1,10 +1,10 @@
 import sklearn.metrics
 from funcy import fallback, flip, partial, raiser, rcompose, select_values
 
-from fhub_core.exc import Error
-from fhub_core.modeling.constants import CLASSIFICATION_SCORING, REGRESSION_SCORING, SCORING_NAME_MAPPER
-from fhub_core.util.log import logger
-from fhub_core.util.modutil import import_module_from_modname
+from ballet.exc import Error
+from ballet.modeling.constants import CLASSIFICATION_SCORING, REGRESSION_SCORING, SCORING_NAME_MAPPER
+from ballet.util.log import logger
+from ballet.util.modutil import import_module_from_modname
 
 
 class ScorerInfo:

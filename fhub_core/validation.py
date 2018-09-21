@@ -3,14 +3,14 @@ import pathlib
 
 import funcy
 
-from fhub_core.contrib import get_contrib_features
-from fhub_core.exc import UnexpectedValidationStateError
-from fhub_core.feature import Feature
-from fhub_core.util import assertion_method
-from fhub_core.util.gitutil import LocalPullRequestBuildDiffer
-from fhub_core.util.log import logger
-from fhub_core.util.modutil import import_module_at_path, relpath_to_modname
-from fhub_core.util.travisutil import (
+from ballet.contrib import get_contrib_features
+from ballet.exc import UnexpectedValidationStateError
+from ballet.feature import Feature
+from ballet.util import assertion_method
+from ballet.util.gitutil import LocalPullRequestBuildDiffer
+from ballet.util.log import logger
+from ballet.util.modutil import import_module_at_path, relpath_to_modname
+from ballet.util.travisutil import (
     TravisPullRequestBuildDiffer, can_use_travis_differ)
 
 __all__ = [

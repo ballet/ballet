@@ -1,4 +1,4 @@
-* fhub_core version:
+* ballet version:
 * Python version:
 * Operating System:
 

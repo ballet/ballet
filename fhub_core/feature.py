@@ -7,8 +7,8 @@ from sklearn.pipeline import _name_estimators
 from sklearn_pandas import DataFrameMapper
 from sklearn_pandas.pipeline import TransformerPipeline
 
-from fhub_core.util import asarray2d, indent
-from fhub_core.util.log import logger
+from ballet.util import asarray2d, indent
+from ballet.util.log import logger
 
 
 __all__ = ['Feature', 'make_robust_transformer',

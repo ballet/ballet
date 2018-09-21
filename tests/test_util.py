@@ -5,12 +5,12 @@ import types
 import unittest
 from unittest.mock import patch
 
-import fhub_core
-from fhub_core.util.gitutil import get_diff_str_from_commits
-from fhub_core.util.modutil import (  # noqa F401
+import ballet
+from ballet.util.gitutil import get_diff_str_from_commits
+from ballet.util.modutil import (  # noqa F401
     import_module_at_path, import_module_from_modname,
     import_module_from_relpath, modname_to_relpath, relpath_to_modname)
-from fhub_core.util.travisutil import (
+from ballet.util.travisutil import (
     TravisPullRequestBuildDiffer, get_travis_pr_num, is_travis_pr)
 
 from .util import make_mock_commits, mock_repo
@@ -62,31 +62,31 @@ class TestModutil(unittest.TestCase):
         raise NotImplementedError
 
     def test_relpath_to_modname(self):
-        relpath = 'fhub_core/util/_util.py'
-        expected_modname = 'fhub_core.util._util'
+        relpath = 'ballet/util/_util.py'
+        expected_modname = 'ballet.util._util'
         actual_modname = relpath_to_modname(relpath)
         self.assertEqual(actual_modname, expected_modname)
 
-        relpath = 'fhub_core/util/__init__.py'
-        expected_modname = 'fhub_core.util'
+        relpath = 'ballet/util/__init__.py'
+        expected_modname = 'ballet.util'
         actual_modname = relpath_to_modname(relpath)
         self.assertEqual(actual_modname, expected_modname)
 
-        relpath = 'fhub_core/foo/bar/baz.zip'
+        relpath = 'ballet/foo/bar/baz.zip'
         with self.assertRaises(ValueError):
             relpath_to_modname(relpath)
 
     def test_modname_to_relpath(self):
-        modname = 'fhub_core.util._util'
-        expected_relpath = 'fhub_core/util/_util.py'
+        modname = 'ballet.util._util'
+        expected_relpath = 'ballet/util/_util.py'
         actual_relpath = modname_to_relpath(modname)
         self.assertEqual(actual_relpath, expected_relpath)
 
-        modname = 'fhub_core.util'
+        modname = 'ballet.util'
         # mypackage.__file__ resolves to the __init__.py
-        project_root = pathlib.Path(fhub_core.__file__).parent.parent
+        project_root = pathlib.Path(ballet.__file__).parent.parent
 
-        expected_relpath = 'fhub_core/util/__init__.py'
+        expected_relpath = 'ballet/util/__init__.py'
         actual_relpath = modname_to_relpath(modname, project_root=project_root)
         self.assertEqual(actual_relpath, expected_relpath)
 
@@ -99,7 +99,7 @@ class TestModutil(unittest.TestCase):
             try:
                 os.chdir(tmpdir)
                 actual_relpath = modname_to_relpath(modname)
-                expected_relpath = 'fhub_core/util.py'
+                expected_relpath = 'ballet/util.py'
                 self.assertEqual(actual_relpath, expected_relpath)
             finally:
                 os.chdir(cwd)
@@ -109,15 +109,15 @@ class TestModutil(unittest.TestCase):
         try:
             os.chdir(str(project_root))
             actual_relpath = modname_to_relpath(modname)
-            expected_relpath = 'fhub_core/util/__init__.py'
+            expected_relpath = 'ballet/util/__init__.py'
             self.assertEqual(actual_relpath, expected_relpath)
         finally:
             os.chdir(cwd)
 
         # without add_init
-        modname = 'fhub_core.util'
+        modname = 'ballet.util'
         add_init = False
-        expected_relpath = 'fhub_core/util'
+        expected_relpath = 'ballet/util'
         actual_relpath = modname_to_relpath(
             modname, project_root=project_root, add_init=add_init)
         self.assertEqual(actual_relpath, expected_relpath)

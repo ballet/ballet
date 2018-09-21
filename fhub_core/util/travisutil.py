@@ -3,9 +3,9 @@ import os
 import funcy
 import git
 
-from fhub_core.exc import UnexpectedTravisEnvironmentError
-from fhub_core.util.gitutil import PullRequestBuildDiffer
-from fhub_core.util.log import logger
+from ballet.exc import UnexpectedTravisEnvironmentError
+from ballet.util.gitutil import PullRequestBuildDiffer
+from ballet.util.log import logger
 
 
 def get_travis_env_or_fail(name):

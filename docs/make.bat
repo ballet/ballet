@@ -9,7 +9,7 @@ if "%SPHINXBUILD%" == "" (
 )
 set SOURCEDIR=.
 set BUILDDIR=_build
-set SPHINXPROJ=fhub_core
+set SPHINXPROJ=ballet
 
 if "%1" == "" goto help
 

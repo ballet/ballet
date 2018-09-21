@@ -4,7 +4,7 @@
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = python -msphinx
-SPHINXPROJ    = fhub_core
+SPHINXPROJ    = ballet
 SOURCEDIR     = .
 BUILDDIR      = _build
 

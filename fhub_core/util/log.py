@@ -1,6 +1,6 @@
 import logging
 
-import fhub_core
+import ballet
 
 
-logger = logging.getLogger(fhub_core.__name__)
+logger = logging.getLogger(ballet.__name__)

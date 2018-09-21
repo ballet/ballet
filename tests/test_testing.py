@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import pandas.util.testing as pdt
 
-from fhub_core.util.testing import ArrayLikeEqualityTestingMixin
+from ballet.util.testing import ArrayLikeEqualityTestingMixin
 
 
 class TestArrayLikeEqualityTestingMixin(
