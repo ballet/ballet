@@ -1,11 +1,10 @@
-Welcome to fhub_core's documentation!
-======================================
+.. mdinclude:: readme.rst
 
 .. toctree::
+   :hidden:
    :maxdepth: 2
-   :caption: Contents:
 
-   readme
+   Overview <readme>
    installation
    usage
    modules

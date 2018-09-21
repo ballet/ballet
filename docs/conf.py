@@ -22,8 +22,6 @@ import os
 import sys
 
 import sphinx_rtd_theme # For read the docs theme
-from recommonmark.parser import CommonMarkParser
-from recommonmark.transform import AutoStructify
 
 sys.path.insert(0, os.path.abspath('..'))
 
@@ -38,7 +36,9 @@ import fhub_core
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
+    'm2r',
     'sphinx.ext.autodoc',
+    'sphinx.ext.githubpages',
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
 ]
@@ -50,17 +50,13 @@ templates_path = ['_templates']
 # You can specify multiple suffix as a list of string:
 source_suffix = ['.rst', '.md']
 
-source_parsers = {
-    '.md': CommonMarkParser,
-}
-
 # The master toctree document.
 master_doc = 'index'
 
 # General information about the project.
 project = u'fhub_core'
-copyright = u"2018, Micah Smith"
-author = u"Micah Smith"
+copyright = u'2018, Micah Smith'
+author = u'Micah Smith'
 
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout
@@ -118,7 +114,7 @@ html_theme_options = {
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-# html_static_path = ['_static']
+html_static_path = ['_static']
 
 
 # -- Options for HTMLHelp output ---------------------------------------
