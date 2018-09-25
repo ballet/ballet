@@ -1,10 +1,10 @@
+import funcy
 import numpy as np
 import pandas as pd
-from ballet.util import get_arr_desc
 from sklearn.base import BaseEstimator, TransformerMixin
 
-import funcy
 from ballet.eng.base import NoFitMixin, SimpleFunctionTransformer
+from ballet.util import get_arr_desc
 
 __all__ = ['IdentityTransformer', 'ValueReplacer', 'NamedFramer']
 

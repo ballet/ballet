@@ -1,5 +1,6 @@
 RANDOM_STATE = 1754
 
+
 def _make_multiclass(lst):
     return [
         l + '_' + MULTICLASS_METRIC_AGGREGATION
@@ -50,6 +51,3 @@ SCORING_NAME_MAPPER = {
     'neg_median_absolute_error': 'Negative Median Absolute Error',
     'r2': 'R-squared',
 }
-
-
-

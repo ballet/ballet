@@ -6,10 +6,11 @@ import sklearn.datasets
 from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import LabelBinarizer
 
-from ballet.modeling.problem import MulticlassClassificationProblem, RegressionProblem
 from ballet.modeler import (
     DecisionTreeModeler, StratifiedKFoldMultiClassIndicator, TunedModeler,
     TunedRandomForestClassifier, TunedRandomForestRegressor)
+from ballet.modeling.problem import (
+    MulticlassClassificationProblem, RegressionProblem)
 from ballet.util.log import logger
 from ballet.util.testing import EPSILON, log_seed_on_error, seeded
 

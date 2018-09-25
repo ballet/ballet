@@ -7,7 +7,6 @@ import numpy.testing as npt
 import pandas as pd
 import pandas.util.testing as pdt
 
-
 EPSILON = 1e-4
 
 

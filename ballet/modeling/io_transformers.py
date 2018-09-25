@@ -117,5 +117,3 @@ class TargetTypeTransformer(FeatureTypeTransformer):
             y = self.label_binarizer_.inverse_transform(y)
         y = super().inverse_transform(y)
         return y
-
-

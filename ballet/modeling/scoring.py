@@ -2,7 +2,8 @@ import sklearn.metrics
 from funcy import fallback, flip, partial, raiser, rcompose, select_values
 
 from ballet.exc import Error
-from ballet.modeling.constants import CLASSIFICATION_SCORING, REGRESSION_SCORING, SCORING_NAME_MAPPER
+from ballet.modeling.constants import (
+    CLASSIFICATION_SCORING, REGRESSION_SCORING, SCORING_NAME_MAPPER)
 from ballet.util.log import logger
 from ballet.util.modutil import import_module_from_modname
 
@@ -34,7 +35,10 @@ class ScorerInfo:
             from_attr,
             from_sklearn_metrics,
             from_import,
-            raiser(Error, 'Could not get a scorer with configuration {}'.format(self.name)),
+            raiser(
+                Error,
+                'Could not get a scorer with configuration {}'.format(
+                    self.name)),
         )
         return self._scorer
 
@@ -43,9 +47,11 @@ class ScorerInfo:
         if self._name is None:
             if self._scorer is not None:
                 # try from scorer
-                if isinstance(self._scorer, sklearn.metrics.scorer._BaseScorer):
+                if isinstance(self._scorer,
+                              sklearn.metrics.scorer._BaseScorer):
                     scorers = sklearn.metrics.scorer.SCORERS
-                    matches = select_values(lambda x: x == self._scorer, scorers)
+                    matches = select_values(
+                        lambda x: x == self._scorer, scorers)
                     matches = list(matches.keys())
                     if len(matches) == 1:
                         self._name = matches[0]

@@ -1,6 +1,5 @@
-from sklearn.base import BaseEstimator, TransformerMixin
-
 import funcy
+from sklearn.base import BaseEstimator, TransformerMixin
 
 __all__ = [
     'NoFitMixin',

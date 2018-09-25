@@ -1,5 +1,5 @@
-from abc import ABCMeta, abstractmethod
 import os
+from abc import ABCMeta, abstractmethod
 
 import btb
 import btb.tuning.gp
@@ -7,14 +7,15 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.externals import joblib
 from sklearn.model_selection import (
-    KFold, StratifiedKFold, cross_val_score, cross_validate, train_test_split,
-)
+    KFold, StratifiedKFold, cross_val_score, cross_validate, train_test_split)
 from sklearn.model_selection._validation import _multimetric_score
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 
 from ballet.modeling.constants import RANDOM_STATE
-from ballet.modeling.io_transformers import FeatureTypeTransformer, TargetTypeTransformer
-from ballet.modeling.scoring import ScorerInfo, get_scorer_names_for_problem_type
+from ballet.modeling.io_transformers import (
+    FeatureTypeTransformer, TargetTypeTransformer)
+from ballet.modeling.scoring import (
+    ScorerInfo, get_scorer_names_for_problem_type)
 from ballet.util.log import logger
 
 
@@ -197,10 +198,12 @@ class Modeler:
             raise NotImplementedError
 
     def _get_default_classifier(self):
-        return RandomForestClassifier(n_estimators=10, random_state=RANDOM_STATE + 1)
+        return RandomForestClassifier(
+            n_estimators=10, random_state=RANDOM_STATE + 1)
 
     def _get_default_regressor(self):
-        return RandomForestRegressor(n_estimators=10, random_state=RANDOM_STATE + 2)
+        return RandomForestRegressor(
+            n_estimators=10, random_state=RANDOM_STATE + 2)
 
 
 class DecisionTreeModeler(Modeler):
@@ -260,6 +263,7 @@ class SelfTuningMixin(metaclass=ABCMeta):
             if self.tunables is not None:
 
                 scorer = None
+
                 def score(estimator):
                     scores = cross_val_score(
                         estimator, X, y,
@@ -295,8 +299,8 @@ class SelfTuningMixin(metaclass=ABCMeta):
                     .format(original_score, best_score))
             else:
                 logger.warning('Tuning requested, but either btb not '
-                                'installed or tunable HyperParameters not '
-                                'specified.')
+                               'installed or tunable HyperParameters not '
+                               'specified.')
 
         return super().fit(X, y, **fit_kwargs)
 
@@ -312,11 +316,13 @@ class SelfTuningRandomForestMixin(SelfTuningMixin):
         ]
 
 
-class TunedRandomForestRegressor(SelfTuningRandomForestMixin, RandomForestRegressor):
+class TunedRandomForestRegressor(
+        SelfTuningRandomForestMixin, RandomForestRegressor):
     pass
 
 
-class TunedRandomForestClassifier(SelfTuningRandomForestMixin, RandomForestClassifier):
+class TunedRandomForestClassifier(
+        SelfTuningRandomForestMixin, RandomForestClassifier):
     pass
 
 

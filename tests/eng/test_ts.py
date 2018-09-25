@@ -2,13 +2,13 @@ import unittest
 
 import numpy as np
 import pandas as pd
-from ballet.util.testing import ArrayLikeEqualityTestingMixin
 
 import ballet.eng.ts
+from ballet.util.testing import ArrayLikeEqualityTestingMixin
 
 
 class TestTimeSeriesTransformers(
-         unittest.TestCase, ArrayLikeEqualityTestingMixin):
+        unittest.TestCase, ArrayLikeEqualityTestingMixin):
 
     def test_single_lagger(self):
         # simple test
@@ -21,7 +21,7 @@ class TestTimeSeriesTransformers(
         self.assertSeriesEqual(result, expected_result)
 
         data = pd.DataFrame(
-            data = {
+            data={
                 'city': ['LA', 'LA', 'LA', 'NYC', 'BOS', 'BOS', 'BOS'],
                 'year': [2001, 2002, 2003, 2002, 2003, 2004, 2005],
                 'width': [1, 2, 3, 4, 5, 6, 7],
@@ -31,7 +31,7 @@ class TestTimeSeriesTransformers(
             1, groupby_kwargs={'level': 'city'})
         result = trans.fit_transform(data)
         expected_result = pd.DataFrame(
-            data = {
+            data={
                 'city': ['LA', 'LA', 'LA', 'NYC', 'BOS', 'BOS', 'BOS'],
                 'year': [2001, 2002, 2003, 2002, 2003, 2004, 2005],
                 'width': [np.nan, 1, 2, np.nan, np.nan, 5, 6],

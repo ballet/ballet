@@ -10,7 +10,6 @@ from sklearn_pandas.pipeline import TransformerPipeline
 from ballet.util import asarray2d, indent
 from ballet.util.log import logger
 
-
 __all__ = ['Feature', 'make_robust_transformer',
            'RobustTransformerPipeline', 'make_robust_transformer_pipeline']
 
