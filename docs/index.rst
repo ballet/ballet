@@ -1,7 +1,6 @@
 .. mdinclude:: readme.rst
 
 .. toctree::
-   :caption: Getting Started
    :hidden:
    :maxdepth: 2
 
