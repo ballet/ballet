@@ -2,6 +2,7 @@ import unittest
 
 import numpy as np
 import pandas as pd
+import sklearn.base
 
 import ballet.eng.base
 import ballet.eng.misc
@@ -21,6 +22,13 @@ class TestBase(unittest.TestCase):
         # method should exist
         a.fit('X')
         a.fit('X', y=None)
+
+
+    def test_base_transformer(self):
+        a = ballet.eng.base.BaseTransformer()
+
+        self.assertIsInstance(a, sklearn.base.BaseEstimator)
+        self.assertTrue(hasattr(a, 'fit'))
 
     def test_simple_function_transformer(self):
         def func(x): return x + 5
