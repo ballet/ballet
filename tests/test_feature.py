@@ -4,9 +4,10 @@ import funcy
 import numpy as np
 import pandas as pd
 import sklearn.preprocessing
+from sklearn_pandas import DataFrameMapper
 
-from ballet import Feature, make_robust_transformer
 from ballet.compat import SimpleImputer
+from ballet.feature import Feature, make_mapper, make_robust_transformer
 from ballet.util import IdentityTransformer, asarray2d
 
 from .util import FragileTransformer, FragileTransformerPipeline
@@ -148,3 +149,10 @@ class TestFeature(unittest.TestCase):
         tup = feature.as_input_transformer_tuple()
         self.assertIsInstance(tup, tuple)
         self.assertEqual(len(tup), 2)
+
+    def test_make_mapper(self):
+        feature = Feature(self.input, self.transformer)
+        features = [feature]
+        mapper = make_mapper(features)
+        self.assertIsInstance(mapper, DataFrameMapper)
+

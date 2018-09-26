@@ -10,8 +10,21 @@ from sklearn_pandas.pipeline import TransformerPipeline
 from ballet.util import asarray2d, indent
 from ballet.util.log import logger
 
-__all__ = ['Feature', 'make_robust_transformer',
-           'RobustTransformerPipeline', 'make_robust_transformer_pipeline']
+__all__ = ['make_mapper', 'Feature']
+
+
+def make_mapper(features):
+    """Make a DataFrameMapper from a list of features
+
+    Args:
+        features (List[Feature]): list of features
+
+    Returns:
+        DataFrameMapper: mapper made from features
+    """
+    return DataFrameMapper(
+        [t.as_input_transformer_tuple() for t in features],
+        input_df=True)
 
 
 class RobustTransformerPipeline(TransformerPipeline):

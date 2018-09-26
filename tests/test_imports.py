@@ -5,7 +5,8 @@ class TestImports(unittest.TestCase):
     def test_feature_imports(self):
         from ballet.feature import (  # noqa
             Feature, make_robust_transformer,
-            RobustTransformerPipeline, make_robust_transformer_pipeline, )
+            RobustTransformerPipeline, make_robust_transformer_pipeline,
+            make_mapper, )
 
     def test_contrib_imports(self):
         from ballet.contrib import (  # noqa
@@ -35,9 +36,7 @@ class TestImports(unittest.TestCase):
 
     def test_toplevel_imports(self):
         from ballet import (  # noqa
-            Feature, make_robust_transformer,
-            RobustTransformerPipeline, make_robust_transformer_pipeline,
-            get_contrib_features, )
+            Feature, make_mapper, get_contrib_features, )
 
     def test_nonexistent_import(self):
         with self.assertRaises(ImportError):
