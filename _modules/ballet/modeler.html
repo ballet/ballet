@@ -346,7 +346,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">target_type_transformer</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
             <span class="n">transformer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_type_transformer</span>
             <span class="n">kf</span> <span class="o">=</span> <span class="n">StratifiedKFoldMultiClassIndicator</span><span class="p">(</span>
-                <span class="n">transformer</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n_splits</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">RANDOM_STATE</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span>
+                <span class="n">transformer</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n_splits</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                <span class="n">random_state</span><span class="o">=</span><span class="n">RANDOM_STATE</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">problem_type</span><span class="o">.</span><span class="n">regression</span><span class="p">:</span>
             <span class="n">kf</span> <span class="o">=</span> <span class="n">KFold</span><span class="p">(</span><span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n_splits</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">RANDOM_STATE</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -542,9 +543,9 @@
 
 
 <div class="viewcode-block" id="StratifiedKFoldMultiClassIndicator"><a class="viewcode-back" href="../../api/ballet.modeler.html#ballet.modeler.StratifiedKFoldMultiClassIndicator">[docs]</a><span class="k">class</span> <span class="nc">StratifiedKFoldMultiClassIndicator</span><span class="p">(</span><span class="n">StratifiedKFold</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Adaptation of StratifiedKFold to support multiclass-indicator format y values.</span>
+    <span class="sd">&#39;&#39;&#39;Adaptation of StratifiedKFold for multiclass-indicator format y values.</span>
 
-<span class="sd">    Note that this should not be used for multilabel, multiclass dataself.</span>
+<span class="sd">    Note that this should not be used for multilabel, multiclass data.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformer</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
