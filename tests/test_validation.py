@@ -10,7 +10,8 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from ballet.compat import SimpleImputer
 from ballet.exc import UnexpectedValidationStateError
 from ballet.feature import Feature
-from ballet.util import IdentityTransformer, NoFitMixin
+from ballet.eng.misc import NoFitMixin
+from ballet.eng.misc import IdentityTransformer
 from ballet.util.gitutil import get_diff_str_from_commits
 from ballet.util.travisutil import TravisPullRequestBuildDiffer
 from ballet.validation import FeatureValidator, PullRequestFeatureValidator
