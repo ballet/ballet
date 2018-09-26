@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.feature &mdash; ballet 0.4.0 documentation</title>
+  <title>ballet.feature &mdash; ballet 0.4.1 documentation</title>
   
 
   
@@ -216,20 +216,33 @@
 <span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">asarray2d</span><span class="p">,</span> <span class="n">indent</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Feature&#39;</span><span class="p">,</span> <span class="s1">&#39;make_robust_transformer&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;RobustTransformerPipeline&#39;</span><span class="p">,</span> <span class="s1">&#39;make_robust_transformer_pipeline&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;make_mapper&#39;</span><span class="p">,</span> <span class="s1">&#39;Feature&#39;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="RobustTransformerPipeline"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.feature.RobustTransformerPipeline">[docs]</a><span class="k">class</span> <span class="nc">RobustTransformerPipeline</span><span class="p">(</span><span class="n">TransformerPipeline</span><span class="p">):</span>
+<div class="viewcode-block" id="make_mapper"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.feature.make_mapper">[docs]</a><span class="k">def</span> <span class="nf">make_mapper</span><span class="p">(</span><span class="n">features</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make a DataFrameMapper from a list of features</span>
 
-<div class="viewcode-block" id="RobustTransformerPipeline.transform"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.feature.RobustTransformerPipeline.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_kwargs</span><span class="p">):</span>
+<span class="sd">    Args:</span>
+<span class="sd">        features (List[Feature]): list of features</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        DataFrameMapper: mapper made from features</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">DataFrameMapper</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">as_input_transformer_tuple</span><span class="p">()</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">features</span><span class="p">],</span>
+        <span class="n">input_df</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<span class="k">class</span> <span class="nc">RobustTransformerPipeline</span><span class="p">(</span><span class="n">TransformerPipeline</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_kwargs</span><span class="p">):</span>
         <span class="n">_transform</span> <span class="o">=</span> <span class="n">make_robust_to_tabular_types</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">_transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_kwargs</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">_transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_kwargs</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="make_robust_transformer_pipeline"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.feature.make_robust_transformer_pipeline">[docs]</a><span class="k">def</span> <span class="nf">make_robust_transformer_pipeline</span><span class="p">(</span><span class="o">*</span><span class="n">steps</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">make_robust_transformer_pipeline</span><span class="p">(</span><span class="o">*</span><span class="n">steps</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Construct a RobustTransformerPipeline from the given estimators.&#39;&#39;&#39;</span>
-    <span class="k">return</span> <span class="n">RobustTransformerPipeline</span><span class="p">(</span><span class="n">_name_estimators</span><span class="p">(</span><span class="n">steps</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">RobustTransformerPipeline</span><span class="p">(</span><span class="n">_name_estimators</span><span class="p">(</span><span class="n">steps</span><span class="p">))</span>
 
 
 <span class="k">def</span> <span class="nf">make_conversion_approaches</span><span class="p">():</span>
@@ -259,10 +272,10 @@
     <span class="k">return</span> <span class="n">wrapped</span>
 
 
-<div class="viewcode-block" id="make_robust_transformer"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.feature.make_robust_transformer">[docs]</a><span class="k">def</span> <span class="nf">make_robust_transformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">make_robust_transformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">):</span>
     <span class="n">transformer</span><span class="o">.</span><span class="n">fit</span> <span class="o">=</span> <span class="n">make_robust_to_tabular_types</span><span class="p">(</span><span class="n">transformer</span><span class="o">.</span><span class="n">fit</span><span class="p">)</span>
     <span class="n">transformer</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">make_robust_to_tabular_types</span><span class="p">(</span><span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">transformer</span></div>
+    <span class="k">return</span> <span class="n">transformer</span>
 
 
 <div class="viewcode-block" id="Feature"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.feature.Feature">[docs]</a><span class="k">class</span> <span class="nc">Feature</span><span class="p">:</span>
@@ -330,7 +343,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.4.0',
+            VERSION:'0.4.1',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
