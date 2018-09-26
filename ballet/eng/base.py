@@ -2,9 +2,10 @@ import funcy
 from sklearn.base import BaseEstimator, TransformerMixin
 
 __all__ = [
+    'BaseTransformer',
+    'GroupedFunctionTransformer',
     'NoFitMixin',
     'SimpleFunctionTransformer',
-    'GroupedFunctionTransformer',
 ]
 
 
@@ -13,7 +14,11 @@ class NoFitMixin:
         return self
 
 
-class SimpleFunctionTransformer(BaseEstimator, NoFitMixin, TransformerMixin):
+class BaseTransformer(NoFitMixin, TransformerMixin, BaseEstimator):
+    pass
+
+
+class SimpleFunctionTransformer(BaseTransformer):
     def __init__(self, func, func_args=None, func_kwargs=None):
         super().__init__()
         self.func = func

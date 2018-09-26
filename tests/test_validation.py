@@ -5,12 +5,11 @@ from unittest.mock import patch
 import funcy
 import numpy as np
 import pandas as pd
-from sklearn.base import BaseEstimator, TransformerMixin
 
 from ballet.compat import SimpleImputer
 from ballet.exc import UnexpectedValidationStateError
 from ballet.feature import Feature
-from ballet.eng.misc import NoFitMixin
+from ballet.eng.base import BaseTransformer
 from ballet.eng.misc import IdentityTransformer
 from ballet.util.gitutil import get_diff_str_from_commits
 from ballet.util.travisutil import TravisPullRequestBuildDiffer
@@ -73,8 +72,7 @@ class TestFeatureValidator(TestDataMixin, unittest.TestCase):
         self.assertIn('can_transform', failures)
 
     def test_bad_feature_wrong_transform_length(self):
-        class _WrongLengthTransformer(
-                BaseEstimator, NoFitMixin, TransformerMixin):
+        class _WrongLengthTransformer(BaseTransformer):
             def transform(self, X, **transform_kwargs):
                 new_shape = list(X.shape)
                 new_shape[0] += 1

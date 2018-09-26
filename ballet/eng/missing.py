@@ -1,7 +1,6 @@
 import numpy as np
-from sklearn.base import BaseEstimator, TransformerMixin
 
-from ballet.eng.base import GroupedFunctionTransformer, NoFitMixin
+from ballet.eng.base import BaseTransformer, GroupedFunctionTransformer
 
 __all__ = ['LagImputer', 'NullFiller', 'NullIndicator']
 
@@ -12,7 +11,7 @@ class LagImputer(GroupedFunctionTransformer):
                          groupby_kwargs=groupby_kwargs)
 
 
-class NullFiller(BaseEstimator, NoFitMixin, TransformerMixin):
+class NullFiller(BaseTransformer):
     def __init__(self, isnull=None, replacement=0.0):
         super().__init__()
         if isnull is None:
@@ -28,6 +27,6 @@ class NullFiller(BaseEstimator, NoFitMixin, TransformerMixin):
         return X
 
 
-class NullIndicator(BaseEstimator, NoFitMixin, TransformerMixin):
+class NullIndicator(BaseTransformer):
     def transform(self, X, **tranform_kwargs):
         return np.isnan(X).astype(int)

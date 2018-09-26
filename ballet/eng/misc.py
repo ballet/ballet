@@ -1,9 +1,8 @@
 import funcy
 import numpy as np
 import pandas as pd
-from sklearn.base import BaseEstimator, TransformerMixin
 
-from ballet.eng.base import NoFitMixin, SimpleFunctionTransformer
+from ballet.eng.base import BaseTransformer, SimpleFunctionTransformer
 from ballet.util import get_arr_desc
 
 __all__ = ['IdentityTransformer', 'ValueReplacer', 'NamedFramer']
@@ -14,7 +13,7 @@ class IdentityTransformer(SimpleFunctionTransformer):
         super().__init__(funcy.identity)
 
 
-class ValueReplacer(BaseEstimator, NoFitMixin, TransformerMixin):
+class ValueReplacer(BaseTransformer):
     def __init__(self, value, replacement):
         super().__init__()
         self.value = value
@@ -27,7 +26,7 @@ class ValueReplacer(BaseEstimator, NoFitMixin, TransformerMixin):
         return X
 
 
-class NamedFramer(BaseEstimator, NoFitMixin, TransformerMixin):
+class NamedFramer(BaseTransformer):
     def __init__(self, name):
         super().__init__()
         self.name = name
