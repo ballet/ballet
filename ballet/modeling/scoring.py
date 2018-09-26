@@ -58,8 +58,8 @@ class ScorerInfo:
                     elif len(matches) > 1:
                         # unexpected
                         logger.debug(
-                            'Unexpectedly found multiple matches for scorer name {name}: '
-                            '{matches!r}'
+                            'Unexpectedly found multiple matches for scorer '
+                            'name {name}: {matches!r}'
                             .format(name=self._name, matches=matches))
                     else:
                         # must be a custom scorer, try to get name
@@ -104,9 +104,9 @@ def get_scorer_names_for_problem_type(problem_type):
     '''Get scorers for this problem type.
 
     Returns:
-        list: List of scorer_name as defined in sklearn.metrics. This is a 'utility
-            variable' that can be used where we just need the names of the
-            scoring functions and not the more complete information.
+        list: List of scorer_name as defined in sklearn.metrics. This is a
+            'utility variable' that can be used where we just need the names of
+             the scoring functions and not the more complete information.
     '''
     # scoring_types maps user-readable name to `scoring`, as argument to
     # cross_val_score

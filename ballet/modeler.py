@@ -140,7 +140,8 @@ class Modeler:
             self.target_type_transformer.inverse_transform(y)
             transformer = self.target_type_transformer
             kf = StratifiedKFoldMultiClassIndicator(
-                transformer, shuffle=True, n_splits=3, random_state=RANDOM_STATE + 3)
+                transformer, shuffle=True, n_splits=3,
+                random_state=RANDOM_STATE + 3)
         elif self.problem_type.regression:
             kf = KFold(shuffle=True, n_splits=3, random_state=RANDOM_STATE + 4)
         else:
@@ -336,9 +337,9 @@ class TunedModeler(Modeler):
 
 
 class StratifiedKFoldMultiClassIndicator(StratifiedKFold):
-    '''Adaptation of StratifiedKFold to support multiclass-indicator format y values.
+    '''Adaptation of StratifiedKFold for multiclass-indicator format y values.
 
-    Note that this should not be used for multilabel, multiclass dataself.
+    Note that this should not be used for multilabel, multiclass data.
     '''
 
     def __init__(self, transformer, *args, **kwargs):
