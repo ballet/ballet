@@ -14,5 +14,12 @@ else:
     import pathlib  # noqa F401
 
 
+# re-export some names
 from ballet.feature import *  # noqa
 from ballet.contrib import *  # noqa
+
+
+# configure module-level logging
+import logging  # noqa E402
+from ballet.util.log import logger  # noqa E402
+logger.addHandler(logging.NullHandler())
