@@ -30,6 +30,7 @@ setup_requirements = [
 test_requirements = [
     'coverage>=4.5.1',
     'pytest>=3.4.2',
+    'pytest-cov',
     'tox>=2.9.1',
 ]
 
