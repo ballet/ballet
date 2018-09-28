@@ -1,14 +1,14 @@
-import sys
+from collections import namedtuple
 import traceback
 
 import numpy as np
 import pandas as pd
 from funcy import identity, is_seqcont, wraps
-from sklearn.pipeline import _name_estimators
+from sklearn.base import TransformerMixin
 from sklearn_pandas import DataFrameMapper
-from sklearn_pandas.pipeline import TransformerPipeline, make_transformer_pipeline
+from sklearn_pandas.pipeline import make_transformer_pipeline
 
-from ballet.util import asarray2d, indent
+from ballet.util import asarray2d, indent, DeepcopyMixin
 from ballet.util.log import logger
 
 __all__ = ['make_mapper', 'Feature']
@@ -28,91 +28,141 @@ def make_mapper(features):
         input_df=True)
 
 
+ConversionApproach = namedtuple('ConversionApproach', 'name convert caught')
 default_caught = (ValueError, TypeError)
 conversion_approaches = [
-    ('identity', identity, default_caught),
-    ('series', pd.Series, default_caught),
-    ('dataframe', pd.DataFrame, default_caught),
-    ('array', np.asarray, default_caught),
-    ('asarray2d', asarray2d, ()),
+    ConversionApproach('identity', identity, default_caught),
+    ConversionApproach('series', pd.Series, default_caught),
+    ConversionApproach('dataframe', pd.DataFrame, default_caught),
+    ConversionApproach('array', np.asarray, default_caught),
+    ConversionApproach('asarray2d', asarray2d, ()),
 ]
-
-
-def log_failure_detail(failure_detail):
-    print('*** logging is happening', flush=True)
-    logger.info("Conversion failed, and we're not sure why...")
-    logger.info('Here are the approaches we tried, and how they failed.')
-    for i, item in enumerate(failure_detail):
-        msg = ('{i}. Conversion using approach {name!r} resulted in '
-               '{exc_name} ({exc}), ')
-        if item['outcome'] == 'caught':
-            msg += 'which was caught, and the next approach was tried.'
-        elif item['outcome'] == 'failure':
-            msg += 'which was an unexpected error resulting in failure.'
-        else:
-            raise RuntimeError
-        exc_name = type(item['exc']).__name__
-        logger.info(msg.format(i=i+1, exc_name=exc_name, **item))
-
-
-def make_robust_to_tabular_types(func):
-
-    @wraps(func)
-    def wrapped(X, y=None, **kwargs):
-        failure_detail = []
-        for name, convert, caught in conversion_approaches:
-            try:
-                logger.debug(
-                    "Converting using approach '{name}'"
-                    .format(name=name))
-                if y is not None:
-                    return func(convert(X), y=convert(y), **kwargs)
-                else:
-                    return func(convert(X), **kwargs)
-            except caught as e:
-                tb = traceback.format_exc()
-                failure_detail.append(
-                    {'name': name, 'exc': e, 'tb': tb, 'outcome': 'caught'})
-                pretty_tb = indent(tb, n=8)
-                logger.debug(
-                    "Conversion approach didn't work, "
-                    "caught exception '{name}'\n\n{tb}"
-                    .format(name=type(e).__name__, tb=pretty_tb))
-                continue
-            except Exception as e:
-                tb = traceback.format_exc()
-                failure_detail.append(
-                    {'name': name, 'exc': e, 'tb': tb, 'outcome': 'failure'})
-                log_failure_detail(failure_detail)
-                raise
-
-        # none of the conversion attempts succeeded
-        log_failure_detail(failure_detail)
-
-    return wrapped
-
-
-def make_robust_transformer(transformer):
-    transformer.fit = make_robust_to_tabular_types(transformer.fit)
-    transformer.transform = make_robust_to_tabular_types(transformer.transform)
-    return transformer
 
 
 def make_robust_transformer_pipeline(*steps):
     '''Construct a RobustTransformerPipeline from the given estimators.'''
-    transformer_pipeline = make_transformer_pipeline(*steps)
-    for i in range(transformer_pipeline.steps):
-        transformer_pipeline.steps[i][1] = make_robust_transformer(transformer_pipeline.steps[i][1])
-    return transformer_pipeline
+    steps = list(map(DelegatingRobustTransformer, steps))
+    return make_transformer_pipeline(*steps)
+
+
+class DelegatingRobustTransformer(DeepcopyMixin, TransformerMixin):
+
+    def __init__(self, transformer):
+        self._transformer = transformer
+        self._successful_conversion_approach = None
+
+    def __getattr__(self, attr):
+        return getattr(self._transformer, attr)
+
+    def __repr__(self):
+        name = type(self).__name__
+        return '{name}({transformer!r})'.format(
+            name=name, transformer=self._transformer)
+
+    def fit(self, X, y=None, **kwargs):
+        # don't return the result of transformer.fit because it is the
+        # underlying transformer, not this robust transformer
+        self._call_robust(self._transformer.fit, X, y, kwargs)
+
+        # instead, return this robust transformer
+        return self
+
+    def transform(self, X, y=None, **kwargs):
+        return self._call_robust(self._transformer.transform, X, y, kwargs)
+
+    def _call_with_convert(self, method, convert, X, y, kwargs):
+        if y is not None:
+            return method(convert(X), y=convert(y), **kwargs)
+        else:
+            return method(convert(X), **kwargs)
+
+    def _call_robust(self, method, X, y, kwargs):
+        if self._successful_conversion_approach is not None:
+            approach = self._successful_conversion_approach
+            self._log_attempt_using_successful_approach(approach)
+            convert = approach.convert
+            return self._call_with_convert(method, convert, X, y, kwargs)
+        else:
+            for approach in conversion_approaches:
+                try:
+                    self._log_attempt(approach)
+                    result = self._call_with_convert(
+                        method, approach.convert, X, y, kwargs)
+                except approach.caught as e:
+                    self._log_catch(approach, e)
+                    continue
+                except Exception as e:
+                    self._log_error(approach, e)
+                    break
+                else:
+                    self._log_success(approach)
+                    self._successful_conversion_approach = approach
+                    return result
+
+            self._log_no_more_approaches()
+
+    def _log_attempt_using_successful_approach(self, approach):
+        logger.debug(
+            'Attempting to convert using previously-successful '
+            'approach {approach.name!r}'
+            .format(approach=approach))
+
+    def _log_attempt(self, approach):
+        logger.debug(
+            'Attempting to convert using approach {approach.name!r}...'
+            .format(approach=approach))
+
+    def _get_pretty_tb(self):
+        tb = traceback.format_exc()
+        pretty_tb = indent(tb, n=8)
+        return pretty_tb
+
+    def _log_catch(self, approach, e):
+        pretty_tb = self._get_pretty_tb()
+        exc_name = type(e).__name__
+        logger.debug(
+            "Conversion approach {approach.name!r} didn't work, "
+            "caught exception {exc_name!r}\n\n{tb}"
+            .format(approach=approach, exc_name=exc_name, tb=pretty_tb))
+
+    def _log_error(self, approach, e):
+        pretty_tb = self._get_pretty_tb()
+        exc_name = type(e).__name__
+        logger.debug(
+            "Conversion failed during {approach.name!r} because of an "
+            "unrecoverable error {exc_name!r}\n\n{tb}"
+            .format(approach=approach, exc_name=exc_name, tb=pretty_tb))
+
+    def _log_success(self, approach):
+        logger.debug(
+            'Conversion approach {approach.name!r} succeeded!'
+            .format(approach=approach))
+
+    def _log_no_more_approaches(self, approach):
+        logger.info("Conversion failed, and we're not sure why...")
+        #logger.info('Here are the approaches we tried, and how they failed.')
+        #for i, item in enumerate(failure_detail):
+        #    msg = ('{i}. Conversion using approach {name!r} resulted in '
+        #           '{exc_name} ({exc}), ')
+        #    if item['outcome'] == 'caught':
+        #        msg += 'which was caught, and the next approach was tried.'
+        #    elif item['outcome'] == 'failure':
+        #        msg += 'which was an unexpected error resulting in failure.'
+        #    else:
+        #        raise RuntimeError
+        #    exc_name = type(item['exc']).__name__
+        #    logger.info(msg.format(i=i+1, exc_name=exc_name, **item))
 
 
 class Feature:
     def __init__(self, input, transformer, name=None, description=None,
                  output=None, source=None, options=None):
         self.input = input
+
         if is_seqcont(transformer):
             transformer = make_robust_transformer_pipeline(*transformer)
-        self.transformer = make_robust_transformer(transformer)
+        self.transformer = DelegatingRobustTransformer(transformer)
+
         self.name = name
         self.description = description
         self.output = output  # unused
@@ -128,10 +178,11 @@ class Feature:
                 attr_name=attr, attr_val=getattr(self, attr)
             ) for attr in attr_list
         )
-        return self.__class__.__name__ + '(' + attrs_str + ')'
+        return '{clsname}({attrs_str})'.format(
+            clsname=type(self).__name__, attrs_str=attrs_str)
 
     def as_input_transformer_tuple(self):
-        return (self.input, self.transformer)
+        return self.input, self.transformer
 
     def as_dataframe_mapper(self):
         return DataFrameMapper([
