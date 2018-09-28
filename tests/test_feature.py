@@ -7,7 +7,7 @@ import sklearn.preprocessing
 from sklearn_pandas import DataFrameMapper
 
 from ballet.compat import SimpleImputer
-from ballet.feature import Feature, make_mapper, make_robust_transformer
+from ballet.feature import Feature, make_mapper, DelegatingRobustTransformer
 from ballet.eng.misc import IdentityTransformer
 from ballet.util import asarray2d
 
@@ -46,8 +46,8 @@ class TestFeature(unittest.TestCase):
             catches,
             transformer_maker=FragileTransformer):
         fragile_transformer = transformer_maker(bad_input_checks, catches)
-        robust_transformer = make_robust_transformer(
-            FragileTransformer(bad_input_checks, catches))
+        robust_transformer = DelegatingRobustTransformer(
+            transformer_maker(bad_input_checks, catches))
 
         for input_type in input_types:
             X, y = self.d[input_type]
@@ -100,7 +100,7 @@ class TestFeature(unittest.TestCase):
         # some of these input types are bad for sklearn.
         input_types = ('ser', 'df', 'arr1d')
         for Transformer in Transformers:
-            robust_transformer = make_robust_transformer(Transformer())
+            robust_transformer = DelegatingRobustTransformer(Transformer())
             for input_type in input_types:
                 X, y = self.d[input_type]
                 robust_transformer.fit_transform(X, y=y)
