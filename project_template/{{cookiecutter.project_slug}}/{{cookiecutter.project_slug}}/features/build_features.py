@@ -6,7 +6,6 @@ import ballet.contrib
 import ballet.util.modutil
 import click
 import numpy as np
-from ballet.util.fsutil import replaceext, spliceext
 from ballet.util.ioutil import write_tabular
 
 from {{ cookiecutter.project_slug }}.load_data import load_data
