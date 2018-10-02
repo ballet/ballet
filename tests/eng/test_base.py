@@ -23,7 +23,6 @@ class TestBase(unittest.TestCase):
         a.fit('X')
         a.fit('X', y=None)
 
-
     def test_base_transformer(self):
         a = ballet.eng.base.BaseTransformer()
 

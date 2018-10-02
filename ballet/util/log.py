@@ -2,7 +2,6 @@ import logging
 
 import ballet
 
-
 LOG_FORMAT = r'[%(asctime)s] {%(name)s: %(filename)s:%(lineno)d} %(levelname)s - %(message)s'  # noqa E501
 SIMPLE_LOG_FORMAT = r'%(asctime)s %(levelname)s - %(message)s'
 
@@ -12,7 +11,7 @@ _handler = None
 
 def enable(level=logging.INFO):
     """Enable simple console logging for this module"""
-    name=logging._levelToName[level]
+    name = logging._levelToName[level]
     global _handler
     if _handler is None:
         logger.setLevel(level)

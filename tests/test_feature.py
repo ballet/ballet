@@ -7,8 +7,8 @@ import sklearn.preprocessing
 from sklearn_pandas import DataFrameMapper
 
 from ballet.compat import SimpleImputer
-from ballet.feature import Feature, make_mapper, DelegatingRobustTransformer
 from ballet.eng.misc import IdentityTransformer
+from ballet.feature import DelegatingRobustTransformer, Feature, make_mapper
 from ballet.util import asarray2d
 
 from .util import FragileTransformer, FragileTransformerPipeline
