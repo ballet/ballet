@@ -151,9 +151,13 @@ class TestFeature(unittest.TestCase):
         self.assertIsInstance(tup, tuple)
         self.assertEqual(len(tup), 2)
 
+    def test_feature_as_dataframe_mapper(self):
+        feature = Feature(self.input, self.transformer)
+        mapper = feature.as_dataframe_mapper()
+        self.assertIsInstance(mapper, DataFrameMapper)
+
     def test_make_mapper(self):
         feature = Feature(self.input, self.transformer)
         features = [feature]
         mapper = make_mapper(features)
         self.assertIsInstance(mapper, DataFrameMapper)
-
