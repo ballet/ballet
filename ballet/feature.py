@@ -63,7 +63,7 @@ def make_transformer_pipeline(*steps):
 
 
 def make_robust_transformer_pipeline(*steps):
-    '''Construct a RobustTransformerPipeline from the given estimators.'''
+    """Construct a transformer pipeline of DelegatingRobustTransformers"""
     steps = list(map(DelegatingRobustTransformer, steps))
     return make_transformer_pipeline(*steps)
 
@@ -72,6 +72,19 @@ ConversionApproach = namedtuple('ConversionApproach', 'name convert caught')
 
 
 class DelegatingRobustTransformer(DeepcopyMixin, TransformerMixin):
+    """Robust transformer that delegates to underlying transformer
+
+    This transformer is robust against different typed and shaped input data.
+    It tries a variety of input data conversion approaches and passes the
+    result to the underlying transformer, using the first approach that works.
+
+    Args:
+        transformer: a transformer object with fit and transform methods
+
+    Raises:
+        UnsuccessfulInputConversionError: If none of the conversion approaches work.
+
+    """
 
     DEFAULT_CAUGHT = (ValueError, TypeError)
 
