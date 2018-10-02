@@ -8,3 +8,7 @@ class UnexpectedTravisEnvironmentError(Error):
 
 class UnexpectedValidationStateError(Error):
     pass
+
+
+class UnsuccessfulInputConversionError(Error):
+    pass

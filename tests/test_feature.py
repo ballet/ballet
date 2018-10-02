@@ -7,7 +7,7 @@ import sklearn.preprocessing
 from sklearn_pandas import DataFrameMapper
 
 from ballet.compat import SimpleImputer
-from ballet.feature import Feature, make_mapper, make_robust_transformer
+from ballet.feature import Feature, make_mapper, DelegatingRobustTransformer
 from ballet.eng.misc import IdentityTransformer
 from ballet.util import asarray2d
 
@@ -46,8 +46,8 @@ class TestFeature(unittest.TestCase):
             catches,
             transformer_maker=FragileTransformer):
         fragile_transformer = transformer_maker(bad_input_checks, catches)
-        robust_transformer = make_robust_transformer(
-            FragileTransformer(bad_input_checks, catches))
+        robust_transformer = DelegatingRobustTransformer(
+            transformer_maker(bad_input_checks, catches))
 
         for input_type in input_types:
             X, y = self.d[input_type]
@@ -100,7 +100,7 @@ class TestFeature(unittest.TestCase):
         # some of these input types are bad for sklearn.
         input_types = ('ser', 'df', 'arr1d')
         for Transformer in Transformers:
-            robust_transformer = make_robust_transformer(Transformer())
+            robust_transformer = DelegatingRobustTransformer(Transformer())
             for input_type in input_types:
                 X, y = self.d[input_type]
                 robust_transformer.fit_transform(X, y=y)
@@ -151,9 +151,18 @@ class TestFeature(unittest.TestCase):
         self.assertIsInstance(tup, tuple)
         self.assertEqual(len(tup), 2)
 
+    def test_feature_as_dataframe_mapper(self):
+        feature = Feature(self.input, self.transformer)
+        mapper = feature.as_dataframe_mapper()
+        self.assertIsInstance(mapper, DataFrameMapper)
+
     def test_make_mapper(self):
         feature = Feature(self.input, self.transformer)
         features = [feature]
         mapper = make_mapper(features)
         self.assertIsInstance(mapper, DataFrameMapper)
 
+    def test_make_mapper_scalar(self):
+        feature = Feature(self.input, self.transformer)
+        mapper = make_mapper(feature)
+        self.assertIsInstance(mapper, DataFrameMapper)
