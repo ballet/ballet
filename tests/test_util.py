@@ -16,7 +16,7 @@ from ballet.util.travisutil import (
 from .util import make_mock_commits, mock_repo
 
 
-class TestModutil(unittest.TestCase):
+class ModTest(unittest.TestCase):
 
     @unittest.expectedFailure
     def test_import_module_from_modname(self):
@@ -123,7 +123,7 @@ class TestModutil(unittest.TestCase):
         self.assertEqual(actual_relpath, expected_relpath)
 
 
-class TestTravis(unittest.TestCase):
+class TravisTest(unittest.TestCase):
     def setUp(self):
         self.pr_num = 7
         self.commit_range = 'HEAD^..HEAD'
@@ -204,3 +204,37 @@ class TestTravis(unittest.TestCase):
                     self.assertEqual(diff.change_type, 'A')
                     self.assertEqual(diff.b_path, 'file{j}.py'.format(j=j))
                     j += 1
+
+
+class FsTest(unittest.TestCase):
+
+    @unittest.expectedFailure
+    def test_spliceext(self):
+        raise NotImplementedError
+
+    @unittest.expectedFailure
+    def test_replaceext(self):
+        raise NotImplementedError
+
+    @unittest.expectedFailure
+    def test_splitext2(self):
+        raise NotImplementedError
+
+
+class IoTest(unittest.TestCase):
+
+    @unittest.expectedFailure
+    def test_write_tabular(self):
+        raise NotImplementedError
+
+    @unittest.expectedFailure
+    def test_read_tabular(self):
+        raise NotImplementedError
+
+    @unittest.expectedFailure
+    def test_save_model(self):
+        raise NotImplementedError
+
+    @unittest.expectedFailure
+    def test_save_predictions(self):
+        raise NotImplementedError
