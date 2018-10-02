@@ -1,12 +1,12 @@
-from collections import namedtuple
+from collections import Counter, namedtuple
 import traceback
 
 import numpy as np
 import pandas as pd
-from funcy import identity, is_seqcont, wraps
+from funcy import identity, is_seqcont, select_values
 from sklearn.base import TransformerMixin
 from sklearn_pandas import DataFrameMapper
-from sklearn_pandas.pipeline import make_transformer_pipeline
+from sklearn_pandas.pipeline import TransformerPipeline
 
 from ballet.util import asarray2d, indent, DeepcopyMixin
 from ballet.util.log import logger
@@ -28,15 +28,37 @@ def make_mapper(features):
         input_df=True)
 
 
-ConversionApproach = namedtuple('ConversionApproach', 'name convert caught')
-default_caught = (ValueError, TypeError)
-conversion_approaches = [
-    ConversionApproach('identity', identity, default_caught),
-    ConversionApproach('series', pd.Series, default_caught),
-    ConversionApproach('dataframe', pd.DataFrame, default_caught),
-    ConversionApproach('array', np.asarray, default_caught),
-    ConversionApproach('asarray2d', asarray2d, ()),
-]
+def _name_estimators(estimators):
+    """Generate names for estimators.
+
+    Adapted from sklearn.pipeline._name_estimators
+    """
+
+    def get_name(estimator):
+        if isinstance(estimator, DelegatingRobustTransformer):
+            return get_name(estimator._transformer)
+
+        return type(estimator).__name__.lower()
+
+    names = list(map(get_name, estimators))
+    counter = dict(Counter(names))
+    counter = select_values(lambda x: x>1 , counter)
+
+    for i in reversed(range(len(estimators))):
+        name = names[i]
+        if name in counter:
+            names[i] += "-%d" % counter[name]
+            counter[name] -= 1
+
+    return list(zip(names, estimators))
+
+
+def make_transformer_pipeline(*steps):
+    """Construct a TransformerPipeline from the given estimators.
+
+    Source: sklearn_pandas.make_transformer_pipeline
+    """
+    return TransformerPipeline(_name_estimators(steps))
 
 
 def make_robust_transformer_pipeline(*steps):
