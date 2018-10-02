@@ -110,6 +110,10 @@ class DelegatingRobustTransformer(DeepcopyMixin, TransformerMixin):
         return '{name}({transformer!r})'.format(
             name=name, transformer=self._transformer)
 
+    @property
+    def _tname(self):
+        return type(self._transformer).__name__
+
     def fit(self, X, y=None, **kwargs):
         # don't return the result of transformer.fit because it is the
         # underlying transformer, not this robust transformer
@@ -161,29 +165,30 @@ class DelegatingRobustTransformer(DeepcopyMixin, TransformerMixin):
 
     def _log_attempt_using_stored_approach(self, approach):
         logger.debug(
-            'Attempting to convert using stored, previously-successful '
-            'approach {approach.name!r}'
-            .format(approach=approach))
+            '{tname}: Attempting to convert using stored, '
+            'previously-successful approach {approach.name!r}'
+            .format(tname=self._tname, approach=approach))
 
     def _log_failure_using_stored_approach(self, approach, e):
         pretty_tb = self._get_pretty_tb()
         exc_name = type(e).__name__
         logger.debug(
-            'Conversion unexpectedly failed using stored, '
+            '{tname}: Conversion unexpectedly failed using stored, '
             'previously-successful approach {approach.name!r} '
             'because of error {exc_name!r}\n\n{tb}'
-            .format(approach=approach, exc_name=exc_name, tb=pretty_tb))
+            .format(tname=self._tname, approach=approach, exc_name=exc_name,
+                    tb=pretty_tb))
 
     def _log_success_using_stored_approach(self, approach):
         logger.debug(
-            'Conversion with stored, previously-successful approach '
+            '{tname}: Conversion with stored, previously-successful approach '
             '{approach.name!r} succeeded!'
-            .format(approach=approach))
+            .format(tname=self._tname, approach=approach))
 
     def _log_attempt(self, approach):
         logger.debug(
-            'Attempting to convert using approach {approach.name!r}...'
-            .format(approach=approach))
+            '{tname}: Attempting to convert using approach {approach.name!r}...'
+            .format(tname=self._tname, approach=approach))
 
     def _get_pretty_tb(self):
         tb = traceback.format_exc()
@@ -194,22 +199,22 @@ class DelegatingRobustTransformer(DeepcopyMixin, TransformerMixin):
         pretty_tb = self._get_pretty_tb()
         exc_name = type(e).__name__
         logger.debug(
-            'Conversion approach {approach.name!r} didn\'t work, '
+            '{tname}: Conversion approach {approach.name!r} didn\'t work, '
             'caught exception {exc_name!r}\n\n{tb}'
-            .format(approach=approach, exc_name=exc_name, tb=pretty_tb))
+            .format(tname=self._tname, approach=approach, exc_name=exc_name, tb=pretty_tb))
 
     def _log_error(self, approach, e):
         pretty_tb = self._get_pretty_tb()
         exc_name = type(e).__name__
         logger.debug(
-            'Conversion failed during {approach.name!r} because of an '
-            'unrecoverable error {exc_name!r}\n\n{tb}'
-            .format(approach=approach, exc_name=exc_name, tb=pretty_tb))
+            '{tname}: Conversion failed during {approach.name!r} because of '
+            'an unrecoverable error {exc_name!r}\n\n{tb}'
+            .format(tname=self._tname, approach=approach, exc_name=exc_name, tb=pretty_tb))
 
     def _log_success(self, approach):
         logger.debug(
-            'Conversion approach {approach.name!r} succeeded!'
-            .format(approach=approach))
+            '{tname}: Conversion approach {approach.name!r} succeeded!'
+            .format(tname=self._tname, approach=approach))
 
     def _log_failure_no_more_approaches(self):
         logger.info('Conversion failed, and we\'re not sure why...')
