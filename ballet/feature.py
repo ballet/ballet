@@ -8,6 +8,7 @@ from sklearn.base import TransformerMixin
 from sklearn_pandas import DataFrameMapper
 from sklearn_pandas.pipeline import TransformerPipeline
 
+from ballet.exc import UnsuccessfulInputConversionError
 from ballet.util import asarray2d, indent, DeepcopyMixin
 from ballet.util.log import logger
 
@@ -119,29 +120,29 @@ class DelegatingRobustTransformer(DeepcopyMixin, TransformerMixin):
             convert = approach.convert
             try:
                 result = self._call_with_convert(method, convert, X, y, kwargs)
-            except Exception as e:
-                self._log_failure_using_stored_approach(approach, e)
-            else:
                 self._log_success_using_stored_approach(approach)
                 return result
+            except Exception as e:
+                self._log_failure_using_stored_approach(approach, e)
+                raise
         else:
             for approach in DelegatingRobustTransformer.CONVERSION_APPROACHES:
                 try:
                     self._log_attempt(approach)
                     result = self._call_with_convert(
                         method, approach.convert, X, y, kwargs)
+                    self._log_success(approach)
+                    self._stored_conversion_approach = approach
+                    return result
                 except approach.caught as e:
                     self._log_catch(approach, e)
                     continue
                 except Exception as e:
                     self._log_error(approach, e)
-                    break
-                else:
-                    self._log_success(approach)
-                    self._stored_conversion_approach = approach
-                    return result
+                    raise
 
             self._log_failure_no_more_approaches()
+            raise UnsuccessfulInputConversionError
 
     def _log_attempt_using_stored_approach(self, approach):
         logger.debug(
@@ -197,18 +198,6 @@ class DelegatingRobustTransformer(DeepcopyMixin, TransformerMixin):
 
     def _log_failure_no_more_approaches(self):
         logger.info('Conversion failed, and we\'re not sure why...')
-        #logger.info('Here are the approaches we tried, and how they failed.')
-        #for i, item in enumerate(failure_detail):
-        #    msg = ('{i}. Conversion using approach {name!r} resulted in '
-        #           '{exc_name} ({exc}), ')
-        #    if item['outcome'] == 'caught':
-        #        msg += 'which was caught, and the next approach was tried.'
-        #    elif item['outcome'] == 'failure':
-        #        msg += 'which was an unexpected error resulting in failure.'
-        #    else:
-        #        raise RuntimeError
-        #    exc_name = type(item['exc']).__name__
-        #    logger.info(msg.format(i=i+1, exc_name=exc_name, **item))
 
 
 class Feature:
