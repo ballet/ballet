@@ -45,11 +45,24 @@ def make_robust_transformer_pipeline(*steps):
     return make_transformer_pipeline(*steps)
 
 
+ConversionApproach = namedtuple('ConversionApproach', 'name convert caught')
+
+
 class DelegatingRobustTransformer(DeepcopyMixin, TransformerMixin):
+
+    DEFAULT_CAUGHT = (ValueError, TypeError)
+
+    CONVERSION_APPROACHES = [
+        ConversionApproach('identity', identity, DEFAULT_CAUGHT),
+        ConversionApproach('series', pd.Series, DEFAULT_CAUGHT),
+        ConversionApproach('dataframe', pd.DataFrame, DEFAULT_CAUGHT),
+        ConversionApproach('array', np.asarray, DEFAULT_CAUGHT),
+        ConversionApproach('asarray2d', asarray2d, ()),
+    ]
 
     def __init__(self, transformer):
         self._transformer = transformer
-        self._successful_conversion_approach = None
+        self._stored_conversion_approach = None
 
     def __getattr__(self, attr):
         return getattr(self._transformer, attr)
@@ -70,20 +83,27 @@ class DelegatingRobustTransformer(DeepcopyMixin, TransformerMixin):
     def transform(self, X, y=None, **kwargs):
         return self._call_robust(self._transformer.transform, X, y, kwargs)
 
-    def _call_with_convert(self, method, convert, X, y, kwargs):
+    @staticmethod
+    def _call_with_convert(method, convert, X, y, kwargs):
         if y is not None:
             return method(convert(X), y=convert(y), **kwargs)
         else:
             return method(convert(X), **kwargs)
 
     def _call_robust(self, method, X, y, kwargs):
-        if self._successful_conversion_approach is not None:
-            approach = self._successful_conversion_approach
-            self._log_attempt_using_successful_approach(approach)
+        if self._stored_conversion_approach is not None:
+            approach = self._stored_conversion_approach
+            self._log_attempt_using_stored_approach(approach)
             convert = approach.convert
-            return self._call_with_convert(method, convert, X, y, kwargs)
+            try:
+                result = self._call_with_convert(method, convert, X, y, kwargs)
+            except Exception as e:
+                self._log_failure_using_stored_approach(approach, e)
+            else:
+                self._log_success_using_stored_approach(approach)
+                return result
         else:
-            for approach in conversion_approaches:
+            for approach in DelegatingRobustTransformer.CONVERSION_APPROACHES:
                 try:
                     self._log_attempt(approach)
                     result = self._call_with_convert(
@@ -96,15 +116,30 @@ class DelegatingRobustTransformer(DeepcopyMixin, TransformerMixin):
                     break
                 else:
                     self._log_success(approach)
-                    self._successful_conversion_approach = approach
+                    self._stored_conversion_approach = approach
                     return result
 
-            self._log_no_more_approaches()
+            self._log_failure_no_more_approaches()
 
-    def _log_attempt_using_successful_approach(self, approach):
+    def _log_attempt_using_stored_approach(self, approach):
         logger.debug(
-            'Attempting to convert using previously-successful '
+            'Attempting to convert using stored, previously-successful '
             'approach {approach.name!r}'
+            .format(approach=approach))
+
+    def _log_failure_using_stored_approach(self, approach, e):
+        pretty_tb = self._get_pretty_tb()
+        exc_name = type(e).__name__
+        logger.debug(
+            'Conversion unexpectedly failed using stored, '
+            'previously-successful approach {approach.name!r} '
+            'because of error {exc_name!r}\n\n{tb}'
+            .format(approach=approach, exc_name=exc_name, tb=pretty_tb))
+
+    def _log_success_using_stored_approach(self, approach):
+        logger.debug(
+            'Conversion with stored, previously-successful approach '
+            '{approach.name!r} succeeded!'
             .format(approach=approach))
 
     def _log_attempt(self, approach):
@@ -121,16 +156,16 @@ class DelegatingRobustTransformer(DeepcopyMixin, TransformerMixin):
         pretty_tb = self._get_pretty_tb()
         exc_name = type(e).__name__
         logger.debug(
-            "Conversion approach {approach.name!r} didn't work, "
-            "caught exception {exc_name!r}\n\n{tb}"
+            'Conversion approach {approach.name!r} didn\'t work, '
+            'caught exception {exc_name!r}\n\n{tb}'
             .format(approach=approach, exc_name=exc_name, tb=pretty_tb))
 
     def _log_error(self, approach, e):
         pretty_tb = self._get_pretty_tb()
         exc_name = type(e).__name__
         logger.debug(
-            "Conversion failed during {approach.name!r} because of an "
-            "unrecoverable error {exc_name!r}\n\n{tb}"
+            'Conversion failed during {approach.name!r} because of an '
+            'unrecoverable error {exc_name!r}\n\n{tb}'
             .format(approach=approach, exc_name=exc_name, tb=pretty_tb))
 
     def _log_success(self, approach):
@@ -138,8 +173,8 @@ class DelegatingRobustTransformer(DeepcopyMixin, TransformerMixin):
             'Conversion approach {approach.name!r} succeeded!'
             .format(approach=approach))
 
-    def _log_no_more_approaches(self, approach):
-        logger.info("Conversion failed, and we're not sure why...")
+    def _log_failure_no_more_approaches(self):
+        logger.info('Conversion failed, and we\'re not sure why...')
         #logger.info('Here are the approaches we tried, and how they failed.')
         #for i, item in enumerate(failure_detail):
         #    msg = ('{i}. Conversion using approach {name!r} resulted in '
@@ -160,8 +195,9 @@ class Feature:
         self.input = input
 
         if is_seqcont(transformer):
-            transformer = make_robust_transformer_pipeline(*transformer)
-        self.transformer = DelegatingRobustTransformer(transformer)
+            self.transformer = make_robust_transformer_pipeline(*transformer)
+        else:
+            self.transformer = DelegatingRobustTransformer(transformer)
 
         self.name = name
         self.description = description
