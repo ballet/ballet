@@ -3,7 +3,7 @@ import traceback
 
 import numpy as np
 import pandas as pd
-from funcy import identity, is_seqcont, select_values
+from funcy import identity, is_seqcont, iterable, select_values
 from sklearn.base import TransformerMixin
 from sklearn_pandas import DataFrameMapper
 from sklearn_pandas.pipeline import TransformerPipeline
@@ -16,14 +16,16 @@ __all__ = ['make_mapper', 'Feature']
 
 
 def make_mapper(features):
-    """Make a DataFrameMapper from a list of features
+    """Make a DataFrameMapper from a feature or list of features
 
     Args:
-        features (List[Feature]): list of features
+        features (Union[Feature, List[Feature]]): feature or list of features
 
     Returns:
         DataFrameMapper: mapper made from features
     """
+    if not iterable(features):
+        features = (features, )
     return DataFrameMapper(
         [t.as_input_transformer_tuple() for t in features],
         input_df=True)

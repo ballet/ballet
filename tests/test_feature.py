@@ -161,3 +161,8 @@ class TestFeature(unittest.TestCase):
         features = [feature]
         mapper = make_mapper(features)
         self.assertIsInstance(mapper, DataFrameMapper)
+
+    def test_make_mapper_scalar(self):
+        feature = Feature(self.input, self.transformer)
+        mapper = make_mapper(feature)
+        self.assertIsInstance(mapper, DataFrameMapper)
