@@ -2,6 +2,8 @@ import logging
 import os
 
 import ballet
+import ballet.contrib
+import ballet.util.modutil
 import click
 import numpy as np
 from ballet.util.fsutil import replaceext, spliceext
