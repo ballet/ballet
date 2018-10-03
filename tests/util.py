@@ -88,7 +88,8 @@ def make_mock_commit(repo, kind='A', path=None, content=None):
             else:
                 abspath.touch()
         repo.git.add(str(abspath))
-        repo.git.commit(m='Commit {}'.format(str(abspath)))
+        repo.git.commit(m='Commit {}'.format(str(abspath)),
+                        author='Name <me@example.com>')
     else:
         raise NotImplementedError
 
