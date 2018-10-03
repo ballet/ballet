@@ -1,5 +1,5 @@
-from collections import Counter, namedtuple
 import traceback
+from collections import Counter, namedtuple
 
 import numpy as np
 import pandas as pd
@@ -9,7 +9,7 @@ from sklearn_pandas import DataFrameMapper
 from sklearn_pandas.pipeline import TransformerPipeline
 
 from ballet.exc import UnsuccessfulInputConversionError
-from ballet.util import asarray2d, indent, DeepcopyMixin
+from ballet.util import DeepcopyMixin, asarray2d, indent
 from ballet.util.log import logger
 
 __all__ = ['make_mapper', 'Feature']
@@ -45,7 +45,7 @@ def _name_estimators(estimators):
 
     names = list(map(get_name, estimators))
     counter = dict(Counter(names))
-    counter = select_values(lambda x: x>1 , counter)
+    counter = select_values(lambda x: x > 1, counter)
 
     for i in reversed(range(len(estimators))):
         name = names[i]
@@ -84,7 +84,8 @@ class DelegatingRobustTransformer(DeepcopyMixin, TransformerMixin):
         transformer: a transformer object with fit and transform methods
 
     Raises:
-        UnsuccessfulInputConversionError: If none of the conversion approaches work.
+        UnsuccessfulInputConversionError: If none of the conversion approaches
+            work.
 
     """
 
@@ -165,7 +166,8 @@ class DelegatingRobustTransformer(DeepcopyMixin, TransformerMixin):
 
     def _log_attempt_using_stored_approach(self, approach):
         logger.debug(
-            '{tname}: Attempting to convert using stored, '
+            '{tname}: '
+            'Attempting to convert using stored, '
             'previously-successful approach {approach.name!r}'
             .format(tname=self._tname, approach=approach))
 
@@ -173,7 +175,8 @@ class DelegatingRobustTransformer(DeepcopyMixin, TransformerMixin):
         pretty_tb = self._get_pretty_tb()
         exc_name = type(e).__name__
         logger.debug(
-            '{tname}: Conversion unexpectedly failed using stored, '
+            '{tname}: '
+            'Conversion unexpectedly failed using stored, '
             'previously-successful approach {approach.name!r} '
             'because of error {exc_name!r}\n\n{tb}'
             .format(tname=self._tname, approach=approach, exc_name=exc_name,
@@ -181,13 +184,15 @@ class DelegatingRobustTransformer(DeepcopyMixin, TransformerMixin):
 
     def _log_success_using_stored_approach(self, approach):
         logger.debug(
-            '{tname}: Conversion with stored, previously-successful approach '
+            '{tname}: '
+            'Conversion with stored, previously-successful approach '
             '{approach.name!r} succeeded!'
             .format(tname=self._tname, approach=approach))
 
     def _log_attempt(self, approach):
         logger.debug(
-            '{tname}: Attempting to convert using approach {approach.name!r}...'
+            '{tname}: '
+            'Attempting to convert using approach {approach.name!r}...'
             .format(tname=self._tname, approach=approach))
 
     def _get_pretty_tb(self):
@@ -199,21 +204,26 @@ class DelegatingRobustTransformer(DeepcopyMixin, TransformerMixin):
         pretty_tb = self._get_pretty_tb()
         exc_name = type(e).__name__
         logger.debug(
-            '{tname}: Conversion approach {approach.name!r} didn\'t work, '
+            '{tname}: '
+            'Conversion approach {approach.name!r} didn\'t work, '
             'caught exception {exc_name!r}\n\n{tb}'
-            .format(tname=self._tname, approach=approach, exc_name=exc_name, tb=pretty_tb))
+            .format(tname=self._tname, approach=approach, exc_name=exc_name,
+                    tb=pretty_tb))
 
     def _log_error(self, approach, e):
         pretty_tb = self._get_pretty_tb()
         exc_name = type(e).__name__
         logger.debug(
-            '{tname}: Conversion failed during {approach.name!r} because of '
+            '{tname}: '
+            'Conversion failed during {approach.name!r} because of '
             'an unrecoverable error {exc_name!r}\n\n{tb}'
-            .format(tname=self._tname, approach=approach, exc_name=exc_name, tb=pretty_tb))
+            .format(tname=self._tname, approach=approach, exc_name=exc_name,
+                    tb=pretty_tb))
 
     def _log_success(self, approach):
         logger.debug(
-            '{tname}: Conversion approach {approach.name!r} succeeded!'
+            '{tname}: '
+            'Conversion approach {approach.name!r} succeeded!'
             .format(tname=self._tname, approach=approach))
 
     def _log_failure_no_more_approaches(self):

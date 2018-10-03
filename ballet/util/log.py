@@ -2,7 +2,6 @@ import logging
 
 import ballet
 
-
 LOG_FORMAT = r'[%(asctime)s] {%(name)s: %(filename)s:%(lineno)d} %(levelname)s - %(message)s'  # noqa E501
 SIMPLE_LOG_FORMAT = r'%(asctime)s %(levelname)s - %(message)s'
 
