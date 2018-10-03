@@ -12,3 +12,7 @@ class UnexpectedValidationStateError(Error):
 
 class UnsuccessfulInputConversionError(Error):
     pass
+
+
+class ConfigurationError(Error):
+    pass

@@ -22,6 +22,7 @@ requirements = [
     'pandas; python_version>="3.5"',  # hack
     'pandas<0.21; python_version<"3.5"',  # hack
     'pathlib2>=2.1.0; python_version<"3.5"',
+    'pyyaml',
     'scikit_learn',
     'sklearn_pandas',
 ]

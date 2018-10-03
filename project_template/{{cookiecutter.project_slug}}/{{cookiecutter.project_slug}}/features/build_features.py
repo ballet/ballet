@@ -8,6 +8,7 @@ import click
 import numpy as np
 from ballet.util.ioutil import write_tabular
 
+import {{ cookiecutter.project_slug }}.conf as conf
 from {{ cookiecutter.project_slug }}.load_data import load_data
 
 
@@ -15,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_contrib_features():
-    modname= '{{ cookiecutter.project_slug }}.features.contrib'
+    modname = conf.get('contrib', 'module_name')
     mod = ballet.util.modutil.import_module_from_modname(modname)
     return ballet.contrib.get_contrib_features(mod)
 
