@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.exc &mdash; ballet 0.4.1 documentation</title>
+  <title>ballet.quickstart &mdash; ballet 0.4.1 documentation</title>
   
 
   
@@ -190,7 +190,7 @@
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
-      <li>ballet.exc</li>
+      <li>ballet.quickstart</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -205,25 +205,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for ballet.exc</h1><div class="highlight"><pre>
-<div class="viewcode-block" id="Error"><a class="viewcode-back" href="../../api/ballet.exc.html#ballet.exc.Error">[docs]</a><span></span><span class="k">class</span> <span class="nc">Error</span><span class="p">(</span><span class="ne">BaseException</span><span class="p">):</span>
-    <span class="k">pass</span></div>
+  <h1>Source code for ballet.quickstart</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">cookiecutter.main</span> <span class="k">import</span> <span class="n">cookiecutter</span>
+
+<span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="k">import</span> <span class="n">pathlib</span>
 
 
-<div class="viewcode-block" id="UnexpectedTravisEnvironmentError"><a class="viewcode-back" href="../../api/ballet.exc.html#ballet.exc.UnexpectedTravisEnvironmentError">[docs]</a><span class="k">class</span> <span class="nc">UnexpectedTravisEnvironmentError</span><span class="p">(</span><span class="n">Error</span><span class="p">):</span>
-    <span class="k">pass</span></div>
+<div class="viewcode-block" id="generate_project"><a class="viewcode-back" href="../../api/ballet.quickstart.html#ballet.quickstart.generate_project">[docs]</a><span class="k">def</span> <span class="nf">generate_project</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">&#39;project_template&#39;</span><span class="p">)</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">cookiecutter</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="UnexpectedValidationStateError"><a class="viewcode-back" href="../../api/ballet.exc.html#ballet.exc.UnexpectedValidationStateError">[docs]</a><span class="k">class</span> <span class="nc">UnexpectedValidationStateError</span><span class="p">(</span><span class="n">Error</span><span class="p">):</span>
-    <span class="k">pass</span></div>
-
-
-<div class="viewcode-block" id="UnsuccessfulInputConversionError"><a class="viewcode-back" href="../../api/ballet.exc.html#ballet.exc.UnsuccessfulInputConversionError">[docs]</a><span class="k">class</span> <span class="nc">UnsuccessfulInputConversionError</span><span class="p">(</span><span class="n">Error</span><span class="p">):</span>
-    <span class="k">pass</span></div>
-
-
-<div class="viewcode-block" id="ConfigurationError"><a class="viewcode-back" href="../../api/ballet.exc.html#ballet.exc.ConfigurationError">[docs]</a><span class="k">class</span> <span class="nc">ConfigurationError</span><span class="p">(</span><span class="n">Error</span><span class="p">):</span>
-    <span class="k">pass</span></div>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../api/ballet.quickstart.html#ballet.quickstart.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">generate_project</span><span class="p">()</span></div>
 </pre></div>
 
            </div>

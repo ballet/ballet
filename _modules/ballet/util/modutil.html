@@ -106,6 +106,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.exc.html">ballet.exc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.feature.html">ballet.feature module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.modeler.html">ballet.modeler module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.project.html">ballet.project module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.quickstart.html">ballet.quickstart module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.validation.html">ballet.validation module</a></li>
 </ul>
 </li>
@@ -337,9 +339,11 @@
 <span class="sd">            that are packages. Defaults to True</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">        &gt;&gt;&gt; modname_to_relpath(</span>
-<span class="sd">                &#39;/path/to/project&#39;, &#39;dengue_prediction.features&#39;)</span>
-<span class="sd">        &#39;dengue_prediction/features/__init__.py&#39;</span>
+<span class="sd">        &gt;&gt;&gt; modname_to_relpath(&#39;foo.features&#39;)</span>
+<span class="sd">        &#39;foo/features.py&#39;</span>
+<span class="sd">        &gt;&gt;&gt; modname_to_relpath(&#39;foo.features&#39;,</span>
+<span class="sd">                               project_root=&#39;/path/to/project&#39;)</span>
+<span class="sd">        &#39;foo/features/__init__.py&#39;</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">parts</span> <span class="o">=</span> <span class="n">modname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
     <span class="n">relpath</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="o">*</span><span class="n">parts</span><span class="p">)</span>

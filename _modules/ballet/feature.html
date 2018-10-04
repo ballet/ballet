@@ -106,6 +106,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.exc.html">ballet.exc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.feature.html">ballet.feature module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.modeler.html">ballet.modeler module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.project.html">ballet.project module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.quickstart.html">ballet.quickstart module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.validation.html">ballet.validation module</a></li>
 </ul>
 </li>
@@ -206,6 +208,7 @@
   <h1>Source code for ballet.feature</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Counter</span><span class="p">,</span> <span class="n">namedtuple</span>
+<span class="kn">from</span> <span class="nn">inspect</span> <span class="k">import</span> <span class="n">signature</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -436,14 +439,36 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Conversion failed, and we</span><span class="se">\&#39;</span><span class="s1">re not sure why...&#39;</span><span class="p">)</span>
 
 
+<span class="k">def</span> <span class="nf">_validate_transformer_api</span><span class="p">(</span><span class="n">transformer</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
+        <span class="nb">hasattr</span><span class="p">(</span><span class="n">transformer</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="s1">&#39;transform&#39;</span><span class="p">,</span> <span class="s1">&#39;fit_transform&#39;</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Transformer object missing required attribute&#39;</span><span class="p">)</span>
+
+    <span class="n">sig_fit</span> <span class="o">=</span> <span class="n">signature</span><span class="p">(</span><span class="n">transformer</span><span class="o">.</span><span class="n">fit</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;(X, y=None&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">sig_fit</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;Invalid signature for transformer.fit: </span><span class="si">{sig_fit}</span><span class="s1">&#39;</span>
+            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sig_fit</span><span class="o">=</span><span class="n">sig_fit</span><span class="p">))</span>
+
+    <span class="n">sig_transform</span> <span class="o">=</span> <span class="n">signature</span><span class="p">(</span><span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;(X&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">sig_transform</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;Invalid signature for transformer.transform: </span><span class="si">{sig_transform}</span><span class="s1">&#39;</span>
+            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sig_fit</span><span class="o">=</span><span class="n">sig_fit</span><span class="p">))</span>
+
+
 <div class="viewcode-block" id="Feature"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.feature.Feature">[docs]</a><span class="k">class</span> <span class="nc">Feature</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="nb">input</span>
 
         <span class="k">if</span> <span class="n">is_seqcont</span><span class="p">(</span><span class="n">transformer</span><span class="p">):</span>
+            <span class="nb">map</span><span class="p">(</span><span class="n">_validate_transformer_api</span><span class="p">,</span> <span class="n">transformer</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span> <span class="o">=</span> <span class="n">make_robust_transformer_pipeline</span><span class="p">(</span><span class="o">*</span><span class="n">transformer</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="n">_validate_transformer_api</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span> <span class="o">=</span> <span class="n">DelegatingRobustTransformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
