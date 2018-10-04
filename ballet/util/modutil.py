@@ -131,9 +131,11 @@ def modname_to_relpath(modname, project_root=None, add_init=True):
             that are packages. Defaults to True
 
     Example:
-        >>> modname_to_relpath(
-                '/path/to/project', 'dengue_prediction.features')
-        'dengue_prediction/features/__init__.py'
+        >>> modname_to_relpath('foo.features')
+        'foo/features.py'
+        >>> modname_to_relpath('foo.features',
+                               project_root='/path/to/project')
+        'foo/features/__init__.py'
     '''
     parts = modname.split('.')
     relpath = pathlib.Path('.').joinpath(*parts)
