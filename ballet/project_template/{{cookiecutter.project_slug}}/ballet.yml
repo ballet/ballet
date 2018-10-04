@@ -1,16 +1,16 @@
 problem:
   name: {{ cookiecutter.problem_name }}
-  problem_type: regression
+  problem_type: {{ cookiecutter.problem_type }}
   problem_type_details:
-    scorer: neg_mean_absolute_error
-    classification_type:
+    scorer: {% if cookiecutter.problem_type == 'classification' %}{{ cookiecutter.classification_scorer }}{% else %}{{ cookiecutter.regression_scorer }}{% endif %}
+    classification_type: {% if cookiecutter.problem_type == 'classification' %}{{ cookiecutter.classification_type }}{% endif %}
 
 data:
   s3_bucket: todo
   s3_bucket_region: todo
   train: data/raw
-  entities_table_name: todo
-  target_table_name: todo
+  entities_table_name: entities
+  target_table_name: targets
 
 contrib:
   module_name: {{ cookiecutter.project_slug }}.features.contrib
@@ -20,8 +20,8 @@ contrib:
 
 tables:
   -
-    name: features
-    path: features.csv
+    name: entities
+    path: entities.csv
     pd_read_kwargs:
       index_col:
       - todo
