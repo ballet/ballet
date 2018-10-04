@@ -63,7 +63,7 @@ def test_quickstart():
     # first providing a mock feature, call build_features
     with patch.object(
         foo_features_buildfeatures, 'get_contrib_features',
-        return_value=[Feature(input='A', transformer=IdentityTransformer)]
+        return_value=[Feature(input='A', transformer=IdentityTransformer())]
     ):
         X_df = pd.util.testing.makeCustomDataframe(5, 2)
         X_df.columns = ['A', 'B']
