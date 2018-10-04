@@ -24,7 +24,7 @@ def get_contrib_features():
 def build_features(X_df):
     logger.info('Building features...')
     features = get_contrib_features()
-    mapper = ballet.features.make_mapper(features)
+    mapper = ballet.feature.make_mapper(features)
     X = mapper.fit_transform(X_df)
     logger.info('Building features...DONE')
     return X, mapper
