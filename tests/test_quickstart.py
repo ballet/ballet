@@ -3,9 +3,14 @@ from types import ModuleType
 import unittest
 from unittest.mock import patch
 
+import numpy as np
+import pandas as pd
 from ballet.compat import pathlib
-from ballet.util.modutil import import_module_at_path
+from ballet.eng.misc import IdentityTransformer
+from ballet.feature import Feature
+from ballet.util.modutil import import_module_at_path, modname_to_relpath
 from ballet.quickstart import generate_project, main
+from sklearn_pandas import DataFrameMapper
 
 class QuickstartTest(unittest.TestCase):
 
@@ -35,15 +40,33 @@ def test_quickstart():
     # make sure we can import different modules without error
     base = pathlib.Path(tempdir).joinpath(modname)
 
-    # 'import foo'
-    path_foo = base.joinpath(modname)
-    mod_foo = import_module_at_path(modname, path_foo)
-    assert isinstance(mod_foo, ModuleType)
+    def _import(modname):
+        relpath = modname_to_relpath(modname)
+        abspath = base.joinpath(relpath)
+        return import_module_at_path(modname, abspath)
 
-    # 'import foo.features'
-    path_foo_features = path_foo.joinpath('features')
-    mod_foo_features = import_module_at_path(modname + '.' + 'features',
-                                             path_foo_features)
-    assert isinstance(mod_foo_features, ModuleType)
+    foo = _import('foo')
+    assert isinstance(foo, ModuleType)
+
+    foo_features = _import('foo.features')
+    assert isinstance(foo_features, ModuleType)
+
+    foo_features_buildfeatures = _import('foo.features.build_features')
+    assert isinstance(foo_features_buildfeatures, ModuleType)
+
+    get_contrib_features = foo_features_buildfeatures.get_contrib_features
+    features = get_contrib_features()
+    assert len(features) == 0
+
+    # first providing a mock feature, call build_features
+    with patch.object(
+        foo_features_buildfeatures, 'get_contrib_features',
+        return_value=[Feature(input='A', transformer=IdentityTransformer)]
+    ):
+        X_df = pd.util.testing.makeCustomDataframe(5, 2)
+        X_df.columns = ['A', 'B']
+        X, mapper = foo_features_buildfeatures.build_features(X_df)
+        assert np.shape(X) == (5, 1)
+        assert isinstance(mapper, DataFrameMapper)
 
     _tempdir.cleanup()
