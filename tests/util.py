@@ -88,8 +88,7 @@ def make_mock_commit(repo, kind='A', path=None, content=None):
             else:
                 abspath.touch()
         repo.git.add(str(abspath))
-        repo.git.commit(m='Commit {}'.format(str(abspath)),
-                        author='Name <me@example.com>')
+        repo.git.commit(m='Commit {}'.format(str(abspath)))
     else:
         raise NotImplementedError
 
@@ -113,6 +112,13 @@ def mock_repo():
         os.chdir(str(tmpdir))
         dir = pathlib.Path(tmpdir)
         repo = git.Repo.init(str(dir))
+        
+        # need to explicitly set user/email as email cannot be detected
+        # in CI environment
+        with repo.config_writer() as cw:
+            cw.set_value('user', 'email', 'me@example.com')
+            cw.set_value('user', 'name', 'Name')
+            
         try:
             yield repo
         finally:
