@@ -1,19 +1,47 @@
 import yaml
 from ballet.compat import pathlib
 from ballet.exc import ConfigurationError
-from funcy import get_in, merge, partial
+from funcy import get_in, memoize, partial
 
 
-def find_ballet_yml(package_root):
-    """Find ballet.yml config file
+DEFAULT_CONFIG_NAME = 'ballet.yml'
 
-    Recursively search up the directory tree from the package root, and then also search in
+
+def get_config_paths(package_root):
+    """Get candidate config paths
+
+    Creates a sequence of paths that includes the package root and all of its
+    parents, as well as ~/.ballet.
     """
     package_root = pathlib.Path(package_root)
-    dirs = list(package_root.parents) + [pathlib.Path.home().joinpath('.ballet')]
+
+    # parents of package directory
+    paths = [
+        d.joinpath(DEFAULT_CONFIG_NAME)
+        for d in package_root.parents
+    ]
+
+    # home directory
+    paths.append(
+        pathlib.Path.home().joinpath('.ballet', DEFAULT_CONFIG_NAME))
+
+    # defaults in ballet repo
+    pass
+
+    return paths
+
+
+@memoize
+def find_configs(package_root):
+    """Find valid ballet project config files
+
+    See if any of the candidates returned by get_config_paths are valid.
+
+    Raises:
+        ConfigurationError: No valid config files were found.
+    """
     configs = []
-    for d in dirs:
-        candidate = d.joinpath('ballet.yml')
+    for candidate in get_config_paths(package_root):
         if candidate.exists() and candidate.is_file():
             with candidate.open('r') as f:
                 config = yaml.load(f)
@@ -26,9 +54,15 @@ def find_ballet_yml(package_root):
 
 
 def config_get(package_root, *path, default=None):
-    configs = find_ballet_yml(package_root)
-    config = merge(*configs)
-    return get_in(config, path, default=default)
+    configs = find_configs(package_root)
+
+    o = object()
+    for config in configs:
+        result = get_in(config, path, default=o)
+        if result is not o:
+            return result
+
+    return default
 
 
 def make_config_get(package_root):
