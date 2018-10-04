@@ -9,7 +9,6 @@ import pandas as pd
 from ballet.util.fsutil import splitext2
 from ballet.util.log import logger
 
-
 __all__ = ['read_tabular', 'write_tabular']
 
 

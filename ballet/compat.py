@@ -8,6 +8,7 @@ except ImportError:
 
 # pathlib compatibility
 import sys
+
 if sys.version_info < (3, 5, 0):
     import pathlib2 as pathlib
 else:

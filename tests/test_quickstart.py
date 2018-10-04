@@ -1,16 +1,18 @@
 import tempfile
-from types import ModuleType
 import unittest
+from types import ModuleType
 from unittest.mock import patch
 
 import numpy as np
 import pandas as pd
+from sklearn_pandas import DataFrameMapper
+
 from ballet.compat import pathlib
 from ballet.eng.misc import IdentityTransformer
 from ballet.feature import Feature
-from ballet.util.modutil import import_module_at_path, modname_to_relpath
 from ballet.quickstart import generate_project, main
-from sklearn_pandas import DataFrameMapper
+from ballet.util.modutil import import_module_at_path, modname_to_relpath
+
 
 class QuickstartTest(unittest.TestCase):
 

@@ -1,8 +1,8 @@
 import yaml
-from ballet.compat import pathlib
-from ballet.exc import ConfigurationError
 from funcy import get_in, memoize, partial
 
+from ballet.compat import pathlib
+from ballet.exc import ConfigurationError
 
 DEFAULT_CONFIG_NAME = 'ballet.yml'
 
@@ -26,7 +26,6 @@ def get_config_paths(package_root):
         pathlib.Path.home().joinpath('.ballet', DEFAULT_CONFIG_NAME))
 
     # defaults in ballet repo
-    pass
 
     return paths
 

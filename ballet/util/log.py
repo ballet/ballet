@@ -23,6 +23,6 @@ def enable(logger=logger, level=logging.INFO):
     if _handler not in logger.handlers:
         logger.addHandler(_handler)
 
-    levelName=logging._levelToName[level]
+    levelName = logging._levelToName[level]
     logger.log(
         level, 'Logging enabled at level {name}.'.format(name=levelName))
