@@ -39,6 +39,13 @@ class TestFeature(unittest.TestCase):
     def test_feature_init(self):
         Feature(self.input, self.transformer)
 
+    def test_feature_init_invalid_transformer_api(self):
+        with self.assertRaises(ValueError):
+            Feature(self.input, object())
+
+        with self.assertRaises(ValueError):
+            Feature(self.input, IdentityTransformer)
+
     def _test_robust_transformer(
             self,
             input_types,
@@ -166,3 +173,19 @@ class TestFeature(unittest.TestCase):
         feature = Feature(self.input, self.transformer)
         mapper = make_mapper(feature)
         self.assertIsInstance(mapper, DataFrameMapper)
+
+    def test_mapper_fit(self):
+        feature = Feature(self.input, self.transformer)
+        mapper = make_mapper(feature)
+        df = pd.util.testing.makeCustomDataframe(5, 2)
+        df.columns = ['foo', 'bar']
+        mapper.fit(df)
+
+    def test_mapper_transform(self):
+        feature = Feature(self.input, self.transformer)
+        mapper = make_mapper(feature)
+        df = pd.util.testing.makeCustomDataframe(5, 2)
+        df.columns = ['foo', 'bar']
+        mapper.fit(df)
+        X = mapper.transform(df)
+        self.assertEqual(np.shape(X), (5, 1))

@@ -6,13 +6,6 @@ __author__ = """Micah Smith"""
 __email__ = 'micahs@mit.edu'
 __version__ = '0.4.1'
 
-# pathlib compatibility
-import sys
-if sys.version_info < (3, 5, 0):
-    import pathlib2 as pathlib
-else:
-    import pathlib  # noqa F401
-
 
 # re-export some names
 from ballet.feature import *  # noqa

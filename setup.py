@@ -13,12 +13,16 @@ with open('HISTORY.md') as history_file:
 
 requirements = [
     'baytune>=0.2.1',
+    'cookiecutter',
+    'Click>=6.0',
     'funcy',
     'gitpython',
+    'h5py',
     'numpy',
     'pandas; python_version>="3.5"',  # hack
     'pandas<0.21; python_version<"3.5"',  # hack
     'pathlib2>=2.1.0; python_version<"3.5"',
+    'pyyaml',
     'scikit_learn',
     'sklearn_pandas',
 ]
@@ -72,6 +76,9 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
     description='Core functionality for lightweight, collaborative data science projects',
+    entry_points = {
+        'console_scripts': ['ballet-quickstart=ballet.quickstart:main'],
+    },
     extras_require={
         'test': test_requirements,
         'dev': development_requirements + test_requirements,

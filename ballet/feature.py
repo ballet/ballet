@@ -1,5 +1,6 @@
 import traceback
 from collections import Counter, namedtuple
+from inspect import signature
 
 import numpy as np
 import pandas as pd
@@ -230,14 +231,36 @@ class DelegatingRobustTransformer(DeepcopyMixin, TransformerMixin):
         logger.info('Conversion failed, and we\'re not sure why...')
 
 
+def _validate_transformer_api(transformer):
+    if not all(
+        hasattr(transformer, attr)
+        for attr in ['fit', 'transform', 'fit_transform']
+    ):
+        raise ValueError('Transformer object missing required attribute')
+
+    sig_fit = signature(transformer.fit)
+    if '(X, y=None' not in str(sig_fit):
+        raise ValueError(
+            'Invalid signature for transformer.fit: {sig_fit}'
+            .format(sig_fit=sig_fit))
+
+    sig_transform = signature(transformer.transform)
+    if '(X' not in str(sig_transform):
+        raise ValueError(
+            'Invalid signature for transformer.transform: {sig_transform}'
+            .format(sig_fit=sig_fit))
+
+
 class Feature:
     def __init__(self, input, transformer, name=None, description=None,
                  output=None, source=None, options=None):
         self.input = input
 
         if is_seqcont(transformer):
+            map(_validate_transformer_api, transformer)
             self.transformer = make_robust_transformer_pipeline(*transformer)
         else:
+            _validate_transformer_api(transformer)
             self.transformer = DelegatingRobustTransformer(transformer)
 
         self.name = name

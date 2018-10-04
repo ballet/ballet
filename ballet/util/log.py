@@ -9,19 +9,20 @@ logger = logging.getLogger(ballet.__name__)
 _handler = None
 
 
-def enable(level=logging.INFO):
+def enable(logger=logger, level=logging.INFO):
     """Enable simple console logging for this module"""
-    name = logging._levelToName[level]
     global _handler
     if _handler is None:
-        logger.setLevel(level)
         _handler = logging.StreamHandler()
-        _handler.setLevel(level)
         formatter = logging.Formatter(LOG_FORMAT)
         _handler.setFormatter(formatter)
+
+    logger.setLevel(level)
+    _handler.setLevel(level)
+
+    if _handler not in logger.handlers:
         logger.addHandler(_handler)
-        logger.log(level, 'Logging enabled at level {name}.'.format(name=name))
-    else:
-        logger.setLevel(level)
-        _handler.setLevel(level)
-        logger.log(level, 'Logging changed to level {name}.'.format(name=name))
+
+    levelName = logging._levelToName[level]
+    logger.log(
+        level, 'Logging enabled at level {name}.'.format(name=levelName))

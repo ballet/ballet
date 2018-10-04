@@ -61,7 +61,8 @@ lint: ## check style with flake8 and isort
 
 .PHONY: fix-lint
 fix-lint: ## fix lint issues using autoflake, autopep8, and isort
-	find ballet -name '*.py' | xargs autoflake --in-place --remove-all-unused-imports --remove-unused-variables
+	find ballet -name '*.py' -not -path '*ballet/project_template/*' \
+		| xargs autoflake --in-place --remove-all-unused-imports --remove-unused-variables
 	autopep8 --in-place --recursive --aggressive ballet
 	isort --apply --atomic --recursive ballet
 

@@ -1,0 +1,35 @@
+problem:
+  name: {{ cookiecutter.problem_name }}
+  problem_type: {{ cookiecutter.problem_type }}
+  problem_type_details:
+    scorer: {% if cookiecutter.problem_type == 'classification' %}{{ cookiecutter.classification_scorer }}{% else %}{{ cookiecutter.regression_scorer }}{% endif %}
+    classification_type: {% if cookiecutter.problem_type == 'classification' %}{{ cookiecutter.classification_type }}{% endif %}
+
+data:
+  s3_bucket: todo
+  s3_bucket_region: todo
+  train: data/raw
+  entities_table_name: entities
+  target_table_name: targets
+
+contrib:
+  module_name: {{ cookiecutter.project_slug }}.features.contrib
+  module_path: {{ cookiecutter.project_slug }}/features/contrib
+  comparison_remote: origin
+  comparison_ref: master
+
+tables:
+  -
+    name: entities
+    path: entities.csv
+    pd_read_kwargs:
+      index_col:
+      - todo
+      header: 0
+  -
+    name: targets
+    path: targets.csv
+    pd_read_kwargs:
+      index_col:
+      - todo
+      header: 0
