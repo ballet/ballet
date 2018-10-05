@@ -14,12 +14,9 @@ from ballet.util import asarray2d
 from .util import FragileTransformer, FragileTransformerPipeline
 
 
-class TestFeature(unittest.TestCase):
+class DelegatingRobustTransformerTest(unittest.TestCase):
+
     def setUp(self):
-        self.input = 'foo'
-
-        self.transformer = IdentityTransformer()
-
         self.X_ser = pd.util.testing.makeFloatSeries()
         self.X_df = self.X_ser.to_frame()
         self.X_arr1d = np.asarray(self.X_ser)
@@ -36,22 +33,10 @@ class TestFeature(unittest.TestCase):
             'arr2d': (self.X_arr2d, self.y_arr2d),
         }
 
-    def test_feature_init(self):
-        Feature(self.input, self.transformer)
-
-    def test_feature_init_invalid_transformer_api(self):
-        with self.assertRaises(ValueError):
-            Feature(self.input, object())
-
-        with self.assertRaises(ValueError):
-            Feature(self.input, IdentityTransformer)
-
     def _test_robust_transformer(
-            self,
-            input_types,
-            bad_input_checks,
-            catches,
-            transformer_maker=FragileTransformer):
+        self, input_types, bad_input_checks, catches,
+        transformer_maker=FragileTransformer
+    ):
         fragile_transformer = transformer_maker(bad_input_checks, catches)
         robust_transformer = DelegatingRobustTransformer(
             transformer_maker(bad_input_checks, catches))
@@ -113,7 +98,8 @@ class TestFeature(unittest.TestCase):
                 robust_transformer.fit_transform(X, y=y)
 
     def _test_robust_transformer_pipeline(
-            self, input_types, bad_input_checks, catches):
+        self, input_types, bad_input_checks, catches
+    ):
         FragileTransformerPipeline3 = funcy.partial(
             FragileTransformerPipeline, 3)
         return self._test_robust_transformer(
@@ -151,6 +137,23 @@ class TestFeature(unittest.TestCase):
         catches = (ValueError, TypeError)
         self._test_robust_transformer_pipeline(
             input_types, bad_input_checks, catches)
+
+
+class FeatureTest(unittest.TestCase):
+
+    def setUp(self):
+        self.input = 'foo'
+        self.transformer = IdentityTransformer()
+
+    def test_feature_init(self):
+        Feature(self.input, self.transformer)
+
+    def test_feature_init_invalid_transformer_api(self):
+        with self.assertRaises(ValueError):
+            Feature(self.input, object())
+
+        with self.assertRaises(ValueError):
+            Feature(self.input, IdentityTransformer)
 
     def test_feature_as_input_transformer_tuple(self):
         feature = Feature(self.input, self.transformer)
