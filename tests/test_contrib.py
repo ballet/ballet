@@ -7,7 +7,7 @@ import funcy
 
 from ballet.compat import pathlib
 from ballet.contrib import get_contrib_features
-from ballet.util.modutil import import_module_at_path
+from ballet.util.mod import import_module_at_path
 
 logging.basicConfig(level=logging.DEBUG)
 

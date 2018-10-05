@@ -7,10 +7,10 @@ from ballet.contrib import get_contrib_features
 from ballet.exc import UnexpectedValidationStateError
 from ballet.feature import Feature
 from ballet.util import assertion_method
-from ballet.util.gitutil import LocalPullRequestBuildDiffer
+from ballet.util.git import LocalPullRequestBuildDiffer
 from ballet.util.log import logger
-from ballet.util.modutil import import_module_at_path, relpath_to_modname
-from ballet.util.travisutil import (
+from ballet.util.mod import import_module_at_path, relpath_to_modname
+from ballet.util.ci import (
     TravisPullRequestBuildDiffer, can_use_travis_differ)
 
 __all__ = [

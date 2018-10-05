@@ -6,11 +6,11 @@ from unittest.mock import patch
 
 import ballet
 from ballet.compat import pathlib
-from ballet.util.gitutil import get_diff_str_from_commits
-from ballet.util.modutil import (  # noqa F401
+from ballet.util.git import get_diff_str_from_commits
+from ballet.util.mod import (  # noqa F401
     import_module_at_path, import_module_from_modname,
     import_module_from_relpath, modname_to_relpath, relpath_to_modname)
-from ballet.util.travisutil import (
+from ballet.util.ci import (
     TravisPullRequestBuildDiffer, get_travis_pr_num, is_travis_pr)
 
 from .util import make_mock_commits, mock_repo

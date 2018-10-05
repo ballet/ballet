@@ -3,10 +3,10 @@ import os
 
 import ballet
 import ballet.contrib
-import ballet.util.modutil
+import ballet.util.mod
 import click
 import numpy as np
-from ballet.util.ioutil import write_tabular
+from ballet.util.io import write_tabular
 
 import {{ cookiecutter.project_slug }}.conf as conf
 from {{ cookiecutter.project_slug }}.load_data import load_data
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 def get_contrib_features():
     modname = conf.get('contrib', 'module_name')
-    mod = ballet.util.modutil.import_module_from_modname(modname)
+    mod = ballet.util.mod.import_module_from_modname(modname)
     return ballet.contrib.get_contrib_features(mod)
 
 
