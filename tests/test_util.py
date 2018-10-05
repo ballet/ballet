@@ -1,11 +1,11 @@
 import os
-import pathlib
 import tempfile
 import types
 import unittest
 from unittest.mock import patch
 
 import ballet
+from ballet.compat import pathlib
 from ballet.util.gitutil import get_diff_str_from_commits
 from ballet.util.modutil import (  # noqa F401
     import_module_at_path, import_module_from_modname,

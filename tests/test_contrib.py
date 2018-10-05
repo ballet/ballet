@@ -1,11 +1,11 @@
 import logging
-import pathlib
 import tempfile
 import unittest
 from textwrap import dedent
 
 import funcy
 
+from ballet.compat import pathlib
 from ballet.contrib import get_contrib_features
 from ballet.util.modutil import import_module_at_path
 

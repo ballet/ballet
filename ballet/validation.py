@@ -1,8 +1,8 @@
 import copy
-import pathlib
 
 import funcy
 
+from ballet.compat import pathlib
 from ballet.contrib import get_contrib_features
 from ballet.exc import UnexpectedValidationStateError
 from ballet.feature import Feature
