@@ -112,13 +112,13 @@ def mock_repo():
         os.chdir(str(tmpdir))
         dir = pathlib.Path(tmpdir)
         repo = git.Repo.init(str(dir))
-        
+
         # need to explicitly set user/email as email cannot be detected
         # in CI environment
         with repo.config_writer() as cw:
             cw.set_value('user', 'email', 'me@example.com')
             cw.set_value('user', 'name', 'Name')
-            
+
         try:
             yield repo
         finally:
