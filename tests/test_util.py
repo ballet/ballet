@@ -280,6 +280,7 @@ class IoTest(unittest.TestCase):
         obj = object()
         filepath = '/foo/bar/baz.xyz'
         with self.assertRaises(NotImplementedError):
+            ballet.util.io.write_tabular(obj, filepath)
 
     @patch('builtins.open', new_callable=mock_open)
     @patch('pickle.dump')
