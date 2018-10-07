@@ -13,7 +13,7 @@ from ballet.exc import UnexpectedValidationStateError
 from ballet.feature import Feature
 from ballet.util.git import get_diff_str_from_commits
 from ballet.util.ci import TravisPullRequestBuildDiffer
-from ballet.validation import FeatureValidator, PullRequestFeatureValidator
+from ballet.validation import FeatureApiValidator, PullRequestFeatureValidator
 
 from .util import (
     FragileTransformer, make_mock_commit, make_mock_commits, mock_repo)
@@ -43,7 +43,7 @@ class TestFeatureValidator(TestDataMixin, unittest.TestCase):
             transformer=SimpleImputer(),
         )
 
-        validator = FeatureValidator(self.X, self.y)
+        validator = FeatureApiValidator(self.X, self.y)
         result, failures = validator.validate(feature)
         self.assertTrue(result)
         self.assertEqual(len(failures), 0)
@@ -54,7 +54,7 @@ class TestFeatureValidator(TestDataMixin, unittest.TestCase):
             input=3,
             transformer=SimpleImputer(),
         )
-        validator = FeatureValidator(self.X, self.y)
+        validator = FeatureApiValidator(self.X, self.y)
         result, failures = validator.validate(feature)
         self.assertFalse(result)
         self.assertIn('has_correct_input_type', failures)
@@ -66,7 +66,7 @@ class TestFeatureValidator(TestDataMixin, unittest.TestCase):
             transformer=FragileTransformer(
                 (lambda x: True, ), (RuntimeError, ))
         )
-        validator = FeatureValidator(self.X, self.y)
+        validator = FeatureApiValidator(self.X, self.y)
         result, failures = validator.validate(feature)
         self.assertFalse(result)
         self.assertIn('can_transform', failures)
@@ -84,7 +84,7 @@ class TestFeatureValidator(TestDataMixin, unittest.TestCase):
             input='size',
             transformer=_WrongLengthTransformer(),
         )
-        validator = FeatureValidator(self.X, self.y)
+        validator = FeatureApiValidator(self.X, self.y)
         result, failures = validator.validate(feature)
         self.assertFalse(result)
         self.assertIn('has_correct_output_dimensions', failures)
@@ -97,7 +97,7 @@ class TestFeatureValidator(TestDataMixin, unittest.TestCase):
             input='size',
             transformer=_CopyFailsTransformer(),
         )
-        validator = FeatureValidator(self.X, self.y)
+        validator = FeatureApiValidator(self.X, self.y)
         result, failures = validator.validate(feature)
         self.assertFalse(result)
         self.assertIn('can_deepcopy', failures)

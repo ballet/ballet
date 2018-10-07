@@ -14,12 +14,12 @@ from ballet.util.ci import (
     TravisPullRequestBuildDiffer, can_use_travis_differ)
 
 __all__ = [
-    'FeatureValidator',
+    'FeatureApiValidator',
     'PullRequestFeatureValidator'
 ]
 
 
-class FeatureValidator:
+class FeatureApiValidator:
 
     def __init__(self, X, y):
         self.X = X
@@ -157,7 +157,7 @@ class PullRequestFeatureValidator:
            changes. Admissible file changes solely contribute python files to
            the contrib subdirectory.
         3. Collect features from admissible new files.
-        4. Validate each of these features using the FeatureValidator.
+        4. Validate each of these features using the FeatureApiValidator.
         5. Report the overall validation results.
         '''
 
@@ -294,7 +294,7 @@ class PullRequestFeatureValidator:
         X, y = subsample_data_for_validation(self.X, self.y)
 
         # validate
-        feature_validator = FeatureValidator(X, y)
+        feature_validator = FeatureApiValidator(X, y)
         overall_result = True
         for feature in self.features:
             result, failures = feature_validator.validate(feature)
