@@ -13,7 +13,7 @@ from ballet.exc import UnexpectedValidationStateError
 from ballet.feature import Feature
 from ballet.util.git import get_diff_str_from_commits
 from ballet.util.ci import TravisPullRequestBuildDiffer
-from ballet.validation import FeatureApiValidator, PullRequestFeatureValidator
+from ballet.validation import FeatureApiValidator, PullRequestStructureValidator
 
 from .util import (
     FragileTransformer, make_mock_commit, make_mock_commits, mock_repo)
@@ -148,7 +148,7 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
                 'TRAVIS_COMMIT_RANGE': commit_range,
             }
             with patch.dict('os.environ', travis_env_vars):
-                yield PullRequestFeatureValidator(
+                yield PullRequestStructureValidator(
                     repo, self.pr_num, contrib_module_path, X, y)
 
     def test_prfv_init(self):
@@ -185,7 +185,7 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
                 'TRAVIS_COMMIT_RANGE': commit_range,
             }
             with patch.dict('os.environ', travis_env_vars):
-                validator = PullRequestFeatureValidator(
+                validator = PullRequestStructureValidator(
                     repo, self.pr_num, contrib_module_path, X, y)
                 validator._collect_file_diffs()
 
@@ -218,7 +218,7 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
                 'TRAVIS_COMMIT_RANGE': travis_commit_range,
             }
             with patch.dict('os.environ', travis_env_vars):
-                yield PullRequestFeatureValidator(
+                yield PullRequestStructureValidator(
                     repo, self.pr_num, contrib_module_path, X, y)
 
     def test_prfv_end_to_end_failure_no_features_found(self):

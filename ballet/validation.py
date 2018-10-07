@@ -15,7 +15,7 @@ from ballet.util.ci import (
 
 __all__ = [
     'FeatureApiValidator',
-    'PullRequestFeatureValidator'
+    'PullRequestStructureValidator'
 ]
 
 
@@ -114,7 +114,11 @@ class FeatureApiValidator:
                 yield (method, name)
 
 
-class PullRequestFeatureValidator:
+class ProjectStructureValidator:
+    pass
+
+
+class PullRequestStructureValidator(ProjectStructureValidator):
     APPROPRIATE_CHANGE_TYPES = ['A']
     APPROPRIATE_FILE_EXTS = ['.py']
 
@@ -198,7 +202,7 @@ class PullRequestFeatureValidator:
         def is_appropriate_change_type(diff):
             '''File change is an addition'''
             return diff.change_type in \
-                PullRequestFeatureValidator.APPROPRIATE_CHANGE_TYPES
+                   PullRequestStructureValidator.APPROPRIATE_CHANGE_TYPES
 
         def within_contrib_subdirectory(diff):
             '''File addition is a subdirectory of project's contrib dir'''
@@ -214,7 +218,7 @@ class PullRequestFeatureValidator:
             '''File change is a python file'''
             path = diff.b_path
             try:
-                for ext in PullRequestFeatureValidator.APPROPRIATE_FILE_EXTS:
+                for ext in PullRequestStructureValidator.APPROPRIATE_FILE_EXTS:
                     if path.endswith(ext):
                         return True
                 return False
