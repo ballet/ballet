@@ -4,6 +4,7 @@ import types
 import unittest
 from unittest.mock import ANY, mock_open, patch
 
+from funcy import identity
 import numpy as np
 import pandas as pd
 
@@ -213,37 +214,53 @@ class CiTest(unittest.TestCase):
 
 class FsTest(unittest.TestCase):
 
-    def test_spliceext(self):
-        filepath = '/foo/bar/baz.txt'
-        s = '_new'
-        expected = '/foo/bar/baz_new.txt'
+    def setUp(self):
+        self.fs_path_conversions = [identity, pathlib.Path]
 
-        actual = ballet.util.fs.spliceext(filepath, s)
-        self.assertEqual(actual, expected)
+    def test_spliceext(self):
+        filepath0 = '/foo/bar/baz.txt'
+
+        for func in self.fs_path_conversions:
+            filepath = func(filepath0)
+            s = '_new'
+            expected = '/foo/bar/baz_new.txt'
+
+            actual = ballet.util.fs.spliceext(filepath, s)
+            self.assertEqual(actual, expected)
 
     def test_replaceext(self):
-        filepath = '/foo/bar/baz.txt'
+        filepath0 = '/foo/bar/baz.txt'
         expected = '/foo/bar/baz.py'
 
-        new_ext = 'py'
-        actual = ballet.util.fs.replaceext(filepath, new_ext)
-        self.assertEqual(actual, expected)
+        for func in self.fs_path_conversions:
+            filepath = func(filepath0)
 
-        new_ext = '.py'
-        actual = ballet.util.fs.replaceext(filepath, new_ext)
-        self.assertEqual(actual, expected)
+            new_ext = 'py'
+            actual = ballet.util.fs.replaceext(filepath, new_ext)
+            self.assertEqual(actual, expected)
+
+            new_ext = '.py'
+            actual = ballet.util.fs.replaceext(filepath, new_ext)
+            self.assertEqual(actual, expected)
 
     def test_splitext2(self):
-        filepath = '/foo/bar/baz.txt'
+        filepath0 = '/foo/bar/baz.txt'
         expected = ('/foo/bar', 'baz', '.txt')
 
-        actual = ballet.util.fs.splitext2(filepath)
-        self.assertEqual(actual, expected)
+        for func in self.fs_path_conversions:
+            filepath = func(filepath0)
 
-        filepath = 'baz.txt'
+            actual = ballet.util.fs.splitext2(filepath)
+            self.assertEqual(actual, expected)
+
+        filepath0 = 'baz.txt'
         expected = ('', 'baz', '.txt')
-        actual = ballet.util.fs.splitext2(filepath)
-        self.assertEqual(actual, expected)
+
+        for func in self.fs_path_conversions:
+            filepath = func(filepath0)
+
+            actual = ballet.util.fs.splitext2(filepath)
+            self.assertEqual(actual, expected)
 
 
 class IoTest(unittest.TestCase):
