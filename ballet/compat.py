@@ -8,10 +8,12 @@ except ImportError:
 
 # pathlib compatibility
 import sys
-
 if sys.version_info < (3, 5, 0):
     import pathlib2 as pathlib
-    safepath = str
 else:
     import pathlib  # noqa F401
-    safepath = lambda x: x
+if sys.version_info < (3, 6, 0):
+    safepath = str
+else:
+    from funcy import identity
+    safepath = identity
