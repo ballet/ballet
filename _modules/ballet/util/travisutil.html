@@ -240,8 +240,7 @@
     <span class="sd">&#39;&#39;&#39;Return the PR number if the job is a pull request, None otherwise</span>
 
 <span class="sd">    See also:</span>
-<span class="sd">        - &lt;https://docs.travis-ci.com/user/environment-variables</span>
-<span class="sd">          /#Default-Environment-Variables&gt;</span>
+<span class="sd">        - &lt;https://docs.travis-ci.com/user/environment-variables/#Default-Environment-Variables&gt;</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">travis_pull_request</span> <span class="o">=</span> <span class="n">get_travis_env_or_fail</span><span class="p">(</span><span class="s1">&#39;TRAVIS_PULL_REQUEST&#39;</span><span class="p">)</span>
@@ -273,11 +272,12 @@
 
 
 <div class="viewcode-block" id="TravisPullRequestBuildDiffer"><a class="viewcode-back" href="../../../api/ballet.util.travisutil.html#ballet.util.travisutil.TravisPullRequestBuildDiffer">[docs]</a><span class="k">class</span> <span class="nc">TravisPullRequestBuildDiffer</span><span class="p">(</span><span class="n">PullRequestBuildDiffer</span><span class="p">):</span>
-    <span class="n">EXPECTED_TRAVIS_ENV_VARS</span> <span class="o">=</span> <span class="p">[</span>
+
+    <span class="n">EXPECTED_TRAVIS_ENV_VARS</span> <span class="o">=</span> <span class="p">(</span>
         <span class="s1">&#39;TRAVIS_BUILD_DIR&#39;</span><span class="p">,</span>
         <span class="s1">&#39;TRAVIS_PULL_REQUEST&#39;</span><span class="p">,</span>
         <span class="s1">&#39;TRAVIS_COMMIT_RANGE&#39;</span><span class="p">,</span>
-    <span class="p">]</span>
+    <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pr_num</span><span class="p">,</span> <span class="n">repo</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">repo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
