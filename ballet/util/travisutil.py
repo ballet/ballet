@@ -32,8 +32,7 @@ def get_travis_pr_num():
     '''Return the PR number if the job is a pull request, None otherwise
 
     See also:
-        - <https://docs.travis-ci.com/user/environment-variables
-          /#Default-Environment-Variables>
+        - <https://docs.travis-ci.com/user/environment-variables/#Default-Environment-Variables>
     '''
     try:
         travis_pull_request = get_travis_env_or_fail('TRAVIS_PULL_REQUEST')
@@ -65,11 +64,12 @@ def can_use_travis_differ():
 
 
 class TravisPullRequestBuildDiffer(PullRequestBuildDiffer):
-    EXPECTED_TRAVIS_ENV_VARS = [
+
+    EXPECTED_TRAVIS_ENV_VARS = (
         'TRAVIS_BUILD_DIR',
         'TRAVIS_PULL_REQUEST',
         'TRAVIS_COMMIT_RANGE',
-    ]
+    )
 
     def __init__(self, pr_num, repo=None):
         if repo is None:
