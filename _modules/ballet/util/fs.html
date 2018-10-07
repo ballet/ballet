@@ -206,7 +206,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ballet.util.fs</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="kn">import</span> <span class="nn">os.path</span>
+
+<span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="k">import</span> <span class="n">safepath</span>
 
 
 <div class="viewcode-block" id="spliceext"><a class="viewcode-back" href="../../../api/ballet.util.fs.html#ballet.util.fs.spliceext">[docs]</a><span class="k">def</span> <span class="nf">spliceext</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
@@ -219,8 +221,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        str</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">filepath</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
-    <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+    <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">safepath</span><span class="p">(</span><span class="n">filepath</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">root</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="n">ext</span></div>
 
 
@@ -245,8 +246,7 @@
     <span class="k">if</span> <span class="n">new_ext</span> <span class="ow">and</span> <span class="n">new_ext</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;.&#39;</span><span class="p">:</span>
         <span class="n">new_ext</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">new_ext</span>
 
-    <span class="n">filepath</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
-    <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+    <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">safepath</span><span class="p">(</span><span class="n">filepath</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">root</span> <span class="o">+</span> <span class="n">new_ext</span></div>
 
 
@@ -259,9 +259,8 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        str</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">filepath</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
-    <span class="n">root</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
-    <span class="n">filename</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">root</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">safepath</span><span class="p">(</span><span class="n">filepath</span><span class="p">))</span>
+    <span class="n">filename</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">safepath</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">root</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">ext</span></div>
 </pre></div>
 
