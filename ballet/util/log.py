@@ -26,7 +26,7 @@ def enable(logger=logger, level=logging.INFO):
     levelName = logging._levelToName[level]
     logger.log(
         level, 'Logging enabled at level {name}.'.format(name=levelName))
-    
+
 
 class LoggingContext(object):
     '''

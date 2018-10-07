@@ -8,7 +8,23 @@ def spliceext(filepath, s):
 
 
 def replaceext(filepath, new_ext):
-    """Replace any existing file extension with a new one"""
+    """Replace any existing file extension with a new one
+
+    Args:
+        filepath (str, path): file path
+        new_ext (str): new file extension; if a leading dot is not included,
+            it will be added.
+
+    Example::
+
+        >>> replaceext('/foo/bar.txt', 'py')
+        '/foo/bar.py'
+        >>> replaceext('/foo/bar.txt', '.doc')
+        '/foo/bar.doc'
+    """
+    if new_ext and new_ext[0] != '.':
+        new_ext = '.' + new_ext
+
     root, ext = os.path.splitext(filepath)
     return root + new_ext
 
