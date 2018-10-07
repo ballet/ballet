@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.util.travisutil module &mdash; ballet 0.4.1 documentation</title>
+  <title>ballet.util.git module &mdash; ballet 0.4.1 documentation</title>
   
 
   
@@ -28,8 +28,8 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="ballet.compat module" href="ballet.compat.html" />
-    <link rel="prev" title="ballet.util.testing module" href="ballet.util.testing.html" /> 
+    <link rel="next" title="ballet.util.io module" href="ballet.util.io.html" />
+    <link rel="prev" title="ballet.util.fs module" href="ballet.util.fs.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -194,14 +194,14 @@
         
           <li><a href="ballet.util.html">ballet.util package</a> &raquo;</li>
         
-      <li>ballet.util.travisutil module</li>
+      <li>ballet.util.git module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
             
-              <a href="https://github.com/HDI-Project/ballet/blob/master/docs/api/ballet.util.travisutil.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/HDI-Project/ballet/blob/master/docs/api/ballet.util.git.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -215,56 +215,111 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-ballet.util.travisutil">
-<span id="ballet-util-travisutil-module"></span><h1>ballet.util.travisutil module<a class="headerlink" href="#module-ballet.util.travisutil" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-ballet.util.git">
+<span id="ballet-util-git-module"></span><h1>ballet.util.git module<a class="headerlink" href="#module-ballet.util.git" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
-<dt id="ballet.util.travisutil.TravisPullRequestBuildDiffer">
-<em class="property">class </em><code class="descclassname">ballet.util.travisutil.</code><code class="descname">TravisPullRequestBuildDiffer</code><span class="sig-paren">(</span><em>pr_num</em>, <em>repo=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/travisutil.html#TravisPullRequestBuildDiffer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.travisutil.TravisPullRequestBuildDiffer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="ballet.util.gitutil.html#ballet.util.gitutil.PullRequestBuildDiffer" title="ballet.util.gitutil.PullRequestBuildDiffer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.util.gitutil.PullRequestBuildDiffer</span></code></a></p>
+<dt id="ballet.util.git.HeadInfo">
+<em class="property">class </em><code class="descclassname">ballet.util.git.</code><code class="descname">HeadInfo</code><span class="sig-paren">(</span><em>repo</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#HeadInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.git.HeadInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="attribute">
-<dt id="ballet.util.travisutil.TravisPullRequestBuildDiffer.EXPECTED_TRAVIS_ENV_VARS">
-<code class="descname">EXPECTED_TRAVIS_ENV_VARS</code><em class="property"> = ('TRAVIS_BUILD_DIR', 'TRAVIS_PULL_REQUEST', 'TRAVIS_COMMIT_RANGE')</em><a class="headerlink" href="#ballet.util.travisutil.TravisPullRequestBuildDiffer.EXPECTED_TRAVIS_ENV_VARS" title="Permalink to this definition">¶</a></dt>
+<dt id="ballet.util.git.HeadInfo.path">
+<code class="descname">path</code><a class="headerlink" href="#ballet.util.git.HeadInfo.path" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="function">
-<dt id="ballet.util.travisutil.can_use_travis_differ">
-<code class="descclassname">ballet.util.travisutil.</code><code class="descname">can_use_travis_differ</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/travisutil.html#can_use_travis_differ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.travisutil.can_use_travis_differ" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the required travis env vars are set for the travis differ</p>
+<dl class="class">
+<dt id="ballet.util.git.LocalPullRequestBuildDiffer">
+<em class="property">class </em><code class="descclassname">ballet.util.git.</code><code class="descname">LocalPullRequestBuildDiffer</code><a class="reference internal" href="../_modules/ballet/util/git.html#LocalPullRequestBuildDiffer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.git.LocalPullRequestBuildDiffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ballet.util.git.PullRequestBuildDiffer" title="ballet.util.git.PullRequestBuildDiffer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.util.git.PullRequestBuildDiffer</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="ballet.util.git.PullRequestBuildDiffer">
+<em class="property">class </em><code class="descclassname">ballet.util.git.</code><code class="descname">PullRequestBuildDiffer</code><span class="sig-paren">(</span><em>pr_num</em>, <em>repo</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#PullRequestBuildDiffer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.git.PullRequestBuildDiffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="ballet.util.git.PullRequestBuildDiffer.diff">
+<code class="descname">diff</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#PullRequestBuildDiffer.diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.git.PullRequestBuildDiffer.diff" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ballet.util.git.PullRequestInfo">
+<em class="property">class </em><code class="descclassname">ballet.util.git.</code><code class="descname">PullRequestInfo</code><span class="sig-paren">(</span><em>pr_num</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#PullRequestInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.git.PullRequestInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="ballet.util.git.PullRequestInfo.local_ref_name">
+<code class="descname">local_ref_name</code><a class="headerlink" href="#ballet.util.git.PullRequestInfo.local_ref_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shorthand name of local ref, e.g. ‘pull/1’</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ballet.util.git.PullRequestInfo.local_rev_name">
+<code class="descname">local_rev_name</code><a class="headerlink" href="#ballet.util.git.PullRequestInfo.local_rev_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Full name of revision, e.g. ‘refs/heads/pull/1’</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ballet.util.git.PullRequestInfo.remote_ref_name">
+<code class="descname">remote_ref_name</code><a class="headerlink" href="#ballet.util.git.PullRequestInfo.remote_ref_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Full name of remote ref (as on GitHub), e.g. ‘refs/pull/1/head’</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="function">
-<dt id="ballet.util.travisutil.dump_travis_env_vars">
-<code class="descclassname">ballet.util.travisutil.</code><code class="descname">dump_travis_env_vars</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/travisutil.html#dump_travis_env_vars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.travisutil.dump_travis_env_vars" title="Permalink to this definition">¶</a></dt>
+<dt id="ballet.util.git.get_diff_str_from_commits">
+<code class="descclassname">ballet.util.git.</code><code class="descname">get_diff_str_from_commits</code><span class="sig-paren">(</span><em>a</em>, <em>b</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#get_diff_str_from_commits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.git.get_diff_str_from_commits" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="ballet.util.travisutil.ensure_expected_travis_env_vars">
-<code class="descclassname">ballet.util.travisutil.</code><code class="descname">ensure_expected_travis_env_vars</code><span class="sig-paren">(</span><em>names</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/travisutil.html#ensure_expected_travis_env_vars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.travisutil.ensure_expected_travis_env_vars" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="ballet.util.travisutil.get_travis_env_or_fail">
-<code class="descclassname">ballet.util.travisutil.</code><code class="descname">get_travis_env_or_fail</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/travisutil.html#get_travis_env_or_fail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.travisutil.get_travis_env_or_fail" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="ballet.util.travisutil.get_travis_pr_num">
-<code class="descclassname">ballet.util.travisutil.</code><code class="descname">get_travis_pr_num</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/travisutil.html#get_travis_pr_num"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.travisutil.get_travis_pr_num" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the PR number if the job is a pull request, None otherwise</p>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<ul class="last simple">
-<li>&lt;<a class="reference external" href="https://docs.travis-ci.com/user/environment-variables/#Default-Environment-Variables">https://docs.travis-ci.com/user/environment-variables/#Default-Environment-Variables</a>&gt;</li>
+<dt id="ballet.util.git.get_diffs_by_diff_str">
+<code class="descclassname">ballet.util.git.</code><code class="descname">get_diffs_by_diff_str</code><span class="sig-paren">(</span><em>repo</em>, <em>diff_str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#get_diffs_by_diff_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.git.get_diffs_by_diff_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get file changes via a diff string.</p>
+<p>For details on specifying revisions, see <cite>git help revisions</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>repo</strong> (<em>git.Repo</em>) – Repo object initialized with project root</li>
+<li><strong>diff_str</strong> (<em>str</em>) – diff string identifying range of diff. For example,
+<cite>master..HEAD</cite> diffs from master to HEAD, and <cite>12345678..abcdef90</cite>
+compares to commits.</li>
 </ul>
-</div>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of git.diff.Diff identifying changes between revisions</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
-<dt id="ballet.util.travisutil.is_travis_pr">
-<code class="descclassname">ballet.util.travisutil.</code><code class="descname">is_travis_pr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/travisutil.html#is_travis_pr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.travisutil.is_travis_pr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the current job is a pull request build</p>
+<dt id="ballet.util.git.get_diffs_by_revision">
+<code class="descclassname">ballet.util.git.</code><code class="descname">get_diffs_by_revision</code><span class="sig-paren">(</span><em>repo</em>, <em>from_revision</em>, <em>to_revision</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#get_diffs_by_revision"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.git.get_diffs_by_revision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get file changes between two revisions.</p>
+<p>For details on specifying revisions, see <cite>git help revisions</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>repo</strong> (<em>git.Repo</em>) – Repo object initialized with project root</li>
+<li><strong>from_revision</strong> (<em>str</em>) – revision identifier for the starting point of the
+diff</li>
+<li><strong>to_revision</strong> (<em>str</em>) – revision identifier for the ending point of the diff</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of git.diff.Diff identifying changes between revisions</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -277,10 +332,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="ballet.compat.html" class="btn btn-neutral float-right" title="ballet.compat module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="ballet.util.io.html" class="btn btn-neutral float-right" title="ballet.util.io module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="ballet.util.testing.html" class="btn btn-neutral" title="ballet.util.testing module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="ballet.util.fs.html" class="btn btn-neutral" title="ballet.util.fs module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

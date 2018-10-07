@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.util.modutil &mdash; ballet 0.4.1 documentation</title>
+  <title>ballet.util.mod &mdash; ballet 0.4.1 documentation</title>
   
 
   
@@ -190,7 +190,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>ballet.util.modutil</li>
+      <li>ballet.util.mod</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -205,7 +205,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for ballet.util.modutil</h1><div class="highlight"><pre>
+  <h1>Source code for ballet.util.mod</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">import</span> <span class="nn">pkgutil</span>
 
@@ -213,18 +213,18 @@
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span>
 
 
-<div class="viewcode-block" id="import_module_from_modname"><a class="viewcode-back" href="../../../api/ballet.util.modutil.html#ballet.util.modutil.import_module_from_modname">[docs]</a><span class="k">def</span> <span class="nf">import_module_from_modname</span><span class="p">(</span><span class="n">modname</span><span class="p">):</span>
+<div class="viewcode-block" id="import_module_from_modname"><a class="viewcode-back" href="../../../api/ballet.util.mod.html#ballet.util.mod.import_module_from_modname">[docs]</a><span class="k">def</span> <span class="nf">import_module_from_modname</span><span class="p">(</span><span class="n">modname</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Import module&#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="import_module_from_relpath"><a class="viewcode-back" href="../../../api/ballet.util.modutil.html#ballet.util.modutil.import_module_from_relpath">[docs]</a><span class="k">def</span> <span class="nf">import_module_from_relpath</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<div class="viewcode-block" id="import_module_from_relpath"><a class="viewcode-back" href="../../../api/ballet.util.mod.html#ballet.util.mod.import_module_from_relpath">[docs]</a><span class="k">def</span> <span class="nf">import_module_from_relpath</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Import module at relative path to project root&#39;&#39;&#39;</span>
     <span class="n">modname</span> <span class="o">=</span> <span class="n">relpath_to_modname</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">import_module_from_modname</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="import_module_at_path"><a class="viewcode-back" href="../../../api/ballet.util.modutil.html#ballet.util.modutil.import_module_at_path">[docs]</a><span class="k">def</span> <span class="nf">import_module_at_path</span><span class="p">(</span><span class="n">modname</span><span class="p">,</span> <span class="n">modpath</span><span class="p">):</span>
+<div class="viewcode-block" id="import_module_at_path"><a class="viewcode-back" href="../../../api/ballet.util.mod.html#ballet.util.mod.import_module_at_path">[docs]</a><span class="k">def</span> <span class="nf">import_module_at_path</span><span class="p">(</span><span class="n">modname</span><span class="p">,</span> <span class="n">modpath</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Import module from path that may not be on system path</span>
 
 <span class="sd">    Args:</span>
@@ -296,7 +296,7 @@
     <span class="k">return</span> <span class="n">mod</span></div>
 
 
-<div class="viewcode-block" id="relpath_to_modname"><a class="viewcode-back" href="../../../api/ballet.util.modutil.html#ballet.util.modutil.relpath_to_modname">[docs]</a><span class="k">def</span> <span class="nf">relpath_to_modname</span><span class="p">(</span><span class="n">relpath</span><span class="p">):</span>
+<div class="viewcode-block" id="relpath_to_modname"><a class="viewcode-back" href="../../../api/ballet.util.mod.html#ballet.util.mod.relpath_to_modname">[docs]</a><span class="k">def</span> <span class="nf">relpath_to_modname</span><span class="p">(</span><span class="n">relpath</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Convert relative path to module name</span>
 
 <span class="sd">    Within a project, a path to the source file is uniquely identified with a</span>
@@ -326,7 +326,7 @@
     <span class="k">return</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="modname_to_relpath"><a class="viewcode-back" href="../../../api/ballet.util.modutil.html#ballet.util.modutil.modname_to_relpath">[docs]</a><span class="k">def</span> <span class="nf">modname_to_relpath</span><span class="p">(</span><span class="n">modname</span><span class="p">,</span> <span class="n">project_root</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">add_init</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="modname_to_relpath"><a class="viewcode-back" href="../../../api/ballet.util.mod.html#ballet.util.mod.modname_to_relpath">[docs]</a><span class="k">def</span> <span class="nf">modname_to_relpath</span><span class="p">(</span><span class="n">modname</span><span class="p">,</span> <span class="n">project_root</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">add_init</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Convert module name to relative path.</span>
 
 <span class="sd">    The project root is usually needed to detect if the module is a package, in</span>

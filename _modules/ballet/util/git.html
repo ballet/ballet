@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.util.gitutil &mdash; ballet 0.4.1 documentation</title>
+  <title>ballet.util.git &mdash; ballet 0.4.1 documentation</title>
   
 
   
@@ -190,7 +190,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>ballet.util.gitutil</li>
+      <li>ballet.util.git</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -205,14 +205,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for ballet.util.gitutil</h1><div class="highlight"><pre>
-<div class="viewcode-block" id="PullRequestBuildDiffer"><a class="viewcode-back" href="../../../api/ballet.util.gitutil.html#ballet.util.gitutil.PullRequestBuildDiffer">[docs]</a><span></span><span class="k">class</span> <span class="nc">PullRequestBuildDiffer</span><span class="p">:</span>
+  <h1>Source code for ballet.util.git</h1><div class="highlight"><pre>
+<div class="viewcode-block" id="PullRequestBuildDiffer"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.PullRequestBuildDiffer">[docs]</a><span></span><span class="k">class</span> <span class="nc">PullRequestBuildDiffer</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pr_num</span><span class="p">,</span> <span class="n">repo</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span> <span class="o">=</span> <span class="n">pr_num</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">repo</span> <span class="o">=</span> <span class="n">repo</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_environment</span><span class="p">()</span>
 
-<div class="viewcode-block" id="PullRequestBuildDiffer.diff"><a class="viewcode-back" href="../../../api/ballet.util.gitutil.html#ballet.util.gitutil.PullRequestBuildDiffer.diff">[docs]</a>    <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PullRequestBuildDiffer.diff"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.PullRequestBuildDiffer.diff">[docs]</a>    <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">diff_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_diff_str</span><span class="p">()</span>
         <span class="n">diffs</span> <span class="o">=</span> <span class="n">get_diffs_by_diff_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="p">,</span> <span class="n">diff_str</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">diffs</span></div>
@@ -224,14 +224,14 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
-<div class="viewcode-block" id="LocalPullRequestBuildDiffer"><a class="viewcode-back" href="../../../api/ballet.util.gitutil.html#ballet.util.gitutil.LocalPullRequestBuildDiffer">[docs]</a><span class="k">class</span> <span class="nc">LocalPullRequestBuildDiffer</span><span class="p">(</span><span class="n">PullRequestBuildDiffer</span><span class="p">):</span>
+<div class="viewcode-block" id="LocalPullRequestBuildDiffer"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.LocalPullRequestBuildDiffer">[docs]</a><span class="k">class</span> <span class="nc">LocalPullRequestBuildDiffer</span><span class="p">(</span><span class="n">PullRequestBuildDiffer</span><span class="p">):</span>
     <span class="c1"># TODO</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
-<div class="viewcode-block" id="get_diffs_by_revision"><a class="viewcode-back" href="../../../api/ballet.util.gitutil.html#ballet.util.gitutil.get_diffs_by_revision">[docs]</a><span class="k">def</span> <span class="nf">get_diffs_by_revision</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">from_revision</span><span class="p">,</span> <span class="n">to_revision</span><span class="p">):</span>
+<div class="viewcode-block" id="get_diffs_by_revision"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.get_diffs_by_revision">[docs]</a><span class="k">def</span> <span class="nf">get_diffs_by_revision</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">from_revision</span><span class="p">,</span> <span class="n">to_revision</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Get file changes between two revisions.</span>
 
 <span class="sd">    For details on specifying revisions, see `git help revisions`.</span>
@@ -250,11 +250,11 @@
     <span class="k">return</span> <span class="n">get_diffs_by_diff_str</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">diff_str</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_diff_str_from_commits"><a class="viewcode-back" href="../../../api/ballet.util.gitutil.html#ballet.util.gitutil.get_diff_str_from_commits">[docs]</a><span class="k">def</span> <span class="nf">get_diff_str_from_commits</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<div class="viewcode-block" id="get_diff_str_from_commits"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.get_diff_str_from_commits">[docs]</a><span class="k">def</span> <span class="nf">get_diff_str_from_commits</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
     <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{a}</span><span class="s1">..</span><span class="si">{b}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">hexsha</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="o">.</span><span class="n">hexsha</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_diffs_by_diff_str"><a class="viewcode-back" href="../../../api/ballet.util.gitutil.html#ballet.util.gitutil.get_diffs_by_diff_str">[docs]</a><span class="k">def</span> <span class="nf">get_diffs_by_diff_str</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">diff_str</span><span class="p">):</span>
+<div class="viewcode-block" id="get_diffs_by_diff_str"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.get_diffs_by_diff_str">[docs]</a><span class="k">def</span> <span class="nf">get_diffs_by_diff_str</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">diff_str</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Get file changes via a diff string.</span>
 
 <span class="sd">    For details on specifying revisions, see `git help revisions`.</span>
@@ -276,7 +276,7 @@
 
 
 <span class="c1"># deprecated for now</span>
-<div class="viewcode-block" id="PullRequestInfo"><a class="viewcode-back" href="../../../api/ballet.util.gitutil.html#ballet.util.gitutil.PullRequestInfo">[docs]</a><span class="k">class</span> <span class="nc">PullRequestInfo</span><span class="p">:</span>
+<div class="viewcode-block" id="PullRequestInfo"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.PullRequestInfo">[docs]</a><span class="k">class</span> <span class="nc">PullRequestInfo</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pr_num</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span> <span class="o">=</span> <span class="n">pr_num</span>
 
@@ -299,7 +299,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format</span><span class="p">(</span><span class="s1">&#39;refs/pull/</span><span class="si">{pr_num}</span><span class="s1">/head&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="HeadInfo"><a class="viewcode-back" href="../../../api/ballet.util.gitutil.html#ballet.util.gitutil.HeadInfo">[docs]</a><span class="k">class</span> <span class="nc">HeadInfo</span><span class="p">:</span>
+<div class="viewcode-block" id="HeadInfo"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.HeadInfo">[docs]</a><span class="k">class</span> <span class="nc">HeadInfo</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repo</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">head</span>
 
