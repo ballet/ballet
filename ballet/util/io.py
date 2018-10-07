@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 from ballet.compat import pathlib
-from ballet.util.fsutil import splitext2
+from ballet.util.fs import splitext2
 from ballet.util.log import logger
 
 __all__ = ['read_tabular', 'write_tabular']

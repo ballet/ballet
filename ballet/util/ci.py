@@ -4,7 +4,7 @@ import funcy
 import git
 
 from ballet.exc import UnexpectedTravisEnvironmentError
-from ballet.util.gitutil import PullRequestBuildDiffer
+from ballet.util.git import PullRequestBuildDiffer
 from ballet.util.log import logger
 
 

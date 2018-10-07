@@ -5,7 +5,7 @@ from ballet.exc import Error
 from ballet.modeling.constants import (
     CLASSIFICATION_SCORING, REGRESSION_SCORING, SCORING_NAME_MAPPER)
 from ballet.util.log import logger
-from ballet.util.modutil import import_module_from_modname
+from ballet.util.mod import import_module_from_modname
 
 
 class ScorerInfo:

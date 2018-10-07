@@ -11,7 +11,7 @@ from ballet.compat import pathlib
 from ballet.eng.misc import IdentityTransformer
 from ballet.feature import Feature
 from ballet.quickstart import generate_project, main
-from ballet.util.modutil import import_module_at_path, modname_to_relpath
+from ballet.util.mod import import_module_at_path, modname_to_relpath
 
 
 class QuickstartTest(unittest.TestCase):
