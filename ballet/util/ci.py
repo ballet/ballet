@@ -33,7 +33,7 @@ def get_travis_pr_num():
 
     See also:
         - <https://docs.travis-ci.com/user/environment-variables/#Default-Environment-Variables>
-    '''
+    '''  # noqa
     try:
         travis_pull_request = get_travis_env_or_fail('TRAVIS_PULL_REQUEST')
         if travis_pull_request == 'false':
