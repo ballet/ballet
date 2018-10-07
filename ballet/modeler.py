@@ -11,6 +11,7 @@ from sklearn.model_selection import (
 from sklearn.model_selection._validation import _multimetric_score
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 
+from ballet.compat import safepath
 from ballet.modeling.constants import RANDOM_STATE
 from ballet.modeling.io_transformers import (
     FeatureTypeTransformer, TargetTypeTransformer)
@@ -74,7 +75,7 @@ class Modeler:
         joblib.dump(self.estimator, filepath, compress=True)
 
     def load(self, filepath):
-        if not os.path.exists(filepath):
+        if not os.path.exists(safepath(filepath)):
             raise ValueError("Couldn't find model at {}".format(filepath))
         self.estimator = joblib.load(filepath)
 

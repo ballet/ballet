@@ -1,4 +1,6 @@
-import os
+import os.path
+
+from ballet.compat import safepath
 
 
 def spliceext(filepath, s):
@@ -11,8 +13,7 @@ def spliceext(filepath, s):
     Returns:
         str
     """
-    filepath = str(filepath)
-    root, ext = os.path.splitext(filepath)
+    root, ext = os.path.splitext(safepath(filepath))
     return root + s + ext
 
 
@@ -37,8 +38,7 @@ def replaceext(filepath, new_ext):
     if new_ext and new_ext[0] != '.':
         new_ext = '.' + new_ext
 
-    filepath = str(filepath)
-    root, ext = os.path.splitext(filepath)
+    root, ext = os.path.splitext(safepath(filepath))
     return root + new_ext
 
 
@@ -51,7 +51,6 @@ def splitext2(filepath):
     Returns:
         str
     """
-    filepath = str(filepath)
-    root, filename = os.path.split(filepath)
-    filename, ext = os.path.splitext(filename)
+    root, filename = os.path.split(safepath(filepath))
+    filename, ext = os.path.splitext(safepath(filename))
     return root, filename, ext

@@ -11,7 +11,7 @@ import pandas as pd
 import ballet
 import ballet.util.fs
 import ballet.util.io
-from ballet.compat import pathlib
+from ballet.compat import pathlib, safepath
 from ballet.util.git import get_diff_str_from_commits
 from ballet.util.mod import (  # noqa F401
     import_module_at_path, import_module_from_modname,
@@ -329,7 +329,7 @@ class IoTest(unittest.TestCase):
             filepath = pathlib.Path(d).joinpath('baz.h5')
             ballet.util.io._write_tabular_h5(obj, filepath)
 
-            file_size = os.path.getsize(filepath)
+            file_size = os.path.getsize(safepath(filepath))
             self.assertGreater(file_size, 0)
 
     def test_write_tabular_h5_ndframe(self):

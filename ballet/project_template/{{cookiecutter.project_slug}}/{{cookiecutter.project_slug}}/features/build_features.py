@@ -6,6 +6,7 @@ import ballet.contrib
 import ballet.util.mod
 import click
 import numpy as np
+from ballet.compat import safepath
 from ballet.util.io import write_tabular
 
 import {{ cookiecutter.project_slug }}.conf as conf
@@ -54,7 +55,7 @@ def build_features_from_dir(input_dir, return_mapper=False):
 def save_features(X, y, output_dir):
     logger.info('Saving features...')
     os.makedirs(output_dir, exist_ok=True)
-    fn = os.path.join(output_dir, 'features.pkl')
+    fn = os.path.join(safepath(output_dir), 'features.pkl')
     write_tabular(X, fn)
     logger.info('Saved features to {}'.format(fn))
 
