@@ -5,28 +5,53 @@ from funcy import all_fn, isa, iterable
 
 from ballet.compat import pathlib
 from ballet.contrib import get_contrib_features
-from ballet.exc import UnexpectedValidationStateError
+from ballet.exc import FeatureRejected, UnexpectedValidationStateError
 from ballet.feature import Feature
 from ballet.util import validation_check
-from ballet.util.ci import TravisPullRequestBuildDiffer, can_use_travis_differ
+from ballet.util.ci import (
+    detect_target_type, TravisPullRequestBuildDiffer, can_use_travis_differ)
 from ballet.util.git import LocalPullRequestBuildDiffer
 from ballet.util.log import logger
 from ballet.util.mod import import_module_at_path, relpath_to_modname
 
 
+def get_proposed_feature():
+    return None
+
+
+def check_project_structure(project):
+    pass
+
+
+def validate_feature_api(project):
+    pass
+
+
+def evaluate_feature_performance(project):
+    X_df, y_df = project['load_data']()
+    features = project['get_contrib_features']()
+    evaluator = FeatureRelevanceEvaluator(X_df, y_df, features)
+    proposed_feature = get_proposed_feature()
+    accepted = evaluator.judge(proposed_feature)
+    if not accepted:
+        raise FeatureRejected
+
+
+def prune_existing_features(project):
+   X_df, y_df = project['load_data']()
+   features = project['get_contrib_features']()
+   evaluator = FeatureRedundancyEvaluator(X_df, y_df, features)
+   redundant_features = evaluator.prune()
+   # propose removal
+
+
 class FeaturePerformanceEvaluator:
     """Evaluate the performance of features from an ML point-of-view"""
 
-    def __init__(self, X_df, features_X, mapper_X, X,
-                       y_df, features_y, mapper_y, y):
+    def __init__(self, X_df, y_df, features):
         self.X_df = X_df
-        self.features_X = features_X
-        self.mapper_X = mapper_X
-        self.X = X
         self.y_df = y_df
-        self.features_y = features_y
-        self.mapper_y = mapper_y
-        self.y = y
+        self.features = features
 
 
 class PreAcceptanceFeaturePerformanceEvaluator(
@@ -363,3 +388,21 @@ class PullRequestStructureValidator(ProjectStructureValidator):
 def subsample_data_for_validation(X, y):
     # TODO
     return X, y
+
+
+def validate(project, target_type=None):
+    if target_type is None:
+        target_type = detect_target_type()
+
+    if target_type == 'project_structure_validation':
+        check_project_structure(project)
+    elif target_type == 'feature_api_validation':
+        validate_feature_api(project)
+    elif target_type == 'pre_acceptance_feature_evaluation':
+        evaluate_feature_performance(project)
+    elif target_type == 'post_acceptance_feature_evaluation':
+        prune_existing_features(project)
+    else:
+        raise NotImplementedError
+
+

@@ -8,6 +8,13 @@ from ballet.util.git import PullRequestBuildDiffer
 from ballet.util.log import logger
 
 
+TEST_TYPE_ENV_VAR = 'TEST_TYPE'
+
+
+def detect_target_type():
+    return os.environ.get(TEST_TYPE_ENV_VAR, default=None)
+
+
 def get_travis_env_or_fail(name):
     if name in os.environ:
         return os.environ[name]

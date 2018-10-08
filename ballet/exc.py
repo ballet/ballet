@@ -16,3 +16,11 @@ class UnsuccessfulInputConversionError(Error):
 
 class ConfigurationError(Error):
     pass
+
+
+class FeatureValidationError(Error):
+    pass
+
+
+class FeatureRejected(FeatureValidationError):
+    pass
