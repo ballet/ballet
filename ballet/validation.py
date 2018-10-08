@@ -1,3 +1,4 @@
+from abc import ABCMeta, abstractmethod
 import copy
 
 import funcy
@@ -18,14 +19,50 @@ __all__ = [
 ]
 
 
+class FeaturePerformanceEvaluator:
+    """Evaluate the performance of features from an ML point-of-view"""
+
+    def __init__(self, X_df, features_X, mapper_X, X,
+                       y_df, features_y, mapper_y, y):
+        self.X_df = X_df
+        self.features_X = features_X
+        self.mapper_X = mapper_X
+        self.X = X
+        self.y_df = y_df
+        self.features_y = features_y
+        self.mapper_y = mapper_y
+        self.y = y
+
+
+class PreAcceptanceFeaturePerformanceEvaluator(
+        FeaturePerformanceEvaluator, metaclass=ABCMeta):
+    """Accept/reject a feature to the project based on its performance"""
+
+    @abstractmethod
+    def judge(self):
+        pass
+
+
+class PostAcceptanceFeaturePerformanceEvaluator(
+        FeaturePerformanceEvaluator, metaclass=ABCMeta):
+    """Prune features after acceptance based on their performance"""
+
+    @abstractmethod
+    def prune(self):
+        pass
+
+
 class FeatureApiValidator:
+    """Validate that a feature confirms to the feature API
+
+    """
 
     def __init__(self, X, y):
         self.X = X
         self.y = y
 
     def validate(self, feature):
-        '''Validate the feature'''
+        """Validate the feature"""
         failures = []
         result = True
         for check, name in self._get_all_checks():
@@ -42,7 +79,7 @@ class FeatureApiValidator:
 
     @assertion_method
     def _has_correct_input_type(self, feature):
-        '''Check that `input` is a string or iterable of string'''
+        """Check that `input` is a string or iterable of string"""
         input = feature.input
         is_str = funcy.isa(str)
         is_nested_str = funcy.all_fn(
@@ -122,7 +159,7 @@ class PullRequestStructureValidator(ProjectStructureValidator):
     APPROPRIATE_FILE_EXTS = ['.py']
 
     def __init__(self, repo, pr_num, contrib_module_path, X, y):
-        '''Validate the features introduced in a proposed pull request.
+        """Validate the features introduced in a proposed pull request.
 
         Args:
             repo (git.Repo): project repo
@@ -130,7 +167,7 @@ class PullRequestStructureValidator(ProjectStructureValidator):
             contrib_module_path (str): Relative path to contrib module
             X (array-like): Example X array-like
             y (array-like): Example y array-like
-        '''
+        """
         self.repo = repo
         self.pr_num = pr_num
         self.contrib_module_path = contrib_module_path
@@ -151,7 +188,7 @@ class PullRequestStructureValidator(ProjectStructureValidator):
         self.features_validation_result = None
 
     def validate(self):
-        '''Validate pull request.
+        """Validate pull request.
 
         To do this, follows these steps:
         1. Collects the files that have changed in this pull request as
@@ -162,7 +199,7 @@ class PullRequestStructureValidator(ProjectStructureValidator):
         3. Collect features from admissible new files.
         4. Validate each of these features using the FeatureApiValidator.
         5. Report the overall validation results.
-        '''
+        """
 
         # collect, categorize, and validate file changes
         self._collect_file_diffs()
@@ -188,7 +225,7 @@ class PullRequestStructureValidator(ProjectStructureValidator):
         logger.info('Collected {} file(s)'.format(len(self.file_diffs)))
 
     def _categorize_file_diffs(self):
-        '''Partition file changes into admissible and inadmissible changes'''
+        """Partition file changes into admissible and inadmissible changes"""
         if self.file_diffs is None:
             raise UnexpectedValidationStateError(
                 'File changes have not been collected.')
@@ -199,12 +236,12 @@ class PullRequestStructureValidator(ProjectStructureValidator):
         self.file_diffs_inadmissible = []
 
         def is_appropriate_change_type(diff):
-            '''File change is an addition'''
+            """File change is an addition"""
             return diff.change_type in \
                    PullRequestStructureValidator.APPROPRIATE_CHANGE_TYPES
 
         def within_contrib_subdirectory(diff):
-            '''File addition is a subdirectory of project's contrib dir'''
+            """File addition is a subdirectory of project's contrib dir"""
             path = diff.b_path
             contrib_relpath = self.contrib_module_path
             try:
@@ -214,7 +251,7 @@ class PullRequestStructureValidator(ProjectStructureValidator):
                 return False
 
         def is_appropriate_file_ext(diff):
-            '''File change is a python file'''
+            """File change is a python file"""
             path = diff.b_path
             try:
                 for ext in PullRequestStructureValidator.APPROPRIATE_FILE_EXTS:
