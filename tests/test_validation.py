@@ -9,12 +9,11 @@ import pandas as pd
 from ballet.compat import SimpleImputer
 from ballet.eng.base import BaseTransformer
 from ballet.eng.misc import IdentityTransformer
-from ballet.exc import UnexpectedValidationStateError
 from ballet.feature import Feature
 from ballet.util.ci import TravisPullRequestBuildDiffer
 from ballet.util.git import get_diff_str_from_commits
 from ballet.validation import (
-    FeatureApiValidator, PullRequestStructureValidator)
+    FeatureApiValidator, FileChangeValidator)
 
 from .util import (
     FragileTransformer, make_mock_commit, make_mock_commits, mock_repo)
@@ -149,26 +148,13 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
                 'TRAVIS_COMMIT_RANGE': commit_range,
             }
             with patch.dict('os.environ', travis_env_vars):
-                yield PullRequestStructureValidator(
+                yield FileChangeValidator(
                     repo, self.pr_num, contrib_module_path, X, y)
 
     def test_prfv_init(self):
         with self.null_prfv() as validator:
             self.assertIsInstance(
                 validator.differ, TravisPullRequestBuildDiffer)
-
-    def test_prfv_required_method_ordering(self):
-        with self.null_prfv() as validator:
-            with self.assertRaises(UnexpectedValidationStateError):
-                validator._categorize_file_diffs()
-            with self.assertRaises(UnexpectedValidationStateError):
-                validator._validate_files()
-            with self.assertRaises(UnexpectedValidationStateError):
-                validator._collect_features()
-            with self.assertRaises(UnexpectedValidationStateError):
-                validator._validate_features()
-            with self.assertRaises(UnexpectedValidationStateError):
-                validator._determine_validation_result()
 
     def test_prfv_collect_file_diffs(self):
         n = 10
@@ -186,13 +172,13 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
                 'TRAVIS_COMMIT_RANGE': commit_range,
             }
             with patch.dict('os.environ', travis_env_vars):
-                validator = PullRequestStructureValidator(
+                validator = FileChangeValidator(
                     repo, self.pr_num, contrib_module_path, X, y)
-                validator._collect_file_diffs()
+                file_diffs = validator._collect_file_diffs()
 
                 # checks on file_diffs
-                self.assertEqual(len(validator.file_diffs), n - 1)
-                for diff in validator.file_diffs:
+                self.assertEqual(len(file_diffs), n - 1)
+                for diff in file_diffs:
                     self.assertEqual(diff.change_type, 'A')
                     self.assertTrue(diff.b_path.startswith('file'))
                     self.assertTrue(diff.b_path.endswith('.py'))
@@ -219,7 +205,7 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
                 'TRAVIS_COMMIT_RANGE': travis_commit_range,
             }
             with patch.dict('os.environ', travis_env_vars):
-                yield PullRequestStructureValidator(
+                yield FileChangeValidator(
                     repo, self.pr_num, contrib_module_path, X, y)
 
     def test_prfv_end_to_end_failure_no_features_found(self):
