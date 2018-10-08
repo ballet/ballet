@@ -7,6 +7,7 @@ RANDOM_STATE = 1754
 
 
 def asarray2d(a):
+    """Cast to 2d array"""
     arr = np.asarray(a)
     if arr.ndim == 1:
         arr = arr.reshape(-1, 1)
@@ -14,6 +15,7 @@ def asarray2d(a):
 
 
 def get_arr_desc(arr):
+    """Get array description, in the form '<array type> <array shape>'"""
     desc = '{typ} {shp}'
     typ = type(arr)
     shp = getattr(arr, 'shape', None)
@@ -21,20 +23,23 @@ def get_arr_desc(arr):
 
 
 def indent(text, n=4):
+    """Indent each line of text by n spaces"""
     _indent = ' ' * n
-    return '\n'.join([_indent + line for line in text.split('\n')])
+    return '\n'.join(_indent + line for line in text.split('\n'))
 
 
-def assertion_method(func):
-    '''Evaluate func, returning T if no errors and F if AssertionError'''
+def validation_check(func):
+    """Decorate func to return True if no exceptions and False otherwise"""
     @funcy.wraps(func)
     def wrapped(*args, **kwargs):
         try:
             func(*args, **kwargs)
             return True
-        except AssertionError:
+        except Exception:
             return False
+
     wrapped.is_check = True
+
     return wrapped
 
 

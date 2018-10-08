@@ -7,7 +7,7 @@ from ballet.compat import pathlib
 from ballet.contrib import get_contrib_features
 from ballet.exc import UnexpectedValidationStateError
 from ballet.feature import Feature
-from ballet.util import assertion_method
+from ballet.util import validation_check
 from ballet.util.ci import TravisPullRequestBuildDiffer, can_use_travis_differ
 from ballet.util.git import LocalPullRequestBuildDiffer
 from ballet.util.log import logger
@@ -73,11 +73,11 @@ class FeatureApiValidator:
 
         return result, failures
 
-    @assertion_method
+    @validation_check
     def _is_feature(self, feature):
         assert isinstance(feature, Feature)
 
-    @assertion_method
+    @validation_check
     def _has_correct_input_type(self, feature):
         """Check that `input` is a string or iterable of string"""
         input = feature.input
@@ -86,19 +86,19 @@ class FeatureApiValidator:
             funcy.iterable, lambda x: all(map(is_str, x)))
         assert is_str(input) or is_nested_str(input)
 
-    @assertion_method
+    @validation_check
     def _has_transformer_interface(self, feature):
         assert hasattr(feature.transformer, 'fit')
         assert hasattr(feature.transformer, 'transform')
 
-    @assertion_method
+    @validation_check
     def _can_make_mapper(self, feature):
         try:
             feature.as_dataframe_mapper()
         except Exception:
             raise AssertionError
 
-    @assertion_method
+    @validation_check
     def _can_fit(self, feature):
         try:
             mapper = feature.as_dataframe_mapper()
@@ -106,7 +106,7 @@ class FeatureApiValidator:
         except Exception:
             raise AssertionError
 
-    @assertion_method
+    @validation_check
     def _can_transform(self, feature):
         try:
             mapper = feature.as_dataframe_mapper()
@@ -115,7 +115,7 @@ class FeatureApiValidator:
         except Exception:
             raise AssertionError
 
-    @assertion_method
+    @validation_check
     def _can_fit_transform(self, feature):
         try:
             mapper = feature.as_dataframe_mapper()
@@ -123,7 +123,7 @@ class FeatureApiValidator:
         except Exception:
             raise AssertionError
 
-    @assertion_method
+    @validation_check
     def _has_correct_output_dimensions(self, feature):
         try:
             mapper = feature.as_dataframe_mapper()
@@ -133,7 +133,7 @@ class FeatureApiValidator:
 
         assert self.X.shape[0] == X.shape[0]
 
-    @assertion_method
+    @validation_check
     def _can_deepcopy(self, feature):
         try:
             copy.deepcopy(feature)
