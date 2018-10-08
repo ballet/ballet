@@ -11,8 +11,8 @@ from ballet.eng.base import BaseTransformer
 from ballet.eng.misc import IdentityTransformer
 from ballet.exc import UnexpectedValidationStateError
 from ballet.feature import Feature
-from ballet.util.git import get_diff_str_from_commits
 from ballet.util.ci import TravisPullRequestBuildDiffer
+from ballet.util.git import get_diff_str_from_commits
 from ballet.validation import FeatureApiValidator, PullRequestStructureValidator
 
 from .util import (
