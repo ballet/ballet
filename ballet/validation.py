@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 import copy
 
-import funcy
+from funcy import all_fn, isa, iterable
 
 from ballet.compat import pathlib
 from ballet.contrib import get_contrib_features
@@ -64,12 +64,12 @@ class FeatureApiValidator:
     def validate(self, feature):
         """Validate the feature"""
         failures = []
-        result = True
         for check, name in self._get_all_checks():
             success = check(feature)
             if not success:
-                result = False
                 failures.append(name)
+
+        result = bool(failures)
 
         return result, failures
 
@@ -81,64 +81,47 @@ class FeatureApiValidator:
     def _has_correct_input_type(self, feature):
         """Check that `input` is a string or iterable of string"""
         input = feature.input
-        is_str = funcy.isa(str)
-        is_nested_str = funcy.all_fn(
-            funcy.iterable, lambda x: all(map(is_str, x)))
+        is_str = isa(str)
+        is_nested_str = all_fn(
+            iterable, lambda x: all(map(is_str, x)))
         assert is_str(input) or is_nested_str(input)
 
     @validation_check
     def _has_transformer_interface(self, feature):
         assert hasattr(feature.transformer, 'fit')
         assert hasattr(feature.transformer, 'transform')
+        assert hasattr(feature.transformer, 'fit_transform')
 
     @validation_check
     def _can_make_mapper(self, feature):
-        try:
-            feature.as_dataframe_mapper()
-        except Exception:
-            raise AssertionError
+        feature.as_dataframe_mapper()
 
     @validation_check
     def _can_fit(self, feature):
-        try:
-            mapper = feature.as_dataframe_mapper()
-            mapper.fit(self.X, self.y)
-        except Exception:
-            raise AssertionError
+        mapper = feature.as_dataframe_mapper()
+        mapper.fit(self.X, self.y)
 
     @validation_check
     def _can_transform(self, feature):
-        try:
-            mapper = feature.as_dataframe_mapper()
-            mapper.fit(self.X, self.y)
-            mapper.transform(self.X)
-        except Exception:
-            raise AssertionError
+        mapper = feature.as_dataframe_mapper()
+        mapper.fit(self.X, self.y)
+        mapper.transform(self.X)
 
     @validation_check
     def _can_fit_transform(self, feature):
-        try:
-            mapper = feature.as_dataframe_mapper()
-            mapper.fit_transform(self.X, self.y)
-        except Exception:
-            raise AssertionError
+        mapper = feature.as_dataframe_mapper()
+        mapper.fit_transform(self.X, self.y)
 
     @validation_check
     def _has_correct_output_dimensions(self, feature):
-        try:
-            mapper = feature.as_dataframe_mapper()
-            X = mapper.fit_transform(self.X, self.y)
-        except Exception:
-            raise AssertionError
+        mapper = feature.as_dataframe_mapper()
+        X = mapper.fit_transform(self.X, self.y)
 
         assert self.X.shape[0] == X.shape[0]
 
     @validation_check
     def _can_deepcopy(self, feature):
-        try:
-            copy.deepcopy(feature)
-        except Exception:
-            raise AssertionError
+        copy.deepcopy(feature)
 
     def _get_all_checks(self):
         for method_name in self.__dir__():
@@ -261,7 +244,7 @@ class PullRequestStructureValidator(ProjectStructureValidator):
             except Exception:
                 return False
 
-        is_admissible = funcy.all_fn(
+        is_admissible = all_fn(
             is_appropriate_change_type,
             within_contrib_subdirectory,
             is_appropriate_file_ext,
