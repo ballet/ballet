@@ -146,12 +146,12 @@ class CiTest(unittest.TestCase):
             ('TRAVIS_PULL_REQUEST', 'FALSE', None),
             ('TRAVIS_PULL_REQUEST', 'false', None),
             ('TRAVIS_PULL_REQUEST', 'abcd', None),
-            ('UNRELATED_VAR', '', None),
+            ('UNRELATED', '', None),
         )
-        for env_name, env_value, expected_result in matrix:
-            with patch.dict('os.environ', {env_name: env_value}):
-                actual_result = get_travis_pr_num()
-                self.assertEqual(actual_result, expected_result)
+        for env_name, env_value, expected in matrix:
+            with patch.dict('os.environ', {env_name: env_value}, clear=True):
+                actual = get_travis_pr_num()
+                self.assertEqual(actual, expected)
 
     def test_is_travis_pr(self):
         matrix = (
@@ -160,12 +160,12 @@ class CiTest(unittest.TestCase):
             ('TRAVIS_PULL_REQUEST', 'FALSE', False),
             ('TRAVIS_PULL_REQUEST', 'false', False),
             ('TRAVIS_PULL_REQUEST', 'abcd', False),
-            ('UNRELATED_VAR', '', False),
+            ('UNRELATED', '', False),
         )
-        for env_name, env_value, expected_result in matrix:
-            with patch.dict('os.environ', {env_name: env_value}):
-                actual_result = is_travis_pr()
-                self.assertEqual(actual_result, expected_result)
+        for env_name, env_value, expected in matrix:
+            with patch.dict('os.environ', {env_name: env_value}, clear=True):
+                actual = is_travis_pr()
+                self.assertEqual(actual, expected)
 
     def test_travis_pull_request_build_differ(self):
         with mock_repo() as repo:
