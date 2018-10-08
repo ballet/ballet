@@ -7,7 +7,6 @@ from ballet.exc import UnexpectedTravisEnvironmentError
 from ballet.util.git import PullRequestBuildDiffer
 from ballet.util.log import logger
 
-
 TEST_TYPE_ENV_VAR = 'TEST_TYPE'
 
 

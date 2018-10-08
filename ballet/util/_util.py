@@ -1,7 +1,7 @@
 from copy import deepcopy
 
-import funcy
 import numpy as np
+from funcy import ignore
 
 RANDOM_STATE = 1754
 
@@ -30,17 +30,16 @@ def indent(text, n=4):
 
 def validation_check(func):
     """Decorate func to return True if no exceptions and False otherwise"""
-    @funcy.wraps(func)
-    def wrapped(*args, **kwargs):
-        try:
-            func(*args, **kwargs)
-            return True
-        except Exception:
-            return False
-
+    wrapped = ignore(Exception, default=False)(func)
     wrapped.is_check = True
-
     return wrapped
+
+
+def make_plural_suffix(obj, suffix='s'):
+    if len(obj) > 0:
+        return suffix
+    else:
+        return ''
 
 
 class DeepcopyMixin:

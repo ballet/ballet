@@ -6,10 +6,6 @@ class UnexpectedTravisEnvironmentError(Error):
     pass
 
 
-class UnexpectedValidationStateError(Error):
-    pass
-
-
 class UnsuccessfulInputConversionError(Error):
     pass
 
@@ -23,4 +19,12 @@ class FeatureValidationError(Error):
 
 
 class FeatureRejected(FeatureValidationError):
+    pass
+
+
+class InvalidProjectStructure(FeatureValidationError):
+    pass
+
+
+class InvalidFeatureApi(FeatureValidationError):
     pass
