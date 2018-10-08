@@ -282,10 +282,7 @@ class Feature:
             clsname=type(self).__name__, attrs_str=attrs_str)
 
     def as_input_transformer_tuple(self):
-        if self.name:
-            return (self.input, self.transformer, {'alias': self.name})
-        else:
-            return self.input, self.transformer
+        return (self.input, self.transformer, {'alias': self.output})
 
     def as_dataframe_mapper(self):
         return DataFrameMapper([
