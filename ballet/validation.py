@@ -13,11 +13,6 @@ from ballet.util.git import LocalPullRequestBuildDiffer
 from ballet.util.log import logger
 from ballet.util.mod import import_module_at_path, relpath_to_modname
 
-__all__ = [
-    'FeatureApiValidator',
-    'PullRequestStructureValidator'
-]
-
 
 class FeaturePerformanceEvaluator:
     """Evaluate the performance of features from an ML point-of-view"""
@@ -39,8 +34,15 @@ class PreAcceptanceFeaturePerformanceEvaluator(
     """Accept/reject a feature to the project based on its performance"""
 
     @abstractmethod
-    def judge(self):
+    def judge(self, feature):
         pass
+
+
+class FeatureRelevanceEvaluator(PreAcceptanceFeaturePerformanceEvaluator):
+    """Accept a feature if it is correlated to the target"""
+
+    def judge(self, feature):
+        return False
 
 
 class PostAcceptanceFeaturePerformanceEvaluator(
@@ -50,6 +52,19 @@ class PostAcceptanceFeaturePerformanceEvaluator(
     @abstractmethod
     def prune(self):
         pass
+
+
+class FeatureRedundancyEvaluator(PreAcceptanceFeaturePerformanceEvaluator):
+    """Remove a feature if it is conditionally independent of the target
+
+    Let Sk be the set of subsets of features of size less than or equal to k.
+    A feature Xi is redundant if it is independent of the target, conditional
+    on some S in Sk. If a feature is redundant, it is removed from the feature
+    matrix.
+    """
+
+    def prune(self, k=4):
+        return []
 
 
 class FeatureApiValidator:
