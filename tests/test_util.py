@@ -12,6 +12,7 @@ import ballet
 import ballet.util.fs
 import ballet.util.io
 from ballet.compat import pathlib, safepath
+from ballet.util import validation_check
 from ballet.util.ci import (
     TravisPullRequestBuildDiffer, get_travis_pr_num, is_travis_pr)
 from ballet.util.git import get_diff_str_from_commits
@@ -20,6 +21,29 @@ from ballet.util.mod import (  # noqa F401
     import_module_from_relpath, modname_to_relpath, relpath_to_modname)
 
 from .util import make_mock_commits, mock_repo
+
+
+class UtilTest(unittest.TestCase):
+
+    def test_validation_check(self):
+
+        @validation_check
+        def returns_true():
+            return True
+
+        self.assertTrue(returns_true())
+
+        @validation_check
+        def returns_false():
+            return False
+
+        self.assertTrue(returns_false())
+
+        @validation_check
+        def raises():
+            raise Exception
+
+        self.assertFalse(raises())
 
 
 class ModTest(unittest.TestCase):

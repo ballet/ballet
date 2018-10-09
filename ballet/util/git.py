@@ -1,6 +1,13 @@
 class PullRequestBuildDiffer:
+    """Diff files from this pull request against a comparison ref
+
+    Args:
+        pr_num (str, int): pull request number
+        repo (git.Repo): repo
+    """
+
     def __init__(self, pr_num, repo):
-        self.pr_num = pr_num
+        self.pr_num = int(pr_num)
         self.repo = repo
         self._check_environment()
 

@@ -2,7 +2,6 @@ import unittest
 from textwrap import dedent
 from unittest.mock import patch
 
-import funcy
 import numpy as np
 import pandas as pd
 from funcy import contextmanager
@@ -41,6 +40,7 @@ def null_file_change_validator(pr_num):
             'TRAVIS_PULL_REQUEST': str(pr_num),
             'TRAVIS_COMMIT_RANGE': commit_range,
         }
+
         with patch.dict('os.environ', travis_env_vars, clear=True):
             yield FileChangeValidator(
                 repo, pr_num, contrib_module_path, X, y)
@@ -60,7 +60,6 @@ def mock_file_change_validator(
         travis_pull_request = str(pr_num)
         travis_commit_range = get_diff_str_from_commits(
             repo.head.commit.parents[0], repo.head.commit)
-        X, y = X, y
 
         travis_env_vars = {
             'TRAVIS_BUILD_DIR': travis_build_dir,
@@ -70,6 +69,32 @@ def mock_file_change_validator(
 
         with patch.dict('os.environ', travis_env_vars, clear=True):
             yield FileChangeValidator(
+                repo, pr_num, contrib_module_path, X, y)
+
+
+@contextmanager
+def mock_feature_api_validator(
+    path_content, pr_num, contrib_module_path, X, y
+):
+    """FileChangeValidator for mock repo and mock project content
+
+    Args:
+        path_content: iterable of (relative path, file content)
+    """
+    with mock_project(path_content) as repo:
+        travis_build_dir = repo.working_tree_dir
+        travis_pull_request = str(pr_num)
+        travis_commit_range = get_diff_str_from_commits(
+            repo.head.commit.parents[0], repo.head.commit)
+
+        travis_env_vars = {
+            'TRAVIS_BUILD_DIR': travis_build_dir,
+            'TRAVIS_PULL_REQUEST': travis_pull_request,
+            'TRAVIS_COMMIT_RANGE': travis_commit_range,
+        }
+
+        with patch.dict('os.environ', travis_env_vars, clear=True):
+            yield FeatureApiValidator(
                 repo, pr_num, contrib_module_path, X, y)
 
 
@@ -157,7 +182,7 @@ class SingleFeatureApiValidatorTest(SampleDataMixin, unittest.TestCase):
         self.assertIn('can_deepcopy', failures)
 
 
-class FileChangeValidatorTest(SampleDataMixin, unittest.TestCase):
+class ProjectStructureValidatorTest(SampleDataMixin, unittest.TestCase):
 
     def setUp(self):
         super().setUp()
@@ -217,6 +242,7 @@ class FileChangeValidatorTest(SampleDataMixin, unittest.TestCase):
 
                 # checks on file_diffs
                 self.assertEqual(len(file_diffs), n - 1)
+
                 for diff in file_diffs:
                     self.assertEqual(diff.change_type, 'A')
                     self.assertTrue(diff.b_path.startswith('file'))
@@ -234,7 +260,10 @@ class FileChangeValidatorTest(SampleDataMixin, unittest.TestCase):
     def test_collect_changes(self):
         raise NotImplementedError
 
-    def test_end_to_end_failure_no_features_found(self):
+
+class FileChangeValidatorTest(ProjectStructureValidatorTest):
+
+    def test_validation_failure_no_features_found(self):
         path_content = [
             ('readme.txt', None),
             ('src/__init__.py', None),
@@ -249,7 +278,7 @@ class FileChangeValidatorTest(SampleDataMixin, unittest.TestCase):
             result = validator.validate()
             self.assertFalse(result)
 
-    def test_end_to_end_failure_inadmissible_file_diffs(self):
+    def test_validation_failure_inadmissible_file_diffs(self):
         path_content = [
             ('readme.txt', None),
             ('src/__init__.py', None),
@@ -274,7 +303,7 @@ class FileChangeValidatorTest(SampleDataMixin, unittest.TestCase):
             self.assertFalse(
                 validator.file_diffs_validation_result)
 
-    def test_end_to_end_failure_bad_package_structure(self):
+    def test_validation_failure_bad_package_structure(self):
         path_content = [
             ('foo.jpg', None),
             ('src/contrib/bar/baz.py', self.valid_feature_str),
@@ -298,33 +327,7 @@ class FileChangeValidatorTest(SampleDataMixin, unittest.TestCase):
             self.assertFalse(
                 validator.features_validation_result)
 
-    def test_end_to_end_failure_invalid_feature(self):
-        path_content = [
-            ('foo.jpg', None),
-            ('src/__init__.py', None),
-            ('src/contrib/__init__.py', None),
-            ('src/contrib/foo.py', self.invalid_feature_str),
-        ]
-        contrib_module_path = 'src/contrib/'
-        with mock_file_change_validator(
-            path_content, self.pr_num, contrib_module_path, self.X, self.y
-        ) as validator:
-            result = validator.validate()
-            self.assertFalse(result)
-            self.assertEqual(
-                len(validator.file_diffs), 1)
-            self.assertEqual(
-                len(validator.file_diffs_admissible), 1)
-            self.assertEqual(
-                len(validator.file_diffs_inadmissible), 0)
-            self.assertTrue(
-                validator.file_diffs_validation_result)
-            self.assertEqual(
-                len(validator.features), 1)
-            self.assertFalse(
-                validator.features_validation_result)
-
-    def test_end_to_end_success(self):
+    def test_validation_success(self):
         path_content = [
             ('bob.xml', '<><> :: :)'),
             ('src/__init__.py', None),
@@ -337,3 +340,28 @@ class FileChangeValidatorTest(SampleDataMixin, unittest.TestCase):
         ) as validator:
             result = validator.validate()
             self.assertTrue(result)
+
+
+class FeatureApiValidatorTest(ProjectStructureValidatorTest):
+
+    def test_validation_failure_invalid_feature(self):
+        path_content = [
+            ('foo.jpg', None),
+            ('src/__init__.py', None),
+            ('src/contrib/__init__.py', None),
+            ('src/contrib/foo.py', self.invalid_feature_str),
+        ]
+        contrib_module_path = 'src/contrib/'
+        with mock_feature_api_validator(
+            path_content, self.pr_num, contrib_module_path, self.X, self.y
+        ) as validator:
+            file_diffs, diffs_admissible, diffs_inadmissible, new_features = \
+                validator.collect_changes()
+
+            self.assertEqual(len(file_diffs), 1)
+            self.assertEqual(len(diffs_admissible), 1)
+            self.assertEqual(len(diffs_inadmissible), 0)
+            self.assertEqual(len(new_features), 1)
+
+            result = validator.validate()
+            self.assertFalse(result)

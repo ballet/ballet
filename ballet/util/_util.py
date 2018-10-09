@@ -1,7 +1,7 @@
 from copy import deepcopy
 
 import numpy as np
-from funcy import ignore
+from funcy import wraps
 
 RANDOM_STATE = 1754
 
@@ -30,7 +30,15 @@ def indent(text, n=4):
 
 def validation_check(func):
     """Decorate func to return True if no exceptions and False otherwise"""
-    wrapped = ignore(Exception, default=False)(func)
+
+    @wraps(func)
+    def wrapped(*args, **kwargs):
+        try:
+            func(*args, **kwargs)
+            return True
+        except Exception:
+            return False
+
     wrapped.is_check = True
     return wrapped
 

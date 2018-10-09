@@ -2,6 +2,7 @@ import os
 
 import funcy
 import git
+from funcy import constantly, ignore, post_processing
 
 from ballet.exc import UnexpectedTravisEnvironmentError
 from ballet.util.git import PullRequestBuildDiffer
@@ -19,7 +20,9 @@ def get_travis_env_or_fail(name):
         return os.environ[name]
     else:
         # dump_travis_env_vars()
-        raise UnexpectedTravisEnvironmentError
+        raise UnexpectedTravisEnvironmentError(
+            'Missing TRAVIS environment variable: {name}'
+            .format(name=name))
 
 
 def ensure_expected_travis_env_vars(names):
@@ -29,25 +32,26 @@ def ensure_expected_travis_env_vars(names):
 
 def dump_travis_env_vars():
     travis_env_vars = funcy.select_keys(
-        lambda key: key.startswith('TRAVIS'),
-        os.environ)
+        lambda key: key.startswith('TRAVIS'), os.environ)
     logger.debug(travis_env_vars)
 
 
 def get_travis_pr_num():
-    '''Return the PR number if the job is a pull request, None otherwise
+    """Return the PR number if the job is a pull request, None otherwise
+    
+    Returns:
+        int
 
     See also:
         - <https://docs.travis-ci.com/user/environment-variables/#Default-Environment-Variables>
-    '''  # noqa
+    """  # noqa
     try:
         travis_pull_request = get_travis_env_or_fail('TRAVIS_PULL_REQUEST')
         if travis_pull_request == 'false':
             return None
         else:
             try:
-                pr_num = int(travis_pull_request)
-                return pr_num
+                return int(travis_pull_request)
             except ValueError:
                 return None
     except UnexpectedTravisEnvironmentError:
@@ -55,18 +59,16 @@ def get_travis_pr_num():
 
 
 def is_travis_pr():
-    '''Check if the current job is a pull request build'''
+    """Check if the current job is a pull request build"""
     return get_travis_pr_num() is not None
 
 
+@ignore(UnexpectedTravisEnvironmentError, default=False)
+@post_processing(constantly(True))
 def can_use_travis_differ():
-    '''Check if the required travis env vars are set for the travis differ'''
-    try:
-        ensure_expected_travis_env_vars(
-            TravisPullRequestBuildDiffer.EXPECTED_TRAVIS_ENV_VARS)
-        return True
-    except UnexpectedTravisEnvironmentError:
-        return False
+    """Check if the required travis env vars are set for the travis differ"""
+    ensure_expected_travis_env_vars(
+        TravisPullRequestBuildDiffer.EXPECTED_TRAVIS_ENV_VARS)
 
 
 class TravisPullRequestBuildDiffer(PullRequestBuildDiffer):
@@ -88,7 +90,9 @@ class TravisPullRequestBuildDiffer(PullRequestBuildDiffer):
 
         travis_pr_num = get_travis_pr_num()
         if travis_pr_num != self.pr_num:
-            raise UnexpectedTravisEnvironmentError
+            raise UnexpectedTravisEnvironmentError(
+                'TRAVIS_PULL_REQUEST {tpr!r} did not match expected {pr!r}'
+                .format(tpr=travis_pr_num, pr=self.pr_num))
 
     def _get_diff_str(self):
         return get_travis_env_or_fail('TRAVIS_COMMIT_RANGE')

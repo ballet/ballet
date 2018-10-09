@@ -134,7 +134,7 @@ class SingleFeatureApiValidator:
             if not success:
                 failures.append(name)
 
-        result = bool(failures)
+        result = not failures
 
         return result, failures
 
@@ -238,7 +238,7 @@ class ProjectStructureValidator:
         file_diffs = self._collect_file_diffs()
         file_diffs_admissible, file_diffs_inadmissible = \
             self._categorize_file_diffs(file_diffs)
-        new_features = self._collect_features()
+        new_features, _ = self._collect_features(file_diffs_admissible)
 
         return (file_diffs, file_diffs_admissible, file_diffs_inadmissible,
                 new_features)
@@ -316,7 +316,7 @@ class ProjectStructureValidator:
         logger.info('Collecting newly-proposed features...')
 
         new_features = []
-        okay = True
+        all_features_imported_okay = True
         for diff in file_diffs_admissible:
             path = diff.b_path
             project_root = pathlib.Path(self.repo.working_tree_dir)
@@ -329,13 +329,13 @@ class ProjectStructureValidator:
                     'Validation failure: failed to import module at {}'
                     .format(path))
                 logger.exception('Exception details: ')
-                okay = False
+                all_features_imported_okay = False
             else:
                 new_features.extend(get_contrib_features(mod))
 
         logger.info('Collected {n} feature(s)'.format(n=len(new_features)))
 
-        return new_features, okay
+        return new_features, all_features_imported_okay
 
     def validate(self):
         raise NotImplementedError
@@ -345,13 +345,14 @@ class FileChangeValidator(ProjectStructureValidator):
 
     def validate(self):
         _, _, inadmissible, _ = self.collect_changes()
+        print(inadmissible)
         return not inadmissible
 
 
 class FeatureApiValidator(ProjectStructureValidator):
 
     def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.X, self.y = subsample_data_for_validation(self.X, self.y)
 
     def validate(self):
