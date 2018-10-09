@@ -305,9 +305,11 @@ class ProjectStructureValidator:
                     'Categorized {file} as INADMISSIBLE'
                     .format(file=diff.b_path))
 
-        logger.info('Admitted {} file(s) and rejected {} file(s)'.format(
+        logger.info('Admitted {} file{} and rejected {} file{}'.format(
             len(file_diffs_admissible),
-            len(file_diffs_inadmissible)))
+            make_plural_suffix(file_diffs_admissible),
+            len(file_diffs_inadmissible),
+            make_plural_suffix(file_diffs_inadmissible)))
 
         return file_diffs_admissible, file_diffs_inadmissible
 
@@ -333,7 +335,9 @@ class ProjectStructureValidator:
             else:
                 new_features.extend(get_contrib_features(mod))
 
-        logger.info('Collected {n} feature(s)'.format(n=len(new_features)))
+        n = len(new_features)
+        s = make_plural_suffix(new_features)
+        logger.info('Collected {n} feature{s}'.format(n=n, s=s))
 
         return new_features, all_features_imported_okay
 
@@ -362,7 +366,7 @@ class FeatureApiValidator(ProjectStructureValidator):
 
         # if no features were added at all, reject
         if not new_features:
-            logger.info('Failed to collect any new feature(s).')
+            logger.info('Failed to collect any new features.')
             return False
 
         feature_validator = SingleFeatureApiValidator(self.X, self.y)

@@ -44,7 +44,7 @@ def validation_check(func):
 
 
 def make_plural_suffix(obj, suffix='s'):
-    if len(obj) > 0:
+    if len(obj) != 1:
         return suffix
     else:
         return ''
