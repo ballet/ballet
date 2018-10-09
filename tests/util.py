@@ -95,11 +95,14 @@ def make_mock_commit(repo, kind='A', path=None, content=None):
     return repo.head.commit
 
 
-def make_mock_commits(repo, n=10):
+def make_mock_commits(repo, n=10, filename='file{i}.py'):
     '''Create n sequential files/commits'''
+    if '{i}' not in filename:
+        raise ValueError
+
     commits = []
     for i in range(n):
-        commit = make_mock_commit(repo, path='file{}.py'.format(i))
+        commit = make_mock_commit(repo, path=filename.format(i=i))
         commits.append(commit)
     return commits
 

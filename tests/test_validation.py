@@ -5,6 +5,7 @@ from unittest.mock import patch
 import funcy
 import numpy as np
 import pandas as pd
+from funcy import contextmanager
 
 from ballet.compat import SimpleImputer
 from ballet.eng.base import BaseTransformer
@@ -13,13 +14,66 @@ from ballet.feature import Feature
 from ballet.util.ci import TravisPullRequestBuildDiffer
 from ballet.util.git import get_diff_str_from_commits
 from ballet.validation import (
-    FeatureApiValidator, FileChangeValidator)
+    FeatureApiValidator, FileChangeValidator, SingleFeatureApiValidator)
 
 from .util import (
     FragileTransformer, make_mock_commit, make_mock_commits, mock_repo)
 
 
-class TestDataMixin:
+@contextmanager
+def mock_project(path_content):
+    with mock_repo() as repo:
+        for path, content in path_content:
+            make_mock_commit(repo, path=path, content=content)
+        yield repo
+
+
+@contextmanager
+def null_file_change_validator(pr_num):
+    with mock_repo() as repo:
+        commit_range = 'HEAD^..HEAD'
+        contrib_module_path = None
+        X = None
+        y = None
+
+        travis_env_vars = {
+            'TRAVIS_BUILD_DIR': repo.working_tree_dir,
+            'TRAVIS_PULL_REQUEST': str(pr_num),
+            'TRAVIS_COMMIT_RANGE': commit_range,
+        }
+        with patch.dict('os.environ', travis_env_vars, clear=True):
+            yield FileChangeValidator(
+                repo, pr_num, contrib_module_path, X, y)
+
+
+@contextmanager
+def mock_file_change_validator(
+    path_content, pr_num, contrib_module_path, X, y
+):
+    """FileChangeValidator for mock repo and mock project content
+
+    Args:
+        path_content: iterable of (relative path, file content)
+    """
+    with mock_project(path_content) as repo:
+        travis_build_dir = repo.working_tree_dir
+        travis_pull_request = str(pr_num)
+        travis_commit_range = get_diff_str_from_commits(
+            repo.head.commit.parents[0], repo.head.commit)
+        X, y = X, y
+
+        travis_env_vars = {
+            'TRAVIS_BUILD_DIR': travis_build_dir,
+            'TRAVIS_PULL_REQUEST': travis_pull_request,
+            'TRAVIS_COMMIT_RANGE': travis_commit_range,
+        }
+
+        with patch.dict('os.environ', travis_env_vars, clear=True):
+            yield FileChangeValidator(
+                repo, pr_num, contrib_module_path, X, y)
+
+
+class SampleDataMixin:
     def setUp(self):
         self.df = pd.DataFrame(
             data={
@@ -35,7 +89,7 @@ class TestDataMixin:
         super().setUp()
 
 
-class TestFeatureValidator(TestDataMixin, unittest.TestCase):
+class SingleFeatureApiValidatorTest(SampleDataMixin, unittest.TestCase):
 
     def test_good_feature(self):
         feature = Feature(
@@ -43,7 +97,7 @@ class TestFeatureValidator(TestDataMixin, unittest.TestCase):
             transformer=SimpleImputer(),
         )
 
-        validator = FeatureApiValidator(self.X, self.y)
+        validator = SingleFeatureApiValidator(self.X, self.y)
         result, failures = validator.validate(feature)
         self.assertTrue(result)
         self.assertEqual(len(failures), 0)
@@ -54,7 +108,7 @@ class TestFeatureValidator(TestDataMixin, unittest.TestCase):
             input=3,
             transformer=SimpleImputer(),
         )
-        validator = FeatureApiValidator(self.X, self.y)
+        validator = SingleFeatureApiValidator(self.X, self.y)
         result, failures = validator.validate(feature)
         self.assertFalse(result)
         self.assertIn('has_correct_input_type', failures)
@@ -66,7 +120,7 @@ class TestFeatureValidator(TestDataMixin, unittest.TestCase):
             transformer=FragileTransformer(
                 (lambda x: True, ), (RuntimeError, ))
         )
-        validator = FeatureApiValidator(self.X, self.y)
+        validator = SingleFeatureApiValidator(self.X, self.y)
         result, failures = validator.validate(feature)
         self.assertFalse(result)
         self.assertIn('can_transform', failures)
@@ -84,7 +138,7 @@ class TestFeatureValidator(TestDataMixin, unittest.TestCase):
             input='size',
             transformer=_WrongLengthTransformer(),
         )
-        validator = FeatureApiValidator(self.X, self.y)
+        validator = SingleFeatureApiValidator(self.X, self.y)
         result, failures = validator.validate(feature)
         self.assertFalse(result)
         self.assertIn('has_correct_output_dimensions', failures)
@@ -97,13 +151,13 @@ class TestFeatureValidator(TestDataMixin, unittest.TestCase):
             input='size',
             transformer=_CopyFailsTransformer(),
         )
-        validator = FeatureApiValidator(self.X, self.y)
+        validator = SingleFeatureApiValidator(self.X, self.y)
         result, failures = validator.validate(feature)
         self.assertFalse(result)
         self.assertIn('can_deepcopy', failures)
 
 
-class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
+class FileChangeValidatorTest(SampleDataMixin, unittest.TestCase):
 
     def setUp(self):
         super().setUp()
@@ -120,7 +174,7 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
             input = 'size'
             transformer = IdentityTransformer()
             '''
-        )
+        ).strip()
         self.invalid_feature_str = dedent(
             '''
             from sklearn.base import BaseEstimator, TransformerMixin
@@ -132,34 +186,18 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
             input = 'size'
             transformer = RaisingTransformer()
             '''
-        )
+        ).strip()
 
-    @funcy.contextmanager
-    def null_prfv(self):
-        with mock_repo() as repo:
-            commit_range = 'HEAD^..HEAD'
-            contrib_module_path = None
-            X = None
-            y = None
-
-            travis_env_vars = {
-                'TRAVIS_BUILD_DIR': repo.working_tree_dir,
-                'TRAVIS_PULL_REQUEST': str(self.pr_num),
-                'TRAVIS_COMMIT_RANGE': commit_range,
-            }
-            with patch.dict('os.environ', travis_env_vars):
-                yield FileChangeValidator(
-                    repo, self.pr_num, contrib_module_path, X, y)
-
-    def test_prfv_init(self):
-        with self.null_prfv() as validator:
+    def test_init(self):
+        with null_file_change_validator(self.pr_num) as validator:
             self.assertIsInstance(
                 validator.differ, TravisPullRequestBuildDiffer)
 
-    def test_prfv_collect_file_diffs(self):
+    def test_collect_file_diffs(self):
         n = 10
+        filename = 'file{i}.py'
         with mock_repo() as repo:
-            commits = make_mock_commits(repo, n=n)
+            commits = make_mock_commits(repo, n=n, filename=filename)
             contrib_module_path = None
             X = None
             y = None
@@ -171,7 +209,8 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
                 'TRAVIS_PULL_REQUEST': str(self.pr_num),
                 'TRAVIS_COMMIT_RANGE': commit_range,
             }
-            with patch.dict('os.environ', travis_env_vars):
+
+            with patch.dict('os.environ', travis_env_vars, clear=True):
                 validator = FileChangeValidator(
                     repo, self.pr_num, contrib_module_path, X, y)
                 file_diffs = validator._collect_file_diffs()
@@ -183,32 +222,19 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
                     self.assertTrue(diff.b_path.startswith('file'))
                     self.assertTrue(diff.b_path.endswith('.py'))
 
-    @funcy.contextmanager
-    def mock_project(self, path_content):
-        with mock_repo() as repo:
-            for path, content in path_content:
-                make_mock_commit(repo, path=path, content=content)
-            yield repo
+    @unittest.expectedFailure
+    def test_categorize_file_diffs(self):
+        raise NotImplementedError
 
-    @funcy.contextmanager
-    def _test_prfv_end_to_end(self, path_content, contrib_module_path):
-        with self.mock_project(path_content) as repo:
-            travis_build_dir = repo.working_tree_dir
-            travis_pull_request = str(self.pr_num)
-            travis_commit_range = get_diff_str_from_commits(
-                repo.head.commit.parents[0], repo.head.commit)
-            X, y = self.X, self.y
+    @unittest.expectedFailure
+    def test_collect_features(self):
+        raise NotImplementedError
 
-            travis_env_vars = {
-                'TRAVIS_BUILD_DIR': travis_build_dir,
-                'TRAVIS_PULL_REQUEST': travis_pull_request,
-                'TRAVIS_COMMIT_RANGE': travis_commit_range,
-            }
-            with patch.dict('os.environ', travis_env_vars):
-                yield FileChangeValidator(
-                    repo, self.pr_num, contrib_module_path, X, y)
+    @unittest.expectedFailure
+    def test_collect_changes(self):
+        raise NotImplementedError
 
-    def test_prfv_end_to_end_failure_no_features_found(self):
+    def test_end_to_end_failure_no_features_found(self):
         path_content = [
             ('readme.txt', None),
             ('src/__init__.py', None),
@@ -217,12 +243,13 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
             ('src/contrib/baz.py', None),
         ]
         contrib_module_path = 'src/contrib/'
-        with self._test_prfv_end_to_end(path_content, contrib_module_path) \
-                as validator:
+        with mock_file_change_validator(
+            path_content, self.pr_num, contrib_module_path, self.X, self.y
+        ) as validator:
             result = validator.validate()
             self.assertFalse(result)
 
-    def test_prfv_end_to_end_failure_inadmissible_file_diffs(self):
+    def test_end_to_end_failure_inadmissible_file_diffs(self):
         path_content = [
             ('readme.txt', None),
             ('src/__init__.py', None),
@@ -231,8 +258,9 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
             ('invalid.py', None),
         ]
         contrib_module_path = 'src/contrib/'
-        with self._test_prfv_end_to_end(path_content, contrib_module_path) \
-                as validator:
+        with mock_file_change_validator(
+            path_content, self.pr_num, contrib_module_path, self.X, self.y
+        ) as validator:
             result = validator.validate()
             self.assertFalse(result)
             self.assertEqual(
@@ -246,14 +274,15 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
             self.assertFalse(
                 validator.file_diffs_validation_result)
 
-    def test_prfv_end_to_end_failure_bad_package_structure(self):
+    def test_end_to_end_failure_bad_package_structure(self):
         path_content = [
             ('foo.jpg', None),
             ('src/contrib/bar/baz.py', self.valid_feature_str),
         ]
         contrib_module_path = 'src/contrib/'
-        with self._test_prfv_end_to_end(path_content, contrib_module_path) \
-                as validator:
+        with mock_file_change_validator(
+            path_content, self.pr_num, contrib_module_path, self.X, self.y
+        ) as validator:
             result = validator.validate()
             self.assertFalse(result)
             self.assertEqual(
@@ -269,7 +298,7 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
             self.assertFalse(
                 validator.features_validation_result)
 
-    def test_prfv_end_to_end_failure_invalid_feature(self):
+    def test_end_to_end_failure_invalid_feature(self):
         path_content = [
             ('foo.jpg', None),
             ('src/__init__.py', None),
@@ -277,8 +306,9 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
             ('src/contrib/foo.py', self.invalid_feature_str),
         ]
         contrib_module_path = 'src/contrib/'
-        with self._test_prfv_end_to_end(path_content, contrib_module_path) \
-                as validator:
+        with mock_file_change_validator(
+            path_content, self.pr_num, contrib_module_path, self.X, self.y
+        ) as validator:
             result = validator.validate()
             self.assertFalse(result)
             self.assertEqual(
@@ -294,7 +324,7 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
             self.assertFalse(
                 validator.features_validation_result)
 
-    def test_prfv_end_to_end_success(self):
+    def test_end_to_end_success(self):
         path_content = [
             ('bob.xml', '<><> :: :)'),
             ('src/__init__.py', None),
@@ -302,7 +332,8 @@ class TestPullRequestFeatureValidator(TestDataMixin, unittest.TestCase):
             ('src/contrib/bean.py', self.valid_feature_str),
         ]
         contrib_module_path = 'src/contrib/'
-        with self._test_prfv_end_to_end(path_content, contrib_module_path) \
-                as validator:
+        with mock_file_change_validator(
+            path_content, self.pr_num, contrib_module_path, self.X, self.y
+        ) as validator:
             result = validator.validate()
             self.assertTrue(result)

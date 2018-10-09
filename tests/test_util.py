@@ -177,7 +177,7 @@ class CiTest(unittest.TestCase):
                 'TRAVIS_PULL_REQUEST': str(pr_num),
                 'TRAVIS_COMMIT_RANGE': commit_range,
             }
-            with patch.dict('os.environ', travis_env_vars):
+            with patch.dict('os.environ', travis_env_vars, clear=True):
                 differ = TravisPullRequestBuildDiffer(pr_num)
                 diff_str = differ._get_diff_str()
                 self.assertEqual(diff_str, commit_range)
@@ -195,7 +195,7 @@ class CiTest(unittest.TestCase):
                 'TRAVIS_PULL_REQUEST': str(pr_num),
                 'TRAVIS_COMMIT_RANGE': commit_range,
             }
-            with patch.dict('os.environ', travis_env_vars):
+            with patch.dict('os.environ', travis_env_vars, clear=True):
                 differ = TravisPullRequestBuildDiffer(pr_num)
                 diff_str = differ._get_diff_str()
                 self.assertEqual(diff_str, commit_range)
