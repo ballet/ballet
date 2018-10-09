@@ -1,7 +1,6 @@
 from copy import deepcopy
 
 import numpy as np
-from funcy import wraps
 
 RANDOM_STATE = 1754
 
@@ -26,21 +25,6 @@ def indent(text, n=4):
     """Indent each line of text by n spaces"""
     _indent = ' ' * n
     return '\n'.join(_indent + line for line in text.split('\n'))
-
-
-def validation_check(func):
-    """Decorate func to return True if no exceptions and False otherwise"""
-
-    @wraps(func)
-    def wrapped(*args, **kwargs):
-        try:
-            func(*args, **kwargs)
-            return True
-        except Exception:
-            return False
-
-    wrapped.is_check = True
-    return wrapped
 
 
 def make_plural_suffix(obj, suffix='s'):
