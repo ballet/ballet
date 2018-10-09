@@ -263,21 +263,6 @@ class ProjectStructureValidatorTest(SampleDataMixin, unittest.TestCase):
 
 class FileChangeValidatorTest(ProjectStructureValidatorTest):
 
-    def test_validation_failure_no_features_found(self):
-        path_content = [
-            ('readme.txt', None),
-            ('src/__init__.py', None),
-            ('src/contrib/__init__.py', None),
-            ('src/contrib/foo.py', None),
-            ('src/contrib/baz.py', None),
-        ]
-        contrib_module_path = 'src/contrib/'
-        with mock_file_change_validator(
-            path_content, self.pr_num, contrib_module_path, self.X, self.y
-        ) as validator:
-            result = validator.validate()
-            self.assertFalse(result)
-
     def test_validation_failure_inadmissible_file_diffs(self):
         path_content = [
             ('readme.txt', None),
@@ -290,18 +275,15 @@ class FileChangeValidatorTest(ProjectStructureValidatorTest):
         with mock_file_change_validator(
             path_content, self.pr_num, contrib_module_path, self.X, self.y
         ) as validator:
+            file_diffs, diffs_admissible, diffs_inadmissible, new_features = \
+                validator.collect_changes()
+            self.assertEqual(len(file_diffs), 1)
+            self.assertEqual(len(diffs_admissible), 0)
+            self.assertEqual(len(diffs_inadmissible), 1)
+            self.assertEqual(diffs_inadmissible[0].b_path, 'invalid.py')
+
             result = validator.validate()
             self.assertFalse(result)
-            self.assertEqual(
-                len(validator.file_diffs), 1)
-            self.assertEqual(
-                len(validator.file_diffs_admissible), 0)
-            self.assertEqual(
-                len(validator.file_diffs_inadmissible), 1)
-            self.assertEqual(
-                validator.file_diffs_inadmissible[0].b_path, 'invalid.py')
-            self.assertFalse(
-                validator.file_diffs_validation_result)
 
     def test_validation_failure_bad_package_structure(self):
         path_content = [
@@ -312,20 +294,15 @@ class FileChangeValidatorTest(ProjectStructureValidatorTest):
         with mock_file_change_validator(
             path_content, self.pr_num, contrib_module_path, self.X, self.y
         ) as validator:
+            file_diffs, diffs_admissible, diffs_inadmissible, new_features = \
+                validator.collect_changes()
+            self.assertEqual(len(file_diffs), 1)
+            self.assertEqual(len(diffs_admissible), 1)
+            self.assertEqual(len(diffs_inadmissible), 0)
+            self.assertEqual(len(new_features), 0)
+
             result = validator.validate()
             self.assertFalse(result)
-            self.assertEqual(
-                len(validator.file_diffs), 1)
-            self.assertEqual(
-                len(validator.file_diffs_admissible), 1)
-            self.assertEqual(
-                len(validator.file_diffs_inadmissible), 0)
-            self.assertTrue(
-                validator.file_diffs_validation_result)
-            self.assertEqual(
-                len(validator.features), 0)
-            self.assertFalse(
-                validator.features_validation_result)
 
     def test_validation_success(self):
         path_content = [
@@ -343,6 +320,21 @@ class FileChangeValidatorTest(ProjectStructureValidatorTest):
 
 
 class FeatureApiValidatorTest(ProjectStructureValidatorTest):
+
+    def test_validation_failure_no_features_found(self):
+        path_content = [
+            ('readme.txt', None),
+            ('src/__init__.py', None),
+            ('src/contrib/__init__.py', None),
+            ('src/contrib/foo.py', None),
+            ('src/contrib/baz.py', None),
+        ]
+        contrib_module_path = 'src/contrib/'
+        with mock_feature_api_validator(
+            path_content, self.pr_num, contrib_module_path, self.X, self.y
+        ) as validator:
+            result = validator.validate()
+            self.assertFalse(result)
 
     def test_validation_failure_invalid_feature(self):
         path_content = [
