@@ -25,7 +25,7 @@ def get_proposed_features(project):
     X_df, y_df = project['load_data']()
     validator = ProjectStructureValidator(
         repo, pr_num, contrib_module_path, X_df, y_df)
-    _, _, _, new_features = validator.collect_changes()
+    _, _, _, new_features, _ = validator.collect_changes()
     return new_features
 
 
@@ -238,10 +238,10 @@ class ProjectStructureValidator:
         file_diffs = self._collect_file_diffs()
         file_diffs_admissible, file_diffs_inadmissible = \
             self._categorize_file_diffs(file_diffs)
-        new_features, _ = self._collect_features(file_diffs_admissible)
+        new_features, imported_okay = self._collect_features(file_diffs_admissible)
 
         return (file_diffs, file_diffs_admissible, file_diffs_inadmissible,
-                new_features)
+                new_features, imported_okay)
 
     def _collect_file_diffs(self):
         logger.info('Collecting file changes...')
@@ -318,7 +318,7 @@ class ProjectStructureValidator:
         logger.info('Collecting newly-proposed features...')
 
         new_features = []
-        all_features_imported_okay = True
+        imported_okay = True
         for diff in file_diffs_admissible:
             path = diff.b_path
             project_root = pathlib.Path(self.repo.working_tree_dir)
@@ -331,7 +331,7 @@ class ProjectStructureValidator:
                     'Validation failure: failed to import module at {}'
                     .format(path))
                 logger.exception('Exception details: ')
-                all_features_imported_okay = False
+                imported_okay = False
             else:
                 new_features.extend(get_contrib_features(mod))
 
@@ -339,7 +339,7 @@ class ProjectStructureValidator:
         s = make_plural_suffix(new_features)
         logger.info('Collected {n} feature{s}'.format(n=n, s=s))
 
-        return new_features, all_features_imported_okay
+        return new_features, imported_okay
 
     def validate(self):
         raise NotImplementedError
@@ -348,9 +348,8 @@ class ProjectStructureValidator:
 class FileChangeValidator(ProjectStructureValidator):
 
     def validate(self):
-        _, _, inadmissible, _ = self.collect_changes()
-        print(inadmissible)
-        return not inadmissible
+        _, _, inadmissible, _, imported_okay = self.collect_changes()
+        return not inadmissible and imported_okay
 
 
 class FeatureApiValidator(ProjectStructureValidator):
@@ -362,7 +361,7 @@ class FeatureApiValidator(ProjectStructureValidator):
     def validate(self):
         """Collect and validate all new features"""
 
-        diffs, admissible, inadmissible, new_features = self.collect_changes()
+        diffs, admissible, inadmissible, new_features, imported_okay = self.collect_changes()
 
         # if no features were added at all, reject
         if not new_features:

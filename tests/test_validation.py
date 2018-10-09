@@ -275,12 +275,13 @@ class FileChangeValidatorTest(ProjectStructureValidatorTest):
         with mock_file_change_validator(
             path_content, self.pr_num, contrib_module_path, self.X, self.y
         ) as validator:
-            file_diffs, diffs_admissible, diffs_inadmissible, new_features = \
+            file_diffs, diffs_admissible, diffs_inadmissible, new_features, imported_okay = \
                 validator.collect_changes()
             self.assertEqual(len(file_diffs), 1)
             self.assertEqual(len(diffs_admissible), 0)
             self.assertEqual(len(diffs_inadmissible), 1)
             self.assertEqual(diffs_inadmissible[0].b_path, 'invalid.py')
+            self.assertTrue(imported_okay)
 
             result = validator.validate()
             self.assertFalse(result)
@@ -294,12 +295,13 @@ class FileChangeValidatorTest(ProjectStructureValidatorTest):
         with mock_file_change_validator(
             path_content, self.pr_num, contrib_module_path, self.X, self.y
         ) as validator:
-            file_diffs, diffs_admissible, diffs_inadmissible, new_features = \
+            file_diffs, diffs_admissible, diffs_inadmissible, new_features, imported_okay = \
                 validator.collect_changes()
             self.assertEqual(len(file_diffs), 1)
             self.assertEqual(len(diffs_admissible), 1)
             self.assertEqual(len(diffs_inadmissible), 0)
             self.assertEqual(len(new_features), 0)
+            self.assertFalse(imported_okay)
 
             result = validator.validate()
             self.assertFalse(result)
@@ -347,13 +349,14 @@ class FeatureApiValidatorTest(ProjectStructureValidatorTest):
         with mock_feature_api_validator(
             path_content, self.pr_num, contrib_module_path, self.X, self.y
         ) as validator:
-            file_diffs, diffs_admissible, diffs_inadmissible, new_features = \
+            file_diffs, diffs_admissible, diffs_inadmissible, new_features, imported_okay = \
                 validator.collect_changes()
 
             self.assertEqual(len(file_diffs), 1)
             self.assertEqual(len(diffs_admissible), 1)
             self.assertEqual(len(diffs_inadmissible), 0)
             self.assertEqual(len(new_features), 1)
+            self.assertTrue(imported_okay)
 
             result = validator.validate()
             self.assertFalse(result)
