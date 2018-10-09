@@ -5,7 +5,7 @@ import git
 from ballet.exc import (
     InvalidFeatureApi, InvalidProjectStructure, FeatureRejected)
 from ballet.util.ci import get_travis_pr_num
-from ballet.validation.osfs import (
+from ballet.validation.feature_evaluation import (
     FeatureRedundancyEvaluator, FeatureRelevanceEvaluator)
 from ballet.validation.project_structure import (
     FeatureApiValidator, FileChangeValidator, ProjectStructureValidator)
