@@ -12,7 +12,6 @@ import ballet
 import ballet.util.fs
 import ballet.util.io
 from ballet.compat import pathlib, safepath
-from ballet.util import validation_check
 from ballet.util.ci import (
     TravisPullRequestBuildDiffer, get_travis_pr_num, is_travis_pr)
 from ballet.util.git import get_diff_str_from_commits
@@ -25,25 +24,25 @@ from .util import make_mock_commits, mock_repo
 
 class UtilTest(unittest.TestCase):
 
-    def test_validation_check(self):
+    @unittest.expectedFailure
+    def test_asarray2d(self):
+        raise NotImplementedError
 
-        @validation_check
-        def returns_true():
-            return True
+    @unittest.expectedFailure
+    def test_get_arr_desc(self):
+        raise NotImplementedError
 
-        self.assertTrue(returns_true())
+    @unittest.expectedFailure
+    def test_indent(self):
+        raise NotImplementedError
 
-        @validation_check
-        def returns_false():
-            return False
+    @unittest.expectedFailure
+    def test_make_plural_suffix(self):
+        raise NotImplementedError
 
-        self.assertTrue(returns_false())
-
-        @validation_check
-        def raises():
-            raise Exception
-
-        self.assertFalse(raises())
+    @unittest.expectedFailure
+    def test_deepcopy_mixin(self):
+        raise NotImplementedError
 
 
 class ModTest(unittest.TestCase):
