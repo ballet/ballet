@@ -1,5 +1,7 @@
+import os
 import tempfile
 import unittest
+from subprocess import check_call
 from types import ModuleType
 from unittest.mock import patch
 
@@ -12,6 +14,7 @@ from ballet.eng.misc import IdentityTransformer
 from ballet.feature import Feature
 from ballet.quickstart import generate_project, main
 from ballet.util.mod import import_module_at_path, modname_to_relpath
+from ballet.validation import TEST_TYPE_ENV_VAR, BalletTestTypes
 
 
 class QuickstartTest(unittest.TestCase):
@@ -27,7 +30,7 @@ class QuickstartTest(unittest.TestCase):
         self.assertIn('project_template', str(path))
 
 
-def test_quickstart():
+def test_end_to_end():
     modname = 'foo'
     extra_context = {
         'project_slug': modname,
@@ -70,5 +73,11 @@ def test_quickstart():
         X, mapper = foo_features_buildfeatures.build_features(X_df)
         assert np.shape(X) == (5, 1)
         assert isinstance(mapper, DataFrameMapper)
+
+    # validation
+    with patch.dict(os.environ,
+                    {TEST_TYPE_ENV_VAR:
+                     BalletTestTypes.PROJECT_STRUCTURE_VALIDATION}):
+        check_call('./validate.py', cwd=str(base), env=os.environ)
 
     _tempdir.cleanup()
