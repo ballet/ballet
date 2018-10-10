@@ -95,24 +95,26 @@ class Project:
         else:
             return module
 
-    @cached_property
+    @property
     def pr_num(self):
         result = get_pr_num(repo=self.repo)
         if result is None:
             result = get_travis_pr_num()
-        if result is None:
+        if result is not None:
+            return result
+        else:
             raise Error
 
-    @cached_property
+    @property
     def path(self):
         return pathlib.Path(self.package.__file__).resolve()
 
-    @cached_property
+    @property
     def repo(self):
-        return git.Repo(self._path, search_parent_directories=True)
+        return git.Repo(self.path, search_parent_directories=True)
 
     def __getattr__(self, attr):
         if attr in Project.attr_map:
             return self._resolve(*Project.attr_map[attr])
         else:
-            raise AttributeError
+            return object.__getattribute__(self, attr)

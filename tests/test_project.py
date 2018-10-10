@@ -4,7 +4,8 @@ from unittest.mock import patch
 from ballet.compat import pathlib
 from ballet.exc import ConfigurationError
 from ballet.project import (
-    DEFAULT_CONFIG_NAME, find_configs, get_config_paths, make_config_get)
+    DEFAULT_CONFIG_NAME, find_configs, get_config_paths, make_config_get,
+    Project)
 
 
 class ProjectTest(unittest.TestCase):
@@ -61,3 +62,12 @@ class ProjectTest(unittest.TestCase):
 
         # with default
         self.assertEqual(get('nonexistent', 'path', default=3), 3)
+
+    @patch('git.Repo')
+    @patch('ballet.util.git.get_pr_num')
+    def test_project_pr_num(self, mock_get_pr_num, mock_Repo):
+        expected = 3
+        mock_get_pr_num.return_value = expected
+
+        project = Project(None)
+        self.assertEqual(project.pr_num, expected)
