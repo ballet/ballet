@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import patch
+from unittest.mock import PropertyMock, patch
 
 from ballet.compat import pathlib
 from ballet.exc import ConfigurationError
@@ -63,11 +63,12 @@ class ProjectTest(unittest.TestCase):
         # with default
         self.assertEqual(get('nonexistent', 'path', default=3), 3)
 
-    @patch('git.Repo')
-    @patch('ballet.util.git.get_pr_num')
-    def test_project_pr_num(self, mock_get_pr_num, mock_Repo):
+    @patch('ballet.project.Project.repo', new_callable=PropertyMock)
+    @patch('ballet.project.get_pr_num')
+    def test_project_pr_num(self, mock_get_pr_num, mock_repo):
         expected = 3
         mock_get_pr_num.return_value = expected
 
-        project = Project(None)
+        package = None
+        project = Project(package)
         self.assertEqual(project.pr_num, expected)

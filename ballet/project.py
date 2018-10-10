@@ -2,7 +2,7 @@ from importlib import import_module
 
 import git
 import yaml
-from funcy import cached_property, get_in, memoize, partial
+from funcy import get_in, memoize, partial
 
 from ballet.compat import pathlib
 from ballet.exc import ConfigurationError, Error
@@ -103,7 +103,7 @@ class Project:
         if result is not None:
             return result
         else:
-            raise Error
+            raise Error('Could not determine PR number.')
 
     @property
     def path(self):
