@@ -13,6 +13,13 @@ from ballet.util.mod import import_module_at_path, relpath_to_modname
 from ballet.validation.base import BaseValidator
 
 
+def _log_collect_items(name, items):
+    n = len(items)
+    s = make_plural_suffix(items)
+    logger.info('Collected {n} {name}{s}'.format(n=n, name=name, s=s))
+    return items
+
+
 class ChangeCollector:
     APPROPRIATE_CHANGE_TYPES = ['A']
     APPROPRIATE_FILE_EXTS = importlib.machinery.SOURCE_SUFFIXES
@@ -55,6 +62,7 @@ class ChangeCollector:
         return (file_diffs, file_diffs_admissible, file_diffs_inadmissible,
                 new_feature_info)
 
+    @post_processing(partial(_log_collect_items, 'file'))
     @stacklog(logger.info, 'Collecting file changes')
     def _collect_file_diffs(self):
         file_diffs = self.differ.diff()
@@ -62,10 +70,6 @@ class ChangeCollector:
         # log results
         for i, file in enumerate(file_diffs):
             logger.debug('File {i}: {file}'.format(i=i, file=file))
-
-        n = len(file_diffs)
-        s = make_plural_suffix(file_diffs)
-        logger.info('Collected {n} file{s}'.format(n=n, s=s))
 
         return file_diffs
 
@@ -123,14 +127,7 @@ class ChangeCollector:
 
         return file_diffs_admissible, file_diffs_inadmissible
 
-    @staticmethod
-    def _log_collect_feature_info(info):
-        n = len(info)
-        s = make_plural_suffix(info)
-        logger.info('Collected info on {n} feature{s}'.format(n=n, s=s))
-        return info
-
-    @post_processing(_log_collect_feature_info)
+    @post_processing(partial(_log_collect_items, 'feature'))
     @collecting
     @stacklog(logger.info, 'Collecting info on newly-proposed features')
     def _collect_feature_info(self, file_diffs_admissible):

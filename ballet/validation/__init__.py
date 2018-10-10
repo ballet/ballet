@@ -8,7 +8,7 @@ from ballet.util.ci import get_travis_pr_num
 from ballet.validation.feature_evaluation import (
     FeatureRedundancyEvaluator, FeatureRelevanceEvaluator)
 from ballet.validation.project_structure import (
-    FeatureApiValidator, FileChangeValidator, ProjectStructureValidator)
+    ChangeCollector, FeatureApiValidator, FileChangeValidator)
 
 
 TEST_TYPE_ENV_VAR = 'TEST_TYPE'
@@ -19,9 +19,10 @@ def get_proposed_features(project):
     pr_num = get_travis_pr_num()
     contrib_module_path = project['get']('contrib', 'module_path')
     X_df, y_df = project['load_data']()
-    validator = ProjectStructureValidator(
+    change_collector = ChangeCollector(
         repo, pr_num, contrib_module_path, X_df, y_df)
-    _, _, _, new_features, _ = validator.collect_changes()
+    _, _, _, new_features = change_collector.collect_changes()
+    # TODO import features
     return new_features
 
 
@@ -33,9 +34,8 @@ def check_project_structure(project):
     repo = git.Repo(project['here'](), search_parent_directories=True)
     pr_num = get_travis_pr_num()
     contrib_module_path = project['get']('contrib', 'module_path')
-    X_df, y_df = project['load_data']()
     validator = FileChangeValidator(
-        repo, pr_num, contrib_module_path, X_df, y_df)
+        repo, pr_num, contrib_module_path)
     result = validator.validate()
     if not result:
         raise InvalidProjectStructure

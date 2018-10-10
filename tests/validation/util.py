@@ -6,7 +6,7 @@ from funcy import contextmanager
 
 from ballet.util.git import get_diff_str_from_commits
 from ballet.validation.project_structure import (
-    FeatureApiValidator, FileChangeValidator)
+    ChangeCollector, FeatureApiValidator, FileChangeValidator)
 
 from ..util import (
     make_mock_commit, mock_repo)
@@ -37,12 +37,10 @@ def mock_project(path_content):
 
 
 @contextmanager
-def null_file_change_validator(pr_num):
+def null_change_collector(pr_num):
     with mock_repo() as repo:
         commit_range = 'HEAD^..HEAD'
         contrib_module_path = None
-        X = None
-        y = None
 
         travis_env_vars = {
             'TRAVIS_BUILD_DIR': repo.working_tree_dir,
@@ -51,13 +49,13 @@ def null_file_change_validator(pr_num):
         }
 
         with patch.dict('os.environ', travis_env_vars, clear=True):
-            yield FileChangeValidator(
-                repo, pr_num, contrib_module_path, X, y)
+            yield ChangeCollector(
+                repo, pr_num, contrib_module_path)
 
 
 @contextmanager
 def mock_file_change_validator(
-    path_content, pr_num, contrib_module_path, X, y
+    path_content, pr_num, contrib_module_path
 ):
     """FileChangeValidator for mock repo and mock project content
 
@@ -78,7 +76,7 @@ def mock_file_change_validator(
 
         with patch.dict('os.environ', travis_env_vars, clear=True):
             yield FileChangeValidator(
-                repo, pr_num, contrib_module_path, X, y)
+                repo, pr_num, contrib_module_path)
 
 
 @contextmanager
