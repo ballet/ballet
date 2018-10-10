@@ -1,9 +1,8 @@
 import os
 
-import git
-
 from ballet.exc import (
     InvalidFeatureApi, InvalidProjectStructure, FeatureRejected)
+from ballet.project import Project
 from ballet.util.ci import get_travis_pr_num
 from ballet.validation.feature_evaluation import (
     FeatureRedundancyEvaluator, FeatureRelevanceEvaluator)
@@ -15,15 +14,15 @@ TEST_TYPE_ENV_VAR = 'TEST_TYPE'
 
 
 def get_proposed_features(project):
-    repo = git.Repo(project['here'](), search_parent_directories=True)
+    repo = project.repo
     pr_num = get_travis_pr_num()
-    contrib_module_path = project['get']('contrib', 'module_path')
-    X_df, y_df = project['load_data']()
+    contrib_module_path = project.get('contrib', 'module_path')
+    X_df, y_df = project.load_data()
     change_collector = ChangeCollector(
         repo, pr_num, contrib_module_path, X_df, y_df)
-    _, _, _, new_features = change_collector.collect_changes()
+    _, _, _, new_feature_info = change_collector.collect_changes()
     # TODO import features
-    return new_features
+    return new_feature_info
 
 
 def detect_target_type():
@@ -31,7 +30,7 @@ def detect_target_type():
 
 
 def check_project_structure(project):
-    repo = git.Repo(project['here'](), search_parent_directories=True)
+    repo = project.repo
     pr_num = get_travis_pr_num()
     contrib_module_path = project['get']('contrib', 'module_path')
     validator = FileChangeValidator(
@@ -42,10 +41,10 @@ def check_project_structure(project):
 
 
 def validate_feature_api(project):
-    repo = git.Repo(project['here'](), search_parent_directories=True)
+    repo = project.repo
     pr_num = get_travis_pr_num()
-    contrib_module_path = project['get']('contrib', 'module_path')
-    X_df, y_df = project['load_data']()
+    contrib_module_path = project.get('contrib', 'module_path')
+    X_df, y_df = project.load_data()
     validator = FeatureApiValidator(
         repo, pr_num, contrib_module_path, X_df, y_df)
     result = validator.validate()
@@ -54,8 +53,8 @@ def validate_feature_api(project):
 
 
 def evaluate_feature_performance(project):
-    X_df, y_df = project['load_data']()
-    features = project['get_contrib_features']()
+    X_df, y_df = project.load_data()
+    features = project.get_contrib_features()
     evaluator = FeatureRelevanceEvaluator(X_df, y_df, features)
     proposed_features = get_proposed_features(project)
     accepted = evaluator.judge(proposed_features)
@@ -64,8 +63,8 @@ def evaluate_feature_performance(project):
 
 
 def prune_existing_features(project):
-    X_df, y_df = project['load_data']()
-    features = project['get_contrib_features']()
+    X_df, y_df = project.load_data()
+    features = project.get_contrib_features()
     evaluator = FeatureRedundancyEvaluator(X_df, y_df, features)
     redundant_features = evaluator.prune()
 
@@ -74,7 +73,10 @@ def prune_existing_features(project):
         pass
 
 
-def main(project, target_type=None):
+def main(package, target_type=None):
+
+    project = Project(package)
+
     if target_type is None:
         target_type = detect_target_type()
 

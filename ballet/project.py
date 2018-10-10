@@ -1,3 +1,6 @@
+from importlib import import_module
+
+import git
 import yaml
 from funcy import get_in, memoize, partial
 
@@ -66,3 +69,24 @@ def config_get(package_root, *path, default=None):
 
 def make_config_get(package_root):
     return partial(config_get, package_root)
+
+
+class Project:
+
+    def __init__(self, package):
+        self.package = package
+
+        self.conf = self._import('.conf')
+        self.get = getattr(self.conf, 'get')
+        self.path = pathlib.Path(self.package.__file__).resolve()
+        self.load_data = self._import('.load_data')
+        build_features = self._import('.features.build_features')
+        self.build_features = getattr(build_features, 'build_features')
+        self.get_contrib_features = getattr(
+            build_features, 'get_contrib_features')
+
+        self.repo = git.Repo(self.path, search_parent_directories=True)
+
+    def _import(self, modname):
+        return import_module(modname, package=self.package.__name__)
+
