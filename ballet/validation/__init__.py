@@ -38,6 +38,8 @@ def detect_target_type():
 
 
 def check_project_structure(project):
+    if not project.on_pr():
+        return
     validator = FileChangeValidator(project)
     result = validator.validate()
     if not result:
@@ -45,6 +47,8 @@ def check_project_structure(project):
 
 
 def validate_feature_api(project):
+    if not project.on_pr():
+        return
     validator = FeatureApiValidator(project)
     result = validator.validate()
     if not result:
@@ -52,6 +56,8 @@ def validate_feature_api(project):
 
 
 def evaluate_feature_performance(project):
+    if not project.on_pr():
+        return
     X_df, y_df = project.load_data()
     features = project.get_contrib_features()
     evaluator = FeatureRelevanceEvaluator(X_df, y_df, features)

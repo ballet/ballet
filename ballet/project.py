@@ -81,8 +81,8 @@ class Project:
         'get': ('.conf', 'get'),
         'load_data': ('.load_data', 'load_data'),
         'build_features': ('.features.build_features', 'build_features'),
-        '_get_contrib_features': ('.features.build_features',
-                                  '_get_contrib_features')
+        'get_contrib_features': ('.features.build_features',
+                                  'get_contrib_features')
     }
 
     def __init__(self, package):
@@ -100,10 +100,10 @@ class Project:
         result = get_pr_num(repo=self.repo)
         if result is None:
             result = get_travis_pr_num()
-        if result is not None:
-            return result
-        else:
-            raise Error('Could not determine PR number.')
+        return result
+
+    def on_pr(self):
+        return self.pr_num is not None
 
     @property
     def path(self):
@@ -112,6 +112,10 @@ class Project:
     @property
     def repo(self):
         return git.Repo(self.path, search_parent_directories=True)
+
+    @property
+    def contrib_module_path(self):
+        return self.get('contrib', 'module_path')
 
     def __getattr__(self, attr):
         if attr in Project.attr_map:

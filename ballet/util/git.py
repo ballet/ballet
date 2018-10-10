@@ -30,9 +30,11 @@ class PullRequestBuildDiffer:
 
 
 class LocalPullRequestBuildDiffer(PullRequestBuildDiffer):
-    # TODO
 
-    def __init__(self):
+    def _check_environment(self):
+        raise NotImplementedError
+
+    def _get_diff_str(self):
         raise NotImplementedError
 
 
