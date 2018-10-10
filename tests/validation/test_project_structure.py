@@ -2,16 +2,14 @@ import unittest
 from textwrap import dedent
 from unittest.mock import patch
 
-
 from ballet.util.ci import TravisPullRequestBuildDiffer
 from ballet.util.git import get_diff_str_from_commits
 from ballet.validation.project_structure import ChangeCollector
 
-from .util import (mock_feature_api_validator,
-                   mock_file_change_validator,
-                   null_change_collector,
-                   SampleDataMixin)
 from ..util import make_mock_commits, mock_repo
+from .util import (
+    SampleDataMixin, make_mock_project, mock_feature_api_validator,
+    mock_file_change_validator, null_change_collector)
 
 
 class CommonSetup(SampleDataMixin):
@@ -59,8 +57,6 @@ class ChangeCollectorTest(CommonSetup, unittest.TestCase):
         with mock_repo() as repo:
             commits = make_mock_commits(repo, n=n, filename=filename)
             contrib_module_path = None
-            X = None
-            y = None
             commit_range = get_diff_str_from_commits(
                 commits[0], commits[-1])
 
@@ -71,8 +67,9 @@ class ChangeCollectorTest(CommonSetup, unittest.TestCase):
             }
 
             with patch.dict('os.environ', travis_env_vars, clear=True):
-                change_collector = ChangeCollector(
-                    repo, self.pr_num, contrib_module_path)
+                project = make_mock_project(repo, self.pr_num,
+                                            contrib_module_path)
+                change_collector = ChangeCollector(project)
                 file_diffs = change_collector._collect_file_diffs()
 
                 # checks on file_diffs
@@ -110,8 +107,9 @@ class FileChangeValidatorTest(CommonSetup, unittest.TestCase):
         with mock_file_change_validator(
             path_content, self.pr_num, contrib_module_path
         ) as validator:
-            file_diffs, diffs_admissible, diffs_inadmissible, new_feature_info = \
-                validator.change_collector.collect_changes()
+            changes = validator.change_collector.collect_changes()
+            (file_diffs, diffs_admissible, diffs_inadmissible,
+                new_feature_info) = changes
             self.assertEqual(len(file_diffs), 1)
             self.assertEqual(len(diffs_admissible), 0)
             self.assertEqual(len(diffs_inadmissible), 1)
@@ -166,16 +164,17 @@ class FeatureApiValidatorTest(CommonSetup, unittest.TestCase):
         with mock_feature_api_validator(
             path_content, self.pr_num, contrib_module_path, self.X, self.y
         ) as validator:
-            file_diffs, diffs_admissible, diffs_inadmissible, new_feature_info = \
-                validator.change_collector.collect_changes()
+            changes = validator.change_collector.collect_changes()
+            (file_diffs, diffs_admissible, diffs_inadmissible,
+                new_feature_info) = changes
 
             self.assertEqual(len(file_diffs), 1)
             self.assertEqual(len(diffs_admissible), 1)
             self.assertEqual(len(diffs_inadmissible), 0)
 
             # TODO
-            #self.assertEqual(len(new_features), 1)
-            #self.assertTrue(imported_okay)
+            # self.assertEqual(len(new_features), 1)
+            # self.assertTrue(imported_okay)
 
             result = validator.validate()
             self.assertFalse(result)
@@ -189,16 +188,16 @@ class FeatureApiValidatorTest(CommonSetup, unittest.TestCase):
         with mock_feature_api_validator(
             path_content, self.pr_num, contrib_module_path, self.X, self.y
         ) as validator:
-            file_diffs, diffs_admissible, diffs_inadmissible, new_feature_info = \
-                validator.change_collector.collect_changes()
+            changes = validator.change_collector.collect_changes()
+            (file_diffs, diffs_admissible, diffs_inadmissible,
+                new_feature_info) = changes
             self.assertEqual(len(file_diffs), 1)
             self.assertEqual(len(diffs_admissible), 1)
             self.assertEqual(len(diffs_inadmissible), 0)
 
             # TODO
-            #self.assertEqual(len(new_feature_info), 0)
-            #self.assertFalse(imported_okay)
+            # self.assertEqual(len(new_feature_info), 0)
+            # self.assertFalse(imported_okay)
 
             result = validator.validate()
             self.assertFalse(result)
-

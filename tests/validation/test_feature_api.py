@@ -2,19 +2,16 @@ import unittest
 
 import numpy as np
 
+from ballet.compat import SimpleImputer
 from ballet.eng.base import BaseTransformer
 from ballet.eng.misc import IdentityTransformer
-from ballet.compat import SimpleImputer
 from ballet.feature import Feature
 from ballet.validation.feature_api import (
-    CanDeepcopyCheck,
-    CanTransformCheck,
-    HasCorrectInputTypeCheck,
-    HasCorrectOutputDimensionsCheck,
-    validate)
+    CanDeepcopyCheck, CanTransformCheck, HasCorrectInputTypeCheck,
+    HasCorrectOutputDimensionsCheck, validate)
 
-from .util import SampleDataMixin
 from ..util import FragileTransformer
+from .util import SampleDataMixin
 
 
 class ProjectStructureTest(SampleDataMixin, unittest.TestCase):

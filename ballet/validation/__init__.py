@@ -3,7 +3,6 @@ import os
 from ballet.exc import (
     InvalidFeatureApi, InvalidProjectStructure, FeatureRejected)
 from ballet.project import Project
-from ballet.util.ci import get_travis_pr_num
 from ballet.validation.feature_evaluation import (
     FeatureRedundancyEvaluator, FeatureRelevanceEvaluator)
 from ballet.validation.project_structure import (
@@ -14,12 +13,7 @@ TEST_TYPE_ENV_VAR = 'TEST_TYPE'
 
 
 def get_proposed_features(project):
-    repo = project.repo
-    pr_num = get_travis_pr_num()
-    contrib_module_path = project.get('contrib', 'module_path')
-    X_df, y_df = project.load_data()
-    change_collector = ChangeCollector(
-        repo, pr_num, contrib_module_path, X_df, y_df)
+    change_collector = ChangeCollector(project)
     _, _, _, new_feature_info = change_collector.collect_changes()
     # TODO import features
     return new_feature_info
@@ -30,23 +24,14 @@ def detect_target_type():
 
 
 def check_project_structure(project):
-    repo = project.repo
-    pr_num = get_travis_pr_num()
-    contrib_module_path = project['get']('contrib', 'module_path')
-    validator = FileChangeValidator(
-        repo, pr_num, contrib_module_path)
+    validator = FileChangeValidator(project)
     result = validator.validate()
     if not result:
         raise InvalidProjectStructure
 
 
 def validate_feature_api(project):
-    repo = project.repo
-    pr_num = get_travis_pr_num()
-    contrib_module_path = project.get('contrib', 'module_path')
-    X_df, y_df = project.load_data()
-    validator = FeatureApiValidator(
-        repo, pr_num, contrib_module_path, X_df, y_df)
+    validator = FeatureApiValidator(project)
     result = validator.validate()
     if not result:
         raise InvalidFeatureApi

@@ -24,7 +24,7 @@ class ChangeCollector:
     APPROPRIATE_CHANGE_TYPES = ['A']
     APPROPRIATE_FILE_EXTS = importlib.machinery.SOURCE_SUFFIXES
 
-    def __init__(self, repo, pr_num, contrib_module_path):
+    def __init__(self, project):
         """Validate the features introduced in a proposed pull request.
 
         Args:
@@ -32,9 +32,9 @@ class ChangeCollector:
             pr_num (int, str): Pull request number
             contrib_module_path (str): Relative path to contrib module
         """
-        self.repo = repo
-        self.pr_num = str(pr_num)
-        self.contrib_module_path = contrib_module_path
+        self.repo = project.repo
+        self.pr_num = str(project.pr_num)
+        self.contrib_module_path = project.contrib_module_path
 
         if can_use_travis_differ():
             self.differ = TravisPullRequestBuildDiffer(self.pr_num)
@@ -95,11 +95,10 @@ class ChangeCollector:
         def is_appropriate_file_ext(diff):
             """File change is a python file"""
             path = diff.b_path
-            for ext in ChangeCollector.APPROPRIATE_FILE_EXTS:
-                if path.endswith(ext):
-                    return True
-
-            return False
+            return any(
+                path.endswith(ext)
+                for ext in ChangeCollector.APPROPRIATE_FILE_EXTS
+            )
 
         is_admissible = all_fn(
             is_appropriate_change_type,
@@ -142,9 +141,8 @@ class ChangeCollector:
 
 class FileChangeValidator(BaseValidator):
 
-    def __init__(self, repo, pr_num, contrib_module_path):
-        self.change_collector = ChangeCollector(
-            repo, pr_num, contrib_module_path)
+    def __init__(self, project):
+        self.change_collector = ChangeCollector(project)
 
     def validate(self):
         _, _, inadmissible, _ = self.change_collector.collect_changes()
@@ -157,9 +155,10 @@ def subsample_data_for_validation(X, y):
 
 class FeatureApiValidator(BaseValidator):
 
-    def __init__(self, repo, pr_num, contrib_module_path, X, y):
-        self.change_collector = ChangeCollector(
-            repo, pr_num, contrib_module_path)
+    def __init__(self, project):
+        self.change_collector = ChangeCollector(project)
+
+        X, y = project.load_data()
         self.X, self.y = subsample_data_for_validation(X, y)
 
     def validate(self):

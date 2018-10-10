@@ -1,3 +1,9 @@
+import os
+
+import git
+from funcy import ignore, re_find
+
+
 class PullRequestBuildDiffer:
     """Diff files from this pull request against a comparison ref
 
@@ -72,6 +78,14 @@ def get_diffs_by_diff_str(repo, diff_str):
     b_obj = repo.rev_parse(b)
     diffs = a_obj.diff(b_obj)
     return diffs
+
+
+@ignore(Exception)
+def get_pr_num(repo=None):
+    if repo is None:
+        repo = git.Repo(os.getcwd(), search_parent_directories=True)
+    pr_num = re_find(r'refs/heads/pull/(\d+)', repo.head.ref.path)
+    return int(pr_num)
 
 
 # deprecated for now

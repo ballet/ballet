@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import numpy as np
 import pandas as pd
@@ -8,8 +8,7 @@ from ballet.util.git import get_diff_str_from_commits
 from ballet.validation.project_structure import (
     ChangeCollector, FeatureApiValidator, FileChangeValidator)
 
-from ..util import (
-    make_mock_commit, mock_repo)
+from ..util import make_mock_commit, mock_repo
 
 
 class SampleDataMixin:
@@ -26,6 +25,13 @@ class SampleDataMixin:
         self.X = self.df[['size', 'strength']]
         self.y = self.df[['happy']]
         super().setUp()
+
+
+def make_mock_project(repo, pr_num, contrib_module_path):
+    project = Mock(repo=repo,
+                   pr_num=pr_num,
+                   contrib_module_path=contrib_module_path)
+    return project
 
 
 @contextmanager
@@ -49,8 +55,8 @@ def null_change_collector(pr_num):
         }
 
         with patch.dict('os.environ', travis_env_vars, clear=True):
-            yield ChangeCollector(
-                repo, pr_num, contrib_module_path)
+            project = make_mock_project(repo, pr_num, contrib_module_path)
+            yield ChangeCollector(project)
 
 
 @contextmanager
@@ -75,8 +81,8 @@ def mock_file_change_validator(
         }
 
         with patch.dict('os.environ', travis_env_vars, clear=True):
-            yield FileChangeValidator(
-                repo, pr_num, contrib_module_path)
+            project = make_mock_project(repo, pr_num, contrib_module_path)
+            yield FileChangeValidator(project)
 
 
 @contextmanager
@@ -101,5 +107,6 @@ def mock_feature_api_validator(
         }
 
         with patch.dict('os.environ', travis_env_vars, clear=True):
-            yield FeatureApiValidator(
-                repo, pr_num, contrib_module_path, X, y)
+            project = make_mock_project(repo, pr_num, contrib_module_path)
+            project.load_data.return_value = X, y
+            yield FeatureApiValidator(project)

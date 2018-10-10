@@ -11,7 +11,6 @@ class BaseValidator(metaclass=ABCMeta):
         Returns:
             bool: validation succeeded
         """
-        pass
 
 
 class FeaturePerformanceEvaluator(metaclass=ABCMeta):
@@ -33,7 +32,6 @@ class PreAcceptanceFeaturePerformanceEvaluator(FeaturePerformanceEvaluator):
         Returns:
             bool: feature should be accepted
         """
-        pass
 
 
 class PostAcceptanceFeaturePerformanceEvaluator(FeaturePerformanceEvaluator):
@@ -46,4 +44,3 @@ class PostAcceptanceFeaturePerformanceEvaluator(FeaturePerformanceEvaluator):
         Returns:
             list: list of features to remove
         """
-        pass
