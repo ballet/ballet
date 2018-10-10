@@ -10,7 +10,14 @@ from ballet.validation.project_structure import (
     ChangeCollector, FeatureApiValidator, FileChangeValidator)
 
 
-TEST_TYPE_ENV_VAR = 'TEST_TYPE'
+TEST_TYPE_ENV_VAR = 'BALLET_TEST_TYPE'
+
+
+class BalletTestTypes:
+    PROJECT_STRUCTURE_VALIDATION = 'project_structure_validation'
+    FEATURE_API_VALIDATION = 'feature_api_validation'
+    PRE_ACCEPTANCE_FEATURE_EVALUATION = 'pre_acceptance_feature_evaluation'
+    POST_ACCEPTANCE_FEATURE_EVALUATION = 'post_acceptance_feature_evaluation'
 
 
 def get_proposed_features(project):
@@ -65,20 +72,23 @@ def prune_existing_features(project):
         pass
 
 
-def main(package, target_type=None):
+def main(package, test_target_type=None):
 
     project = Project(package)
 
-    if target_type is None:
-        target_type = detect_target_type()
+    if test_target_type is None:
+        test_target_type = detect_target_type()
 
-    if target_type == 'project_structure_validation':
+    if test_target_type == BalletTestTypes.PROJECT_STRUCTURE_VALIDATION:
         check_project_structure(project)
-    elif target_type == 'feature_api_validation':
+    elif test_target_type == BalletTestTypes.FEATURE_API_VALIDATION:
         validate_feature_api(project)
-    elif target_type == 'pre_acceptance_feature_evaluation':
+    elif test_target_type == BalletTestTypes.PRE_ACCEPTANCE_FEATURE_EVALUATION:
         evaluate_feature_performance(project)
-    elif target_type == 'post_acceptance_feature_evaluation':
+    elif test_target_type == (
+            BalletTestTypes.POST_ACCEPTANCE_FEATURE_EVALUATION):
         prune_existing_features(project)
     else:
-        raise NotImplementedError
+        raise NotImplementedError(
+            'Unsupported test target type: {test_target_type}'
+            .format(test_target_type=test_target_type))
