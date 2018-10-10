@@ -70,6 +70,7 @@ def config_get(package_root, *path, default=None):
 
 
 def make_config_get(package_root):
+    package_root = pathlib.Path(package_root).resolve()
     return partial(config_get, package_root)
 
 
@@ -80,8 +81,8 @@ class Project:
         'get': ('.conf', 'get'),
         'load_data': ('.load_data', 'load_data'),
         'build_features': ('.features.build_features', 'build_features'),
-        'get_contrib_features': ('.features.build_features',
-                                 'get_contrib_features')
+        '_get_contrib_features': ('.features.build_features',
+                                  '_get_contrib_features')
     }
 
     def __init__(self, package):

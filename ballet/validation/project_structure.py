@@ -4,7 +4,7 @@ from funcy import all_fn, collecting, ignore, partial, post_processing
 
 import ballet
 from ballet.compat import pathlib
-from ballet.contrib import get_contrib_features
+from ballet.contrib import _get_contrib_features
 from ballet.util import make_plural_suffix
 from ballet.util.ci import TravisPullRequestBuildDiffer, can_use_travis_differ
 from ballet.util.git import LocalPullRequestBuildDiffer
@@ -171,7 +171,7 @@ class FeatureApiValidator(BaseValidator):
             imported_okay = True
             try:
                 mod = importer()
-                features.extend(get_contrib_features(mod))
+                features.extend(_get_contrib_features(mod))
             except ImportError:
                 logger.info(
                     'Validation failure: failed to import module at {}'

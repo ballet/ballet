@@ -5,6 +5,7 @@ import types
 import funcy
 
 from ballet.feature import Feature
+from ballet.project import Project
 from ballet.util.log import logger
 
 __all__ = [
@@ -12,7 +13,13 @@ __all__ = [
 ]
 
 
-def get_contrib_features(contrib):
+def get_contrib_features(root):
+    project = Project(root)
+    contrib = project._resolve('.features.contrib')
+    return _get_contrib_features(contrib)
+
+
+def _get_contrib_features(module):
     '''Get contributed features from within given module
 
     Be very careful with untrusted code. The module/package will be
@@ -25,28 +32,28 @@ def get_contrib_features(contrib):
             definitions
 
     Returns:
-        List of Feature
+        List[Feature]: list of features
     '''
 
-    if isinstance(contrib, types.ModuleType):
+    if isinstance(module, types.ModuleType):
         contrib_features = []
 
         # fuuuuu
         importlib.invalidate_caches()
 
         # any module that has a __path__ attribute is a package
-        if hasattr(contrib, '__path__'):
-            features = get_contrib_features_from_package(contrib)
+        if hasattr(module, '__path__'):
+            features = _get_contrib_features_from_package(module)
             contrib_features.extend(features)
         else:
-            features = get_contrib_features_from_module(contrib)
+            features = _get_contrib_features_from_module(module)
             contrib_features.extend(features)
         return contrib_features
     else:
         raise ValueError('Input is not a module')
 
 
-def get_contrib_features_from_package(package):
+def _get_contrib_features_from_package(package):
     contrib_features = []
 
     logger.debug(
@@ -63,13 +70,13 @@ def get_contrib_features_from_package(package):
                 'Failed to import module {modname}'
                 .format(modname=modname))
             continue
-        features = get_contrib_features_from_module(mod)
+        features = _get_contrib_features_from_module(mod)
         contrib_features.extend(features)
 
     return contrib_features
 
 
-def get_contrib_features_from_module(mod):
+def _get_contrib_features_from_module(mod):
     contrib_features = []
 
     logger.debug(

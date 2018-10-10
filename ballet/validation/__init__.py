@@ -1,7 +1,8 @@
 import os
 
 from ballet.exc import (
-    InvalidFeatureApi, InvalidProjectStructure, FeatureRejected)
+    ConfigurationError, FeatureRejected, InvalidFeatureApi,
+    InvalidProjectStructure)
 from ballet.project import Project
 from ballet.validation.feature_evaluation import (
     FeatureRedundancyEvaluator, FeatureRelevanceEvaluator)
@@ -20,7 +21,13 @@ def get_proposed_features(project):
 
 
 def detect_target_type():
-    return os.environ.get(TEST_TYPE_ENV_VAR, default=None)
+    if TEST_TYPE_ENV_VAR in os.environ:
+        return os.environ[TEST_TYPE_ENV_VAR]
+    else:
+        raise ConfigurationError(
+            'Could not detect test target type: '
+            'missing environment variable {envvar}'
+            .format(envvar=TEST_TYPE_ENV_VAR))
 
 
 def check_project_structure(project):

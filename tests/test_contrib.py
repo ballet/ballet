@@ -6,7 +6,7 @@ from textwrap import dedent
 import funcy
 
 from ballet.compat import pathlib
-from ballet.contrib import get_contrib_features
+from ballet.contrib import _get_contrib_features
 from ballet.util.mod import import_module_at_path
 
 logging.basicConfig(level=logging.DEBUG)
@@ -51,7 +51,7 @@ class TestContrib(unittest.TestCase):
         # give a nonsense *module*, shouldn't import anything. this is a bad
         # test because it relies on module not defining certain names
         import math
-        features = get_contrib_features(math)
+        features = _get_contrib_features(math)
 
         # features should be an empty list
         self.assertEqual(len(features), 0)
@@ -59,7 +59,7 @@ class TestContrib(unittest.TestCase):
         # give a nonsense *package*, shouldn't import anything. this is a bad
         # test because it relies on module not defining certain names
         import funcy
-        features = get_contrib_features(funcy)
+        features = _get_contrib_features(funcy)
         self.assertEqual(len(features), 0)
 
     def test_get_contrib_features_generated_modules_components(self):
@@ -100,5 +100,5 @@ class TestContrib(unittest.TestCase):
             modpath.mkdir()
             create_contrib_modules_at_dir(modpath, content, n=n)
             mod = import_module_at_path(modname, modpath)
-            features = get_contrib_features(mod)
+            features = _get_contrib_features(mod)
             yield mod, features

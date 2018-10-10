@@ -7,9 +7,10 @@ import ballet.util.mod
 import click
 import numpy as np
 from ballet.compat import safepath
+from ballet.util.log import stacklog
 from ballet.util.io import write_tabular
 
-import {{ cookiecutter.project_slug }}.conf as conf
+import {{ cookiecutter.project_slug }}
 from {{ cookiecutter.project_slug }}.load_data import load_data
 
 
@@ -17,17 +18,14 @@ logger = logging.getLogger(__name__)
 
 
 def get_contrib_features():
-    modname = conf.get('contrib', 'module_name')
-    mod = ballet.util.mod.import_module_from_modname(modname)
-    return ballet.contrib.get_contrib_features(mod)
+    return ballet.contrib.get_contrib_features({{cookiecutter.project_slug}})
 
 
+@stacklog(logger.info, 'Building features')
 def build_features(X_df):
-    logger.info('Building features...')
     features = get_contrib_features()
     mapper = ballet.feature.make_mapper(features)
     X = mapper.fit_transform(X_df)
-    logger.info('Building features...DONE')
     return X, mapper
 
 
@@ -36,13 +34,11 @@ def build_features_from_dir(input_dir, return_mapper=False):
     X_df_tr, _ = load_data()
     X_tr, mapper_X = build_features(X_df_tr)
 
-    logger.info('Loading data from {}...'.format(input_dir))
-    X_df, y_df = load_data(input_dir=input_dir)
-    logger.info('Loading data...DONE')
+    with stacklog(logger.info, 'Loading data from {}'.format(input_dir)):
+        X_df, y_df = load_data(input_dir=input_dir)
 
-    logger.info('Building features...')
-    X = mapper_X.transform(X_df)
-    logger.info('Building features...DONE')
+    with stacklog(logger.info, 'Building features'):
+        X = mapper_X.transform(X_df)
 
     y = np.asarray(y_df)
 

@@ -34,8 +34,9 @@ class ProjectTest(unittest.TestCase):
         with self.assertRaises(ConfigurationError):
             find_configs(package_root)
 
+    @patch('pathlib.Path')
     @patch('ballet.project.find_configs')
-    def test_config_get(self, mock_find_configs):
+    def test_config_get(self, mock_find_configs, mock_Path):
         config1 = {
             'problem': {
                 'name': 'foo',
