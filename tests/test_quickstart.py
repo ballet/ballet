@@ -86,15 +86,16 @@ def test_end_to_end():
             X_df = pd.DataFrame(data=data.data, columns=data.feature_names)
             y_df = pd.Series(data.target, name='price')
             return X_df, y_df
-        """).strip()
+    """).strip()
 
-    with base.joinpath(modname, 'load_data.py').open('w') as f:
+    p = base.joinpath(modname, 'load_data.py')
+    with p.open('w') as f:
         f.write(new_load_data_str)
 
     # commit changes
     repo = git.Repo(safepath(base))
-    repo.git.add(u=True)
-    repo.git.commit(m='Load boston dataset')
+    repo.index.add([str(p)])
+    repo.index.commit('Load boston dataset')
 
     # call different validation routines
     def call_validate(ballet_test_type):
@@ -102,7 +103,35 @@ def test_end_to_end():
                         {TEST_TYPE_ENV_VAR: ballet_test_type}):
             check_call('./validate.py', cwd=safepath(base), env=os.environ)
 
-    for ballet_test_type in get_enum_values(BalletTestTypes):
-        call_validate(ballet_test_type)
+    def call_validate_all():
+        for ballet_test_type in get_enum_values(BalletTestTypes):
+            call_validate(ballet_test_type)
+
+    call_validate_all()
+
+    # write a new feature
+    new_feature_str = dedent("""
+        import numpy as np
+        from ballet import Feature
+        from ballet.eng.base import SimpleFunctionTransformer
+        
+        input = 'DIS'
+        transformer = SimpleFunctionTransformer(np.log)
+    """).strip()
+
+    p = base.joinpath(modname, 'features', 'contrib', 'user_bob',
+                       'feature_log_dis.py')
+    p.parent.mkdir(exist_ok=True)
+    with p.open('w') as f:
+        f.write(new_feature_str)
+    p1 = p.parent.joinpath('__init__.py')
+    p1.touch()
+
+    # commit new feature on master
+    repo.index.add([str(p), str(p1)])
+    repo.index.commit('Add new feature')
+
+    # call different validation routines
+    call_validate_all()
 
     _tempdir.cleanup()
