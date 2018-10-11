@@ -3,6 +3,7 @@ import importlib.machinery
 from funcy import all_fn, collecting, ignore, partial, post_processing
 
 import ballet
+import ballet.validation.feature_api
 from ballet.compat import pathlib
 from ballet.contrib import _get_contrib_features
 from ballet.util import make_plural_suffix
@@ -39,7 +40,7 @@ class ChangeCollector:
         if can_use_travis_differ():
             self.differ = TravisPullRequestBuildDiffer(self.pr_num)
         else:
-            self.differ = LocalPullRequestBuildDiffer()
+            self.differ = LocalPullRequestBuildDiffer(self.repo, self.pr_num)
 
     def collect_changes(self):
         """Collect file and feature changes

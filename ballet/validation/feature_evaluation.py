@@ -7,7 +7,7 @@ class FeatureRelevanceEvaluator(PreAcceptanceFeaturePerformanceEvaluator):
     """Accept a feature if it is correlated to the target"""
 
     def judge(self, feature):
-        return False
+        return True
 
 
 class FeatureRedundancyEvaluator(PostAcceptanceFeaturePerformanceEvaluator):
