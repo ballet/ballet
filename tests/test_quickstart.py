@@ -2,17 +2,20 @@ import os
 import tempfile
 import unittest
 from subprocess import check_call
+from textwrap import dedent
 from types import ModuleType
 from unittest.mock import patch
 
+import git
 import numpy as np
 import pandas as pd
 from sklearn_pandas import DataFrameMapper
 
-from ballet.compat import pathlib
+from ballet.compat import pathlib, safepath
 from ballet.eng.misc import IdentityTransformer
 from ballet.feature import Feature
 from ballet.quickstart import generate_project, main
+from ballet.util import get_enum_values
 from ballet.util.mod import import_module_at_path, modname_to_relpath
 from ballet.validation import TEST_TYPE_ENV_VAR, BalletTestTypes
 
@@ -74,10 +77,32 @@ def test_end_to_end():
         assert np.shape(X) == (5, 1)
         assert isinstance(mapper, DataFrameMapper)
 
-    # validation
-    with patch.dict(os.environ,
-                    {TEST_TYPE_ENV_VAR:
-                     BalletTestTypes.PROJECT_STRUCTURE_VALIDATION}):
-        check_call('./validate.py', cwd=str(base), env=os.environ)
+    # write a new version of foo.load_data.load_data
+    new_load_data_str = dedent("""
+        import pandas as pd
+        import sklearn.datasets
+        def load_data():
+            data = sklearn.datasets.load_boston()
+            X_df = pd.DataFrame(data=data.data, columns=data.feature_names)
+            y_df = pd.Series(data.target, name='price')
+            return X_df, y_df
+        """).strip()
+
+    with base.joinpath(modname, 'load_data.py').open('w') as f:
+        f.write(new_load_data_str)
+
+    # commit changes
+    repo = git.Repo(safepath(base))
+    repo.git.add(u=True)
+    repo.git.commit(m='Load boston dataset')
+
+    # call different validation routines
+    def call_validate(ballet_test_type):
+        with patch.dict(os.environ,
+                        {TEST_TYPE_ENV_VAR: ballet_test_type}):
+            check_call('./validate.py', cwd=safepath(base), env=os.environ)
+
+    for ballet_test_type in get_enum_values(BalletTestTypes):
+        call_validate(ballet_test_type)
 
     _tempdir.cleanup()

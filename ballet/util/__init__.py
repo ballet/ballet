@@ -21,6 +21,14 @@ def get_arr_desc(arr):
     return desc.format(typ=typ, shp=shp)
 
 
+def get_enum_keys(cls):
+    return [attr for attr in dir(cls) if not attr.startswith('_')]
+
+
+def get_enum_values(cls):
+    return [getattr(cls, attr) for attr in get_enum_keys(cls)]
+
+
 def indent(text, n=4):
     """Indent each line of text by n spaces"""
     _indent = ' ' * n
