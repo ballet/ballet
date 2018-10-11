@@ -1,9 +1,12 @@
 import os
 
+from funcy import ignore
+
 from ballet.exc import (
     ConfigurationError, FeatureRejected, InvalidFeatureApi,
-    InvalidProjectStructure)
+    InvalidProjectStructure, SkippedValidationTest)
 from ballet.project import Project
+from ballet.util.log import logger, stacklog
 from ballet.validation.feature_evaluation import (
     FeatureRedundancyEvaluator, FeatureRelevanceEvaluator)
 from ballet.validation.project_structure import (
@@ -37,27 +40,39 @@ def detect_target_type():
             .format(envvar=TEST_TYPE_ENV_VAR))
 
 
+@ignore(SkippedValidationTest)
+@stacklog(logger.info, 'Ballet Validation: checking project structure',
+          conditions=[(SkippedValidationTest, 'SKIPPED')])
 def check_project_structure(project):
     if not project.on_pr():
-        return
+        raise SkippedValidationTest
+
     validator = FileChangeValidator(project)
     result = validator.validate()
     if not result:
         raise InvalidProjectStructure
 
 
+@ignore(SkippedValidationTest)
+@stacklog(logger.info, 'Ballet Validation: validating feature API',
+          conditions=[(SkippedValidationTest, 'SKIPPED')])
 def validate_feature_api(project):
     if not project.on_pr():
-        return
+        raise SkippedValidationTest
+
     validator = FeatureApiValidator(project)
     result = validator.validate()
     if not result:
         raise InvalidFeatureApi
 
 
+@ignore(SkippedValidationTest)
+@stacklog(logger.info, 'Ballet Validation: evaluating feature performance',
+          conditions=[(SkippedValidationTest, 'SKIPPED')])
 def evaluate_feature_performance(project):
     if not project.on_pr():
-        return
+        raise SkippedValidationTest
+
     X_df, y_df = project.load_data()
     features = project.get_contrib_features()
     evaluator = FeatureRelevanceEvaluator(X_df, y_df, features)
@@ -67,7 +82,13 @@ def evaluate_feature_performance(project):
         raise FeatureRejected
 
 
+@ignore(SkippedValidationTest)
+@stacklog(logger.info, 'Ballet Validation: pruning existing features',
+          conditions=[(SkippedValidationTest, 'SKIPPED')])
 def prune_existing_features(project):
+    if project.on_pr():
+        raise SkippedValidationTest
+
     X_df, y_df = project.load_data()
     features = project.get_contrib_features()
     evaluator = FeatureRedundancyEvaluator(X_df, y_df, features)

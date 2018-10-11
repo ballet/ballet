@@ -28,3 +28,7 @@ class InvalidProjectStructure(FeatureValidationError):
 
 class InvalidFeatureApi(FeatureValidationError):
     pass
+
+
+class SkippedValidationTest(Error):
+    pass
