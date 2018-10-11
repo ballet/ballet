@@ -16,6 +16,7 @@ from ballet.eng.misc import IdentityTransformer
 from ballet.feature import Feature
 from ballet.quickstart import generate_project, main
 from ballet.util import get_enum_values
+from ballet.util.git import switch_to_new_branch
 from ballet.util.mod import import_module_at_path, modname_to_relpath
 from ballet.validation import TEST_TYPE_ENV_VAR, BalletTestTypes
 
@@ -129,7 +130,21 @@ def test_end_to_end():
 
     # commit new feature on master
     repo.index.add([str(p), str(p1)])
-    repo.index.commit('Add new feature')
+    repo.index.commit('Add log(DIS) feature')
+
+    # call different validation routines
+    call_validate_all()
+
+    # branch to a fake PR
+    switch_to_new_branch(repo, 'pull/1')
+
+    # write a new feature
+    new_feature_str1 = new_feature_str.replace('DIS', 'TAX')
+    p2 = p.parent.joinpath('feature_log_tax.py')
+    with p2.open('w') as f:
+        f.write(new_feature_str1)
+    repo.index.add([str(p2)])
+    repo.index.commit('Add log(TAX) feature')
 
     # call different validation routines
     call_validate_all()
