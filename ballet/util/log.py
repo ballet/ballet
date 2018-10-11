@@ -67,6 +67,9 @@ class stacklog:
         method: log callable
         message: log message
         *args: args to log method
+        conditions (List[Tuple]): list of tuples of exceptions or tuple of
+            exceptions to catch and log conditions, such as
+            ``[('SKIPPED', NotImplementedError)]``.
         **kwargs: kwargs to log method
 
     Example usage:
@@ -77,18 +80,25 @@ class stacklog:
        with stacklog(logging.info, 'Running error-prone function'):
            raise Exception
 
+       with stacklog(logging.info, 'Skipping not implemented',
+                     conditions=[(NotImplementedError, 'SKIPPED')]):
+           raise NotImplementedError
+
     This produces logging output:
 
         INFO:root:Running long function...
         INFO:root:Running long function...DONE
         INFO:root:Running error-prone function...
         INFO:root:Running error-prone function...FAILURE
+        INFO:root:Skipping not implemented...
+        INFO:root:Skipping not implemented...SKIPPED
     """
 
-    def __init__(self, method, message, *args, **kwargs):
+    def __init__(self, method, message, *args, conditions=None, **kwargs):
         self.method = method
         self.message = str(message)
         self.args = args
+        self.conditions = conditions
         self.kwargs = kwargs
 
     def _log(self, suffix=''):
@@ -102,6 +112,21 @@ class stacklog:
     def _fail(self):
         self._log(suffix='FAILURE')
 
+    def _matches_condition(self, exc_type):
+        if self.conditions is not None:
+            return any(
+                issubclass(exc_type, e)
+                for e, _ in self.conditions
+            )
+        else:
+            return False
+
+    def _log_condition(self, exc_type):
+        for e, suffix in self.conditions:
+            if issubclass(exc_type, e):
+                self._log(suffix=suffix)
+                return
+
     def __call__(self, func):
 
         @wraps(func)
@@ -113,11 +138,13 @@ class stacklog:
 
     def __enter__(self):
         self._begin()
-        return
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if exc_type is None:
             self._succeed()
+        elif self._matches_condition(exc_type):
+            self._log_condition(exc_type)
         else:
             self._fail()
+
         return False
