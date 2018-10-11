@@ -1,7 +1,11 @@
 import os
+import re
 
 import git
-from funcy import ignore, re_find
+from funcy import ignore, re_find, re_test
+
+
+PR_REF_PATH_REGEX = re.compile(r'refs/heads/pull/(\d+)')
 
 
 class PullRequestBuildDiffer:
@@ -12,9 +16,9 @@ class PullRequestBuildDiffer:
         repo (git.Repo): repo
     """
 
-    def __init__(self, pr_num, repo):
-        self.pr_num = int(pr_num)
+    def __init__(self, repo, pr_num):
         self.repo = repo
+        self.pr_num = int(pr_num)
         self._check_environment()
 
     def diff(self):
@@ -31,11 +35,19 @@ class PullRequestBuildDiffer:
 
 class LocalPullRequestBuildDiffer(PullRequestBuildDiffer):
 
+    @property
+    def _pr_name(self):
+        return self.repo.head.ref.name
+
+    @property
+    def _pr_path(self):
+        return self.repo.head.ref.path
+
     def _check_environment(self):
-        raise NotImplementedError
+        assert re_test(PR_REF_PATH_REGEX, self._pr_path)
 
     def _get_diff_str(self):
-        raise NotImplementedError
+        return '{from_}..{to_}'.format(from_='master', to_=self._pr_name)
 
 
 def get_diffs_by_revision(repo, from_revision, to_revision):
@@ -86,8 +98,13 @@ def get_diffs_by_diff_str(repo, diff_str):
 def get_pr_num(repo=None):
     if repo is None:
         repo = git.Repo(os.getcwd(), search_parent_directories=True)
-    pr_num = re_find(r'refs/heads/pull/(\d+)', repo.head.ref.path)
+    pr_num = re_find(PR_REF_PATH_REGEX, repo.head.ref.path)
     return int(pr_num)
+
+
+def switch_to_new_branch(repo, name):
+    new_branch = repo.create_head(name)
+    repo.head.ref = new_branch
 
 
 # deprecated for now
