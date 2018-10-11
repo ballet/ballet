@@ -40,7 +40,7 @@ class ChangeCollector:
         if can_use_travis_differ():
             self.differ = TravisPullRequestBuildDiffer(self.pr_num)
         else:
-            self.differ = LocalPullRequestBuildDiffer(self.repo, self.pr_num)
+            self.differ = LocalPullRequestBuildDiffer(self.pr_num, self.repo)
 
     def collect_changes(self):
         """Collect file and feature changes
@@ -55,10 +55,9 @@ class ChangeCollector:
         """
 
         file_diffs = self._collect_file_diffs()
-        file_diffs_admissible, file_diffs_inadmissible = \
-            self._categorize_file_diffs(file_diffs)
-        new_feature_info = self._collect_feature_info(
-            file_diffs_admissible)
+        (file_diffs_admissible,
+         file_diffs_inadmissible) = self._categorize_file_diffs(file_diffs)
+        new_feature_info = self._collect_feature_info(file_diffs_admissible)
 
         return (file_diffs, file_diffs_admissible, file_diffs_inadmissible,
                 new_feature_info)

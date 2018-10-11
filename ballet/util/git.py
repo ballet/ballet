@@ -16,9 +16,9 @@ class PullRequestBuildDiffer:
         repo (git.Repo): repo
     """
 
-    def __init__(self, repo, pr_num):
-        self.repo = repo
+    def __init__(self, pr_num, repo):
         self.pr_num = int(pr_num)
+        self.repo = repo
         self._check_environment()
 
     def diff(self):
