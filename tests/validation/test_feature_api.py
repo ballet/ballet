@@ -8,7 +8,7 @@ from ballet.eng.misc import IdentityTransformer
 from ballet.feature import Feature
 from ballet.validation.feature_api import (
     CanDeepcopyCheck, CanTransformCheck, HasCorrectInputTypeCheck,
-    HasCorrectOutputDimensionsCheck, validate)
+    HasCorrectOutputDimensionsCheck, NoMissingValuesCheck, validate)
 
 from ..util import FragileTransformer
 from .util import SampleDataMixin
@@ -75,3 +75,13 @@ class ProjectStructureTest(SampleDataMixin, unittest.TestCase):
         result, failures = validate(feature, self.X, self.y)
         self.assertFalse(result)
         self.assertIn(CanDeepcopyCheck.__name__, failures)
+
+    def test_producing_missing_values_fails(self):
+        assert np.any(self.X.isnull())
+        feature = Feature(
+            input='size',
+            transformer=IdentityTransformer()
+        )
+        result, failures = validate(feature, self.X, self.y)
+        self.assertFalse(result)
+        self.assertIn(NoMissingValuesCheck.__name__, failures)

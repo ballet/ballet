@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from copy import deepcopy
 
+import numpy as np
 from funcy import (
     all_fn, collecting, constantly, ignore, isa, iterable, post_processing)
 
@@ -95,14 +96,14 @@ class CanFitCheck(FeatureApiCheck):
 
     def check(self, feature):
         mapper = feature.as_dataframe_mapper()
-        mapper.fit(self.X, self.y)
+        mapper.fit(self.X, y=self.y)
 
 
 class CanTransformCheck(FeatureApiCheck):
 
     def check(self, feature):
         mapper = feature.as_dataframe_mapper()
-        mapper.fit(self.X, self.y)
+        mapper.fit(self.X, y=self.y)
         mapper.transform(self.X)
 
 
@@ -110,14 +111,14 @@ class CanFitTransformCheck(FeatureApiCheck):
 
     def check(self, feature):
         mapper = feature.as_dataframe_mapper()
-        mapper.fit_transform(self.X, self.y)
+        mapper.fit_transform(self.X, y=self.y)
 
 
 class HasCorrectOutputDimensionsCheck(FeatureApiCheck):
 
     def check(self, feature):
         mapper = feature.as_dataframe_mapper()
-        X = mapper.fit_transform(self.X, self.y)
+        X = mapper.fit_transform(self.X, y=self.y)
         assert self.X.shape[0] == X.shape[0]
 
 
@@ -125,3 +126,19 @@ class CanDeepcopyCheck(FeatureApiCheck):
 
     def check(self, feature):
         deepcopy(feature)
+
+
+class NoMissingValuesCheck(FeatureApiCheck):
+
+    def check(self, feature):
+        mapper = feature.as_dataframe_mapper()
+        X = mapper.fit_transform(self.X, y=self.y)
+        assert not np.any(np.isnan(X))
+
+
+class NoInfiniteValuesCheck(FeatureApiCheck):
+
+    def check(self, feature):
+        mapper = feature.as_dataframe_mapper()
+        X = mapper.fit_transform(self.X, y=self.y)
+        assert not np.any(np.isinf(X))
