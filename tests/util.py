@@ -67,6 +67,7 @@ def make_mock_commit(repo, kind='A', path=None, content=None):
 
     dir = repo.working_tree_dir
     abspath = pathlib.Path(dir).joinpath(path)
+
     if kind == 'A':
         # TODO make robust
         abspath.parent.mkdir(parents=True, exist_ok=True)
@@ -112,11 +113,7 @@ def mock_repo():
     '''Create a new repo'''
     with tempfile.TemporaryDirectory() as tmpdir:
         cwd = os.getcwd()
-        os.chdir(str(tmpdir))
         dir = pathlib.Path(tmpdir)
         repo = git.Repo.init(str(dir))
         set_ci_git_config_variables(repo)
-        try:
-            yield repo
-        finally:
-            os.chdir(cwd)
+        yield repo
