@@ -112,9 +112,8 @@ def set_config_variables(repo, variables):
     Args:
         variables (dict): entries of the form 'user.email': 'you@example.com'
     """
-    with repo.config_writer() as cw:
-        for k, v in variables.items():
-            cw.set_value(*k.split('.'), v)
+    for k, v in variables.items():
+        repo.git.config(k, v)
 
 
 # deprecated for now
