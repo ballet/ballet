@@ -90,10 +90,23 @@ def test_end_to_end():
                         {TEST_TYPE_ENV_VAR: ballet_test_type}):
             check_call('./validate.py', cwd=safepath(base), env=os.environ)
 
-    def call_validate_all():
-        for ballet_test_type in get_enum_values(BalletTestTypes):
-            call_validate(ballet_test_type)
-
+    def call_validate_all(pr=None):
+        envvars = {
+            'TRAVIS_BUILD_DIR': repo.working_tree_dir,
+        }
+        if pr is None:
+            envvars['TRAVIS_PULL_REQUEST'] = 'false'
+            envvars['TRAVIS_COMMIT_RANGE'] = ''
+        else:
+            envvars['TRAVIS_PULL_REQUEST'] = str(pr)
+            envvars['TRAVIS_COMMIT_RANGE'] = '{master}..{commit}'.format(
+                master='master',
+                commit=repo.commit('pull/{}'.format(pr)).hexsha)
+        # we simulate a commit on the master branch, so pull request is false and
+        # commit range is empty
+        with patch.dict(os.environ, ):
+            for ballet_test_type in get_enum_values(BalletTestTypes):
+                call_validate(ballet_test_type)
     call_validate_all()
 
     # write a new feature
@@ -132,7 +145,7 @@ def test_end_to_end():
     repo.index.commit('Add log(TAX) feature')
 
     # call different validation routines
-    call_validate_all()
+    call_validate_all(pr=1)
 
     # merge PR with master
     repo.git.checkout('master')
