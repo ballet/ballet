@@ -45,7 +45,7 @@ def create_contrib_modules_at_dir(dirname, modcontent, n=1):
             f.write(modcontent_i)
 
 
-class TestContrib(unittest.TestCase):
+class ContribTest(unittest.TestCase):
 
     def test_get_contrib_features_stdlib(self):
         # give a nonsense *module*, shouldn't import anything. this is a bad
