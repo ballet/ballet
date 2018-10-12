@@ -11,14 +11,24 @@ __all__ = [
 ]
 
 
-def get_contrib_features(root):
-    project = Project(root)
+def get_contrib_features(project_root):
+    """Get contributed features for a project at project_root
+
+    For a project ``foo``, walks modules within the ``foo.features.contrib``
+    subpackage. A single object that is an instance of ``ballet.Feature`` is
+    imported if present in each module. The resulting ``Feature`` objects are
+    collected.
+
+    Args:
+        project_root (str, path): Path to project root
+    """
+    project = Project(project_root)
     contrib = project._resolve('.features.contrib')
     return _get_contrib_features(contrib)
 
 
 def _get_contrib_features(module):
-    '''Get contributed features from within given module
+    """Get contributed features from within given module
 
     Be very careful with untrusted code. The module/package will be
     walked, every submodule will be imported, and all the code therein will be
@@ -31,21 +41,17 @@ def _get_contrib_features(module):
 
     Returns:
         List[Feature]: list of features
-    '''
+    """
 
     if isinstance(module, types.ModuleType):
         contrib_features = []
 
-        # fuuuuu
-        importlib.invalidate_caches()
-
-        # any module that has a __path__ attribute is a package
+        # any module that has a __path__ attribute is also a package
         if hasattr(module, '__path__'):
             features = _get_contrib_features_from_package(module)
-            contrib_features.extend(features)
         else:
             features = _get_contrib_features_from_module(module)
-            contrib_features.extend(features)
+        contrib_features.extend(features)
         return contrib_features
     else:
         raise ValueError('Input is not a module')
@@ -82,7 +88,7 @@ def _get_contrib_features_from_module(mod):
         .format(modname=mod.__name__))
 
     try:
-        feature = import_contrib_feature_from_feature(mod)
+        feature = _import_contrib_feature_from_feature(mod)
         contrib_features.append(feature)
         logger.debug(
             'Imported 1 feature from {modname} from Feature object'
@@ -95,7 +101,7 @@ def _get_contrib_features_from_module(mod):
     return contrib_features
 
 
-def import_contrib_feature_from_feature(mod):
+def _import_contrib_feature_from_feature(mod):
     candidates = []
     for attr in dir(mod):
         obj = getattr(mod, attr)
