@@ -2,8 +2,6 @@ import importlib
 import pkgutil
 import types
 
-import funcy
-
 from ballet.feature import Feature
 from ballet.project import Project
 from ballet.util.log import logger
@@ -83,7 +81,6 @@ def _get_contrib_features_from_module(mod):
         'Trying to import contributed feature(s) from module {modname}...'
         .format(modname=mod.__name__))
 
-    # case 1: module contains an instance of Feature
     try:
         feature = import_contrib_feature_from_feature(mod)
         contrib_features.append(feature)
@@ -91,33 +88,11 @@ def _get_contrib_features_from_module(mod):
             'Imported 1 feature from {modname} from Feature object'
             .format(modname=mod.__name__))
     except ImportError:
-        # case 2: file has at least `input` and `transformer` defined
-        try:
-            feature = import_contrib_feature_from_components(mod)
-            contrib_features.append(feature)
-            logger.debug(
-                'Imported 1 feature from {modname} from components'
-                .format(modname=mod.__name__))
-        except ImportError:
-            # case 3: nothing useful in file
-            logger.debug(
-                'Failed to import anything useful from module {modname}'
-                .format(modname=mod.__name__))
+        logger.debug(
+            'Failed to import anything useful from module {modname}'
+            .format(modname=mod.__name__))
 
     return contrib_features
-
-
-def import_contrib_feature_from_components(mod):
-    required = ['input', 'transformer']
-    optional = ['name', 'description', 'output', 'options']
-    required_vars, optional_vars = import_names_from_module(
-        mod, required, optional)
-    feature = Feature(
-        input=required_vars['input'],
-        transformer=required_vars['transformer'],
-        source=mod.__name__,
-        **optional_vars)
-    return feature
 
 
 def import_contrib_feature_from_feature(mod):
@@ -140,35 +115,3 @@ def import_contrib_feature_from_feature(mod):
         raise ImportError(
             'Did not find any \'Feature\' objects in module {modname}'
             .format(modname=mod.__name__))
-
-
-def import_names_from_module(mod, required, optional):
-
-    # required vars
-    if required:
-        required_vars = {}
-        if isinstance(required, str):
-            required = [required]
-        for varname in required:
-            if hasattr(mod, varname):
-                required_vars[varname] = getattr(mod, varname)
-            else:
-                raise ImportError(
-                    'Required variable {varname} not found in module {modname}'
-                    .format(varname=varname, modname=mod.__name__))
-    else:
-        required_vars = None
-
-    # optional vars
-    if optional:
-        if isinstance(optional, str):
-            optional = [optional]
-        optional_vars = {
-            k: getattr(mod, k)
-            for k in optional
-            if hasattr(mod, k)
-        }
-    else:
-        optional_vars = None
-
-    return required_vars, optional_vars

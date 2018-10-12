@@ -116,6 +116,7 @@ def test_end_to_end():
         from ballet.eng.base import SimpleFunctionTransformer
         input = 'DIS'
         transformer = SimpleFunctionTransformer(np.log)
+        feature = Feature(input, transformer)
     """).strip()
 
     p = base.joinpath(modname, 'features', 'contrib', 'user_bob',

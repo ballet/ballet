@@ -1,4 +1,3 @@
-import os
 import random
 import tempfile
 
@@ -112,7 +111,6 @@ def set_ci_git_config_variables(repo):
 def mock_repo():
     '''Create a new repo'''
     with tempfile.TemporaryDirectory() as tmpdir:
-        cwd = os.getcwd()
         dir = pathlib.Path(tmpdir)
         repo = git.Repo.init(str(dir))
         set_ci_git_config_variables(repo)

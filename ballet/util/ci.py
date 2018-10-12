@@ -1,6 +1,5 @@
 import os
 
-import funcy
 import git
 from funcy import constantly, ignore, post_processing
 
