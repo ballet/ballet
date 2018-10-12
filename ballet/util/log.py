@@ -11,7 +11,7 @@ logger = logging.getLogger(ballet.__name__)
 _handler = None
 
 
-def enable(logger=logger, level=logging.INFO):
+def enable(logger=logger, level=logging.INFO, echo=True):
     """Enable simple console logging for this module"""
     global _handler
     if _handler is None:
@@ -26,8 +26,10 @@ def enable(logger=logger, level=logging.INFO):
         logger.addHandler(_handler)
 
     levelName = logging._levelToName[level]
-    logger.log(
-        level, 'Logging enabled at level {name}.'.format(name=levelName))
+
+    if echo:
+        logger.log(
+            level, 'Logging enabled at level {name}.'.format(name=levelName))
 
 
 class LoggingContext(object):

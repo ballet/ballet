@@ -8,6 +8,6 @@ if __name__ == '__main__':
 
     import {{ cookiecutter.project_slug }}
 
-    ballet.util.log.enable(level=logging.INFO)
+    ballet.util.log.enable(level=logging.INFO, echo=False)
 
     ballet.validation.main({{ cookiecutter.project_slug }})
