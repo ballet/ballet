@@ -83,13 +83,13 @@ def _get_contrib_features_from_module(mod):
         'Trying to import contributed feature(s) from module {modname}...'
         .format(modname=mod.__name__))
 
-    # case 1: file defines `features` variable
+    # case 1: module contains an instance of Feature
     try:
-        features = import_contrib_feature_from_collection(mod)
-        contrib_features.extend(features)
+        feature = import_contrib_feature_from_feature(mod)
+        contrib_features.append(feature)
         logger.debug(
-            'Imported {n} feature(s) from {modname} from collection'
-            .format(n=len(features), modname=mod.__name__))
+            'Imported 1 feature from {modname} from Feature object'
+            .format(modname=mod.__name__))
     except ImportError:
         # case 2: file has at least `input` and `transformer` defined
         try:
@@ -120,22 +120,29 @@ def import_contrib_feature_from_components(mod):
     return feature
 
 
-def import_contrib_feature_from_collection(mod):
-    required = 'features'
-    optional = None
-    required_vars, _ = import_names_from_module(
-        mod, required, optional)
-    features = required_vars['features']
-    for feature in features:
+def import_contrib_feature_from_feature(mod):
+    candidates = []
+    for attr in dir(mod):
+        obj = getattr(mod, attr)
+        if isinstance(obj, Feature):
+            candidates.append(obj)
+
+    if len(candidates) == 1:
+        feature = candidates[0]
         feature.source = mod.__name__
-    return features
+        return feature
+    elif len(candidates) > 1:
+        raise ImportError(
+            'Found too many \'Feature\' objects in module {modname}: '
+            '{candidates!r}'
+            .format(modname=mod.__name__, candidates=candidates))
+    else:
+        raise ImportError(
+            'Did not find any \'Feature\' objects in module {modname}'
+            .format(modname=mod.__name__))
 
 
 def import_names_from_module(mod, required, optional):
-
-    msg = funcy.partial(
-        'Required variable {varname} not found in module {modname}'
-        .format, modname=mod.__name__)
 
     # required vars
     if required:
@@ -146,7 +153,9 @@ def import_names_from_module(mod, required, optional):
             if hasattr(mod, varname):
                 required_vars[varname] = getattr(mod, varname)
             else:
-                raise ImportError(msg(varname=varname))
+                raise ImportError(
+                    'Required variable {varname} not found in module {modname}'
+                    .format(varname=varname, modname=mod.__name__))
     else:
         required_vars = None
 
@@ -154,8 +163,11 @@ def import_names_from_module(mod, required, optional):
     if optional:
         if isinstance(optional, str):
             optional = [optional]
-        optional_vars = {k: getattr(mod, k)
-                         for k in optional if hasattr(mod, k)}
+        optional_vars = {
+            k: getattr(mod, k)
+            for k in optional
+            if hasattr(mod, k)
+        }
     else:
         optional_vars = None
 
