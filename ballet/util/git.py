@@ -107,6 +107,17 @@ def switch_to_new_branch(repo, name):
     repo.head.ref = new_branch
 
 
+def set_config_variables(repo, variables):
+    """Set config variables
+
+    Args:
+        variables (dict): entries of the form 'user.email': 'you@example.com'
+    """
+    with repo.config_writer() as cw:
+        for k, v in variables.items():
+            cw.set_value(*k.split('.'), v)
+
+
 # deprecated for now
 class PullRequestInfo:
     def __init__(self, pr_num):

@@ -136,6 +136,13 @@ def test_end_to_end():
     # call different validation routines
     call_validate_all()
 
+    # merge PR with master
+    repo.git.checkout('master')
+    repo.git.merge('pull/1', no_ff=True)
+
+    # call different validation routines
+    call_validate_all()
+
     _tempdir.cleanup()
 
 
