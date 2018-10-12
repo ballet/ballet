@@ -4,7 +4,6 @@ import re
 import git
 from funcy import ignore, re_find, re_test
 
-
 PR_REF_PATH_REGEX = re.compile(r'refs/heads/pull/(\d+)')
 
 

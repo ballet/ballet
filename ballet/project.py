@@ -5,7 +5,7 @@ import yaml
 from funcy import get_in, memoize, partial
 
 from ballet.compat import pathlib
-from ballet.exc import ConfigurationError, Error
+from ballet.exc import ConfigurationError
 from ballet.util.ci import get_travis_pr_num
 from ballet.util.git import get_pr_num
 
@@ -82,7 +82,7 @@ class Project:
         'load_data': ('.load_data', 'load_data'),
         'build_features': ('.features.build_features', 'build_features'),
         'get_contrib_features': ('.features.build_features',
-                                  'get_contrib_features')
+                                 'get_contrib_features')
     }
 
     def __init__(self, package):

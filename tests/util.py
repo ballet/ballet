@@ -3,7 +3,7 @@ import random
 import tempfile
 
 import git
-from funcy import any_fn, merge, contextmanager
+from funcy import any_fn, contextmanager, merge
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn_pandas.pipeline import TransformerPipeline
 

@@ -1,9 +1,9 @@
 import os
 import tempfile
-from unittest.mock import patch
 from subprocess import check_call
 from textwrap import dedent
 from types import ModuleType
+from unittest.mock import patch
 
 import git
 import numpy as np
@@ -16,7 +16,6 @@ from ballet.feature import Feature
 from ballet.quickstart import generate_project
 from ballet.util import get_enum_values
 from ballet.util.git import switch_to_new_branch
-from ballet.util.log import logger
 from ballet.util.mod import import_module_at_path, modname_to_relpath
 from ballet.validation import TEST_TYPE_ENV_VAR, BalletTestTypes
 
@@ -102,7 +101,6 @@ def test_end_to_end():
         import numpy as np
         from ballet import Feature
         from ballet.eng.base import SimpleFunctionTransformer
-        
         input = 'DIS'
         transformer = SimpleFunctionTransformer(np.log)
     """).strip()
