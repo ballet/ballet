@@ -80,7 +80,7 @@ test-all: ## run tests on every Python version with tox
 
 .PHONY: coverage
 coverage: ## check code coverage quickly with the default Python
-	coverage run --source ballet -m pytest
+	coverage run -m pytest
 	coverage report -m
 	coverage html
 	$(BROWSER) htmlcov/index.html
