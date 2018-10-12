@@ -101,8 +101,10 @@ def make_mock_commits(repo, n=10, filename='file{i}.py'):
 
 
 def set_ci_git_config_variables(repo):
-    set_config_variables(repo, 'user.name', 'Foo Bar')
-    set_config_variables(repo, 'user.email', 'foo@bar.com')
+    set_config_variables(repo, {
+        'user.name': 'Foo Bar',
+        'user.email': 'foo@bar.com',
+    })
 
 
 @contextmanager
@@ -113,7 +115,7 @@ def mock_repo():
         os.chdir(str(tmpdir))
         dir = pathlib.Path(tmpdir)
         repo = git.Repo.init(str(dir))
-        set_ci_git_config_variables()
+        set_ci_git_config_variables(repo)
         try:
             yield repo
         finally:

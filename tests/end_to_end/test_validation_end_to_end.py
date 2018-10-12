@@ -24,7 +24,7 @@ from ballet.validation import TEST_TYPE_ENV_VAR, BalletTestTypes
 def test_end_to_end():
     modname = 'foo'
     extra_context = {
-        'project_slug': modname,
+        'project_name': modname.capitalize(),
     }
 
     _tempdir = tempfile.TemporaryDirectory()
