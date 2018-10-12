@@ -102,11 +102,11 @@ def test_end_to_end():
             envvars['TRAVIS_COMMIT_RANGE'] = '{master}..{commit}'.format(
                 master='master',
                 commit=repo.commit('pull/{}'.format(pr)).hexsha)
-        # we simulate a commit on the master branch, so pull request is false and
-        # commit range is empty
-        with patch.dict(os.environ, ):
+
+        with patch.dict(os.environ, envvars):
             for ballet_test_type in get_enum_values(BalletTestTypes):
                 call_validate(ballet_test_type)
+
     call_validate_all()
 
     # write a new feature

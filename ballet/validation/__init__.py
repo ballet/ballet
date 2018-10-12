@@ -7,6 +7,7 @@ from ballet.exc import (
     InvalidProjectStructure, SkippedValidationTest)
 from ballet.project import Project
 from ballet.util.log import logger, stacklog
+from ballet.util.ci import dump_travis_env_vars
 from ballet.validation.feature_evaluation import (
     FeatureRedundancyEvaluator, FeatureRelevanceEvaluator)
 from ballet.validation.project_structure import (
@@ -100,6 +101,7 @@ def prune_existing_features(project):
 
 
 def main(package, test_target_type=None):
+    dump_travis_env_vars()
 
     project = Project(package)
 

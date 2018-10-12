@@ -25,9 +25,11 @@ def ensure_expected_travis_env_vars(names):
 
 
 def dump_travis_env_vars():
-    travis_env_vars = funcy.select_keys(
-        lambda key: key.startswith('TRAVIS'), os.environ)
-    logger.debug(travis_env_vars)
+    travis_env_vars = {
+        k: v for k, v in os.environ.items()
+        if k.startswith('TRAVIS')
+    }
+    logger.info(repr(travis_env_vars))
 
 
 def get_travis_pr_num():
