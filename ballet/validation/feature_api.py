@@ -21,7 +21,7 @@ def validate(feature, X, y):
 def get_checks(X, y):
     checks = FeatureApiCheck.__subclasses__()
     for Checker in checks:
-        method = Checker(X, y)._check
+        method = Checker(X, y).do_check
         name = Checker.__name__
         yield method, name
 
@@ -43,7 +43,7 @@ class FeatureApiCheck(metaclass=ABCMeta):
 
     @ignore(Exception, default=False)
     @post_processing(constantly(True))
-    def _check(self, feature):
+    def do_check(self, feature):
         self.check(feature)
 
     @abstractmethod

@@ -1,6 +1,7 @@
 import importlib.machinery
+from abc import ABCMeta, abstractmethod
 
-from funcy import all_fn, collecting, ignore, partial, post_processing
+from funcy import collecting, ignore, partial, post_processing, re_test
 
 import ballet
 import ballet.validation.feature_api
@@ -13,6 +14,9 @@ from ballet.util.log import logger, stacklog
 from ballet.util.mod import import_module_at_path, relpath_to_modname
 from ballet.validation.base import BaseValidator
 
+FEATURE_MODULE_NAME_REGEX = r'feature_[a-zA-Z0-9]'
+SUBPACKAGE_NAME_REGEX = r'user_[a-zA-Z0-9_]+'
+
 
 def _log_collect_items(name, items):
     n = len(items)
@@ -21,9 +25,82 @@ def _log_collect_items(name, items):
     return items
 
 
+class DiffCheck(metaclass=ABCMeta):
+
+    def __init__(self, project):
+        self.project = project
+
+    @ignore(Exception, default=False)
+    def do_check(self, diff):
+        return self.check(diff)
+
+    @abstractmethod
+    def check(self, diff):
+        pass
+
+
+class IsAdditionCheck(DiffCheck):
+
+    def check(self, diff):
+        return diff.change_type == 'A'
+
+
+class IsPythonSourceCheck(DiffCheck):
+
+    def check(self, diff):
+        path = diff.b_path
+        return any(
+            path.endswith(ext)
+            for ext in importlib.machinery.SOURCE_SUFFIXES
+        )
+
+
+class WithinContribCheck(DiffCheck):
+
+    def check(self, diff):
+        path = diff.path
+        contrib_path = self.project.contrib_module_path
+        return pathlib.Path(contrib_path) in pathlib.Path(path).parents
+
+
+def relative_to_contrib(diff, project):
+    path = pathlib.Path(diff.path)
+    contrib_path = project.contrib_module_path
+    return path.relative_to(contrib_path)
+
+
+class SubpackageNameTest(DiffCheck):
+
+    def check(self, diff):
+        relative_path = relative_to_contrib(diff, self.project)
+        subpackage_name = relative_path.parts[0]
+        return re_test(SUBPACKAGE_NAME_REGEX, subpackage_name)
+
+
+class FeatureModuleNameTest(DiffCheck):
+
+    def check(self, diff):
+        relative_path = relative_to_contrib(diff, self.project)
+        feature_module_name = relative_path.parts[-1]
+        return re_test(FEATURE_MODULE_NAME_REGEX, feature_module_name)
+
+
+class RelativeNameLengthTest(DiffCheck):
+
+    def check(self, diff):
+        relative_path = relative_to_contrib(diff, self.project)
+        return len(relative_path.parts) == 2
+
+
+@post_processing(all)
+@collecting
+def is_admissible(diff, project):
+    for Checker in DiffCheck.__subclasses__():
+        checker = Checker(project)
+        yield checker.do_check(diff)
+
+
 class ChangeCollector:
-    APPROPRIATE_CHANGE_TYPES = ['A']
-    APPROPRIATE_FILE_EXTS = importlib.machinery.SOURCE_SUFFIXES
 
     def __init__(self, project):
         """Validate the features introduced in a proposed pull request.
@@ -33,6 +110,7 @@ class ChangeCollector:
             pr_num (int, str): Pull request number
             contrib_module_path (str): Relative path to contrib module
         """
+        self.project = project
         self.repo = project.repo
         self.pr_num = str(project.pr_num)
         self.contrib_module_path = project.contrib_module_path
@@ -80,34 +158,8 @@ class ChangeCollector:
         file_diffs_admissible = []
         file_diffs_inadmissible = []
 
-        def is_appropriate_change_type(diff):
-            """File change is an addition"""
-            return diff.change_type in ChangeCollector.APPROPRIATE_CHANGE_TYPES
-
-        @ignore(Exception, default=False)
-        def within_contrib_subdirectory(diff):
-            """File addition is a subdirectory of project's contrib dir"""
-            path = diff.b_path
-            contrib_relpath = self.contrib_module_path
-            return pathlib.Path(contrib_relpath) in pathlib.Path(path).parents
-
-        @ignore(Exception, default=False)
-        def is_appropriate_file_ext(diff):
-            """File change is a python file"""
-            path = diff.b_path
-            return any(
-                path.endswith(ext)
-                for ext in ChangeCollector.APPROPRIATE_FILE_EXTS
-            )
-
-        is_admissible = all_fn(
-            is_appropriate_change_type,
-            within_contrib_subdirectory,
-            is_appropriate_file_ext,
-        )
-
         for diff in file_diffs:
-            if is_admissible(diff):
+            if is_admissible(diff, self.project):
                 file_diffs_admissible.append(diff)
                 logger.debug(
                     'Categorized {file} as ADMISSIBLE'
@@ -130,6 +182,17 @@ class ChangeCollector:
     @collecting
     @stacklog(logger.info, 'Collecting info on newly-proposed features')
     def _collect_feature_info(self, file_diffs_admissible):
+        """Collect feature info
+
+        Args:
+            file_diffs_admissible (List[git.diff.Diff]): list of Diffs
+                corresponding to admissible file changes compared to comparison
+                ref
+
+        Returns:
+            List[Tuple]: list of tuple of importer, module name, and module
+                path. The "importer" is a callable that returns a module
+        """
         project_root = pathlib.Path(self.repo.working_tree_dir)
         for diff in file_diffs_admissible:
             path = diff.b_path
@@ -145,7 +208,8 @@ class FileChangeValidator(BaseValidator):
         self.change_collector = ChangeCollector(project)
 
     def validate(self):
-        _, _, inadmissible, _ = self.change_collector.collect_changes()
+        _, _, inadmissible, new_feature_info = \
+            self.change_collector.collect_changes()
         return not inadmissible
 
 

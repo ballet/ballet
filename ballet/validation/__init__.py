@@ -24,7 +24,7 @@ class BalletTestTypes:
     POST_ACCEPTANCE_FEATURE_EVALUATION = 'post_acceptance_feature_evaluation'
 
 
-def get_proposed_features(project):
+def get_proposed_feature(project):
     change_collector = ChangeCollector(project)
     _, _, _, new_feature_info = change_collector.collect_changes()
     # TODO import features
@@ -77,8 +77,8 @@ def evaluate_feature_performance(project):
     X_df, y_df = project.load_data()
     features = project.get_contrib_features()
     evaluator = FeatureRelevanceEvaluator(X_df, y_df, features)
-    proposed_features = get_proposed_features(project)
-    accepted = evaluator.judge(proposed_features)
+    proposed_feature = get_proposed_feature(project)
+    accepted = evaluator.judge(proposed_feature)
     if not accepted:
         raise FeatureRejected
 

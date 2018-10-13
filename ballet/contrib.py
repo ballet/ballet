@@ -1,4 +1,3 @@
-import importlib
 import pkgutil
 import types
 
