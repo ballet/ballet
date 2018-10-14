@@ -7,7 +7,7 @@ import ballet
 import ballet.validation.feature_api
 from ballet.compat import pathlib
 from ballet.contrib import _get_contrib_features
-from ballet.util import make_plural_suffix
+from ballet.util import make_plural_suffix, whether_failures
 from ballet.util.ci import TravisPullRequestBuildDiffer, can_use_travis_differ
 from ballet.util.git import LocalPullRequestBuildDiffer
 from ballet.util.log import logger, stacklog
@@ -23,6 +23,16 @@ def _log_collect_items(name, items):
     s = make_plural_suffix(items)
     logger.info('Collected {n} {name}{s}'.format(n=n, name=name, s=s))
     return items
+
+
+@whether_failures
+def is_admissible(diff, project):
+    for Checker in DiffCheck.__subclasses__():
+        check = Checker(project).do_check
+        name = Checker.__name__
+        success = check(diff)
+        if not success:
+            yield name
 
 
 class DiffCheck(metaclass=ABCMeta):
@@ -85,19 +95,11 @@ class FeatureModuleNameTest(DiffCheck):
         return re_test(FEATURE_MODULE_NAME_REGEX, feature_module_name)
 
 
-class RelativeNameLengthTest(DiffCheck):
+class RelativeNameDepthCheck(DiffCheck):
 
     def check(self, diff):
         relative_path = relative_to_contrib(diff, self.project)
         return len(relative_path.parts) == 2
-
-
-@post_processing(all)
-@collecting
-def is_admissible(diff, project):
-    for Checker in DiffCheck.__subclasses__():
-        checker = Checker(project)
-        yield checker.do_check(diff)
 
 
 class ChangeCollector:
@@ -159,7 +161,8 @@ class ChangeCollector:
         file_diffs_inadmissible = []
 
         for diff in file_diffs:
-            if is_admissible(diff, self.project):
+            admissible, failures = is_admissible(diff, self.project)
+            if admissible:
                 file_diffs_admissible.append(diff)
                 logger.debug(
                     'Categorized {file} as ADMISSIBLE'
@@ -167,8 +170,9 @@ class ChangeCollector:
             else:
                 file_diffs_inadmissible.append(diff)
                 logger.debug(
-                    'Categorized {file} as INADMISSIBLE'
-                    .format(file=diff.b_path))
+                    'Categorized {file} as INADMISSIBLE; '
+                    'failures were {failures}'
+                    .format(file=diff.b_path, failures=failures))
 
         logger.info('Admitted {} file{} and rejected {} file{}'.format(
             len(file_diffs_admissible),

@@ -1,6 +1,7 @@
 from copy import deepcopy
 
 import numpy as np
+from funcy import decorator
 
 RANDOM_STATE = 1754
 
@@ -40,6 +41,13 @@ def make_plural_suffix(obj, suffix='s'):
         return suffix
     else:
         return ''
+
+
+@decorator
+def whether_failures(call):
+    """Collects failures and return (success, list_of_failures)"""
+    failures = list(call())
+    return not failures, failures
 
 
 class DeepcopyMixin:

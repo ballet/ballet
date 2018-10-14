@@ -3,13 +3,13 @@ from copy import deepcopy
 
 import numpy as np
 from funcy import (
-    all_fn, collecting, constantly, ignore, isa, iterable, post_processing)
+    all_fn, constantly, ignore, isa, iterable, post_processing)
 
 from ballet.feature import Feature
+from ballet.util import whether_failures
 
 
-@post_processing(lambda failures: (not failures, failures))
-@collecting
+@whether_failures
 def validate(feature, X, y):
     """Validate the feature"""
     for check, name in get_checks(X, y):
