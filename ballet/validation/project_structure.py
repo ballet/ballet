@@ -14,7 +14,7 @@ from ballet.util.log import logger, stacklog
 from ballet.util.mod import import_module_at_path, relpath_to_modname
 from ballet.validation.base import BaseValidator
 
-FEATURE_MODULE_NAME_REGEX = r'feature_[a-zA-Z0-9]'
+FEATURE_MODULE_NAME_REGEX = r'feature_[a-zA-Z0-9]+\.\w+'
 SUBPACKAGE_NAME_REGEX = r'user_[a-zA-Z0-9_]+'
 
 
@@ -68,18 +68,27 @@ class IsPythonSourceCheck(DiffCheck):
 class WithinContribCheck(DiffCheck):
 
     def check(self, diff):
-        path = diff.path
+        path = diff.b_path
         contrib_path = self.project.contrib_module_path
         return pathlib.Path(contrib_path) in pathlib.Path(path).parents
 
 
 def relative_to_contrib(diff, project):
-    path = pathlib.Path(diff.path)
+    """Compute relative path of changed file to contrib dir
+
+    Args:
+        diff (git.diff.Diff): file diff
+        project (Project): project
+
+    Returns:
+        Path
+    """
+    path = pathlib.Path(diff.b_path)
     contrib_path = project.contrib_module_path
     return path.relative_to(contrib_path)
 
 
-class SubpackageNameTest(DiffCheck):
+class SubpackageNameCheck(DiffCheck):
 
     def check(self, diff):
         relative_path = relative_to_contrib(diff, self.project)
@@ -87,7 +96,7 @@ class SubpackageNameTest(DiffCheck):
         return re_test(SUBPACKAGE_NAME_REGEX, subpackage_name)
 
 
-class FeatureModuleNameTest(DiffCheck):
+class FeatureModuleNameCheck(DiffCheck):
 
     def check(self, diff):
         relative_path = relative_to_contrib(diff, self.project)
@@ -267,7 +276,7 @@ class FeatureApiValidator(BaseValidator):
                     logger.info(
                         'Feature is NOT valid: {feature}'
                         .format(feature=feature))
-                    logger.debug(
+                    logger.info(
                         'Failures in validation: {failures}'
                         .format(failures=failures))
                     result = False
