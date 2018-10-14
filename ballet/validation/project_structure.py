@@ -94,7 +94,7 @@ class SubpackageNameCheck(DiffCheck):
         relative_path = relative_to_contrib(diff, self.project)
         subpackage_name = relative_path.parts[0]
         return re_test(SUBPACKAGE_NAME_REGEX, subpackage_name)
-
+    
 
 class FeatureModuleNameCheck(DiffCheck):
 

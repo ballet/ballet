@@ -20,6 +20,18 @@ from ballet.util.mod import import_module_at_path, modname_to_relpath
 from ballet.validation import TEST_TYPE_ENV_VAR, BalletTestTypes
 
 
+def submit_feature(repo, contrib_dir, username, featurename, new_feature_str):
+    feature_path = contrib_dir.joinpath('user_{}'.format(username), 'feature_{}.py'.format(featurename))
+    feature_path.parent.mkdir(exist_ok=True)
+    init_path = feature_path.parent.joinpath('__init__.py')
+
+    init_path.touch()
+    with feature_path.open('w') as f:
+        f.write(new_feature_str)
+
+    repo.index.add([str(init_path), str(feature_path)])
+    repo.index.commit('Add {} feature'.format(feature_path))
+
 def test_end_to_end():
     modname = 'foo'
     extra_context = {
@@ -110,6 +122,8 @@ def test_end_to_end():
     call_validate_all()
 
     # write a new feature
+    contrib_dir = base.joinpath(modname, 'features', 'contrib')
+
     new_feature_str = dedent("""
         import numpy as np
         from ballet import Feature
@@ -118,18 +132,9 @@ def test_end_to_end():
         transformer = SimpleFunctionTransformer(np.log)
         feature = Feature(input, transformer)
     """).strip()
-
-    p = base.joinpath(modname, 'features', 'contrib', 'user_bob',
-                      'feature_log_dis.py')
-    p.parent.mkdir(exist_ok=True)
-    with p.open('w') as f:
-        f.write(new_feature_str)
-    p1 = p.parent.joinpath('__init__.py')
-    p1.touch()
-
-    # commit new feature on master
-    repo.index.add([str(p), str(p1)])
-    repo.index.commit('Add log(DIS) feature')
+    username = 'alice'
+    featurename = 'log_dis'
+    submit_feature(repo, contrib_dir, username, featurename, new_feature_str)
 
     # call different validation routines
     call_validate_all()
@@ -138,12 +143,10 @@ def test_end_to_end():
     switch_to_new_branch(repo, 'pull/1')
 
     # write a new feature
-    new_feature_str1 = new_feature_str.replace('DIS', 'TAX')
-    p2 = p.parent.joinpath('feature_log_tax.py')
-    with p2.open('w') as f:
-        f.write(new_feature_str1)
-    repo.index.add([str(p2)])
-    repo.index.commit('Add log(TAX) feature')
+    new_feature_str = new_feature_str.replace('DIS', 'TAX')
+    username = 'bob'
+    featurename = 'log_tax'
+    submit_feature(repo, contrib_dir, username, featurename, new_feature_str)
 
     # call different validation routines
     call_validate_all(pr=1)
