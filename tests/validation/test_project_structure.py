@@ -100,7 +100,8 @@ class FileChangeValidatorTest(CommonSetup, unittest.TestCase):
             ('readme.txt', None),
             ('src/__init__.py', None),
             ('src/contrib/__init__.py', None),
-            ('src/contrib/foo.py', None),
+            ('src/contrib/user_foo/feature_bar.py', None),
+            ('src/contrib/user_foo/__init__.py', None),
             ('invalid.py', None),
         ]
         contrib_module_path = 'src/contrib/'
@@ -126,7 +127,8 @@ class FileChangeValidatorTest(CommonSetup, unittest.TestCase):
             ('bob.xml', '<><> :: :)'),
             ('src/__init__.py', None),
             ('src/contrib/__init__.py', None),
-            ('src/contrib/bean.py', self.valid_feature_str),
+            ('src/contrib/user_foo/__init__.py', None),
+            ('src/contrib/user_foo/feature_bar.py', None),
         ]
         contrib_module_path = 'src/contrib/'
         with mock_file_change_validator(
