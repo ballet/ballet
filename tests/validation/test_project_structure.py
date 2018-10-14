@@ -242,7 +242,8 @@ class FeatureApiValidatorTest(CommonSetup, unittest.TestCase):
             ('foo.jpg', None),
             ('src/__init__.py', None),
             ('src/contrib/__init__.py', None),
-            ('src/contrib/foo.py', self.invalid_feature_str),
+            ('src/contrib/user_bar/__init__.py', None),
+            ('src/contrib/user_bar/feature_foo.py', self.invalid_feature_str),
         ]
         contrib_module_path = 'src/contrib/'
         with mock_feature_api_validator(
@@ -264,9 +265,12 @@ class FeatureApiValidatorTest(CommonSetup, unittest.TestCase):
             self.assertFalse(result)
 
     def test_validation_failure_import_error(self):
+        import_error_str = dedent('''
+            edf foo():  pass
+        ''').strip()
         path_content = [
             ('foo.jpg', None),
-            ('src/contrib/bar/baz.py', self.valid_feature_str),
+            ('src/contrib/user_bar/feature_baz.py', import_error_str),
         ]
         contrib_module_path = 'src/contrib/'
         with mock_feature_api_validator(
