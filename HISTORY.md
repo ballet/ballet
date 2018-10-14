@@ -1,5 +1,11 @@
 # History
 
+## 0.5 (2018-10-14)
+
+* Add project template and ballet-quickstart command
+* Add project structure checks and feature API checks
+* Implement multi-stage validation routine driver
+
 ## 0.4 (2018-09-21)
 
 * Implement `Modeler` for versatile modeling and evaluation
