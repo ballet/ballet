@@ -11,6 +11,7 @@ class BaseValidator(metaclass=ABCMeta):
         Returns:
             bool: validation succeeded
         """
+        pass
 
 
 class FeaturePerformanceEvaluator(metaclass=ABCMeta):
@@ -22,7 +23,7 @@ class FeaturePerformanceEvaluator(metaclass=ABCMeta):
         self.features = features
 
 
-class PreAcceptanceFeaturePerformanceEvaluator(FeaturePerformanceEvaluator):
+class FeatureAcceptanceEvaluator(FeaturePerformanceEvaluator):
     """Accept/reject a feature to the project based on its performance"""
 
     @abstractmethod
@@ -32,9 +33,10 @@ class PreAcceptanceFeaturePerformanceEvaluator(FeaturePerformanceEvaluator):
         Returns:
             bool: feature should be accepted
         """
+        pass
 
 
-class PostAcceptanceFeaturePerformanceEvaluator(FeaturePerformanceEvaluator):
+class FeaturePruningEvaluator(FeaturePerformanceEvaluator):
     """Prune features after acceptance based on their performance"""
 
     @abstractmethod
@@ -44,3 +46,4 @@ class PostAcceptanceFeaturePerformanceEvaluator(FeaturePerformanceEvaluator):
         Returns:
             list: list of features to remove
         """
+        pass

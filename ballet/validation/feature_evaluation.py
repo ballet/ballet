@@ -1,16 +1,15 @@
 from ballet.validation.base import (
-    PostAcceptanceFeaturePerformanceEvaluator,
-    PreAcceptanceFeaturePerformanceEvaluator)
+    FeatureAcceptanceEvaluator, FeaturePruningEvaluator)
 
 
-class FeatureRelevanceEvaluator(PreAcceptanceFeaturePerformanceEvaluator):
+class FeatureRelevanceEvaluator(FeatureAcceptanceEvaluator):
     """Accept a feature if it is correlated to the target"""
 
     def judge(self, feature):
         return True
 
 
-class FeatureRedundancyEvaluator(PostAcceptanceFeaturePerformanceEvaluator):
+class FeatureRedundancyEvaluator(FeaturePruningEvaluator):
     """Remove a feature if it is conditionally independent of the target
 
     Let Sk be the set of subsets of features of size less than or equal to k.

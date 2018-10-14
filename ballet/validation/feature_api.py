@@ -58,6 +58,7 @@ class FeatureApiCheck(metaclass=ABCMeta):
         Raises:
             Exception: the provided feature failed the API check
         """
+        pass
 
 
 class IsFeatureCheck(FeatureApiCheck):
