@@ -7,10 +7,9 @@ from ballet.project import Project
 from ballet.util.ci import TravisPullRequestBuildDiffer
 from ballet.util.git import get_diff_str_from_commits
 from ballet.validation.project_structure import (
-    relative_to_contrib,
-    IsAdditionCheck, IsPythonSourceCheck, WithinContribCheck,
-    SubpackageNameCheck, ModuleNameCheck, RelativeNameDepthCheck,
-    ChangeCollector)
+    ChangeCollector, IsAdditionCheck, IsPythonSourceCheck, ModuleNameCheck,
+    RelativeNameDepthCheck, SubpackageNameCheck, WithinContribCheck,
+    relative_to_contrib)
 
 from ..util import make_mock_commits, mock_repo
 from .util import (
@@ -122,7 +121,8 @@ class DiffCheckTest(unittest.TestCase):
         mock_diff = Mock(b_path='foo/features/contrib/user_bob/feature_1.py')
         self.assertTrue(checker.do_check(mock_diff))
 
-        mock_diff = Mock(b_path='foo/features/contrib/user_bob/a/b/c/d/feature_1.py')
+        mock_diff = Mock(
+            b_path='foo/features/contrib/user_bob/a/b/c/d/feature_1.py')
         self.assertFalse(checker.do_check(mock_diff))
 
 

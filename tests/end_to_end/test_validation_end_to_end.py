@@ -21,7 +21,8 @@ from ballet.validation import TEST_TYPE_ENV_VAR, BalletTestTypes
 
 
 def submit_feature(repo, contrib_dir, username, featurename, new_feature_str):
-    feature_path = contrib_dir.joinpath('user_{}'.format(username), 'feature_{}.py'.format(featurename))
+    feature_path = contrib_dir.joinpath(
+        'user_{}'.format(username), 'feature_{}.py'.format(featurename))
     feature_path.parent.mkdir(exist_ok=True)
     init_path = feature_path.parent.joinpath('__init__.py')
 
@@ -31,6 +32,7 @@ def submit_feature(repo, contrib_dir, username, featurename, new_feature_str):
 
     repo.index.add([str(init_path), str(feature_path)])
     repo.index.commit('Add {} feature'.format(feature_path))
+
 
 def test_end_to_end():
     modname = 'foo'

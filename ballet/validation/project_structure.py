@@ -105,7 +105,6 @@ class RelativeNameDepthCheck(DiffCheck):
         return len(relative_path.parts) == 2
 
 
-
 class ModuleNameCheck(DiffCheck):
 
     def check(self, diff):
@@ -114,6 +113,7 @@ class ModuleNameCheck(DiffCheck):
             FEATURE_MODULE_NAME_REGEX, filename)
         is_valid_init_module_name = filename == '__init__.py'
         return is_valid_feature_module_name or is_valid_init_module_name
+
 
 class IfInitModuleThenIsEmptyCheck(DiffCheck):
 
@@ -127,7 +127,8 @@ class IfInitModuleThenIsEmptyCheck(DiffCheck):
             return True
 
 
-CollectedChanges = namedtuple('CollectedChanges',
+CollectedChanges = namedtuple(
+    'CollectedChanges',
     'file_diffs candidate_feature_diffs valid_init_diffs inadmissible_diffs '
     'new_feature_info')
 
@@ -204,7 +205,7 @@ class ChangeCollector:
                     valid_init_diffs.append(diff)
                     logger.debug(
                         'Categorized {file} as VALID INIT MODULE'
-                            .format(file=diff.b_path))
+                        .format(file=diff.b_path))
             else:
                 inadmissible_files.append(diff)
                 logger.debug(

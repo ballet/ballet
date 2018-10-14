@@ -2,8 +2,7 @@ from abc import ABCMeta, abstractmethod
 from copy import deepcopy
 
 import numpy as np
-from funcy import (
-    all_fn, constantly, ignore, isa, iterable, post_processing)
+from funcy import all_fn, constantly, ignore, isa, iterable, post_processing
 
 from ballet.feature import Feature
 from ballet.util import whether_failures
