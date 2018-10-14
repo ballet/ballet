@@ -98,6 +98,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.util.html#submodules">Submodules</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.validation.html">ballet.validation package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.validation.html#submodules">Submodules</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/ballet.html#submodules">Submodules</a><ul>
@@ -108,7 +112,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.modeler.html">ballet.modeler module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.project.html">ballet.project module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.quickstart.html">ballet.quickstart module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.validation.html">ballet.validation module</a></li>
 </ul>
 </li>
 </ul>
@@ -190,6 +193,8 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
+          <li><a href="../util.html">ballet.util</a> &raquo;</li>
+        
       <li>ballet.util.ci</li>
     
     
@@ -208,8 +213,8 @@
   <h1>Source code for ballet.util.ci</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">os</span>
 
-<span class="kn">import</span> <span class="nn">funcy</span>
 <span class="kn">import</span> <span class="nn">git</span>
+<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">constantly</span><span class="p">,</span> <span class="n">ignore</span><span class="p">,</span> <span class="n">post_processing</span>
 
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">UnexpectedTravisEnvironmentError</span>
 <span class="kn">from</span> <span class="nn">ballet.util.git</span> <span class="k">import</span> <span class="n">PullRequestBuildDiffer</span>
@@ -221,7 +226,9 @@
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># dump_travis_env_vars()</span>
-        <span class="k">raise</span> <span class="n">UnexpectedTravisEnvironmentError</span></div>
+        <span class="k">raise</span> <span class="n">UnexpectedTravisEnvironmentError</span><span class="p">(</span>
+            <span class="s1">&#39;Missing TRAVIS environment variable: </span><span class="si">{name}</span><span class="s1">&#39;</span>
+            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="ensure_expected_travis_env_vars"><a class="viewcode-back" href="../../../api/ballet.util.ci.html#ballet.util.ci.ensure_expected_travis_env_vars">[docs]</a><span class="k">def</span> <span class="nf">ensure_expected_travis_env_vars</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
@@ -230,26 +237,29 @@
 
 
 <div class="viewcode-block" id="dump_travis_env_vars"><a class="viewcode-back" href="../../../api/ballet.util.ci.html#ballet.util.ci.dump_travis_env_vars">[docs]</a><span class="k">def</span> <span class="nf">dump_travis_env_vars</span><span class="p">():</span>
-    <span class="n">travis_env_vars</span> <span class="o">=</span> <span class="n">funcy</span><span class="o">.</span><span class="n">select_keys</span><span class="p">(</span>
-        <span class="k">lambda</span> <span class="n">key</span><span class="p">:</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;TRAVIS&#39;</span><span class="p">),</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">travis_env_vars</span><span class="p">)</span></div>
+    <span class="n">travis_env_vars</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;TRAVIS&#39;</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">travis_env_vars</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="get_travis_pr_num"><a class="viewcode-back" href="../../../api/ballet.util.ci.html#ballet.util.ci.get_travis_pr_num">[docs]</a><span class="k">def</span> <span class="nf">get_travis_pr_num</span><span class="p">():</span>
-    <span class="sd">&#39;&#39;&#39;Return the PR number if the job is a pull request, None otherwise</span>
+    <span class="sd">&quot;&quot;&quot;Return the PR number if the job is a pull request, None otherwise</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        int</span>
 
 <span class="sd">    See also:</span>
 <span class="sd">        - &lt;https://docs.travis-ci.com/user/environment-variables/#Default-Environment-Variables&gt;</span>
-<span class="sd">    &#39;&#39;&#39;</span>  <span class="c1"># noqa</span>
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">travis_pull_request</span> <span class="o">=</span> <span class="n">get_travis_env_or_fail</span><span class="p">(</span><span class="s1">&#39;TRAVIS_PULL_REQUEST&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">travis_pull_request</span> <span class="o">==</span> <span class="s1">&#39;false&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">pr_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">travis_pull_request</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">pr_num</span>
+                <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">travis_pull_request</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">None</span>
     <span class="k">except</span> <span class="n">UnexpectedTravisEnvironmentError</span><span class="p">:</span>
@@ -257,18 +267,16 @@
 
 
 <div class="viewcode-block" id="is_travis_pr"><a class="viewcode-back" href="../../../api/ballet.util.ci.html#ballet.util.ci.is_travis_pr">[docs]</a><span class="k">def</span> <span class="nf">is_travis_pr</span><span class="p">():</span>
-    <span class="sd">&#39;&#39;&#39;Check if the current job is a pull request build&#39;&#39;&#39;</span>
+    <span class="sd">&quot;&quot;&quot;Check if the current job is a pull request build&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">get_travis_pr_num</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="can_use_travis_differ"><a class="viewcode-back" href="../../../api/ballet.util.ci.html#ballet.util.ci.can_use_travis_differ">[docs]</a><span class="k">def</span> <span class="nf">can_use_travis_differ</span><span class="p">():</span>
-    <span class="sd">&#39;&#39;&#39;Check if the required travis env vars are set for the travis differ&#39;&#39;&#39;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">ensure_expected_travis_env_vars</span><span class="p">(</span>
-            <span class="n">TravisPullRequestBuildDiffer</span><span class="o">.</span><span class="n">EXPECTED_TRAVIS_ENV_VARS</span><span class="p">)</span>
-        <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">except</span> <span class="n">UnexpectedTravisEnvironmentError</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">False</span></div>
+<div class="viewcode-block" id="can_use_travis_differ"><a class="viewcode-back" href="../../../api/ballet.util.ci.html#ballet.util.ci.can_use_travis_differ">[docs]</a><span class="nd">@ignore</span><span class="p">(</span><span class="n">UnexpectedTravisEnvironmentError</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nd">@post_processing</span><span class="p">(</span><span class="n">constantly</span><span class="p">(</span><span class="kc">True</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">can_use_travis_differ</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Check if the required travis env vars are set for the travis differ&quot;&quot;&quot;</span>
+    <span class="n">ensure_expected_travis_env_vars</span><span class="p">(</span>
+        <span class="n">TravisPullRequestBuildDiffer</span><span class="o">.</span><span class="n">EXPECTED_TRAVIS_ENV_VARS</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="TravisPullRequestBuildDiffer"><a class="viewcode-back" href="../../../api/ballet.util.ci.html#ballet.util.ci.TravisPullRequestBuildDiffer">[docs]</a><span class="k">class</span> <span class="nc">TravisPullRequestBuildDiffer</span><span class="p">(</span><span class="n">PullRequestBuildDiffer</span><span class="p">):</span>
@@ -290,7 +298,9 @@
 
         <span class="n">travis_pr_num</span> <span class="o">=</span> <span class="n">get_travis_pr_num</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">travis_pr_num</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">UnexpectedTravisEnvironmentError</span>
+            <span class="k">raise</span> <span class="n">UnexpectedTravisEnvironmentError</span><span class="p">(</span>
+                <span class="s1">&#39;TRAVIS_PULL_REQUEST </span><span class="si">{tpr!r}</span><span class="s1"> did not match expected </span><span class="si">{pr!r}</span><span class="s1">&#39;</span>
+                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tpr</span><span class="o">=</span><span class="n">travis_pr_num</span><span class="p">,</span> <span class="n">pr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_get_diff_str</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">get_travis_env_or_fail</span><span class="p">(</span><span class="s1">&#39;TRAVIS_COMMIT_RANGE&#39;</span><span class="p">)</span>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.project module &mdash; ballet 0.4.1 documentation</title>
+  <title>ballet.validation.base module &mdash; ballet 0.4.1 documentation</title>
   
 
   
@@ -28,8 +28,8 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="ballet.quickstart module" href="ballet.quickstart.html" />
-    <link rel="prev" title="ballet.modeler module" href="ballet.modeler.html" /> 
+    <link rel="next" title="ballet.validation.feature_api module" href="ballet.validation.feature_api.html" />
+    <link rel="prev" title="ballet.validation package" href="ballet.validation.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -87,7 +87,7 @@
 <p class="caption"><span class="caption-text">Advanced Usage</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="ballet.html">API Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="ballet.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l2 current"><a class="reference internal" href="ballet.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="ballet.eng.html">ballet.eng package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="ballet.eng.html#submodules">Submodules</a></li>
 </ul>
@@ -100,19 +100,19 @@
 <li class="toctree-l4"><a class="reference internal" href="ballet.util.html#submodules">Submodules</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="ballet.validation.html">ballet.validation package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="ballet.validation.html#submodules">Submodules</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="ballet.validation.html">ballet.validation package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="ballet.validation.html#submodules">Submodules</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l2 current"><a class="reference internal" href="ballet.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ballet.html#submodules">Submodules</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="ballet.compat.html">ballet.compat module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.contrib.html">ballet.contrib module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.exc.html">ballet.exc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.feature.html">ballet.feature module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.modeler.html">ballet.modeler module</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">ballet.project module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.project.html">ballet.project module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.quickstart.html">ballet.quickstart module</a></li>
 </ul>
 </li>
@@ -195,14 +195,16 @@
         
           <li><a href="ballet.html">ballet package</a> &raquo;</li>
         
-      <li>ballet.project module</li>
+          <li><a href="ballet.validation.html">ballet.validation package</a> &raquo;</li>
+        
+      <li>ballet.validation.base module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
             
-              <a href="https://github.com/HDI-Project/ballet/blob/master/docs/api/ballet.project.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/HDI-Project/ballet/blob/master/docs/api/ballet.validation.base.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -216,76 +218,83 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-ballet.project">
-<span id="ballet-project-module"></span><h1>ballet.project module<a class="headerlink" href="#module-ballet.project" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-ballet.validation.base">
+<span id="ballet-validation-base-module"></span><h1>ballet.validation.base module<a class="headerlink" href="#module-ballet.validation.base" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
-<dt id="ballet.project.Project">
-<em class="property">class </em><code class="descclassname">ballet.project.</code><code class="descname">Project</code><span class="sig-paren">(</span><em>package</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/project.html#Project"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.project.Project" title="Permalink to this definition">¶</a></dt>
+<dt id="ballet.validation.base.BaseValidator">
+<em class="property">class </em><code class="descclassname">ballet.validation.base.</code><code class="descname">BaseValidator</code><a class="reference internal" href="../_modules/ballet/validation/base.html#BaseValidator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.base.BaseValidator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="attribute">
-<dt id="ballet.project.Project.attr_map">
-<code class="descname">attr_map</code><em class="property"> = {'build_features': ('.features.build_features', 'build_features'), 'conf': ('.conf', None), 'get': ('.conf', 'get'), 'get_contrib_features': ('.features.build_features', 'get_contrib_features'), 'load_data': ('.load_data', 'load_data')}</em><a class="headerlink" href="#ballet.project.Project.attr_map" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ballet.project.Project.contrib_module_path">
-<code class="descname">contrib_module_path</code><a class="headerlink" href="#ballet.project.Project.contrib_module_path" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<p>Base class for a generic validator</p>
 <dl class="method">
-<dt id="ballet.project.Project.on_pr">
-<code class="descname">on_pr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/project.html#Project.on_pr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.project.Project.on_pr" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ballet.project.Project.path">
-<code class="descname">path</code><a class="headerlink" href="#ballet.project.Project.path" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ballet.project.Project.pr_num">
-<code class="descname">pr_num</code><a class="headerlink" href="#ballet.project.Project.pr_num" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ballet.project.Project.repo">
-<code class="descname">repo</code><a class="headerlink" href="#ballet.project.Project.repo" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="ballet.project.config_get">
-<code class="descclassname">ballet.project.</code><code class="descname">config_get</code><span class="sig-paren">(</span><em>package_root</em>, <em>*path</em>, <em>default=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/project.html#config_get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.project.config_get" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="ballet.project.find_configs">
-<code class="descclassname">ballet.project.</code><code class="descname">find_configs</code><span class="sig-paren">(</span><em>package_root</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/project.html#find_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.project.find_configs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find valid ballet project config files</p>
-<p>See if any of the candidates returned by get_config_paths are valid.</p>
+<dt id="ballet.validation.base.BaseValidator.validate">
+<code class="descname">validate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/base.html#BaseValidator.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.base.BaseValidator.validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate something</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ConfigurationError</span></code> – No valid config files were found.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">validation succeeded</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
-<dl class="function">
-<dt id="ballet.project.get_config_paths">
-<code class="descclassname">ballet.project.</code><code class="descname">get_config_paths</code><span class="sig-paren">(</span><em>package_root</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/project.html#get_config_paths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.project.get_config_paths" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get candidate config paths</p>
-<p>Creates a sequence of paths that includes the package root and all of its
-parents, as well as ~/.ballet.</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="ballet.project.make_config_get">
-<code class="descclassname">ballet.project.</code><code class="descname">make_config_get</code><span class="sig-paren">(</span><em>package_root</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/project.html#make_config_get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.project.make_config_get" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dl class="class">
+<dt id="ballet.validation.base.FeaturePerformanceEvaluator">
+<em class="property">class </em><code class="descclassname">ballet.validation.base.</code><code class="descname">FeaturePerformanceEvaluator</code><span class="sig-paren">(</span><em>X_df</em>, <em>y_df</em>, <em>features</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/base.html#FeaturePerformanceEvaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.base.FeaturePerformanceEvaluator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Evaluate the performance of features from an ML point-of-view</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="ballet.validation.base.PostAcceptanceFeaturePerformanceEvaluator">
+<em class="property">class </em><code class="descclassname">ballet.validation.base.</code><code class="descname">PostAcceptanceFeaturePerformanceEvaluator</code><span class="sig-paren">(</span><em>X_df</em>, <em>y_df</em>, <em>features</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/base.html#PostAcceptanceFeaturePerformanceEvaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.base.PostAcceptanceFeaturePerformanceEvaluator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ballet.validation.base.FeaturePerformanceEvaluator" title="ballet.validation.base.FeaturePerformanceEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.FeaturePerformanceEvaluator</span></code></a></p>
+<p>Prune features after acceptance based on their performance</p>
+<dl class="method">
+<dt id="ballet.validation.base.PostAcceptanceFeaturePerformanceEvaluator.prune">
+<code class="descname">prune</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/base.html#PostAcceptanceFeaturePerformanceEvaluator.prune"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.base.PostAcceptanceFeaturePerformanceEvaluator.prune" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prune existing features</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list of features to remove</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ballet.validation.base.PreAcceptanceFeaturePerformanceEvaluator">
+<em class="property">class </em><code class="descclassname">ballet.validation.base.</code><code class="descname">PreAcceptanceFeaturePerformanceEvaluator</code><span class="sig-paren">(</span><em>X_df</em>, <em>y_df</em>, <em>features</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/base.html#PreAcceptanceFeaturePerformanceEvaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.base.PreAcceptanceFeaturePerformanceEvaluator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ballet.validation.base.FeaturePerformanceEvaluator" title="ballet.validation.base.FeaturePerformanceEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.FeaturePerformanceEvaluator</span></code></a></p>
+<p>Accept/reject a feature to the project based on its performance</p>
+<dl class="method">
+<dt id="ballet.validation.base.PreAcceptanceFeaturePerformanceEvaluator.judge">
+<code class="descname">judge</code><span class="sig-paren">(</span><em>feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/base.html#PreAcceptanceFeaturePerformanceEvaluator.judge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.base.PreAcceptanceFeaturePerformanceEvaluator.judge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Judge whether feature should be accepted</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">feature should be accepted</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
 
 </div>
 
@@ -297,10 +306,10 @@ parents, as well as ~/.ballet.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="ballet.quickstart.html" class="btn btn-neutral float-right" title="ballet.quickstart module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="ballet.validation.feature_api.html" class="btn btn-neutral float-right" title="ballet.validation.feature_api module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="ballet.modeler.html" class="btn btn-neutral" title="ballet.modeler module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="ballet.validation.html" class="btn btn-neutral" title="ballet.validation package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

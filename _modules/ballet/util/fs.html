@@ -98,6 +98,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.util.html#submodules">Submodules</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.validation.html">ballet.validation package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.validation.html#submodules">Submodules</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/ballet.html#submodules">Submodules</a><ul>
@@ -108,7 +112,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.modeler.html">ballet.modeler module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.project.html">ballet.project module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.quickstart.html">ballet.quickstart module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.validation.html">ballet.validation module</a></li>
 </ul>
 </li>
 </ul>
@@ -190,6 +193,8 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
+          <li><a href="../util.html">ballet.util</a> &raquo;</li>
+        
       <li>ballet.util.fs</li>
     
     
@@ -262,6 +267,23 @@
     <span class="n">root</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">safepath</span><span class="p">(</span><span class="n">filepath</span><span class="p">))</span>
     <span class="n">filename</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">safepath</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">root</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">ext</span></div>
+
+
+<div class="viewcode-block" id="isemptyfile"><a class="viewcode-back" href="../../../api/ballet.util.fs.html#ballet.util.fs.isemptyfile">[docs]</a><span class="k">def</span> <span class="nf">isemptyfile</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Determine if the file both exists and isempty</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        filepath (str, path): file path</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">exists</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">safepath</span><span class="p">(</span><span class="n">filepath</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">exists</span><span class="p">:</span>
+        <span class="n">filesize</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">safepath</span><span class="p">(</span><span class="n">filepath</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">filesize</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
 </pre></div>
 
            </div>

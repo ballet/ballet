@@ -98,6 +98,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../../api/ballet.util.html#submodules">Submodules</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.validation.html">ballet.validation package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/ballet.validation.html#submodules">Submodules</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/ballet.html#submodules">Submodules</a><ul>
@@ -108,7 +112,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.modeler.html">ballet.modeler module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.project.html">ballet.project module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.quickstart.html">ballet.quickstart module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.validation.html">ballet.validation module</a></li>
 </ul>
 </li>
 </ul>
@@ -210,11 +213,12 @@
 
 <span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="k">import</span> <span class="n">pathlib</span>
 
+<span class="n">PROJECT_TEMPLATE_PATH</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">&#39;project_template&#39;</span><span class="p">))</span>
+
 
 <div class="viewcode-block" id="generate_project"><a class="viewcode-back" href="../../api/ballet.quickstart.html#ballet.quickstart.generate_project">[docs]</a><span class="k">def</span> <span class="nf">generate_project</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">&#39;project_template&#39;</span><span class="p">)</span>
-    <span class="n">path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="n">cookiecutter</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+    <span class="n">cookiecutter</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">PROJECT_TEMPLATE_PATH</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../../api/ballet.quickstart.html#ballet.quickstart.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>

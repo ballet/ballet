@@ -98,6 +98,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../../api/ballet.util.html#submodules">Submodules</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.validation.html">ballet.validation package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/ballet.validation.html#submodules">Submodules</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/ballet.html#submodules">Submodules</a><ul>
@@ -108,7 +112,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.modeler.html">ballet.modeler module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.project.html">ballet.project module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.quickstart.html">ballet.quickstart module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.validation.html">ballet.validation module</a></li>
 </ul>
 </li>
 </ul>
@@ -206,11 +209,16 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ballet.project</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">yaml</span>
+<span></span><span class="kn">from</span> <span class="nn">importlib</span> <span class="k">import</span> <span class="n">import_module</span>
+
+<span class="kn">import</span> <span class="nn">git</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">get_in</span><span class="p">,</span> <span class="n">memoize</span><span class="p">,</span> <span class="n">partial</span>
 
 <span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="k">import</span> <span class="n">pathlib</span>
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">ConfigurationError</span>
+<span class="kn">from</span> <span class="nn">ballet.util.ci</span> <span class="k">import</span> <span class="n">get_travis_pr_num</span>
+<span class="kn">from</span> <span class="nn">ballet.util.git</span> <span class="k">import</span> <span class="n">get_pr_num</span>
 
 <span class="n">DEFAULT_CONFIG_NAME</span> <span class="o">=</span> <span class="s1">&#39;ballet.yml&#39;</span>
 
@@ -273,7 +281,60 @@
 
 
 <div class="viewcode-block" id="make_config_get"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.make_config_get">[docs]</a><span class="k">def</span> <span class="nf">make_config_get</span><span class="p">(</span><span class="n">package_root</span><span class="p">):</span>
+    <span class="n">package_root</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">package_root</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="n">config_get</span><span class="p">,</span> <span class="n">package_root</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Project"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.Project">[docs]</a><span class="k">class</span> <span class="nc">Project</span><span class="p">:</span>
+
+    <span class="n">attr_map</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;conf&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;.conf&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="s1">&#39;get&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;.conf&#39;</span><span class="p">,</span> <span class="s1">&#39;get&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;load_data&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;.load_data&#39;</span><span class="p">,</span> <span class="s1">&#39;load_data&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;build_features&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;.features.build_features&#39;</span><span class="p">,</span> <span class="s1">&#39;build_features&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;get_contrib_features&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;.features.build_features&#39;</span><span class="p">,</span>
+                                 <span class="s1">&#39;get_contrib_features&#39;</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">package</span> <span class="o">=</span> <span class="n">package</span>
+
+    <span class="k">def</span> <span class="nf">_resolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">modname</span><span class="p">,</span> <span class="n">attr</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">modname</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">attr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">module</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pr_num</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">get_pr_num</span><span class="p">(</span><span class="n">repo</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">get_travis_pr_num</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+<div class="viewcode-block" id="Project.on_pr"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.Project.on_pr">[docs]</a>    <span class="k">def</span> <span class="nf">on_pr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># If package.__file__ is `/foo/foo/__init__.py`, then project.path</span>
+        <span class="c1"># should be `/foo`</span>
+        <span class="k">return</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">repo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">search_parent_directories</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">contrib_module_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;contrib&#39;</span><span class="p">,</span> <span class="s1">&#39;module_path&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">Project</span><span class="o">.</span><span class="n">attr_map</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve</span><span class="p">(</span><span class="o">*</span><span class="n">Project</span><span class="o">.</span><span class="n">attr_map</span><span class="p">[</span><span class="n">attr</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

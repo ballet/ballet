@@ -100,6 +100,10 @@
 <li class="toctree-l4 current"><a class="reference internal" href="ballet.util.html#submodules">Submodules</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.validation.html">ballet.validation package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ballet.validation.html#submodules">Submodules</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="ballet.html#submodules">Submodules</a><ul>
@@ -110,7 +114,6 @@
 <li class="toctree-l3"><a class="reference internal" href="ballet.modeler.html">ballet.modeler module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.project.html">ballet.project module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.quickstart.html">ballet.quickstart module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ballet.validation.html">ballet.validation module</a></li>
 </ul>
 </li>
 </ul>
@@ -227,8 +230,54 @@
 
 <dl class="function">
 <dt id="ballet.util.log.enable">
-<code class="descclassname">ballet.util.log.</code><code class="descname">enable</code><span class="sig-paren">(</span><em>logger=&lt;Logger ballet (WARNING)&gt;</em>, <em>level=20</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/log.html#enable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.log.enable" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">ballet.util.log.</code><code class="descname">enable</code><span class="sig-paren">(</span><em>logger=&lt;Logger ballet (WARNING)&gt;</em>, <em>level=20</em>, <em>echo=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/log.html#enable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.log.enable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Enable simple console logging for this module</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="ballet.util.log.stacklog">
+<em class="property">class </em><code class="descclassname">ballet.util.log.</code><code class="descname">stacklog</code><span class="sig-paren">(</span><em>method</em>, <em>message</em>, <em>*args</em>, <em>conditions=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/log.html#stacklog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.log.stacklog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Stack log messages</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>method</strong> – log callable</li>
+<li><strong>message</strong> – log message</li>
+<li><strong>*args</strong> – args to log method</li>
+<li><strong>conditions</strong> (<em>List</em><em>[</em><em>Tuple</em><em>]</em>) – list of tuples of exceptions or tuple of
+exceptions to catch and log conditions, such as
+<code class="docutils literal notranslate"><span class="pre">[('SKIPPED',</span> <span class="pre">NotImplementedError)]</span></code>.</li>
+<li><strong>**kwargs</strong> – kwargs to log method</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Example usage:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>with stacklog(logging.info, ‘Running long function’):</dt>
+<dd>run_long_function()</dd>
+<dt>with stacklog(logging.info, ‘Running error-prone function’):</dt>
+<dd>raise Exception</dd>
+<dt>with stacklog(logging.info, ‘Skipping not implemented’,</dt>
+<dd><blockquote class="first">
+<div>conditions=[(NotImplementedError, ‘SKIPPED’)]):</div></blockquote>
+<p class="last">raise NotImplementedError</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>This produces logging output:</p>
+<blockquote>
+<div><a class="reference external" href="INFO:root:Running">INFO:root:Running</a> long function…
+<a class="reference external" href="INFO:root:Running">INFO:root:Running</a> long function…DONE
+<a class="reference external" href="INFO:root:Running">INFO:root:Running</a> error-prone function…
+<a class="reference external" href="INFO:root:Running">INFO:root:Running</a> error-prone function…FAILURE
+<a class="reference external" href="INFO:root:Skipping">INFO:root:Skipping</a> not implemented…
+<a class="reference external" href="INFO:root:Skipping">INFO:root:Skipping</a> not implemented…SKIPPED</div></blockquote>
 </dd></dl>
 
 </div>

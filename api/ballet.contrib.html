@@ -100,6 +100,10 @@
 <li class="toctree-l4"><a class="reference internal" href="ballet.util.html#submodules">Submodules</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.validation.html">ballet.validation package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ballet.validation.html#submodules">Submodules</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2 current"><a class="reference internal" href="ballet.html#submodules">Submodules</a><ul class="current">
@@ -110,7 +114,6 @@
 <li class="toctree-l3"><a class="reference internal" href="ballet.modeler.html">ballet.modeler module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.project.html">ballet.project module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.quickstart.html">ballet.quickstart module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ballet.validation.html">ballet.validation module</a></li>
 </ul>
 </li>
 </ul>
@@ -217,20 +220,17 @@
 <span id="ballet-contrib-module"></span><h1>ballet.contrib module<a class="headerlink" href="#module-ballet.contrib" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="ballet.contrib.get_contrib_features">
-<code class="descclassname">ballet.contrib.</code><code class="descname">get_contrib_features</code><span class="sig-paren">(</span><em>contrib</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/contrib.html#get_contrib_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.contrib.get_contrib_features" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get contributed features from within given module</p>
-<p>Be very careful with untrusted code. The module/package will be
-walked, every submodule will be imported, and all the code therein will be
-executed. But why would you be trying to import from an untrusted package
-anyway?</p>
+<code class="descclassname">ballet.contrib.</code><code class="descname">get_contrib_features</code><span class="sig-paren">(</span><em>project_root</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/contrib.html#get_contrib_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.contrib.get_contrib_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get contributed features for a project at project_root</p>
+<p>For a project <code class="docutils literal notranslate"><span class="pre">foo</span></code>, walks modules within the <code class="docutils literal notranslate"><span class="pre">foo.features.contrib</span></code>
+subpackage. A single object that is an instance of <code class="docutils literal notranslate"><span class="pre">ballet.Feature</span></code> is
+imported if present in each module. The resulting <code class="docutils literal notranslate"><span class="pre">Feature</span></code> objects are
+collected.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>contrib</strong> (<em>module</em>) – module (standalone or package) that contains feature
-definitions</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of Feature</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project_root</strong> (<em>str</em><em>, </em><em>path</em>) – Path to project root</td>
 </tr>
 </tbody>
 </table>

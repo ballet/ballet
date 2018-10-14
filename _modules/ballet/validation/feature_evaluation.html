@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.eng.missing &mdash; ballet 0.4.1 documentation</title>
+  <title>ballet.validation.feature_evaluation &mdash; ballet 0.4.1 documentation</title>
   
 
   
@@ -193,7 +193,9 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>ballet.eng.missing</li>
+          <li><a href="../validation.html">ballet.validation</a> &raquo;</li>
+        
+      <li>ballet.validation.feature_evaluation</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -208,39 +210,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for ballet.eng.missing</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="kn">from</span> <span class="nn">ballet.eng.base</span> <span class="k">import</span> <span class="n">BaseTransformer</span><span class="p">,</span> <span class="n">GroupedFunctionTransformer</span>
-
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;LagImputer&#39;</span><span class="p">,</span> <span class="s1">&#39;NullFiller&#39;</span><span class="p">,</span> <span class="s1">&#39;NullIndicator&#39;</span><span class="p">]</span>
+  <h1>Source code for ballet.validation.feature_evaluation</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">ballet.validation.base</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">PostAcceptanceFeaturePerformanceEvaluator</span><span class="p">,</span>
+    <span class="n">PreAcceptanceFeaturePerformanceEvaluator</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="LagImputer"><a class="viewcode-back" href="../../../api/ballet.eng.missing.html#ballet.eng.missing.LagImputer">[docs]</a><span class="k">class</span> <span class="nc">LagImputer</span><span class="p">(</span><span class="n">GroupedFunctionTransformer</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groupby_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;ffill&#39;</span><span class="p">),</span>
-                         <span class="n">groupby_kwargs</span><span class="o">=</span><span class="n">groupby_kwargs</span><span class="p">)</span></div>
+<div class="viewcode-block" id="FeatureRelevanceEvaluator"><a class="viewcode-back" href="../../../api/ballet.validation.feature_evaluation.html#ballet.validation.feature_evaluation.FeatureRelevanceEvaluator">[docs]</a><span class="k">class</span> <span class="nc">FeatureRelevanceEvaluator</span><span class="p">(</span><span class="n">PreAcceptanceFeaturePerformanceEvaluator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Accept a feature if it is correlated to the target&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="FeatureRelevanceEvaluator.judge"><a class="viewcode-back" href="../../../api/ballet.validation.feature_evaluation.html#ballet.validation.feature_evaluation.FeatureRelevanceEvaluator.judge">[docs]</a>    <span class="k">def</span> <span class="nf">judge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span></div></div>
 
 
-<div class="viewcode-block" id="NullFiller"><a class="viewcode-back" href="../../../api/ballet.eng.missing.html#ballet.eng.missing.NullFiller">[docs]</a><span class="k">class</span> <span class="nc">NullFiller</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">isnull</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">replacement</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">isnull</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">isnull</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">isnull</span> <span class="o">=</span> <span class="n">isnull</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">replacement</span> <span class="o">=</span> <span class="n">replacement</span>
+<div class="viewcode-block" id="FeatureRedundancyEvaluator"><a class="viewcode-back" href="../../../api/ballet.validation.feature_evaluation.html#ballet.validation.feature_evaluation.FeatureRedundancyEvaluator">[docs]</a><span class="k">class</span> <span class="nc">FeatureRedundancyEvaluator</span><span class="p">(</span><span class="n">PostAcceptanceFeaturePerformanceEvaluator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Remove a feature if it is conditionally independent of the target</span>
 
-<div class="viewcode-block" id="NullFiller.transform"><a class="viewcode-back" href="../../../api/ballet.eng.missing.html#ballet.eng.missing.NullFiller.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_kwargs</span><span class="p">):</span>
-        <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-        <span class="n">X</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">replacement</span>
-        <span class="k">return</span> <span class="n">X</span></div></div>
+<span class="sd">    Let Sk be the set of subsets of features of size less than or equal to k.</span>
+<span class="sd">    A feature Xi is redundant if it is independent of the target, conditional</span>
+<span class="sd">    on some S in Sk. If a feature is redundant, it is removed from the feature</span>
+<span class="sd">    matrix.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-
-<div class="viewcode-block" id="NullIndicator"><a class="viewcode-back" href="../../../api/ballet.eng.missing.html#ballet.eng.missing.NullIndicator">[docs]</a><span class="k">class</span> <span class="nc">NullIndicator</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">):</span>
-<div class="viewcode-block" id="NullIndicator.transform"><a class="viewcode-back" href="../../../api/ballet.eng.missing.html#ballet.eng.missing.NullIndicator.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">tranform_kwargs</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span></div></div>
+<div class="viewcode-block" id="FeatureRedundancyEvaluator.prune"><a class="viewcode-back" href="../../../api/ballet.validation.feature_evaluation.html#ballet.validation.feature_evaluation.FeatureRedundancyEvaluator.prune">[docs]</a>    <span class="k">def</span> <span class="nf">prune</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[]</span></div></div>
 </pre></div>
 
            </div>

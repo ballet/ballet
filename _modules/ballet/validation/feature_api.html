@@ -1,0 +1,408 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ballet.validation.feature_api &mdash; ballet 0.4.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> ballet
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#stable-release">Stable release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#from-source">From source</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced Usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ballet.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/ballet.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.eng.html">ballet.eng package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.eng.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.modeling.html">ballet.modeling package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.modeling.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.util.html">ballet.util package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.util.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.validation.html">ballet.validation package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.validation.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/ballet.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.compat.html">ballet.compat module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.contrib.html">ballet.contrib module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.exc.html">ballet.exc module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.feature.html">ballet.feature module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.modeler.html">ballet.modeler module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.project.html">ballet.project module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.quickstart.html">ballet.quickstart module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Development Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#types-of-contributions">Types of Contributions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributing.html#report-bugs">Report Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributing.html#fix-bugs">Fix Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributing.html#implement-features">Implement Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributing.html#write-documentation">Write Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributing.html#submit-feedback">Submit Feedback</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#get-started">Get Started!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#pull-request-guidelines">Pull Request Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#tips">Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#deploying">Deploying</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Credits</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../authors.html#development-lead">Development Lead</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../authors.html#contributors">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id1">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id2">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id3">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id4">0.1</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ballet</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../validation.html">ballet.validation</a> &raquo;</li>
+        
+      <li>ballet.validation.feature_api</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ballet.validation.feature_api</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">all_fn</span><span class="p">,</span> <span class="n">constantly</span><span class="p">,</span> <span class="n">ignore</span><span class="p">,</span> <span class="n">isa</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">post_processing</span>
+
+<span class="kn">from</span> <span class="nn">ballet.feature</span> <span class="k">import</span> <span class="n">Feature</span>
+<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">whether_failures</span>
+
+
+<div class="viewcode-block" id="validate"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.validate">[docs]</a><span class="nd">@whether_failures</span>
+<span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Validate the feature&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">check</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">get_checks</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">success</span> <span class="o">=</span> <span class="n">check</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">name</span></div>
+
+
+<div class="viewcode-block" id="get_checks"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.get_checks">[docs]</a><span class="k">def</span> <span class="nf">get_checks</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="n">checks</span> <span class="o">=</span> <span class="n">FeatureApiCheck</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">Checker</span> <span class="ow">in</span> <span class="n">checks</span><span class="p">:</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="n">Checker</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">do_check</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">Checker</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">yield</span> <span class="n">method</span><span class="p">,</span> <span class="n">name</span></div>
+
+
+<div class="viewcode-block" id="FeatureApiCheck"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.FeatureApiCheck">[docs]</a><span class="k">class</span> <span class="nc">FeatureApiCheck</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for implementing new Feature API checks</span>
+
+<span class="sd">    To add a new check, simply subclass this class and implement the ``check``</span>
+<span class="sd">    method.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        X: X</span>
+<span class="sd">        y: y</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">X</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+
+<div class="viewcode-block" id="FeatureApiCheck.do_check"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.FeatureApiCheck.do_check">[docs]</a>    <span class="nd">@ignore</span><span class="p">(</span><span class="ne">Exception</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="nd">@post_processing</span><span class="p">(</span><span class="n">constantly</span><span class="p">(</span><span class="kc">True</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">do_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FeatureApiCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.FeatureApiCheck.check">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check something about the feature, raising an error on failure</span>
+
+<span class="sd">        Note that the return value of this method is ignored; the check fails</span>
+<span class="sd">        if any Exception is raised, and succeeds otherwise.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            feature (Feature): the feature to check</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            Exception: the provided feature failed the API check</span>
+<span class="sd">        &quot;&quot;&quot;</span></div></div>
+
+
+<div class="viewcode-block" id="IsFeatureCheck"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.IsFeatureCheck">[docs]</a><span class="k">class</span> <span class="nc">IsFeatureCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
+
+<div class="viewcode-block" id="IsFeatureCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.IsFeatureCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">Feature</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="HasCorrectInputTypeCheck"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.HasCorrectInputTypeCheck">[docs]</a><span class="k">class</span> <span class="nc">HasCorrectInputTypeCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
+
+<div class="viewcode-block" id="HasCorrectInputTypeCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.HasCorrectInputTypeCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check that `input` is a string or iterable of string&quot;&quot;&quot;</span>
+        <span class="nb">input</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">input</span>
+        <span class="n">is_str</span> <span class="o">=</span> <span class="n">isa</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+        <span class="n">is_nested_str</span> <span class="o">=</span> <span class="n">all_fn</span><span class="p">(</span>
+            <span class="n">iterable</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">is_str</span><span class="p">,</span> <span class="n">x</span><span class="p">)))</span>
+        <span class="k">assert</span> <span class="n">is_str</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span> <span class="ow">or</span> <span class="n">is_nested_str</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="HasTransformerInterfaceCheck"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.HasTransformerInterfaceCheck">[docs]</a><span class="k">class</span> <span class="nc">HasTransformerInterfaceCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
+
+<div class="viewcode-block" id="HasTransformerInterfaceCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.HasTransformerInterfaceCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">transformer</span><span class="p">,</span> <span class="s1">&#39;fit&#39;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">transformer</span><span class="p">,</span> <span class="s1">&#39;transform&#39;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">transformer</span><span class="p">,</span> <span class="s1">&#39;fit_transform&#39;</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="CanMakeMapperCheck"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.CanMakeMapperCheck">[docs]</a><span class="k">class</span> <span class="nc">CanMakeMapperCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
+
+<div class="viewcode-block" id="CanMakeMapperCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.CanMakeMapperCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="CanFitCheck"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.CanFitCheck">[docs]</a><span class="k">class</span> <span class="nc">CanFitCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
+
+<div class="viewcode-block" id="CanFitCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.CanFitCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
+        <span class="n">mapper</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="CanTransformCheck"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.CanTransformCheck">[docs]</a><span class="k">class</span> <span class="nc">CanTransformCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
+
+<div class="viewcode-block" id="CanTransformCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.CanTransformCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
+        <span class="n">mapper</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">mapper</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="CanFitTransformCheck"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.CanFitTransformCheck">[docs]</a><span class="k">class</span> <span class="nc">CanFitTransformCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
+
+<div class="viewcode-block" id="CanFitTransformCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.CanFitTransformCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
+        <span class="n">mapper</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="HasCorrectOutputDimensionsCheck"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.HasCorrectOutputDimensionsCheck">[docs]</a><span class="k">class</span> <span class="nc">HasCorrectOutputDimensionsCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
+
+<div class="viewcode-block" id="HasCorrectOutputDimensionsCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.HasCorrectOutputDimensionsCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">mapper</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div></div>
+
+
+<div class="viewcode-block" id="CanDeepcopyCheck"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.CanDeepcopyCheck">[docs]</a><span class="k">class</span> <span class="nc">CanDeepcopyCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
+
+<div class="viewcode-block" id="CanDeepcopyCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.CanDeepcopyCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="n">deepcopy</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="NoMissingValuesCheck"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.NoMissingValuesCheck">[docs]</a><span class="k">class</span> <span class="nc">NoMissingValuesCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
+
+<div class="viewcode-block" id="NoMissingValuesCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.NoMissingValuesCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">mapper</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">X</span><span class="p">))</span></div></div>
+
+
+<div class="viewcode-block" id="NoInfiniteValuesCheck"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.NoInfiniteValuesCheck">[docs]</a><span class="k">class</span> <span class="nc">NoInfiniteValuesCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
+
+<div class="viewcode-block" id="NoInfiniteValuesCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.NoInfiniteValuesCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">mapper</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">X</span><span class="p">))</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Micah Smith
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
