@@ -97,6 +97,14 @@ class SubpackageNameCheck(DiffCheck):
         return re_test(SUBPACKAGE_NAME_REGEX, subpackage_name)
 
 
+class RelativeNameDepthCheck(DiffCheck):
+
+    def check(self, diff):
+        relative_path = relative_to_contrib(diff, self.project)
+        return len(relative_path.parts) == 2
+
+
+
 class ModuleNameCheck(DiffCheck):
 
     def check(self, diff):
@@ -105,14 +113,6 @@ class ModuleNameCheck(DiffCheck):
             FEATURE_MODULE_NAME_REGEX, filename)
         is_valid_init_module_name = filename == '__init__.py'
         return is_valid_feature_module_name or is_valid_init_module_name
-
-
-class RelativeNameDepthCheck(DiffCheck):
-
-    def check(self, diff):
-        relative_path = relative_to_contrib(diff, self.project)
-        return len(relative_path.parts) == 2
-
 
 class IfInitModuleThenIsEmptyCheck(DiffCheck):
 
@@ -159,12 +159,12 @@ class ChangeCollector:
         """
 
         file_diffs = self._collect_file_diffs()
-        (file_diffs_admissible,
-         file_diffs_inadmissible) = self._categorize_file_diffs(file_diffs)
-        new_feature_info = self._collect_feature_info(file_diffs_admissible)
+        candidate_feature_diffs, valid_init_diffs, inadmissible_diffs = \
+            self._categorize_file_diffs(file_diffs)
+        new_feature_info = self._collect_feature_info(candidate_feature_diffs)
 
-        return (file_diffs, file_diffs_admissible, file_diffs_inadmissible,
-                new_feature_info)
+        return (file_diffs, candidate_feature_diffs, valid_init_diffs,
+                inadmissible_diffs, new_feature_info)
 
     @post_processing(partial(_log_collect_items, 'file'))
     @stacklog(logger.info, 'Collecting file changes')
@@ -181,39 +181,51 @@ class ChangeCollector:
     def _categorize_file_diffs(self, file_diffs):
         """Partition file changes into admissible and inadmissible changes"""
         # TODO move this into a new validator
-        file_diffs_admissible = []
-        file_diffs_inadmissible = []
+        candidate_feature_diffs = []
+        valid_init_diffs = []
+        inadmissible_files = []
 
         for diff in file_diffs:
             admissible, failures = is_admissible(diff, self.project)
             if admissible:
-                file_diffs_admissible.append(diff)
-                logger.debug(
-                    'Categorized {file} as ADMISSIBLE'
-                    .format(file=diff.b_path))
+                if pathlib.Path(diff.b_path).parts[-1] != '__init__.py':
+                    candidate_feature_diffs.append(diff)
+                    logger.debug(
+                        'Categorized {file} as CANDIDATE FEATURE MODULE'
+                        .format(file=diff.b_path))
+                else:
+                    valid_init_diffs.append(diff)
+                    logger.debug(
+                        'Categorized {file} as VALID INIT MODULE'
+                            .format(file=diff.b_path))
             else:
-                file_diffs_inadmissible.append(diff)
+                inadmissible_files.append(diff)
                 logger.debug(
                     'Categorized {file} as INADMISSIBLE; '
                     'failures were {failures}'
                     .format(file=diff.b_path, failures=failures))
 
-        logger.info('Admitted {} file{} and rejected {} file{}'.format(
-            len(file_diffs_admissible),
-            make_plural_suffix(file_diffs_admissible),
-            len(file_diffs_inadmissible),
-            make_plural_suffix(file_diffs_inadmissible)))
+        logger.info(
+            'Admitted {} candidate feature{} '
+            'and {} __init__ module{} '
+            'and rejected {} file{}'
+            .format(len(candidate_feature_diffs),
+                    make_plural_suffix(candidate_feature_diffs),
+                    len(valid_init_diffs),
+                    make_plural_suffix(valid_init_diffs),
+                    len(inadmissible_files),
+                    make_plural_suffix(inadmissible_files)))
 
-        return file_diffs_admissible, file_diffs_inadmissible
+        return candidate_feature_diffs, valid_init_diffs, inadmissible_files
 
     @post_processing(partial(_log_collect_items, 'feature'))
     @collecting
     @stacklog(logger.info, 'Collecting info on newly-proposed features')
-    def _collect_feature_info(self, file_diffs_admissible):
+    def _collect_feature_info(self, candidate_feature_diffs):
         """Collect feature info
 
         Args:
-            file_diffs_admissible (List[git.diff.Diff]): list of Diffs
+            candidate_feature_diffs (List[git.diff.Diff]): list of Diffs
                 corresponding to admissible file changes compared to comparison
                 ref
 
@@ -222,7 +234,7 @@ class ChangeCollector:
                 path. The "importer" is a callable that returns a module
         """
         project_root = pathlib.Path(self.repo.working_tree_dir)
-        for diff in file_diffs_admissible:
+        for diff in candidate_feature_diffs:
             path = diff.b_path
             modname = relpath_to_modname(path)
             modpath = project_root.joinpath(path)
@@ -236,9 +248,9 @@ class FileChangeValidator(BaseValidator):
         self.change_collector = ChangeCollector(project)
 
     def validate(self):
-        _, _, inadmissible, new_feature_info = \
+        _, _, _, inadmissible_diffs, _ = \
             self.change_collector.collect_changes()
-        return not inadmissible
+        return not inadmissible_diffs
 
 
 def subsample_data_for_validation(X, y):
@@ -256,7 +268,7 @@ class FeatureApiValidator(BaseValidator):
     def validate(self):
         """Collect and validate all new features"""
 
-        _, _, _, new_feature_info = self.change_collector.collect_changes()
+        _, _, _, _, new_feature_info = self.change_collector.collect_changes()
 
         for importer, modname, modpath in new_feature_info:
             features = []
@@ -264,7 +276,7 @@ class FeatureApiValidator(BaseValidator):
             try:
                 mod = importer()
                 features.extend(_get_contrib_features(mod))
-            except ImportError:
+            except (ImportError, SyntaxError):
                 logger.info(
                     'Validation failure: failed to import module at {}'
                     .format(modpath))

@@ -34,7 +34,7 @@ class BalletTestTypes:
 
 def get_proposed_feature(project):
     change_collector = ChangeCollector(project)
-    _, _, _, new_feature_info = change_collector.collect_changes()
+    _, _, _, _, new_feature_info = change_collector.collect_changes()
     # TODO import features
     return new_feature_info
 

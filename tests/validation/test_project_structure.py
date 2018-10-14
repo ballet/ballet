@@ -191,12 +191,13 @@ class FileChangeValidatorTest(CommonSetup, unittest.TestCase):
             path_content, self.pr_num, contrib_module_path
         ) as validator:
             changes = validator.change_collector.collect_changes()
-            (file_diffs, diffs_admissible, diffs_inadmissible,
-                new_feature_info) = changes
+            (file_diffs, candidate_feature_diffs, valid_init_diffs,
+             inadmissible_diffs, new_feature_info) = changes
             self.assertEqual(len(file_diffs), 1)
-            self.assertEqual(len(diffs_admissible), 0)
-            self.assertEqual(len(diffs_inadmissible), 1)
-            self.assertEqual(diffs_inadmissible[0].b_path, 'invalid.py')
+            self.assertEqual(len(candidate_feature_diffs), 0)
+            self.assertEqual(len(valid_init_diffs), 0)
+            self.assertEqual(len(inadmissible_diffs), 1)
+            self.assertEqual(inadmissible_diffs[0].b_path, 'invalid.py')
 
             # TODO
             # self.assertTrue(imported_okay)
@@ -206,7 +207,7 @@ class FileChangeValidatorTest(CommonSetup, unittest.TestCase):
 
     def test_validation_success(self):
         path_content = [
-            ('bob.xml', '<><> :: :)'),
+            ('bob.xml', '<hello>'),
             ('src/__init__.py', None),
             ('src/contrib/__init__.py', None),
             ('src/contrib/user_foo/__init__.py', None),
@@ -227,8 +228,8 @@ class FeatureApiValidatorTest(CommonSetup, unittest.TestCase):
             ('readme.txt', None),
             ('src/__init__.py', None),
             ('src/contrib/__init__.py', None),
-            ('src/contrib/foo.py', None),
-            ('src/contrib/baz.py', None),
+            ('src/contrib/user_foo/__init__.py', None),
+            ('src/contrib/user_foo/feature_bar.py', None),
         ]
         contrib_module_path = 'src/contrib/'
         with mock_feature_api_validator(
@@ -242,20 +243,21 @@ class FeatureApiValidatorTest(CommonSetup, unittest.TestCase):
             ('foo.jpg', None),
             ('src/__init__.py', None),
             ('src/contrib/__init__.py', None),
-            ('src/contrib/user_bar/__init__.py', None),
-            ('src/contrib/user_bar/feature_foo.py', self.invalid_feature_str),
+            ('src/contrib/user_foo/__init__.py', None),
+            ('src/contrib/user_foo/feature_bar.py', self.invalid_feature_str),
         ]
         contrib_module_path = 'src/contrib/'
         with mock_feature_api_validator(
             path_content, self.pr_num, contrib_module_path, self.X, self.y
         ) as validator:
             changes = validator.change_collector.collect_changes()
-            (file_diffs, diffs_admissible, diffs_inadmissible,
-                new_feature_info) = changes
+            (file_diffs, candidate_feature_diffs, valid_init_diffs,
+             inadmissible_diffs, new_feature_info) = changes
 
             self.assertEqual(len(file_diffs), 1)
-            self.assertEqual(len(diffs_admissible), 1)
-            self.assertEqual(len(diffs_inadmissible), 0)
+            self.assertEqual(len(candidate_feature_diffs), 1)
+            self.assertEqual(len(valid_init_diffs), 0)
+            self.assertEqual(len(inadmissible_diffs), 0)
 
             # TODO
             # self.assertEqual(len(new_features), 1)
@@ -270,18 +272,22 @@ class FeatureApiValidatorTest(CommonSetup, unittest.TestCase):
         ''').strip()
         path_content = [
             ('foo.jpg', None),
-            ('src/contrib/user_bar/feature_baz.py', import_error_str),
+            ('src/__init__.py', None),
+            ('src/contrib/__init__.py', None),
+            ('src/contrib/user_foo/__init__.py', None),
+            ('src/contrib/user_foo/feature_baz.py', import_error_str),
         ]
         contrib_module_path = 'src/contrib/'
         with mock_feature_api_validator(
             path_content, self.pr_num, contrib_module_path, self.X, self.y
         ) as validator:
             changes = validator.change_collector.collect_changes()
-            (file_diffs, diffs_admissible, diffs_inadmissible,
-                new_feature_info) = changes
+            (file_diffs, candidate_feature_diffs, valid_init_diffs,
+             inadmissible_diffs, new_feature_info) = changes
             self.assertEqual(len(file_diffs), 1)
-            self.assertEqual(len(diffs_admissible), 1)
-            self.assertEqual(len(diffs_inadmissible), 0)
+            self.assertEqual(len(candidate_feature_diffs), 1)
+            self.assertEqual(len(valid_init_diffs), 0)
+            self.assertEqual(len(inadmissible_diffs), 0)
 
             # TODO
             # self.assertEqual(len(new_feature_info), 0)
