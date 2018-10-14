@@ -6,6 +6,7 @@ from ballet.compat import SimpleImputer
 from ballet.eng.base import BaseTransformer
 from ballet.eng.misc import IdentityTransformer
 from ballet.feature import Feature
+from ballet.util import has_nans
 from ballet.validation.feature_api import (
     CanDeepcopyCheck, CanTransformCheck, HasCorrectInputTypeCheck,
     HasCorrectOutputDimensionsCheck, NoMissingValuesCheck, validate)
@@ -77,7 +78,7 @@ class ProjectStructureTest(SampleDataMixin, unittest.TestCase):
         self.assertIn(CanDeepcopyCheck.__name__, failures)
 
     def test_producing_missing_values_fails(self):
-        assert np.any(self.X.isnull())
+        assert has_nans(self.X)
         feature = Feature(
             input='size',
             transformer=IdentityTransformer()

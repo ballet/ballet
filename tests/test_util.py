@@ -41,6 +41,39 @@ class UtilTest(unittest.TestCase):
         raise NotImplementedError
 
     @unittest.expectedFailure
+    def test_whether_failures(self):
+        raise NotImplementedError
+
+    def test_has_nans(self):
+        objs_with_nans = [
+            pd.DataFrame(data={'x': [1, np.nan], 'y': [np.nan, 2]}),
+            pd.DataFrame(data={'x': [1, np.nan]}),
+            pd.Series(data=[1, np.nan]),
+            np.array([[1, np.nan], [np.nan, 2]]),
+            np.array([[1, np.nan]]),
+            np.array([1, np.nan]),
+            np.array([1, np.nan]).T,
+            np.array(np.nan),
+        ]
+
+        objs_without_nans = [
+            pd.DataFrame(data={'x': [1, 0], 'y': [0, 2]}),
+            pd.DataFrame(data={'x': [1, 0]}),
+            pd.Series(data=[1, 0]),
+            np.array([[1, 0], [0, 2]]),
+            np.array([[1, 0]]),
+            np.array([1, 0]),
+            np.array([1, 0]).T,
+            np.array(0),
+        ]
+
+        for obj in objs_with_nans:
+            self.assertTrue(ballet.util.has_nans(obj))
+
+        for obj in objs_without_nans:
+            self.assertFalse(ballet.util.has_nans(obj))
+
+    @unittest.expectedFailure
     def test_deepcopy_mixin(self):
         raise NotImplementedError
 

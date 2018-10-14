@@ -50,6 +50,18 @@ def whether_failures(call):
     return not failures, failures
 
 
+def has_nans(obj):
+    """Check if obj has any NaNs
+
+    Compatible with different behavior of np.isnan, which sometimes applies
+    over all axes (py35, py35) and sometimes does not (py34).
+    """
+    nans = np.isnan(obj)
+    while np.ndim(nans):
+        nans = np.any(nans)
+    return bool(nans)
+
+
 class DeepcopyMixin:
 
     def __deepcopy__(self, memo):
