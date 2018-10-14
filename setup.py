@@ -54,7 +54,6 @@ development_requirements = [
     'isort>=4.3.4',
 
     # fix style issues
-    'autoflake>=1.1',
     'autopep8>=1.3.5',
 
     # distribute on PyPI
