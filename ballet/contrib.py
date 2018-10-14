@@ -1,10 +1,8 @@
-import importlib
 import pkgutil
 import types
 
-import funcy
-
 from ballet.feature import Feature
+from ballet.project import Project
 from ballet.util.log import logger
 
 __all__ = [
@@ -12,8 +10,24 @@ __all__ = [
 ]
 
 
-def get_contrib_features(contrib):
-    '''Get contributed features from within given module
+def get_contrib_features(project_root):
+    """Get contributed features for a project at project_root
+
+    For a project ``foo``, walks modules within the ``foo.features.contrib``
+    subpackage. A single object that is an instance of ``ballet.Feature`` is
+    imported if present in each module. The resulting ``Feature`` objects are
+    collected.
+
+    Args:
+        project_root (str, path): Path to project root
+    """
+    project = Project(project_root)
+    contrib = project._resolve('.features.contrib')
+    return _get_contrib_features(contrib)
+
+
+def _get_contrib_features(module):
+    """Get contributed features from within given module
 
     Be very careful with untrusted code. The module/package will be
     walked, every submodule will be imported, and all the code therein will be
@@ -25,28 +39,24 @@ def get_contrib_features(contrib):
             definitions
 
     Returns:
-        List of Feature
-    '''
+        List[Feature]: list of features
+    """
 
-    if isinstance(contrib, types.ModuleType):
+    if isinstance(module, types.ModuleType):
         contrib_features = []
 
-        # fuuuuu
-        importlib.invalidate_caches()
-
-        # any module that has a __path__ attribute is a package
-        if hasattr(contrib, '__path__'):
-            features = get_contrib_features_from_package(contrib)
-            contrib_features.extend(features)
+        # any module that has a __path__ attribute is also a package
+        if hasattr(module, '__path__'):
+            features = _get_contrib_features_from_package(module)
         else:
-            features = get_contrib_features_from_module(contrib)
-            contrib_features.extend(features)
+            features = _get_contrib_features_from_module(module)
+        contrib_features.extend(features)
         return contrib_features
     else:
         raise ValueError('Input is not a module')
 
 
-def get_contrib_features_from_package(package):
+def _get_contrib_features_from_package(package):
     contrib_features = []
 
     logger.debug(
@@ -63,93 +73,50 @@ def get_contrib_features_from_package(package):
                 'Failed to import module {modname}'
                 .format(modname=modname))
             continue
-        features = get_contrib_features_from_module(mod)
+        features = _get_contrib_features_from_module(mod)
         contrib_features.extend(features)
 
     return contrib_features
 
 
-def get_contrib_features_from_module(mod):
+def _get_contrib_features_from_module(mod):
     contrib_features = []
 
     logger.debug(
         'Trying to import contributed feature(s) from module {modname}...'
         .format(modname=mod.__name__))
 
-    # case 1: file defines `features` variable
     try:
-        features = import_contrib_feature_from_collection(mod)
-        contrib_features.extend(features)
+        feature = _import_contrib_feature_from_feature(mod)
+        contrib_features.append(feature)
         logger.debug(
-            'Imported {n} feature(s) from {modname} from collection'
-            .format(n=len(features), modname=mod.__name__))
+            'Imported 1 feature from {modname} from Feature object'
+            .format(modname=mod.__name__))
     except ImportError:
-        # case 2: file has at least `input` and `transformer` defined
-        try:
-            feature = import_contrib_feature_from_components(mod)
-            contrib_features.append(feature)
-            logger.debug(
-                'Imported 1 feature from {modname} from components'
-                .format(modname=mod.__name__))
-        except ImportError:
-            # case 3: nothing useful in file
-            logger.debug(
-                'Failed to import anything useful from module {modname}'
-                .format(modname=mod.__name__))
+        logger.debug(
+            'Failed to import anything useful from module {modname}'
+            .format(modname=mod.__name__))
 
     return contrib_features
 
 
-def import_contrib_feature_from_components(mod):
-    required = ['input', 'transformer']
-    optional = ['name', 'description', 'output', 'options']
-    required_vars, optional_vars = import_names_from_module(
-        mod, required, optional)
-    feature = Feature(
-        input=required_vars['input'],
-        transformer=required_vars['transformer'],
-        source=mod.__name__,
-        **optional_vars)
-    return feature
+def _import_contrib_feature_from_feature(mod):
+    candidates = []
+    for attr in dir(mod):
+        obj = getattr(mod, attr)
+        if isinstance(obj, Feature):
+            candidates.append(obj)
 
-
-def import_contrib_feature_from_collection(mod):
-    required = 'features'
-    optional = None
-    required_vars, _ = import_names_from_module(
-        mod, required, optional)
-    features = required_vars['features']
-    for feature in features:
+    if len(candidates) == 1:
+        feature = candidates[0]
         feature.source = mod.__name__
-    return features
-
-
-def import_names_from_module(mod, required, optional):
-
-    msg = funcy.partial(
-        'Required variable {varname} not found in module {modname}'
-        .format, modname=mod.__name__)
-
-    # required vars
-    if required:
-        required_vars = {}
-        if isinstance(required, str):
-            required = [required]
-        for varname in required:
-            if hasattr(mod, varname):
-                required_vars[varname] = getattr(mod, varname)
-            else:
-                raise ImportError(msg(varname=varname))
+        return feature
+    elif len(candidates) > 1:
+        raise ImportError(
+            'Found too many \'Feature\' objects in module {modname}: '
+            '{candidates!r}'
+            .format(modname=mod.__name__, candidates=candidates))
     else:
-        required_vars = None
-
-    # optional vars
-    if optional:
-        if isinstance(optional, str):
-            optional = [optional]
-        optional_vars = {k: getattr(mod, k)
-                         for k in optional if hasattr(mod, k)}
-    else:
-        optional_vars = None
-
-    return required_vars, optional_vars
+        raise ImportError(
+            'Did not find any \'Feature\' objects in module {modname}'
+            .format(modname=mod.__name__))

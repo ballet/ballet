@@ -1,10 +1,11 @@
 import unittest
-from unittest.mock import patch
+from unittest.mock import PropertyMock, patch
 
 from ballet.compat import pathlib
 from ballet.exc import ConfigurationError
 from ballet.project import (
-    DEFAULT_CONFIG_NAME, find_configs, get_config_paths, make_config_get)
+    DEFAULT_CONFIG_NAME, Project, find_configs, get_config_paths,
+    make_config_get)
 
 
 class ProjectTest(unittest.TestCase):
@@ -34,8 +35,9 @@ class ProjectTest(unittest.TestCase):
         with self.assertRaises(ConfigurationError):
             find_configs(package_root)
 
+    @patch.object(pathlib, 'Path')
     @patch('ballet.project.find_configs')
-    def test_config_get(self, mock_find_configs):
+    def test_config_get(self, mock_find_configs, mock_Path):
         config1 = {
             'problem': {
                 'name': 'foo',
@@ -60,3 +62,13 @@ class ProjectTest(unittest.TestCase):
 
         # with default
         self.assertEqual(get('nonexistent', 'path', default=3), 3)
+
+    @patch('ballet.project.Project.repo', new_callable=PropertyMock)
+    @patch('ballet.project.get_pr_num')
+    def test_project_pr_num(self, mock_get_pr_num, mock_repo):
+        expected = 3
+        mock_get_pr_num.return_value = expected
+
+        package = None
+        project = Project(package)
+        self.assertEqual(project.pr_num, expected)

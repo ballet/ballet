@@ -54,3 +54,20 @@ def splitext2(filepath):
     root, filename = os.path.split(safepath(filepath))
     filename, ext = os.path.splitext(safepath(filename))
     return root, filename, ext
+
+
+def isemptyfile(filepath):
+    """Determine if the file both exists and isempty
+
+    Args:
+        filepath (str, path): file path
+
+    Returns:
+        bool
+    """
+    exists = os.path.exists(safepath(filepath))
+    if exists:
+        filesize = os.path.getsize(safepath(filepath))
+        return filesize == 0
+    else:
+        return False

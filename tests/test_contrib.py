@@ -3,10 +3,10 @@ import tempfile
 import unittest
 from textwrap import dedent
 
-import funcy
+from funcy import contextmanager
 
 from ballet.compat import pathlib
-from ballet.contrib import get_contrib_features
+from ballet.contrib import _get_contrib_features
 from ballet.util.mod import import_module_at_path
 
 logging.basicConfig(level=logging.DEBUG)
@@ -45,60 +45,45 @@ def create_contrib_modules_at_dir(dirname, modcontent, n=1):
             f.write(modcontent_i)
 
 
-class TestContrib(unittest.TestCase):
+class ContribTest(unittest.TestCase):
 
     def test_get_contrib_features_stdlib(self):
         # give a nonsense *module*, shouldn't import anything. this is a bad
         # test because it relies on module not defining certain names
         import math
-        features = get_contrib_features(math)
+        features = _get_contrib_features(math)
 
         # features should be an empty list
         self.assertEqual(len(features), 0)
 
+    def test_get_contrib_features_thirdparty(self):
         # give a nonsense *package*, shouldn't import anything. this is a bad
         # test because it relies on module not defining certain names
         import funcy
-        features = get_contrib_features(funcy)
+        features = _get_contrib_features(funcy)
         self.assertEqual(len(features), 0)
 
-    def test_get_contrib_features_generated_modules_components(self):
+    def test_get_contrib_features_generated(self):
         n = 4
-        content = dedent(
-            '''
-            from sklearn.preprocessing import StandardScaler
-            input = 'col{i}'
-            transformer = StandardScaler()
-            '''
-        )
-        modname = 'contrib_features_generated_modules_components'
-        with self.mock_contrib_module(modname, content, n) as (mod, features):
-            self.assertEqual(len(features), n)
-
-    def test_get_contrib_features_generated_modules_collection(self):
-        n = 4
-        k = 2
         content = dedent(
             '''
             from ballet import Feature
             from sklearn.preprocessing import StandardScaler
-            input = 'col{{i}}'
+            input = 'col{i}'
             transformer = StandardScaler()
-            features = [
-                Feature(input=input, transformer=transformer),
-            ] * {k}
+            feature = Feature(input, transformer)
             '''
-        ).format(k=k, i='i')
-        modname = 'contrib_features_generated_modules_collection'
+        ).strip()
+        modname = 'contrib_features_generated'
         with self.mock_contrib_module(modname, content, n) as (mod, features):
-            self.assertEqual(len(features), n * k)
+            self.assertEqual(len(features), n)
 
-    @funcy.contextmanager
+    @contextmanager
     def mock_contrib_module(self, modname, content, n):
         with tempfile.TemporaryDirectory() as tmpdir:
             modpath = pathlib.Path(tmpdir).joinpath(modname)
             modpath.mkdir()
             create_contrib_modules_at_dir(modpath, content, n=n)
             mod = import_module_at_path(modname, modpath)
-            features = get_contrib_features(mod)
+            features = _get_contrib_features(mod)
             yield mod, features

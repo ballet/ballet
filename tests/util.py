@@ -1,14 +1,14 @@
-import os
 import random
 import tempfile
 
-import funcy
 import git
+from funcy import any_fn, contextmanager, merge
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn_pandas.pipeline import TransformerPipeline
 
 from ballet.compat import pathlib
 from ballet.eng.misc import IdentityTransformer
+from ballet.util.git import set_config_variables
 
 EPSILON = 1e-4
 
@@ -19,11 +19,11 @@ class FragileTransformer(BaseEstimator, TransformerMixin):
         '''Raises a random error if any input check returns True'''
         super().__init__()
 
-        self._check = funcy.any_fn(*bad_input_checks)
+        self._check = any_fn(*bad_input_checks)
         self._errors = errors
 
         self._random = random.Random()
-        self._random.seed = hash(funcy.merge(bad_input_checks, errors))
+        self._random.seed = hash(merge(bad_input_checks, errors))
 
     def _raise(self):
         raise self._random.choice(self._errors)
@@ -64,16 +64,9 @@ def make_mock_commit(repo, kind='A', path=None, content=None):
     if not path:
         path = 'file{}'.format(random.randint(0, 999))
 
-    # TODO resolve relative to root, then delete root
-    # path = pathlib.Path(path).resolve()
-    # dir = pathlib.Path(repo.working_tree_dir).resolve()
-    # if dir not in path.parents:
-    #     raise ValueError(
-    #         'Path {} must be a relative path to a subdirectory of the '
-    #         'repo root.'.format(str(path))
-
     dir = repo.working_tree_dir
     abspath = pathlib.Path(dir).joinpath(path)
+
     if kind == 'A':
         # TODO make robust
         abspath.parent.mkdir(parents=True, exist_ok=True)
@@ -95,31 +88,30 @@ def make_mock_commit(repo, kind='A', path=None, content=None):
     return repo.head.commit
 
 
-def make_mock_commits(repo, n=10):
+def make_mock_commits(repo, n=10, filename='file{i}.py'):
     '''Create n sequential files/commits'''
+    if '{i}' not in filename:
+        raise ValueError
+
     commits = []
     for i in range(n):
-        commit = make_mock_commit(repo, path='file{}.py'.format(i))
+        commit = make_mock_commit(repo, path=filename.format(i=i))
         commits.append(commit)
     return commits
 
 
-@funcy.contextmanager
+def set_ci_git_config_variables(repo):
+    set_config_variables(repo, {
+        'user.name': 'Foo Bar',
+        'user.email': 'foo@bar.com',
+    })
+
+
+@contextmanager
 def mock_repo():
     '''Create a new repo'''
     with tempfile.TemporaryDirectory() as tmpdir:
-        cwd = os.getcwd()
-        os.chdir(str(tmpdir))
         dir = pathlib.Path(tmpdir)
         repo = git.Repo.init(str(dir))
-
-        # need to explicitly set user/email as email cannot be detected
-        # in CI environment
-        with repo.config_writer() as cw:
-            cw.set_value('user', 'email', 'me@example.com')
-            cw.set_value('user', 'name', 'Name')
-
-        try:
-            yield repo
-        finally:
-            os.chdir(cwd)
+        set_ci_git_config_variables(repo)
+        yield repo

@@ -1,6 +1,22 @@
+import os
+import re
+
+import git
+from funcy import ignore, re_find, re_test
+
+PR_REF_PATH_REGEX = re.compile(r'refs/heads/pull/(\d+)')
+
+
 class PullRequestBuildDiffer:
+    """Diff files from this pull request against a comparison ref
+
+    Args:
+        pr_num (str, int): pull request number
+        repo (git.Repo): repo
+    """
+
     def __init__(self, pr_num, repo):
-        self.pr_num = pr_num
+        self.pr_num = int(pr_num)
         self.repo = repo
         self._check_environment()
 
@@ -17,10 +33,20 @@ class PullRequestBuildDiffer:
 
 
 class LocalPullRequestBuildDiffer(PullRequestBuildDiffer):
-    # TODO
 
-    def __init__(self):
-        raise NotImplementedError
+    @property
+    def _pr_name(self):
+        return self.repo.head.ref.name
+
+    @property
+    def _pr_path(self):
+        return self.repo.head.ref.path
+
+    def _check_environment(self):
+        assert re_test(PR_REF_PATH_REGEX, self._pr_path)
+
+    def _get_diff_str(self):
+        return '{from_}..{to_}'.format(from_='master', to_=self._pr_name)
 
 
 def get_diffs_by_revision(repo, from_revision, to_revision):
@@ -65,6 +91,29 @@ def get_diffs_by_diff_str(repo, diff_str):
     b_obj = repo.rev_parse(b)
     diffs = a_obj.diff(b_obj)
     return diffs
+
+
+@ignore(Exception)
+def get_pr_num(repo=None):
+    if repo is None:
+        repo = git.Repo(os.getcwd(), search_parent_directories=True)
+    pr_num = re_find(PR_REF_PATH_REGEX, repo.head.ref.path)
+    return int(pr_num)
+
+
+def switch_to_new_branch(repo, name):
+    new_branch = repo.create_head(name)
+    repo.head.ref = new_branch
+
+
+def set_config_variables(repo, variables):
+    """Set config variables
+
+    Args:
+        variables (dict): entries of the form 'user.email': 'you@example.com'
+    """
+    for k, v in variables.items():
+        repo.git.config(k, v)
 
 
 # deprecated for now

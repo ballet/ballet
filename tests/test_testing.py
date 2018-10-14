@@ -7,7 +7,7 @@ import pandas.util.testing as pdt
 from ballet.util.testing import ArrayLikeEqualityTestingMixin
 
 
-class TestArrayLikeEqualityTestingMixin(
+class ArrayLikeEqualityTestingMixinTest(
         ArrayLikeEqualityTestingMixin, unittest.TestCase):
 
     def setUp(self):

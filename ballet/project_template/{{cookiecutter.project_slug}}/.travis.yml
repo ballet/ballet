@@ -1,0 +1,20 @@
+language: python
+
+python: 3.6
+
+matrix:
+  include:
+    - name: "Project structure validation"
+      env: BALLET_TEST_TYPE=project_structure_validation
+    - name: "Feature API validation"
+      env: BALLET_TEST_TYPE=feature_api_validation
+    - name: "Pre-acceptance feature performance evaluation"
+      env: BALLET_TEST_TYPE=pre_acceptance_feature_evaluation
+    - name: "Post-acceptance feature performance evaluation"
+      env: BALLET_TEST_TYPE=post_acceptance_feature_evaluation
+
+install:
+  - pip install -r requirements.txt
+
+script:
+  - ./validate.py

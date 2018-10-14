@@ -15,7 +15,7 @@ from ballet.util.log import logger
 from ballet.util.testing import EPSILON, log_seed_on_error, seeded
 
 
-class _CommonTesting:
+class _CommonSetup:
 
     def setUp(self):
         # Create fake data
@@ -79,7 +79,7 @@ class _CommonTesting:
         }
 
 
-class TestModeler(_CommonTesting, unittest.TestCase):
+class ModelerTest(_CommonSetup, unittest.TestCase):
 
     def setUp(self):
         super().setUp()
@@ -139,7 +139,7 @@ class TestModeler(_CommonTesting, unittest.TestCase):
             metrics['R-squared'], 0.6, delta=0.1 - EPSILON)
 
 
-class TestTunedModelers(_CommonTesting, unittest.TestCase):
+class TunedModelerTest(_CommonSetup, unittest.TestCase):
 
     def setUp(self):
         super().setUp()
@@ -149,22 +149,30 @@ class TestTunedModelers(_CommonTesting, unittest.TestCase):
         modeler, X, y = super()._setup_modeler(problem_type, data)
         return modeler, X, y
 
+    @unittest.skip
     def test_classification_cv(self):
+        # TODO patch
         metrics, metrics_pd = self._call_method(
             '_test_problem_type_cv', MulticlassClassificationProblem, seed=1)
         self.assertEqual(metrics, metrics_pd)
 
+    @unittest.skip
     def test_classification_train_test(self):
+        # TODO patch
         metrics, metrics_pd = self._call_method(
             '_test_problem_type_train_test', MulticlassClassificationProblem,
             seed=2)
         self.assertEqual(metrics, metrics_pd)
 
+    @unittest.skip
     def test_regression_cv(self):
+        # TODO patch
         metrics, metrics_pd = self._call_method(
             '_test_problem_type_cv', RegressionProblem, seed=3)
 
+    @unittest.skip
     def test_regression_train_test(self):
+        # TODO patch
         metrics, metrics_pd = self._call_method(
             '_test_problem_type_train_test', RegressionProblem, seed=4)
         self.assertEqual(metrics, metrics_pd)
@@ -180,16 +188,21 @@ class TestTunedModelers(_CommonTesting, unittest.TestCase):
             new_score = model.score(X, y)
             self.assertGreaterEqual(new_score, old_score)
 
+    @unittest.skip
     def test_tuned_random_forest_regressor(self):
+        # TODO patch
         self._test_tuned_random_forest_estimator(
             TunedRandomForestRegressor, RegressionProblem)
 
+    @unittest.skip
     def test_tuned_random_forest_classifier(self):
+        # TODO patch
         self._test_tuned_random_forest_estimator(
             TunedRandomForestClassifier, MulticlassClassificationProblem)
 
 
-class TestStratifiedKFoldMultiClassIndicator(unittest.TestCase):
+class StratifiedKFoldMultiClassIndicatorTest(unittest.TestCase):
+
     def test(self):
         X, y = sklearn.datasets.load_iris(return_X_y=True)
         transformer = LabelBinarizer()
