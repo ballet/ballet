@@ -270,15 +270,13 @@ class FeatureApiValidator(BaseValidator):
                     feature, self.X, self.y)
                 if success:
                     logger.info(
-                        'Feature is valid: {feature}'
+                        'Feature {feature!r} is valid'
                         .format(feature=feature))
                 else:
                     logger.info(
-                        'Feature is NOT valid: {feature}'
-                        .format(feature=feature))
-                    logger.info(
-                        'Failures in validation: {failures}'
-                        .format(failures=failures))
+                        'Feature {feature!r} is NOT valid; '
+                        'failures were {failures}'
+                        .format(feature=feature, failures=failures))
                     result = False
 
             return result
