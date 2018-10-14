@@ -1,5 +1,6 @@
 import importlib.machinery
 from abc import ABCMeta, abstractmethod
+from collections import namedtuple
 
 from funcy import collecting, ignore, partial, post_processing, re_test
 
@@ -126,6 +127,11 @@ class IfInitModuleThenIsEmptyCheck(DiffCheck):
             return True
 
 
+CollectedChanges = namedtuple('CollectedChanges',
+    'file_diffs candidate_feature_diffs valid_init_diffs inadmissible_diffs '
+    'new_feature_info')
+
+
 class ChangeCollector:
 
     def __init__(self, project):
@@ -163,8 +169,9 @@ class ChangeCollector:
             self._categorize_file_diffs(file_diffs)
         new_feature_info = self._collect_feature_info(candidate_feature_diffs)
 
-        return (file_diffs, candidate_feature_diffs, valid_init_diffs,
-                inadmissible_diffs, new_feature_info)
+        return CollectedChanges(
+            file_diffs, candidate_feature_diffs, valid_init_diffs,
+            inadmissible_diffs, new_feature_info)
 
     @post_processing(partial(_log_collect_items, 'file'))
     @stacklog(logger.info, 'Collecting file changes')
@@ -248,9 +255,8 @@ class FileChangeValidator(BaseValidator):
         self.change_collector = ChangeCollector(project)
 
     def validate(self):
-        _, _, _, inadmissible_diffs, _ = \
-            self.change_collector.collect_changes()
-        return not inadmissible_diffs
+        collected_changes = self.change_collector.collect_changes()
+        return not collected_changes.inadmissible_diffs
 
 
 def subsample_data_for_validation(X, y):
@@ -268,9 +274,9 @@ class FeatureApiValidator(BaseValidator):
     def validate(self):
         """Collect and validate all new features"""
 
-        _, _, _, _, new_feature_info = self.change_collector.collect_changes()
+        collected_changes = self.change_collector.collect_changes()
 
-        for importer, modname, modpath in new_feature_info:
+        for importer, modname, modpath in collected_changes.new_feature_info:
             features = []
             imported_okay = True
             try:
