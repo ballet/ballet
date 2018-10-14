@@ -9,6 +9,7 @@ from ballet.compat import pathlib
 from ballet.contrib import _get_contrib_features
 from ballet.util import make_plural_suffix, whether_failures
 from ballet.util.ci import TravisPullRequestBuildDiffer, can_use_travis_differ
+from ballet.util.fs import isemptyfile
 from ballet.util.git import LocalPullRequestBuildDiffer
 from ballet.util.log import logger, stacklog
 from ballet.util.mod import import_module_at_path, relpath_to_modname
@@ -94,14 +95,16 @@ class SubpackageNameCheck(DiffCheck):
         relative_path = relative_to_contrib(diff, self.project)
         subpackage_name = relative_path.parts[0]
         return re_test(SUBPACKAGE_NAME_REGEX, subpackage_name)
-    
 
-class FeatureModuleNameCheck(DiffCheck):
+
+class ModuleNameCheck(DiffCheck):
 
     def check(self, diff):
-        relative_path = relative_to_contrib(diff, self.project)
-        feature_module_name = relative_path.parts[-1]
-        return re_test(FEATURE_MODULE_NAME_REGEX, feature_module_name)
+        filename = pathlib.Path(diff.b_path).parts[-1]
+        is_valid_feature_module_name = re_test(
+            FEATURE_MODULE_NAME_REGEX, filename)
+        is_valid_init_module_name = filename == '__init__.py'
+        return is_valid_feature_module_name or is_valid_init_module_name
 
 
 class RelativeNameDepthCheck(DiffCheck):
@@ -109,6 +112,18 @@ class RelativeNameDepthCheck(DiffCheck):
     def check(self, diff):
         relative_path = relative_to_contrib(diff, self.project)
         return len(relative_path.parts) == 2
+
+
+class IfInitModuleThenIsEmptyCheck(DiffCheck):
+
+    def check(self, diff):
+        path = pathlib.Path(diff.b_path)
+        filename = path.parts[-1]
+        if filename == '__init__.py':
+            abspath = self.project.path.joinpath(path)
+            return isemptyfile(abspath)
+        else:
+            return True
 
 
 class ChangeCollector:

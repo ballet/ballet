@@ -319,6 +319,10 @@ class FsTest(unittest.TestCase):
             actual = ballet.util.fs.splitext2(filepath)
             self.assertEqual(actual, expected)
 
+    @unittest.expectedFailure
+    def test_isemptyfile(self):
+        raise NotImplementedError
+
 
 class IoTest(unittest.TestCase):
 

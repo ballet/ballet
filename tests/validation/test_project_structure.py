@@ -9,7 +9,7 @@ from ballet.util.git import get_diff_str_from_commits
 from ballet.validation.project_structure import (
     relative_to_contrib,
     IsAdditionCheck, IsPythonSourceCheck, WithinContribCheck,
-    SubpackageNameCheck, FeatureModuleNameCheck, RelativeNameDepthCheck,
+    SubpackageNameCheck, ModuleNameCheck, RelativeNameDepthCheck,
     ChangeCollector)
 
 from ..util import make_mock_commits, mock_repo
@@ -102,7 +102,7 @@ class DiffCheckTest(unittest.TestCase):
         self.assertFalse(checker.do_check(mock_diff))
 
     def test_feature_module_name_check(self):
-        checker = FeatureModuleNameCheck(self.project)
+        checker = ModuleNameCheck(self.project)
 
         mock_diff = Mock(b_path='foo/features/contrib/user_bob/feature_1.py')
         self.assertTrue(checker.do_check(mock_diff))

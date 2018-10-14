@@ -107,7 +107,9 @@ class Project:
 
     @property
     def path(self):
-        return pathlib.Path(self.package.__file__).resolve()
+        # If package.__file__ is `/foo/foo/__init__.py`, then project.path
+        # should be `/foo`
+        return pathlib.Path(self.package.__file__).resolve().parent.parent
 
     @property
     def repo(self):
