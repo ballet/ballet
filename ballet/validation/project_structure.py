@@ -14,7 +14,7 @@ from ballet.util.log import logger, stacklog
 from ballet.util.mod import import_module_at_path, relpath_to_modname
 from ballet.validation.base import BaseValidator
 
-FEATURE_MODULE_NAME_REGEX = r'feature_[a-zA-Z0-9]+\.\w+'
+FEATURE_MODULE_NAME_REGEX = r'feature_[a-zA-Z0-9_]+\.\w+'
 SUBPACKAGE_NAME_REGEX = r'user_[a-zA-Z0-9_]+'
 
 
