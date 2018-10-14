@@ -1,13 +1,12 @@
 import os
 
-from funcy import ignore
+from funcy import decorator, ignore
 
 from ballet.exc import (
     ConfigurationError, FeatureRejected, InvalidFeatureApi,
     InvalidProjectStructure, SkippedValidationTest)
 from ballet.project import Project
 from ballet.util.log import logger, stacklog
-from ballet.util.ci import dump_travis_env_vars
 from ballet.validation.feature_evaluation import (
     FeatureRedundancyEvaluator, FeatureRelevanceEvaluator)
 from ballet.validation.project_structure import (
@@ -15,6 +14,15 @@ from ballet.validation.project_structure import (
 
 
 TEST_TYPE_ENV_VAR = 'BALLET_TEST_TYPE'
+
+
+@decorator
+def log_validation_stage(call, message):
+    call = stacklog(logger.info,
+                    'Ballet Validation: {message}'.format(message=message),
+                    conditions=[(SkippedValidationTest, 'SKIPPED')])(call)
+    call = ignore(SkippedValidationTest)(call)
+    return call()
 
 
 class BalletTestTypes:
@@ -41,9 +49,7 @@ def detect_target_type():
             .format(envvar=TEST_TYPE_ENV_VAR))
 
 
-@ignore(SkippedValidationTest)
-@stacklog(logger.info, 'Ballet Validation: checking project structure',
-          conditions=[(SkippedValidationTest, 'SKIPPED')])
+@log_validation_stage('checking project structure')
 def check_project_structure(project):
     if not project.on_pr():
         raise SkippedValidationTest
@@ -54,9 +60,7 @@ def check_project_structure(project):
         raise InvalidProjectStructure
 
 
-@ignore(SkippedValidationTest)
-@stacklog(logger.info, 'Ballet Validation: validating feature API',
-          conditions=[(SkippedValidationTest, 'SKIPPED')])
+@log_validation_stage('validating feature API')
 def validate_feature_api(project):
     if not project.on_pr():
         raise SkippedValidationTest
@@ -67,9 +71,7 @@ def validate_feature_api(project):
         raise InvalidFeatureApi
 
 
-@ignore(SkippedValidationTest)
-@stacklog(logger.info, 'Ballet Validation: evaluating feature performance',
-          conditions=[(SkippedValidationTest, 'SKIPPED')])
+@log_validation_stage('evaluating feature performance')
 def evaluate_feature_performance(project):
     if not project.on_pr():
         raise SkippedValidationTest
@@ -83,9 +85,7 @@ def evaluate_feature_performance(project):
         raise FeatureRejected
 
 
-@ignore(SkippedValidationTest)
-@stacklog(logger.info, 'Ballet Validation: pruning existing features',
-          conditions=[(SkippedValidationTest, 'SKIPPED')])
+@log_validation_stage('pruning existing features')
 def prune_existing_features(project):
     if project.on_pr():
         raise SkippedValidationTest
@@ -101,8 +101,6 @@ def prune_existing_features(project):
 
 
 def main(package, test_target_type=None):
-    dump_travis_env_vars()
-
     project = Project(package)
 
     if test_target_type is None:
