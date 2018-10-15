@@ -80,9 +80,8 @@ class Project:
         'conf': ('.conf', None),
         'get': ('.conf', 'get'),
         'load_data': ('.load_data', 'load_data'),
-        'build_features': ('.features.build_features', 'build_features'),
-        'get_contrib_features': ('.features.build_features',
-                                 'get_contrib_features')
+        'build': ('.features', 'build'),
+        'get_contrib_features': ('.features', 'get_contrib_features')
     }
 
     def __init__(self, package):

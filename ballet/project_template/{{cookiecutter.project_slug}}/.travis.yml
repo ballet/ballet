@@ -8,13 +8,14 @@ matrix:
       env: BALLET_TEST_TYPE=project_structure_validation
     - name: "Feature API validation"
       env: BALLET_TEST_TYPE=feature_api_validation
-    - name: "Pre-acceptance feature performance evaluation"
-      env: BALLET_TEST_TYPE=pre_acceptance_feature_evaluation
-    - name: "Post-acceptance feature performance evaluation"
-      env: BALLET_TEST_TYPE=post_acceptance_feature_evaluation
+    - name: "Feature acceptance evaluation"
+      env: BALLET_TEST_TYPE=feature_acceptance_evaluation
+    - name: "Feature pruning evaluation"
+      env: BALLET_TEST_TYPE=feature_pruning_evaluation
 
 install:
   - pip install -r requirements.txt
 
 script:
+  - printenv | grep TRAVIS
   - ./validate.py

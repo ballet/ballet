@@ -28,8 +28,8 @@ def log_validation_stage(call, message):
 class BalletTestTypes:
     PROJECT_STRUCTURE_VALIDATION = 'project_structure_validation'
     FEATURE_API_VALIDATION = 'feature_api_validation'
-    PRE_ACCEPTANCE_FEATURE_EVALUATION = 'pre_acceptance_feature_evaluation'
-    POST_ACCEPTANCE_FEATURE_EVALUATION = 'post_acceptance_feature_evaluation'
+    FEATURE_ACCEPTANCE_EVALUTION = 'feature_acceptance_evaluation'
+    FEATURE_PRUNING_EVALUATION = 'feature_pruning_evaluation'
 
 
 def get_proposed_feature(project):
@@ -110,10 +110,10 @@ def main(package, test_target_type=None):
         check_project_structure(project)
     elif test_target_type == BalletTestTypes.FEATURE_API_VALIDATION:
         validate_feature_api(project)
-    elif test_target_type == BalletTestTypes.PRE_ACCEPTANCE_FEATURE_EVALUATION:
+    elif test_target_type == BalletTestTypes.FEATURE_ACCEPTANCE_EVALUTION:
         evaluate_feature_performance(project)
     elif test_target_type == (
-            BalletTestTypes.POST_ACCEPTANCE_FEATURE_EVALUATION):
+            BalletTestTypes.FEATURE_PRUNING_EVALUATION):
         prune_existing_features(project)
     else:
         raise NotImplementedError(
