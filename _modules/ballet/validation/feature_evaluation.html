@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.validation.feature_evaluation &mdash; ballet 0.4.1 documentation</title>
+  <title>ballet.validation.feature_evaluation &mdash; ballet 0.5.0 documentation</title>
   
 
   
@@ -140,10 +140,11 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id1">0.4 (2018-09-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id2">0.3 (2018-04-28)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id3">0.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id4">0.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id1">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id2">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id3">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id4">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id5">0.1</a></li>
 </ul>
 </li>
 </ul>
@@ -212,18 +213,17 @@
             
   <h1>Source code for ballet.validation.feature_evaluation</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">ballet.validation.base</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">PostAcceptanceFeaturePerformanceEvaluator</span><span class="p">,</span>
-    <span class="n">PreAcceptanceFeaturePerformanceEvaluator</span><span class="p">)</span>
+    <span class="n">FeatureAcceptanceEvaluator</span><span class="p">,</span> <span class="n">FeaturePruningEvaluator</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="FeatureRelevanceEvaluator"><a class="viewcode-back" href="../../../api/ballet.validation.feature_evaluation.html#ballet.validation.feature_evaluation.FeatureRelevanceEvaluator">[docs]</a><span class="k">class</span> <span class="nc">FeatureRelevanceEvaluator</span><span class="p">(</span><span class="n">PreAcceptanceFeaturePerformanceEvaluator</span><span class="p">):</span>
+<div class="viewcode-block" id="FeatureRelevanceEvaluator"><a class="viewcode-back" href="../../../api/ballet.validation.feature_evaluation.html#ballet.validation.feature_evaluation.FeatureRelevanceEvaluator">[docs]</a><span class="k">class</span> <span class="nc">FeatureRelevanceEvaluator</span><span class="p">(</span><span class="n">FeatureAcceptanceEvaluator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Accept a feature if it is correlated to the target&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="FeatureRelevanceEvaluator.judge"><a class="viewcode-back" href="../../../api/ballet.validation.feature_evaluation.html#ballet.validation.feature_evaluation.FeatureRelevanceEvaluator.judge">[docs]</a>    <span class="k">def</span> <span class="nf">judge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">True</span></div></div>
 
 
-<div class="viewcode-block" id="FeatureRedundancyEvaluator"><a class="viewcode-back" href="../../../api/ballet.validation.feature_evaluation.html#ballet.validation.feature_evaluation.FeatureRedundancyEvaluator">[docs]</a><span class="k">class</span> <span class="nc">FeatureRedundancyEvaluator</span><span class="p">(</span><span class="n">PostAcceptanceFeaturePerformanceEvaluator</span><span class="p">):</span>
+<div class="viewcode-block" id="FeatureRedundancyEvaluator"><a class="viewcode-back" href="../../../api/ballet.validation.feature_evaluation.html#ballet.validation.feature_evaluation.FeatureRedundancyEvaluator">[docs]</a><span class="k">class</span> <span class="nc">FeatureRedundancyEvaluator</span><span class="p">(</span><span class="n">FeaturePruningEvaluator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Remove a feature if it is conditionally independent of the target</span>
 
 <span class="sd">    Let Sk be the set of subsets of features of size less than or equal to k.</span>

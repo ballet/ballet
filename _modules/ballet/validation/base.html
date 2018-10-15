@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.validation.base &mdash; ballet 0.4.1 documentation</title>
+  <title>ballet.validation.base &mdash; ballet 0.5.0 documentation</title>
   
 
   
@@ -140,10 +140,11 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id1">0.4 (2018-09-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id2">0.3 (2018-04-28)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id3">0.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id4">0.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id1">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id2">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id3">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id4">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id5">0.1</a></li>
 </ul>
 </li>
 </ul>
@@ -223,7 +224,8 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: validation succeeded</span>
-<span class="sd">        &quot;&quot;&quot;</span></div></div>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div></div>
 
 
 <div class="viewcode-block" id="FeaturePerformanceEvaluator"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.FeaturePerformanceEvaluator">[docs]</a><span class="k">class</span> <span class="nc">FeaturePerformanceEvaluator</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
@@ -235,28 +237,30 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">features</span></div>
 
 
-<div class="viewcode-block" id="PreAcceptanceFeaturePerformanceEvaluator"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.PreAcceptanceFeaturePerformanceEvaluator">[docs]</a><span class="k">class</span> <span class="nc">PreAcceptanceFeaturePerformanceEvaluator</span><span class="p">(</span><span class="n">FeaturePerformanceEvaluator</span><span class="p">):</span>
+<div class="viewcode-block" id="FeatureAcceptanceEvaluator"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.FeatureAcceptanceEvaluator">[docs]</a><span class="k">class</span> <span class="nc">FeatureAcceptanceEvaluator</span><span class="p">(</span><span class="n">FeaturePerformanceEvaluator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Accept/reject a feature to the project based on its performance&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="PreAcceptanceFeaturePerformanceEvaluator.judge"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.PreAcceptanceFeaturePerformanceEvaluator.judge">[docs]</a>    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="FeatureAcceptanceEvaluator.judge"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.FeatureAcceptanceEvaluator.judge">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">judge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Judge whether feature should be accepted</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: feature should be accepted</span>
-<span class="sd">        &quot;&quot;&quot;</span></div></div>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div></div>
 
 
-<div class="viewcode-block" id="PostAcceptanceFeaturePerformanceEvaluator"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.PostAcceptanceFeaturePerformanceEvaluator">[docs]</a><span class="k">class</span> <span class="nc">PostAcceptanceFeaturePerformanceEvaluator</span><span class="p">(</span><span class="n">FeaturePerformanceEvaluator</span><span class="p">):</span>
+<div class="viewcode-block" id="FeaturePruningEvaluator"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.FeaturePruningEvaluator">[docs]</a><span class="k">class</span> <span class="nc">FeaturePruningEvaluator</span><span class="p">(</span><span class="n">FeaturePerformanceEvaluator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Prune features after acceptance based on their performance&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="PostAcceptanceFeaturePerformanceEvaluator.prune"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.PostAcceptanceFeaturePerformanceEvaluator.prune">[docs]</a>    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="FeaturePruningEvaluator.prune"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.FeaturePruningEvaluator.prune">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">prune</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Prune existing features</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            list: list of features to remove</span>
-<span class="sd">        &quot;&quot;&quot;</span></div></div>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div></div>
 </pre></div>
 
            </div>
