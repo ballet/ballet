@@ -18,8 +18,9 @@ class AlphaInvestingAcceptanceEvaluator(FeatureAcceptanceEvaluator):
     def judge(self, feature):
         mapper_X = make_mapper(self.features)
         X = mapper_X.fit_transform(self.X_df)
-        y = asarray2d(self.y_df)
-        xi = make_mapper(feature).fit_transform(self.X_df)
+        y = self.y
+        mapper_xi = make_mapper(feature)
+        xi = mapper_xi.fit_transform(self.X_df)
         p = get_p_value(X, y, xi)
         return p < self.ai
 
