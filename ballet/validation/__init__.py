@@ -76,9 +76,9 @@ def evaluate_feature_performance(project):
     if not project.on_pr():
         raise SkippedValidationTest
 
-    X_df, y_df = project.load_data()
-    features = project.get_contrib_features()
-    evaluator = FeatureRelevanceEvaluator(X_df, y_df, features)
+    out = project.build()
+    X_df, y, features = out['X_df'], out['y'], out['features']
+    evaluator = FeatureRelevanceEvaluator(X_df, y, features)
     proposed_feature = get_proposed_feature(project)
     accepted = evaluator.judge(proposed_feature)
     if not accepted:
@@ -90,9 +90,9 @@ def prune_existing_features(project):
     if project.on_pr():
         raise SkippedValidationTest
 
-    X_df, y_df = project.load_data()
-    features = project.get_contrib_features()
-    evaluator = FeatureRedundancyEvaluator(X_df, y_df, features)
+    out = project.build()
+    X_df, y, features = out['X_df'], out['y'], out['features']
+    evaluator = FeatureRedundancyEvaluator(X_df, y, features)
     redundant_features = evaluator.prune()
 
     # propose removal

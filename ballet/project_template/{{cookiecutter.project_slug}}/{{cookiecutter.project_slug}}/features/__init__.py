@@ -25,7 +25,7 @@ def get_target_encoder():
 
 
 @stacklog(logger.info, 'Building features and target')
-def build(X_df=None, y_df=None, return_mappers=False):
+def build(X_df=None, y_df=None):
     if X_df is None:
         X_df, _ = load_data()
     if y_df is None:
@@ -33,15 +33,23 @@ def build(X_df=None, y_df=None, return_mappers=False):
 
     features = get_contrib_features()
     mapper_X = ballet.feature.make_mapper(features)
-    X = mapper_X.fit_transform(X_df)
+    if features:
+        X = mapper_X.fit_transform(X_df)
+    else:
+        X = None
 
     encoder_y = get_target_encoder()
     y = encoder_y.fit_transform(y_df)
 
-    if return_mappers:
-        return X, y, mapper_X, encoder_y
-    else:
-        return X, y
+    return {
+        'X_df': X_df,
+        'features': features,
+        'mapper_X': mapper_X,
+        'X': X,
+        'y_df': y_df,
+        'encoder_y': encoder_y,
+        'y': y,
+    }
 
 
 def save_features(X, output_dir):

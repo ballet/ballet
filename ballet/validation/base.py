@@ -17,9 +17,9 @@ class BaseValidator(metaclass=ABCMeta):
 class FeaturePerformanceEvaluator(metaclass=ABCMeta):
     """Evaluate the performance of features from an ML point-of-view"""
 
-    def __init__(self, X_df, y_df, features):
+    def __init__(self, X_df, y, features):
         self.X_df = X_df
-        self.y_df = y_df
+        self.y = y
         self.features = features
 
 

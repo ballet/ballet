@@ -71,10 +71,9 @@ def test_end_to_end():
     ):
         X_df = pd.util.testing.makeCustomDataframe(5, 2)
         X_df.columns = ['A', 'B']
-        X, y, mapper_X, encoder_y = \
-            foo_features.build(X_df=X_df, y_df=[], return_mappers=True)
-        assert np.shape(X) == (5, 1)
-        assert isinstance(mapper_X, DataFrameMapper)
+        out = foo_features.build(X_df=X_df, y_df=[])
+        assert np.shape(out['X']) == (5, 1)
+        assert isinstance(out['mapper_X'], DataFrameMapper)
 
     # write a new version of foo.load_data.load_data
     new_load_data_str = dedent("""
