@@ -4,7 +4,7 @@
 
 __author__ = """Micah Smith"""
 __email__ = 'micahs@mit.edu'
-__version__ = '0.5.0'
+__version__ = '0.5.1-dev'
 
 
 # re-export some names
