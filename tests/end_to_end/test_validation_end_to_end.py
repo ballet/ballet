@@ -60,23 +60,21 @@ def test_end_to_end():
     foo_features = _import('foo.features')
     assert isinstance(foo_features, ModuleType)
 
-    foo_features_buildfeatures = _import('foo.features.build_features')
-    assert isinstance(foo_features_buildfeatures, ModuleType)
-
-    get_contrib_features = foo_features_buildfeatures.get_contrib_features
+    get_contrib_features = foo_features.get_contrib_features
     features = get_contrib_features()
     assert len(features) == 0
 
-    # first providing a mock feature, call build_features
+    # first providing a mock feature, call build
     with patch.object(
-        foo_features_buildfeatures, 'get_contrib_features',
+        foo_features, 'get_contrib_features',
         return_value=[Feature(input='A', transformer=IdentityTransformer())]
     ):
         X_df = pd.util.testing.makeCustomDataframe(5, 2)
         X_df.columns = ['A', 'B']
-        X, mapper = foo_features_buildfeatures.build_features(X_df)
+        X, y, mapper_X, encoder_y = \
+            foo_features.build(X_df=X_df, y_df=[], return_mappers=True)
         assert np.shape(X) == (5, 1)
-        assert isinstance(mapper, DataFrameMapper)
+        assert isinstance(mapper_X, DataFrameMapper)
 
     # write a new version of foo.load_data.load_data
     new_load_data_str = dedent("""
