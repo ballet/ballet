@@ -61,11 +61,8 @@ lint: ## check style with flake8 and isort
 
 .PHONY: fix-lint
 fix-lint: ## fix lint issues using autopep8 and isort
-	autopep8 --in-place --recursive --aggressive ballet
-	isort --apply --atomic --recursive ballet
-
-	autopep8 --in-place --recursive --aggressive tests
-	isort --apply --atomic --recursive tests
+	autopep8 --in-place --recursive --aggressive ballet tests
+	isort --apply --atomic --recursive ballet tests
 
 .PHONY: test
 test: ## run tests quickly with the default Python
