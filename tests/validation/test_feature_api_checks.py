@@ -7,9 +7,11 @@ from ballet.eng.base import BaseTransformer
 from ballet.eng.misc import IdentityTransformer
 from ballet.feature import Feature
 from ballet.util import has_nans
-from ballet.validation.feature_api import (
-    CanDeepcopyCheck, CanTransformCheck, HasCorrectInputTypeCheck,
-    HasCorrectOutputDimensionsCheck, NoMissingValuesCheck, validate)
+from ballet.validation.base import check_from_class
+from ballet.validation.feature_api_checks import (
+    CanDeepcopyCheck, CanTransformCheck, FeatureApiCheck,
+    HasCorrectInputTypeCheck, HasCorrectOutputDimensionsCheck,
+    NoMissingValuesCheck)
 
 from ..util import FragileTransformer
 from .util import SampleDataMixin
@@ -23,8 +25,9 @@ class ProjectStructureTest(SampleDataMixin, unittest.TestCase):
             transformer=SimpleImputer(),
         )
 
-        result, failures = validate(feature, self.X, self.y)
-        self.assertTrue(result)
+        valid, failures = check_from_class(
+            FeatureApiCheck, feature, self.X, self.y)
+        self.assertTrue(valid)
         self.assertEqual(len(failures), 0)
 
     def test_bad_feature_input(self):
@@ -33,8 +36,9 @@ class ProjectStructureTest(SampleDataMixin, unittest.TestCase):
             input=3,
             transformer=SimpleImputer(),
         )
-        result, failures = validate(feature, self.X, self.y)
-        self.assertFalse(result)
+        valid, failures = check_from_class(
+            FeatureApiCheck, feature, self.X, self.y)
+        self.assertFalse(valid)
         self.assertIn(HasCorrectInputTypeCheck.__name__, failures)
 
     def test_bad_feature_transform_errors(self):
@@ -44,8 +48,9 @@ class ProjectStructureTest(SampleDataMixin, unittest.TestCase):
             transformer=FragileTransformer(
                 (lambda x: True, ), (RuntimeError, ))
         )
-        result, failures = validate(feature, self.X, self.y)
-        self.assertFalse(result)
+        valid, failures = check_from_class(
+            FeatureApiCheck, feature, self.X, self.y)
+        self.assertFalse(valid)
         self.assertIn(CanTransformCheck.__name__, failures)
 
     def test_bad_feature_wrong_transform_length(self):
@@ -61,8 +66,9 @@ class ProjectStructureTest(SampleDataMixin, unittest.TestCase):
             input='size',
             transformer=_WrongLengthTransformer(),
         )
-        result, failures = validate(feature, self.X, self.y)
-        self.assertFalse(result)
+        valid, failures = check_from_class(
+            FeatureApiCheck, feature, self.X, self.y)
+        self.assertFalse(valid)
         self.assertIn(HasCorrectOutputDimensionsCheck.__name__, failures)
 
     def test_bad_feature_deepcopy_fails(self):
@@ -73,8 +79,9 @@ class ProjectStructureTest(SampleDataMixin, unittest.TestCase):
             input='size',
             transformer=_CopyFailsTransformer(),
         )
-        result, failures = validate(feature, self.X, self.y)
-        self.assertFalse(result)
+        valid, failures = check_from_class(
+            FeatureApiCheck, feature, self.X, self.y)
+        self.assertFalse(valid)
         self.assertIn(CanDeepcopyCheck.__name__, failures)
 
     def test_producing_missing_values_fails(self):
@@ -83,6 +90,7 @@ class ProjectStructureTest(SampleDataMixin, unittest.TestCase):
             input='size',
             transformer=IdentityTransformer()
         )
-        result, failures = validate(feature, self.X, self.y)
-        self.assertFalse(result)
+        valid, failures = check_from_class(
+            FeatureApiCheck, feature, self.X, self.y)
+        self.assertFalse(valid)
         self.assertIn(NoMissingValuesCheck.__name__, failures)

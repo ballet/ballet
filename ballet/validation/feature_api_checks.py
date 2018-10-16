@@ -1,64 +1,23 @@
-from abc import ABCMeta, abstractmethod
 from copy import deepcopy
 
 import numpy as np
-from funcy import all_fn, constantly, ignore, isa, iterable, post_processing
+from funcy import all_fn, isa, iterable
 
 from ballet.feature import Feature
-from ballet.util import whether_failures
+from ballet.validation.base import BaseCheck
 
 
-@whether_failures
-def validate(feature, X, y):
-    """Validate the feature"""
-    for check, name in get_checks(X, y):
-        success = check(feature)
-        if not success:
-            yield name
-
-
-def get_checks(X, y):
-    checks = FeatureApiCheck.__subclasses__()
-    for Checker in checks:
-        method = Checker(X, y).do_check
-        name = Checker.__name__
-        yield method, name
-
-
-class FeatureApiCheck(metaclass=ABCMeta):
+class FeatureApiCheck(BaseCheck):
     """Base class for implementing new Feature API checks
 
-    To add a new check, simply subclass this class and implement the ``check``
-    method.
-
     Args:
-        X: X
-        y: y
+        X (array-like): X
+        y (array-like): y
     """
 
     def __init__(self, X, y):
         self.X = X
         self.y = y
-
-    @ignore(Exception, default=False)
-    @post_processing(constantly(True))
-    def do_check(self, feature):
-        self.check(feature)
-
-    @abstractmethod
-    def check(self, feature):
-        """Check something about the feature, raising an error on failure
-
-        Note that the return value of this method is ignored; the check fails
-        if any Exception is raised, and succeeds otherwise.
-
-        Args:
-            feature (Feature): the feature to check
-
-        Raises:
-            Exception: the provided feature failed the API check
-        """
-        pass
 
 
 class IsFeatureCheck(FeatureApiCheck):

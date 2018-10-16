@@ -2,17 +2,16 @@ from collections import namedtuple
 
 from funcy import collecting, partial, post_processing
 
-import ballet
-import ballet.validation.feature_api
 from ballet.compat import pathlib
 from ballet.contrib import _get_contrib_features
-from ballet.util import make_plural_suffix, whether_failures
+from ballet.util import make_plural_suffix
 from ballet.util.ci import TravisPullRequestBuildDiffer, can_use_travis_differ
 from ballet.util.git import LocalPullRequestBuildDiffer
 from ballet.util.log import logger, stacklog
 from ballet.util.mod import import_module_at_path, relpath_to_modname
-from ballet.validation.base import BaseValidator
+from ballet.validation.base import BaseValidator, check_from_class
 from ballet.validation.diff_checks import DiffCheck
+from ballet.validation.feature_api_checks import FeatureApiCheck
 
 
 def _log_collect_items(name, items):
@@ -20,16 +19,6 @@ def _log_collect_items(name, items):
     s = make_plural_suffix(items)
     logger.info('Collected {n} {name}{s}'.format(n=n, name=name, s=s))
     return items
-
-
-@whether_failures
-def is_admissible(diff, project):
-    for Checker in DiffCheck.__subclasses__():
-        check = Checker(project).do_check
-        name = Checker.__name__
-        success = check(diff)
-        if not success:
-            yield name
 
 
 CollectedChanges = namedtuple(
@@ -99,8 +88,9 @@ class ChangeCollector:
         inadmissible_files = []
 
         for diff in file_diffs:
-            admissible, failures = is_admissible(diff, self.project)
-            if admissible:
+            valid, failures = check_from_class(
+                DiffCheck, diff, self.project)
+            if valid:
                 if pathlib.Path(diff.b_path).parts[-1] != '__init__.py':
                     candidate_feature_diffs.append(diff)
                     logger.debug(
@@ -205,9 +195,9 @@ class FeatureApiValidator(BaseValidator):
 
             result = True
             for feature in features:
-                success, failures = ballet.validation.feature_api.validate(
-                    feature, self.X, self.y)
-                if success:
+                valid, failures = check_from_class(
+                    FeatureApiCheck, feature, self.X, self.y)
+                if valid:
                     logger.info(
                         'Feature {feature!r} is valid'
                         .format(feature=feature))
