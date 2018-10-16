@@ -4,6 +4,8 @@ import pandas as pd
 
 from ballet.eng.base import BaseTransformer, SimpleFunctionTransformer
 from ballet.util import get_arr_desc
+from scipy.special import boxcox1p
+from scipy.stats import skew
 
 __all__ = ['IdentityTransformer', 'ValueReplacer', 'NamedFramer']
 
@@ -12,6 +14,22 @@ class IdentityTransformer(SimpleFunctionTransformer):
     def __init__(self):
         super().__init__(funcy.identity)
 
+class BoxCoxTransformer(BaseTransformer):
+    def __init__(self, threshold, lambda=0):
+        super().__init__()
+        self.threshold = threshold
+        self.lambda = lambda
+
+    def fit(self, X, **fit_args):
+        X = X.copy()
+        skewed_feats = X.apply(lambda x: skew(x.dropna()))
+        feats_to_transform = skewed_feats[abs(skewed_feats) > self.threshold]
+        for feat in feats_to_transform.index:
+            X[feat] = boxcox1p(X[feat], self.lambda)
+        return X
+
+    def transform(self, X, **transform_args):
+        return X
 
 class ValueReplacer(BaseTransformer):
     def __init__(self, value, replacement):
