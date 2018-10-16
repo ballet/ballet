@@ -2,7 +2,8 @@ import os
 import re
 
 import git
-from funcy import ignore, re_find, re_test
+import requests
+from funcy import collecting, ignore, re_find, re_test
 
 PR_REF_PATH_REGEX = re.compile(r'refs/heads/pull/(\d+)')
 
@@ -116,34 +117,30 @@ def set_config_variables(repo, variables):
         repo.git.config(k, v)
 
 
-# deprecated for now
-class PullRequestInfo:
-    def __init__(self, pr_num):
-        self.pr_num = pr_num
-
-    def _format(self, str):
-        return str.format(pr_num=self.pr_num)
-
-    @property
-    def local_ref_name(self):
-        '''Shorthand name of local ref, e.g. 'pull/1' '''
-        return self._format('pull/{pr_num}')
-
-    @property
-    def local_rev_name(self):
-        '''Full name of revision, e.g. 'refs/heads/pull/1' '''
-        return self._format('refs/heads/pull/{pr_num}')
-
-    @property
-    def remote_ref_name(self):
-        '''Full name of remote ref (as on GitHub), e.g. 'refs/pull/1/head' '''
-        return self._format('refs/pull/{pr_num}/head')
+def get_pull_requests(owner, repo, state='closed'):
+    base = 'https://api.github.com'
+    q = '/repos/{owner}/{repo}/pulls'.format(owner=owner, repo=repo)
+    url = base + q
+    headers = {
+        'Accept': 'application/vnd.github.v3+json'
+    }
+    params = {
+        'state': state,
+        'base': 'master',
+        'sort': 'created',
+        'direction': 'asc',
+    }
+    res = requests.get(url, headers=headers, params=params)
+    res.raise_for_status()
+    return res.json()
 
 
-class HeadInfo:
-    def __init__(self, repo):
-        self.head = repo.head
+@collecting
+def get_pull_request_outcomes(owner, repo):
+    prs = get_pull_requests(owner, repo, state='closed')
+    for pr in prs:
+        if pr['merged_at'] is not None:
+            yield 'accepted'
+        else:
+            yield 'rejected'
 
-    @property
-    def path(self):
-        return self.head.ref.path
