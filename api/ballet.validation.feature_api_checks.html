@@ -1,0 +1,426 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ballet.validation.feature_api_checks module &mdash; ballet 0.5.1-dev documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ballet.validation.feature_evaluation module" href="ballet.validation.feature_evaluation.html" />
+    <link rel="prev" title="ballet.validation.diff_checks module" href="ballet.validation.diff_checks.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> ballet
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#stable-release">Stable release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#from-source">From source</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced Usage</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="ballet.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="ballet.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="ballet.eng.html">ballet.eng package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ballet.eng.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.modeling.html">ballet.modeling package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ballet.modeling.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.util.html">ballet.util package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ballet.util.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="reference internal" href="ballet.validation.html">ballet.validation package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="ballet.validation.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ballet.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ballet.compat.html">ballet.compat module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.contrib.html">ballet.contrib module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.exc.html">ballet.exc module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.feature.html">ballet.feature module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.modeler.html">ballet.modeler module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.project.html">ballet.project module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.quickstart.html">ballet.quickstart module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Development Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#types-of-contributions">Types of Contributions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#report-bugs">Report Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#fix-bugs">Fix Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#implement-features">Implement Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#write-documentation">Write Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#submit-feedback">Submit Feedback</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#get-started">Get Started!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#pull-request-guidelines">Pull Request Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#tips">Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#deploying">Deploying</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../authors.html">Credits</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../authors.html#development-lead">Development Lead</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../authors.html#contributors">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">History</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id1">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id2">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id3">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id4">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id5">0.1</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ballet</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="ballet.html">ballet package</a> &raquo;</li>
+        
+          <li><a href="ballet.validation.html">ballet.validation package</a> &raquo;</li>
+        
+      <li>ballet.validation.feature_api_checks module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/HDI-Project/ballet/blob/master/docs/api/ballet.validation.feature_api_checks.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-ballet.validation.feature_api_checks">
+<span id="ballet-validation-feature-api-checks-module"></span><h1>ballet.validation.feature_api_checks module<a class="headerlink" href="#module-ballet.validation.feature_api_checks" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="ballet.validation.feature_api_checks.CanDeepcopyCheck">
+<em class="property">class </em><code class="descclassname">ballet.validation.feature_api_checks.</code><code class="descname">CanDeepcopyCheck</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_api_checks.html#CanDeepcopyCheck"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_api_checks.CanDeepcopyCheck" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ballet.validation.feature_api_checks.FeatureApiCheck" title="ballet.validation.feature_api_checks.FeatureApiCheck"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.feature_api_checks.FeatureApiCheck</span></code></a></p>
+<dl class="method">
+<dt id="ballet.validation.feature_api_checks.CanDeepcopyCheck.check">
+<code class="descname">check</code><span class="sig-paren">(</span><em>feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_api_checks.html#CanDeepcopyCheck.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_api_checks.CanDeepcopyCheck.check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ballet.validation.feature_api_checks.CanFitCheck">
+<em class="property">class </em><code class="descclassname">ballet.validation.feature_api_checks.</code><code class="descname">CanFitCheck</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_api_checks.html#CanFitCheck"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_api_checks.CanFitCheck" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ballet.validation.feature_api_checks.FeatureApiCheck" title="ballet.validation.feature_api_checks.FeatureApiCheck"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.feature_api_checks.FeatureApiCheck</span></code></a></p>
+<dl class="method">
+<dt id="ballet.validation.feature_api_checks.CanFitCheck.check">
+<code class="descname">check</code><span class="sig-paren">(</span><em>feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_api_checks.html#CanFitCheck.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_api_checks.CanFitCheck.check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ballet.validation.feature_api_checks.CanFitTransformCheck">
+<em class="property">class </em><code class="descclassname">ballet.validation.feature_api_checks.</code><code class="descname">CanFitTransformCheck</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_api_checks.html#CanFitTransformCheck"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_api_checks.CanFitTransformCheck" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ballet.validation.feature_api_checks.FeatureApiCheck" title="ballet.validation.feature_api_checks.FeatureApiCheck"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.feature_api_checks.FeatureApiCheck</span></code></a></p>
+<dl class="method">
+<dt id="ballet.validation.feature_api_checks.CanFitTransformCheck.check">
+<code class="descname">check</code><span class="sig-paren">(</span><em>feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_api_checks.html#CanFitTransformCheck.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_api_checks.CanFitTransformCheck.check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ballet.validation.feature_api_checks.CanMakeMapperCheck">
+<em class="property">class </em><code class="descclassname">ballet.validation.feature_api_checks.</code><code class="descname">CanMakeMapperCheck</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_api_checks.html#CanMakeMapperCheck"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_api_checks.CanMakeMapperCheck" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ballet.validation.feature_api_checks.FeatureApiCheck" title="ballet.validation.feature_api_checks.FeatureApiCheck"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.feature_api_checks.FeatureApiCheck</span></code></a></p>
+<dl class="method">
+<dt id="ballet.validation.feature_api_checks.CanMakeMapperCheck.check">
+<code class="descname">check</code><span class="sig-paren">(</span><em>feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_api_checks.html#CanMakeMapperCheck.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_api_checks.CanMakeMapperCheck.check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ballet.validation.feature_api_checks.CanTransformCheck">
+<em class="property">class </em><code class="descclassname">ballet.validation.feature_api_checks.</code><code class="descname">CanTransformCheck</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_api_checks.html#CanTransformCheck"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_api_checks.CanTransformCheck" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ballet.validation.feature_api_checks.FeatureApiCheck" title="ballet.validation.feature_api_checks.FeatureApiCheck"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.feature_api_checks.FeatureApiCheck</span></code></a></p>
+<dl class="method">
+<dt id="ballet.validation.feature_api_checks.CanTransformCheck.check">
+<code class="descname">check</code><span class="sig-paren">(</span><em>feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_api_checks.html#CanTransformCheck.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_api_checks.CanTransformCheck.check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ballet.validation.feature_api_checks.FeatureApiCheck">
+<em class="property">class </em><code class="descclassname">ballet.validation.feature_api_checks.</code><code class="descname">FeatureApiCheck</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_api_checks.html#FeatureApiCheck"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_api_checks.FeatureApiCheck" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ballet.validation.base.html#ballet.validation.base.BaseCheck" title="ballet.validation.base.BaseCheck"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.BaseCheck</span></code></a></p>
+<p>Base class for implementing new Feature API checks</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>X</strong> (<em>array-like</em>) – X</li>
+<li><strong>y</strong> (<em>array-like</em>) – y</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="ballet.validation.feature_api_checks.HasCorrectInputTypeCheck">
+<em class="property">class </em><code class="descclassname">ballet.validation.feature_api_checks.</code><code class="descname">HasCorrectInputTypeCheck</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_api_checks.html#HasCorrectInputTypeCheck"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_api_checks.HasCorrectInputTypeCheck" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ballet.validation.feature_api_checks.FeatureApiCheck" title="ballet.validation.feature_api_checks.FeatureApiCheck"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.feature_api_checks.FeatureApiCheck</span></code></a></p>
+<dl class="method">
+<dt id="ballet.validation.feature_api_checks.HasCorrectInputTypeCheck.check">
+<code class="descname">check</code><span class="sig-paren">(</span><em>feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_api_checks.html#HasCorrectInputTypeCheck.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_api_checks.HasCorrectInputTypeCheck.check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that <cite>input</cite> is a string or iterable of string</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ballet.validation.feature_api_checks.HasCorrectOutputDimensionsCheck">
+<em class="property">class </em><code class="descclassname">ballet.validation.feature_api_checks.</code><code class="descname">HasCorrectOutputDimensionsCheck</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_api_checks.html#HasCorrectOutputDimensionsCheck"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_api_checks.HasCorrectOutputDimensionsCheck" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ballet.validation.feature_api_checks.FeatureApiCheck" title="ballet.validation.feature_api_checks.FeatureApiCheck"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.feature_api_checks.FeatureApiCheck</span></code></a></p>
+<dl class="method">
+<dt id="ballet.validation.feature_api_checks.HasCorrectOutputDimensionsCheck.check">
+<code class="descname">check</code><span class="sig-paren">(</span><em>feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_api_checks.html#HasCorrectOutputDimensionsCheck.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_api_checks.HasCorrectOutputDimensionsCheck.check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ballet.validation.feature_api_checks.HasTransformerInterfaceCheck">
+<em class="property">class </em><code class="descclassname">ballet.validation.feature_api_checks.</code><code class="descname">HasTransformerInterfaceCheck</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_api_checks.html#HasTransformerInterfaceCheck"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_api_checks.HasTransformerInterfaceCheck" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ballet.validation.feature_api_checks.FeatureApiCheck" title="ballet.validation.feature_api_checks.FeatureApiCheck"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.feature_api_checks.FeatureApiCheck</span></code></a></p>
+<dl class="method">
+<dt id="ballet.validation.feature_api_checks.HasTransformerInterfaceCheck.check">
+<code class="descname">check</code><span class="sig-paren">(</span><em>feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_api_checks.html#HasTransformerInterfaceCheck.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_api_checks.HasTransformerInterfaceCheck.check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ballet.validation.feature_api_checks.IsFeatureCheck">
+<em class="property">class </em><code class="descclassname">ballet.validation.feature_api_checks.</code><code class="descname">IsFeatureCheck</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_api_checks.html#IsFeatureCheck"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_api_checks.IsFeatureCheck" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ballet.validation.feature_api_checks.FeatureApiCheck" title="ballet.validation.feature_api_checks.FeatureApiCheck"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.feature_api_checks.FeatureApiCheck</span></code></a></p>
+<dl class="method">
+<dt id="ballet.validation.feature_api_checks.IsFeatureCheck.check">
+<code class="descname">check</code><span class="sig-paren">(</span><em>feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_api_checks.html#IsFeatureCheck.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_api_checks.IsFeatureCheck.check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ballet.validation.feature_api_checks.NoInfiniteValuesCheck">
+<em class="property">class </em><code class="descclassname">ballet.validation.feature_api_checks.</code><code class="descname">NoInfiniteValuesCheck</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_api_checks.html#NoInfiniteValuesCheck"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_api_checks.NoInfiniteValuesCheck" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ballet.validation.feature_api_checks.FeatureApiCheck" title="ballet.validation.feature_api_checks.FeatureApiCheck"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.feature_api_checks.FeatureApiCheck</span></code></a></p>
+<dl class="method">
+<dt id="ballet.validation.feature_api_checks.NoInfiniteValuesCheck.check">
+<code class="descname">check</code><span class="sig-paren">(</span><em>feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_api_checks.html#NoInfiniteValuesCheck.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_api_checks.NoInfiniteValuesCheck.check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ballet.validation.feature_api_checks.NoMissingValuesCheck">
+<em class="property">class </em><code class="descclassname">ballet.validation.feature_api_checks.</code><code class="descname">NoMissingValuesCheck</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_api_checks.html#NoMissingValuesCheck"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_api_checks.NoMissingValuesCheck" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ballet.validation.feature_api_checks.FeatureApiCheck" title="ballet.validation.feature_api_checks.FeatureApiCheck"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.feature_api_checks.FeatureApiCheck</span></code></a></p>
+<dl class="method">
+<dt id="ballet.validation.feature_api_checks.NoMissingValuesCheck.check">
+<code class="descname">check</code><span class="sig-paren">(</span><em>feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_api_checks.html#NoMissingValuesCheck.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_api_checks.NoMissingValuesCheck.check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ballet.validation.feature_evaluation.html" class="btn btn-neutral float-right" title="ballet.validation.feature_evaluation module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ballet.validation.diff_checks.html" class="btn btn-neutral" title="ballet.validation.diff_checks module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Micah Smith
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

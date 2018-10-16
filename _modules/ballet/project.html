@@ -286,6 +286,21 @@
     <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="n">config_get</span><span class="p">,</span> <span class="n">package_root</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="relative_to_contrib"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.relative_to_contrib">[docs]</a><span class="k">def</span> <span class="nf">relative_to_contrib</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">project</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute relative path of changed file to contrib dir</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        diff (git.diff.Diff): file diff</span>
+<span class="sd">        project (Project): project</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Path</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">b_path</span><span class="p">)</span>
+    <span class="n">contrib_path</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">contrib_module_path</span>
+    <span class="k">return</span> <span class="n">path</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">contrib_path</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="Project"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.Project">[docs]</a><span class="k">class</span> <span class="nc">Project</span><span class="p">:</span>
 
     <span class="n">attr_map</span> <span class="o">=</span> <span class="p">{</span>

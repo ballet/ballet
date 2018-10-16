@@ -214,6 +214,10 @@
   <h1>Source code for ballet.validation.base</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
 
+<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">constantly</span><span class="p">,</span> <span class="n">ignore</span><span class="p">,</span> <span class="n">post_processing</span>
+
+<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">whether_failures</span>
+
 
 <div class="viewcode-block" id="BaseValidator"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.BaseValidator">[docs]</a><span class="k">class</span> <span class="nc">BaseValidator</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for a generic validator&quot;&quot;&quot;</span>
@@ -261,6 +265,28 @@
 <span class="sd">            list: list of features to remove</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div></div>
+
+
+<div class="viewcode-block" id="BaseCheck"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.BaseCheck">[docs]</a><span class="k">class</span> <span class="nc">BaseCheck</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
+
+<div class="viewcode-block" id="BaseCheck.do_check"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.BaseCheck.do_check">[docs]</a>    <span class="nd">@ignore</span><span class="p">(</span><span class="ne">Exception</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="nd">@post_processing</span><span class="p">(</span><span class="n">constantly</span><span class="p">(</span><span class="kc">True</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">do_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BaseCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.BaseCheck.check">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">pass</span></div></div>
+
+
+<div class="viewcode-block" id="check_from_class"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.check_from_class">[docs]</a><span class="nd">@whether_failures</span>
+<span class="k">def</span> <span class="nf">check_from_class</span><span class="p">(</span><span class="n">check_class</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="o">*</span><span class="n">checker_args</span><span class="p">,</span> <span class="o">**</span><span class="n">checker_kwargs</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">Checker</span> <span class="ow">in</span> <span class="n">check_class</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">():</span>
+        <span class="n">check</span> <span class="o">=</span> <span class="n">Checker</span><span class="p">(</span><span class="o">*</span><span class="n">checker_args</span><span class="p">,</span> <span class="o">**</span><span class="n">checker_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">do_check</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">Checker</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="n">success</span> <span class="o">=</span> <span class="n">check</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">name</span></div>
 </pre></div>
 
            </div>
