@@ -2,14 +2,13 @@ import os
 
 from funcy import decorator, ignore
 
-import ballet.validation.alpha_investing as alpha_investing
 from ballet.exc import (
     ConfigurationError, FeatureRejected, InvalidFeatureApi,
     InvalidProjectStructure, SkippedValidationTest)
 from ballet.project import Project, load_alpha, save_alpha
 from ballet.util.log import logger, stacklog
 from ballet.validation.alpha_investing import (
-    AlphaInvestingAcceptanceEvaluator, compute_ai, update_ai)
+    AlphaInvestingAcceptanceEvaluator)
 from ballet.validation.feature_evaluation import NoOpPruningEvaluator
 from ballet.validation.project_structure import (
     ChangeCollector, FeatureApiValidator, FileChangeValidator)

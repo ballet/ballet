@@ -2,13 +2,11 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 
 from ballet.feature import make_mapper
-from ballet.validation.base import FeatureAcceptanceEvaluator
 from ballet.util import asarray2d
-
+from ballet.validation.base import FeatureAcceptanceEvaluator
 
 w0 = 0.5
 da = 0.5
-
 
 
 class AlphaInvestingAcceptanceEvaluator(FeatureAcceptanceEvaluator):
@@ -44,21 +42,22 @@ def get_p_value(X, y, xi):
     model1.fit(X1, y)
     error1 = 1 - model1.score(X1, y)
 
-    p = np.exp((error1-error0)*N/(2*error0))
-    assert p>0
+    p = np.exp((error1 - error0) * N / (2 * error0))
+    assert p > 0
     return p
+
 
 def update_ai(a, i, accepted):
     "Given a_i, i, accepted_i, produces a_{i+1}"
-    w = a*(2*(i-1))
+    w = a * (2 * (i - 1))
     w = w - a + da * accepted
     i += 1
-    return w/(2*i)
+    return w / (2 * i)
 
 
 def update_wi(w, i, accepted):
     """Given w_i, i, accepted_i, produces w_{i+1}"""
-    a = w/(2*i)
+    a = w / (2 * i)
     w = w - a + da * accepted
     return w
 
@@ -78,14 +77,14 @@ def compute_parameters(outcomes, w0=w0, da=da):
     wis.append(w)
     i = 1
     for outcome in outcomes:
-        a = w/(2*i)
+        a = w / (2 * i)
         ais.append(a)
         w = w - a + da * (outcome == 'accepted')
         wis.append(w)
         i += 1
 
     # compute a_{i+1} for next iteration
-    a = w/(2*i)
+    a = w / (2 * i)
     ais.append(a)
 
     return ais, wis

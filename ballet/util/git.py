@@ -143,4 +143,3 @@ def get_pull_request_outcomes(owner, repo):
             yield 'accepted'
         else:
             yield 'rejected'
-

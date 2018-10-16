@@ -356,7 +356,7 @@ class GitTest(unittest.TestCase):
         owner = 'foo'
         repo = 'bar'
         state = 'closed'
-        prs = get_pull_requests(owner, repo, state=state)
+        get_pull_requests(owner, repo, state=state)
 
         (url, ), kwargs = mock_requests_get.call_args
         self.assertIn(owner, url)
@@ -364,7 +364,6 @@ class GitTest(unittest.TestCase):
         self.assertIn('headers', kwargs)
         self.assertIn('params', kwargs)
         self.assertEqual(kwargs['params']['state'], state)
-
 
     @patch('ballet.util.git.get_pull_requests')
     def test_get_pull_request_outcomes(self, mock_get_pull_requests):
