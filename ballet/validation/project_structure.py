@@ -1,23 +1,17 @@
-import importlib.machinery
-from abc import ABCMeta, abstractmethod
 from collections import namedtuple
 
-from funcy import collecting, ignore, partial, post_processing, re_test
+from funcy import collecting, partial, post_processing
 
-import ballet
-import ballet.validation.feature_api
 from ballet.compat import pathlib
 from ballet.contrib import _get_contrib_features
-from ballet.util import make_plural_suffix, whether_failures
+from ballet.util import make_plural_suffix
 from ballet.util.ci import TravisPullRequestBuildDiffer, can_use_travis_differ
-from ballet.util.fs import isemptyfile
 from ballet.util.git import LocalPullRequestBuildDiffer
 from ballet.util.log import logger, stacklog
 from ballet.util.mod import import_module_at_path, relpath_to_modname
-from ballet.validation.base import BaseValidator
-
-FEATURE_MODULE_NAME_REGEX = r'feature_[a-zA-Z0-9_]+\.\w+'
-SUBPACKAGE_NAME_REGEX = r'user_[a-zA-Z0-9_]+'
+from ballet.validation.base import BaseValidator, check_from_class
+from ballet.validation.diff_checks import DiffCheck
+from ballet.validation.feature_api_checks import FeatureApiCheck
 
 
 def _log_collect_items(name, items):
@@ -25,106 +19,6 @@ def _log_collect_items(name, items):
     s = make_plural_suffix(items)
     logger.info('Collected {n} {name}{s}'.format(n=n, name=name, s=s))
     return items
-
-
-@whether_failures
-def is_admissible(diff, project):
-    for Checker in DiffCheck.__subclasses__():
-        check = Checker(project).do_check
-        name = Checker.__name__
-        success = check(diff)
-        if not success:
-            yield name
-
-
-class DiffCheck(metaclass=ABCMeta):
-
-    def __init__(self, project):
-        self.project = project
-
-    @ignore(Exception, default=False)
-    def do_check(self, diff):
-        return self.check(diff)
-
-    @abstractmethod
-    def check(self, diff):
-        pass
-
-
-class IsAdditionCheck(DiffCheck):
-
-    def check(self, diff):
-        return diff.change_type == 'A'
-
-
-class IsPythonSourceCheck(DiffCheck):
-
-    def check(self, diff):
-        path = diff.b_path
-        return any(
-            path.endswith(ext)
-            for ext in importlib.machinery.SOURCE_SUFFIXES
-        )
-
-
-class WithinContribCheck(DiffCheck):
-
-    def check(self, diff):
-        path = diff.b_path
-        contrib_path = self.project.contrib_module_path
-        return pathlib.Path(contrib_path) in pathlib.Path(path).parents
-
-
-def relative_to_contrib(diff, project):
-    """Compute relative path of changed file to contrib dir
-
-    Args:
-        diff (git.diff.Diff): file diff
-        project (Project): project
-
-    Returns:
-        Path
-    """
-    path = pathlib.Path(diff.b_path)
-    contrib_path = project.contrib_module_path
-    return path.relative_to(contrib_path)
-
-
-class SubpackageNameCheck(DiffCheck):
-
-    def check(self, diff):
-        relative_path = relative_to_contrib(diff, self.project)
-        subpackage_name = relative_path.parts[0]
-        return re_test(SUBPACKAGE_NAME_REGEX, subpackage_name)
-
-
-class RelativeNameDepthCheck(DiffCheck):
-
-    def check(self, diff):
-        relative_path = relative_to_contrib(diff, self.project)
-        return len(relative_path.parts) == 2
-
-
-class ModuleNameCheck(DiffCheck):
-
-    def check(self, diff):
-        filename = pathlib.Path(diff.b_path).parts[-1]
-        is_valid_feature_module_name = re_test(
-            FEATURE_MODULE_NAME_REGEX, filename)
-        is_valid_init_module_name = filename == '__init__.py'
-        return is_valid_feature_module_name or is_valid_init_module_name
-
-
-class IfInitModuleThenIsEmptyCheck(DiffCheck):
-
-    def check(self, diff):
-        path = pathlib.Path(diff.b_path)
-        filename = path.parts[-1]
-        if filename == '__init__.py':
-            abspath = self.project.path.joinpath(path)
-            return isemptyfile(abspath)
-        else:
-            return True
 
 
 CollectedChanges = namedtuple(
@@ -194,8 +88,9 @@ class ChangeCollector:
         inadmissible_files = []
 
         for diff in file_diffs:
-            admissible, failures = is_admissible(diff, self.project)
-            if admissible:
+            valid, failures = check_from_class(
+                DiffCheck, diff, self.project)
+            if valid:
                 if pathlib.Path(diff.b_path).parts[-1] != '__init__.py':
                     candidate_feature_diffs.append(diff)
                     logger.debug(
@@ -300,9 +195,9 @@ class FeatureApiValidator(BaseValidator):
 
             result = True
             for feature in features:
-                success, failures = ballet.validation.feature_api.validate(
-                    feature, self.X, self.y)
-                if success:
+                valid, failures = check_from_class(
+                    FeatureApiCheck, feature, self.X, self.y)
+                if valid:
                     logger.info(
                         'Feature {feature!r} is valid'
                         .format(feature=feature))

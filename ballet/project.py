@@ -74,6 +74,21 @@ def make_config_get(package_root):
     return partial(config_get, package_root)
 
 
+def relative_to_contrib(diff, project):
+    """Compute relative path of changed file to contrib dir
+
+    Args:
+        diff (git.diff.Diff): file diff
+        project (Project): project
+
+    Returns:
+        Path
+    """
+    path = pathlib.Path(diff.b_path)
+    contrib_path = project.contrib_module_path
+    return path.relative_to(contrib_path)
+
+
 class Project:
 
     attr_map = {
