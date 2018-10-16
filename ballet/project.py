@@ -1,3 +1,4 @@
+import json
 from importlib import import_module
 
 import git
@@ -8,6 +9,7 @@ from ballet.compat import pathlib
 from ballet.exc import ConfigurationError
 from ballet.util.ci import get_travis_pr_num
 from ballet.util.git import get_pr_num
+from ballet.validation.alpha_investing import w0, update_ai
 
 DEFAULT_CONFIG_NAME = 'ballet.yml'
 
@@ -138,3 +140,31 @@ class Project:
             return self._resolve(*Project.attr_map[attr])
         else:
             return object.__getattribute__(self, attr)
+
+
+def get_alpha_file_path(project)
+    return pathlib.Path(project.path).joinpath('.alpha.json')
+
+
+def load_alpha(project):
+    alpha_file = get_alpha_file_path(project)
+    if not alpha_file.exists():
+        with alpha_file.open('w') as f:
+            content = {'a': w0/2, 'i': 1}
+            json.dump(content, f)
+
+    with alpha_file.open('r') as f:
+        content = json.load(f)
+
+    return content['a'], content['i']
+
+
+def save_alpha(project, ai, i, accepted):
+    alpha_file = get_alpha_file_path(project)
+    content = {
+        'a': update_ai(ai, i, accepted),
+        'i': i+1,
+    }
+
+    with alpha_file.open('w') as f:
+        json.dump(content, f)

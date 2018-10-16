@@ -2,13 +2,15 @@ import os
 
 from funcy import decorator, ignore
 
+import ballet.validation.alpha_investing as alpha_investing
 from ballet.exc import (
     ConfigurationError, FeatureRejected, InvalidFeatureApi,
     InvalidProjectStructure, SkippedValidationTest)
-from ballet.project import Project
+from ballet.project import Project, load_alpha, save_alpha
 from ballet.util.log import logger, stacklog
-from ballet.validation.feature_evaluation import (
-    FeatureRedundancyEvaluator, FeatureRelevanceEvaluator)
+from ballet.validation.alpha_investing import (
+    AlphaInvestingAcceptanceEvaluator, compute_ai, update_ai)
+from ballet.validation.feature_evaluation import NoOpPruningEvaluator
 from ballet.validation.project_structure import (
     ChangeCollector, FeatureApiValidator, FileChangeValidator)
 
@@ -78,9 +80,15 @@ def evaluate_feature_performance(project):
 
     out = project.build()
     X_df, y, features = out['X_df'], out['y'], out['features']
-    evaluator = FeatureRelevanceEvaluator(X_df, y, features)
+
+    ai, i = load_alpha(project)
+
+    evaluator = AlphaInvestingAcceptanceEvaluator(X_df, y, features, ai)
     proposed_feature = get_proposed_feature(project)
     accepted = evaluator.judge(proposed_feature)
+
+    save_alpha(project, ai, i, accepted)
+
     if not accepted:
         raise FeatureRejected
 
@@ -92,7 +100,7 @@ def prune_existing_features(project):
 
     out = project.build()
     X_df, y, features = out['X_df'], out['y'], out['features']
-    evaluator = FeatureRedundancyEvaluator(X_df, y, features)
+    evaluator = NoOpPruningEvaluator(X_df, y, features)
     redundant_features = evaluator.prune()
 
     # propose removal
