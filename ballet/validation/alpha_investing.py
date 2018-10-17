@@ -1,6 +1,8 @@
+import json
 import numpy as np
 from sklearn.linear_model import LinearRegression
 
+from ballet.compat import pathlib
 from ballet.feature import make_mapper
 from ballet.util import asarray2d
 from ballet.validation.base import FeatureAcceptanceEvaluator
@@ -93,3 +95,31 @@ def compute_parameters(outcomes, w0=w0, da=da):
 def compute_ai(outcomes, w0=w0, da=da):
     ais, wis = compute_parameters(outcomes, w0=w0, da=da)
     return ais[-1]
+
+
+def get_alpha_file_path(project):
+    return pathlib.Path(project.path).joinpath('.alpha.json')
+
+
+def load_alpha(project):
+    alpha_file = get_alpha_file_path(project)
+    if not alpha_file.exists():
+        with alpha_file.open('w') as f:
+            content = {'a': w0 / 2, 'i': 1}
+            json.dump(content, f)
+
+    with alpha_file.open('r') as f:
+        content = json.load(f)
+
+    return content['a'], content['i']
+
+
+def save_alpha(project, ai, i, accepted):
+    alpha_file = get_alpha_file_path(project)
+    content = {
+        'a': update_ai(ai, i, accepted),
+        'i': i + 1,
+    }
+
+    with alpha_file.open('w') as f:
+        json.dump(content, f)

@@ -5,10 +5,10 @@ from funcy import decorator, ignore
 from ballet.exc import (
     ConfigurationError, FeatureRejected, InvalidFeatureApi,
     InvalidProjectStructure, SkippedValidationTest)
-from ballet.project import Project, load_alpha, save_alpha
+from ballet.project import Project
 from ballet.util.log import logger, stacklog
 from ballet.validation.alpha_investing import (
-    AlphaInvestingAcceptanceEvaluator)
+    AlphaInvestingAcceptanceEvaluator, load_alpha, save_alpha)
 from ballet.validation.feature_evaluation import NoOpPruningEvaluator
 from ballet.validation.project_structure import (
     ChangeCollector, FeatureApiValidator, FileChangeValidator)
