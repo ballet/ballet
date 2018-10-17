@@ -76,7 +76,7 @@ def _get_contrib_features_from_package(package):
                 .format(modname=modname))
             continue
 
-        yield  _get_contrib_feature_from_module(mod)
+        yield _get_contrib_feature_from_module(mod)
 
 
 def _get_contrib_feature_from_module(mod):

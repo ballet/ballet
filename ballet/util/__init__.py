@@ -1,7 +1,9 @@
 from copy import deepcopy
 
 import numpy as np
+import pandas as pd
 from funcy import decorator, lfilter
+import sklearn.datasets
 
 RANDOM_STATE = 1754
 
@@ -74,6 +76,15 @@ def dfilter(call, pred):
         [2, 0]
     """
     return lfilter(pred, call())
+
+
+def load_sklearn_df(name):
+    method_name = 'load_{name}'.format(name=name)
+    method = getattr(sklearn.datasets, method_name)
+    data = method()
+    X_df = pd.DataFrame(data=data.data, columns=data.feature_names)
+    y_df = pd.Series(data.target, name='target')
+    return X_df, y_df
 
 
 class DeepcopyMixin:

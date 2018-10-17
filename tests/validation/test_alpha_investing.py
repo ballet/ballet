@@ -2,7 +2,8 @@ import unittest
 
 import numpy as np
 
-from ballet.validation.alpha_investing import compute_ai, compute_parameters
+from ballet.validation.alpha_investing import (
+    compute_ai, compute_parameters, get_p_value)
 
 
 class AlphaInvestingTest(unittest.TestCase):
@@ -33,3 +34,11 @@ class AlphaInvestingTest(unittest.TestCase):
         self.assertTrue(
             np.all(np.diff(np.array(wis)) < 0)
         )
+
+    def test_get_p_value(self):
+        n = 15
+        X = np.random.rand(n, 4) * 10
+        xi = np.random.rand(n, 1)
+        y = 5 * xi
+        p = get_p_value(X, y, xi)
+        self.assertLess(p, 0.05)

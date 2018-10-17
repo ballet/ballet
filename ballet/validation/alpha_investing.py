@@ -6,6 +6,7 @@ from sklearn.linear_model import LinearRegression
 from ballet.compat import pathlib
 from ballet.feature import make_mapper
 from ballet.util import asarray2d
+from ballet.util.log import logger
 from ballet.validation.base import FeatureAcceptanceEvaluator
 
 w0 = 0.5
@@ -19,33 +20,41 @@ class AlphaInvestingAcceptanceEvaluator(FeatureAcceptanceEvaluator):
         self.ai = ai
 
     def judge(self, feature):
+        logger.info(
+            'Judging feature using alpha investing, alpha={ai}'
+            .format(ai=self.ai))
         mapper_X = make_mapper(self.features)
         X = mapper_X.fit_transform(self.X_df)
         y = self.y
         mapper_xi = make_mapper(feature)
         xi = mapper_xi.fit_transform(self.X_df)
         p = get_p_value(X, y, xi)
+        logger.debug('Got p value {p!r}'.format(p=p))
         return p < self.ai
 
 
 def get_p_value(X, y, xi):
     N = np.size(y, 0)
+    ones = np.ones((N, 1))
     if X is None:
-        X0 = np.ones((N, 1))
+        X0 = ones
     else:
-        X0 = X
+        X0 = np.hstack((ones, X))
 
     X1 = np.hstack((X, asarray2d(xi)))
 
-    model0 = LinearRegression()
+    model0 = LinearRegression(fit_intercept=False)
     model0.fit(X0, y)
-    error0 = 1 - model0.score(X0, y)
+    ypred0 = model0.predict(X0)
+    error0 = np.sum(np.square(y - ypred0))
 
-    model1 = LinearRegression()
+    model1 = LinearRegression(fit_intercept=False)
     model1.fit(X1, y)
-    error1 = 1 - model1.score(X1, y)
+    ypred1 = model1.predict(X1)
+    error1 = np.sum(np.square(y - ypred1))
 
-    p = np.exp((error1 - error0) * N / (2 * error0))
+    p = np.exp((error1 - error0) / (2 * error0 / N))
+
     assert p > 0
     return p
 
