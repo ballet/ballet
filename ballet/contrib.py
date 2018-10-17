@@ -1,8 +1,11 @@
 import pkgutil
 import types
 
+from funcy import collecting, complement, isnone
+
 from ballet.feature import Feature
 from ballet.project import Project
+from ballet.util import dfilter
 from ballet.util.log import logger
 
 __all__ = [
@@ -26,6 +29,8 @@ def get_contrib_features(project_root):
     return _get_contrib_features(contrib)
 
 
+@dfilter(complement(isnone))
+@collecting
 def _get_contrib_features(module):
     """Get contributed features from within given module
 
@@ -43,29 +48,26 @@ def _get_contrib_features(module):
     """
 
     if isinstance(module, types.ModuleType):
-        contrib_features = []
-
         # any module that has a __path__ attribute is also a package
         if hasattr(module, '__path__'):
-            features = _get_contrib_features_from_package(module)
+            yield from _get_contrib_features_from_package(module)
         else:
-            features = _get_contrib_features_from_module(module)
-        contrib_features.extend(features)
-        return contrib_features
+            yield _get_contrib_feature_from_module(module)
     else:
         raise ValueError('Input is not a module')
 
 
+@collecting
 def _get_contrib_features_from_package(package):
-    contrib_features = []
-
     logger.debug(
         'Walking package path {path} to detect modules...'
         .format(path=package.__path__))
+
     for importer, modname, _ in pkgutil.walk_packages(
             path=package.__path__,
             prefix=package.__name__ + '.',
             onerror=logger.error):
+
         try:
             mod = importer.find_module(modname).load_module(modname)
         except ImportError:
@@ -73,34 +75,15 @@ def _get_contrib_features_from_package(package):
                 'Failed to import module {modname}'
                 .format(modname=modname))
             continue
-        features = _get_contrib_features_from_module(mod)
-        contrib_features.extend(features)
 
-    return contrib_features
+        yield  _get_contrib_feature_from_module(mod)
 
 
-def _get_contrib_features_from_module(mod):
-    contrib_features = []
-
+def _get_contrib_feature_from_module(mod):
     logger.debug(
-        'Trying to import contributed feature(s) from module {modname}...'
+        'Trying to import contributed feature from module {modname}...'
         .format(modname=mod.__name__))
 
-    try:
-        feature = _import_contrib_feature_from_feature(mod)
-        contrib_features.append(feature)
-        logger.debug(
-            'Imported 1 feature from {modname} from Feature object'
-            .format(modname=mod.__name__))
-    except ImportError:
-        logger.debug(
-            'Failed to import anything useful from module {modname}'
-            .format(modname=mod.__name__))
-
-    return contrib_features
-
-
-def _import_contrib_feature_from_feature(mod):
     candidates = []
     for attr in dir(mod):
         obj = getattr(mod, attr)
@@ -110,13 +93,19 @@ def _import_contrib_feature_from_feature(mod):
     if len(candidates) == 1:
         feature = candidates[0]
         feature.source = mod.__name__
+        logger.debug(
+            'Imported 1 feature from {modname} from {Feature.__name__} object'
+            .format(modname=mod.__name__, Feature=Feature))
         return feature
     elif len(candidates) > 1:
-        raise ImportError(
-            'Found too many \'Feature\' objects in module {modname}: '
-            '{candidates!r}'
-            .format(modname=mod.__name__, candidates=candidates))
+        logger.debug(
+            'Found too many {Feature.__name__} objects in module {modname}, '
+            'skipping; candidates were {candidates!r}'
+            .format(Feature=Feature, modname=mod.__name__,
+                    candidates=candidates))
+        return None
     else:
-        raise ImportError(
-            'Did not find any \'Feature\' objects in module {modname}'
+        logger.debug(
+            'Failed to import anything useful from module {modname}'
             .format(modname=mod.__name__))
+        return None

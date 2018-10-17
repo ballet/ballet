@@ -1,4 +1,5 @@
 import json
+
 import numpy as np
 from sklearn.linear_model import LinearRegression
 
@@ -13,8 +14,8 @@ da = 0.5
 
 class AlphaInvestingAcceptanceEvaluator(FeatureAcceptanceEvaluator):
 
-    def __init__(self, *args, ai):
-        super().__init__(*args)
+    def __init__(self, X_df, y, features, ai):
+        super().__init__(X_df, y, features)
         self.ai = ai
 
     def judge(self, feature):

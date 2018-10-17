@@ -1,7 +1,7 @@
 from copy import deepcopy
 
 import numpy as np
-from funcy import decorator
+from funcy import decorator, lfilter
 
 RANDOM_STATE = 1754
 
@@ -60,6 +60,20 @@ def has_nans(obj):
     while np.ndim(nans):
         nans = np.any(nans)
     return bool(nans)
+
+
+@decorator
+def dfilter(call, pred):
+    """Decorate a callable with a filter that accepts a predicate
+
+    Example::
+
+        >>> @dfilter(lambda x: x > 0)
+        ... def numbers():
+        ...     return [-1, 2, 0, -2]
+        [2, 0]
+    """
+    return lfilter(pred, call())
 
 
 class DeepcopyMixin:

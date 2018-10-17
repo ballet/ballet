@@ -1,4 +1,3 @@
-import json
 from importlib import import_module
 
 import git
@@ -139,5 +138,3 @@ class Project:
             return self._resolve(*Project.attr_map[attr])
         else:
             return object.__getattribute__(self, attr)
-
-

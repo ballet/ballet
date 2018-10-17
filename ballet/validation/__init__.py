@@ -2,8 +2,9 @@ import os
 
 from funcy import decorator, ignore
 
+from ballet.contrib import _get_contrib_feature_from_module
 from ballet.exc import (
-    ConfigurationError, FeatureRejected, InvalidFeatureApi,
+    Error, ConfigurationError, FeatureRejected, InvalidFeatureApi,
     InvalidProjectStructure, SkippedValidationTest)
 from ballet.project import Project
 from ballet.util.log import logger, stacklog
@@ -36,8 +37,12 @@ class BalletTestTypes:
 def get_proposed_feature(project):
     change_collector = ChangeCollector(project)
     collected_changes = change_collector.collect_changes()
-    # TODO import features
-    return collected_changes.new_feature_info
+    if len(collected_changes.new_feature_info) != 1:
+        raise Error
+    importer, _, _ = collected_changes.new_feature_info[0]
+    module = importer()
+    feature = _get_contrib_feature_from_module(module)
+    return feature
 
 
 def detect_target_type():
