@@ -1,7 +1,8 @@
 import json
 
 import numpy as np
-from sklearn.linear_model import LinearRegression
+from scipy.stats import chi2
+from statsmodels.api import OLS
 
 from ballet.compat import pathlib
 from ballet.feature import make_mapper
@@ -33,29 +34,29 @@ class AlphaInvestingAcceptanceEvaluator(FeatureAcceptanceEvaluator):
         return p < self.ai
 
 
+def compute_log_likelihood(X, y, hasconst=True):
+    return OLS(y, X, hasconst=hasconst).fit().llf
+
+
 def get_p_value(X, y, xi):
+    xi = asarray2d(xi)
     N = np.size(y, 0)
-    ones = np.ones((N, 1))
-    if X is None:
-        X0 = ones
-    else:
-        X0 = np.hstack((ones, X))
+    k = np.size(xi, 1)
 
-    X1 = np.hstack((X, asarray2d(xi)))
+    X0 = np.ones((N, 1))
+    if X is not None:
+        X0 = np.hstack((X0, X))
+    X1 = np.hstack((X0, xi))
 
-    model0 = LinearRegression(fit_intercept=False)
-    model0.fit(X0, y)
-    ypred0 = model0.predict(X0)
-    error0 = np.sum(np.square(y - ypred0))
+    logL0 = compute_log_likelihood(X0, y)
+    logL1 = compute_log_likelihood(X1, y)
 
-    model1 = LinearRegression(fit_intercept=False)
-    model1.fit(X1, y)
-    ypred1 = model1.predict(X1)
-    error1 = np.sum(np.square(y - ypred1))
+    # T ~ chi2Ck)
+    T = -2 * (logL0 - logL1)
+    p = 1 - chi2.cdf(T, k)
 
-    p = np.exp((error1 - error0) / (2 * error0 / N))
+    assert p >= 0
 
-    assert p > 0
     return p
 
 

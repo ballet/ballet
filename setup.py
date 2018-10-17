@@ -26,6 +26,7 @@ requirements = [
     'requests',
     'scikit_learn',
     'sklearn_pandas',
+    'statsmodels',
 ]
 
 setup_requirements = [
