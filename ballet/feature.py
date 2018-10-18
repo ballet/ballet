@@ -11,7 +11,7 @@ from sklearn_pandas.pipeline import TransformerPipeline
 
 from ballet.eng.misc import NullTransformer
 from ballet.exc import UnsuccessfulInputConversionError
-from ballet.util import DeepcopyMixin, asarray2d, indent
+from ballet.util import DeepcopyMixin, asarray2d, indent, quiet
 from ballet.util.log import logger
 
 __all__ = ['make_mapper', 'Feature']
@@ -137,6 +137,7 @@ class DelegatingRobustTransformer(DeepcopyMixin, TransformerMixin):
         else:
             return method(convert(X), **kwargs)
 
+    @quiet
     def _call_robust(self, method, X, y, kwargs):
         if self._stored_conversion_approach is not None:
             approach = self._stored_conversion_approach

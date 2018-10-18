@@ -1,4 +1,7 @@
+from contextlib import redirect_stderr, redirect_stdout
 from copy import deepcopy
+from os import devnull
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -85,6 +88,15 @@ def load_sklearn_df(name):
     X_df = pd.DataFrame(data=data.data, columns=data.feature_names)
     y_df = pd.Series(data.target, name='target')
     return X_df, y_df
+
+
+@decorator
+def quiet(call):
+    with open(devnull, 'w') as fnull:
+        with redirect_stderr(fnull) as err, redirect_stdout(fnull) as out:
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                return call()
 
 
 class DeepcopyMixin:
