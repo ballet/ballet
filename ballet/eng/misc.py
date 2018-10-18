@@ -53,3 +53,10 @@ class NamedFramer(BaseTransformer):
                 raise ValueError(msg.format(get_arr_desc(X)))
 
         raise TypeError(msg.format(get_arr_desc(X)))
+
+
+class NullTransformer(BaseTransformer):
+
+    def transform(self, X, **transform_kwargs):
+        n = np.size(X, 0)
+        return np.empty((n, 0))

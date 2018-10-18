@@ -9,6 +9,7 @@ from sklearn.base import TransformerMixin
 from sklearn_pandas import DataFrameMapper
 from sklearn_pandas.pipeline import TransformerPipeline
 
+from ballet.eng.misc import NullTransformer
 from ballet.exc import UnsuccessfulInputConversionError
 from ballet.util import DeepcopyMixin, asarray2d, indent
 from ballet.util.log import logger
@@ -25,6 +26,8 @@ def make_mapper(features):
     Returns:
         DataFrameMapper: mapper made from features
     """
+    if not features:
+        features = Feature(input=[], transformer=NullTransformer())
     if not iterable(features):
         features = (features, )
     return DataFrameMapper(
