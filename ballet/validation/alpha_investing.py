@@ -1,6 +1,7 @@
 import json
 
 import numpy as np
+from funcy import decorator
 from numpy.linalg.linalg import LinAlgError
 from scipy.stats import chi2
 from statsmodels.api import OLS
@@ -19,6 +20,7 @@ class AlphaInvestingAcceptanceEvaluator(FeatureAcceptanceEvaluator):
 
     def __init__(self, X_df, y, features, ai):
         super().__init__(X_df, y, features)
+        assert ai > 0, f'ai was less than 0: {ai}'
         self.ai = ai
 
     def judge(self, feature):
@@ -35,6 +37,13 @@ class AlphaInvestingAcceptanceEvaluator(FeatureAcceptanceEvaluator):
         return bool(p < self.ai)
 
 
+@decorator
+def replace_invalid(call, pred, value):
+    x = call()
+    return x if not pred(x) else value
+
+
+@replace_invalid(np.isnan, -np.inf)
 def compute_log_likelihood(X, y, hasconst=True):
     try:
         return OLS(y, X, hasconst=hasconst).fit().llf
@@ -56,21 +65,22 @@ def get_p_value(X, y, xi):
     logL0 = compute_log_likelihood(X0, y)
     logL1 = compute_log_likelihood(X1, y)
 
+    assert np.isfinite(logL0), f'No reason for logL0 to be {logL0}'
+
     # T ~ chi2Ck)
     T = -2 * (logL0 - logL1)
     p = 1 - chi2.cdf(T, k)
 
-    assert p >= 0
+    assert p >= 0, f'p was {p}, L0 was {logL0}, L1 was {logL1}, T was {T}'
 
     return p
 
 
-def update_ai(a, i, accepted):
+def update_ai(ai, i, accepted):
     "Given a_i, i, accepted_i, produces a_{i+1}"
-    w = a * (2 * (i - 1))
-    w = w - a + da * accepted
-    i += 1
-    return w / (2 * i)
+    wi = ai * 2 * i
+    wi1 = wi - ai + da * accepted
+    return wi1 / (2 * (i+1))
 
 
 def update_wi(w, i, accepted):
