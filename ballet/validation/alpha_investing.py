@@ -1,6 +1,7 @@
 import json
 
 import numpy as np
+from numpy.linalg.linalg import LinAlgError
 from scipy.stats import chi2
 from statsmodels.api import OLS
 
@@ -31,11 +32,15 @@ class AlphaInvestingAcceptanceEvaluator(FeatureAcceptanceEvaluator):
         xi = mapper_xi.fit_transform(self.X_df)
         p = get_p_value(X, y, xi)
         logger.debug('Got p value {p!r}'.format(p=p))
-        return p < self.ai
+        return bool(p < self.ai)
 
 
 def compute_log_likelihood(X, y, hasconst=True):
-    return OLS(y, X, hasconst=hasconst).fit().llf
+    try:
+        return OLS(y, X, hasconst=hasconst).fit().llf
+    except LinAlgError:
+        logger.debug('Error computing log likelihood; returning -inf')
+        return -np.inf
 
 
 def get_p_value(X, y, xi):
