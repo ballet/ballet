@@ -15,6 +15,7 @@ requirements = [
     'baytune>=0.2.1',
     'cookiecutter',
     'Click>=6.0',
+    'dill',
     'funcy',
     'gitpython',
     'h5py',
@@ -24,7 +25,7 @@ requirements = [
     'pathlib2>=2.1.0; python_version<"3.5"',
     'pyyaml',
     'requests',
-    'scikit_learn',
+    'scikit_learn>=0.20',
     'sklearn_pandas',
     'statsmodels',
 ]
