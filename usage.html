@@ -82,7 +82,15 @@
 <li class="toctree-l2"><a class="reference internal" href="installation.html#from-source">From source</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ballet-projects">Ballet projects</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#project-instantiation">Project instantiation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#developing-new-features">Developing new features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#validating-features">Validating features</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 <p class="caption"><span class="caption-text">Advanced Usage</span></p>
 <ul>
@@ -217,9 +225,129 @@
             
   <div class="section" id="usage">
 <h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
-<p>To use ballet in a project:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ballet</span>
+<div class="section" id="ballet-projects">
+<h2>Ballet projects<a class="headerlink" href="#ballet-projects" title="Permalink to this headline">¶</a></h2>
+<p>In this section, we will describe how the Ballet framework can be leveraged for a hypothetical
+collaborative feature engineering project, which we will call ballet-project.</p>
+<p>Before creating ballet-project, the maintainer must have a training dataset used for developing features and details about
+the prediction problem they are ultimately trying to solve.</p>
+<div class="section" id="project-instantiation">
+<h3>Project instantiation<a class="headerlink" href="#project-instantiation" title="Permalink to this headline">¶</a></h3>
+<p>To instantiate a project, use the <cite>ballet-quickstart</cite> command:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> ballet-quickstart
+<span class="go">full_name [Your Name]: Jane Developer</span>
+<span class="go">email [you@example.com]: jane@developer.org</span>
+<span class="go">github_username [jane]: jane_developer</span>
+<span class="go">project_name [Predict Foo]: Predict house prices</span>
+<span class="go">project_slug [predict_house_prices]: ballet_project</span>
+<span class="go">Select problem_type:</span>
+<span class="go">1 - classification</span>
+<span class="go">2 - regression</span>
+<span class="go">Choose from 1, 2 (1, 2) [1]: 2</span>
+<span class="go">Select classification_type:</span>
+<span class="go">1 - n/a</span>
+<span class="go">2 - binary</span>
+<span class="go">3 - multiclass</span>
+<span class="go">Choose from 1, 2, 3 (1, 2, 3) [1]: 1</span>
+<span class="go">Select classification_scorer:</span>
+<span class="go">1 - n/a</span>
+<span class="go">2 - accuracy</span>
+<span class="go">3 - balanced_accuracy</span>
+<span class="go">4 - average_precision</span>
+<span class="go">5 - brier_score_loss</span>
+<span class="go">6 - f1</span>
+<span class="go">7 - f1_micro</span>
+<span class="go">8 - f1_macro</span>
+<span class="go">9 - f1_weighted</span>
+<span class="go">10 - f1_samples</span>
+<span class="go">11 - neg_log_loss</span>
+<span class="go">12 - precision</span>
+<span class="go">13 - precision_micro</span>
+<span class="go">14 - precision_macro</span>
+<span class="go">15 - precision_weighted</span>
+<span class="go">16 - precision_samples</span>
+<span class="go">17 - recall</span>
+<span class="go">18 - recall_micro</span>
+<span class="go">19 - recall_macro</span>
+<span class="go">20 - recall_weighted</span>
+<span class="go">21 - recall_samples</span>
+<span class="go">22 - roc_auc</span>
+<span class="go">Choose from 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22 (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22) [1]: 1</span>
+<span class="go">Select regression_scorer:</span>
+<span class="go">1 - n/a</span>
+<span class="go">2 - explained_variance</span>
+<span class="go">3 - neg_mean_absolute_error</span>
+<span class="go">4 - neg_mean_squared_error</span>
+<span class="go">5 - neg_mean_squared_log_error</span>
+<span class="go">6 - neg_median_absolute_error</span>
+<span class="go">7 - r2</span>
+<span class="go">Choose from 1, 2, 3, 4, 5, 6, 7 (1, 2, 3, 4, 5, 6, 7) [1]: 5</span>
+<span class="go">Initialized empty Git repository in /tmp/ballet_project/.git/</span>
+<span class="go">[master (root-commit) 95a70e9] Automatically generated files from ballet-quickstart</span>
+<span class="go"> 11 files changed, 252 insertions(+)</span>
+<span class="go"> create mode 100644 .gitignore</span>
+<span class="go"> create mode 100644 .travis.yml</span>
+<span class="go"> create mode 100644 README.md</span>
+<span class="go"> create mode 100644 ballet.yml</span>
+<span class="go"> create mode 100644 ballet_project/__init__.py</span>
+<span class="go"> create mode 100644 ballet_project/conf.py</span>
+<span class="go"> create mode 100644 ballet_project/features/__init__.py</span>
+<span class="go"> create mode 100644 ballet_project/features/contrib/__init__.py</span>
+<span class="go"> create mode 100644 ballet_project/load_data.py</span>
+<span class="go"> create mode 100644 requirements.txt</span>
+<span class="go"> create mode 100755 validate.py</span>
 </pre></div>
+</div>
+<p>This command uses <a class="reference external" href="https://cookiecutter.readthedocs.io/en/latest">cookiecutter</a> to render a templated project using information supplied by the user. The resulting
+files are then committed to a new git repository. Note that the specification of a scorer for the not-chosen problem
+type can be skipped (by selecting <code class="docutils literal notranslate"><span class="pre">n/a</span></code>).</p>
+<p>Let’s see what files have been created:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">.gitignore</span></code>: a reference gitignore file.</li>
+<li><code class="docutils literal notranslate"><span class="pre">.travis.yml</span></code>: a <a class="reference external" href="https://travis-ci.org">Travis CI</a> configuration file pre-configured to run a ballet validation suite.</li>
+<li><code class="docutils literal notranslate"><span class="pre">README.md</span></code>: a basic README for your project.</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal notranslate"><span class="pre">ballet.yml</span></code>: a Ballet configuration file, with details about the prediction problem, the training data, and</dt>
+<dd>location of feature engineering source code.</dd>
+</dl>
+</li>
+<li>ballet_project: a Python package that implements an empty feature engineering pipeline.</li>
+<li><code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>: package dependencies</li>
+<li><code class="docutils literal notranslate"><span class="pre">validate.py</span></code>: a driver script for the validation suite that calls out to Ballet for most functionality.</li>
+</ul>
+</div>
+<div class="section" id="developing-new-features">
+<h3>Developing new features<a class="headerlink" href="#developing-new-features" title="Permalink to this headline">¶</a></h3>
+<p>A contributors wants to develop a new feature for inclusion in the project. First, they fork the project and create a
+new Python subpackage under the “contrib” directory. In this example, the contrib directory is
+<code class="docutils literal notranslate"><span class="pre">ballet_project/features/contrib</span></code>, but it can be changed in <code class="docutils literal notranslate"><span class="pre">ballet.yml</span></code>.</p>
+<ul class="simple">
+<li>The new subpackage must be named like <code class="docutils literal notranslate"><span class="pre">user_&lt;github</span> <span class="pre">username&gt;</span></code>.</li>
+<li>The new submodule that will contain the feature must be named like <code class="docutils literal notranslate"><span class="pre">feature_&lt;feature</span> <span class="pre">name&gt;.py</span></code>.</li>
+</ul>
+<p>Within the feature submodule, the contributor can write arbitrary Python code. Ultimately, a single object that is an
+instance of <code class="docutils literal notranslate"><span class="pre">ballet.Feature</span></code> must be defined; it will be imported by the feature engineering pipeline.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ballet.eng</span>
+<span class="kn">from</span> <span class="nn">ballet</span> <span class="kn">import</span> <span class="n">Feature</span>
+
+<span class="nb">input</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span>
+<span class="n">transformer</span> <span class="o">=</span> <span class="n">ballet</span><span class="o">.</span><span class="n">eng</span><span class="o">.</span><span class="n">misc</span><span class="o">.</span><span class="n">IdentityTransformer</span><span class="p">()</span>
+<span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="n">transformer</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In this example, a feature is defined that will receive column <code class="docutils literal notranslate"><span class="pre">'A'</span></code> from the data and passes it through unmodified.</p>
+<p>The contributor now commits their changes and creates a <a class="reference external" href="https://help.github.com/articles/about-pull-requests/">pull request</a> to the <code class="docutils literal notranslate"><span class="pre">ballet_project</span></code> repository.</p>
+</div>
+<div class="section" id="validating-features">
+<h3>Validating features<a class="headerlink" href="#validating-features" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">ballet_project</span></code> repository has received a new pull request which triggers an automatic evaluation.</p>
+<ol class="arabic simple">
+<li>The PR is downloaded by an external continuous integration service, <a class="reference external" href="https://travis-ci.org">Travis CI</a>.</li>
+</ol>
+<p>2. The <code class="docutils literal notranslate"><span class="pre">validate.py</span></code> script is run, which validates the proposed feature contribution using functionality within
+the <code class="docutils literal notranslate"><span class="pre">ballet.validation</span></code> module.
+3. If the feature can be validated successfully, the PR passes, and the proposed feature can be merged into the project.</p>
+</div>
 </div>
 </div>
 
@@ -268,7 +396,6 @@
         <script type="text/javascript" src="_static/jquery.js"></script>
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
 
   
