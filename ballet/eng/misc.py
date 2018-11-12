@@ -1,13 +1,13 @@
 import funcy
 import numpy as np
 import pandas as pd
-
-from ballet.eng.base import BaseTransformer, SimpleFunctionTransformer
-from ballet.util import get_arr_desc
 from scipy.special import boxcox1p
 from scipy.stats import skew
 
-__all__ = ['IdentityTransformer', 'ValueReplacer', 'NamedFramer']
+from ballet.eng.base import BaseTransformer, SimpleFunctionTransformer
+from ballet.util import get_arr_desc
+
+__all__ = ['IdentityTransformer', 'BoxCoxTransformer' 'ValueReplacer', 'NamedFramer']
 
 
 class IdentityTransformer(SimpleFunctionTransformer):
