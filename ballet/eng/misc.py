@@ -21,16 +21,12 @@ class BoxCoxTransformer(BaseTransformer):
         self.threshold = threshold
         self.lmbda = lmbda
 
-    def fit(self, X, **fit_args):
-        X = X.copy()
-        skewed_feats = X.apply(lambda x: skew(x.dropna()))
-        feats_to_transform = skewed_feats[abs(skewed_feats) > self.threshold]
-        for feat in feats_to_transform.index:
-            X[feat] = boxcox1p(X[feat], self.lmbda)
-        return X
+    def fit(self, X, y=None, **fit_args):
+        self.features_to_transform_ = skew(X) > self.threshold
 
     def transform(self, X, **transform_args):
-        return X
+        return boxcox1p(X[self.features_to_transform_], self.lmbda)
+
 
 
 class ValueReplacer(BaseTransformer):
