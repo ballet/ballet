@@ -27,7 +27,7 @@ class TestMisc(unittest.TestCase):
         ser_unskewed = pd.Series([0,0,0,0,1])
         nparr = np.array([[0,0],[0,0],[0,0],[0,0],[0,1]])
 
-        exp_skew_res = round([0,0,0,0,math.log1p(1)])
+        exp_skew_res = round(np.array([0,0,0,0,math.log1p(1)]))
 
         # test on DF
         df_res = a.fit_transform(df)
