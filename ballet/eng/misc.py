@@ -23,6 +23,7 @@ class BoxCoxTransformer(BaseTransformer):
 
     def fit(self, X, y=None, **fit_args):
         self.features_to_transform_ = skew(X) > self.threshold
+        return self
 
     def transform(self, X, **transform_args):
         return boxcox1p(X[self.features_to_transform_], self.lmbda)
