@@ -21,7 +21,7 @@ class TestMisc(unittest.TestCase):
     def test_box_cox_transformer(self):
         a = ballet.eng.misc.BoxCoxTransformer(threshold=0)
         df = pd.DataFrame()
-        df['skewed'] = [0,0,0,0,0,1]
+        df['skewed'] = [0,0,0,0,1]
         df['unskewed'] = [0,0,0,0,0]
         ser_skewed = pd.Series([0,0,0,0,0])
         ser_unskewed = pd.Series([0,0,0,0,1])
