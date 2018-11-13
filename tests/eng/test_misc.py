@@ -23,11 +23,11 @@ class TestMisc(unittest.TestCase):
         df = pd.DataFrame()
         df['skewed'] = [0,0,0,0,1]
         df['unskewed'] = [0,0,0,0,0]
-        ser_skewed = pd.Series([0,0,0,0,0])
-        ser_unskewed = pd.Series([0,0,0,0,1])
+        ser_skewed = pd.Series([0,0,0,0,1])
+        ser_unskewed = pd.Series([0,0,0,0,0])
         nparr = np.array([[0,0],[0,0],[0,0],[0,0],[0,1]])
 
-        exp_skew_res = np.around(np.array([0,0,0,0,math.log1p(1)]))
+        exp_skew_res = np.around(np.array([0,0,0,0,math.log1p(1)]), 6)
 
         # test on DF
         df_res = a.fit_transform(df)
