@@ -23,12 +23,15 @@ class BoxCoxTransformer(BaseTransformer):
 
     def fit(self, X, y=None, **fit_args):
         self.features_to_transform_ = skew(X) > self.threshold
+        if (isinstance(X, pd.DataFrame)):
+            # Hack to get a mask over columns
+            self.features_to_transform_ = X.columns.putmask(~self.features_to_transform_, None) & X.columns
         return self
 
     def transform(self, X, **transform_args):
         if isinstance(X, pd.DataFrame):
-
-        elif isinstance(X, pd.Series) and self.features_to_transform_ == True:
+            return boxcox1p(X[self.features_to_transform_], self.lmbda)
+        elif isinstance(X, pd.Series) and self.features_to_transform_:
             return boxcox1p(X, self.lmbda)
         elif isinstance(X, np.ndarray):
             return boxcox1p(X[:, self.features_to_transform_], self.lmbda)
