@@ -7,7 +7,7 @@ from scipy.stats import skew
 from ballet.eng.base import BaseTransformer, SimpleFunctionTransformer
 from ballet.util import get_arr_desc
 
-__all__ = ['IdentityTransformer', 'BoxCoxTransformer' 'ValueReplacer', 'NamedFramer']
+__all__ = ['IdentityTransformer', 'BoxCoxTransformer', 'ValueReplacer', 'NamedFramer']
 
 
 class IdentityTransformer(SimpleFunctionTransformer):
