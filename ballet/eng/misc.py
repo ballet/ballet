@@ -26,7 +26,12 @@ class BoxCoxTransformer(BaseTransformer):
         return self
 
     def transform(self, X, **transform_args):
-        return boxcox1p(X[self.features_to_transform_], self.lmbda)
+        if isinstance(X, pd.DataFrame):
+
+        elif isinstance(X, pd.Series) and self.features_to_transform_ == True:
+            return boxcox1p(X, self.lmbda)
+        elif isinstance(X, np.ndarray):
+            return boxcox1p(X[:, self.features_to_transform_], self.lmbda)
 
 
 

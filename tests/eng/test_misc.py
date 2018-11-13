@@ -17,6 +17,9 @@ class TestMisc(unittest.TestCase):
         result = trans.fit_transform(data)
         pd.util.testing.assert_frame_equal(result, expected_result)
 
+    def test_box_cox_transformer(self):
+        a = ballet.eng.misc.BoxCoxTransformer(threshold=0)
+
     def test_named_framer(self):
         name = 'foo'
 
