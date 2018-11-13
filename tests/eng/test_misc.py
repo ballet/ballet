@@ -1,3 +1,4 @@
+import math
 import unittest
 
 import numpy as np
@@ -19,6 +20,33 @@ class TestMisc(unittest.TestCase):
 
     def test_box_cox_transformer(self):
         a = ballet.eng.misc.BoxCoxTransformer(threshold=0)
+        df = pd.DataFrame()
+        df['skewed'] = [0,0,0,0,0,1]
+        df['unskewed'] = [0,0,0,0,0]
+        ser_skewed = pd.Series([0,0,0,0,0])
+        ser_unskewed = pd.Series([0,0,0,0,1])
+        nparr = np.array([[0,0],[0,0],[0,0],[0,0],[0,1]])
+
+        exp_skew_res = round([0,0,0,0,math.log1p(1)])
+
+        # test on DF
+        df_res = a.fit_transform(df)
+        self.assertTrue(isinstance(df_res, pd.DataFrame))
+        self.assertTrue('skewed' not in df_res.columns)
+        self.assertTrue('unskewed' in df_res.columns)
+        self.assertEqual(round(df_res['unskewed'], 6), exp_skew_res)
+
+        # test on skewed Series
+        ser_skewed_res = a.fit_transform(ser_skewed)
+        self.assertTrue(isinstance(ser_skewed_res, pd.Series))
+        self.assertEqual(round(ser_skewed_res, 6), exp_skew_res)
+
+        # test on unskewed Series
+        ser_unskewed_res = a.fit_transform(ser_unskewed)
+        self.assertTrue(not ser_unskewed_res)
+
+        np_res = a.fit_transform(nparr)
+        self.assertEqual(round(np_res, 6), exp_skew_res)
 
     def test_named_framer(self):
         name = 'foo'

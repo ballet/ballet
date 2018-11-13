@@ -22,7 +22,7 @@ class BoxCoxTransformer(BaseTransformer):
         self.lmbda = lmbda
 
     def fit(self, X, y=None, **fit_args):
-        self.features_to_transform_ = skew(X) > self.threshold
+        self.features_to_transform_ = abs(skew(X)) > self.threshold
         if (isinstance(X, pd.DataFrame)):
             # Hack to get a mask over columns
             self.features_to_transform_ = X.columns.putmask(~self.features_to_transform_, None) & X.columns
