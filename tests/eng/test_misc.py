@@ -32,9 +32,9 @@ class TestMisc(unittest.TestCase):
         # test on DF
         df_res = a.fit_transform(df)
         self.assertTrue(isinstance(df_res, pd.DataFrame))
-        self.assertTrue('skewed' not in df_res.columns)
-        self.assertTrue('unskewed' in df_res.columns)
-        self.assertEqual(np.around(df_res['unskewed'], 6), exp_skew_res)
+        self.assertTrue('skewed' in df_res.columns)
+        self.assertTrue('unskewed' not in df_res.columns)
+        self.assertEqual(np.around(df_res['skewed'], 6), exp_skew_res)
 
         # test on skewed Series
         ser_skewed_res = a.fit_transform(ser_skewed)
