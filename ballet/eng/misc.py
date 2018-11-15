@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from scipy.special import boxcox1p
 from scipy.stats import skew
+from sklearn.utils.validation import check_is_fitted
 
 from ballet.eng.base import BaseTransformer, SimpleFunctionTransformer
 from ballet.util import get_arr_desc
@@ -29,13 +30,23 @@ class BoxCoxTransformer(BaseTransformer):
         return self
 
     def transform(self, X, **transform_args):
+        check_is_fitted(self, 'features_to_transform_')
         if isinstance(X, pd.DataFrame):
-            return boxcox1p(X[self.features_to_transform_], self.lmbda)
-        elif isinstance(X, pd.Series) and self.features_to_transform_:
-            return boxcox1p(X, self.lmbda)
+            if isinstance(self.features_to_transform_, pd.Index):
+                return boxcox1p(X[self.features_to_transform_], self.lmbda) if not self.features_to_transform_.empty else X
+            else:
+                msg = "Cannot transform features {} on dataframe {}"
+                raise TypeError(msg.format(get_arr_desc(self.features_to_transform_), get_arr_desc(X)))
+        elif isinstance(X, pd.Series):
+            return boxcox1p(X, self.lmbda) if self.features_to_transform_ else X
         elif isinstance(X, np.ndarray):
-            return boxcox1p(X[:, self.features_to_transform_], self.lmbda)
-
+            return boxcox1p(X[:, self.features_to_transform_], self.lmbda) if self.features_to_transform_.any() else X
+        # base case: if not a matched type, return if features_to_transform is "truthy"
+        elif not self.features_to_transform_:
+            return X
+        else:
+            msg = "Couldn't use boxcox transform on features in {}."
+            raise TypeError(msg.format(get_arr_desc(X)))
 
 
 class ValueReplacer(BaseTransformer):
