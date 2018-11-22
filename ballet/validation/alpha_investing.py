@@ -67,7 +67,7 @@ def get_p_value(X, y, xi):
 
     assert np.isfinite(logL0), f'No reason for logL0 to be {logL0}'
 
-    # T ~ chi2Ck)
+    # T ~ chi2(k)
     T = -2 * (logL0 - logL1)
     p = 1 - chi2.cdf(T, k)
 
