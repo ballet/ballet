@@ -32,7 +32,7 @@ class TestMisc(ArrayLikeEqualityTestingMixin, unittest.TestCase):
         df_res = a.fit_transform(df)
         self.assertTrue(isinstance(df_res, pd.DataFrame))
         self.assertTrue('skewed' in df_res.columns)
-        self.assertTrue('unskewed' not in df_res.columns)
+        self.assertTrue('unskewed' in df_res.columns)
         self.assertArrayAlmostEqual(df_res['skewed'], exp_skew_res)
 
         # test on DF, no skewed columns
