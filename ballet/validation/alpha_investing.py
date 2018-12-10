@@ -20,7 +20,7 @@ class AlphaInvestingAcceptanceEvaluator(FeatureAcceptanceEvaluator):
 
     def __init__(self, X_df, y, features, ai):
         super().__init__(X_df, y, features)
-        assert ai > 0, f'ai was less than 0: {ai}'
+        assert ai > 0, 'ai was less than 0: {0}'.format(ai)
         self.ai = ai
 
     def judge(self, feature):
