@@ -20,7 +20,7 @@ class AlphaInvestingAcceptanceEvaluator(FeatureAcceptanceEvaluator):
 
     def __init__(self, X_df, y, features, ai):
         super().__init__(X_df, y, features)
-        assert ai > 0, 'ai was less than 0: {0}'.format(ai)
+        assert ai > 0, 'ai was less than 0: {ai}'.format(ai=ai)
         self.ai = ai
 
     def judge(self, feature):
@@ -66,13 +66,13 @@ def get_p_value(X, y, xi):
     logL0 = compute_log_likelihood(X0, y)
     logL1 = compute_log_likelihood(X1, y)
 
-    assert np.isfinite(logL0), f'No reason for logL0 to be {logL0}'
+    assert np.isfinite(logL0), 'No reason for logL0 to be {logL0}'.format(logL0=logL0)
 
     # T ~ chi2(k)
     T = -2 * (logL0 - logL1)
     p = 1 - chi2.cdf(T, k)
 
-    assert p >= 0, f'p was {p}, L0 was {logL0}, L1 was {logL1}, T was {T}'
+    assert p >= 0, 'p was {p}, L0 was {logL0}, L1 was {logL1}, T was {T}'.format(p=p, logL0=logL0, logL01=logL1, T=T)
 
     return p
 
