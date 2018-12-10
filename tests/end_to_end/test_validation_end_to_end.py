@@ -183,19 +183,20 @@ def test_end_to_end():
     featurename = 'Z_1'
     submit_feature(repo, contrib_dir, username, featurename, new_feature_str)
     with pytest.raises(CalledProcessError):
-        call_validate_all()
+        call_validate_all(pr=2)
 
     # write another new feature
+    repo.git.checkout('master')
     switch_to_new_branch(repo, 'pull/3')
     new_feature_str = make_feature_str('B')
     username = 'charlie'
     featurename = 'B'
     submit_feature(repo, contrib_dir, username, featurename, new_feature_str)
-    call_validate_all()
+    call_validate_all(pr=3)
 
     # merge PR with master
     repo.git.checkout('master')
-    repo.git.merge('pull/1', no_ff=True)
+    repo.git.merge('pull/3', no_ff=True)
 
     # call different validation routines
     call_validate_all()
