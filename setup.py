@@ -27,7 +27,8 @@ requirements = [
     'requests',
     'scikit_learn>=0.20',
     'sklearn_pandas',
-    'statsmodels',
+    'statsmodels; python_version >= "3.5"', # hack recommended by https://github.com/statsmodels/statsmodels/issues/4651
+    'statsmodels<0.9; python_version == "3.4"',
 ]
 
 setup_requirements = [
