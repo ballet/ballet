@@ -8,10 +8,17 @@ except ImportError:
 
 # pathlib compatibility
 import sys
+import contextlib
+
+redirect_stdout = contextlib.redirect_stdout
 if sys.version_info < (3, 5, 0):
     import pathlib2 as pathlib
+    def redirect_stderr(path):
+        f = open(path, 'w')
+        sys.stderr = f
 else:
     import pathlib  # noqa F401
+    redirect_stderr = contextlib.redirect_stderr
 if sys.version_info < (3, 6, 0):
     safepath = str
 else:

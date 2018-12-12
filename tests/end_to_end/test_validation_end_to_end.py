@@ -17,6 +17,7 @@ from ballet.feature import Feature
 from ballet.quickstart import generate_project
 from ballet.util import get_enum_values
 from ballet.util.git import switch_to_new_branch
+from ballet.util.log import logger
 from ballet.util.mod import import_module_at_path, modname_to_relpath
 from ballet.validation import TEST_TYPE_ENV_VAR, BalletTestTypes
 
@@ -160,6 +161,7 @@ def test_end_to_end():
     call_validate_all()
 
     # branch to a fake PR and write a new feature
+    logger.info('Switching to pull request 1, User Bob, Feature A')
     switch_to_new_branch(repo, 'pull/1')
     new_feature_str = make_feature_str('A')
     username = 'bob'
@@ -167,22 +169,27 @@ def test_end_to_end():
     submit_feature(repo, contrib_dir, username, featurename, new_feature_str)
 
     # call different validation routines
+    logger.info('Validating pull request 1, User Bob, Feature A')
     call_validate_all(pr=1)
 
     # merge PR with master
+    logger.info('Merging into master')
     repo.git.checkout('master')
     repo.git.merge('pull/1', no_ff=True)
 
     # call different validation routines
+    logger.info('Validating after merge')
     call_validate_all()
 
     # write another new feature
+    logger.info('Switching to pull request 2, User Charlie, Feature Z_1')
     switch_to_new_branch(repo, 'pull/2')
     new_feature_str = make_feature_str('Z_1')
     username = 'charlie'
     featurename = 'Z_1'
     submit_feature(repo, contrib_dir, username, featurename, new_feature_str)
     with pytest.raises(CalledProcessError):
+        logger.info('Validating pull request 2, User Charlie, Feature Z_1')
         call_validate_all(pr=2)
 
     # write another new feature

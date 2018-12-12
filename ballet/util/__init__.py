@@ -1,4 +1,4 @@
-from contextlib import redirect_stderr, redirect_stdout
+from ballet.compat import redirect_stderr, redirect_stdout
 from copy import deepcopy
 from os import devnull
 import warnings
