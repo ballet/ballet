@@ -15,6 +15,7 @@ if sys.version_info < (3, 5, 0):
     import pathlib2 as pathlib
     def redirect_stderr(f):
         sys.stderr = f
+        return f
 else:
     import pathlib  # noqa F401
     redirect_stderr = contextlib.redirect_stderr
