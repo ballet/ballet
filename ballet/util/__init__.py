@@ -1,12 +1,13 @@
-from ballet.compat import redirect_stderr, redirect_stdout
+import warnings
 from copy import deepcopy
 from os import devnull
-import warnings
 
 import numpy as np
 import pandas as pd
-from funcy import decorator, lfilter
 import sklearn.datasets
+from funcy import decorator, lfilter
+
+from ballet.compat import redirect_stderr, redirect_stdout
 
 RANDOM_STATE = 1754
 
@@ -93,7 +94,7 @@ def load_sklearn_df(name):
 @decorator
 def quiet(call):
     with open(devnull, 'w') as fnull:
-        with redirect_stderr(fnull) as err, redirect_stdout(fnull) as out:
+        with redirect_stderr(fnull), redirect_stdout(fnull):
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
                 return call()

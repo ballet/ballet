@@ -65,13 +65,13 @@ def get_p_value(X, y, xi):
     logL0 = compute_log_likelihood(X0, y)
     logL1 = compute_log_likelihood(X1, y)
 
-    assert np.isfinite(logL0), 'No reason for logL0 to be {logL0}'.format(logL0=logL0)
+    assert np.isfinite(logL0)
 
     # T ~ chi2(k)
     T = -2 * (logL0 - logL1)
     p = 1 - chi2.cdf(T, k)
 
-    assert p >= 0, 'p was {p}, L0 was {logL0}, L1 was {logL1}, T was {T}'.format(p=p, logL0=logL0, logL01=logL1, T=T)
+    assert p >= 0
 
     return p
 
@@ -79,7 +79,7 @@ def update_ai(ai, i, accepted):
     "Given a_i, i, accepted_i, produces a_{i+1}"
     wi = ai * 2 * i
     wi1 = wi - ai + da * accepted
-    return wi1 / (2 * (i+1))
+    return wi1 / (2 * (i + 1))
 
 
 def update_wi(w, i, accepted):

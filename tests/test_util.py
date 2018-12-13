@@ -1,4 +1,5 @@
 import os
+import sys
 import tempfile
 import types
 import unittest
@@ -9,6 +10,7 @@ import pandas as pd
 from funcy import identity
 
 import ballet
+import ballet.util
 import ballet.util.fs
 import ballet.util.io
 from ballet.compat import pathlib, safepath
@@ -31,6 +33,14 @@ class UtilTest(unittest.TestCase):
 
     @unittest.expectedFailure
     def test_get_arr_desc(self):
+        raise NotImplementedError
+
+    @unittest.expectedFailure
+    def test_get_enum_keys(self):
+        raise NotImplementedError
+
+    @unittest.expectedFailure
+    def test_get_enum_values(self):
         raise NotImplementedError
 
     @unittest.expectedFailure
@@ -73,6 +83,25 @@ class UtilTest(unittest.TestCase):
 
         for obj in objs_without_nans:
             self.assertFalse(ballet.util.has_nans(obj))
+
+    @unittest.expectedFailure
+    def test_dfilter(self):
+        raise NotImplementedError
+
+    @unittest.expectedFailure
+    def test_load_sklearn_df(self):
+        raise NotImplementedError
+
+    def test_quiet_stderr(self):
+        @ballet.util.quiet
+        def f():
+            print('bar', file=sys.stderr)
+
+        # doesn't check that nothing is printed to sys.stderr, but makes sure
+        # the stream is reset properly (esp on py<3.5)
+        stderr = sys.stderr
+        f()
+        self.assertIs(sys.stderr, stderr)
 
     @unittest.expectedFailure
     def test_deepcopy_mixin(self):
