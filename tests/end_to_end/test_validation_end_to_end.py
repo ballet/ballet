@@ -98,7 +98,7 @@ def test_end_to_end():
             X, y, coef = make_regression(
                 n_samples=50, n_features=p, n_informative=q, coef=True,
                 shuffle=True, random_state=1)
-                
+
             # informative columns are 'A', 'B'
             # uninformative columns are 'Z_0', ..., 'Z_11'
             columns = []
@@ -109,7 +109,7 @@ def test_end_to_end():
                     columns.append(other.pop())
                 else:
                     columns.append(informative.pop())
-                
+
             X_df = pd.DataFrame(data=X, columns=columns)
             y_df = pd.Series(y)
             return X_df, y_df
