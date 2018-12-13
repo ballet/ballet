@@ -62,7 +62,7 @@ class TestMisc(ArrayLikeEqualityTestingMixin, unittest.TestCase):
         # test on np arrs
         nparr = np.array([[0,0],[0,0],[0,0],[0,0],[0,1]])
         np_res = a.fit_transform(nparr)
-        self.assertArrayAlmostEqual(np.reshape(np_res, 5), exp_skew_res)
+        self.assertArrayAlmostEqual(np.reshape(np_res, (2,5)), [exp_unskew_res, exp_skew_res])
 
     def test_named_framer(self):
         name = 'foo'
