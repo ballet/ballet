@@ -32,7 +32,6 @@ class AlphaInvestingAcceptanceEvaluator(FeatureAcceptanceEvaluator):
         y = self.y
         mapper_xi = make_mapper(feature)
         xi = mapper_xi.fit_transform(self.X_df)
-        X = remove_candidate_feature(X, xi)
         p = get_p_value(X, y, xi)
         logger.debug('Got p value {p!r}'.format(p=p))
         return bool(p < self.ai)
@@ -75,15 +74,6 @@ def get_p_value(X, y, xi):
     assert p >= 0, 'p was {p}, L0 was {logL0}, L1 was {logL1}, T was {T}'.format(p=p, logL0=logL0, logL01=logL1, T=T)
 
     return p
-
-def remove_candidate_feature(X, xi):
-    k = np.size(xi, 1)
-    n = np.size(X, 1)
-    
-    for i in range(n - k + 1):
-        if np.allclose(X[:, i:(i + k)], xi, rtol= .001):
-            return np.concatenate((X[:, :i], X[:, i + k:]), axis=1)
-    return X
 
 def update_ai(ai, i, accepted):
     "Given a_i, i, accepted_i, produces a_{i+1}"
