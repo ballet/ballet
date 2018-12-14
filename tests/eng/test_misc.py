@@ -1,11 +1,12 @@
-import math
 import unittest
 
 import numpy as np
 import pandas as pd
+from scipy.special import boxcox1p
 
 import ballet.eng.misc
 from ballet.util.testing import ArrayLikeEqualityTestingMixin
+
 
 class TestMisc(ArrayLikeEqualityTestingMixin, unittest.TestCase):
     def setup(self):
@@ -20,49 +21,55 @@ class TestMisc(ArrayLikeEqualityTestingMixin, unittest.TestCase):
         pd.util.testing.assert_frame_equal(result, expected_result)
 
     def test_box_cox_transformer(self):
-        a = ballet.eng.misc.BoxCoxTransformer(threshold=0)
+        threshold = 0.0
+        lmbda = 0.0
+        trans = ballet.eng.misc.BoxCoxTransformer(threshold=threshold,
+                                                  lmbda=lmbda)
 
-        exp_skew_res = np.log1p([0,0,0,0,1])
-        exp_unskew_res = [0,0,0,0,0]
+        skewed = [0., 0., 0., 0., 1.]
+        unskewed = [0., 0., 0., 0., 0.]
+
+        exp_skew_res = boxcox1p(skewed, lmbda)
+        exp_unskew_res = unskewed
 
         # test on DF, one skewed column
         df = pd.DataFrame()
-        df['skewed'] = [0,0,0,0,1]
-        df['unskewed'] = [0,0,0,0,0]
-        df_res = a.fit_transform(df)
-        self.assertTrue(isinstance(df_res, pd.DataFrame))
-        self.assertTrue('skewed' in df_res.columns)
-        self.assertTrue('unskewed' in df_res.columns)
+        df['skewed'] = skewed
+        df['unskewed'] = unskewed
+        df_res = trans.fit_transform(df)
+        self.assertIsInstance(df_res, pd.DataFrame)
+        self.assertIn('skewed', df_res.columns)
+        self.assertIn('unskewed', df_res.columns)
         self.assertArrayAlmostEqual(df_res['skewed'], exp_skew_res)
 
         # test on DF, no skewed columns
         df_unskewed = pd.DataFrame()
-        df_unskewed['col1'] = [0,0,0,0,0]
-        df_unskewed['col2'] = [0,0,0,0,0]
-        df_unskewed_res = a.fit_transform(df_unskewed)
-        self.assertTrue(isinstance(df_unskewed_res, pd.DataFrame))
-        self.assertTrue('col1' in df_unskewed_res.columns)
-        self.assertTrue('col2' in df_unskewed_res.columns)
+        df_unskewed['col1'] = unskewed
+        df_unskewed['col2'] = unskewed
+        df_unskewed_res = trans.fit_transform(df_unskewed)
+        self.assertIsInstance(df_unskewed_res, pd.DataFrame)
+        self.assertIn('col1', df_unskewed_res.columns)
+        self.assertIn('col2', df_unskewed_res.columns)
         self.assertArrayEqual(df_unskewed_res['col1'], exp_unskew_res)
         self.assertArrayEqual(df_unskewed_res['col2'], exp_unskew_res)
 
-
         # test on skewed Series
-        ser_skewed = pd.Series([0,0,0,0,1])
-        ser_skewed_res = a.fit_transform(ser_skewed)
-        self.assertTrue(isinstance(ser_skewed_res, pd.Series))
+        ser_skewed = pd.Series(skewed)
+        ser_skewed_res = trans.fit_transform(ser_skewed)
+        self.assertIsInstance(ser_skewed_res, pd.Series)
         self.assertArrayAlmostEqual(ser_skewed_res, exp_skew_res)
 
         # test on unskewed Series
-        ser_unskewed = pd.Series([0,0,0,0,0])
-        ser_unskewed_res = a.fit_transform(ser_unskewed)
-        self.assertTrue(isinstance(ser_unskewed_res, pd.Series))
+        ser_unskewed = pd.Series(unskewed)
+        ser_unskewed_res = trans.fit_transform(ser_unskewed)
+        self.assertIsInstance(ser_unskewed_res, pd.Series)
         self.assertArrayEqual(ser_unskewed_res, exp_unskew_res)
 
-        # test on np arrs
-        nparr = np.array([[0,0],[0,0],[0,0],[0,0],[0,1]])
-        np_res = a.fit_transform(nparr)
-        self.assertArrayAlmostEqual(np.reshape(np_res, (2,5)), [exp_unskew_res, exp_skew_res])
+        # test on array
+        arr = np.array([unskewed, skewed]).T
+        arr_res = trans.fit_transform(arr)
+        arr_exp = np.vstack((exp_unskew_res, exp_skew_res)).T
+        self.assertArrayAlmostEqual(arr_res, arr_exp)
 
     def test_named_framer(self):
         name = 'foo'
