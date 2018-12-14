@@ -34,9 +34,8 @@ class BoxCoxTransformer(BaseTransformer):
     def transform(self, X, **transform_args):
         check_is_fitted(self, 'features_to_transform_')
 
-        X = X.copy()
-
         if isinstance(X, pd.DataFrame):
+            X = X.copy()
             X.loc[:, self.features_to_transform_] = boxcox1p(
                 X.loc[:, self.features_to_transform_], self.lmbda)
             return X
@@ -45,6 +44,7 @@ class BoxCoxTransformer(BaseTransformer):
                 X, self.lmbda) if self.features_to_transform_ else X
         elif isinstance(X, np.ndarray):
             if self.features_to_transform_.any():
+                X = X.copy()
                 X = X.astype('float')
                 mask = np.tile(self.features_to_transform_, (X.shape[0], 1))
                 np.putmask(X, mask, boxcox1p(
