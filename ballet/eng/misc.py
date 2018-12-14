@@ -8,7 +8,11 @@ from sklearn.utils.validation import check_is_fitted
 from ballet.eng.base import BaseTransformer, SimpleFunctionTransformer
 from ballet.util import get_arr_desc
 
-__all__ = ['IdentityTransformer', 'BoxCoxTransformer', 'ValueReplacer', 'NamedFramer']
+__all__ = [
+    'IdentityTransformer',
+    'BoxCoxTransformer',
+    'ValueReplacer',
+    'NamedFramer']
 
 
 class IdentityTransformer(SimpleFunctionTransformer):
@@ -23,36 +27,37 @@ class BoxCoxTransformer(BaseTransformer):
         self.lmbda = lmbda
 
     def fit(self, X, y=None, **fit_args):
+        # features_to_transform_ is a bool or array[bool]
         self.features_to_transform_ = abs(skew(X)) > self.threshold
-        if (isinstance(X, pd.DataFrame)):
-            # Hack to get a mask over columns
-            self.features_to_transform_ = X.columns.putmask(~self.features_to_transform_, None) & X.columns
         return self
 
     def transform(self, X, **transform_args):
         check_is_fitted(self, 'features_to_transform_')
+
+        X = X.copy()
+
         if isinstance(X, pd.DataFrame):
-            if isinstance(self.features_to_transform_, pd.Index):
-                if not self.features_to_transform_.empty:
-                    X[self.features_to_transform_] = boxcox1p(X[self.features_to_transform_], self.lmbda)
-                return X
-            else:
-                msg = "Cannot transform features {} on dataframe {}"
-                raise TypeError(msg.format(get_arr_desc(self.features_to_transform_), get_arr_desc(X)))
-        elif isinstance(X, pd.Series):
-            return boxcox1p(X, self.lmbda) if self.features_to_transform_ else X
+            X.loc[:, self.features_to_transform_] = boxcox1p(
+                X.loc[:, self.features_to_transform_], self.lmbda)
+            return X
+        elif np.ndim(X) == 1:
+            return boxcox1p(
+                X, self.lmbda) if self.features_to_transform_ else X
         elif isinstance(X, np.ndarray):
             if self.features_to_transform_.any():
-                X = X.astype(float)
-                two_d_mask = [self.features_to_transform_ for i in range(X.shape[0])]
-                np.putmask(X, two_d_mask, boxcox1p(X[:, self.features_to_transform_], self.lmbda))
+                X = X.astype('float')
+                mask = np.tile(self.features_to_transform_, (X.shape[0], 1))
+                np.putmask(X, mask, boxcox1p(
+                    X[:, self.features_to_transform_], self.lmbda))
             return X
-        # base case: if not a matched type, return if features_to_transform is "truthy"
         elif not self.features_to_transform_:
+            # if we wouldn't otherwise have known what to do, we can pass
+            # through X if transformation was not necessary anyways
             return X
         else:
-            msg = "Couldn't use boxcox transform on features in {}."
-            raise TypeError(msg.format(get_arr_desc(X)))
+            raise TypeError(
+                "Couldn't use boxcox transform on features in {}."
+                .format(get_arr_desc(X)))
 
 
 class ValueReplacer(BaseTransformer):
