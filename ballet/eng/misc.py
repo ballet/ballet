@@ -43,7 +43,9 @@ class BoxCoxTransformer(BaseTransformer):
             return boxcox1p(X, self.lmbda) if self.features_to_transform_ else X
         elif isinstance(X, np.ndarray):
             if self.features_to_transform_.any():
-                X[:, self.features_to_transform_] = boxcox1p(X[:, self.features_to_transform_])
+                X = X.astype(float)
+                two_d_mask = [self.features_to_transform_ for i in range(X.shape[0])]
+                np.putmask(X, two_d_mask, boxcox1p(X[:, self.features_to_transform_], self.lmbda))
             return X
         # base case: if not a matched type, return if features_to_transform is "truthy"
         elif not self.features_to_transform_:
