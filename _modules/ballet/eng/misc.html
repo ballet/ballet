@@ -221,16 +221,63 @@
 <span></span><span class="kn">import</span> <span class="nn">funcy</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="k">import</span> <span class="n">boxcox1p</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">skew</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="k">import</span> <span class="n">check_is_fitted</span>
 
 <span class="kn">from</span> <span class="nn">ballet.eng.base</span> <span class="k">import</span> <span class="n">BaseTransformer</span><span class="p">,</span> <span class="n">SimpleFunctionTransformer</span>
 <span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">get_arr_desc</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;IdentityTransformer&#39;</span><span class="p">,</span> <span class="s1">&#39;ValueReplacer&#39;</span><span class="p">,</span> <span class="s1">&#39;NamedFramer&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;IdentityTransformer&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;BoxCoxTransformer&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ValueReplacer&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;NamedFramer&#39;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="IdentityTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.misc.html#ballet.eng.misc.IdentityTransformer">[docs]</a><span class="k">class</span> <span class="nc">IdentityTransformer</span><span class="p">(</span><span class="n">SimpleFunctionTransformer</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">funcy</span><span class="o">.</span><span class="n">identity</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BoxCoxTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.misc.html#ballet.eng.misc.BoxCoxTransformer">[docs]</a><span class="k">class</span> <span class="nc">BoxCoxTransformer</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">lmbda</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lmbda</span> <span class="o">=</span> <span class="n">lmbda</span>
+
+<div class="viewcode-block" id="BoxCoxTransformer.fit"><a class="viewcode-back" href="../../../api/ballet.eng.misc.html#ballet.eng.misc.BoxCoxTransformer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">fit_args</span><span class="p">):</span>
+        <span class="c1"># features_to_transform_ is a bool or array[bool]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">features_to_transform_</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">skew</span><span class="p">(</span><span class="n">X</span><span class="p">))</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="BoxCoxTransformer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.misc.html#ballet.eng.misc.BoxCoxTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_args</span><span class="p">):</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;features_to_transform_&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_to_transform_</span><span class="p">]</span> <span class="o">=</span> <span class="n">boxcox1p</span><span class="p">(</span>
+                <span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_to_transform_</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">lmbda</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">X</span>
+        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">boxcox1p</span><span class="p">(</span>
+                <span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lmbda</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_to_transform_</span> <span class="k">else</span> <span class="n">X</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_to_transform_</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features_to_transform_</span><span class="p">,</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">putmask</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">boxcox1p</span><span class="p">(</span>
+                    <span class="n">X</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_to_transform_</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">lmbda</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">X</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_to_transform_</span><span class="p">:</span>
+            <span class="c1"># if we wouldn&#39;t otherwise have known what to do, we can pass</span>
+            <span class="c1"># through X if transformation was not necessary anyways</span>
+            <span class="k">return</span> <span class="n">X</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Couldn&#39;t use boxcox transform on features in </span><span class="si">{}</span><span class="s2">.&quot;</span>
+                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">get_arr_desc</span><span class="p">(</span><span class="n">X</span><span class="p">)))</span></div></div>
 
 
 <div class="viewcode-block" id="ValueReplacer"><a class="viewcode-back" href="../../../api/ballet.eng.misc.html#ballet.eng.misc.ValueReplacer">[docs]</a><span class="k">class</span> <span class="nc">ValueReplacer</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">):</span>
