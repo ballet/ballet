@@ -45,7 +45,7 @@ def get_proposed_feature(project):
     feature = _get_contrib_feature_from_module(module)
     return feature
 
-def remove_proposed_feature(features, proposed_feature):
+def get_accepted_features(features, proposed_feature):
     for i in range(len(features)):
         if features[i].source == proposed_feature.source:
             return features[:i] + features[i+1:]
@@ -94,7 +94,7 @@ def evaluate_feature_performance(project):
     ai, i = load_alpha(project)
 
     proposed_feature = get_proposed_feature(project)
-    accepted_features = remove_proposed_feature(features, proposed_feature)
+    accepted_features = get_accepted_features(features, proposed_feature)
     evaluator = AlphaInvestingAcceptanceEvaluator(X_df, y, accepted_features, ai)
     accepted = evaluator.judge(proposed_feature)
 
