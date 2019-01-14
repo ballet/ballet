@@ -111,6 +111,16 @@ class DelegatingRobustTransformer(DeepcopyMixin, TransformerMixin):
         name = type(self).__name__
         return '{name}({transformer!r})'.format(
             name=name, transformer=self._transformer)
+    
+    def __eq__(self, other):
+        if isinstance(other, DelegatingRobustTransformer):
+            return False
+        if self._stored_conversion_approach != other._stored_conversion_approach:
+            return False
+        if self._transformer != other._transformer:
+            return False 
+        return True
+
 
     @property
     def _tname(self):
@@ -265,9 +275,27 @@ class Feature:
 
         self.name = name
         self.description = description
-        self.output = output  # unused
+        self.output = output
         self.source = source
         self.options = options if options is not None else {}
+
+    def __eq__(self, other):
+        if not isinstance(other, Feature):
+            return False
+        if self.name != other.name:
+            return False
+        if self.description != other.description:
+            return False
+        if self.output != other.output:
+            return False 
+        if self.source != other.source:
+            return False
+        if self.transformer != other.transformer:
+            return False
+        if self.options != other.options:
+            return False 
+
+        return True
 
     def __repr__(self):
         # TODO use self.__dict__ directly, which respects insertion order
