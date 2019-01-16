@@ -20,6 +20,12 @@ def _check_ext(ext, expected):
 
 
 def write_tabular(obj, filepath):
+    """Write tabular object in HDF5 or pickle format
+
+    Args:
+        obj (array or DataFrame): tabular object to write
+        filepath (path-like): path to write to; must end in '.h5' or '.pkl'
+    """
     _, fn, ext = splitext2(filepath)
     if ext == '.h5':
         _write_tabular_h5(obj, filepath)
@@ -54,6 +60,11 @@ def _write_tabular_h5(obj, filepath):
 
 
 def read_tabular(filepath):
+    """Read tabular object in HDF5 or pickle format
+
+    Args:
+        filepath (path-like): path to read to; must end in '.h5' or '.pkl'
+    """
     _, fn, ext = splitext2(filepath)
     if ext == '.h5':
         return _read_tabular_h5(filepath)

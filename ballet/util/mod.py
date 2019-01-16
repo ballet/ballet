@@ -6,18 +6,18 @@ from ballet.util.log import logger
 
 
 def import_module_from_modname(modname):
-    '''Import module'''
+    """Import module"""
     return importlib.import_module(modname)
 
 
 def import_module_from_relpath(path):
-    '''Import module at relative path to project root'''
+    """Import module at relative path to project root"""
     modname = relpath_to_modname(path)
     return import_module_from_modname(modname)
 
 
 def import_module_at_path(modname, modpath):
-    '''Import module from path that may not be on system path
+    """Import module from path that may not be on system path
 
     Args:
         modname (str): module name from package root, e.g. foo.bar
@@ -37,7 +37,7 @@ def import_module_at_path(modname, modpath):
         >>> modpath = '/home/user/foo/bar'
         >>> import_module_at_path(modname, modpath)
         <module 'foo.bar' from '/home/user/foo/bar/__init__.py'>
-    '''
+    """
     # TODO just keep navigating up in the source tree until an __init__.py is
     # not found?
     # TODO resolve all paths before messing with parents
@@ -89,7 +89,7 @@ def import_module_at_path(modname, modpath):
 
 
 def relpath_to_modname(relpath):
-    '''Convert relative path to module name
+    """Convert relative path to module name
 
     Within a project, a path to the source file is uniquely identified with a
     module name. Relative paths of the form 'foo/bar' are *not* converted to
@@ -102,7 +102,7 @@ def relpath_to_modname(relpath):
     Example:
         >>> relpath_to_modname('ballet/util/_util.py')
         'ballet.util._util'
-    '''
+    """
     parts = pathlib.Path(relpath).parts
     if parts[-1] == '__init__.py':
         parts = parts[:-1]
@@ -119,7 +119,7 @@ def relpath_to_modname(relpath):
 
 
 def modname_to_relpath(modname, project_root=None, add_init=True):
-    '''Convert module name to relative path.
+    """Convert module name to relative path.
 
     The project root is usually needed to detect if the module is a package, in
     which case the relevant file is the `__init__.py` within the subdirectory.
@@ -136,7 +136,7 @@ def modname_to_relpath(modname, project_root=None, add_init=True):
         >>> modname_to_relpath('foo.features',
                                project_root='/path/to/project')
         'foo/features/__init__.py'
-    '''
+    """
     parts = modname.split('.')
     relpath = pathlib.Path('.').joinpath(*parts)
 

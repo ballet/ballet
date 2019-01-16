@@ -16,11 +16,26 @@ __all__ = [
 
 
 class IdentityTransformer(SimpleFunctionTransformer):
+    """Simple transformer that passes through its input"""
+
     def __init__(self):
         super().__init__(funcy.identity)
 
 
 class BoxCoxTransformer(BaseTransformer):
+    """Conditionally apply the Box-Cox transformation
+
+    In the fit stage, determines which variables (columns) have absolute skew
+    above ``threshold``. In the transform stage, applies the Box-Cox
+    transformation of 1+x to each variable selected previously.
+
+    Args:
+        threshold: skew threshold.
+        lmbda (float, default=0.0): Power parameter of the Box-Cox transform.
+
+    See also:
+        https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.boxcox1p.html
+    """
     def __init__(self, threshold, lmbda=0):
         super().__init__()
         self.threshold = threshold
@@ -56,11 +71,18 @@ class BoxCoxTransformer(BaseTransformer):
             return X
         else:
             raise TypeError(
-                "Couldn't use boxcox transform on features in {}."
+                "Couldn't use Box-Cox transform on features in {}."
                 .format(get_arr_desc(X)))
 
 
 class ValueReplacer(BaseTransformer):
+    """Replace instances of some value with some replacement
+
+    Args:
+        value: value to replace (checked by equality testing)
+        replacement: replacement
+    """
+
     def __init__(self, value, replacement):
         super().__init__()
         self.value = value
@@ -74,6 +96,14 @@ class ValueReplacer(BaseTransformer):
 
 
 class NamedFramer(BaseTransformer):
+    """Convert object to named 1d DataFrame
+
+    If transformation is successful, the resulting object is a DataFrame with a
+    ``name`` attribute as given.
+
+    Args:
+        name: name for resulting DataFrame
+    """
     def __init__(self, name):
         super().__init__()
         self.name = name
