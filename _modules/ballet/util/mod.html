@@ -228,18 +228,18 @@
 
 
 <div class="viewcode-block" id="import_module_from_modname"><a class="viewcode-back" href="../../../api/ballet.util.mod.html#ballet.util.mod.import_module_from_modname">[docs]</a><span class="k">def</span> <span class="nf">import_module_from_modname</span><span class="p">(</span><span class="n">modname</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Import module&#39;&#39;&#39;</span>
+    <span class="sd">&quot;&quot;&quot;Import module&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="import_module_from_relpath"><a class="viewcode-back" href="../../../api/ballet.util.mod.html#ballet.util.mod.import_module_from_relpath">[docs]</a><span class="k">def</span> <span class="nf">import_module_from_relpath</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Import module at relative path to project root&#39;&#39;&#39;</span>
+    <span class="sd">&quot;&quot;&quot;Import module at relative path to project root&quot;&quot;&quot;</span>
     <span class="n">modname</span> <span class="o">=</span> <span class="n">relpath_to_modname</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">import_module_from_modname</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="import_module_at_path"><a class="viewcode-back" href="../../../api/ballet.util.mod.html#ballet.util.mod.import_module_at_path">[docs]</a><span class="k">def</span> <span class="nf">import_module_at_path</span><span class="p">(</span><span class="n">modname</span><span class="p">,</span> <span class="n">modpath</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Import module from path that may not be on system path</span>
+    <span class="sd">&quot;&quot;&quot;Import module from path that may not be on system path</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        modname (str): module name from package root, e.g. foo.bar</span>
@@ -259,7 +259,7 @@
 <span class="sd">        &gt;&gt;&gt; modpath = &#39;/home/user/foo/bar&#39;</span>
 <span class="sd">        &gt;&gt;&gt; import_module_at_path(modname, modpath)</span>
 <span class="sd">        &lt;module &#39;foo.bar&#39; from &#39;/home/user/foo/bar/__init__.py&#39;&gt;</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># TODO just keep navigating up in the source tree until an __init__.py is</span>
     <span class="c1"># not found?</span>
     <span class="c1"># TODO resolve all paths before messing with parents</span>
@@ -311,7 +311,7 @@
 
 
 <div class="viewcode-block" id="relpath_to_modname"><a class="viewcode-back" href="../../../api/ballet.util.mod.html#ballet.util.mod.relpath_to_modname">[docs]</a><span class="k">def</span> <span class="nf">relpath_to_modname</span><span class="p">(</span><span class="n">relpath</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Convert relative path to module name</span>
+    <span class="sd">&quot;&quot;&quot;Convert relative path to module name</span>
 
 <span class="sd">    Within a project, a path to the source file is uniquely identified with a</span>
 <span class="sd">    module name. Relative paths of the form &#39;foo/bar&#39; are *not* converted to</span>
@@ -324,7 +324,7 @@
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; relpath_to_modname(&#39;ballet/util/_util.py&#39;)</span>
 <span class="sd">        &#39;ballet.util._util&#39;</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">parts</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">relpath</span><span class="p">)</span><span class="o">.</span><span class="n">parts</span>
     <span class="k">if</span> <span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;__init__.py&#39;</span><span class="p">:</span>
         <span class="n">parts</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -341,7 +341,7 @@
 
 
 <div class="viewcode-block" id="modname_to_relpath"><a class="viewcode-back" href="../../../api/ballet.util.mod.html#ballet.util.mod.modname_to_relpath">[docs]</a><span class="k">def</span> <span class="nf">modname_to_relpath</span><span class="p">(</span><span class="n">modname</span><span class="p">,</span> <span class="n">project_root</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">add_init</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Convert module name to relative path.</span>
+    <span class="sd">&quot;&quot;&quot;Convert module name to relative path.</span>
 
 <span class="sd">    The project root is usually needed to detect if the module is a package, in</span>
 <span class="sd">    which case the relevant file is the `__init__.py` within the subdirectory.</span>
@@ -358,7 +358,7 @@
 <span class="sd">        &gt;&gt;&gt; modname_to_relpath(&#39;foo.features&#39;,</span>
 <span class="sd">                               project_root=&#39;/path/to/project&#39;)</span>
 <span class="sd">        &#39;foo/features/__init__.py&#39;</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">parts</span> <span class="o">=</span> <span class="n">modname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
     <span class="n">relpath</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="o">*</span><span class="n">parts</span><span class="p">)</span>
 
@@ -414,6 +414,7 @@
         <script type="text/javascript" src="../../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
     
 
   

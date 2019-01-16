@@ -249,15 +249,43 @@
 <dt id="ballet.feature.Feature">
 <em class="property">class </em><code class="descclassname">ballet.feature.</code><code class="descname">Feature</code><span class="sig-paren">(</span><em>input</em>, <em>transformer</em>, <em>name=None</em>, <em>description=None</em>, <em>output=None</em>, <em>source=None</em>, <em>options=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/feature.html#Feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.feature.Feature" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A logical feature</p>
+<p>Conceptually, a logical feature is a learned function that maps raw
+variables in one data instance to a vector of feature values. A logical
+feature can produce either a scalar feature value for each instance or a
+vector of feature values, as in the case of an embedding technique like PCA
+or the one-hot encoding of a categorical variable.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>input</strong> (<em>str</em><em>, </em><em>Collection</em><em>[</em><em>str</em><em>]</em>) – required columns from the input
+dataframe needed for the transformation</li>
+<li><strong>transformer</strong> (<em>transformer-like</em>) – instance of class that provides
+fit/transform-style learned transformer</li>
+<li><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – name of the feature</li>
+<li><strong>description</strong> (<em>str</em><em>, </em><em>optional</em>) – description of the feature</li>
+<li><strong>output</strong> (<em>str</em><em>, </em><em>list</em><em>[</em><em>str</em><em>]</em>) – ordered sequence of names of features
+produced by this transformer</li>
+<li><strong>source</strong> (<em>path-like</em>) – the source file in which this feature was defined</li>
+<li><strong>options</strong> (<em>dict</em>) – options</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="ballet.feature.Feature.as_dataframe_mapper">
 <code class="descname">as_dataframe_mapper</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/feature.html#Feature.as_dataframe_mapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.feature.Feature.as_dataframe_mapper" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return standalone DataFrameMapper with this feature</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="ballet.feature.Feature.as_input_transformer_tuple">
 <code class="descname">as_input_transformer_tuple</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/feature.html#Feature.as_input_transformer_tuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.feature.Feature.as_input_transformer_tuple" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return an tuple for passing to DataFrameMapper constructor</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -308,6 +336,7 @@
         <script type="text/javascript" src="../_static/jquery.js"></script>
         <script type="text/javascript" src="../_static/underscore.js"></script>
         <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
     
 
   

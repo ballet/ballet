@@ -247,12 +247,14 @@
 <div class="viewcode-block" id="IsAdditionCheck"><a class="viewcode-back" href="../../../api/ballet.validation.diff_checks.html#ballet.validation.diff_checks.IsAdditionCheck">[docs]</a><span class="k">class</span> <span class="nc">IsAdditionCheck</span><span class="p">(</span><span class="n">DiffCheck</span><span class="p">):</span>
 
 <div class="viewcode-block" id="IsAdditionCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.diff_checks.html#ballet.validation.diff_checks.IsAdditionCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diff</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check that the diff represents the addition of a new file&quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="n">diff</span><span class="o">.</span><span class="n">change_type</span> <span class="o">==</span> <span class="s1">&#39;A&#39;</span></div></div>
 
 
 <div class="viewcode-block" id="IsPythonSourceCheck"><a class="viewcode-back" href="../../../api/ballet.validation.diff_checks.html#ballet.validation.diff_checks.IsPythonSourceCheck">[docs]</a><span class="k">class</span> <span class="nc">IsPythonSourceCheck</span><span class="p">(</span><span class="n">DiffCheck</span><span class="p">):</span>
 
 <div class="viewcode-block" id="IsPythonSourceCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.diff_checks.html#ballet.validation.diff_checks.IsPythonSourceCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diff</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check that the new file introduced is a python source file&quot;&quot;&quot;</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">diff</span><span class="o">.</span><span class="n">b_path</span>
         <span class="k">assert</span> <span class="nb">any</span><span class="p">(</span>
             <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">ext</span><span class="p">)</span>
@@ -263,6 +265,7 @@
 <div class="viewcode-block" id="WithinContribCheck"><a class="viewcode-back" href="../../../api/ballet.validation.diff_checks.html#ballet.validation.diff_checks.WithinContribCheck">[docs]</a><span class="k">class</span> <span class="nc">WithinContribCheck</span><span class="p">(</span><span class="n">DiffCheck</span><span class="p">):</span>
 
 <div class="viewcode-block" id="WithinContribCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.diff_checks.html#ballet.validation.diff_checks.WithinContribCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diff</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check that the new file introduced is within the contrib subdirectory&quot;&quot;&quot;</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">diff</span><span class="o">.</span><span class="n">b_path</span>
         <span class="n">contrib_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">contrib_module_path</span>
         <span class="k">assert</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">contrib_path</span><span class="p">)</span> <span class="ow">in</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">parents</span></div></div>
@@ -271,6 +274,10 @@
 <div class="viewcode-block" id="SubpackageNameCheck"><a class="viewcode-back" href="../../../api/ballet.validation.diff_checks.html#ballet.validation.diff_checks.SubpackageNameCheck">[docs]</a><span class="k">class</span> <span class="nc">SubpackageNameCheck</span><span class="p">(</span><span class="n">DiffCheck</span><span class="p">):</span>
 
 <div class="viewcode-block" id="SubpackageNameCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.diff_checks.html#ballet.validation.diff_checks.SubpackageNameCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diff</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check that the name of the subpackage within contrib is valid</span>
+
+<span class="sd">        The package name must match ``user_[a-zA-Z0-9_]+``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">relative_path</span> <span class="o">=</span> <span class="n">relative_to_contrib</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">)</span>
         <span class="n">subpackage_name</span> <span class="o">=</span> <span class="n">relative_path</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">assert</span> <span class="n">re_test</span><span class="p">(</span><span class="n">SUBPACKAGE_NAME_REGEX</span><span class="p">,</span> <span class="n">subpackage_name</span><span class="p">)</span></div></div>
@@ -279,6 +286,10 @@
 <div class="viewcode-block" id="RelativeNameDepthCheck"><a class="viewcode-back" href="../../../api/ballet.validation.diff_checks.html#ballet.validation.diff_checks.RelativeNameDepthCheck">[docs]</a><span class="k">class</span> <span class="nc">RelativeNameDepthCheck</span><span class="p">(</span><span class="n">DiffCheck</span><span class="p">):</span>
 
 <div class="viewcode-block" id="RelativeNameDepthCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.diff_checks.html#ballet.validation.diff_checks.RelativeNameDepthCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diff</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check that the new file introduced is at the proper depth</span>
+
+<span class="sd">        The proper depth is 2 (contrib/user_example/new_file.py)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">relative_path</span> <span class="o">=</span> <span class="n">relative_to_contrib</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">relative_path</span><span class="o">.</span><span class="n">parts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span></div></div>
 
@@ -286,6 +297,11 @@
 <div class="viewcode-block" id="ModuleNameCheck"><a class="viewcode-back" href="../../../api/ballet.validation.diff_checks.html#ballet.validation.diff_checks.ModuleNameCheck">[docs]</a><span class="k">class</span> <span class="nc">ModuleNameCheck</span><span class="p">(</span><span class="n">DiffCheck</span><span class="p">):</span>
 
 <div class="viewcode-block" id="ModuleNameCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.diff_checks.html#ballet.validation.diff_checks.ModuleNameCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diff</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check that the new file introduced has a valid name</span>
+
+<span class="sd">        The module can either be an __init__.py file or must</span>
+<span class="sd">        match ``feature_[a-zA-Z0-9_]+\.\w+``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">b_path</span><span class="p">)</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">is_valid_feature_module_name</span> <span class="o">=</span> <span class="n">re_test</span><span class="p">(</span>
             <span class="n">FEATURE_MODULE_NAME_REGEX</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
@@ -296,6 +312,7 @@
 <div class="viewcode-block" id="IfInitModuleThenIsEmptyCheck"><a class="viewcode-back" href="../../../api/ballet.validation.diff_checks.html#ballet.validation.diff_checks.IfInitModuleThenIsEmptyCheck">[docs]</a><span class="k">class</span> <span class="nc">IfInitModuleThenIsEmptyCheck</span><span class="p">(</span><span class="n">DiffCheck</span><span class="p">):</span>
 
 <div class="viewcode-block" id="IfInitModuleThenIsEmptyCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.diff_checks.html#ballet.validation.diff_checks.IfInitModuleThenIsEmptyCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diff</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check that if the new file is __init__.py, then it is an empty file&quot;&quot;&quot;</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">b_path</span><span class="p">)</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">filename</span> <span class="o">==</span> <span class="s1">&#39;__init__.py&#39;</span><span class="p">:</span>
@@ -338,6 +355,7 @@
         <script type="text/javascript" src="../../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
     
 
   

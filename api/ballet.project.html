@@ -231,6 +231,26 @@
 <dt id="ballet.project.Project">
 <em class="property">class </em><code class="descclassname">ballet.project.</code><code class="descname">Project</code><span class="sig-paren">(</span><em>package</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/project.html#Project"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.project.Project" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Encapsulate information on a ballet project</p>
+<p>This is a utility class mostly useful for easy access to the project’s
+information from within the ballet.validation package.</p>
+<p>In addition to the defined methods and properties, the following functions
+of the project can be accessed as attributes of a class instance, where
+<code class="docutils literal notranslate"><span class="pre">prj</span></code> refers to the python module of the underlying ballet project:
+- <code class="docutils literal notranslate"><span class="pre">conf</span></code> (<code class="docutils literal notranslate"><span class="pre">prj.conf</span></code>)
+- <code class="docutils literal notranslate"><span class="pre">get</span></code> (<code class="docutils literal notranslate"><span class="pre">prj.conf.get</span></code>)
+- <code class="docutils literal notranslate"><span class="pre">load_data</span></code> (<code class="docutils literal notranslate"><span class="pre">prj.load_data.load_data</span></code>)
+- <code class="docutils literal notranslate"><span class="pre">build</span></code> (<code class="docutils literal notranslate"><span class="pre">prj.features.build</span></code>)
+- <code class="docutils literal notranslate"><span class="pre">get_contrib_features</span></code> (<code class="docutils literal notranslate"><span class="pre">prj.features.get_contrib_features</span></code>)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>package</strong> (<em>ModuleType</em>) – python package representing imported ballet
+project</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="ballet.project.Project.attr_map">
 <code class="descname">attr_map</code><em class="property"> = {'build': ('.features', 'build'), 'conf': ('.conf', None), 'get': ('.conf', 'get'), 'get_contrib_features': ('.features', 'get_contrib_features'), 'load_data': ('.load_data', 'load_data')}</em><a class="headerlink" href="#ballet.project.Project.attr_map" title="Permalink to this definition">¶</a></dt>
@@ -239,34 +259,63 @@
 <dl class="attribute">
 <dt id="ballet.project.Project.contrib_module_path">
 <code class="descname">contrib_module_path</code><a class="headerlink" href="#ballet.project.Project.contrib_module_path" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return the path to the project’s contrib module</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="ballet.project.Project.on_pr">
 <code class="descname">on_pr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/project.html#Project.on_pr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.project.Project.on_pr" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return whether the project has a source tree on a PR</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="ballet.project.Project.path">
 <code class="descname">path</code><a class="headerlink" href="#ballet.project.Project.path" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return the project path</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">package.__file__</span></code> is <code class="docutils literal notranslate"><span class="pre">/foo/foo/__init__.py</span></code>, then project.path
+should be <code class="docutils literal notranslate"><span class="pre">/foo</span></code>.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="ballet.project.Project.pr_num">
 <code class="descname">pr_num</code><a class="headerlink" href="#ballet.project.Project.pr_num" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return the PR number or None if not on a PR</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="ballet.project.Project.repo">
 <code class="descname">repo</code><a class="headerlink" href="#ballet.project.Project.repo" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return a git.Repo object corresponding to this project</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="function">
 <dt id="ballet.project.config_get">
 <code class="descclassname">ballet.project.</code><code class="descname">config_get</code><span class="sig-paren">(</span><em>package_root</em>, <em>*path</em>, <em>default=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/project.html#config_get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.project.config_get" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get a configuration option following a path through the config</p>
+<p>Example usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">config_get</span><span class="p">(</span><span class="s1">&#39;/path/to/package&#39;</span><span class="p">,</span>
+<span class="go">               &#39;problem&#39;, &#39;problem_type_details&#39;, &#39;scorer&#39;,</span>
+<span class="go">               default=&#39;accuracy&#39;)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>package_root</strong> (<em>path-like</em>) – Directory of the ballet project root
+directory, the one usually containing the <code class="docutils literal notranslate"><span class="pre">ballet.yml</span></code> file.</li>
+<li><strong>*path</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – List of config sections and options to follow.</li>
+<li><strong>default</strong> (<em>default=None</em>) – A default value to return in the case that
+the option does not exist.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="ballet.project.find_configs">
@@ -277,7 +326,10 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ConfigurationError</span></code> – No valid config files were found.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>package_root</strong> (<em>path-like</em>) – Directory of the ballet project root
+directory, the one usually containing the <code class="docutils literal notranslate"><span class="pre">ballet.yml</span></code> file.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ConfigurationError</span></code> – No valid config files were found.</td>
 </tr>
 </tbody>
 </table>
@@ -289,12 +341,22 @@
 <dd><p>Get candidate config paths</p>
 <p>Creates a sequence of paths that includes the package root and all of its
 parents, as well as ~/.ballet.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>package_root</strong> (<em>path-like</em>) – Directory of the ballet project root
+directory, the one usually containing the <code class="docutils literal notranslate"><span class="pre">ballet.yml</span></code> file.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="ballet.project.make_config_get">
 <code class="descclassname">ballet.project.</code><code class="descname">make_config_get</code><span class="sig-paren">(</span><em>package_root</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/project.html#make_config_get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.project.make_config_get" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return a function to get configuration options for a specific project</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="ballet.project.relative_to_contrib">
@@ -364,6 +426,7 @@ parents, as well as ~/.ballet.</p>
         <script type="text/javascript" src="../_static/jquery.js"></script>
         <script type="text/javascript" src="../_static/underscore.js"></script>
         <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
     
 
   

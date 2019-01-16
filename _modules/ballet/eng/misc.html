@@ -236,11 +236,26 @@
 
 
 <div class="viewcode-block" id="IdentityTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.misc.html#ballet.eng.misc.IdentityTransformer">[docs]</a><span class="k">class</span> <span class="nc">IdentityTransformer</span><span class="p">(</span><span class="n">SimpleFunctionTransformer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Simple transformer that passes through its input&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">funcy</span><span class="o">.</span><span class="n">identity</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="BoxCoxTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.misc.html#ballet.eng.misc.BoxCoxTransformer">[docs]</a><span class="k">class</span> <span class="nc">BoxCoxTransformer</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Conditionally apply the Box-Cox transformation</span>
+
+<span class="sd">    In the fit stage, determines which variables (columns) have absolute skew</span>
+<span class="sd">    above ``threshold``. In the transform stage, applies the Box-Cox</span>
+<span class="sd">    transformation of 1+x to each variable selected previously.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        threshold: skew threshold.</span>
+<span class="sd">        lmbda (float, default=0.0): Power parameter of the Box-Cox transform.</span>
+
+<span class="sd">    See also:</span>
+<span class="sd">        https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.boxcox1p.html</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">lmbda</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
@@ -276,11 +291,18 @@
             <span class="k">return</span> <span class="n">X</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;Couldn&#39;t use boxcox transform on features in </span><span class="si">{}</span><span class="s2">.&quot;</span>
+                <span class="s2">&quot;Couldn&#39;t use Box-Cox transform on features in </span><span class="si">{}</span><span class="s2">.&quot;</span>
                 <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">get_arr_desc</span><span class="p">(</span><span class="n">X</span><span class="p">)))</span></div></div>
 
 
 <div class="viewcode-block" id="ValueReplacer"><a class="viewcode-back" href="../../../api/ballet.eng.misc.html#ballet.eng.misc.ValueReplacer">[docs]</a><span class="k">class</span> <span class="nc">ValueReplacer</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Replace instances of some value with some replacement</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        value: value to replace (checked by equality testing)</span>
+<span class="sd">        replacement: replacement</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">replacement</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
@@ -294,6 +316,14 @@
 
 
 <div class="viewcode-block" id="NamedFramer"><a class="viewcode-back" href="../../../api/ballet.eng.misc.html#ballet.eng.misc.NamedFramer">[docs]</a><span class="k">class</span> <span class="nc">NamedFramer</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert object to named 1d DataFrame</span>
+
+<span class="sd">    If transformation is successful, the resulting object is a DataFrame with a</span>
+<span class="sd">    ``name`` attribute as given.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        name: name for resulting DataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
@@ -357,6 +387,7 @@
         <script type="text/javascript" src="../../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
     
 
   

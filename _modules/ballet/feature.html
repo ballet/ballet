@@ -472,6 +472,27 @@
 
 
 <div class="viewcode-block" id="Feature"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.feature.Feature">[docs]</a><span class="k">class</span> <span class="nc">Feature</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A logical feature</span>
+
+<span class="sd">    Conceptually, a logical feature is a learned function that maps raw</span>
+<span class="sd">    variables in one data instance to a vector of feature values. A logical</span>
+<span class="sd">    feature can produce either a scalar feature value for each instance or a</span>
+<span class="sd">    vector of feature values, as in the case of an embedding technique like PCA</span>
+<span class="sd">    or the one-hot encoding of a categorical variable.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        input (str, Collection[str]): required columns from the input</span>
+<span class="sd">            dataframe needed for the transformation</span>
+<span class="sd">        transformer (transformer-like): instance of class that provides</span>
+<span class="sd">            fit/transform-style learned transformer</span>
+<span class="sd">        name (str, optional): name of the feature</span>
+<span class="sd">        description (str, optional): description of the feature</span>
+<span class="sd">        output (str, list[str]): ordered sequence of names of features</span>
+<span class="sd">            produced by this transformer</span>
+<span class="sd">        source (path-like): the source file in which this feature was defined</span>
+<span class="sd">        options (dict): options</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="nb">input</span>
@@ -502,9 +523,11 @@
             <span class="n">clsname</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">attrs_str</span><span class="o">=</span><span class="n">attrs_str</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Feature.as_input_transformer_tuple"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.feature.Feature.as_input_transformer_tuple">[docs]</a>    <span class="k">def</span> <span class="nf">as_input_transformer_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return an tuple for passing to DataFrameMapper constructor&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;alias&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">})</span></div>
 
 <div class="viewcode-block" id="Feature.as_dataframe_mapper"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.feature.Feature.as_dataframe_mapper">[docs]</a>    <span class="k">def</span> <span class="nf">as_dataframe_mapper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return standalone DataFrameMapper with this feature&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">DataFrameMapper</span><span class="p">([</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">as_input_transformer_tuple</span><span class="p">()</span>
         <span class="p">],</span> <span class="n">input_df</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div></div>
@@ -545,6 +568,7 @@
         <script type="text/javascript" src="../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
     
 
   

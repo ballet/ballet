@@ -226,11 +226,23 @@
 
 
 <div class="viewcode-block" id="SingleLagger"><a class="viewcode-back" href="../../../api/ballet.eng.ts.html#ballet.eng.ts.SingleLagger">[docs]</a><span class="k">class</span> <span class="nc">SingleLagger</span><span class="p">(</span><span class="n">GroupedFunctionTransformer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Transformer that applies a lag operator to each group</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        lag (int): lag to apply</span>
+<span class="sd">        groupby_kwargs (dict): keyword arguments to pd.DataFrame.groupby</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lag</span><span class="p">,</span> <span class="n">groupby_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="n">lag</span><span class="p">),</span> <span class="n">groupby_kwargs</span><span class="o">=</span><span class="n">groupby_kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="make_multi_lagger"><a class="viewcode-back" href="../../../api/ballet.eng.ts.html#ballet.eng.ts.make_multi_lagger">[docs]</a><span class="k">def</span> <span class="nf">make_multi_lagger</span><span class="p">(</span><span class="n">lags</span><span class="p">,</span> <span class="n">groupby_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return a union of transformers that apply different lags</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        lags (Collection[int]): collection of lags to apply</span>
+<span class="sd">        groupby_kwargs (dict): keyword arguments to pd.DataFrame.groupby</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">laggers</span> <span class="o">=</span> <span class="p">[</span><span class="n">SingleLagger</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">groupby_kwargs</span><span class="o">=</span><span class="n">groupby_kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lags</span><span class="p">]</span>
     <span class="n">feature_union</span> <span class="o">=</span> <span class="n">FeatureUnion</span><span class="p">([</span>
         <span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">lagger</span><span class="p">),</span> <span class="n">lagger</span><span class="p">)</span> <span class="k">for</span> <span class="n">lagger</span> <span class="ow">in</span> <span class="n">laggers</span>
@@ -273,6 +285,7 @@
         <script type="text/javascript" src="../../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
     
 
   

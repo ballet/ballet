@@ -233,12 +233,33 @@
 <dt id="ballet.eng.misc.IdentityTransformer">
 <em class="property">class </em><code class="descclassname">ballet.eng.misc.</code><code class="descname">IdentityTransformer</code><a class="reference internal" href="../_modules/ballet/eng/misc.html#IdentityTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.misc.IdentityTransformer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="ballet.eng.base.html#ballet.eng.base.SimpleFunctionTransformer" title="ballet.eng.base.SimpleFunctionTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.base.SimpleFunctionTransformer</span></code></a></p>
+<p>Simple transformer that passes through its input</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="ballet.eng.misc.BoxCoxTransformer">
 <em class="property">class </em><code class="descclassname">ballet.eng.misc.</code><code class="descname">BoxCoxTransformer</code><span class="sig-paren">(</span><em>threshold</em>, <em>lmbda=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/misc.html#BoxCoxTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.misc.BoxCoxTransformer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="ballet.eng.base.html#ballet.eng.base.BaseTransformer" title="ballet.eng.base.BaseTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.base.BaseTransformer</span></code></a></p>
+<p>Conditionally apply the Box-Cox transformation</p>
+<p>In the fit stage, determines which variables (columns) have absolute skew
+above <code class="docutils literal notranslate"><span class="pre">threshold</span></code>. In the transform stage, applies the Box-Cox
+transformation of 1+x to each variable selected previously.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>threshold</strong> – skew threshold.</li>
+<li><strong>lmbda</strong> (<em>float</em><em>, </em><em>default=0.0</em>) – Power parameter of the Box-Cox transform.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.boxcox1p.html">https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.boxcox1p.html</a></p>
+</div>
 <dl class="method">
 <dt id="ballet.eng.misc.BoxCoxTransformer.fit">
 <code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y=None</em>, <em>**fit_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/misc.html#BoxCoxTransformer.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.misc.BoxCoxTransformer.fit" title="Permalink to this definition">¶</a></dt>
@@ -255,6 +276,19 @@
 <dt id="ballet.eng.misc.ValueReplacer">
 <em class="property">class </em><code class="descclassname">ballet.eng.misc.</code><code class="descname">ValueReplacer</code><span class="sig-paren">(</span><em>value</em>, <em>replacement</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/misc.html#ValueReplacer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.misc.ValueReplacer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="ballet.eng.base.html#ballet.eng.base.BaseTransformer" title="ballet.eng.base.BaseTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.base.BaseTransformer</span></code></a></p>
+<p>Replace instances of some value with some replacement</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>value</strong> – value to replace (checked by equality testing)</li>
+<li><strong>replacement</strong> – replacement</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="ballet.eng.misc.ValueReplacer.transform">
 <code class="descname">transform</code><span class="sig-paren">(</span><em>X</em>, <em>**transform_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/misc.html#ValueReplacer.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.misc.ValueReplacer.transform" title="Permalink to this definition">¶</a></dt>
@@ -266,6 +300,17 @@
 <dt id="ballet.eng.misc.NamedFramer">
 <em class="property">class </em><code class="descclassname">ballet.eng.misc.</code><code class="descname">NamedFramer</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/misc.html#NamedFramer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.misc.NamedFramer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="ballet.eng.base.html#ballet.eng.base.BaseTransformer" title="ballet.eng.base.BaseTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.base.BaseTransformer</span></code></a></p>
+<p>Convert object to named 1d DataFrame</p>
+<p>If transformation is successful, the resulting object is a DataFrame with a
+<code class="docutils literal notranslate"><span class="pre">name</span></code> attribute as given.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> – name for resulting DataFrame</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="ballet.eng.misc.NamedFramer.transform">
 <code class="descname">transform</code><span class="sig-paren">(</span><em>X</em>, <em>**transform_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/misc.html#NamedFramer.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.misc.NamedFramer.transform" title="Permalink to this definition">¶</a></dt>
@@ -320,6 +365,7 @@
         <script type="text/javascript" src="../_static/jquery.js"></script>
         <script type="text/javascript" src="../_static/underscore.js"></script>
         <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
     
 
   

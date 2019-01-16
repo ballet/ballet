@@ -237,6 +237,10 @@
 
 <span class="sd">    Creates a sequence of paths that includes the package root and all of its</span>
 <span class="sd">    parents, as well as ~/.ballet.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        package_root (path-like): Directory of the ballet project root</span>
+<span class="sd">            directory, the one usually containing the ``ballet.yml`` file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">package_root</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">package_root</span><span class="p">)</span>
 
@@ -261,6 +265,10 @@
 
 <span class="sd">    See if any of the candidates returned by get_config_paths are valid.</span>
 
+<span class="sd">    Args:</span>
+<span class="sd">        package_root (path-like): Directory of the ballet project root</span>
+<span class="sd">            directory, the one usually containing the ``ballet.yml`` file.</span>
+
 <span class="sd">    Raises:</span>
 <span class="sd">        ConfigurationError: No valid config files were found.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -278,6 +286,21 @@
 
 
 <div class="viewcode-block" id="config_get"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.config_get">[docs]</a><span class="k">def</span> <span class="nf">config_get</span><span class="p">(</span><span class="n">package_root</span><span class="p">,</span> <span class="o">*</span><span class="n">path</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get a configuration option following a path through the config</span>
+
+<span class="sd">    Example usage:</span>
+
+<span class="sd">        &gt;&gt;&gt; config_get(&#39;/path/to/package&#39;,</span>
+<span class="sd">                       &#39;problem&#39;, &#39;problem_type_details&#39;, &#39;scorer&#39;,</span>
+<span class="sd">                       default=&#39;accuracy&#39;)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        package_root (path-like): Directory of the ballet project root</span>
+<span class="sd">            directory, the one usually containing the ``ballet.yml`` file.</span>
+<span class="sd">        *path (list[str]): List of config sections and options to follow.</span>
+<span class="sd">        default (default=None): A default value to return in the case that</span>
+<span class="sd">            the option does not exist.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">configs</span> <span class="o">=</span> <span class="n">find_configs</span><span class="p">(</span><span class="n">package_root</span><span class="p">)</span>
 
     <span class="n">o</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>
@@ -290,6 +313,11 @@
 
 
 <div class="viewcode-block" id="make_config_get"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.make_config_get">[docs]</a><span class="k">def</span> <span class="nf">make_config_get</span><span class="p">(</span><span class="n">package_root</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return a function to get configuration options for a specific project</span>
+
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">package_root</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">package_root</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="n">config_get</span><span class="p">,</span> <span class="n">package_root</span><span class="p">)</span></div>
 
@@ -310,6 +338,24 @@
 
 
 <div class="viewcode-block" id="Project"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.Project">[docs]</a><span class="k">class</span> <span class="nc">Project</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Encapsulate information on a ballet project</span>
+
+<span class="sd">    This is a utility class mostly useful for easy access to the project&#39;s</span>
+<span class="sd">    information from within the ballet.validation package.</span>
+
+<span class="sd">    In addition to the defined methods and properties, the following functions</span>
+<span class="sd">    of the project can be accessed as attributes of a class instance, where</span>
+<span class="sd">    ``prj`` refers to the python module of the underlying ballet project:</span>
+<span class="sd">    - ``conf`` (``prj.conf``)</span>
+<span class="sd">    - ``get`` (``prj.conf.get``)</span>
+<span class="sd">    - ``load_data`` (``prj.load_data.load_data``)</span>
+<span class="sd">    - ``build`` (``prj.features.build``)</span>
+<span class="sd">    - ``get_contrib_features`` (``prj.features.get_contrib_features``)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        package (ModuleType): python package representing imported ballet</span>
+<span class="sd">            project</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">attr_map</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;conf&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;.conf&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
@@ -331,26 +377,33 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">pr_num</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the PR number or None if not on a PR&quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">get_pr_num</span><span class="p">(</span><span class="n">repo</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">get_travis_pr_num</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">result</span>
 
 <div class="viewcode-block" id="Project.on_pr"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.Project.on_pr">[docs]</a>    <span class="k">def</span> <span class="nf">on_pr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return whether the project has a source tree on a PR&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># If package.__file__ is `/foo/foo/__init__.py`, then project.path</span>
-        <span class="c1"># should be `/foo`</span>
+        <span class="sd">&quot;&quot;&quot;Return the project path</span>
+
+<span class="sd">        If ``package.__file__`` is ``/foo/foo/__init__.py``, then project.path</span>
+<span class="sd">        should be ``/foo``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">repo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a git.Repo object corresponding to this project&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">search_parent_directories</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">contrib_module_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the path to the project&#39;s contrib module&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;contrib&#39;</span><span class="p">,</span> <span class="s1">&#39;module_path&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
@@ -395,6 +448,7 @@
         <script type="text/javascript" src="../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
     
 
   

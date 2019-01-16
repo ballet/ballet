@@ -245,13 +245,14 @@
 <div class="viewcode-block" id="IsFeatureCheck"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api_checks.html#ballet.validation.feature_api_checks.IsFeatureCheck">[docs]</a><span class="k">class</span> <span class="nc">IsFeatureCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
 
 <div class="viewcode-block" id="IsFeatureCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api_checks.html#ballet.validation.feature_api_checks.IsFeatureCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check that the object is an instance of ballet.Feature&quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">Feature</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="HasCorrectInputTypeCheck"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api_checks.html#ballet.validation.feature_api_checks.HasCorrectInputTypeCheck">[docs]</a><span class="k">class</span> <span class="nc">HasCorrectInputTypeCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
 
 <div class="viewcode-block" id="HasCorrectInputTypeCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api_checks.html#ballet.validation.feature_api_checks.HasCorrectInputTypeCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check that `input` is a string or iterable of string&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Check that the feature&#39;s `input` is a str or Iterable[str]&quot;&quot;&quot;</span>
         <span class="nb">input</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">input</span>
         <span class="n">is_str</span> <span class="o">=</span> <span class="n">isa</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
         <span class="n">is_nested_str</span> <span class="o">=</span> <span class="n">all_fn</span><span class="p">(</span>
@@ -262,6 +263,7 @@
 <div class="viewcode-block" id="HasTransformerInterfaceCheck"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api_checks.html#ballet.validation.feature_api_checks.HasTransformerInterfaceCheck">[docs]</a><span class="k">class</span> <span class="nc">HasTransformerInterfaceCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
 
 <div class="viewcode-block" id="HasTransformerInterfaceCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api_checks.html#ballet.validation.feature_api_checks.HasTransformerInterfaceCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check that the feature has a fit/transform/fit_tranform interface&quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">transformer</span><span class="p">,</span> <span class="s1">&#39;fit&#39;</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">transformer</span><span class="p">,</span> <span class="s1">&#39;transform&#39;</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">transformer</span><span class="p">,</span> <span class="s1">&#39;fit_transform&#39;</span><span class="p">)</span></div></div>
@@ -270,12 +272,14 @@
 <div class="viewcode-block" id="CanMakeMapperCheck"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api_checks.html#ballet.validation.feature_api_checks.CanMakeMapperCheck">[docs]</a><span class="k">class</span> <span class="nc">CanMakeMapperCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
 
 <div class="viewcode-block" id="CanMakeMapperCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api_checks.html#ballet.validation.feature_api_checks.CanMakeMapperCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check that the feature can be converted to a DataFrameMapper&quot;&quot;&quot;</span>
         <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span></div></div>
 
 
 <div class="viewcode-block" id="CanFitCheck"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api_checks.html#ballet.validation.feature_api_checks.CanFitCheck">[docs]</a><span class="k">class</span> <span class="nc">CanFitCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
 
 <div class="viewcode-block" id="CanFitCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api_checks.html#ballet.validation.feature_api_checks.CanFitCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check that fit can be called on reference data&quot;&quot;&quot;</span>
         <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
         <span class="n">mapper</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div></div>
 
@@ -283,6 +287,7 @@
 <div class="viewcode-block" id="CanTransformCheck"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api_checks.html#ballet.validation.feature_api_checks.CanTransformCheck">[docs]</a><span class="k">class</span> <span class="nc">CanTransformCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
 
 <div class="viewcode-block" id="CanTransformCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api_checks.html#ballet.validation.feature_api_checks.CanTransformCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check that transform can be called on reference data&quot;&quot;&quot;</span>
         <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
         <span class="n">mapper</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
         <span class="n">mapper</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">)</span></div></div>
@@ -291,6 +296,7 @@
 <div class="viewcode-block" id="CanFitTransformCheck"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api_checks.html#ballet.validation.feature_api_checks.CanFitTransformCheck">[docs]</a><span class="k">class</span> <span class="nc">CanFitTransformCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
 
 <div class="viewcode-block" id="CanFitTransformCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api_checks.html#ballet.validation.feature_api_checks.CanFitTransformCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check that fit_transform can be called on reference data&quot;&quot;&quot;</span>
         <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
         <span class="n">mapper</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div></div>
 
@@ -298,6 +304,11 @@
 <div class="viewcode-block" id="HasCorrectOutputDimensionsCheck"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api_checks.html#ballet.validation.feature_api_checks.HasCorrectOutputDimensionsCheck">[docs]</a><span class="k">class</span> <span class="nc">HasCorrectOutputDimensionsCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
 
 <div class="viewcode-block" id="HasCorrectOutputDimensionsCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api_checks.html#ballet.validation.feature_api_checks.HasCorrectOutputDimensionsCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check that the dimensions of the transformed data are correct</span>
+
+<span class="sd">        For input X, an n x p array, a n x q array should be produced,</span>
+<span class="sd">        where q is the number of features produced by the logical feature.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">mapper</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div></div>
@@ -306,12 +317,17 @@
 <div class="viewcode-block" id="CanDeepcopyCheck"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api_checks.html#ballet.validation.feature_api_checks.CanDeepcopyCheck">[docs]</a><span class="k">class</span> <span class="nc">CanDeepcopyCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
 
 <div class="viewcode-block" id="CanDeepcopyCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api_checks.html#ballet.validation.feature_api_checks.CanDeepcopyCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check that the feature can be deepcopied</span>
+
+<span class="sd">        This is needed for execution of the overall transformation pipeline</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">deepcopy</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="NoMissingValuesCheck"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api_checks.html#ballet.validation.feature_api_checks.NoMissingValuesCheck">[docs]</a><span class="k">class</span> <span class="nc">NoMissingValuesCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
 
 <div class="viewcode-block" id="NoMissingValuesCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api_checks.html#ballet.validation.feature_api_checks.NoMissingValuesCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check that the output of the transformer has no missing values&quot;&quot;&quot;</span>
         <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">mapper</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
         <span class="k">assert</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">X</span><span class="p">))</span></div></div>
@@ -320,6 +336,7 @@
 <div class="viewcode-block" id="NoInfiniteValuesCheck"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api_checks.html#ballet.validation.feature_api_checks.NoInfiniteValuesCheck">[docs]</a><span class="k">class</span> <span class="nc">NoInfiniteValuesCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
 
 <div class="viewcode-block" id="NoInfiniteValuesCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api_checks.html#ballet.validation.feature_api_checks.NoInfiniteValuesCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check that the output of the transformer has no non-finite values&quot;&quot;&quot;</span>
         <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">mapper</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
         <span class="k">assert</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">X</span><span class="p">))</span></div></div>
@@ -360,6 +377,7 @@
         <script type="text/javascript" src="../../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
     
 
   

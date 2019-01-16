@@ -226,12 +226,21 @@
 
 
 <div class="viewcode-block" id="LagImputer"><a class="viewcode-back" href="../../../api/ballet.eng.missing.html#ballet.eng.missing.LagImputer">[docs]</a><span class="k">class</span> <span class="nc">LagImputer</span><span class="p">(</span><span class="n">GroupedFunctionTransformer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Fill missing values using group-specific lags&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groupby_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;ffill&#39;</span><span class="p">),</span>
                          <span class="n">groupby_kwargs</span><span class="o">=</span><span class="n">groupby_kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="NullFiller"><a class="viewcode-back" href="../../../api/ballet.eng.missing.html#ballet.eng.missing.NullFiller">[docs]</a><span class="k">class</span> <span class="nc">NullFiller</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Fill values passing a filter with a given replacement</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        isnull (callable): vectorized test of whether a value is consider null.</span>
+<span class="sd">            Defaults to ``np.isnan``.</span>
+<span class="sd">        replacement: replacement for each null value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">isnull</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">replacement</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">isnull</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -248,6 +257,7 @@
 
 
 <div class="viewcode-block" id="NullIndicator"><a class="viewcode-back" href="../../../api/ballet.eng.missing.html#ballet.eng.missing.NullIndicator">[docs]</a><span class="k">class</span> <span class="nc">NullIndicator</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Indicate whether values are null or not&quot;&quot;&quot;</span>
 <div class="viewcode-block" id="NullIndicator.transform"><a class="viewcode-back" href="../../../api/ballet.eng.missing.html#ballet.eng.missing.NullIndicator.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">tranform_kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span></div></div>
 </pre></div>
@@ -287,6 +297,7 @@
         <script type="text/javascript" src="../../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
     
 
   
