@@ -1,6 +1,6 @@
 import os
 
-from funcy import decorator, ignore
+from funcy import decorator, ignore, lfilter
 
 from ballet.contrib import _get_contrib_feature_from_module
 from ballet.exc import (
@@ -46,10 +46,35 @@ def get_proposed_feature(project):
     return feature
 
 def get_accepted_features(features, proposed_feature):
-    for i in range(len(features)):
-        if features[i].source == proposed_feature.source:
-            return features[:i] + features[i+1:]
-    return features[:]
+    """Deselect candidate features from list of all features
+
+    Args:
+        features (Sequence[Feature]): collection of all features in the
+            ballet project: both accepted features and candidate ones that have
+            not been accepted
+        proposed_feature (Feature): candidate feature that has not been
+            accepted
+
+    Returns:
+        list[Feature]: list of features with the proposed feature not in it.
+
+    Raises:
+        Error: Could not deselect exactly the proposed feature.
+    """
+    def neq(feature):
+        return feature.source != proposed_feature.source
+
+    result = lfilter(neq, features)
+
+    if len(features) - len(result) == 1:
+        return result
+    elif len(result) == len(features):
+        raise Error(
+            'Did not find match for proposed feature within \'contrib\'')
+    else:
+        raise Error(
+            'Unexpected condition (n_features={}, n_result={})'
+            .format(len(features), len(result)))
 
 
 def detect_target_type():
