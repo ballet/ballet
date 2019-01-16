@@ -7,8 +7,14 @@ PROJECT_TEMPLATE_PATH = (
 
 
 def generate_project(**kwargs):
+    """Generate a ballet project according to the project template
+
+    Args:
+        **kwargs: options for the cookiecutter template
+    """
     cookiecutter(str(PROJECT_TEMPLATE_PATH), **kwargs)
 
 
 def main():
+    """Entry point for ballet-quickstart command line tool"""
     generate_project()

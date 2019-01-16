@@ -25,12 +25,14 @@ class DiffCheck(BaseCheck):
 class IsAdditionCheck(DiffCheck):
 
     def check(self, diff):
+        """Check that the diff represents the addition of a new file"""
         assert diff.change_type == 'A'
 
 
 class IsPythonSourceCheck(DiffCheck):
 
     def check(self, diff):
+        """Check that the new file introduced is a python source file"""
         path = diff.b_path
         assert any(
             path.endswith(ext)
@@ -41,6 +43,7 @@ class IsPythonSourceCheck(DiffCheck):
 class WithinContribCheck(DiffCheck):
 
     def check(self, diff):
+        """Check that the new file introduced is within the contrib subdirectory"""
         path = diff.b_path
         contrib_path = self.project.contrib_module_path
         assert pathlib.Path(contrib_path) in pathlib.Path(path).parents
@@ -49,6 +52,10 @@ class WithinContribCheck(DiffCheck):
 class SubpackageNameCheck(DiffCheck):
 
     def check(self, diff):
+        """Check that the name of the subpackage within contrib is valid
+
+        The package name must match ``user_[a-zA-Z0-9_]+``.
+        """
         relative_path = relative_to_contrib(diff, self.project)
         subpackage_name = relative_path.parts[0]
         assert re_test(SUBPACKAGE_NAME_REGEX, subpackage_name)
@@ -57,6 +64,10 @@ class SubpackageNameCheck(DiffCheck):
 class RelativeNameDepthCheck(DiffCheck):
 
     def check(self, diff):
+        """Check that the new file introduced is at the proper depth
+
+        The proper depth is 2 (contrib/user_example/new_file.py)
+        """
         relative_path = relative_to_contrib(diff, self.project)
         assert len(relative_path.parts) == 2
 
@@ -64,6 +75,11 @@ class RelativeNameDepthCheck(DiffCheck):
 class ModuleNameCheck(DiffCheck):
 
     def check(self, diff):
+        """Check that the new file introduced has a valid name
+
+        The module can either be an __init__.py file or must
+        match ``feature_[a-zA-Z0-9_]+\.\w+``.
+        """
         filename = pathlib.Path(diff.b_path).parts[-1]
         is_valid_feature_module_name = re_test(
             FEATURE_MODULE_NAME_REGEX, filename)
@@ -74,6 +90,7 @@ class ModuleNameCheck(DiffCheck):
 class IfInitModuleThenIsEmptyCheck(DiffCheck):
 
     def check(self, diff):
+        """Check that if the new file is __init__.py, then it is an empty file"""
         path = pathlib.Path(diff.b_path)
         filename = path.parts[-1]
         if filename == '__init__.py':

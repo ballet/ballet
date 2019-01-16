@@ -256,6 +256,27 @@ def _validate_transformer_api(transformer):
 
 
 class Feature:
+    """A logical feature
+
+    Conceptually, a logical feature is a learned function that maps raw
+    variables in one data instance to a vector of feature values. A logical
+    feature can produce either a scalar feature value for each instance or a
+    vector of feature values, as in the case of an embedding technique like PCA
+    or the one-hot encoding of a categorical variable.
+
+    Args:
+        input (str, Collection[str]): required columns from the input
+            dataframe needed for the transformation
+        transformer (transformer-like): instance of class that provides
+            fit/transform-style learned transformer
+        name (str, optional): name of the feature
+        description (str, optional): description of the feature
+        output (str, list[str]): ordered sequence of names of features
+            produced by this transformer
+        source (path-like): the source file in which this feature was defined
+        options (dict): options
+    """
+
     def __init__(self, input, transformer, name=None, description=None,
                  output=None, source=None, options=None):
         self.input = input
@@ -286,9 +307,11 @@ class Feature:
             clsname=type(self).__name__, attrs_str=attrs_str)
 
     def as_input_transformer_tuple(self):
-        return self.input, self.transformer
+        """Return an tuple for passing to DataFrameMapper constructor"""
+        return (self.input, self.transformer, {'alias': self.output})
 
     def as_dataframe_mapper(self):
+        """Return standalone DataFrameMapper with this feature"""
         return DataFrameMapper([
             self.as_input_transformer_tuple()
         ], input_df=True)

@@ -5,14 +5,22 @@
 
 # ballet
 
-A **light**weight framework for collaborative data science projects with a focus on **feat**ure engineering.
+A **light**weight framework for collaborative data science projects through **feat**ure engineering.
 
-- *ballet* defines robust `Feature` and `FeaturePipeline` objects built
-alongside the `sklearn_pandas` project, as well as providing a host of other functionality.
-- *ballet.eng* is a library of versatile transformers for feature engineering built
-on top of the base `Feature` abstraction.
+Ballet projects maintain a *feature engineering pipeline invariant*: at any point, the code and features within a
+project repository can be used for end-to-end feature engineering for a given dataset. To expand on an existing feature
+engineering pipeline, well-structured feature source code submissions can be proposed by contributors and extensively
+validated for compatibility and performance.
 
-Note: *ballet* is under active development, please [report all
+Ballet provides the following functionality:
+- `ballet-quickstart`, a command to generate a new predictive modeling project that uses Ballet framework
+- `Feature` objects, that store feature metadata as well as a robust `DelegatingRobustTransformer` transformer pipeline
+    built alongside the `sklearn_pandas` project.
+- `ballet.eng`, a library of versatile transformers and transformer building blocks for developing features that learn.
+- an extensive feature validation suite, that checks project structure and feature API adherence and runs a streaming
+    logical feature selection algorithm.
+
+*Ballet* is under active development, please [report all
 bugs](https://hdi-project.github.io/ballet/contributing.html#report-bugs).
 
 - Free software: MIT license

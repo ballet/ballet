@@ -159,7 +159,7 @@ class FeatureTest(unittest.TestCase):
         feature = Feature(self.input, self.transformer)
         tup = feature.as_input_transformer_tuple()
         self.assertIsInstance(tup, tuple)
-        self.assertEqual(len(tup), 2)
+        self.assertEqual(len(tup), 3)
 
     def test_feature_as_dataframe_mapper(self):
         feature = Feature(self.input, self.transformer)

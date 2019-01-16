@@ -28,15 +28,15 @@ CollectedChanges = namedtuple(
 
 
 class ChangeCollector:
+    """Validate the features introduced in a proposed pull request.
+
+    Args:
+        repo (git.Repo): project repo
+        pr_num (int, str): Pull request number
+        contrib_module_path (str): Relative path to contrib module
+    """
 
     def __init__(self, project):
-        """Validate the features introduced in a proposed pull request.
-
-        Args:
-            repo (git.Repo): project repo
-            pr_num (int, str): Pull request number
-            contrib_module_path (str): Relative path to contrib module
-        """
         self.project = project
         self.repo = project.repo
         self.pr_num = str(project.pr_num)
