@@ -311,3 +311,8 @@ class Feature:
         return DataFrameMapper([
             self.as_input_transformer_tuple()
         ], input_df=True)
+
+class FeatureOutput:
+    def __init__(self, feature, inputs=None):
+        self.feature = feature
+        self.inputs = inputs
