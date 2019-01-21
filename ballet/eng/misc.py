@@ -11,6 +11,11 @@ __all__ = ['IdentityTransformer', 'ValueReplacer', 'NamedFramer']
 class IdentityTransformer(SimpleFunctionTransformer):
     def __init__(self):
         super().__init__(funcy.identity)
+    
+    def __eq__(self, other):
+        if not isinstance(other, IdentityTransformer):
+            return False
+        return True
 
 
 class ValueReplacer(BaseTransformer):
@@ -18,6 +23,15 @@ class ValueReplacer(BaseTransformer):
         super().__init__()
         self.value = value
         self.replacement = replacement
+
+    def __eq__(self, other):
+        if not isinstance(other, ValueReplacer):
+            return False
+        if self.value != other.value:
+            return False
+        if self.replacement != other.replacement:
+            return False
+        return True
 
     def transform(self, X, **transform_kwargs):
         X = X.copy()
@@ -30,6 +44,13 @@ class NamedFramer(BaseTransformer):
     def __init__(self, name):
         super().__init__()
         self.name = name
+    
+    def __eq__(self, other):
+        if not isinstance(other, NamedFramer):
+            return False
+        if self.name != other.name:
+            return False
+        return True
 
     def transform(self, X, **transform_kwargs):
         msg = "Couldn't convert object {} to named 1d DataFrame."

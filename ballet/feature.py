@@ -290,8 +290,17 @@ class Feature:
             return False 
         if self.source != other.source:
             return False
-        if self.transformer != other.transformer:
-            return False
+        if isinstance(self.transformer, DelegatingRobustTransformer):
+            if self.transformer != other.transformer:
+                return False
+        elif isinstance(self.transformer, TransformerPipeline):
+            if not isinstance(other.transformer, TransformerPipeline):
+                return False
+            if len(self.transformer.steps) != len(other.transformer.steps):
+                return False
+            for i in range(self.transformer.steps):
+                if self.transformer.steps[i] != other.transformer.steps[i]:
+                    return False
         if self.options != other.options:
             return False 
 
