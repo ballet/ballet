@@ -17,6 +17,10 @@ def get_config_paths(package_root):
 
     Creates a sequence of paths that includes the package root and all of its
     parents, as well as ~/.ballet.
+
+    Args:
+        package_root (path-like): Directory of the ballet project root
+            directory, the one usually containing the ``ballet.yml`` file.
     """
     package_root = pathlib.Path(package_root)
 
@@ -41,6 +45,10 @@ def find_configs(package_root):
 
     See if any of the candidates returned by get_config_paths are valid.
 
+    Args:
+        package_root (path-like): Directory of the ballet project root
+            directory, the one usually containing the ``ballet.yml`` file.
+
     Raises:
         ConfigurationError: No valid config files were found.
     """
@@ -58,6 +66,21 @@ def find_configs(package_root):
 
 
 def config_get(package_root, *path, default=None):
+    """Get a configuration option following a path through the config
+
+    Example usage:
+
+        >>> config_get('/path/to/package',
+                       'problem', 'problem_type_details', 'scorer',
+                       default='accuracy')
+
+    Args:
+        package_root (path-like): Directory of the ballet project root
+            directory, the one usually containing the ``ballet.yml`` file.
+        *path (list[str]): List of config sections and options to follow.
+        default (default=None): A default value to return in the case that
+            the option does not exist.
+    """
     configs = find_configs(package_root)
 
     o = object()
@@ -70,6 +93,11 @@ def config_get(package_root, *path, default=None):
 
 
 def make_config_get(package_root):
+    """Return a function to get configuration options for a specific project
+
+
+
+    """
     package_root = pathlib.Path(package_root).resolve()
     return partial(config_get, package_root)
 
@@ -90,6 +118,24 @@ def relative_to_contrib(diff, project):
 
 
 class Project:
+    """Encapsulate information on a ballet project
+
+    This is a utility class mostly useful for easy access to the project's
+    information from within the ballet.validation package.
+
+    In addition to the defined methods and properties, the following functions
+    of the project can be accessed as attributes of a class instance, where
+    ``prj`` refers to the python module of the underlying ballet project:
+    - ``conf`` (``prj.conf``)
+    - ``get`` (``prj.conf.get``)
+    - ``load_data`` (``prj.load_data.load_data``)
+    - ``build`` (``prj.features.build``)
+    - ``get_contrib_features`` (``prj.features.get_contrib_features``)
+
+    Args:
+        package (ModuleType): python package representing imported ballet
+            project
+    """
 
     attr_map = {
         'conf': ('.conf', None),
@@ -111,26 +157,33 @@ class Project:
 
     @property
     def pr_num(self):
+        """Return the PR number or None if not on a PR"""
         result = get_pr_num(repo=self.repo)
         if result is None:
             result = get_travis_pr_num()
         return result
 
     def on_pr(self):
+        """Return whether the project has a source tree on a PR"""
         return self.pr_num is not None
 
     @property
     def path(self):
-        # If package.__file__ is `/foo/foo/__init__.py`, then project.path
-        # should be `/foo`
+        """Return the project path
+
+        If ``package.__file__`` is ``/foo/foo/__init__.py``, then project.path
+        should be ``/foo``.
+        """
         return pathlib.Path(self.package.__file__).resolve().parent.parent
 
     @property
     def repo(self):
+        """Return a git.Repo object corresponding to this project"""
         return git.Repo(self.path, search_parent_directories=True)
 
     @property
     def contrib_module_path(self):
+        """Return the path to the project's contrib module"""
         return self.get('contrib', 'module_path')
 
     def __getattr__(self, attr):

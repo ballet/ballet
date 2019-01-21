@@ -19,7 +19,10 @@ def get_contrib_features(project_root):
     collected.
 
     Args:
-        project_root (str, path): Path to project root
+        project_root (str, path-like): Path to project root
+
+    Returns:
+        List[ballet.Feature]: list of Feature objects
     """
     project = Project(project_root)
     contrib = project._resolve('.features.contrib')
