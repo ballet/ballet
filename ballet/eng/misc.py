@@ -46,6 +46,16 @@ class BoxCoxTransformer(BaseTransformer):
         self.threshold = threshold
         self.lmbda = lmbda
 
+    def __eq__(self, other):
+        if not isinstance(other, BoxCoxTransformer):
+            return False
+        if self.threshold != other.threshold:
+            return False
+        if self.lmbda != other.lmbda:
+            return False
+        return True
+
+
     def fit(self, X, y=None, **fit_args):
         # features_to_transform_ is a bool or array[bool]
         self.features_to_transform_ = abs(skew(X)) > self.threshold

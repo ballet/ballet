@@ -12,6 +12,13 @@ class LagImputer(GroupedFunctionTransformer):
         super().__init__(lambda x: x.fillna(method='ffill'),
                          groupby_kwargs=groupby_kwargs)
 
+    def __eq__(self, other):
+        if not isinstance(other, LagImputer):
+            return False
+        if self.groupby_kwargs != other.groupby_kwargs:
+            return False
+        return True
+
 
 class NullFiller(BaseTransformer):
     """Fill values passing a filter with a given replacement
@@ -29,6 +36,15 @@ class NullFiller(BaseTransformer):
             self.isnull = isnull
         self.replacement = replacement
 
+    def __eq__(self, other):
+        if not isinstance(other, NullFiller):
+            return False
+        if self.isnull.__code__.co_code != other.isnull.__code__.co_code:
+            return False
+        if self.replacement != other.replacement:
+            return False
+        return True
+
     def transform(self, X, **transform_kwargs):
         X = X.copy()
         mask = self.isnull(X)
@@ -38,5 +54,10 @@ class NullFiller(BaseTransformer):
 
 class NullIndicator(BaseTransformer):
     """Indicate whether values are null or not"""
+    def __eq__(self, other):
+        if not isinstance(other, NullIndicator):
+            return False
+        return True
+
     def transform(self, X, **tranform_kwargs):
         return np.isnan(X).astype(int)
