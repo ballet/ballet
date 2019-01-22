@@ -113,7 +113,7 @@ class DelegatingRobustTransformer(DeepcopyMixin, TransformerMixin):
             name=name, transformer=self._transformer)
     
     def __eq__(self, other):
-        if isinstance(other, DelegatingRobustTransformer):
+        if not isinstance(other, DelegatingRobustTransformer):
             return False
         if self._stored_conversion_approach != other._stored_conversion_approach:
             return False
@@ -305,6 +305,8 @@ class Feature:
             return False
         if self.name != other.name:
             return False
+        if self.input != other.input:
+            return False
         if self.description != other.description:
             return False
         if self.output != other.output:
@@ -319,7 +321,7 @@ class Feature:
                 return False
             if len(self.transformer.steps) != len(other.transformer.steps):
                 return False
-            for i in range(self.transformer.steps):
+            for i in range(len(self.transformer.steps)):
                 if self.transformer.steps[i] != other.transformer.steps[i]:
                     return False
         if self.options != other.options:

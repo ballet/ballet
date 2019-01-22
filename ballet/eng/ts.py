@@ -15,6 +15,13 @@ class SingleLagger(GroupedFunctionTransformer):
     def __init__(self, lag, groupby_kwargs=None):
         super().__init__(lambda x: x.shift(lag), groupby_kwargs=groupby_kwargs)
 
+    def __eq__(self, other):
+        if not isinstance(other, SingleLagger):
+            return False
+        if not GroupedFunctionTransformer.__eq__(self, other):
+            return False
+        return True
+
 
 def make_multi_lagger(lags, groupby_kwargs=None):
     """Return a union of transformers that apply different lags

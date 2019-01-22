@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from scipy.special import boxcox1p
 
-import ballet.eng.misc
+from ballet.eng.misc import BoxCoxTransformer, NamedFramer, ValueReplacer
 from ballet.util.testing import ArrayLikeEqualityTestingMixin
 
 
@@ -13,18 +13,28 @@ class TestMisc(ArrayLikeEqualityTestingMixin, unittest.TestCase):
         pass
 
     def test_value_replacer(self):
-        trans = ballet.eng.misc.ValueReplacer(0.0, -99)
+        trans = ValueReplacer(0.0, -99)
         data = pd.DataFrame([0, 0, 0, 0, 1, 3, 7, 11, -7])
         expected_result = pd.DataFrame([-99, -99, -99, -99, 1, 3, 7, 11, -7])
 
         result = trans.fit_transform(data)
         pd.util.testing.assert_frame_equal(result, expected_result)
 
+    def test_value_replacer_eq(self):
+        trans = ValueReplacer(0.0, -99)
+        eq_trans = ValueReplacer(0.0, -99)
+        self.assertEqual(trans, eq_trans)
+
+        ne_trans_val = ValueReplacer(1.0, -99)
+        self.assertNotEqual(trans, ne_trans_val)
+
+        ne_trans_rep = ValueReplacer(0.0, -100)
+        self.assertNotEqual(trans, ne_trans_rep)
+
     def test_box_cox_transformer(self):
         threshold = 0.0
         lmbda = 0.0
-        trans = ballet.eng.misc.BoxCoxTransformer(threshold=threshold,
-                                                  lmbda=lmbda)
+        trans = BoxCoxTransformer(threshold=threshold, lmbda=lmbda)
 
         skewed = [0., 0., 0., 0., 1.]
         unskewed = [0., 0., 0., 0., 0.]
@@ -70,6 +80,22 @@ class TestMisc(ArrayLikeEqualityTestingMixin, unittest.TestCase):
         arr_res = trans.fit_transform(arr)
         arr_exp = np.vstack((exp_unskew_res, exp_skew_res)).T
         self.assertArrayAlmostEqual(arr_res, arr_exp)
+    
+    def test_box_cox_transformer_eq(self):
+        threshold = 0.0
+        lmbda = 0.0
+        trans = BoxCoxTransformer(threshold=threshold, lmbda=lmbda)
+
+        eq_trans = BoxCoxTransformer(threshold=threshold, lmbda=lmbda)
+        self.assertEqual(trans, eq_trans)
+
+        ne_threshold = 1.0
+        ne_trans_threshold = BoxCoxTransformer(threshold=ne_threshold, lmbda=lmbda)
+        self.assertNotEqual(trans, ne_trans_threshold)
+
+        ne_lmbda = 1.0
+        ne_trans_lmbda = BoxCoxTransformer(threshold=threshold, lmbda=ne_lmbda)
+        self.assertNotEqual(trans, ne_trans_lmbda)
 
     def test_named_framer(self):
         name = 'foo'
@@ -81,7 +107,7 @@ class TestMisc(ArrayLikeEqualityTestingMixin, unittest.TestCase):
         arr = np.array([1, 2, 3])
 
         for obj in [index, ser, df, arr]:
-            trans = ballet.eng.misc.NamedFramer(name)
+            trans = NamedFramer(name)
             result = trans.fit_transform(obj)
             self.assertTrue(isinstance(result, pd.DataFrame))
             self.assertEqual(result.shape[1], 1)
@@ -91,7 +117,7 @@ class TestMisc(ArrayLikeEqualityTestingMixin, unittest.TestCase):
         int_ = 1
         str_ = 'hello'
         for obj in [int_, str_]:
-            trans = ballet.eng.misc.NamedFramer(name)
+            trans = NamedFramer(name)
             with self.assertRaises(TypeError):
                 result = trans.fit_transform(obj)
 
@@ -99,6 +125,16 @@ class TestMisc(ArrayLikeEqualityTestingMixin, unittest.TestCase):
         wide_df = pd.DataFrame(np.arange(10).reshape(-1, 2))
         wide_arr = np.arange(10).reshape(-1, 2)
         for obj in [wide_df, wide_arr]:
-            trans = ballet.eng.misc.NamedFramer(name)
+            trans = NamedFramer(name)
             with self.assertRaises(ValueError):
                 result = trans.fit_transform(obj)
+
+    def test_named_framer_eq(self):
+        name = 'foo'
+        ne_name = 'bar'
+        trans = NamedFramer(name)
+        eq_trans = NamedFramer(name)
+        ne_trans = NamedFramer(ne_name)
+        self.assertEqual(trans, eq_trans)
+        self.assertNotEqual(trans, ne_trans)
+

@@ -8,6 +8,7 @@ from sklearn_pandas import DataFrameMapper
 
 from ballet.compat import SimpleImputer
 from ballet.eng.misc import IdentityTransformer
+from ballet.eng.base import SimpleFunctionTransformer
 from ballet.feature import DelegatingRobustTransformer, Feature, make_mapper
 from ballet.util import asarray2d
 
@@ -137,6 +138,18 @@ class DelegatingRobustTransformerTest(unittest.TestCase):
         catches = (ValueError, TypeError)
         self._test_robust_transformer_pipeline(
             input_types, bad_input_checks, catches)
+    
+    def test_robust_transformer_eq(self):
+        trans = SimpleFunctionTransformer(lambda x: 2 * x)
+        robust_trans = DelegatingRobustTransformer(trans)
+        
+        eq_trans = SimpleFunctionTransformer(lambda x: 2 * x)
+        eq_robust_trans = DelegatingRobustTransformer(eq_trans)
+        self.assertEqual(robust_trans, eq_robust_trans)
+
+        ne_trans = IdentityTransformer()
+        ne_robust_trans = DelegatingRobustTransformer(ne_trans)
+        self.assertNotEqual(robust_trans, ne_robust_trans)
 
 
 class FeatureTest(unittest.TestCase):
@@ -147,6 +160,41 @@ class FeatureTest(unittest.TestCase):
 
     def test_feature_init(self):
         Feature(self.input, self.transformer)
+
+    def test_feature_eq(self):
+        trans = SimpleFunctionTransformer(lambda x: 2 * x)
+        feature = Feature(['a', 'b'], trans, 'feature', 'a feature', 'output')
+        feature_pipeline = Feature(['a', 'b'], [trans, trans], 'feature', 'a feature', 'output')
+        self.assertNotEqual(feature, feature_pipeline)
+
+        eq_trans = SimpleFunctionTransformer(lambda x: 2 * x)
+        eq_feature = Feature(['a', 'b'], eq_trans, 'feature', 'a feature', 'output')
+        eq_feature_pipeline =  Feature(
+            ['a', 'b'],
+            [eq_trans, eq_trans],
+            'feature',
+            'a feature',
+            'output'
+        )
+        self.assertEqual(feature, eq_feature)
+        self.assertEqual(feature_pipeline, eq_feature_pipeline)
+
+        ne_trans = IdentityTransformer()
+        ne_feature_trans =  Feature(['a', 'b'], ne_trans, 'feature', 'a feature', 'output')
+        self.assertNotEqual(feature, ne_feature_trans)
+
+        ne_feature_input = Feature(['a', 'c'], trans, 'feature', 'a feature', 'output')
+        self.assertNotEqual(feature, ne_feature_input)
+
+        ne_feature_name = Feature(['a', 'b'], trans, 'not a feature', 'a feature', 'output')
+        self.assertNotEqual(feature, ne_feature_name)
+
+        ne_feature_descr = Feature(['a', 'b'], trans, 'feature', 'not a feature', 'output')
+        self.assertNotEqual(feature, ne_feature_descr)
+
+        ne_feature_output = Feature(['a', 'b'], trans, 'feature', 'a feature', 'not output')
+        self.assertNotEqual(feature, ne_feature_output)
+
 
     def test_feature_init_invalid_transformer_api(self):
         with self.assertRaises(ValueError):

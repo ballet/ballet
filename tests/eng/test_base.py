@@ -39,6 +39,17 @@ class TestBase(unittest.TestCase):
 
         self.assertTrue(np.array_equal(data_trans, data_func))
 
+    def test_simple_function_transformer_eq(self):
+        def func(x): return x + 5
+        trans = ballet.eng.base.SimpleFunctionTransformer(func)
+
+        eq_trans = ballet.eng.base.SimpleFunctionTransformer(func)
+        self.assertEqual(trans, eq_trans)
+
+        ne_func = lambda x: 2 * x
+        ne_trans = ballet.eng.base.SimpleFunctionTransformer(ne_func)
+        self.assertNotEqual(trans, ne_trans)
+
     def test_grouped_function_transformer(self):
         df = pd.DataFrame(
             data={
@@ -65,3 +76,21 @@ class TestBase(unittest.TestCase):
         result = trans.transform(df)
         expected_result = df.pipe(func)
         pd.util.testing.assert_series_equal(result, expected_result)
+
+    def test_grouped_function_transformer_eq(self):
+        func = np.sum
+        trans = ballet.eng.base.GroupedFunctionTransformer(
+            func, groupby_kwargs={'level': 'country'})
+        
+        eq_trans = ballet.eng.base.GroupedFunctionTransformer(
+            func, groupby_kwargs={'level': 'country'})
+        self.assertEqual(trans, eq_trans)
+
+        ne_func = np.max
+        ne_trans_func = ballet.eng.base.GroupedFunctionTransformer(
+            ne_func, groupby_kwargs={'level': 'country'})
+        self.assertNotEqual(trans, ne_trans_func)
+
+        ne_trans_groupby = ballet.eng.base.GroupedFunctionTransformer(
+            func, groupby_kwargs={'level': 'city'})
+        self.assertNotEqual(trans, ne_trans_groupby)

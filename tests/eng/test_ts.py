@@ -40,6 +40,22 @@ class TestTimeSeriesTransformers(
 
         self.assertFrameEqual(result, expected_result)
 
+    def test_single_lagger_eq(self):
+        trans = ballet.eng.ts.SingleLagger(
+            1, groupby_kwargs={'level': 'city'})
+
+        eq_trans = ballet.eng.ts.SingleLagger(
+            1, groupby_kwargs={'level': 'city'})
+        self.assertEqual(trans, eq_trans)
+
+        ne_trans_lag = ballet.eng.ts.SingleLagger(
+            2, groupby_kwargs={'level': 'city'})
+        self.assertNotEqual(trans, ne_trans_lag, 'Expected lags to be not equal')
+
+        ne_trans_group = ballet.eng.ts.SingleLagger(
+            1, groupby_kwargs={'level': 'town'})
+        self.assertNotEqual(trans, ne_trans_group, 'Expected groupbys to be not equal')
+
     @unittest.expectedFailure
     def test_multi_lagger(self):
         # TODO
