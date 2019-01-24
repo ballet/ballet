@@ -1,26 +1,30 @@
 import numpy as np
 import pandas as pd
-from sklearn_pandas import DataFrameMapper
+from sklearn.base import BaseEstimator, TransformerMixin
 
 from ballet.feature import Feature, FeatureOutput
 
-class DependenceDataFrameMapper(DataFrameMapper):
+__all__ = ['DependentDataFrameMapper']
+
+class DependentDataFrameMapper(BaseEstimator, TransformerMixin):
     def __init__(self, features):
         if not isinstance(features, list):
             features = [features]
         self.features = features
-        (sorted_feature_nodes, feature_nodes_by_src) = _construct_feature_DAG(features)
+        (sorted_feature_nodes, nodes_by_feature_id) = _construct_feature_DAG(features)
         self.sorted_feature_nodes = sorted_feature_nodes
-        self.feature_nodes_by_src = feature_nodes_by_src
+        self.nodes_by_feature_id = nodes_by_feature_id
 
     def _get_col_subset(self, X, feature):
-        Xt = X[feature.input.filter(lambda x: isinstance(x, str))]
-        dependent_inputs = feature.input.filter(lambda x: isinstance(X, FeatureOutput))
+        basic_inputs = list(filter(lambda x: isinstance(x, str), feature.input))
+        dependent_inputs = list(filter(lambda x: isinstance(x, FeatureOutput), feature.input))
+
+        Xt = X[basic_inputs]
         for parent_output in dependent_inputs:
-            parent_node = self.feature_nodes_by_src[parent_output.feature.source]
+            parent_node = self.nodes_by_feature_id[id(parent_output.feature)]
             parent_output_df = parent_node.output
-            if parent_output.input:
-                parent_output_df = parent_output_df[parent_output.input]
+            if parent_output.outputs:
+                parent_output_df = parent_output_df[parent_output.outputs]
             Xt = pd.concat([Xt, parent_output_df], axis=1)
         return Xt
     
@@ -28,37 +32,33 @@ class DependenceDataFrameMapper(DataFrameMapper):
         extracted = []
         self.transformed_names_ = []
         for feature_node in self.sorted_feature_nodes:
-
+            fea = feature_node.feature
             # columns could be a string or list of
             # strings; we don't care because pandas
             # will handle either.
-            Xt = self._get_col_subset(X, columns)
-            if transformers is not None:
-                with add_column_names_to_exception(columns):
+            Xt = self._get_col_subset(X, fea)
+            if fea.transformer is not None:
                 #     if do_fit and hasattr(transformers, 'fit_transform'):
                 #         Xt = _call_fit(transformers.fit_transform, Xt, y)
                 #     else:
                 #         if do_fit:
                 #             _call_fit(transformers.fit, Xt, y)
-                        Xt = transformers.transform(Xt)
+                Xt = fea.transformer.transform(Xt)
+                feature_node.output = Xt
             extracted.append(_handle_feature(Xt))
 
-            alias = options.get('alias')
-            self.transformed_names_ += self.get_names(
-                columns, transformers, Xt, alias)
+            # alias = options.get('alias')
+            # self.transformed_names_ += self.get_names(
+            #     columns, transformers, Xt, alias)
+        return extracted
+    
+    def transform(self, X):
+        """
+        Transform the given data. Assumes that fit has already been called.
 
-def add_column_names_to_exception(column_names):
-    # Taken from sklearn_pandas.dataframe_mapper, which itself is
-    # Stolen from https://stackoverflow.com/a/17677938/356729
-    try:
-        yield
-    except Exception as ex:
-        if ex.args:
-            msg = u'{}: {}'.format(column_names, ex.args[0])
-        else:
-            msg = str(column_names)
-        ex.args = (msg,) + ex.args[1:]
-        raise
+        X       the data to transform
+        """
+        return self._transform(X)
 
 def _handle_feature(fea):
     """
@@ -76,23 +76,22 @@ def _construct_feature_DAG(features):
     @returns a list of feature nodes, topologically sorted.
     """
     sorted_feature_nodes=[]
-    feature_nodes_by_src = {}
-    feature_nodes = []
+    nodes_by_feature_id = {}
     for feature in features:
-        if feature.source not in feature_nodes_by_src:
-            _explore_feature_DAG(feature, sorted_feature_nodes, feature_nodes_by_src)
-    return (sorted_feature_nodes, feature_nodes_by_src)
+        if id(feature) not in nodes_by_feature_id:
+            _explore_feature_DAG(feature, sorted_feature_nodes, nodes_by_feature_id)
+    return (sorted_feature_nodes, nodes_by_feature_id)
     
-def _explore_feature_DAG(feature, sorted_feature_nodes, feature_nodes_by_src):
+def _explore_feature_DAG(feature, sorted_feature_nodes, nodes_by_feature_id):
     feature_node = FeatureDAGNode(feature)
-    feature_nodes_by_src[feature.source] = feature_node
-    for feature_input in feautre.input:
+    nodes_by_feature_id[id(feature)] = feature_node
+    for feature_input in feature.input:
         if isinstance(feature_input, FeatureOutput):
             parent_feature = feature_input.feature
-            if parent_feature.source not in feature_nodes_by_src:
-                _explore_feature_DAG(parent_feature, sorted_feature_nodes, feature_nodes_by_src)
-            feature_node.add_parent(feature_nodes_by_src[parent_feature.source])
-            feature_nodes_by_src[parent_feature.source].add_child(feature_node)
+            if id(parent_feature) not in nodes_by_feature_id:
+                _explore_feature_DAG(parent_feature, sorted_feature_nodes, nodes_by_feature_id)
+            feature_node.add_parent(nodes_by_feature_id[id(parent_feature)])
+            nodes_by_feature_id[id(parent_feature)].add_child(feature_node)
     sorted_feature_nodes.append(feature_node)
 
 class FeatureDAGNode:

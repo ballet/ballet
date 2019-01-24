@@ -2,6 +2,7 @@ import traceback
 from collections import Counter, namedtuple
 from inspect import signature
 
+import os
 import numpy as np
 import pandas as pd
 from funcy import identity, is_seqcont, iterable, select_values
@@ -13,7 +14,7 @@ from ballet.exc import UnsuccessfulInputConversionError
 from ballet.util import DeepcopyMixin, asarray2d, indent
 from ballet.util.log import logger
 
-__all__ = ['make_mapper', 'Feature']
+__all__ = ['make_mapper', 'Feature', 'FeatureOutput']
 
 
 def make_mapper(features):
@@ -311,8 +312,11 @@ class Feature:
         return DataFrameMapper([
             self.as_input_transformer_tuple()
         ], input_df=True)
+    
+    def getOutput(self, cols=None):
+        return FeatureOutput(self, cols)
 
 class FeatureOutput:
-    def __init__(self, feature, inputs=None):
+    def __init__(self, feature, outputs=None):
         self.feature = feature
-        self.inputs = inputs
+        self.outputs = outputs
