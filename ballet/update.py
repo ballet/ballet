@@ -8,9 +8,6 @@ from cookiecutter.main import cookiecutter
 from ballet.compat import pathlib
 from ballet.quickstart import generate_project
 
-PROJECT_TEMPLATE_PATH = (
-    pathlib.Path(__file__).resolve().parent.joinpath('project_template'))
-
 YML_FILE = 'ballet.yml'
 
 def _find_ballet_dir(path):
