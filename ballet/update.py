@@ -30,8 +30,6 @@ def _find_ballet_dir(path):
 
 def _create_replay(tempdir, name):
     generate_project(replay=True, output_dir=tempdir)
-    for x in pathlib.Path(tempdir).iterdir():
-        print(x)
     return pathlib.Path(tempdir) / name
 
 def update_project():
@@ -46,7 +44,19 @@ def update_project():
     tempdir = _tempdir.name
     updated_project = _create_replay(tempdir, ballet_yml['problem']['name'])
     updated_repo = git.Repo(str(updated_project))
-    current_repo.index.merge_tree(updated_repo.head)
+    try:
+        updated_remote = current_repo.create_remote('temp_update', updated_repo.working_tree_dir)
+        updated_remote.fetch()
+        current_repo.git.merge(
+            'temp_update/master',
+            allow_unrelated_histories=True,
+            strategy_option='theirs',
+            squash=True,
+        )
+    except Exception as e: 
+        print(e)
+    finally:
+        current_repo.delete_remote('temp_update')
 
 
 def main():
