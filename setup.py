@@ -78,7 +78,7 @@ setup(
     entry_points = {
         'console_scripts': [
             'ballet-quickstart=ballet.quickstart:main',
-            'ballet-update=ballet.update.main'
+            'ballet-update=ballet.update:main'
         ],
     },
     extras_require={
