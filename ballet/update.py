@@ -45,10 +45,11 @@ def update_project():
     updated_project = _create_replay(tempdir, ballet_yml['problem']['name'])
     updated_repo = git.Repo(str(updated_project))
     try:
-        updated_remote = current_repo.create_remote('temp_update', updated_repo.working_tree_dir)
+        remote_name = updated_project.parts[-1]
+        updated_remote = current_repo.create_remote(remote_name, updated_repo.working_tree_dir)
         updated_remote.fetch()
         current_repo.git.merge(
-            'temp_update/master',
+            remote_name + '/master',
             allow_unrelated_histories=True,
             strategy_option='theirs',
             squash=True,
@@ -56,7 +57,7 @@ def update_project():
     except Exception as e: 
         print(e)
     finally:
-        current_repo.delete_remote('temp_update')
+        current_repo.delete_remote(remote_name)
 
 
 def main():
