@@ -44,6 +44,7 @@ def get_proposed_feature(project):
     feature = _get_contrib_feature_from_module(module)
     return feature
 
+
 def get_accepted_features(features, proposed_feature):
     """Deselect candidate features from list of all features
 

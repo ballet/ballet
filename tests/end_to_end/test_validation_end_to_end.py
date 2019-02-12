@@ -1,6 +1,6 @@
 import os
 import tempfile
-from subprocess import CalledProcessError, check_call
+from subprocess import check_call
 from textwrap import dedent
 from types import ModuleType
 from unittest.mock import patch
@@ -8,7 +8,6 @@ from unittest.mock import patch
 import git
 import numpy as np
 import pandas as pd
-import pytest
 from sklearn_pandas import DataFrameMapper
 
 from ballet.compat import pathlib, safepath
