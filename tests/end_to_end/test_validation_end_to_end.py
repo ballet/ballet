@@ -188,9 +188,14 @@ def test_end_to_end():
     username = 'charlie'
     featurename = 'Z_1'
     submit_feature(repo, contrib_dir, username, featurename, new_feature_str)
-    with pytest.raises(CalledProcessError):
-        logger.info('Validating pull request 2, User Charlie, Feature Z_1')
-        call_validate_all(pr=2)
+
+    # if we expect this feature to succeed -- with NoOpAcceptanceEvaluator
+    call_validate_all(pr=2)
+
+    # if we expect this feature to fail -- with a more reasonable evaluator
+    # with pytest.raises(CalledProcessError):
+    #     logger.info('Validating pull request 2, User Charlie, Feature Z_1')
+    #     call_validate_all(pr=2)
 
     # write another new feature
     repo.git.checkout('master')
