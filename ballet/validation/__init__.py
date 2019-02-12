@@ -8,9 +8,8 @@ from ballet.exc import (
     InvalidProjectStructure, SkippedValidationTest)
 from ballet.project import Project
 from ballet.util.log import logger, stacklog
-from ballet.validation.alpha_investing import (
-    AlphaInvestingAcceptanceEvaluator, load_alpha, save_alpha)
-from ballet.validation.feature_evaluation import NoOpPruningEvaluator
+from ballet.validation.feature_evaluation import (
+    NoOpAcceptanceEvaluator, NoOpPruningEvaluator)
 from ballet.validation.project_structure import (
     ChangeCollector, FeatureApiValidator, FileChangeValidator)
 
@@ -116,14 +115,11 @@ def evaluate_feature_performance(project):
 
     out = project.build()
     X_df, y, features = out['X_df'], out['y'], out['features']
-    ai, i = load_alpha(project)
 
     proposed_feature = get_proposed_feature(project)
     accepted_features = get_accepted_features(features, proposed_feature)
-    evaluator = AlphaInvestingAcceptanceEvaluator(X_df, y, accepted_features, ai)
+    evaluator = NoOpAcceptanceEvaluator(X_df, y, accepted_features)
     accepted = evaluator.judge(proposed_feature)
-
-    save_alpha(project, ai, i, accepted)
 
     if not accepted:
         raise FeatureRejected
