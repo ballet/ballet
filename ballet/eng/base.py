@@ -11,6 +11,7 @@ __all__ = [
 
 class NoFitMixin:
     """Mix-in class for transformations that do not require a fit stage"""
+
     def fit(self, X, y=None, **fit_kwargs):
         return self
 
@@ -34,6 +35,7 @@ class SimpleFunctionTransformer(BaseTransformer):
         func_args (tuple): additional arguments to pass
         func_kwargs (dict): keyword arguments to pass
     """
+
     def __init__(self, func, func_args=None, func_kwargs=None):
         super().__init__()
         self.func = func
@@ -55,6 +57,7 @@ class GroupedFunctionTransformer(SimpleFunctionTransformer):
         func_kwargs (dict): keyword arguments to pass
         groupby_kwargs (dict): keyword arguments to pd.DataFrame.groupby
     """
+
     def __init__(self, func, func_args=None,
                  func_kwargs=None, groupby_kwargs=None):
         super().__init__(func, func_args=func_args, func_kwargs=func_kwargs)

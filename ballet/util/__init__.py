@@ -1,7 +1,13 @@
+import warnings
 from copy import deepcopy
+from os import devnull
 
 import numpy as np
-from funcy import decorator
+import pandas as pd
+import sklearn.datasets
+from funcy import decorator, lfilter
+
+from ballet.compat import redirect_stderr, redirect_stdout
 
 RANDOM_STATE = 1754
 
@@ -60,6 +66,38 @@ def has_nans(obj):
     while np.ndim(nans):
         nans = np.any(nans)
     return bool(nans)
+
+
+@decorator
+def dfilter(call, pred):
+    """Decorate a callable with a filter that accepts a predicate
+
+    Example::
+
+        >>> @dfilter(lambda x: x > 0)
+        ... def numbers():
+        ...     return [-1, 2, 0, -2]
+        [2, 0]
+    """
+    return lfilter(pred, call())
+
+
+def load_sklearn_df(name):
+    method_name = 'load_{name}'.format(name=name)
+    method = getattr(sklearn.datasets, method_name)
+    data = method()
+    X_df = pd.DataFrame(data=data.data, columns=data.feature_names)
+    y_df = pd.Series(data.target, name='target')
+    return X_df, y_df
+
+
+@decorator
+def quiet(call):
+    with open(devnull, 'w') as fnull:
+        with redirect_stderr(fnull), redirect_stdout(fnull):
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                return call()
 
 
 class DeepcopyMixin:

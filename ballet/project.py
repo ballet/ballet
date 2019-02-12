@@ -24,10 +24,10 @@ def get_config_paths(package_root):
     """
     package_root = pathlib.Path(package_root)
 
-    # parents of package directory
+    # parents of package directory, and check the package_root, just in case
     paths = [
         d.joinpath(DEFAULT_CONFIG_NAME)
-        for d in package_root.parents
+        for d in [package_root] + list(package_root.parents)
     ]
 
     # home directory

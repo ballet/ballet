@@ -1,4 +1,5 @@
 import os
+import sys
 import tempfile
 import types
 import unittest
@@ -9,12 +10,14 @@ import pandas as pd
 from funcy import identity
 
 import ballet
+import ballet.util
 import ballet.util.fs
 import ballet.util.io
 from ballet.compat import pathlib, safepath
 from ballet.util.ci import (
     TravisPullRequestBuildDiffer, get_travis_pr_num, is_travis_pr)
-from ballet.util.git import get_diff_str_from_commits
+from ballet.util.git import (
+    get_diff_str_from_commits, get_pull_request_outcomes, get_pull_requests)
 from ballet.util.mod import (  # noqa F401
     import_module_at_path, import_module_from_modname,
     import_module_from_relpath, modname_to_relpath, relpath_to_modname)
@@ -30,6 +33,14 @@ class UtilTest(unittest.TestCase):
 
     @unittest.expectedFailure
     def test_get_arr_desc(self):
+        raise NotImplementedError
+
+    @unittest.expectedFailure
+    def test_get_enum_keys(self):
+        raise NotImplementedError
+
+    @unittest.expectedFailure
+    def test_get_enum_values(self):
         raise NotImplementedError
 
     @unittest.expectedFailure
@@ -72,6 +83,25 @@ class UtilTest(unittest.TestCase):
 
         for obj in objs_without_nans:
             self.assertFalse(ballet.util.has_nans(obj))
+
+    @unittest.expectedFailure
+    def test_dfilter(self):
+        raise NotImplementedError
+
+    @unittest.expectedFailure
+    def test_load_sklearn_df(self):
+        raise NotImplementedError
+
+    def test_quiet_stderr(self):
+        @ballet.util.quiet
+        def f():
+            print('bar', file=sys.stderr)
+
+        # doesn't check that nothing is printed to sys.stderr, but makes sure
+        # the stream is reset properly (esp on py<3.5)
+        stderr = sys.stderr
+        f()
+        self.assertIs(sys.stderr, stderr)
 
     @unittest.expectedFailure
     def test_deepcopy_mixin(self):
@@ -322,6 +352,73 @@ class FsTest(unittest.TestCase):
     @unittest.expectedFailure
     def test_isemptyfile(self):
         raise NotImplementedError
+
+
+class GitTest(unittest.TestCase):
+
+    @unittest.expectedFailure
+    def test_get_diffs_by_revision(self):
+        raise NotImplementedError
+
+    @unittest.expectedFailure
+    def test_get_diff_str_from_commits(self):
+        raise NotImplementedError
+
+    @unittest.expectedFailure
+    def test_get_diffs_by_diff_str(self):
+        raise NotImplementedError
+
+    @unittest.expectedFailure
+    def test_get_pr_num(self):
+        raise NotImplementedError
+
+    @unittest.expectedFailure
+    def test_switch_to_new_branch(self):
+        raise NotImplementedError
+
+    @unittest.expectedFailure
+    def test_set_config_variables(self):
+        raise NotImplementedError
+
+    @patch('requests.get')
+    def test_get_pull_requests(self, mock_requests_get):
+        owner = 'foo'
+        repo = 'bar'
+        state = 'closed'
+        get_pull_requests(owner, repo, state=state)
+
+        (url, ), kwargs = mock_requests_get.call_args
+        self.assertIn(owner, url)
+        self.assertIn(repo, url)
+        self.assertIn('headers', kwargs)
+        self.assertIn('params', kwargs)
+        self.assertEqual(kwargs['params']['state'], state)
+
+    @patch('ballet.util.git.get_pull_requests')
+    def test_get_pull_request_outcomes(self, mock_get_pull_requests):
+        mock_get_pull_requests.return_value = [
+            {
+                'id': 1,
+                "created_at": "2011-01-26T19:01:12Z",
+                "updated_at": "2011-01-26T19:01:12Z",
+                "closed_at": "2011-01-26T19:01:12Z",
+                "merged_at": "2011-01-26T19:01:12Z",
+            },
+            {
+                "created_at": "2011-01-26T19:03:19Z",
+                "updated_at": "2011-01-26T19:03:19Z",
+                "closed_at": "2011-01-26T19:04:01Z",
+                "merged_at": None,
+            }
+        ]
+        owner = 'foo'
+        repo = 'bar'
+
+        expected = ['accepted', 'rejected']
+        actual = get_pull_request_outcomes(owner, repo)
+        self.assertEqual(actual, expected)
+        mock_get_pull_requests.assert_called_once_with(
+            owner, repo, state='closed')
 
 
 class IoTest(unittest.TestCase):
