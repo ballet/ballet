@@ -76,7 +76,10 @@ setup(
     ],
     description='Core functionality for lightweight, collaborative data science projects',
     entry_points = {
-        'console_scripts': ['ballet-quickstart=ballet.quickstart:main'],
+        'console_scripts': [
+            'ballet-quickstart=ballet.quickstart:main',
+            'ballet-update=ballet.update:main',
+        ],
     },
     extras_require={
         'test': test_requirements,
