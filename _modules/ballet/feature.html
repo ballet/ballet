@@ -17,32 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -229,8 +231,9 @@
 <span class="kn">from</span> <span class="nn">sklearn_pandas</span> <span class="k">import</span> <span class="n">DataFrameMapper</span>
 <span class="kn">from</span> <span class="nn">sklearn_pandas.pipeline</span> <span class="k">import</span> <span class="n">TransformerPipeline</span>
 
+<span class="kn">from</span> <span class="nn">ballet.eng.misc</span> <span class="k">import</span> <span class="n">NullTransformer</span>
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">UnsuccessfulInputConversionError</span>
-<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">DeepcopyMixin</span><span class="p">,</span> <span class="n">asarray2d</span><span class="p">,</span> <span class="n">indent</span>
+<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">DeepcopyMixin</span><span class="p">,</span> <span class="n">asarray2d</span><span class="p">,</span> <span class="n">indent</span><span class="p">,</span> <span class="n">quiet</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;make_mapper&#39;</span><span class="p">,</span> <span class="s1">&#39;Feature&#39;</span><span class="p">]</span>
@@ -245,6 +248,8 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        DataFrameMapper: mapper made from features</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">features</span><span class="p">:</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="p">[],</span> <span class="n">transformer</span><span class="o">=</span><span class="n">NullTransformer</span><span class="p">())</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">iterable</span><span class="p">(</span><span class="n">features</span><span class="p">):</span>
         <span class="n">features</span> <span class="o">=</span> <span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="p">)</span>
     <span class="k">return</span> <span class="n">DataFrameMapper</span><span class="p">(</span>
@@ -354,6 +359,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">method</span><span class="p">(</span><span class="n">convert</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
+    <span class="nd">@quiet</span>
     <span class="k">def</span> <span class="nf">_call_robust</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stored_conversion_approach</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">approach</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stored_conversion_approach</span>
@@ -560,26 +566,16 @@
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

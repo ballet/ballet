@@ -17,32 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
-
-  
-  <script src="../../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -224,7 +226,8 @@
 <span class="kn">import</span> <span class="nn">re</span>
 
 <span class="kn">import</span> <span class="nn">git</span>
-<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">ignore</span><span class="p">,</span> <span class="n">re_find</span><span class="p">,</span> <span class="n">re_test</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">collecting</span><span class="p">,</span> <span class="n">ignore</span><span class="p">,</span> <span class="n">re_find</span><span class="p">,</span> <span class="n">re_test</span>
 
 <span class="n">PR_REF_PATH_REGEX</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;refs/heads/pull/(\d+)&#39;</span><span class="p">)</span>
 
@@ -338,37 +341,32 @@
         <span class="n">repo</span><span class="o">.</span><span class="n">git</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
 
 
-<span class="c1"># deprecated for now</span>
-<div class="viewcode-block" id="PullRequestInfo"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.PullRequestInfo">[docs]</a><span class="k">class</span> <span class="nc">PullRequestInfo</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pr_num</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span> <span class="o">=</span> <span class="n">pr_num</span>
-
-    <span class="k">def</span> <span class="nf">_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pr_num</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">local_ref_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Shorthand name of local ref, e.g. &#39;pull/1&#39; &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format</span><span class="p">(</span><span class="s1">&#39;pull/</span><span class="si">{pr_num}</span><span class="s1">&#39;</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">local_rev_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Full name of revision, e.g. &#39;refs/heads/pull/1&#39; &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format</span><span class="p">(</span><span class="s1">&#39;refs/heads/pull/</span><span class="si">{pr_num}</span><span class="s1">&#39;</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">remote_ref_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Full name of remote ref (as on GitHub), e.g. &#39;refs/pull/1/head&#39; &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format</span><span class="p">(</span><span class="s1">&#39;refs/pull/</span><span class="si">{pr_num}</span><span class="s1">/head&#39;</span><span class="p">)</span></div>
+<div class="viewcode-block" id="get_pull_requests"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.get_pull_requests">[docs]</a><span class="k">def</span> <span class="nf">get_pull_requests</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="n">repo</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s1">&#39;closed&#39;</span><span class="p">):</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="s1">&#39;https://api.github.com&#39;</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="s1">&#39;/repos/</span><span class="si">{owner}</span><span class="s1">/</span><span class="si">{repo}</span><span class="s1">/pulls&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span> <span class="n">repo</span><span class="o">=</span><span class="n">repo</span><span class="p">)</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">q</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;Accept&#39;</span><span class="p">:</span> <span class="s1">&#39;application/vnd.github.v3+json&#39;</span>
+    <span class="p">}</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;state&#39;</span><span class="p">:</span> <span class="n">state</span><span class="p">,</span>
+        <span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="s1">&#39;master&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;sort&#39;</span><span class="p">:</span> <span class="s1">&#39;created&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;direction&#39;</span><span class="p">:</span> <span class="s1">&#39;asc&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+    <span class="n">res</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="HeadInfo"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.HeadInfo">[docs]</a><span class="k">class</span> <span class="nc">HeadInfo</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repo</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">head</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">ref</span><span class="o">.</span><span class="n">path</span></div>
+<div class="viewcode-block" id="get_pull_request_outcomes"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.get_pull_request_outcomes">[docs]</a><span class="nd">@collecting</span>
+<span class="k">def</span> <span class="nf">get_pull_request_outcomes</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="n">repo</span><span class="p">):</span>
+    <span class="n">prs</span> <span class="o">=</span> <span class="n">get_pull_requests</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="n">repo</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s1">&#39;closed&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">pr</span> <span class="ow">in</span> <span class="n">prs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">pr</span><span class="p">[</span><span class="s1">&#39;merged_at&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="s1">&#39;accepted&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="s1">&#39;rejected&#39;</span></div>
 </pre></div>
 
            </div>
@@ -398,26 +396,16 @@
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

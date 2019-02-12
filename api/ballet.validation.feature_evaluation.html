@@ -17,34 +17,36 @@
   
 
   
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="ballet.validation.project_structure module" href="ballet.validation.project_structure.html" />
     <link rel="prev" title="ballet.validation.feature_api_checks module" href="ballet.validation.feature_api_checks.html" /> 
-
-  
-  <script src="../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -230,40 +232,12 @@
   <div class="section" id="module-ballet.validation.feature_evaluation">
 <span id="ballet-validation-feature-evaluation-module"></span><h1>ballet.validation.feature_evaluation module<a class="headerlink" href="#module-ballet.validation.feature_evaluation" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
-<dt id="ballet.validation.feature_evaluation.FeatureRedundancyEvaluator">
-<em class="property">class </em><code class="descclassname">ballet.validation.feature_evaluation.</code><code class="descname">FeatureRedundancyEvaluator</code><span class="sig-paren">(</span><em>X_df</em>, <em>y</em>, <em>features</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_evaluation.html#FeatureRedundancyEvaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_evaluation.FeatureRedundancyEvaluator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="ballet.validation.base.html#ballet.validation.base.FeaturePruningEvaluator" title="ballet.validation.base.FeaturePruningEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.FeaturePruningEvaluator</span></code></a></p>
-<p>Remove a feature if it is conditionally independent of the target</p>
-<p>Let Sk be the set of subsets of features of size less than or equal to k.
-A feature Xi is redundant if it is independent of the target, conditional
-on some S in Sk. If a feature is redundant, it is removed from the feature
-matrix.</p>
-<dl class="method">
-<dt id="ballet.validation.feature_evaluation.FeatureRedundancyEvaluator.prune">
-<code class="descname">prune</code><span class="sig-paren">(</span><em>k=4</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_evaluation.html#FeatureRedundancyEvaluator.prune"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_evaluation.FeatureRedundancyEvaluator.prune" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prune existing features</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list of features to remove</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="ballet.validation.feature_evaluation.FeatureRelevanceEvaluator">
-<em class="property">class </em><code class="descclassname">ballet.validation.feature_evaluation.</code><code class="descname">FeatureRelevanceEvaluator</code><span class="sig-paren">(</span><em>X_df</em>, <em>y</em>, <em>features</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_evaluation.html#FeatureRelevanceEvaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_evaluation.FeatureRelevanceEvaluator" title="Permalink to this definition">¶</a></dt>
+<dt id="ballet.validation.feature_evaluation.NoOpAcceptanceEvaluator">
+<em class="property">class </em><code class="descclassname">ballet.validation.feature_evaluation.</code><code class="descname">NoOpAcceptanceEvaluator</code><span class="sig-paren">(</span><em>X_df</em>, <em>y</em>, <em>features</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_evaluation.html#NoOpAcceptanceEvaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_evaluation.NoOpAcceptanceEvaluator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="ballet.validation.base.html#ballet.validation.base.FeatureAcceptanceEvaluator" title="ballet.validation.base.FeatureAcceptanceEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.FeatureAcceptanceEvaluator</span></code></a></p>
-<p>Accept a feature if it is correlated to the target</p>
 <dl class="method">
-<dt id="ballet.validation.feature_evaluation.FeatureRelevanceEvaluator.judge">
-<code class="descname">judge</code><span class="sig-paren">(</span><em>feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_evaluation.html#FeatureRelevanceEvaluator.judge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_evaluation.FeatureRelevanceEvaluator.judge" title="Permalink to this definition">¶</a></dt>
+<dt id="ballet.validation.feature_evaluation.NoOpAcceptanceEvaluator.judge">
+<code class="descname">judge</code><span class="sig-paren">(</span><em>feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_evaluation.html#NoOpAcceptanceEvaluator.judge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_evaluation.NoOpAcceptanceEvaluator.judge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Judge whether feature should be accepted</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -272,6 +246,28 @@ matrix.</p>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">feature should be accepted</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ballet.validation.feature_evaluation.NoOpPruningEvaluator">
+<em class="property">class </em><code class="descclassname">ballet.validation.feature_evaluation.</code><code class="descname">NoOpPruningEvaluator</code><span class="sig-paren">(</span><em>X_df</em>, <em>y</em>, <em>features</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_evaluation.html#NoOpPruningEvaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_evaluation.NoOpPruningEvaluator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ballet.validation.base.html#ballet.validation.base.FeaturePruningEvaluator" title="ballet.validation.base.FeaturePruningEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.FeaturePruningEvaluator</span></code></a></p>
+<dl class="method">
+<dt id="ballet.validation.feature_evaluation.NoOpPruningEvaluator.prune">
+<code class="descname">prune</code><span class="sig-paren">(</span><em>k=4</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_evaluation.html#NoOpPruningEvaluator.prune"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_evaluation.NoOpPruningEvaluator.prune" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prune existing features</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list of features to remove</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list</td>
 </tr>
 </tbody>
 </table>
@@ -292,7 +288,7 @@ matrix.</p>
         <a href="ballet.validation.project_structure.html" class="btn btn-neutral float-right" title="ballet.validation.project_structure module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="ballet.validation.feature_api_checks.html" class="btn btn-neutral" title="ballet.validation.feature_api_checks module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="ballet.validation.feature_api_checks.html" class="btn btn-neutral float-left" title="ballet.validation.feature_api_checks module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -318,26 +314,16 @@ matrix.</p>
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

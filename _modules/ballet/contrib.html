@@ -17,32 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -221,8 +223,11 @@
 <span></span><span class="kn">import</span> <span class="nn">pkgutil</span>
 <span class="kn">import</span> <span class="nn">types</span>
 
+<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">collecting</span><span class="p">,</span> <span class="n">complement</span><span class="p">,</span> <span class="n">isnone</span>
+
 <span class="kn">from</span> <span class="nn">ballet.feature</span> <span class="k">import</span> <span class="n">Feature</span>
 <span class="kn">from</span> <span class="nn">ballet.project</span> <span class="k">import</span> <span class="n">Project</span>
+<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">dfilter</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
@@ -249,6 +254,8 @@
     <span class="k">return</span> <span class="n">_get_contrib_features</span><span class="p">(</span><span class="n">contrib</span><span class="p">)</span></div>
 
 
+<span class="nd">@dfilter</span><span class="p">(</span><span class="n">complement</span><span class="p">(</span><span class="n">isnone</span><span class="p">))</span>
+<span class="nd">@collecting</span>
 <span class="k">def</span> <span class="nf">_get_contrib_features</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Get contributed features from within given module</span>
 
@@ -266,29 +273,26 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">ModuleType</span><span class="p">):</span>
-        <span class="n">contrib_features</span> <span class="o">=</span> <span class="p">[]</span>
-
         <span class="c1"># any module that has a __path__ attribute is also a package</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="s1">&#39;__path__&#39;</span><span class="p">):</span>
-            <span class="n">features</span> <span class="o">=</span> <span class="n">_get_contrib_features_from_package</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+            <span class="k">yield from</span> <span class="n">_get_contrib_features_from_package</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">features</span> <span class="o">=</span> <span class="n">_get_contrib_features_from_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
-        <span class="n">contrib_features</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">contrib_features</span>
+            <span class="k">yield</span> <span class="n">_get_contrib_feature_from_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Input is not a module&#39;</span><span class="p">)</span>
 
 
+<span class="nd">@collecting</span>
 <span class="k">def</span> <span class="nf">_get_contrib_features_from_package</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
-    <span class="n">contrib_features</span> <span class="o">=</span> <span class="p">[]</span>
-
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
         <span class="s1">&#39;Walking package path </span><span class="si">{path}</span><span class="s1"> to detect modules...&#39;</span>
         <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">package</span><span class="o">.</span><span class="n">__path__</span><span class="p">))</span>
+
     <span class="k">for</span> <span class="n">importer</span><span class="p">,</span> <span class="n">modname</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">walk_packages</span><span class="p">(</span>
             <span class="n">path</span><span class="o">=</span><span class="n">package</span><span class="o">.</span><span class="n">__path__</span><span class="p">,</span>
             <span class="n">prefix</span><span class="o">=</span><span class="n">package</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span>
             <span class="n">onerror</span><span class="o">=</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">):</span>
+
         <span class="k">try</span><span class="p">:</span>
             <span class="n">mod</span> <span class="o">=</span> <span class="n">importer</span><span class="o">.</span><span class="n">find_module</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span><span class="o">.</span><span class="n">load_module</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
@@ -296,34 +300,15 @@
                 <span class="s1">&#39;Failed to import module </span><span class="si">{modname}</span><span class="s1">&#39;</span>
                 <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modname</span><span class="o">=</span><span class="n">modname</span><span class="p">))</span>
             <span class="k">continue</span>
-        <span class="n">features</span> <span class="o">=</span> <span class="n">_get_contrib_features_from_module</span><span class="p">(</span><span class="n">mod</span><span class="p">)</span>
-        <span class="n">contrib_features</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">contrib_features</span>
+        <span class="k">yield</span> <span class="n">_get_contrib_feature_from_module</span><span class="p">(</span><span class="n">mod</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_get_contrib_features_from_module</span><span class="p">(</span><span class="n">mod</span><span class="p">):</span>
-    <span class="n">contrib_features</span> <span class="o">=</span> <span class="p">[]</span>
-
+<span class="k">def</span> <span class="nf">_get_contrib_feature_from_module</span><span class="p">(</span><span class="n">mod</span><span class="p">):</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-        <span class="s1">&#39;Trying to import contributed feature(s) from module </span><span class="si">{modname}</span><span class="s1">...&#39;</span>
+        <span class="s1">&#39;Trying to import contributed feature from module </span><span class="si">{modname}</span><span class="s1">...&#39;</span>
         <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modname</span><span class="o">=</span><span class="n">mod</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
 
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">feature</span> <span class="o">=</span> <span class="n">_import_contrib_feature_from_feature</span><span class="p">(</span><span class="n">mod</span><span class="p">)</span>
-        <span class="n">contrib_features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="s1">&#39;Imported 1 feature from </span><span class="si">{modname}</span><span class="s1"> from Feature object&#39;</span>
-            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modname</span><span class="o">=</span><span class="n">mod</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
-    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="s1">&#39;Failed to import anything useful from module </span><span class="si">{modname}</span><span class="s1">&#39;</span>
-            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modname</span><span class="o">=</span><span class="n">mod</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
-
-    <span class="k">return</span> <span class="n">contrib_features</span>
-
-
-<span class="k">def</span> <span class="nf">_import_contrib_feature_from_feature</span><span class="p">(</span><span class="n">mod</span><span class="p">):</span>
     <span class="n">candidates</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">mod</span><span class="p">):</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
@@ -333,16 +318,22 @@
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">feature</span> <span class="o">=</span> <span class="n">candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">feature</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s1">&#39;Imported 1 feature from </span><span class="si">{modname}</span><span class="s1"> from </span><span class="si">{Feature.__name__}</span><span class="s1"> object&#39;</span>
+            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modname</span><span class="o">=</span><span class="n">mod</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">Feature</span><span class="o">=</span><span class="n">Feature</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">feature</span>
     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-            <span class="s1">&#39;Found too many </span><span class="se">\&#39;</span><span class="s1">Feature</span><span class="se">\&#39;</span><span class="s1"> objects in module </span><span class="si">{modname}</span><span class="s1">: &#39;</span>
-            <span class="s1">&#39;</span><span class="si">{candidates!r}</span><span class="s1">&#39;</span>
-            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modname</span><span class="o">=</span><span class="n">mod</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">candidates</span><span class="o">=</span><span class="n">candidates</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s1">&#39;Found too many </span><span class="si">{Feature.__name__}</span><span class="s1"> objects in module </span><span class="si">{modname}</span><span class="s1">, &#39;</span>
+            <span class="s1">&#39;skipping; candidates were </span><span class="si">{candidates!r}</span><span class="s1">&#39;</span>
+            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Feature</span><span class="o">=</span><span class="n">Feature</span><span class="p">,</span> <span class="n">modname</span><span class="o">=</span><span class="n">mod</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                    <span class="n">candidates</span><span class="o">=</span><span class="n">candidates</span><span class="p">))</span>
+        <span class="k">return</span> <span class="kc">None</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-            <span class="s1">&#39;Did not find any </span><span class="se">\&#39;</span><span class="s1">Feature</span><span class="se">\&#39;</span><span class="s1"> objects in module </span><span class="si">{modname}</span><span class="s1">&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s1">&#39;Failed to import anything useful from module </span><span class="si">{modname}</span><span class="s1">&#39;</span>
             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modname</span><span class="o">=</span><span class="n">mod</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+        <span class="k">return</span> <span class="kc">None</span>
 </pre></div>
 
            </div>
@@ -372,26 +363,16 @@
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

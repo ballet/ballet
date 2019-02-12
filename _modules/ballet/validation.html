@@ -17,32 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -220,15 +222,16 @@
   <h1>Source code for ballet.validation</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">os</span>
 
-<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">decorator</span><span class="p">,</span> <span class="n">ignore</span>
+<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">decorator</span><span class="p">,</span> <span class="n">ignore</span><span class="p">,</span> <span class="n">lfilter</span>
 
+<span class="kn">from</span> <span class="nn">ballet.contrib</span> <span class="k">import</span> <span class="n">_get_contrib_feature_from_module</span>
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">ConfigurationError</span><span class="p">,</span> <span class="n">FeatureRejected</span><span class="p">,</span> <span class="n">InvalidFeatureApi</span><span class="p">,</span>
+    <span class="n">Error</span><span class="p">,</span> <span class="n">ConfigurationError</span><span class="p">,</span> <span class="n">FeatureRejected</span><span class="p">,</span> <span class="n">InvalidFeatureApi</span><span class="p">,</span>
     <span class="n">InvalidProjectStructure</span><span class="p">,</span> <span class="n">SkippedValidationTest</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ballet.project</span> <span class="k">import</span> <span class="n">Project</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span><span class="p">,</span> <span class="n">stacklog</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.feature_evaluation</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">FeatureRedundancyEvaluator</span><span class="p">,</span> <span class="n">FeatureRelevanceEvaluator</span><span class="p">)</span>
+    <span class="n">NoOpAcceptanceEvaluator</span><span class="p">,</span> <span class="n">NoOpPruningEvaluator</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.project_structure</span> <span class="k">import</span> <span class="p">(</span>
     <span class="n">ChangeCollector</span><span class="p">,</span> <span class="n">FeatureApiValidator</span><span class="p">,</span> <span class="n">FileChangeValidator</span><span class="p">)</span>
 
@@ -255,8 +258,45 @@
 <div class="viewcode-block" id="get_proposed_feature"><a class="viewcode-back" href="../../api/ballet.validation.html#ballet.validation.get_proposed_feature">[docs]</a><span class="k">def</span> <span class="nf">get_proposed_feature</span><span class="p">(</span><span class="n">project</span><span class="p">):</span>
     <span class="n">change_collector</span> <span class="o">=</span> <span class="n">ChangeCollector</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
     <span class="n">collected_changes</span> <span class="o">=</span> <span class="n">change_collector</span><span class="o">.</span><span class="n">collect_changes</span><span class="p">()</span>
-    <span class="c1"># TODO import features</span>
-    <span class="k">return</span> <span class="n">collected_changes</span><span class="o">.</span><span class="n">new_feature_info</span></div>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">collected_changes</span><span class="o">.</span><span class="n">new_feature_info</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Error</span>
+    <span class="n">importer</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">collected_changes</span><span class="o">.</span><span class="n">new_feature_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># print(&#39;\n&#39; * 5 + str(collected_changes.new_feature_info))</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">importer</span><span class="p">()</span>
+    <span class="n">feature</span> <span class="o">=</span> <span class="n">_get_contrib_feature_from_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">feature</span></div>
+
+
+<div class="viewcode-block" id="get_accepted_features"><a class="viewcode-back" href="../../api/ballet.validation.html#ballet.validation.get_accepted_features">[docs]</a><span class="k">def</span> <span class="nf">get_accepted_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">proposed_feature</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Deselect candidate features from list of all features</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        features (Sequence[Feature]): collection of all features in the</span>
+<span class="sd">            ballet project: both accepted features and candidate ones that have</span>
+<span class="sd">            not been accepted</span>
+<span class="sd">        proposed_feature (Feature): candidate feature that has not been</span>
+<span class="sd">            accepted</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[Feature]: list of features with the proposed feature not in it.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        Error: Could not deselect exactly the proposed feature.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">neq</span><span class="p">(</span><span class="n">feature</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">feature</span><span class="o">.</span><span class="n">source</span> <span class="o">!=</span> <span class="n">proposed_feature</span><span class="o">.</span><span class="n">source</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">(</span><span class="n">neq</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">result</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">Error</span><span class="p">(</span>
+            <span class="s1">&#39;Did not find match for proposed feature within </span><span class="se">\&#39;</span><span class="s1">contrib</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Error</span><span class="p">(</span>
+            <span class="s1">&#39;Unexpected condition (n_features=</span><span class="si">{}</span><span class="s1">, n_result=</span><span class="si">{}</span><span class="s1">)&#39;</span>
+            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)))</span></div>
 
 
 <div class="viewcode-block" id="detect_target_type"><a class="viewcode-back" href="../../api/ballet.validation.html#ballet.validation.detect_target_type">[docs]</a><span class="k">def</span> <span class="nf">detect_target_type</span><span class="p">():</span>
@@ -298,9 +338,12 @@
 
     <span class="n">out</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
     <span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">features</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;X_df&#39;</span><span class="p">],</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">],</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span>
-    <span class="n">evaluator</span> <span class="o">=</span> <span class="n">FeatureRelevanceEvaluator</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
+
     <span class="n">proposed_feature</span> <span class="o">=</span> <span class="n">get_proposed_feature</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
+    <span class="n">accepted_features</span> <span class="o">=</span> <span class="n">get_accepted_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">proposed_feature</span><span class="p">)</span>
+    <span class="n">evaluator</span> <span class="o">=</span> <span class="n">NoOpAcceptanceEvaluator</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">accepted_features</span><span class="p">)</span>
     <span class="n">accepted</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">judge</span><span class="p">(</span><span class="n">proposed_feature</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="ow">not</span> <span class="n">accepted</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">FeatureRejected</span></div>
 
@@ -312,7 +355,7 @@
 
     <span class="n">out</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
     <span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">features</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;X_df&#39;</span><span class="p">],</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">],</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span>
-    <span class="n">evaluator</span> <span class="o">=</span> <span class="n">FeatureRedundancyEvaluator</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
+    <span class="n">evaluator</span> <span class="o">=</span> <span class="n">NoOpPruningEvaluator</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
     <span class="n">redundant_features</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">prune</span><span class="p">()</span>
 
     <span class="c1"># propose removal</span>
@@ -368,26 +411,16 @@
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
