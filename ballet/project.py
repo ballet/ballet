@@ -25,10 +25,11 @@ def get_config_paths(package_root):
     package_root = pathlib.Path(package_root)
 
     # parents of package directory
-    paths = [
+    paths = [package_root.joinpath(DEFAULT_CONFIG_NAME)] + [
         d.joinpath(DEFAULT_CONFIG_NAME)
         for d in package_root.parents
     ]
+
 
     # home directory
     paths.append(
@@ -54,6 +55,8 @@ def find_configs(package_root):
     """
     configs = []
     for candidate in get_config_paths(package_root):
+        print(candidate)
+        print(candidate.exists())
         if candidate.exists() and candidate.is_file():
             with candidate.open('r') as f:
                 config = yaml.load(f)

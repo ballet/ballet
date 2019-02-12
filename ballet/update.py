@@ -22,8 +22,7 @@ def update_project():
     except Exception as e:
         print(e)
 
-    with tempfile.TemporaryDirectory() as _tempdir:
-        tempdir = _tempdir.name
+    with tempfile.TemporaryDirectory() as tempdir:
         updated_project = _create_replay(tempdir, ballet_yml[0]['problem']['name'])
         updated_repo = git.Repo(safepath(updated_project))
         remote_name = updated_project.parts[-1]
