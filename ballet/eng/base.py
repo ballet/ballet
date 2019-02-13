@@ -83,8 +83,15 @@ class GroupedFunctionTransformer(SimpleFunctionTransformer):
 class GroupwiseTransformer(BaseTransformer):
     """Transformer that does something different for every group
 
-    Args:
+    For each group identified in the training set by the groupby operation,
+    a separate transformer is cloned and fit. This is useful to learn
+    group-wise transformers that do not leak data between the training and
+    test sets. Consider the case of imputing missing values with the mean of
+    some group. A normal, pure-pandas implementation, such as
+    ``X_te.groupby(by='foo').apply('mean')`` would leak information about
+    the test set means, which might differ from the training set means.
 
+    Args:
         transformer (transformer-like or callable): the transformer to apply
             to each group. If transformer is a transformer-like instance (i.e.
             has fit, transform methods etc.), then it is cloned for each group.
@@ -92,14 +99,31 @@ class GroupwiseTransformer(BaseTransformer):
             the class are transformer-like), then it is initialized with no
             arguments for each group. If it is a callable, then it is called
             with no arguments for each group.
+        groupby_kwargs (dict): keyword arguments to pd.DataFrame.groupby
+        handle_unknown (str): 'error' or 'ignore', default=’error’. Whether to
+            raise an error or ignore if an unknown group is encountered during
+            transform. When this parameter is set to 'ignore' and an unknown
+            group is encountered during transform, the group's values will be
+            passed through unchanged.
 
-        handle_unknown: 'error' or 'ignore', default=’error’. Whether to raise
-            an error or ignore if an unknown categorical feature is present
-            during transform (default is to raise). When this parameter is set
-            to 'ignore' and an unknown category is encountered during
-            transform, the resulting one-hot encoded columns for this feature
-            will be all zeros. In the inverse transform, an unknown category
-            will be denoted as None.
+    Example usage:
+
+        In this example, we create a groupwise transformer that fits a
+        separate imputer for each group encountered. For new data points,
+        values will be imputed according to the mean of its group on the
+        training set, avoiding any data leakage.
+
+        .. code-block:: python
+
+           >>> from sklearn.impute import SimpleImputer
+           >>> transformer = GroupwiseTransformer(
+           ...     SimpleImputer(strategy='mean'),
+           ...     groupby_kwargs = {'by': 'name'}
+           ... )
+
+    Raises:
+        ballet.exc.Error: if handle_unknown=='error' and an unknown group is
+            encountered at transform-time.
     """
 
     def __init__(self,
@@ -155,10 +179,10 @@ class GroupwiseTransformer(BaseTransformer):
 
                 # this post-processing step is required because sklearn
                 # transform converts a DataFrame to an array. This is my
-                # best attempt so far to replicate:
+                # best attempt so far to approximate the following:
                 # >>> result = x_group.copy()
                 # >>> result.values = data
-                # which is an error as values is a protected attribute.
+                # which is an error as `values` cannot be set.
                 # Unfortunately, this approach is not robust to different
                 # data types.
                 if not isinstance(x_group, pd.DataFrame):
