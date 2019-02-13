@@ -36,6 +36,7 @@ class BoxCoxTransformer(BaseTransformer):
     See also:
         https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.boxcox1p.html
     """
+
     def __init__(self, threshold, lmbda=0):
         super().__init__()
         self.threshold = threshold
@@ -104,6 +105,7 @@ class NamedFramer(BaseTransformer):
     Args:
         name: name for resulting DataFrame
     """
+
     def __init__(self, name):
         super().__init__()
         self.name = name
@@ -130,3 +132,10 @@ class NamedFramer(BaseTransformer):
                 raise ValueError(msg.format(get_arr_desc(X)))
 
         raise TypeError(msg.format(get_arr_desc(X)))
+
+
+class NullTransformer(BaseTransformer):
+
+    def transform(self, X, **transform_kwargs):
+        n = np.size(X, 0)
+        return np.empty((n, 0))

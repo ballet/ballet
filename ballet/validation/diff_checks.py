@@ -43,7 +43,7 @@ class IsPythonSourceCheck(DiffCheck):
 class WithinContribCheck(DiffCheck):
 
     def check(self, diff):
-        """Check that the new file introduced is within the contrib subdirectory"""
+        """Check that the new file is within the contrib subdirectory"""
         path = diff.b_path
         contrib_path = self.project.contrib_module_path
         assert pathlib.Path(contrib_path) in pathlib.Path(path).parents
@@ -90,7 +90,7 @@ class ModuleNameCheck(DiffCheck):
 class IfInitModuleThenIsEmptyCheck(DiffCheck):
 
     def check(self, diff):
-        """Check that if the new file is __init__.py, then it is an empty file"""
+        """Check that if the new file is __init__.py, then it is empty"""
         path = pathlib.Path(diff.b_path)
         filename = path.parts[-1]
         if filename == '__init__.py':

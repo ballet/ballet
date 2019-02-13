@@ -11,13 +11,13 @@ class FeatureApiCheck(BaseCheck):
     """Base class for implementing new Feature API checks
 
     Args:
-        X (array-like): X
-        y (array-like): y
+        X_df (array-like): X dataframe
+        y_df (array-like): y dataframe
     """
 
-    def __init__(self, X, y):
-        self.X = X
-        self.y = y
+    def __init__(self, X_df, y_df):
+        self.X = X_df
+        self.y = y_df
 
 
 class IsFeatureCheck(FeatureApiCheck):

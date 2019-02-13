@@ -61,7 +61,7 @@ lint: ## check style with flake8 and isort
 
 .PHONY: fix-lint
 fix-lint: ## fix lint issues using autopep8 and isort
-	autopep8 --in-place --recursive --aggressive ballet tests
+	autopep8 --in-place --recursive --aggressive --aggressive ballet tests
 	isort --apply --atomic --recursive ballet tests
 
 .PHONY: test

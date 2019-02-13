@@ -9,8 +9,9 @@ from sklearn.base import TransformerMixin
 from sklearn_pandas import DataFrameMapper
 from sklearn_pandas.pipeline import TransformerPipeline
 
+from ballet.eng.misc import NullTransformer
 from ballet.exc import UnsuccessfulInputConversionError
-from ballet.util import DeepcopyMixin, asarray2d, indent
+from ballet.util import DeepcopyMixin, asarray2d, indent, quiet
 from ballet.util.log import logger
 
 __all__ = ['make_mapper', 'Feature']
@@ -25,6 +26,8 @@ def make_mapper(features):
     Returns:
         DataFrameMapper: mapper made from features
     """
+    if not features:
+        features = Feature(input=[], transformer=NullTransformer())
     if not iterable(features):
         features = (features, )
     return DataFrameMapper(
@@ -134,6 +137,7 @@ class DelegatingRobustTransformer(DeepcopyMixin, TransformerMixin):
         else:
             return method(convert(X), **kwargs)
 
+    @quiet
     def _call_robust(self, method, X, y, kwargs):
         if self._stored_conversion_approach is not None:
             approach = self._stored_conversion_approach

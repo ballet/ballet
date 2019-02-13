@@ -1,14 +1,15 @@
 import os
 
-from funcy import decorator, ignore
+from funcy import decorator, ignore, lfilter
 
+from ballet.contrib import _get_contrib_feature_from_module
 from ballet.exc import (
-    ConfigurationError, FeatureRejected, InvalidFeatureApi,
+    Error, ConfigurationError, FeatureRejected, InvalidFeatureApi,
     InvalidProjectStructure, SkippedValidationTest)
 from ballet.project import Project
 from ballet.util.log import logger, stacklog
 from ballet.validation.feature_evaluation import (
-    FeatureRedundancyEvaluator, FeatureRelevanceEvaluator)
+    NoOpAcceptanceEvaluator, NoOpPruningEvaluator)
 from ballet.validation.project_structure import (
     ChangeCollector, FeatureApiValidator, FileChangeValidator)
 
@@ -35,8 +36,45 @@ class BalletTestTypes:
 def get_proposed_feature(project):
     change_collector = ChangeCollector(project)
     collected_changes = change_collector.collect_changes()
-    # TODO import features
-    return collected_changes.new_feature_info
+    if len(collected_changes.new_feature_info) != 1:
+        raise Error
+    importer, _, _ = collected_changes.new_feature_info[0]
+    # print('\n' * 5 + str(collected_changes.new_feature_info))
+    module = importer()
+    feature = _get_contrib_feature_from_module(module)
+    return feature
+
+
+def get_accepted_features(features, proposed_feature):
+    """Deselect candidate features from list of all features
+
+    Args:
+        features (Sequence[Feature]): collection of all features in the
+            ballet project: both accepted features and candidate ones that have
+            not been accepted
+        proposed_feature (Feature): candidate feature that has not been
+            accepted
+
+    Returns:
+        list[Feature]: list of features with the proposed feature not in it.
+
+    Raises:
+        Error: Could not deselect exactly the proposed feature.
+    """
+    def neq(feature):
+        return feature.source != proposed_feature.source
+
+    result = lfilter(neq, features)
+
+    if len(features) - len(result) == 1:
+        return result
+    elif len(result) == len(features):
+        raise Error(
+            'Did not find match for proposed feature within \'contrib\'')
+    else:
+        raise Error(
+            'Unexpected condition (n_features={}, n_result={})'
+            .format(len(features), len(result)))
 
 
 def detect_target_type():
@@ -78,9 +116,12 @@ def evaluate_feature_performance(project):
 
     out = project.build()
     X_df, y, features = out['X_df'], out['y'], out['features']
-    evaluator = FeatureRelevanceEvaluator(X_df, y, features)
+
     proposed_feature = get_proposed_feature(project)
+    accepted_features = get_accepted_features(features, proposed_feature)
+    evaluator = NoOpAcceptanceEvaluator(X_df, y, accepted_features)
     accepted = evaluator.judge(proposed_feature)
+
     if not accepted:
         raise FeatureRejected
 
@@ -92,7 +133,7 @@ def prune_existing_features(project):
 
     out = project.build()
     X_df, y, features = out['X_df'], out['y'], out['features']
-    evaluator = FeatureRedundancyEvaluator(X_df, y, features)
+    evaluator = NoOpPruningEvaluator(X_df, y, features)
     redundant_features = evaluator.prune()
 
     # propose removal

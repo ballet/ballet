@@ -16,3 +16,8 @@ from ballet.contrib import *  # noqa
 import logging  # noqa E402
 from ballet.util.log import logger  # noqa E402
 logger.addHandler(logging.NullHandler())
+
+# filter warnings
+import warnings  # noqa E402
+warnings.filterwarnings(
+    action="ignore", module="scipy", message="^internal gelsd")

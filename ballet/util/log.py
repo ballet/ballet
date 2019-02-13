@@ -32,6 +32,14 @@ def enable(logger=logger, level=logging.INFO, echo=True):
             level, 'Logging enabled at level {name}.'.format(name=levelName))
 
 
+class LevelFilter(object):
+    def __init__(self, level):
+        self.__level = level
+
+    def filter(self, logRecord):
+        return logRecord.levelno == self.__level
+
+
 class LoggingContext(object):
     '''
     Logging context manager

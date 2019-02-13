@@ -16,6 +16,7 @@ from ballet.feature import Feature
 from ballet.quickstart import generate_project
 from ballet.util import get_enum_values
 from ballet.util.git import switch_to_new_branch
+from ballet.util.log import logger
 from ballet.util.mod import import_module_at_path, modname_to_relpath
 from ballet.validation import TEST_TYPE_ENV_VAR, BalletTestTypes
 
@@ -32,6 +33,16 @@ def submit_feature(repo, contrib_dir, username, featurename, new_feature_str):
 
     repo.index.add([str(init_path), str(feature_path)])
     repo.index.commit('Add {} feature'.format(feature_path))
+
+
+def make_feature_str(input):
+    return dedent("""
+        from ballet import Feature
+        from ballet.eng.misc import IdentityTransformer
+        input = '{input}'
+        transformer = IdentityTransformer()
+        feature = Feature(input, transformer)
+    """.format(input=input)).strip()
 
 
 def test_end_to_end():
@@ -78,11 +89,28 @@ def test_end_to_end():
     # write a new version of foo.load_data.load_data
     new_load_data_str = dedent("""
         import pandas as pd
-        import sklearn.datasets
+        from sklearn.datasets import make_regression
+
         def load_data():
-            data = sklearn.datasets.load_boston()
-            X_df = pd.DataFrame(data=data.data, columns=data.feature_names)
-            y_df = pd.Series(data.target, name='price')
+            p = 15
+            q = 2
+            X, y, coef = make_regression(
+                n_samples=50, n_features=p, n_informative=q, coef=True,
+                shuffle=True, random_state=1)
+
+            # informative columns are 'A', 'B'
+            # uninformative columns are 'Z_0', ..., 'Z_11'
+            columns = []
+            informative = list('AB')
+            other = ['Z_{i}'.format(i=i) for i in reversed(range(p-q))]
+            for i in range(p):
+                if coef[i] == 0:
+                    columns.append(other.pop())
+                else:
+                    columns.append(informative.pop())
+
+            X_df = pd.DataFrame(data=X, columns=columns)
+            y_df = pd.Series(y)
             return X_df, y_df
     """).strip()
 
@@ -93,7 +121,7 @@ def test_end_to_end():
     # commit changes
     repo = git.Repo(safepath(base))
     repo.index.add([str(p)])
-    repo.index.commit('Load boston dataset')
+    repo.index.commit('Load mock regression dataset')
 
     # call different validation routines
     def call_validate(ballet_test_type):
@@ -123,36 +151,63 @@ def test_end_to_end():
     # write a new feature
     contrib_dir = base.joinpath(modname, 'features', 'contrib')
 
-    new_feature_str = dedent("""
-        import numpy as np
-        from ballet import Feature
-        from ballet.eng.base import SimpleFunctionTransformer
-        input = 'DIS'
-        transformer = SimpleFunctionTransformer(np.log)
-        feature = Feature(input, transformer)
-    """).strip()
-    username = 'alice'
-    featurename = 'log_dis'
-    submit_feature(repo, contrib_dir, username, featurename, new_feature_str)
+    # new_feature_str = make_feature_str('Z_0')
+    # username = 'alice'
+    # featurename = 'Z_0'
+    # submit_feature(repo, contrib_dir, username, featurename, new_feature_str)
 
-    # call different validation routines
+    # # call different validation routines
     call_validate_all()
 
-    # branch to a fake PR
+    # branch to a fake PR and write a new feature
+    logger.info('Switching to pull request 1, User Bob, Feature A')
     switch_to_new_branch(repo, 'pull/1')
-
-    # write a new feature
-    new_feature_str = new_feature_str.replace('DIS', 'TAX')
+    new_feature_str = make_feature_str('A')
     username = 'bob'
-    featurename = 'log_tax'
+    featurename = 'A'
     submit_feature(repo, contrib_dir, username, featurename, new_feature_str)
 
     # call different validation routines
+    logger.info('Validating pull request 1, User Bob, Feature A')
     call_validate_all(pr=1)
 
     # merge PR with master
+    logger.info('Merging into master')
     repo.git.checkout('master')
     repo.git.merge('pull/1', no_ff=True)
+
+    # call different validation routines
+    logger.info('Validating after merge')
+    call_validate_all()
+
+    # write another new feature
+    logger.info('Switching to pull request 2, User Charlie, Feature Z_1')
+    switch_to_new_branch(repo, 'pull/2')
+    new_feature_str = make_feature_str('Z_1')
+    username = 'charlie'
+    featurename = 'Z_1'
+    submit_feature(repo, contrib_dir, username, featurename, new_feature_str)
+
+    # if we expect this feature to succeed -- with NoOpAcceptanceEvaluator
+    call_validate_all(pr=2)
+
+    # if we expect this feature to fail -- with a more reasonable evaluator
+    # with pytest.raises(CalledProcessError):
+    #     logger.info('Validating pull request 2, User Charlie, Feature Z_1')
+    #     call_validate_all(pr=2)
+
+    # write another new feature
+    repo.git.checkout('master')
+    switch_to_new_branch(repo, 'pull/3')
+    new_feature_str = make_feature_str('B')
+    username = 'charlie'
+    featurename = 'B'
+    submit_feature(repo, contrib_dir, username, featurename, new_feature_str)
+    call_validate_all(pr=3)
+
+    # merge PR with master
+    repo.git.checkout('master')
+    repo.git.merge('pull/3', no_ff=True)
 
     # call different validation routines
     call_validate_all()

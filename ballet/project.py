@@ -27,7 +27,7 @@ def get_config_paths(package_root):
     # parents of package directory
     paths = [package_root.joinpath(DEFAULT_CONFIG_NAME)] + [
         d.joinpath(DEFAULT_CONFIG_NAME)
-        for d in package_root.parents
+        for d in [package_root] + list(package_root.parents)
     ]
 
 

@@ -12,6 +12,7 @@ class SingleLagger(GroupedFunctionTransformer):
         lag (int): lag to apply
         groupby_kwargs (dict): keyword arguments to pd.DataFrame.groupby
     """
+
     def __init__(self, lag, groupby_kwargs=None):
         super().__init__(lambda x: x.shift(lag), groupby_kwargs=groupby_kwargs)
 
