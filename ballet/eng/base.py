@@ -1,3 +1,4 @@
+import funcy
 import pandas as pd
 import sklearn.base
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -50,7 +51,8 @@ class SimpleFunctionTransformer(BaseTransformer):
     def _func_call(self, *args):
         func_args = self.func_args or ()
         func_kwargs = self.func_kwargs or {}
-        return self.func(*args, *func_args, **func_kwargs)
+        args = funcy.join((args, func_args))  # py34
+        return self.func(*args, **func_kwargs)
 
     def transform(self, X, **transform_kwargs):
         return self._func_call(X)
