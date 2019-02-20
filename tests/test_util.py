@@ -125,9 +125,19 @@ class UtilTest(
         actual = ballet.util.indent(text, n=4)
         self.assertEqual(actual, expected)
 
-    @unittest.expectedFailure
-    def test_make_plural_suffix(self):
-        raise NotImplementedError
+    def test_make_plural_suffix_plural(self):
+        objs = ['honda', 'toyota']
+        suffix = ballet.util.make_plural_suffix(objs)
+        actual = 'car{s}'.format(s=suffix)
+        expected = 'cars'
+        self.assertEqual(actual, expected)
+
+    def test_make_plural_suffix_singular(self):
+        objs = ['honda']
+        suffix = ballet.util.make_plural_suffix(objs)
+        actual = 'car{s}'.format(s=suffix)
+        expected = 'car'
+        self.assertEqual(actual, expected)
 
     @unittest.expectedFailure
     def test_whether_failures(self):
