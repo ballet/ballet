@@ -111,9 +111,19 @@ class UtilTest(
         expected = [1, 2]
         self.assertEqual(actual, expected)
 
-    @unittest.expectedFailure
     def test_indent(self):
-        raise NotImplementedError
+        text = (
+            'Hello\n'
+            '  world\n'
+            '...hi'
+        )
+        expected = (
+            '    Hello\n'
+            '      world\n'
+            '    ...hi'
+        )
+        actual = ballet.util.indent(text, n=4)
+        self.assertEqual(actual, expected)
 
     @unittest.expectedFailure
     def test_make_plural_suffix(self):
