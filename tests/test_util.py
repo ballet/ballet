@@ -21,15 +21,54 @@ from ballet.util.git import (
 from ballet.util.mod import (  # noqa F401
     import_module_at_path, import_module_from_modname,
     import_module_from_relpath, modname_to_relpath, relpath_to_modname)
+from ballet.util.testing import ArrayLikeEqualityTestingMixin
 
 from .util import make_mock_commits, mock_repo
 
 
-class UtilTest(unittest.TestCase):
+class UtilTest(
+    ArrayLikeEqualityTestingMixin,
+    unittest.TestCase
+):
 
-    @unittest.expectedFailure
-    def test_asarray2d(self):
-        raise NotImplementedError
+    def test_asarray2d_shape_n_x_2(self):
+        # case: second dimension is > 1
+        a = np.zeros((3, 2))
+        result = ballet.util.asarray2d(a)
+        self.assertArrayEqual(result, a)
+
+    def test_asarray2d_shape_n_x_1(self):
+        # case: second dimension == 1
+        a = np.zeros((3, 1))
+        result = ballet.util.asarray2d(a)
+        self.assertArrayEqual(result, a)
+
+    def test_asarray2d_shape_n(self):
+        # case: second dimension not present
+        a = np.zeros((3,))
+        result = ballet.util.asarray2d(a)
+        expected_shape = (3, 1)
+        self.assertEqual(result.shape, expected_shape)
+        self.assertArrayEqual(np.ravel(result), a)
+
+    def test_asarray2d_series(self):
+        # case: pd.Series
+        a = np.zeros((3,))
+        ser = pd.Series(a)
+        result = ballet.util.asarray2d(ser)
+        self.assertGreaterEqual(result.shape[1], 1)
+        self.assertArrayEqual(
+            result, ballet.util.asarray2d(a)
+        )
+
+    def test_asarray2d_df(self):
+        # case: pd.DataFrame
+        a = np.zeros((3, 2))
+        df = pd.DataFrame(a)
+        result = ballet.util.asarray2d(df)
+        self.assertEqual(result.shape, df.shape)
+        self.assertGreaterEqual(result.shape[1], 1)
+        self.assertArrayEqual(result, a)
 
     @unittest.expectedFailure
     def test_get_arr_desc(self):
