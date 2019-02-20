@@ -1,5 +1,6 @@
 import warnings
 from copy import deepcopy
+from enum import Enum
 from os import devnull
 
 import numpy as np
@@ -33,7 +34,10 @@ def get_enum_keys(cls):
 
 
 def get_enum_values(cls):
-    return [getattr(cls, attr) for attr in get_enum_keys(cls)]
+    if issubclass(cls, Enum):
+        return [getattr(cls, attr).value for attr in get_enum_keys(cls)]
+    else:
+        return [getattr(cls, attr) for attr in get_enum_keys(cls)]
 
 
 def indent(text, n=4):

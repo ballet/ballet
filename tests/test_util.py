@@ -93,9 +93,23 @@ class UtilTest(
         expected = ['A', 'B']
         self.assertEqual(actual, expected)
 
-    @unittest.expectedFailure
-    def test_get_enum_values(self):
-        raise NotImplementedError
+    def test_get_enum_values_class(self):
+        class MyEnum:
+            A = 1
+            B = 2
+
+        actual = ballet.util.get_enum_values(MyEnum)
+        expected = [1, 2]
+        self.assertEqual(actual, expected)
+
+    def test_get_enum_values_enum(self):
+        class MyEnum(Enum):
+            A = 1
+            B = 2
+
+        actual = ballet.util.get_enum_values(MyEnum)
+        expected = [1, 2]
+        self.assertEqual(actual, expected)
 
     @unittest.expectedFailure
     def test_indent(self):
