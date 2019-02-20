@@ -3,6 +3,7 @@ import sys
 import tempfile
 import types
 import unittest
+from enum import Enum
 from unittest.mock import ANY, mock_open, patch
 
 import numpy as np
@@ -74,9 +75,23 @@ class UtilTest(
     def test_get_arr_desc(self):
         raise NotImplementedError
 
-    @unittest.expectedFailure
-    def test_get_enum_keys(self):
-        raise NotImplementedError
+    def test_get_enum_keys_class(self):
+        class MyEnum:
+            A = 1
+            B = 2
+
+        actual = ballet.util.get_enum_keys(MyEnum)
+        expected = ['A', 'B']
+        self.assertEqual(actual, expected)
+
+    def test_get_enum_keys_enum(self):
+        class MyEnum(Enum):
+            A = 1
+            B = 2
+
+        actual = ballet.util.get_enum_keys(MyEnum)
+        expected = ['A', 'B']
+        self.assertEqual(actual, expected)
 
     @unittest.expectedFailure
     def test_get_enum_values(self):
