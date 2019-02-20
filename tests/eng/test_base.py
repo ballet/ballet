@@ -3,11 +3,15 @@ import unittest
 import numpy as np
 import pandas as pd
 import sklearn.base
+from sklearn.impute import SimpleImputer
 
 import ballet.eng.base
+import ballet.exc
+from ballet.util.testing import ArrayLikeEqualityTestingMixin
 
 
-class TestBase(unittest.TestCase):
+class TestBase(ArrayLikeEqualityTestingMixin, unittest.TestCase):
+
     def setUp(self):
         pass
 
@@ -37,7 +41,7 @@ class TestBase(unittest.TestCase):
         data_trans = trans.transform(data)
         data_func = func(data)
 
-        self.assertTrue(np.array_equal(data_trans, data_func))
+        self.assertArrayEqual(data_trans, data_func)
 
     def test_grouped_function_transformer(self):
         df = pd.DataFrame(
@@ -56,7 +60,7 @@ class TestBase(unittest.TestCase):
         trans.fit(df)
         result = trans.transform(df)
         expected_result = df.groupby(level='country').apply(func)
-        pd.util.testing.assert_frame_equal(result, expected_result)
+        self.assertFrameEqual(result, expected_result)
 
         # without groupby kwargs, produces a series
         func = np.min
@@ -64,4 +68,87 @@ class TestBase(unittest.TestCase):
         trans.fit(df)
         result = trans.transform(df)
         expected_result = df.pipe(func)
-        pd.util.testing.assert_series_equal(result, expected_result)
+        self.assertSeriesEqual(result, expected_result)
+
+
+class GroupwiseTransformerTest(
+    ArrayLikeEqualityTestingMixin, unittest.TestCase
+):
+
+    def setUp(self):
+        self.X_tr = pd.DataFrame(
+            data={
+                'name': ['A', 'A', 'A', 'B', 'B', 'C', 'C'],
+                'year': [2001, 2002, 2003, 2001, 2002, 2001, 2003],
+                'value': [1, 2, np.nan, 4, 4, 5, np.nan],
+            }
+        ).set_index(['name', 'year']).sort_index()
+
+        self.X_te = pd.DataFrame(
+            data={
+                'name': ['A', 'B', 'C'],
+                'year': [2004, 2004, 2004],
+                'value': [np.nan, np.nan, np.nan],
+            }
+        ).set_index(['name', 'year']).sort_index()
+
+        self.groupby_kwargs = {'level': 'name'}
+
+        # mean-impute within groups
+        self.individual_transformer = SimpleImputer()
+        self.trans = ballet.eng.base.GroupwiseTransformer(
+            self.individual_transformer, groupby_kwargs=self.groupby_kwargs)
+
+    def test_can_fit(self):
+        self.trans.fit(self.X_tr)
+
+    def test_can_transform(self):
+        self.trans.fit(self.X_tr)
+
+        result_tr = self.trans.transform(self.X_tr)
+        expected_tr = self.X_tr.copy()
+        expected_tr['value'] = np.array([1, 2, 1.5, 4, 4, 5, 5])
+        self.assertFrameEqual(result_tr, expected_tr)
+
+        result_te = self.trans.transform(self.X_te)
+        expected_te = self.X_te.copy()
+        expected_te['value'] = np.array([1.5, 4, 5])
+        self.assertFrameEqual(result_te, expected_te)
+
+    def test_raise_on_new_group(self):
+        trans = ballet.eng.base.GroupwiseTransformer(
+            self.individual_transformer,
+            groupby_kwargs=self.groupby_kwargs,
+            handle_unknown='error'
+        )
+
+        trans.fit(self.X_tr)
+
+        X_te = self.X_te.copy().reset_index()
+        X_te.loc[0, 'name'] = 'Z'  # new group
+        X_te = X_te.set_index(['name', 'year'])
+
+        with self.assertRaises(ballet.exc.Error):
+            trans.transform(X_te)
+
+    def test_ignore_on_new_group(self):
+        trans = ballet.eng.base.GroupwiseTransformer(
+            self.individual_transformer,
+            groupby_kwargs=self.groupby_kwargs,
+            handle_unknown='ignore'
+        )
+
+        trans.fit(self.X_tr)
+
+        X_te = self.X_te.copy().reset_index()
+        X_te.loc[0, 'name'] = 'Z'  # new group
+        X_te = X_te.set_index(['name', 'year'])
+
+        result = trans.transform(X_te)
+
+        # the first group, Z, is new, and values are passed through, so such
+        # be nan
+        expected = X_te.copy()
+        expected['value'] = np.array([np.nan, 4, 5])
+
+        self.assertFrameEqual(result, expected)
