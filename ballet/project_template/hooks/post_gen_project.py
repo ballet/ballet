@@ -24,8 +24,6 @@ def create_git_repo():
     repo.index.commit('Automatically generated files from ballet-quickstart')
     repo.create_remote('origin', 'https://github.com/{{ cookiecutter.github_owner }}/{{ cookiecutter.project_slug }}')
 
-
-
 def main():
     copy_context()
     create_git_repo()

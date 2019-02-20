@@ -22,7 +22,6 @@ REPLAY_PATH = (
 )
 
 def _create_replay(tempdir, context):
-    print('we get here!!')
     tempdir = pathlib.Path(tempdir)
     name = context['cookiecutter']['project_name']
     old_context = None
@@ -34,12 +33,10 @@ def _create_replay(tempdir, context):
             json.dump(context, replay_file)
         generate_project(replay=True, output_dir=tempdir)
     except:
-        print('we get here')
         # we're missing keys, figure out which and prompt
         with open(PROJECT_CONTEXT_PATH) as context_json:
             new_context = json.load(context_json)
         new_keys = set(new_context.keys()) - set(context['cookiecutter'].keys())
-        print(str(new_keys))
         new_context_config = {'cookiecutter': funcy.project(new_context, new_keys)}
         new_context = prompt_for_config(new_context_config)
         context['cookiecutter'].update(new_context)
@@ -61,7 +58,7 @@ def update_project_template():
         context_path = cwd.joinpath('.cookiecutter_replay.json')
         with open(context_path) as context_file:
             context = json.load(context_file)
-    except Exception:
+    except:
         logger.exception('Could not find ballet repo, update failed')
 
     with tempfile.TemporaryDirectory() as tempdir:
@@ -78,7 +75,7 @@ def update_project_template():
                 # strategy_option='theirs',
                 squash=True,
             )
-        except Exception: 
+        except: 
             logger.exception('Could not merge changes into project, update failed')
         finally:
             current_repo.delete_remote(remote_name)

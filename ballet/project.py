@@ -30,7 +30,6 @@ def get_config_paths(package_root):
         for d in [package_root] + list(package_root.parents)
     ]
 
-
     # home directory
     paths.append(
         pathlib.Path.home().joinpath('.ballet', DEFAULT_CONFIG_NAME))
