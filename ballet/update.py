@@ -10,7 +10,6 @@ from cookiecutter.prompt import prompt_for_config
 
 from ballet.compat import pathlib, safepath
 from ballet.util.log import logger
-from ballet.project import get_config_paths, find_configs
 from ballet.quickstart import generate_project
 
 PROJECT_CONTEXT_PATH = (
