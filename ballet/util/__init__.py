@@ -23,10 +23,13 @@ def asarray2d(a):
 
 def get_arr_desc(arr):
     """Get array description, in the form '<array type> <array shape>'"""
-    desc = '{typ} {shp}'
-    typ = type(arr)
-    shp = getattr(arr, 'shape', None)
-    return desc.format(typ=typ, shp=shp)
+    type_ = type(arr).__name__  # see also __qualname__
+    shape = getattr(arr, 'shape', None)
+    if shape is not None:
+        desc = '{type_} {shape}'
+    else:
+        desc = '{type_} <no shape>'
+    return desc.format(type_=type_, shape=shape)
 
 
 def get_enum_keys(cls):

@@ -72,9 +72,23 @@ class UtilTest(
         self.assertGreaterEqual(result.shape[1], 1)
         self.assertArrayEqual(result, a)
 
-    @unittest.expectedFailure
-    def test_get_arr_desc(self):
-        raise NotImplementedError
+    def test_get_arr_desc_array(self):
+        a = np.ones((2, 2))
+        expected = 'ndarray (2, 2)'
+        actual = ballet.util.get_arr_desc(a)
+        self.assertEqual(actual, expected)
+
+    def test_get_arr_desc_frame(self):
+        df = pd.DataFrame()
+        expected = 'DataFrame (0, 0)'
+        actual = ballet.util.get_arr_desc(df)
+        self.assertEqual(actual, expected)
+
+    def test_get_arr_desc_frame(self):
+        obj = object()
+        expected = 'object <no shape>'
+        actual = ballet.util.get_arr_desc(obj)
+        self.assertEqual(actual, expected)
 
     def test_get_enum_keys_class(self):
         class MyEnum:
