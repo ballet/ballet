@@ -200,9 +200,17 @@ class UtilTest(
         self.assertEqual(actual, expected)
 
 
-    @unittest.expectedFailure
     def test_load_sklearn_df(self):
-        raise NotImplementedError
+        name = 'iris'
+        X_df, y_df = ballet.util.load_sklearn_df(name)
+
+        # validation on X_df
+        self.assertIsNotNone(X_df)
+        self.assertIsInstance(X_df, pd.DataFrame)
+
+        # validation on y_df
+        self.assertIsNotNone(y_df)
+        self.assertIsInstance(y_df, pd.Series)
 
     def test_quiet_stderr(self):
         @ballet.util.quiet
