@@ -221,11 +221,17 @@
             
   <h1>Source code for ballet.eng.base</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">funcy</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">sklearn.base</span>
 <span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="k">import</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="k">import</span> <span class="n">check_is_fitted</span>
+
+<span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">Error</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;BaseTransformer&#39;</span><span class="p">,</span>
     <span class="s1">&#39;GroupedFunctionTransformer&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;GroupwiseTransformer&#39;</span><span class="p">,</span>
     <span class="s1">&#39;NoFitMixin&#39;</span><span class="p">,</span>
     <span class="s1">&#39;SimpleFunctionTransformer&#39;</span><span class="p">,</span>
 <span class="p">]</span>
@@ -261,13 +267,17 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">func_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">func_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">func_args</span> <span class="o">=</span> <span class="n">func_args</span> <span class="k">if</span> <span class="n">func_args</span> <span class="k">else</span> <span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">func_kwargs</span> <span class="o">=</span> <span class="n">func_kwargs</span> <span class="k">if</span> <span class="n">func_kwargs</span> <span class="k">else</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">func_call</span> <span class="o">=</span> <span class="n">funcy</span><span class="o">.</span><span class="n">rpartial</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">func_args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">func_kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">func_args</span> <span class="o">=</span> <span class="n">func_args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">func_kwargs</span> <span class="o">=</span> <span class="n">func_kwargs</span>
+
+    <span class="k">def</span> <span class="nf">_func_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="n">func_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func_args</span> <span class="ow">or</span> <span class="p">()</span>
+        <span class="n">func_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">funcy</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">args</span><span class="p">,</span> <span class="n">func_args</span><span class="p">))</span>  <span class="c1"># py34</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">func_kwargs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SimpleFunctionTransformer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.SimpleFunctionTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_kwargs</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">func_call</span><span class="p">(</span><span class="n">X</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_func_call</span><span class="p">(</span><span class="n">X</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="GroupedFunctionTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.GroupedFunctionTransformer">[docs]</a><span class="k">class</span> <span class="nc">GroupedFunctionTransformer</span><span class="p">(</span><span class="n">SimpleFunctionTransformer</span><span class="p">):</span>
@@ -283,14 +293,144 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">func_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">func_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">groupby_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">func_args</span><span class="o">=</span><span class="n">func_args</span><span class="p">,</span> <span class="n">func_kwargs</span><span class="o">=</span><span class="n">func_kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs</span> <span class="o">=</span> <span class="n">groupby_kwargs</span> <span class="k">if</span> <span class="n">groupby_kwargs</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs</span> <span class="o">=</span> <span class="n">groupby_kwargs</span>
 
 <div class="viewcode-block" id="GroupedFunctionTransformer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.GroupedFunctionTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_kwargs</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs</span><span class="p">:</span>
-            <span class="n">call</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span>
+        <span class="n">groupby_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">groupby_kwargs</span><span class="p">:</span>
+            <span class="n">call</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="o">**</span><span class="n">groupby_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">call</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span><span class="o">.</span><span class="n">pipe</span>
-        <span class="k">return</span> <span class="n">call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func_call</span><span class="p">)</span></div></div>
+            <span class="n">call</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">pipe</span>
+        <span class="k">return</span> <span class="n">call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_func_call</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="GroupwiseTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.GroupwiseTransformer">[docs]</a><span class="k">class</span> <span class="nc">GroupwiseTransformer</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Transformer that does something different for every group</span>
+
+<span class="sd">    For each group identified in the training set by the groupby operation,</span>
+<span class="sd">    a separate transformer is cloned and fit. This is useful to learn</span>
+<span class="sd">    group-wise transformers that do not leak data between the training and</span>
+<span class="sd">    test sets. Consider the case of imputing missing values with the mean of</span>
+<span class="sd">    some group. A normal, pure-pandas implementation, such as</span>
+<span class="sd">    ``X_te.groupby(by=&#39;foo&#39;).apply(&#39;mean&#39;)`` would leak information about</span>
+<span class="sd">    the test set means, which might differ from the training set means.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        transformer (transformer-like or callable): the transformer to apply</span>
+<span class="sd">            to each group. If transformer is a transformer-like instance (i.e.</span>
+<span class="sd">            has fit, transform methods etc.), then it is cloned for each group.</span>
+<span class="sd">            If transformer is a transformer-like class (i.e. instances of</span>
+<span class="sd">            the class are transformer-like), then it is initialized with no</span>
+<span class="sd">            arguments for each group. If it is a callable, then it is called</span>
+<span class="sd">            with no arguments for each group.</span>
+<span class="sd">        groupby_kwargs (dict): keyword arguments to pd.DataFrame.groupby</span>
+<span class="sd">        handle_unknown (str): &#39;error&#39; or &#39;ignore&#39;, default=’error’. Whether to</span>
+<span class="sd">            raise an error or ignore if an unknown group is encountered during</span>
+<span class="sd">            transform. When this parameter is set to &#39;ignore&#39; and an unknown</span>
+<span class="sd">            group is encountered during transform, the group&#39;s values will be</span>
+<span class="sd">            passed through unchanged.</span>
+
+<span class="sd">    Example usage:</span>
+
+<span class="sd">        In this example, we create a groupwise transformer that fits a</span>
+<span class="sd">        separate imputer for each group encountered. For new data points,</span>
+<span class="sd">        values will be imputed according to the mean of its group on the</span>
+<span class="sd">        training set, avoiding any data leakage.</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">           &gt;&gt;&gt; from sklearn.impute import SimpleImputer</span>
+<span class="sd">           &gt;&gt;&gt; transformer = GroupwiseTransformer(</span>
+<span class="sd">           ...     SimpleImputer(strategy=&#39;mean&#39;),</span>
+<span class="sd">           ...     groupby_kwargs = {&#39;by&#39;: &#39;name&#39;}</span>
+<span class="sd">           ... )</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ballet.exc.Error: if handle_unknown==&#39;error&#39; and an unknown group is</span>
+<span class="sd">            encountered at transform-time.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">transformer</span><span class="p">,</span>
+                 <span class="n">groupby_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">handle_unknown</span><span class="o">=</span><span class="s1">&#39;error&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span> <span class="o">=</span> <span class="n">transformer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs</span> <span class="o">=</span> <span class="n">groupby_kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span> <span class="o">=</span> <span class="n">handle_unknown</span>
+
+    <span class="k">def</span> <span class="nf">_make_transformer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">type</span> <span class="ow">or</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GroupwiseTransformer.fit"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.GroupwiseTransformer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">fit_kwargs</span><span class="p">):</span>
+        <span class="c1"># validation on inputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="s1">&#39;ignore&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Invalid value for handle_unknown: </span><span class="si">{}</span><span class="s1">&#39;</span>
+                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span><span class="p">))</span>
+
+        <span class="c1"># Get the groups</span>
+        <span class="n">grouper</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs_</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">groups_</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">grouper</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+        <span class="c1"># Create and fit a transformer for each group</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transformers_</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">group_name</span><span class="p">,</span> <span class="n">x_group</span> <span class="ow">in</span> <span class="n">grouper</span><span class="p">:</span>
+            <span class="n">transformer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_transformer</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Extract y by integer indexing</span>
+                <span class="n">inds</span> <span class="o">=</span> <span class="n">grouper</span><span class="o">.</span><span class="n">indices</span><span class="p">[</span><span class="n">group_name</span><span class="p">]</span>
+                <span class="n">y_group</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">inds</span><span class="p">]</span>
+                <span class="n">transformer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_group</span><span class="p">,</span> <span class="n">y_group</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">transformer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_group</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">transformers_</span><span class="p">[</span><span class="n">group_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">transformer</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="GroupwiseTransformer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.GroupwiseTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_kwargs</span><span class="p">):</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;groups_&#39;</span><span class="p">,</span> <span class="s1">&#39;transformers_&#39;</span><span class="p">])</span>
+
+        <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="n">x_group</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="c1"># If the group is not a DataFrame, there are two problems</span>
+            <span class="c1"># 1. We can&#39;t rely on group.name to lookup the right transformer</span>
+            <span class="c1"># 2. We can&#39;t &quot;reassemble&quot; the transformed</span>
+            <span class="c1"># However, the contract of ``pandas.core.groupby.GroupBy.apply`` is</span>
+            <span class="c1"># that the input is a DataFrame, so this should never occur.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x_group</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+            <span class="k">if</span> <span class="n">x_group</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformers_</span><span class="p">:</span>
+                <span class="n">transformer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformers_</span><span class="p">[</span><span class="n">x_group</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">x_group</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+                <span class="c1"># This post-processing step is required because sklearn</span>
+                <span class="c1"># transform converts a DataFrame to an array. This is my</span>
+                <span class="c1"># best attempt so far to approximate the following:</span>
+                <span class="c1"># &gt;&gt;&gt; result = x_group.copy()</span>
+                <span class="c1"># &gt;&gt;&gt; result.values = data</span>
+                <span class="c1"># which is an error as `values` cannot be set.</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">x_group</span><span class="o">.</span><span class="n">index</span>
+                <span class="n">columns</span> <span class="o">=</span> <span class="n">x_group</span><span class="o">.</span><span class="n">columns</span>
+                <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span> <span class="o">==</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">Error</span><span class="p">(</span>
+                        <span class="s1">&#39;Unknown group: </span><span class="si">{group_name}</span><span class="s1">&#39;</span>
+                        <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group_name</span><span class="o">=</span><span class="n">x_group</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span> <span class="o">==</span> <span class="s1">&#39;ignore&#39;</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">x_group</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Unreachable code</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span>
+
+        <span class="k">return</span> <span class="n">X</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs_</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="n">_transform</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_kwargs</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

@@ -265,6 +265,76 @@
 </dd></dl>
 
 <dl class="class">
+<dt id="ballet.eng.base.GroupwiseTransformer">
+<em class="property">class </em><code class="descclassname">ballet.eng.base.</code><code class="descname">GroupwiseTransformer</code><span class="sig-paren">(</span><em>transformer</em>, <em>groupby_kwargs=None</em>, <em>handle_unknown='error'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/base.html#GroupwiseTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.base.GroupwiseTransformer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ballet.eng.base.BaseTransformer" title="ballet.eng.base.BaseTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.base.BaseTransformer</span></code></a></p>
+<p>Transformer that does something different for every group</p>
+<p>For each group identified in the training set by the groupby operation,
+a separate transformer is cloned and fit. This is useful to learn
+group-wise transformers that do not leak data between the training and
+test sets. Consider the case of imputing missing values with the mean of
+some group. A normal, pure-pandas implementation, such as
+<code class="docutils literal notranslate"><span class="pre">X_te.groupby(by='foo').apply('mean')</span></code> would leak information about
+the test set means, which might differ from the training set means.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>transformer</strong> (<em>transformer-like</em><em> or </em><em>callable</em>) – the transformer to apply
+to each group. If transformer is a transformer-like instance (i.e.
+has fit, transform methods etc.), then it is cloned for each group.
+If transformer is a transformer-like class (i.e. instances of
+the class are transformer-like), then it is initialized with no
+arguments for each group. If it is a callable, then it is called
+with no arguments for each group.</li>
+<li><strong>groupby_kwargs</strong> (<em>dict</em>) – keyword arguments to pd.DataFrame.groupby</li>
+<li><strong>handle_unknown</strong> (<em>str</em>) – ‘error’ or ‘ignore’, default=’error’. Whether to
+raise an error or ignore if an unknown group is encountered during
+transform. When this parameter is set to ‘ignore’ and an unknown
+group is encountered during transform, the group’s values will be
+passed through unchanged.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Example usage:</p>
+<blockquote>
+<div><p>In this example, we create a groupwise transformer that fits a
+separate imputer for each group encountered. For new data points,
+values will be imputed according to the mean of its group on the
+training set, avoiding any data leakage.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sklearn.impute</span> <span class="kn">import</span> <span class="n">SimpleImputer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transformer</span> <span class="o">=</span> <span class="n">GroupwiseTransformer</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">groupby_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;by&#39;</span><span class="p">:</span> <span class="s1">&#39;name&#39;</span><span class="p">}</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="ballet.exc.html#ballet.exc.Error" title="ballet.exc.Error"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ballet.exc.Error</span></code></a> – if handle_unknown==’error’ and an unknown group is
+encountered at transform-time.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="ballet.eng.base.GroupwiseTransformer.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y=None</em>, <em>**fit_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/base.html#GroupwiseTransformer.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.base.GroupwiseTransformer.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ballet.eng.base.GroupwiseTransformer.transform">
+<code class="descname">transform</code><span class="sig-paren">(</span><em>X</em>, <em>**transform_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/base.html#GroupwiseTransformer.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.base.GroupwiseTransformer.transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="ballet.eng.base.NoFitMixin">
 <em class="property">class </em><code class="descclassname">ballet.eng.base.</code><code class="descname">NoFitMixin</code><a class="reference internal" href="../_modules/ballet/eng/base.html#NoFitMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.base.NoFitMixin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
