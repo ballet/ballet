@@ -22,7 +22,7 @@ REPLAY_PATH = (
 
 def _create_replay(tempdir, context):
     tempdir = pathlib.Path(tempdir)
-    name = context['cookiecutter']['project_name']
+    slug = context['cookiecutter']['project_slug']
     old_context = None
     try:
         # replace the current replay with our own
@@ -48,7 +48,7 @@ def _create_replay(tempdir, context):
         if old_context is not None:
             with open(REPLAY_PATH, 'w') as replay_file:
                 json.dump(old_context, replay_file)
-    return tempdir / name
+    return tempdir / slug
 
 def update_project_template():
     cwd = pathlib.Path(os.getcwd())
@@ -74,7 +74,7 @@ def update_project_template():
                 # strategy_option='theirs',
                 squash=True,
             )
-        except: 
+        except:
             logger.exception('Could not merge changes into project, update failed')
         finally:
             current_repo.delete_remote(remote_name)
