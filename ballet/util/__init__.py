@@ -78,7 +78,7 @@ def dfilter(call, pred):
 
     Example::
 
-        >>> @dfilter(lambda x: x > 0)
+        >>> @dfilter(lambda x: x >= 0)
         ... def numbers():
         ...     return [-1, 2, 0, -2]
         [2, 0]

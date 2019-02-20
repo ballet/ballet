@@ -190,9 +190,15 @@ class UtilTest(
         for obj in objs_without_nans:
             self.assertFalse(ballet.util.has_nans(obj))
 
-    @unittest.expectedFailure
     def test_dfilter(self):
-        raise NotImplementedError
+        @ballet.util.dfilter(lambda x: x >= 0)
+        def numbers():
+            return [-1, 2, 0, -2]
+
+        actual = numbers()
+        expected = [2, 0]
+        self.assertEqual(actual, expected)
+
 
     @unittest.expectedFailure
     def test_load_sklearn_df(self):
