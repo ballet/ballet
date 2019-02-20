@@ -175,20 +175,24 @@ class GroupwiseTransformer(BaseTransformer):
         check_is_fitted(self, ['groups_', 'transformers_'])
 
         def _transform(x_group, *args, **kwargs):
+            # If the group is not a DataFrame, there are two problems
+            # 1. We can't rely on group.name to lookup the right transformer
+            # 2. We can't "reassemble" the transformed
+            # However, the contract of ``pandas.core.groupby.GroupBy.apply`` is
+            # that the input is a DataFrame, so this should never occur.
+            if not isinstance(x_group, pd.DataFrame):
+                raise NotImplementedError
+
             if x_group.name in self.transformers_:
                 transformer = self.transformers_[x_group.name]
                 data = transformer.transform(x_group, *args, **kwargs)
 
-                # this post-processing step is required because sklearn
+                # This post-processing step is required because sklearn
                 # transform converts a DataFrame to an array. This is my
                 # best attempt so far to approximate the following:
                 # >>> result = x_group.copy()
                 # >>> result.values = data
                 # which is an error as `values` cannot be set.
-                # Unfortunately, this approach is not robust to different
-                # data types.
-                if not isinstance(x_group, pd.DataFrame):
-                    raise NotImplementedError
                 index = x_group.index
                 columns = x_group.columns
                 return pd.DataFrame(data=data, index=index, columns=columns)
