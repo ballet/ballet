@@ -1,3 +1,4 @@
+import copy
 import os
 import sys
 import tempfile
@@ -223,9 +224,26 @@ class UtilTest(
         f()
         self.assertIs(sys.stderr, stderr)
 
-    @unittest.expectedFailure
     def test_deepcopy_mixin(self):
-        raise NotImplementedError
+        class E(Exception):
+            pass
+
+        class A:
+            def __init__(self, a):
+                self.a = a
+
+            def __deepcopy__(self, memo):
+                raise E
+
+        class B(ballet.util.DeepcopyMixin, A):
+            pass
+
+        a = A(1)
+        with self.assertRaises(E):
+            copy.deepcopy(a)
+
+        b = B(1)
+        copy.deepcopy(b)
 
 
 class ModTest(unittest.TestCase):
