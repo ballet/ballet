@@ -139,9 +139,27 @@ class UtilTest(
         expected = 'car'
         self.assertEqual(actual, expected)
 
-    @unittest.expectedFailure
-    def test_whether_failures(self):
-        raise NotImplementedError
+    def test_whether_failures_failed(self):
+        failures = ['Stopped working', 'Made noises']
+
+        @ballet.util.whether_failures
+        def do_stuff():
+            yield from failures
+
+        success, list_of_failures = do_stuff()
+        self.assertFalse(success)
+        self.assertEqual(list_of_failures, failures)
+
+    def test_whether_failures_succeeded(self):
+        failures = []
+
+        @ballet.util.whether_failures
+        def do_stuff():
+            yield from failures
+
+        success, list_of_failures = do_stuff()
+        self.assertTrue(success)
+        self.assertEqual(list_of_failures, failures)
 
     def test_has_nans(self):
         objs_with_nans = [
