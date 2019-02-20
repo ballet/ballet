@@ -20,7 +20,7 @@ def create_git_repo():
         writer.set_value('user', 'email', '{{ cookiecutter.email }}')
         writer.set_value('github', 'user', '{{ cookiecutter.github_owner }}')
         writer.release()
-    repo.git.add('-u')
+    repo.git.add('.')
     repo.index.commit('Automatically generated files from ballet-quickstart')
     repo.create_remote('origin', 'https://github.com/{{ cookiecutter.github_owner }}/{{ cookiecutter.project_slug }}')
 
