@@ -49,7 +49,7 @@ def _create_replay(cwd, tempdir):
             return tempdir / slug
         else:
             raise FileNotFoundError(
-                'Could not find cookiecutter.json, are you in a ballet repo?')
+                'Could not find cookiecutter_replay.json, are you in a ballet repo?')
     except BaseException:
         # we're missing keys, figure out which and prompt
         logger.exception(
