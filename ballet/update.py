@@ -81,15 +81,10 @@ def update_project_template():
                 strategy_option='theirs',
                 squash=True,
             )
-<<<<<<< HEAD
             current_repo.index.commit('Merge updates from ballet version {}'.format(version))
         except:
             msg = 'Could not merge changes into template-update branch, update failed'
             logger.exception(msg)
-=======
-        except:
-            logger.exception('Could not merge changes into project, update failed')
->>>>>>> c66e6b8d181290144455067b4947c0de7a868758
         finally:
             if current_repo.active_branch != current_repo.heads.master:
                 current_repo.heads.master.checkout()
