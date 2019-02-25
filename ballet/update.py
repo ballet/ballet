@@ -32,9 +32,7 @@ def _create_replay(tempdir, context, old_context=None):
     old_context = None
     try:
         # replace the current replay with our own
-        with open(REPLAY_PATH, 'w') as replay_file:
-            json.dump(context, replay_file)
-        generate_project(replay=True, output_dir=tempdir)
+        generate_project(extra_context=context, no_input=True, output_dir=safepath(tempdir))
     except BaseException:
         # we're missing keys, figure out which and prompt
         logger.exception(
