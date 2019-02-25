@@ -25,7 +25,12 @@ TEMPLATE_BRANCH = 'template-update'
 
 def _create_replay(tempdir, context, old_context=None):
     tempdir = pathlib.Path(tempdir)
+<<<<<<< HEAD
     name = context['cookiecutter']['project_name']
+=======
+    slug = context['cookiecutter']['project_slug']
+    old_context = None
+>>>>>>> c66e6b8d181290144455067b4947c0de7a868758
     try:
         # replace the current replay with our own
         with open(REPLAY_PATH, 'w') as replay_file:
@@ -39,7 +44,7 @@ def _create_replay(tempdir, context, old_context=None):
         if old_context is not None:
             with open(REPLAY_PATH, 'w') as replay_file:
                 json.dump(old_context, replay_file)
-    return tempdir / name
+    return tempdir / slug
 
 def _get_full_context(context):
     with open(PROJECT_CONTEXT_PATH) as context_json:
@@ -80,10 +85,15 @@ def update_project_template():
                 strategy_option='theirs',
                 squash=True,
             )
+<<<<<<< HEAD
             current_repo.index.commit('Merge updates from ballet version {}'.format(version))
         except:
             msg = 'Could not merge changes into template-update branch, update failed'
             logger.exception(msg)
+=======
+        except:
+            logger.exception('Could not merge changes into project, update failed')
+>>>>>>> c66e6b8d181290144455067b4947c0de7a868758
         finally:
             if current_repo.active_branch != current_repo.heads.master:
                 current_repo.heads.master.checkout()
