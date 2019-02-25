@@ -32,17 +32,16 @@ def _create_replay(cwd, tempdir):
     slug = context['cookiecutter']['project_slug']
     old_context = None
     try:
-        # if there are old replays, save it before it's overwritten
         if REPLAY_PATH.exists():
-            with open(REPLAY_PATH) as old_replay_file:
-                old_context = json.load(old_replay_file)
+            with open(REPLAY_PATH, 'r') as replay_file:
+                old_context = json.load(replay_file)
+        # if there are old replays, save it before it's overwritten
+        with open(REPLAY_PATH, 'w') as replay_file:
+            json.dump(context, replay_file)
         # load our context and prompt as necessary
         generate_project(
-            extra_context=context,
-            no_input=True,
+            replay=True,
             output_dir=safepath(tempdir))
-        return tempdir / slug
-
     except BaseException:
         # we're missing keys, figure out which and prompt
         logger.exception(
@@ -52,6 +51,7 @@ def _create_replay(cwd, tempdir):
         if old_context is not None:
             with open(REPLAY_PATH, 'w') as replay_file:
                 json.dump(old_context, replay_file)
+    return tempdir / slug
 
 
 def _get_full_context(cwd):
@@ -112,7 +112,7 @@ def update_project_template():
             TEMPLATE_BRANCH,
             squash=True,
         )
-        commit_prompt = 'Would you like ballet to create a merge commit automatically? [y/N]'
+        commit_prompt = 'Would you like ballet to create a merge commit automatically? [y/N]: '
         answer = input(commit_prompt)
         if 'y' in answer.lower():
             current_repo.index.commit(
