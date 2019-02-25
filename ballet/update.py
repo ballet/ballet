@@ -25,12 +25,8 @@ TEMPLATE_BRANCH = 'template-update'
 
 def _create_replay(tempdir, context, old_context=None):
     tempdir = pathlib.Path(tempdir)
-<<<<<<< HEAD
-    name = context['cookiecutter']['project_name']
-=======
     slug = context['cookiecutter']['project_slug']
     old_context = None
->>>>>>> c66e6b8d181290144455067b4947c0de7a868758
     try:
         # replace the current replay with our own
         with open(REPLAY_PATH, 'w') as replay_file:
