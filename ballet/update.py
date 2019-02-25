@@ -27,29 +27,22 @@ TEMPLATE_BRANCH = 'template-update'
 
 
 def _create_replay(cwd, tempdir):
-    context_path = cwd.joinpath('.cookiecutter_replay.json')
     tempdir = pathlib.Path(tempdir)
+    context = _get_full_context(cwd)
+    slug = context['cookiecutter']['project_slug']
     old_context = None
-    context = None
     try:
         # if there are old replays, save it before it's overwritten
         if REPLAY_PATH.exists():
             with open(REPLAY_PATH) as old_replay_file:
                 old_context = json.load(old_replay_file)
         # load our context and prompt as necessary
-        with open(context_path) as context_file:
-            partial_context = json.load(context_file)
-            full_context = _get_full_context(partial_context)
-            slug = full_context['cookiecutter']['project_slug']
-        if context is not None:
-            generate_project(
-                extra_context=full_context,
-                no_input=True,
-                output_dir=safepath(tempdir))
-            return tempdir / slug
-        else:
-            raise FileNotFoundError(
-                'Could not find cookiecutter_replay.json, are you in a ballet repo?')
+        generate_project(
+            extra_context=context,
+            no_input=True,
+            output_dir=safepath(tempdir))
+        return tempdir / slug
+
     except BaseException:
         # we're missing keys, figure out which and prompt
         logger.exception(
@@ -61,7 +54,14 @@ def _create_replay(cwd, tempdir):
                 json.dump(old_context, replay_file)
 
 
-def _get_full_context(context):
+def _get_full_context(cwd):
+    context_path = cwd.joinpath('.cookiecutter_replay.json')
+    if context_path.exists():
+        with open(context_path) as context_file:
+            context = json.load(context_file)
+    else:
+        raise FileNotFoundError(
+            'Could not find cookiecutter_replay.json, are you in a ballet repo?')
     with open(PROJECT_CONTEXT_PATH) as context_json:
         new_context = json.load(context_json)
     new_keys = set(new_context.keys()) - set(context['cookiecutter'].keys())
