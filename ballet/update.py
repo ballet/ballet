@@ -26,13 +26,30 @@ REPLAY_PATH = (
 TEMPLATE_BRANCH = 'template-update'
 
 
-def _create_replay(tempdir, context, old_context=None):
+def _create_replay(cwd, tempdir):
+    context_path = cwd.joinpath('.cookiecutter_replay.json')
     tempdir = pathlib.Path(tempdir)
-    slug = context['cookiecutter']['project_slug']
     old_context = None
+    context = None
     try:
-        # replace the current replay with our own
-        generate_project(extra_context=context, no_input=True, output_dir=safepath(tempdir))
+        # if there are old replays, save it before it's overwritten
+        if REPLAY_PATH.exists():
+            with open(REPLAY_PATH) as old_replay_file:
+                old_context = json.load(old_replay_file)
+        # load our context and prompt as necessary
+        with open(context_path) as context_file:
+            partial_context = json.load(context_file)
+            full_context = _get_full_context(partial_context)
+            slug = full_context['cookiecutter']['project_slug']
+        if context is not None:
+            generate_project(
+                extra_context=full_context,
+                no_input=True,
+                output_dir=safepath(tempdir))
+            return tempdir / slug
+        else:
+            raise FileNotFoundError(
+                'Could not find cookiecutter.json, are you in a ballet repo?')
     except BaseException:
         # we're missing keys, figure out which and prompt
         logger.exception(
@@ -42,7 +59,6 @@ def _create_replay(tempdir, context, old_context=None):
         if old_context is not None:
             with open(REPLAY_PATH, 'w') as replay_file:
                 json.dump(old_context, replay_file)
-    return tempdir / slug
 
 
 def _get_full_context(context):
@@ -57,23 +73,16 @@ def _get_full_context(context):
 
 def update_project_template():
     cwd = pathlib.Path(os.getcwd())
-    old_replay = None
     try:
         current_repo = git.Repo(
             safepath(cwd),
             search_parent_directories=True)  # for right now
-        context_path = cwd.joinpath('.cookiecutter_replay.json')
-        with open(context_path) as context_file:
-            context = _get_full_context(json.load(context_file))
-        if REPLAY_PATH.exists():
-            with open(REPLAY_PATH) as old_replay_file:
-                old_replay = json.load(old_replay_file)
     except BaseException:
         msg = 'Could not find ballet repo, update failed'
         logger.exception(msg)
 
     with tempfile.TemporaryDirectory() as tempdir:
-        updated_template = _create_replay(tempdir, context, old_replay)
+        updated_template = _create_replay(cwd, tempdir)
         updated_repo = git.Repo(safepath(updated_template))
         # add some randomness in the remote name by using tempdir
         remote_name = updated_template.parts[-1]
