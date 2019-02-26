@@ -203,7 +203,7 @@ def test_update_after_conflicting_changes(quickstart, project_template_copy):
     # add foo: qux to project template
     template_dir = project_template_copy
     with template_dir.joinpath(
-        '{{cookiecutter.project_slug}}', 'ballet.yml').open('a') as f:
+            '{{cookiecutter.project_slug}}', 'ballet.yml').open('a') as f:
         f.write('\nfoo: qux\n')
 
     # run ballet-update-template -- this should raise an error, perhaps,

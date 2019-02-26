@@ -4,8 +4,6 @@ import tempfile
 
 import funcy
 import git
-import yaml
-from cookiecutter.main import cookiecutter
 from cookiecutter.prompt import prompt_for_config
 
 from ballet import __version__ as version
@@ -65,7 +63,8 @@ def _get_full_context(cwd):
             context = json.load(context_file)
     else:
         raise FileNotFoundError(
-            'Could not find cookiecutter_replay.json, are you in a ballet repo?')
+            'Could not find cookiecutter_replay.json, '
+            'are you in a ballet repo?')
     with open(PROJECT_CONTEXT_PATH) as context_json:
         new_context = json.load(context_json)
     new_keys = set(new_context.keys()) - set(context['cookiecutter'].keys())
@@ -104,7 +103,8 @@ def update_project_template(create_merge_commit=False):
             current_repo.index.commit(
                 _make_master_branch_merge_commit_message())
         except BaseException:
-            msg = 'Could not merge changes into template-update branch, update failed'
+            msg = ('Could not merge changes into template-update branch, '
+                   'update failed')
             logger.exception(msg)
         finally:
             if current_repo.active_branch != current_repo.heads.master:
