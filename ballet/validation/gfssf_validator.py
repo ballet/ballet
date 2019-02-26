@@ -12,6 +12,7 @@ NUM_NEIGHBORS = 3  # Used in the sklearn mutual information function
 
 
 def _calculate_disc_entropy(X):
+    # An exact calculation of the dataset entropy, using empirical probability
     n_samples, _ = X.shape
     _, counts = np.unique(X, axis=0, return_counts=True)
     empirical_p = counts * 1.0 / n_samples
@@ -20,6 +21,10 @@ def _calculate_disc_entropy(X):
 
 
 def _estimate_cont_entropy(X):
+    # Based off the Kraskov Estimator for Shannon Entropy
+    # https://journals.aps.org/pre/pdf/10.1103/PhysRevE.69.066138
+    # Implementation based off summary here:
+    # https://pdfs.semanticscholar.org/b3f6/fb5755bf1fdc0d4e97e3805399d32d433611.pdf
     n_samples, n_features = X.size
     nn = NearestNeighbors(metric='chebyshev', n_neighbors=NUM_NEIGHBORS)
     nn.fit(X)
@@ -46,6 +51,8 @@ def _estimate_entropy(X):
     n_samples, _ = X.shape
     disc_mask = np.apply_along_axis(_is_column_discrete, 0, X)
     cont_mask = ~disc_mask
+
+    # If our dataset is fully disc/cont, do something easier
     if np.all(disc_mask):
         return _calculate_disc_entropy(X)
     elif np.all(cont_mask):
@@ -64,7 +71,7 @@ def _estimate_entropy(X):
         conditional_cont_entropy = _estimate_cont_entropy(
             selected_cont_samples)
         entropy += empirical_p[i] * (conditional_cont_entropy + log_p[i])
-    return log_p
+    return entropy
 
 
 def _estimate_conditional_information(x, y, z):
