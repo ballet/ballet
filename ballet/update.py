@@ -26,6 +26,10 @@ REPLAY_PATH = (
 TEMPLATE_BRANCH = 'template-update'
 
 
+def _make_master_branch_merge_commit_message():
+    return 'Merge project template updates from ballet v{}'.format(version)
+
+
 def _create_replay(cwd, tempdir):
     tempdir = pathlib.Path(tempdir)
     context = _get_full_context(cwd)
@@ -98,7 +102,7 @@ def update_project_template(create_merge_commit=False):
                 squash=True,
             )
             current_repo.index.commit(
-                'Merge updates from ballet version {}'.format(version))
+                _make_master_branch_merge_commit_message())
         except BaseException:
             msg = 'Could not merge changes into template-update branch, update failed'
             logger.exception(msg)
@@ -120,7 +124,7 @@ def update_project_template(create_merge_commit=False):
                 create_merge_commit = True
         if create_merge_commit:
             current_repo.index.commit(
-                'Merge updates from ballet version {}'.format(version))
+                _make_master_branch_merge_commit_message())
     except BaseException:
         msg = 'Could not merge changes into master, update failed'
         logger.exception(msg)
