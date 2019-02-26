@@ -1,37 +1,60 @@
+import math
+
 import numpy as np
 import pandas as pd
 
 from ballet.feature import make_mapper
 from ballet.validation.base import FeatureAcceptanceEvaluator
-from scipy.sparse import issparse
 
+from scipy.special import gamma, digamma
+from sklearn.neighbors import NearestNeighbors
 
-def _calculate_entropy_discrete(X):
-    uniques = np.unique(X, axis=0)
-    
-    pass
+NUM_NEIGHBORS=3 # Used in the sklearn mutual information function
 
-def _estimate_entropy_continuous(X):
-    pass
+def _calculate_disc_entropy(X):
+    n_samples, _ = X.shape
+    _, counts = np.unique(X, axis=0, return_counts=True)
+    empirical_p = counts * 1.0 / n_samples
+    log_p = np.log2(empirical_p)
+    return np.sum(np.multiply(empirical_p, log_p))
 
-def _determine_discrete_columns(X):
-    pass
+def _estimate_cont_entropy(X):
+    n_samples, n_features = X.size
+    nn = NearestNeighbors(metric='chebyshev',n_neighbors=NUM_NEIGHBORS)
+    nn.fit(X)
+    r = np.array(nn.kneighbors(X, return_distance=True)).flatten()
+    sum_log_r = np.sum(np.log2(r)) * n_features / n_samples
+    log_vd = n_features * math.log2(math.pi / gamma(n_features / 2.0 + 1)) / 2.0
+    return max(0, sum_log_r + log_vd - digamma(NUM_NEIGHBORS) + digamma(n_samples))
+
+def _is_column_discrete(col):
+    # Stand-in method to figure out if column is discrete
+    # Still researching good ways to do this...
+    uniques = np.unique(col)
+    return (uniques.size * 1.0 / col.size) < 0.05 
 
 def _estimate_entropy(X):
-    n_samples, n_features = X.shape
-    disc_mask = _determine_discrete_columns(X)
+    n_samples, _ = X.shape
+    disc_mask = np.apply_along_axis(_is_column_discrete, 0, X)
     cont_mask = ~disc_mask
     if np.all(disc_mask):
-        return _calculate_entropy_discrete(X)
+        return _calculate_disc_entropy(X)
     elif np.all(cont_mask):
-        return _estimate_entropy_continuous(X)
+        return _estimate_cont_entropy(X)
 
     disc_features = X[:, disc_mask]
     cont_features = X[:, cont_mask]
 
-    conditional_entropy = 0
-    
-    return conditional_entropy + _calculate_entropy_discrete(disc_features)
+    entropy = 0
+    uniques, counts = np.unique(X, axis=0, return_counts=True)
+    empirical_p = counts * 1.0 / n_samples
+    log_p = np.log2(empirical_p)
+    for i in range(counts.size):
+        unique_mask = disc_features == uniques[i]
+        selected_cont_samples = cont_features[unique_mask, :]
+        conditional_cont_entropy = _estimate_cont_entropy(selected_cont_samples)
+        entropy += empirical_p[i] * (conditional_cont_entropy + log_p[i])
+    return log_p
 
 
 def _estimate_conditional_information(x, y, z):
@@ -51,7 +74,7 @@ def _estimate_conditional_information(x, y, z):
 
 def _concat_datasets(dfs_by_src, omit=None):
     filtered_srcs = filter(lambda x: x is not omit, dfs_by_src.keys())
-    filtered_dfs = map(lambda x: dfs_by_src[x], filtered_srcs)
+    filtered_dfs = map(lambda x: np.array(dfs_by_src[x]), filtered_srcs)
     return np.concatenate(filtered_dfs, axis=1)
 
 class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
