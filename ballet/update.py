@@ -71,7 +71,7 @@ def _get_full_context(cwd):
     return context
 
 
-def update_project_template():
+def update_project_template(create_merge_commit=False):
     cwd = pathlib.Path(os.getcwd())
     try:
         current_repo = git.Repo(
@@ -112,9 +112,13 @@ def update_project_template():
             TEMPLATE_BRANCH,
             squash=True,
         )
-        commit_prompt = 'Would you like ballet to create a merge commit automatically? [y/N]: '
-        answer = input(commit_prompt)
-        if 'y' in answer.lower():
+        if not create_merge_commit:
+            commit_prompt = ('Would you like ballet to create a merge commit '
+                             'automatically? [y/N]: ')
+            answer = input(commit_prompt)
+            if 'y' in answer.lower():
+                create_merge_commit = True
+        if create_merge_commit:
             current_repo.index.commit(
                 'Merge updates from ballet version {}'.format(version))
     except BaseException:
