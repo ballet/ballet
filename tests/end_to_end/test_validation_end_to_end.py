@@ -8,6 +8,7 @@ from unittest.mock import patch
 import git
 import numpy as np
 import pandas as pd
+import pytest
 from sklearn_pandas import DataFrameMapper
 
 from ballet.compat import pathlib, safepath
@@ -45,20 +46,21 @@ def make_feature_str(input):
     """.format(input=input)).strip()
 
 
-def test_end_to_end():
+@pytest.mark.usefixtures('clean_system')
+def test_end_to_end(tmp_path):
+    tempdir = tmp_path
+
     modname = 'foo'
     extra_context = {
         'project_name': modname.capitalize(),
+        'project_slug': modname,
     }
 
-    _tempdir = tempfile.TemporaryDirectory()
-    tempdir = _tempdir.name
-
     generate_project(no_input=True, extra_context=extra_context,
-                     output_dir=tempdir)
+                     output_dir=str(tempdir))
 
     # make sure we can import different modules without error
-    base = pathlib.Path(tempdir).joinpath(modname)
+    base = tempdir.joinpath(modname)
 
     def _import(modname):
         relpath = modname_to_relpath(modname)
@@ -211,8 +213,6 @@ def test_end_to_end():
 
     # call different validation routines
     call_validate_all()
-
-    _tempdir.cleanup()
 
 
 if __name__ == '__main__':
