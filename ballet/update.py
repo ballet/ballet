@@ -28,18 +28,6 @@ def _make_master_branch_merge_commit_message():
     return 'Merge project template updates from ballet v{}'.format(version)
 
 
-@funcy.contextmanager
-def temporaryremote(repo, remote_name, updated_repo):
-    with funcy.suppress(Exception):
-        remote = repo.create_remote(
-            remote_name, updated_repo.working_tree_dir)
-        yield remote
-
-    if remote is not None:
-        with funcy.suppress(Exception):
-            repo.delete_remote(remote_name)
-
-
 def _create_replay(cwd, tempdir):
     tempdir = pathlib.Path(tempdir)
     context = _get_full_context(cwd)
@@ -111,10 +99,12 @@ def update_project_template(create_merge_commit=False):
         remote_name = tempdir.parts[-1]
 
         try:
+            remote = repo.create_remote(
+                remote_name, updated_repo.working_tree_dir)
+            remote.fetch()
+
             repo.heads[template_branch].checkout()
-            with temporaryremote(repo, remote_name, updated_repo) as \
-                    updated_remote:
-                updated_remote.fetch()
+            try:
                 repo.git.merge(
                     remote_name + '/master',
                     allow_unrelated_histories=True,
@@ -123,15 +113,18 @@ def update_project_template(create_merge_commit=False):
                 )
                 repo.index.commit(
                     _make_master_branch_merge_commit_message())
-        except GitCommandError:
-            logger.exception(
-                'Could not merge changes into {template_branch} branch, '
-                'update failed'
-                .format(template_branch=template_branch))
-            raise
-        finally:
-            if repo.active_branch != repo.heads.master:
+            except GitCommandError:
+                logger.exception(
+                    'Could not merge changes into {template_branch} branch, '
+                    'update failed'
+                    .format(template_branch=template_branch))
+                raise
+            else:
                 repo.heads.master.checkout()
+        except Exception:
+            with funcy.suppress(Exception):
+                repo.delete_remote(remote_name)
+            raise
 
     try:
         repo.git.merge(template_branch, squash=True)
