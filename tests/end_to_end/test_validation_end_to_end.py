@@ -1,5 +1,4 @@
 import os
-import tempfile
 from subprocess import check_call
 from textwrap import dedent
 from types import ModuleType
@@ -11,7 +10,7 @@ import pandas as pd
 import pytest
 from sklearn_pandas import DataFrameMapper
 
-from ballet.compat import pathlib, safepath
+from ballet.compat import safepath
 from ballet.eng.misc import IdentityTransformer
 from ballet.feature import Feature
 from ballet.quickstart import generate_project

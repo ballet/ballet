@@ -1,6 +1,8 @@
 import random
+import subprocess
 import tempfile
 
+import funcy
 import git
 from funcy import any_fn, contextmanager, merge
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -9,6 +11,7 @@ from sklearn_pandas.pipeline import TransformerPipeline
 from ballet.compat import pathlib
 from ballet.eng.misc import IdentityTransformer
 from ballet.util.git import set_config_variables
+from ballet.util.log import logger
 
 EPSILON = 1e-4
 
@@ -16,7 +19,7 @@ EPSILON = 1e-4
 class FragileTransformer(BaseEstimator, TransformerMixin):
 
     def __init__(self, bad_input_checks, errors):
-        '''Raises a random error if any input check returns True'''
+        """Raises a random error if any input check returns True"""
         super().__init__()
 
         self._check = any_fn(*bad_input_checks)
@@ -115,3 +118,11 @@ def mock_repo():
         repo = git.Repo.init(str(dir))
         set_ci_git_config_variables(repo)
         yield repo
+
+
+def tree(dir):
+    with funcy.suppress((FileNotFoundError, subprocess.SubprocessError)):
+        cmd = ['tree', '-A', '-n', '--charset', 'ASCII', str(dir)]
+        logger.debug('Popen({cmd!r})'.format(cmd=cmd))
+        tree_output = subprocess.check_output(cmd).decode()
+        logger.debug(tree_output)
