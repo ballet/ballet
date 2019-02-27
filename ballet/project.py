@@ -8,6 +8,7 @@ from ballet.compat import pathlib
 from ballet.exc import ConfigurationError
 from ballet.util.ci import get_travis_pr_num
 from ballet.util.git import get_pr_num
+from ballet.util.mod import import_module_at_path
 
 DEFAULT_CONFIG_NAME = 'ballet.yml'
 
@@ -39,6 +40,20 @@ def get_config_paths(package_root):
     return paths
 
 
+def load_config_at_path(path):
+    if path.exists() and path.is_file():
+        with path.open('r') as f:
+            return yaml.load(f)
+    else:
+        return None
+
+
+def load_config_in_dir(path):
+    if path.exists() and path.is_dir():
+        candidate = path.joinpath(DEFAULT_CONFIG_NAME)
+        return load_config_at_path(candidate)
+
+
 @memoize
 def find_configs(package_root):
     """Find valid ballet project config files
@@ -49,15 +64,18 @@ def find_configs(package_root):
         package_root (path-like): Directory of the ballet project root
             directory, the one usually containing the ``ballet.yml`` file.
 
+    Returns:
+        list[tuple]: List of (dict, str) representing config
+            information and the path that information was loaded from
+
     Raises:
         ConfigurationError: No valid config files were found.
     """
     configs = []
     for candidate in get_config_paths(package_root):
-        if candidate.exists() and candidate.is_file():
-            with candidate.open('r') as f:
-                config = yaml.load(f)
-                configs.append(config)
+        config = load_config_at_path(candidate)
+        if config is not None:
+            configs.append((config, candidate))
 
     if configs:
         return configs
@@ -81,10 +99,10 @@ def config_get(package_root, *path, default=None):
         default (default=None): A default value to return in the case that
             the option does not exist.
     """
-    configs = find_configs(package_root)
+    config_info = find_configs(package_root)
 
     o = object()
-    for config in configs:
+    for config, _ in config_info:
         result = get_in(config, path, default=o)
         if result is not o:
             return result
@@ -147,6 +165,17 @@ class Project:
 
     def __init__(self, package):
         self.package = package
+
+    @classmethod
+    def from_path(cls, path):
+        config = load_config_in_dir(path)
+        if config is None:
+            raise ConfigurationError
+
+        project_slug = get_in(config, ('project', 'slug'))
+        package = import_module_at_path(project_slug,
+                                        path.joinpath(project_slug))
+        return cls(package)
 
     def _resolve(self, modname, attr=None):
         module = import_module(modname, package=self.package.__name__)

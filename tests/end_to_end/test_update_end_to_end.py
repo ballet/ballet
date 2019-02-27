@@ -10,6 +10,7 @@ import pytest
 import ballet.quickstart
 import ballet.update
 from ballet.compat import safepath
+from ballet.project import DEFAULT_CONFIG_NAME
 from ballet.quickstart import generate_project
 from ballet.util.log import logger
 from tests.util import tree
@@ -124,12 +125,13 @@ def test_update_after_change_in_template(quickstart, project_template_copy):
 
     template_dir = project_template_copy
 
-    modified_file_path = tmpdir.joinpath(project_slug, 'ballet.yml')
+    modified_file_path = tmpdir.joinpath(project_slug, DEFAULT_CONFIG_NAME)
     new_content = 'foo: bar'
 
     # add foo: bar to project template
-    with template_dir.joinpath(
-            '{{cookiecutter.project_slug}}', 'ballet.yml').open('a') as f:
+    p = template_dir.joinpath('{{cookiecutter.project_slug}}',
+                              DEFAULT_CONFIG_NAME)
+    with p.open('a') as f:
         f.write('\n')
         f.write(new_content)
         f.write('\n')
@@ -173,7 +175,7 @@ def test_update_after_change_in_project(quickstart):
     project_slug = quickstart.project_slug
     repo = quickstart.repo
 
-    modified_file_path = tmpdir.joinpath(project_slug, 'ballet.yml')
+    modified_file_path = tmpdir.joinpath(project_slug, DEFAULT_CONFIG_NAME)
     new_content = 'foo: bar'
     # add foo: bar
     with modified_file_path.open('a') as f:
@@ -182,8 +184,10 @@ def test_update_after_change_in_project(quickstart):
         f.write('\n')
 
     # commit
-    repo.git.add('ballet.yml')
-    repo.git.commit(m='Add "{}" to ballet.yml'.format(new_content))
+    repo.git.add(DEFAULT_CONFIG_NAME)
+    repo.git.commit(
+        m='Add "{new_content}" to {config_file_name}'
+        .format(new_content=new_content, config_file_name=DEFAULT_CONFIG_NAME))
 
     # run ballet-update-template
     _run_ballet_update_template(tmpdir, project_slug)
@@ -212,17 +216,18 @@ def test_update_after_conflicting_changes(quickstart, project_template_copy):
     repo = quickstart.repo
 
     # add foo: bar
-    with tmpdir.joinpath(project_slug, 'ballet.yml').open('a') as f:
+    with tmpdir.joinpath(project_slug, DEFAULT_CONFIG_NAME).open('a') as f:
         f.write('\nfoo: bar\n')
 
     # commit
-    repo.git.add('ballet.yml')
-    repo.git.commit(m='Add "foo: bar" to ballet.yml')
+    repo.git.add(DEFAULT_CONFIG_NAME)
+    repo.git.commit(m='Add "foo: bar" to {}')
 
     # add foo: qux to project template
     template_dir = project_template_copy
-    with template_dir.joinpath(
-            '{{cookiecutter.project_slug}}', 'ballet.yml').open('a') as f:
+    p = template_dir.joinpath('{{cookiecutter.project_slug}}',
+                              DEFAULT_CONFIG_NAME)
+    with p.open('a') as f:
         f.write('\nfoo: qux\n')
 
     # run ballet-update-template -- this should raise an error, perhaps,

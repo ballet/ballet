@@ -1,5 +1,4 @@
 import json
-import os
 import tempfile
 
 import funcy
@@ -9,6 +8,8 @@ from git import GitCommandError
 
 from ballet import __version__ as version
 from ballet.compat import pathlib, safepath
+from ballet.exc import ConfigurationError
+from ballet.project import Project
 from ballet.quickstart import generate_project
 from ballet.util.log import logger
 
@@ -22,11 +23,21 @@ REPLAY_PATH = (
         '.cookiecutter_replay',
         'project_template.json'))
 
-TEMPLATE_BRANCH = 'template-update'
-
 
 def _make_master_branch_merge_commit_message():
     return 'Merge project template updates from ballet v{}'.format(version)
+
+
+@funcy.contextmanager
+def temporaryremote(repo, remote_name, updated_repo):
+    with funcy.suppress(Exception):
+        remote = repo.create_remote(
+            remote_name, updated_repo.working_tree_dir)
+        yield remote
+
+    if remote is not None:
+        with funcy.suppress(Exception):
+            repo.delete_remote(remote_name)
 
 
 def _create_replay(cwd, tempdir):
@@ -79,50 +90,51 @@ def _get_full_context(cwd):
 
 
 def update_project_template(create_merge_commit=False):
-    cwd = pathlib.Path(os.getcwd())
+    cwd = pathlib.Path.cwd().resolve()
+
+    # get ballet project info -- must be at project root directory with a
+    # ballet.yml file.
     try:
-        current_repo = git.Repo(
-            safepath(cwd),
-            search_parent_directories=True)  # for right now
-    except GitCommandError:
-        logger.exception('Could not find ballet repo, update failed')
-        raise
+        project = Project.from_path(cwd)
+    except ConfigurationError:
+        raise ConfigurationError('Must run command from project root.')
+
+    repo = project.repo
+    template_branch = project.get('project', 'template_branch')
 
     with tempfile.TemporaryDirectory() as tempdir:
+        tempdir = pathlib.Path(tempdir)
         updated_template = _create_replay(cwd, tempdir)
         updated_repo = git.Repo(safepath(updated_template))
 
-        # add some randomness in the remote name by using tempdir
-        remote_name = updated_template.parts[-1]
+        # tempdir is a randomly-named dir
+        remote_name = tempdir.parts[-1]
 
         try:
-            current_repo.heads[TEMPLATE_BRANCH].checkout()
-            updated_remote = current_repo.create_remote(
-                remote_name, updated_repo.working_tree_dir)
-            updated_remote.fetch()
-            current_repo.git.merge(
-                remote_name + '/master',
-                allow_unrelated_histories=True,
-                strategy_option='theirs',
-                squash=True,
-            )
-            current_repo.index.commit(
-                _make_master_branch_merge_commit_message())
+            repo.heads[template_branch].checkout()
+            with temporaryremote(repo, remote_name, updated_repo) as \
+                    updated_remote:
+                updated_remote.fetch()
+                repo.git.merge(
+                    remote_name + '/master',
+                    allow_unrelated_histories=True,
+                    strategy_option='theirs',
+                    squash=True,
+                )
+                repo.index.commit(
+                    _make_master_branch_merge_commit_message())
         except GitCommandError:
             logger.exception(
-                'Could not merge changes into template-update branch, '
-                'update failed')
+                'Could not merge changes into {template_branch} branch, '
+                'update failed'
+                .format(template_branch=template_branch))
             raise
         finally:
-            if current_repo.active_branch != current_repo.heads.master:
-                current_repo.heads.master.checkout()
-            current_repo.delete_remote(remote_name)
+            if repo.active_branch != repo.heads.master:
+                repo.heads.master.checkout()
 
     try:
-        current_repo.git.merge(
-            TEMPLATE_BRANCH,
-            squash=True,
-        )
+        repo.git.merge(template_branch, squash=True)
     except GitCommandError:
         logger.exception(
             'Could not merge changes into master, update failed')
@@ -136,7 +148,7 @@ def update_project_template(create_merge_commit=False):
             create_merge_commit = True
 
     if create_merge_commit:
-        current_repo.index.commit(
+        repo.index.commit(
             _make_master_branch_merge_commit_message())
 
 

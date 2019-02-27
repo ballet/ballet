@@ -29,7 +29,7 @@ class ProjectTest(unittest.TestCase):
     @patch('ballet.project.get_config_paths')
     def test_find_configs_no_valid_paths_fails(self, mock_get_config_paths):
         mock_get_config_paths.return_value = [
-            pathlib.Path('/foo/bar/baz/ballet.yml')
+            pathlib.Path('/foo', 'bar', 'baz', DEFAULT_CONFIG_NAME)
         ]
         package_root = None
         with self.assertRaises(ConfigurationError):
@@ -44,14 +44,16 @@ class ProjectTest(unittest.TestCase):
                 'kind': 'Z',
             },
         }
+        path1 = None
         config2 = {
             'problem': {
                 'name': 'bar',
                 'type': 'A',
             },
         }
-        configs = [config1, config2]
-        mock_find_configs.return_value = configs
+        path2 = None
+        config_info = [(config1, path2), (config2, path2)]
+        mock_find_configs.return_value = config_info
 
         package_root = None
         get = make_config_get(package_root)

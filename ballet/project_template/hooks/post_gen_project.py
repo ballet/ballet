@@ -23,7 +23,7 @@ def create_git_repo():
     repo.git.add('.')
     repo.index.commit('Automatically generated files from ballet-quickstart')
     repo.create_remote('origin', 'https://github.com/{{ cookiecutter.github_owner }}/{{ cookiecutter.project_slug }}')
-    repo.create_head('template-update')
+    repo.create_head('{{ cookiecutter._template_branch }}')
 
 def main():
     copy_context()
