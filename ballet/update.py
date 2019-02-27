@@ -7,6 +7,7 @@ import git
 from cookiecutter.prompt import prompt_for_config
 from git import GitCommandError
 
+import ballet.util.log
 from ballet import __version__ as version
 from ballet.compat import pathlib, safepath
 from ballet.quickstart import generate_project
@@ -141,4 +142,5 @@ def update_project_template(create_merge_commit=False):
 
 
 def main():
+    ballet.util.log.enable(logger)
     update_project_template()
