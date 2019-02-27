@@ -215,8 +215,7 @@ def test_end_to_end(tmp_path):
 
 
 if __name__ == '__main__':
-    import logging
     import ballet.util.log
-    ballet.util.log.enable(level=logging.INFO)
+    ballet.util.log.enable(level='INFO')
 
     test_end_to_end()

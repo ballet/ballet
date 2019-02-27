@@ -19,13 +19,14 @@ def enable(logger=logger, level=logging.INFO, echo=True):
         formatter = logging.Formatter(LOG_FORMAT)
         _handler.setFormatter(formatter)
 
+    level = logging._checkLevel(level)
+    levelName = logging._levelToName[level]
+
     logger.setLevel(level)
     _handler.setLevel(level)
 
     if _handler not in logger.handlers:
         logger.addHandler(_handler)
-
-    levelName = logging._levelToName[level]
 
     if echo:
         logger.log(
