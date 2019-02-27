@@ -35,11 +35,11 @@ def _create_replay(cwd, tempdir):
     old_context = None
     try:
         if REPLAY_PATH.exists():
-            with open(REPLAY_PATH, 'r') as replay_file:
-                old_context = json.load(replay_file)
+            with REPLAY_PATH.open('r') as f:
+                old_context = json.load(f)
         # if there are old replays, save it before it's overwritten
-        with open(REPLAY_PATH, 'w') as replay_file:
-            json.dump(context, replay_file)
+        with REPLAY_PATH.open('w') as f:
+            json.dump(context, f)
         # load our context and prompt as necessary
         generate_project(
             replay=True,
@@ -51,22 +51,22 @@ def _create_replay(cwd, tempdir):
     finally:
         # put back the old replay, if it's been overwritten
         if old_context is not None:
-            with open(REPLAY_PATH, 'w') as replay_file:
-                json.dump(old_context, replay_file)
+            with REPLAY_PATH.open('w') as f:
+                json.dump(old_context, f)
     return tempdir / slug
 
 
 def _get_full_context(cwd):
     context_path = cwd.joinpath('.cookiecutter_replay.json')
     if context_path.exists():
-        with open(context_path) as context_file:
-            context = json.load(context_file)
+        with context_path.open('r') as f:
+            context = json.load(f)
     else:
         raise FileNotFoundError(
-            'Could not find cookiecutter_replay.json, '
-            'are you in a ballet repo?')
-    with open(PROJECT_CONTEXT_PATH) as context_json:
-        new_context = json.load(context_json)
+            'Could not find \'.cookiecutter_replay.json\', '
+            'are you in a ballet project repo?')
+    with PROJECT_CONTEXT_PATH.open('r') as f:
+        new_context = json.load(f)
     new_keys = set(new_context.keys()) - set(context['cookiecutter'].keys())
     new_context_config = {'cookiecutter': funcy.project(new_context, new_keys)}
     new_context = prompt_for_config(new_context_config)
