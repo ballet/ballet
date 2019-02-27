@@ -23,6 +23,14 @@ def _tree(dir):
         logger.debug(tree_output)
 
 
+@funcy.contextmanager
+def chdir(d):
+    olddir = os.getcwd()
+    os.chdir(safepath(d))
+    yield
+    os.chdir(safepath(olddir))
+
+
 @pytest.fixture
 def quickstart(tmp_path):
     """
@@ -30,29 +38,30 @@ def quickstart(tmp_path):
     $ ballet-quickstart
     $ tree .
     """
-    # cd tmpdir
     tmpdir = tmp_path
-    os.chdir(safepath(tmpdir))
 
-    project_slug = 'foo'
-    extra_context = {
-        'project_slug': project_slug,
-    }
+    # cd tmpdir
+    with chdir(tmpdir):
 
-    # ballet-quickstart
-    generate_project(no_input=True,
-                     extra_context=extra_context,
-                     output_dir=safepath(tmpdir))
+        project_slug = 'foo'
+        extra_context = {
+            'project_slug': project_slug,
+        }
 
-    # tree .
-    _tree(tmpdir)
+        # ballet-quickstart
+        generate_project(no_input=True,
+                         extra_context=extra_context,
+                         output_dir=safepath(tmpdir))
 
-    repo = git.Repo(safepath(tmpdir.joinpath(project_slug)))
+        # tree .
+        _tree(tmpdir)
 
-    yield (
-        namedtuple('Quickstart', 'tmpdir project_slug repo')
-        ._make((tmpdir, project_slug, repo))
-    )
+        repo = git.Repo(safepath(tmpdir.joinpath(project_slug)))
+
+        yield (
+            namedtuple('Quickstart', 'tmpdir project_slug repo')
+            ._make((tmpdir, project_slug, repo))
+        )
 
 
 @pytest.fixture
@@ -68,11 +77,8 @@ def project_template_copy(tmp_path):
 
 
 def _run_ballet_update_template(d, project_slug):
-    try:
-        os.chdir(safepath(d.joinpath(project_slug)))
+    with chdir(safepath(d.joinpath(project_slug))):
         ballet.update.update_project_template(create_merge_commit=True)
-    finally:
-        os.chdir(safepath(d))
 
 
 @pytest.mark.usefixtures('clean_system')
