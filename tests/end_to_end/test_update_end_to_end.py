@@ -22,16 +22,14 @@ TEMPLATE_BRANCH = 'project-template'
 
 
 @pytest.fixture
-def quickstart(tmp_path):
+def quickstart(tempdir):
     """
-    $ cd tmpdir
+    $ cd tempdir
     $ ballet-quickstart
     $ tree .
     """
-    tmpdir = tmp_path
-
-    # cd tmpdir
-    with work_in(tmpdir):
+    # cd tempdir
+    with work_in(tempdir):
 
         project_slug = 'foo'
         extra_context = {
@@ -41,23 +39,23 @@ def quickstart(tmp_path):
         # ballet-quickstart
         generate_project(no_input=True,
                          extra_context=extra_context,
-                         output_dir=safepath(tmpdir))
+                         output_dir=safepath(tempdir))
 
         # tree .
-        tree(tmpdir)
+        tree(tempdir)
 
-        repo = git.Repo(safepath(tmpdir.joinpath(project_slug)))
+        repo = git.Repo(safepath(tempdir.joinpath(project_slug)))
 
         yield (
-            namedtuple('Quickstart', 'tmpdir project_slug repo')
-            ._make((tmpdir, project_slug, repo))
+            namedtuple('Quickstart', 'tempdir project_slug repo')
+            ._make((tempdir, project_slug, repo))
         )
 
 
 @pytest.fixture
-def project_template_copy(tmp_path):
+def project_template_copy(tempdir):
     old_path = ballet.quickstart._get_project_template_path()
-    new_path = tmp_path.joinpath('project_template')
+    new_path = tempdir.joinpath('project_template')
     shutil.copytree(old_path, safepath(new_path))
 
     with patch('ballet.quickstart._get_project_template_path') as m:
@@ -66,7 +64,7 @@ def project_template_copy(tmp_path):
         yield new_path
 
 
-# ----- Utility methods
+# Utility methods -------------------------------------------------------------
 
 def _run_ballet_update_template(d, project_slug):
     with work_in(safepath(d.joinpath(project_slug))):
@@ -119,6 +117,8 @@ def check_modified_file(path, content):
         assert content in last_line
 
 
+# Tests begin------------------------------------------------------------------
+
 def test_update_after_change_in_template(quickstart, project_template_copy):
     """Test update after changing a file in the template
 
@@ -141,13 +141,13 @@ def test_update_after_change_in_template(quickstart, project_template_copy):
         - commit msg on master matches expected msg
         - foo: bar is the last line of ballet.yml
     """
-    tmpdir = quickstart.tmpdir
+    tempdir = quickstart.tempdir
     project_slug = quickstart.project_slug
     repo = quickstart.repo
 
     template_dir = project_template_copy
 
-    modified_file_path = tmpdir.joinpath(project_slug, DEFAULT_CONFIG_NAME)
+    modified_file_path = tempdir.joinpath(project_slug, DEFAULT_CONFIG_NAME)
     new_content = 'foo: bar'
 
     # add foo: bar to project template
@@ -159,7 +159,7 @@ def test_update_after_change_in_template(quickstart, project_template_copy):
         f.write('\n')
 
     # run ballet-update-template
-    _run_ballet_update_template(tmpdir, project_slug)
+    _run_ballet_update_template(tempdir, project_slug)
 
     # assert on branch master
     check_branch(repo)
@@ -198,13 +198,13 @@ def test_update_after_change_in_project(quickstart):
         - no new commits to master branch
         - foo: bar is the last line of ballet.yml
     """
-    tmpdir = quickstart.tmpdir
+    tempdir = quickstart.tempdir
     project_slug = quickstart.project_slug
     repo = quickstart.repo
 
     expected_template_commit = repo.branches[TEMPLATE_BRANCH].commit
 
-    modified_file_path = tmpdir.joinpath(project_slug, DEFAULT_CONFIG_NAME)
+    modified_file_path = tempdir.joinpath(project_slug, DEFAULT_CONFIG_NAME)
     new_content = 'foo: bar'
     # add foo: bar
     with modified_file_path.open('a') as f:
@@ -221,7 +221,7 @@ def test_update_after_change_in_project(quickstart):
     expected_master_commit = repo.head.commit
 
     # run ballet-update-template
-    _run_ballet_update_template(tmpdir, project_slug)
+    _run_ballet_update_template(tempdir, project_slug)
 
     # assert on branch master
     check_branch(repo)
@@ -231,8 +231,9 @@ def test_update_after_change_in_project(quickstart):
 
     # assert no new commit/changes
     actual_master_commit = repo.head.commit
-    actual_template_commit = repo.branches[TEMPLATE_BRANCH].commit
     assert actual_master_commit == expected_master_commit
+
+    actual_template_commit = repo.branches[TEMPLATE_BRANCH].commit
     assert actual_template_commit == expected_template_commit
 
     # assert foo: bar is in ballet.yml
@@ -247,12 +248,12 @@ def test_update_after_conflicting_changes(quickstart, project_template_copy):
     is not decided yet.
 
     """
-    tmpdir = quickstart.tmpdir
+    tempdir = quickstart.tempdir
     project_slug = quickstart.project_slug
     repo = quickstart.repo
 
     # add foo: bar
-    with tmpdir.joinpath(project_slug, DEFAULT_CONFIG_NAME).open('a') as f:
+    with tempdir.joinpath(project_slug, DEFAULT_CONFIG_NAME).open('a') as f:
         f.write('\nfoo: bar\n')
 
     # commit
@@ -269,7 +270,7 @@ def test_update_after_conflicting_changes(quickstart, project_template_copy):
     # run ballet-update-template -- this should raise an error, perhaps,
     # but it doesn't?
     with pytest.raises(GitCommandError):
-        _run_ballet_update_template(tmpdir, project_slug)
+        _run_ballet_update_template(tempdir, project_slug)
 
     # assert on branch master
     check_branch(repo)
@@ -297,14 +298,14 @@ def test_update_after_no_changes(quickstart):
         - no new remotes
         - no new commit/changes
     """
-    tmpdir = quickstart.tmpdir
+    tempdir = quickstart.tempdir
     project_slug = quickstart.project_slug
     repo = quickstart.repo
 
     expected_master_commit = repo.head.commit
     expected_template_commit = repo.branches[TEMPLATE_BRANCH].commit
 
-    _run_ballet_update_template(tmpdir, project_slug)
+    _run_ballet_update_template(tempdir, project_slug)
 
     # assert on branch master
     check_branch(repo)
@@ -314,6 +315,7 @@ def test_update_after_no_changes(quickstart):
 
     # assert no new commit/changes
     actual_master_commit = repo.head.commit
-    actual_template_commit = repo.branches[TEMPLATE_BRANCH].commit
     assert actual_master_commit == expected_master_commit
+
+    actual_template_commit = repo.branches[TEMPLATE_BRANCH].commit
     assert actual_template_commit == expected_template_commit

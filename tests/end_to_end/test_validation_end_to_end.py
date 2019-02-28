@@ -7,7 +7,6 @@ from unittest.mock import patch
 import git
 import numpy as np
 import pandas as pd
-import pytest
 from sklearn_pandas import DataFrameMapper
 
 from ballet.compat import safepath
@@ -46,9 +45,7 @@ def make_feature_str(input):
 
 
 @pytest.mark.usefixtures('clean_system')
-def test_end_to_end(tmp_path):
-    tempdir = tmp_path
-
+def test_end_to_end(tempdir):
     modname = 'foo'
     extra_context = {
         'project_name': modname.capitalize(),
