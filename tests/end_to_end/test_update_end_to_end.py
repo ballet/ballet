@@ -13,10 +13,12 @@ import ballet.update
 from ballet.compat import safepath
 from ballet.project import DEFAULT_CONFIG_NAME
 from ballet.quickstart import generate_project
-from ballet.util.log import logger
 from tests.util import tree
 
 pytestmark = pytest.mark.usefixtures('clean_system')
+
+
+TEMPLATE_BRANCH = 'project-template'
 
 
 @funcy.contextmanager
@@ -76,7 +78,22 @@ def project_template_copy(tmp_path):
 
 def _run_ballet_update_template(d, project_slug):
     with chdir(safepath(d.joinpath(project_slug))):
-        ballet.update.update_project_template(create_merge_commit=True)
+        ballet.update.update_project_template()
+
+
+def check_remotes(repo, expected_remotes=None):
+    def get_names(remotes):
+        return funcy.lpluck_attr('name', remotes)
+
+    if expected_remotes is None:
+        expected_remote_names = ['origin']
+    else:
+        expected_remote_names = get_names(expected_remotes)
+
+    actual_remotes = repo.remotes
+    actual_remote_names = get_names(actual_remotes)
+
+    assert actual_remote_names == expected_remote_names
 
 
 def check_branch(repo, expected_branch='master'):
@@ -85,17 +102,15 @@ def check_branch(repo, expected_branch='master'):
 
 
 def check_commit_message_on_template(repo):
-    template_branch = 'project-template'
     expected_commit_message = \
         ballet.update._make_template_branch_merge_commit_message()
-    commit = repo.heads[template_branch].commit
+    commit = repo.heads[TEMPLATE_BRANCH].commit
     check_commit_message(commit, expected_commit_message)
 
 
 def check_commit_message_on_master(repo):
-    template_branch = 'project-template'
     expected_commit_message = 'Merge branch \'{template_branch}\''.format(
-        template_branch=template_branch)
+        template_branch=TEMPLATE_BRANCH)
     commit = repo.head.commit
     check_commit_message(commit, expected_commit_message)
 
@@ -164,6 +179,9 @@ def test_update_after_change_in_template(quickstart, project_template_copy):
     # assert foo: bar is in ballet.yml
     check_modified_file(modified_file_path, new_content)
 
+    # assert no new remotes
+    check_remotes(repo)
+
 
 def test_update_after_change_in_project(quickstart):
     """Test update after changing a file in the project itself
@@ -184,12 +202,15 @@ def test_update_after_change_in_project(quickstart):
 
     Then test the following:
         - on branch master
-        - commit msg on master matches expected automatically-generated msg
+        - no new commits to project-template branch
+        - no new commits to master branch
         - foo: bar is the last line of ballet.yml
     """
     tmpdir = quickstart.tmpdir
     project_slug = quickstart.project_slug
     repo = quickstart.repo
+
+    expected_template_commit = repo.branches[TEMPLATE_BRANCH].commit
 
     modified_file_path = tmpdir.joinpath(project_slug, DEFAULT_CONFIG_NAME)
     new_content = 'foo: bar'
@@ -205,15 +226,22 @@ def test_update_after_change_in_project(quickstart):
         m='Add "{new_content}" to {config_file_name}'
         .format(new_content=new_content, config_file_name=DEFAULT_CONFIG_NAME))
 
+    expected_master_commit = repo.head.commit
+
     # run ballet-update-template
     _run_ballet_update_template(tmpdir, project_slug)
 
     # assert on branch master
     check_branch(repo)
 
-    # assert commit message is automatically generated
-    check_commit_message_on_master(repo)
-    check_commit_message_on_template(repo)
+    # assert no new remotes
+    check_remotes(repo)
+
+    # assert no new commit/changes
+    actual_master_commit = repo.head.commit
+    actual_template_commit = repo.branches[TEMPLATE_BRANCH].commit
+    assert actual_master_commit == expected_master_commit
+    assert actual_template_commit == expected_template_commit
 
     # assert foo: bar is in ballet.yml
     check_modified_file(modified_file_path, new_content)
@@ -251,8 +279,13 @@ def test_update_after_conflicting_changes(quickstart, project_template_copy):
     with pytest.raises(GitCommandError):
         _run_ballet_update_template(tmpdir, project_slug)
 
+    # assert on branch master
+    check_branch(repo)
 
-@pytest.mark.xfail
+    # assert no new remotes?
+    check_remotes(repo)
+
+
 def test_update_after_no_changes(quickstart):
     """Test that if there are no changes to project template, nothing happens.
 
@@ -269,24 +302,26 @@ def test_update_after_no_changes(quickstart):
 
     Then test the following:
         - on branch master
+        - no new remotes
         - no new commit/changes
     """
     tmpdir = quickstart.tmpdir
     project_slug = quickstart.project_slug
     repo = quickstart.repo
 
-    expected_commit = repo.head.commit
+    expected_master_commit = repo.head.commit
+    expected_template_commit = repo.branches[TEMPLATE_BRANCH].commit
 
     _run_ballet_update_template(tmpdir, project_slug)
 
     # assert on branch master
     check_branch(repo)
 
+    # assert no new remotes
+    check_remotes(repo)
+
     # assert no new commit/changes
-    try:
-        actual_commit = repo.head.commit
-        assert actual_commit == expected_commit
-    except AssertionError:
-        git_log_output = repo.git.log()
-        logger.debug(git_log_output)
-        raise
+    actual_master_commit = repo.head.commit
+    actual_template_commit = repo.branches[TEMPLATE_BRANCH].commit
+    assert actual_master_commit == expected_master_commit
+    assert actual_template_commit == expected_template_commit

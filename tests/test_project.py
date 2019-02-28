@@ -52,7 +52,7 @@ class ProjectTest(unittest.TestCase):
             },
         }
         path2 = None
-        config_info = [(config1, path2), (config2, path2)]
+        config_info = [(config1, path1), (config2, path2)]
         mock_find_configs.return_value = config_info
 
         package_root = None

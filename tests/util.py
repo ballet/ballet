@@ -126,3 +126,4 @@ def tree(dir):
         logger.debug('Popen({cmd!r})'.format(cmd=cmd))
         tree_output = subprocess.check_output(cmd).decode()
         logger.debug(tree_output)
+        return tree_output
