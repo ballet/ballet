@@ -24,7 +24,7 @@ REPLAY_PATH = (
         'project_template.json'))
 
 
-def _make_master_branch_merge_commit_message():
+def _make_template_branch_merge_commit_message():
     return 'Merge project template updates from ballet v{}'.format(version)
 
 
@@ -88,6 +88,7 @@ def update_project_template(create_merge_commit=False):
         raise ConfigurationError('Must run command from project root.')
 
     repo = project.repo
+    original_head = repo.head.commit.hexsha[:7]
     template_branch = project.get('project', 'template_branch')
 
     with tempfile.TemporaryDirectory() as tempdir:
@@ -98,51 +99,45 @@ def update_project_template(create_merge_commit=False):
         # tempdir is a randomly-named dir
         remote_name = tempdir.parts[-1]
 
-        try:
-            remote = repo.create_remote(
-                remote_name, updated_repo.working_tree_dir)
-            remote.fetch()
+        remote = repo.create_remote(
+            remote_name, updated_repo.working_tree_dir)
+        remote.fetch()
 
-            repo.heads[template_branch].checkout()
-            try:
-                repo.git.merge(
-                    remote_name + '/master',
-                    allow_unrelated_histories=True,
-                    strategy_option='theirs',
-                    squash=True,
-                )
-                repo.index.commit(
-                    _make_master_branch_merge_commit_message())
-            except GitCommandError:
-                logger.exception(
-                    'Could not merge changes into {template_branch} branch, '
-                    'update failed'
-                    .format(template_branch=template_branch))
-                raise
-            else:
-                repo.heads.master.checkout()
-        except Exception:
-            with funcy.suppress(Exception):
-                repo.delete_remote(remote_name)
+        repo.heads[template_branch].checkout()
+        try:
+            repo.git.merge(
+                remote_name + '/master',
+                allow_unrelated_histories=True,
+                strategy_option='theirs',
+                squash=True,
+            )
+            repo.index.commit(
+                _make_template_branch_merge_commit_message())
+        except GitCommandError:
+            logger.exception(
+                'Could not merge changes into {template_branch} branch, '
+                'update failed'
+                .format(template_branch=template_branch))
             raise
+        else:
+            repo.heads.master.checkout()
+
+        with funcy.suppress(Exception):
+            repo.delete_remote(remote_name)
 
     try:
-        repo.git.merge(template_branch, squash=True)
-    except GitCommandError:
-        logger.exception(
-            'Could not merge changes into master, update failed')
+        repo.git.merge(template_branch, no_ff=True)
+    except GitCommandError as e:
+        if 'merge conflict' in str(e).lower():
+            logger.info('\n'.join([
+                'Update failed due to a merge conflict.',
+                'Fix conflicts, and then complete merge manually:',
+                '    $ git add .',
+                '    $ git commit --no-edit',
+                'Otherwise, abandon the update:',
+                '    $ git reset --hard {original_head}'
+            ]).format(original_head=original_head))
         raise
-
-    if not create_merge_commit:
-        commit_prompt = ('Would you like ballet to create a merge commit '
-                         'automatically? [y/N]: ')
-        answer = input(commit_prompt)
-        if 'y' in answer.lower():
-            create_merge_commit = True
-
-    if create_merge_commit:
-        repo.index.commit(
-            _make_master_branch_merge_commit_message())
 
 
 def main():

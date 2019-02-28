@@ -6,6 +6,7 @@ from unittest.mock import patch
 import funcy
 import git
 import pytest
+from git import GitCommandError
 
 import ballet.quickstart
 import ballet.update
@@ -83,10 +84,24 @@ def check_branch(repo, expected_branch='master'):
     assert actual_branch == expected_branch
 
 
-def check_commit_message(repo):
+def check_commit_message_on_template(repo):
+    template_branch = 'project-template'
     expected_commit_message = \
-        ballet.update._make_master_branch_merge_commit_message().strip()
-    actual_commit_message = repo.head.commit.message.strip()
+        ballet.update._make_template_branch_merge_commit_message()
+    commit = repo.heads[template_branch].commit
+    check_commit_message(commit, expected_commit_message)
+
+
+def check_commit_message_on_master(repo):
+    template_branch = 'project-template'
+    expected_commit_message = 'Merge branch \'{template_branch}\''.format(
+        template_branch=template_branch)
+    commit = repo.head.commit
+    check_commit_message(commit, expected_commit_message)
+
+
+def check_commit_message(commit, expected_commit_message):
+    actual_commit_message = commit.message.strip()
     assert actual_commit_message == expected_commit_message
 
 
@@ -143,7 +158,8 @@ def test_update_after_change_in_template(quickstart, project_template_copy):
     check_branch(repo)
 
     # assert commit message is automatically generated
-    check_commit_message(repo)
+    check_commit_message_on_master(repo)
+    check_commit_message_on_template(repo)
 
     # assert foo: bar is in ballet.yml
     check_modified_file(modified_file_path, new_content)
@@ -196,13 +212,13 @@ def test_update_after_change_in_project(quickstart):
     check_branch(repo)
 
     # assert commit message is automatically generated
-    check_commit_message(repo)
+    check_commit_message_on_master(repo)
+    check_commit_message_on_template(repo)
 
     # assert foo: bar is in ballet.yml
     check_modified_file(modified_file_path, new_content)
 
 
-@pytest.mark.xfail
 def test_update_after_conflicting_changes(quickstart, project_template_copy):
     """Test what happens when there are conflicting changes
 
@@ -232,9 +248,8 @@ def test_update_after_conflicting_changes(quickstart, project_template_copy):
 
     # run ballet-update-template -- this should raise an error, perhaps,
     # but it doesn't?
-    _run_ballet_update_template(tmpdir, project_slug)
-
-    assert False
+    with pytest.raises(GitCommandError):
+        _run_ballet_update_template(tmpdir, project_slug)
 
 
 @pytest.mark.xfail
