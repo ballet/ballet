@@ -2,16 +2,9 @@
 
 import git
 import os
-import shutil
 
 PROJECT_DIRECTORY = os.path.realpath(os.path.curdir)
 
-def copy_context():
-    src = os.path.join(os.path.expanduser('~'),
-                       '.cookiecutter_replay',
-                       'project_template.json')
-    dst = os.path.join(PROJECT_DIRECTORY, '.cookiecutter_replay.json')
-    shutil.copyfile(src, dst)
 
 def create_git_repo():
     repo = git.Repo.init('.')
@@ -22,11 +15,13 @@ def create_git_repo():
         writer.release()
     repo.git.add('.')
     repo.index.commit('Automatically generated files from ballet-quickstart')
-    repo.create_remote('origin', 'https://github.com/{{ cookiecutter.github_owner }}/{{ cookiecutter.project_slug }}')
+    repo.create_remote('origin',
+                       'https://github.com/{{ cookiecutter.github_owner }}'
+                       '/{{ cookiecutter.project_slug }}')
     repo.create_head('{{ cookiecutter._template_branch }}')
 
+
 def main():
-    copy_context()
     create_git_repo()
 
 

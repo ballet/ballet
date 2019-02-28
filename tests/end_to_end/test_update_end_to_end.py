@@ -1,4 +1,3 @@
-import os
 import shutil
 from collections import namedtuple
 from unittest.mock import patch
@@ -6,6 +5,7 @@ from unittest.mock import patch
 import funcy
 import git
 import pytest
+from cookiecutter.utils import work_in
 from git import GitCommandError
 
 import ballet.quickstart
@@ -21,14 +21,6 @@ pytestmark = pytest.mark.usefixtures('clean_system')
 TEMPLATE_BRANCH = 'project-template'
 
 
-@funcy.contextmanager
-def chdir(d):
-    olddir = os.getcwd()
-    os.chdir(safepath(d))
-    yield
-    os.chdir(safepath(olddir))
-
-
 @pytest.fixture
 def quickstart(tmp_path):
     """
@@ -39,7 +31,7 @@ def quickstart(tmp_path):
     tmpdir = tmp_path
 
     # cd tmpdir
-    with chdir(tmpdir):
+    with work_in(tmpdir):
 
         project_slug = 'foo'
         extra_context = {
@@ -77,7 +69,7 @@ def project_template_copy(tmp_path):
 # ----- Utility methods
 
 def _run_ballet_update_template(d, project_slug):
-    with chdir(safepath(d.joinpath(project_slug))):
+    with work_in(safepath(d.joinpath(project_slug))):
         ballet.update.update_project_template()
 
 

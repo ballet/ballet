@@ -1,5 +1,6 @@
 import json
 import tempfile
+from unittest.mock import patch
 
 import funcy
 import git
@@ -18,10 +19,8 @@ PROJECT_CONTEXT_PATH = (
         'project_template',
         'cookiecutter.json'))
 
-REPLAY_PATH = (
-    pathlib.Path.home().joinpath(
-        '.cookiecutter_replay',
-        'project_template.json'))
+
+CONTEXT_FILE_NAME = '.cookiecutter_context.json'
 
 
 def _make_template_branch_merge_commit_message():
@@ -33,53 +32,49 @@ def _safe_delete_remote(repo, name):
         repo.delete_remote(name)
 
 
-def _create_replay(cwd, tempdir):
+def _render_project_template(cwd, tempdir):
     tempdir = pathlib.Path(tempdir)
     context = _get_full_context(cwd)
     slug = context['cookiecutter']['project_slug']
-    old_context = None
 
     try:
-        if REPLAY_PATH.exists():
-            with REPLAY_PATH.open('r') as f:
-                old_context = json.load(f)
-        # if there are old replays, save it before it's overwritten
-        with REPLAY_PATH.open('w') as f:
-            json.dump(context, f)
-        # load our context and prompt as necessary
-        generate_project(
-            replay=True,
-            output_dir=safepath(tempdir))
+        # don't dump replay files to home directory.
+        with patch('cookiecutter.main.dump'):
+            generate_project(
+                no_input=True,
+                extra_context=context,
+                output_dir=safepath(tempdir))
     except Exception:
         # we're missing keys, figure out which and prompt
         logger.exception(
             'Could not create a updated project copy, update failed.')
         raise
-    finally:
-        # put back the old replay, if it's been overwritten
-        if old_context is not None:
-            with REPLAY_PATH.open('w') as f:
-                json.dump(old_context, f)
 
     return tempdir / slug
 
 
 def _get_full_context(cwd):
-    context_path = cwd.joinpath('.cookiecutter_replay.json')
+    # load the context stored within the project repository
+    context_path = cwd.joinpath(CONTEXT_FILE_NAME)
     if context_path.exists():
         with context_path.open('r') as f:
             context = json.load(f)
     else:
         raise FileNotFoundError(
-            'Could not find \'.cookiecutter_replay.json\', '
-            'are you in a ballet project repo?')
+            'Could not find \'{}\', are you in a ballet project repo?'
+            .format(CONTEXT_FILE_NAME))
+
+    # find out if there are any new keys to prompt for
     with PROJECT_CONTEXT_PATH.open('r') as f:
         new_context = json.load(f)
-    new_keys = set(new_context.keys()) - set(context['cookiecutter'].keys())
-    new_context_config = {'cookiecutter': funcy.project(new_context, new_keys)}
-    new_context = prompt_for_config(new_context_config)
-    context['cookiecutter'].update(new_context)
-    return context
+    new_keys = set(new_context) - set(context['cookiecutter'])
+    if new_keys:
+        new_context_config = {'cookiecutter': funcy.project(new_context,
+                                                            new_keys)}
+        new_context = prompt_for_config(new_context_config)
+        context['cookiecutter'].update(new_context)
+
+    return context['cookiecutter']
 
 
 def update_project_template():
@@ -98,7 +93,7 @@ def update_project_template():
 
     with tempfile.TemporaryDirectory() as tempdir:
         tempdir = pathlib.Path(tempdir)
-        updated_template = _create_replay(cwd, tempdir)
+        updated_template = _render_project_template(cwd, tempdir)
         updated_repo = git.Repo(safepath(updated_template))
 
         # tempdir is a randomly-named dir
