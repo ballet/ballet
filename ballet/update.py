@@ -28,6 +28,11 @@ def _make_template_branch_merge_commit_message():
     return 'Merge project template updates from ballet v{}'.format(version)
 
 
+def _safe_delete_remote(repo, name):
+    with funcy.suppress(Exception):
+        repo.delete_remote(name)
+
+
 def _create_replay(cwd, tempdir):
     tempdir = pathlib.Path(tempdir)
     context = _get_full_context(cwd)
@@ -77,7 +82,7 @@ def _get_full_context(cwd):
     return context
 
 
-def update_project_template(create_merge_commit=False):
+def update_project_template():
     cwd = pathlib.Path.cwd().resolve()
 
     # get ballet project info -- must be at project root directory with a
@@ -111,19 +116,20 @@ def update_project_template(create_merge_commit=False):
                 strategy_option='theirs',
                 squash=True,
             )
-            repo.index.commit(
-                _make_template_branch_merge_commit_message())
+            if not repo.is_dirty():
+                logger.info('No updates to template -- done.')
+                return
+            commit_message = _make_template_branch_merge_commit_message()
+            repo.git.commit(m=commit_message)
         except GitCommandError:
             logger.exception(
                 'Could not merge changes into {template_branch} branch, '
                 'update failed'
                 .format(template_branch=template_branch))
             raise
-        else:
+        finally:
+            _safe_delete_remote(repo, remote_name)
             repo.heads.master.checkout()
-
-        with funcy.suppress(Exception):
-            repo.delete_remote(remote_name)
 
     try:
         repo.git.merge(template_branch, no_ff=True)
