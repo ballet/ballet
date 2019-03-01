@@ -44,7 +44,6 @@ def make_feature_str(input):
     """.format(input=input)).strip()
 
 
-@pytest.mark.usefixtures('clean_system')
 def test_end_to_end(tempdir):
     modname = 'foo'
     extra_context = {

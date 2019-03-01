@@ -15,8 +15,6 @@ from ballet.project import DEFAULT_CONFIG_NAME
 from ballet.quickstart import generate_project
 from tests.util import tree
 
-pytestmark = pytest.mark.usefixtures('clean_system')
-
 
 TEMPLATE_BRANCH = 'project-template'
 
