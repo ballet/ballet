@@ -1,13 +1,13 @@
 from cookiecutter.main import cookiecutter
 
-from ballet.compat import pathlib
+from ballet.compat import pathlib, safepath
 
 PROJECT_TEMPLATE_PATH = (
     pathlib.Path(__file__).resolve().parent.joinpath('project_template'))
 
 
 def _get_project_template_path():
-    return str(PROJECT_TEMPLATE_PATH)
+    return safepath(PROJECT_TEMPLATE_PATH)
 
 
 def generate_project(**kwargs):
@@ -16,7 +16,10 @@ def generate_project(**kwargs):
     Args:
         **kwargs: options for the cookiecutter template
     """
-    project_template_path = _get_project_template_path()
+    # must use str because cookiecutter can't handle path-like objects.
+    project_template_path = str(_get_project_template_path())
+    if 'output_dir' in kwargs:
+        kwargs['output_dir'] = str(kwargs['output_dir'])
     return cookiecutter(project_template_path, **kwargs)
 
 

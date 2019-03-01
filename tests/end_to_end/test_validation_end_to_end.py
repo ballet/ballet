@@ -52,7 +52,7 @@ def test_end_to_end(tempdir):
     }
 
     generate_project(no_input=True, extra_context=extra_context,
-                     output_dir=str(tempdir))
+                     output_dir=tempdir)
 
     # make sure we can import different modules without error
     base = tempdir.joinpath(modname)

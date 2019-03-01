@@ -1,13 +1,8 @@
 #!/usr/bin/env python
 
-import os
-
 import git
 
 from ballet.update import TEMPLATE_BRANCH
-
-
-PROJECT_DIRECTORY = os.path.realpath(os.path.curdir)
 
 
 def create_git_repo():

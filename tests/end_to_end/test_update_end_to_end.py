@@ -263,8 +263,8 @@ def test_update_after_conflicting_changes(quickstart, project_template_copy):
     with p.open('a') as f:
         f.write('\nfoo: qux\n')
 
-    # run ballet-update-template -- this should raise an error, perhaps,
-    # but it doesn't?
+    # run ballet-update-template -- this should raise an error because there
+    # should be a merge conflict
     with pytest.raises(GitCommandError):
         _run_ballet_update_template(tempdir, project_slug)
 
