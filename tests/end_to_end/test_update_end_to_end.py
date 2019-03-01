@@ -8,6 +8,7 @@ import pytest
 from cookiecutter.utils import work_in
 from git import GitCommandError
 
+import ballet.exc
 import ballet.quickstart
 import ballet.update
 from ballet.compat import safepath
@@ -315,3 +316,14 @@ def test_update_after_no_changes(quickstart):
 
     actual_template_commit = repo.branches[TEMPLATE_BRANCH].commit
     assert actual_template_commit == expected_template_commit
+
+
+def test_update_fails_with_missing_project_template_branch(quickstart):
+    tempdir = quickstart.tempdir
+    repo = quickstart.repo
+    project_slug = quickstart.project_slug
+
+    repo.delete_head(TEMPLATE_BRANCH)
+
+    with pytest.raises(ballet.exc.ConfigurationError):
+        _run_ballet_update_template(tempdir, project_slug)
