@@ -79,6 +79,10 @@ def update_project_template():
     repo = project.repo
     original_head = repo.head.commit.hexsha[:7]
 
+    if TEMPLATE_BRANCH not in repo.branches:
+        raise ConfigurationError(
+            'Could not find \'{}\' branch.'.format(TEMPLATE_BRANCH))
+
     with tempfile.TemporaryDirectory() as tempdir:
         tempdir = pathlib.Path(tempdir)
         updated_template = _render_project_template(cwd, tempdir)
@@ -128,8 +132,10 @@ def update_project_template():
             ]).format(original_head=original_head))
         raise
 
+    logger.info('Update successful.')
+
 
 def main():
     import ballet.util.log
-    ballet.util.log.enable(level='INFO')
+    ballet.util.log.enable(level='INFO', echo=False)
     update_project_template()
