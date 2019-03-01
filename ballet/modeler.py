@@ -1,8 +1,6 @@
 import os
 from abc import ABCMeta, abstractmethod
 
-import btb
-import btb.tuning.gp
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.externals import joblib
@@ -18,6 +16,12 @@ from ballet.modeling.io_transformers import (
 from ballet.modeling.scoring import (
     ScorerInfo, get_scorer_names_for_problem_type)
 from ballet.util.log import logger
+
+try:
+    import btb
+    import btb.tuning.gp
+except ImportError:
+    btb = None
 
 
 class Modeler:
@@ -262,7 +266,7 @@ class SelfTuningMixin(metaclass=ABCMeta):
     def fit(self, X, y, tune=True, **fit_kwargs):
         if tune:
             # do some tuning
-            if self.tunables is not None:
+            if btb is not None and self.tunables is not None:
 
                 scorer = None
 
