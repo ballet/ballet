@@ -13,10 +13,8 @@ import ballet.update
 from ballet.compat import safepath
 from ballet.project import DEFAULT_CONFIG_NAME
 from ballet.quickstart import generate_project
+from ballet.update import TEMPLATE_BRANCH
 from tests.util import tree
-
-
-TEMPLATE_BRANCH = 'project-template'
 
 
 @pytest.fixture

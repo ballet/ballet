@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 
-import git
 import os
+
+import git
+
+from ballet.update import TEMPLATE_BRANCH
+
 
 PROJECT_DIRECTORY = os.path.realpath(os.path.curdir)
 
@@ -18,7 +22,7 @@ def create_git_repo():
     repo.create_remote('origin',
                        'https://github.com/{{ cookiecutter.github_owner }}'
                        '/{{ cookiecutter.project_slug }}')
-    repo.create_head('{{ cookiecutter._template_branch }}')
+    repo.create_head(TEMPLATE_BRANCH)
 
 
 def main():

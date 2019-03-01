@@ -18,9 +18,8 @@ PROJECT_CONTEXT_PATH = (
     pathlib.Path(__file__).resolve().parent.joinpath(
         'project_template',
         'cookiecutter.json'))
-
-
 CONTEXT_FILE_NAME = '.cookiecutter_context.json'
+TEMPLATE_BRANCH = 'project-template'
 
 
 def _make_template_branch_merge_commit_message():
@@ -79,7 +78,6 @@ def update_project_template():
 
     repo = project.repo
     original_head = repo.head.commit.hexsha[:7]
-    template_branch = project.get('project', 'template_branch')
 
     with tempfile.TemporaryDirectory() as tempdir:
         tempdir = pathlib.Path(tempdir)
@@ -93,7 +91,7 @@ def update_project_template():
             remote_name, updated_repo.working_tree_dir)
         remote.fetch()
 
-        repo.heads[template_branch].checkout()
+        repo.heads[TEMPLATE_BRANCH].checkout()
         try:
             repo.git.merge(
                 remote_name + '/master',
@@ -110,14 +108,14 @@ def update_project_template():
             logger.exception(
                 'Could not merge changes into {template_branch} branch, '
                 'update failed'
-                .format(template_branch=template_branch))
+                .format(template_branch=TEMPLATE_BRANCH))
             raise
         finally:
             _safe_delete_remote(repo, remote_name)
             repo.heads.master.checkout()
 
     try:
-        repo.git.merge(template_branch, no_ff=True)
+        repo.git.merge(TEMPLATE_BRANCH, no_ff=True)
     except GitCommandError as e:
         if 'merge conflict' in str(e).lower():
             logger.info('\n'.join([
