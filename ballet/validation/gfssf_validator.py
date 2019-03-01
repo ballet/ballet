@@ -13,11 +13,12 @@ NUM_NEIGHBORS = 3  # Used in the sklearn mutual information function
 
 def _calculate_disc_entropy(X):
     # An exact calculation of the dataset entropy, using empirical probability
+    # H = sum(p_i * log2(p_i))
     n_samples, _ = X.shape
     _, counts = np.unique(X, axis=0, return_counts=True)
     empirical_p = counts * 1.0 / n_samples
-    log_p = np.log2(empirical_p)
-    return np.sum(np.multiply(empirical_p, log_p))
+    log_p = np.log(empirical_p)
+    return -np.sum(np.multiply(empirical_p, log_p))
 
 
 def _estimate_cont_entropy(X):
@@ -25,16 +26,17 @@ def _estimate_cont_entropy(X):
     # https://journals.aps.org/pre/pdf/10.1103/PhysRevE.69.066138
     # Implementation based off summary here:
     # https://pdfs.semanticscholar.org/b3f6/fb5755bf1fdc0d4e97e3805399d32d433611.pdf
-    n_samples, n_features = X.size
-    nn = NearestNeighbors(metric='chebyshev', n_neighbors=NUM_NEIGHBORS)
+    n_samples, n_features = X.shape
+    if n_samples <= 1:
+        return 0
+    nn = NearestNeighbors(n_neighbors=NUM_NEIGHBORS)
     nn.fit(X)
-    r = np.array(nn.kneighbors(X, return_distance=True)).flatten()
-    sum_log_r = np.sum(np.log2(r)) * n_features / n_samples
-    log_vd = n_features * \
-        math.log2(math.pi / gamma(n_features / 2.0 + 1)) / 2.0
+    nn_distances = np.array(nn.kneighbors(X, return_distance=True, n_neighbors=NUM_NEIGHBORS))
+    sum_log_dist = 2.0 * np.sum(np.log(nn_distances[:,NUM_NEIGHBORS - 1])) * n_features / n_samples
+    log_vd = n_features * math.log(math.pi) - math.log(gamma(n_features / 2.0 + 1))
     return max(
         0,
-        sum_log_r +
+        sum_log_dist +
         log_vd -
         digamma(NUM_NEIGHBORS) +
         digamma(n_samples))
@@ -48,7 +50,9 @@ def _is_column_discrete(col):
 
 
 def _estimate_entropy(X):
-    n_samples, _ = X.shape
+    n_samples, n_features = X.shape
+    if n_features < 1:
+        return 0
     disc_mask = np.apply_along_axis(_is_column_discrete, 0, X)
     cont_mask = ~disc_mask
 
@@ -64,13 +68,13 @@ def _estimate_entropy(X):
     entropy = 0
     uniques, counts = np.unique(X, axis=0, return_counts=True)
     empirical_p = counts * 1.0 / n_samples
-    log_p = np.log2(empirical_p)
+    log_p = np.log(empirical_p)
     for i in range(counts.size):
         unique_mask = disc_features == uniques[i]
         selected_cont_samples = cont_features[unique_mask, :]
         conditional_cont_entropy = _estimate_cont_entropy(
             selected_cont_samples)
-        entropy += empirical_p[i] * (conditional_cont_entropy + log_p[i])
+        entropy += empirical_p[i] * (conditional_cont_entropy - log_p[i])
     return entropy
 
 
