@@ -35,22 +35,12 @@ def _safe_delete_remote(repo, name):
 def _render_project_template(cwd, tempdir):
     tempdir = pathlib.Path(tempdir)
     context = _get_full_context(cwd)
-    slug = context['cookiecutter']['project_slug']
 
-    try:
-        # don't dump replay files to home directory.
-        with patch('cookiecutter.main.dump'):
-            generate_project(
-                no_input=True,
-                extra_context=context,
-                output_dir=safepath(tempdir))
-    except Exception:
-        # we're missing keys, figure out which and prompt
-        logger.exception(
-            'Could not create a updated project copy, update failed.')
-        raise
-
-    return tempdir / slug
+    # don't dump replay files to home directory.
+    with patch('cookiecutter.main.dump'):
+        return generate_project(no_input=True,
+                                extra_context=context,
+                                output_dir=safepath(tempdir))
 
 
 def _get_full_context(cwd):

@@ -29,7 +29,7 @@ def quickstart(tempdir):
     $ tree .
     """
     # cd tempdir
-    with work_in(tempdir):
+    with work_in(safepath(tempdir)):
 
         project_slug = 'foo'
         extra_context = {

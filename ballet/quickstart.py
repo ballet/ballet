@@ -17,9 +17,9 @@ def generate_project(**kwargs):
         **kwargs: options for the cookiecutter template
     """
     project_template_path = _get_project_template_path()
-    cookiecutter(project_template_path, **kwargs)
+    return cookiecutter(project_template_path, **kwargs)
 
 
 def main():
     """Entry point for ballet-quickstart command line tool"""
-    generate_project()
+    return generate_project()
