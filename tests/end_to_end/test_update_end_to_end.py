@@ -318,6 +318,16 @@ def test_update_after_no_changes(quickstart):
     assert actual_template_commit == expected_template_commit
 
 
+def test_update_fails_with_dirty_repo(quickstart):
+    tempdir = quickstart.tempdir
+    project_slug = quickstart.project_slug
+    with tempdir.joinpath(project_slug, DEFAULT_CONFIG_NAME).open('a') as f:
+        f.write('\nfoo: bar\n')
+
+    with pytest.raises(ballet.exc.Error, match='uncommitted changes'):
+        _run_ballet_update_template(tempdir, project_slug)
+
+
 def test_update_fails_with_missing_project_template_branch(quickstart):
     tempdir = quickstart.tempdir
     repo = quickstart.repo

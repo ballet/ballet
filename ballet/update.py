@@ -9,7 +9,7 @@ from git import GitCommandError
 
 from ballet import __version__ as version
 from ballet.compat import pathlib, safepath
-from ballet.exc import ConfigurationError
+from ballet.exc import ConfigurationError, Error
 from ballet.project import Project
 from ballet.quickstart import generate_project
 from ballet.util.log import logger
@@ -79,6 +79,11 @@ def update_project_template():
     repo = project.repo
     original_head = repo.head.commit.hexsha[:7]
 
+    if repo.is_dirty():
+        raise Error(
+            'Can\'t update project template with uncommitted changes. '
+            'Please commit your changes and try again.')
+
     if TEMPLATE_BRANCH not in repo.branches:
         raise ConfigurationError(
             'Could not find \'{}\' branch.'.format(TEMPLATE_BRANCH))
@@ -128,7 +133,7 @@ def update_project_template():
                 '    $ git add .',
                 '    $ git commit --no-edit',
                 'Otherwise, abandon the update:',
-                '    $ git reset --hard {original_head}'
+                '    $ git reset --merge {original_head}'
             ]).format(original_head=original_head))
         raise
 
