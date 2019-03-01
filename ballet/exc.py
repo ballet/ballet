@@ -1,4 +1,4 @@
-class Error(BaseException):
+class Error(Exception):
     """Base error for ballet"""
     pass
 
