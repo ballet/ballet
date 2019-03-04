@@ -75,7 +75,7 @@ class RelativeNameDepthCheck(DiffCheck):
 class ModuleNameCheck(DiffCheck):
 
     def check(self, diff):
-        """Check that the new file introduced has a valid name
+        r"""Check that the new file introduced has a valid name
 
         The module can either be an __init__.py file or must
         match ``feature_[a-zA-Z0-9_]+\.\w+``.

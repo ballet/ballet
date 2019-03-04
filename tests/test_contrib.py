@@ -1,4 +1,3 @@
-import logging
 import tempfile
 import unittest
 from textwrap import dedent
@@ -8,8 +7,6 @@ from funcy import contextmanager
 from ballet.compat import pathlib
 from ballet.contrib import _get_contrib_features
 from ballet.util.mod import import_module_at_path
-
-logging.basicConfig(level=logging.DEBUG)
 
 
 def create_contrib_modules_at_dir(dirname, modcontent, n=1):

@@ -1,5 +1,4 @@
 import os
-import tempfile
 from subprocess import check_call
 from textwrap import dedent
 from types import ModuleType
@@ -10,7 +9,7 @@ import numpy as np
 import pandas as pd
 from sklearn_pandas import DataFrameMapper
 
-from ballet.compat import pathlib, safepath
+from ballet.compat import safepath
 from ballet.eng.misc import IdentityTransformer
 from ballet.feature import Feature
 from ballet.quickstart import generate_project
@@ -45,20 +44,18 @@ def make_feature_str(input):
     """.format(input=input)).strip()
 
 
-def test_end_to_end():
+def test_end_to_end(tempdir):
     modname = 'foo'
     extra_context = {
         'project_name': modname.capitalize(),
+        'project_slug': modname,
     }
-
-    _tempdir = tempfile.TemporaryDirectory()
-    tempdir = _tempdir.name
 
     generate_project(no_input=True, extra_context=extra_context,
                      output_dir=tempdir)
 
     # make sure we can import different modules without error
-    base = pathlib.Path(tempdir).joinpath(modname)
+    base = tempdir.joinpath(modname)
 
     def _import(modname):
         relpath = modname_to_relpath(modname)
@@ -212,12 +209,9 @@ def test_end_to_end():
     # call different validation routines
     call_validate_all()
 
-    _tempdir.cleanup()
-
 
 if __name__ == '__main__':
-    import logging
     import ballet.util.log
-    ballet.util.log.enable(level=logging.INFO)
+    ballet.util.log.enable(level='INFO')
 
     test_end_to_end()
