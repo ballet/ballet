@@ -122,6 +122,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.modeler.html">ballet.modeler module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.project.html">ballet.project module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.quickstart.html">ballet.quickstart module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.update.html">ballet.update module</a></li>
 </ul>
 </li>
 </ul>
@@ -243,13 +244,14 @@
         <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="n">LOG_FORMAT</span><span class="p">)</span>
         <span class="n">_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
 
+    <span class="n">level</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">_checkLevel</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+    <span class="n">levelName</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">_levelToName</span><span class="p">[</span><span class="n">level</span><span class="p">]</span>
+
     <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
     <span class="n">_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">_handler</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">_handler</span><span class="p">)</span>
-
-    <span class="n">levelName</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">_levelToName</span><span class="p">[</span><span class="n">level</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">echo</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>

@@ -122,6 +122,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.modeler.html">ballet.modeler module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.project.html">ballet.project module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.quickstart.html">ballet.quickstart module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.update.html">ballet.update module</a></li>
 </ul>
 </li>
 </ul>
@@ -222,10 +223,14 @@
   <h1>Source code for ballet.quickstart</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">cookiecutter.main</span> <span class="k">import</span> <span class="n">cookiecutter</span>
 
-<span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="k">import</span> <span class="n">pathlib</span>
+<span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="k">import</span> <span class="n">pathlib</span><span class="p">,</span> <span class="n">safepath</span>
 
 <span class="n">PROJECT_TEMPLATE_PATH</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">&#39;project_template&#39;</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">_get_project_template_path</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">safepath</span><span class="p">(</span><span class="n">PROJECT_TEMPLATE_PATH</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="generate_project"><a class="viewcode-back" href="../../api/ballet.quickstart.html#ballet.quickstart.generate_project">[docs]</a><span class="k">def</span> <span class="nf">generate_project</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -234,12 +239,16 @@
 <span class="sd">    Args:</span>
 <span class="sd">        **kwargs: options for the cookiecutter template</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">cookiecutter</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">PROJECT_TEMPLATE_PATH</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+    <span class="c1"># must use str because cookiecutter can&#39;t handle path-like objects.</span>
+    <span class="n">project_template_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">_get_project_template_path</span><span class="p">())</span>
+    <span class="k">if</span> <span class="s1">&#39;output_dir&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;output_dir&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;output_dir&#39;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">cookiecutter</span><span class="p">(</span><span class="n">project_template_path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../../api/ballet.quickstart.html#ballet.quickstart.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Entry point for ballet-quickstart command line tool&quot;&quot;&quot;</span>
-    <span class="n">generate_project</span><span class="p">()</span></div>
+    <span class="k">return</span> <span class="n">generate_project</span><span class="p">()</span></div>
 </pre></div>
 
            </div>
