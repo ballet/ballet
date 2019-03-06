@@ -102,6 +102,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/HDI-Project/ballet',
-    version='0.5.1',
+    version='0.5.2-dev',
     zip_safe=False,
 )
