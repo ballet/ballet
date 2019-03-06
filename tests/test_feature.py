@@ -145,8 +145,17 @@ class FeatureTest(unittest.TestCase):
         self.input = 'foo'
         self.transformer = IdentityTransformer()
 
-    def test_feature_init(self):
+    def test_feature_init_with_one_transformer(self):
         Feature(self.input, self.transformer)
+
+    def test_feature_init_with_list_of_transformer(self):
+        Feature(self.input, [self.transformer, self.transformer])
+
+    def test_feature_init_with_callable(self):
+        Feature(self.input, funcy.identity)
+
+    def test_feature_init_with_list_of_transformers_and_callables(self):
+        Feature(self.input, [self.transformer, funcy.identity])
 
     def test_feature_init_invalid_transformer_api(self):
         with self.assertRaises(ValueError):

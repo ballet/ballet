@@ -9,6 +9,7 @@ from sklearn.base import TransformerMixin
 from sklearn_pandas import DataFrameMapper
 from sklearn_pandas.pipeline import TransformerPipeline
 
+from ballet.eng.base import SimpleFunctionTransformer
 from ballet.eng.misc import NullTransformer
 from ballet.exc import UnsuccessfulInputConversionError
 from ballet.util import DeepcopyMixin, asarray2d, indent, quiet
@@ -255,6 +256,13 @@ def _validate_transformer_api(transformer):
             .format(sig_fit=sig_fit))
 
 
+def _replace_callable_with_transformer(transformer):
+    if callable(transformer) and not isinstance(transformer, type):
+        return SimpleFunctionTransformer(transformer)
+    else:
+        return transformer
+
+
 class Feature:
     """A logical feature
 
@@ -267,8 +275,12 @@ class Feature:
     Args:
         input (str, Collection[str]): required columns from the input
             dataframe needed for the transformation
-        transformer (transformer-like): instance of class that provides
-            fit/transform-style learned transformer
+        transformer (transformer-like, List[transformer-like]): transformer, or
+            sequence of transformers. A "transformer" is an instance of a class
+            that provides a fit/transform-style learned transformation.
+            Alternately, a callable can be provided, either by itself or in a
+            list, in which case it will be converted into a
+            ``SimpleFunctionTransformer`` for convenience.
         name (str, optional): name of the feature
         description (str, optional): description of the feature
         output (str, list[str]): ordered sequence of names of features
@@ -282,9 +294,11 @@ class Feature:
         self.input = input
 
         if is_seqcont(transformer):
+            transformer = map(_replace_callable_with_transformer, transformer)
             map(_validate_transformer_api, transformer)
             self.transformer = make_robust_transformer_pipeline(*transformer)
         else:
+            transformer = _replace_callable_with_transformer(transformer)
             _validate_transformer_api(transformer)
             self.transformer = DelegatingRobustTransformer(transformer)
 
