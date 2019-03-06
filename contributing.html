@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Contributing &mdash; ballet 0.5.1-dev documentation</title>
+  <title>Contributing &mdash; ballet 0.5.2-dev documentation</title>
   
 
   
@@ -285,7 +285,7 @@ are welcome :)</li>
 <li><p class="first">Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ mkvirtualenv ballet
 $ <span class="nb">cd</span> ballet/
-$ python setup.py develop
+$ make install-develop
 </pre></div>
 </div>
 </li>
@@ -297,12 +297,11 @@ $ python setup.py develop
 </li>
 <li><p class="first">When you’re done making changes, check that your changes pass flake8 and the
 tests, including testing other Python versions with tox:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ flake8 ballet tests
-$ python setup.py <span class="nb">test</span> or py.test
-$ tox
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ make lint
+$ make <span class="nb">test</span>
+$ make test-all
 </pre></div>
 </div>
-<p>To get flake8 and tox, just pip install them into your virtualenv.</p>
 </li>
 <li><p class="first">Commit your changes and push your branch to GitHub:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ git add .
@@ -331,20 +330,43 @@ and make sure that the tests pass for all supported Python versions.</li>
 <div class="section" id="tips">
 <h2>Tips<a class="headerlink" href="#tips" title="Permalink to this headline">¶</a></h2>
 <p>To run a subset of tests:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ py.test tests.test_ballet
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ python -m pytest -k some_test
 </pre></div>
 </div>
 </div>
 <div class="section" id="deploying">
 <h2>Deploying<a class="headerlink" href="#deploying" title="Permalink to this headline">¶</a></h2>
-<p>A reminder for the maintainers on how to deploy.
-Make sure all your changes are committed (including an entry in HISTORY.md).
-Then run:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ bumpversion patch <span class="c1"># possible: major / minor / patch</span>
-$ git push
+<p>A reminder for the maintainers on how to deploy.</p>
+<ol class="arabic">
+<li><p class="first">Make sure all your changes are committed (including an entry in HISTORY.md).</p>
+</li>
+<li><p class="first">Bumpversion
+- if on a dev version, use <code class="docutils literal notranslate"><span class="pre">bumpversion</span> <span class="pre">release</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ bumpversion release  <span class="c1"># i.e. 0.1.1-dev -&gt; 0.1.1</span>
+$ bumpversion --new-version <span class="m">0</span>.2.0 release  <span class="c1"># i.e. 0.1.1-dev -&gt; 0.2.0</span>
+</pre></div>
+</div>
+<ul>
+<li><p class="first">if you forgot to bump to dev version, use <code class="docutils literal notranslate"><span class="pre">bumpversion</span> <span class="pre">major/minor/patch</span></code>
+directly:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ bumpversion minor  <span class="c1"># i.e. 0.1.1 -&gt; 0.2.0</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p class="first">Bumpversion back to dev:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ bumpversion --no-tag patch   <span class="c1"># i.e. 0.1.1 -&gt; 0.1.2-dev</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Push changes:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ git push
 $ git push --tags
 </pre></div>
 </div>
+</li>
+</ol>
 <p>Travis will then deploy to PyPI if tests pass.</p>
 </div>
 </div>
