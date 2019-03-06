@@ -68,7 +68,7 @@ Ready to contribute? Here's how to set up `ballet` for local development.
 
     $ mkvirtualenv ballet
     $ cd ballet/
-    $ python setup.py develop
+    $ make install-develop
 
 4. Create a branch for local development::
 
@@ -79,11 +79,9 @@ Ready to contribute? Here's how to set up `ballet` for local development.
 5. When you're done making changes, check that your changes pass flake8 and the
    tests, including testing other Python versions with tox::
 
-    $ flake8 ballet tests
-    $ python setup.py test or py.test
-    $ tox
-
-   To get flake8 and tox, just pip install them into your virtualenv.
+    $ make lint
+    $ make test
+    $ make test-all
 
 6. Commit your changes and push your branch to GitHub::
 
@@ -111,18 +109,34 @@ Tips
 
 To run a subset of tests::
 
-$ py.test tests.test_ballet
+$ python -m pytest -k some_test
 
 
 Deploying
 ---------
 
 A reminder for the maintainers on how to deploy.
-Make sure all your changes are committed (including an entry in HISTORY.md).
-Then run::
 
-$ bumpversion patch # possible: major / minor / patch
-$ git push
-$ git push --tags
+1. Make sure all your changes are committed (including an entry in HISTORY.md).
+
+2. Bumpversion
+   - if on a dev version, use ``bumpversion release``::
+
+      $ bumpversion release  # i.e. 0.1.1-dev -> 0.1.1
+      $ bumpversion --new-version 0.2.0 release  # i.e. 0.1.1-dev -> 0.2.0
+
+   - if you forgot to bump to dev version, use ``bumpversion major/minor/patch``
+     directly::
+
+      $ bumpversion minor  # i.e. 0.1.1 -> 0.2.0
+
+3. Bumpversion back to dev::
+
+   $ bumpversion --no-tag patch   # i.e. 0.1.1 -> 0.1.2-dev
+
+4. Push changes::
+
+   $ git push
+   $ git push --tags
 
 Travis will then deploy to PyPI if tests pass.
