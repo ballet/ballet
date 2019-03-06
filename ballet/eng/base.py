@@ -107,6 +107,12 @@ class GroupwiseTransformer(BaseTransformer):
             transform. When this parameter is set to 'ignore' and an unknown
             group is encountered during transform, the group's values will be
             passed through unchanged.
+        handle_error (str): 'error' or 'ignore', default='error'. Whether to
+            raise an error or ignore if an error is raised during transforming
+            an individual group. When this parameter is set to 'ignore' and
+            an error is raised when calling the transformer's transform
+            method on an individual group, the group's values will be passed
+            through unchanged.
 
     Example usage:
 
@@ -120,7 +126,7 @@ class GroupwiseTransformer(BaseTransformer):
            >>> from sklearn.impute import SimpleImputer
            >>> transformer = GroupwiseTransformer(
            ...     SimpleImputer(strategy='mean'),
-           ...     groupby_kwargs = {'by': 'name'}
+           ...     groupby_kwargs = {'level': 'name'}
            ... )
 
     Raises:
@@ -131,10 +137,12 @@ class GroupwiseTransformer(BaseTransformer):
     def __init__(self,
                  transformer,
                  groupby_kwargs=None,
-                 handle_unknown='error'):
+                 handle_unknown='error',
+                 handle_error='error'):
         self.transformer = transformer
         self.groupby_kwargs = groupby_kwargs
         self.handle_unknown = handle_unknown
+        self.handle_error = handle_error
 
     def _make_transformer(self):
         if type(self.transformer) is type or callable(self.transformer):
@@ -149,6 +157,10 @@ class GroupwiseTransformer(BaseTransformer):
             raise ValueError(
                 'Invalid value for handle_unknown: {}'
                 .format(self.handle_unknown))
+        if self.handle_error not in ['error','ignore']:
+            raise ValueError(
+                'Invalid value for handle_error: {}'
+                    .format(self.handle_error))
 
         # Get the groups
         grouper = X.groupby(**self.groupby_kwargs_)
@@ -185,17 +197,23 @@ class GroupwiseTransformer(BaseTransformer):
 
             if x_group.name in self.transformers_:
                 transformer = self.transformers_[x_group.name]
-                data = transformer.transform(x_group, *args, **kwargs)
+                try:
+                    data = transformer.transform(x_group, *args, **kwargs)
 
-                # This post-processing step is required because sklearn
-                # transform converts a DataFrame to an array. This is my
-                # best attempt so far to approximate the following:
-                # >>> result = x_group.copy()
-                # >>> result.values = data
-                # which is an error as `values` cannot be set.
-                index = x_group.index
-                columns = x_group.columns
-                return pd.DataFrame(data=data, index=index, columns=columns)
+                    # This post-processing step is required because sklearn
+                    # transform converts a DataFrame to an array. This is my
+                    # best attempt so far to approximate the following:
+                    # >>> result = x_group.copy()
+                    # >>> result.values = data
+                    # which is an error as `values` cannot be set.
+                    index = x_group.index
+                    columns = x_group.columns
+                    return pd.DataFrame(data=data, index=index, columns=columns)
+                except Exception:
+                    if self.handle_error == 'ignore':
+                        return x_group
+                    else:
+                        raise
             else:
                 if self.handle_unknown == 'error':
                     raise Error(
@@ -207,5 +225,8 @@ class GroupwiseTransformer(BaseTransformer):
                     # Unreachable code
                     raise RuntimeError
 
-        return X.groupby(**self.groupby_kwargs_).apply(
-            _transform, **transform_kwargs)
+        return (
+            X
+            .groupby(**self.groupby_kwargs_)
+            .apply(_transform, **transform_kwargs)
+        )

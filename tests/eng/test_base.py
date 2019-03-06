@@ -152,3 +152,45 @@ class GroupwiseTransformerTest(
         expected['value'] = np.array([np.nan, 4, 5])
 
         self.assertFrameEqual(result, expected)
+
+    def test_raise_on_transform_error(self):
+        exc = Exception
+        class TransformErrorTransformer(ballet.eng.base.BaseTransformer):
+            def transform(self, X, **transform_kwargs):
+                raise exc
+
+        individual_transformer = TransformErrorTransformer()
+        trans = ballet.eng.base.GroupwiseTransformer(
+            individual_transformer,
+            groupby_kwargs=self.groupby_kwargs,
+            handle_error='error',
+        )
+
+        trans.fit(self.X_tr)
+
+        with self.assertRaises(exc):
+            trans.transform(self.X_tr)
+
+    def test_ignore_on_transform_error(self):
+        exc = Exception
+        class TransformErrorTransformer(ballet.eng.base.BaseTransformer):
+            def transform(self, X, **transform_kwargs):
+                raise exc
+
+        individual_transformer = TransformErrorTransformer()
+        trans = ballet.eng.base.GroupwiseTransformer(
+            individual_transformer,
+            groupby_kwargs=self.groupby_kwargs,
+            handle_error='ignore',
+        )
+
+        trans.fit(self.X_tr)
+
+        result_tr = trans.transform(self.X_tr)
+        expected_tr = self.X_tr
+
+        self.assertFrameEqual(result_tr, expected_tr)
+
+        result_te = trans.transform(self.X_te)
+        expected_te = self.X_te
+        self.assertFrameEqual(result_te, expected_te)
