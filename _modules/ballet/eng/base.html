@@ -330,6 +330,12 @@
 <span class="sd">            transform. When this parameter is set to &#39;ignore&#39; and an unknown</span>
 <span class="sd">            group is encountered during transform, the group&#39;s values will be</span>
 <span class="sd">            passed through unchanged.</span>
+<span class="sd">        handle_error (str): &#39;error&#39; or &#39;ignore&#39;, default=&#39;error&#39;. Whether to</span>
+<span class="sd">            raise an error or ignore if an error is raised during transforming</span>
+<span class="sd">            an individual group. When this parameter is set to &#39;ignore&#39; and</span>
+<span class="sd">            an error is raised when calling the transformer&#39;s transform</span>
+<span class="sd">            method on an individual group, the group&#39;s values will be passed</span>
+<span class="sd">            through unchanged.</span>
 
 <span class="sd">    Example usage:</span>
 
@@ -343,7 +349,7 @@
 <span class="sd">           &gt;&gt;&gt; from sklearn.impute import SimpleImputer</span>
 <span class="sd">           &gt;&gt;&gt; transformer = GroupwiseTransformer(</span>
 <span class="sd">           ...     SimpleImputer(strategy=&#39;mean&#39;),</span>
-<span class="sd">           ...     groupby_kwargs = {&#39;by&#39;: &#39;name&#39;}</span>
+<span class="sd">           ...     groupby_kwargs = {&#39;level&#39;: &#39;name&#39;}</span>
 <span class="sd">           ... )</span>
 
 <span class="sd">    Raises:</span>
@@ -354,10 +360,12 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">transformer</span><span class="p">,</span>
                  <span class="n">groupby_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">handle_unknown</span><span class="o">=</span><span class="s1">&#39;error&#39;</span><span class="p">):</span>
+                 <span class="n">handle_unknown</span><span class="o">=</span><span class="s1">&#39;error&#39;</span><span class="p">,</span>
+                 <span class="n">handle_error</span><span class="o">=</span><span class="s1">&#39;error&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span> <span class="o">=</span> <span class="n">transformer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs</span> <span class="o">=</span> <span class="n">groupby_kwargs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span> <span class="o">=</span> <span class="n">handle_unknown</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span> <span class="o">=</span> <span class="n">handle_error</span>
 
     <span class="k">def</span> <span class="nf">_make_transformer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">type</span> <span class="ow">or</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">):</span>
@@ -372,6 +380,10 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s1">&#39;Invalid value for handle_unknown: </span><span class="si">{}</span><span class="s1">&#39;</span>
                 <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">,</span><span class="s1">&#39;ignore&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Invalid value for handle_error: </span><span class="si">{}</span><span class="s1">&#39;</span>
+                    <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">))</span>
 
         <span class="c1"># Get the groups</span>
         <span class="n">grouper</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs_</span><span class="p">)</span>
@@ -408,17 +420,23 @@
 
             <span class="k">if</span> <span class="n">x_group</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformers_</span><span class="p">:</span>
                 <span class="n">transformer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformers_</span><span class="p">[</span><span class="n">x_group</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">x_group</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">x_group</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-                <span class="c1"># This post-processing step is required because sklearn</span>
-                <span class="c1"># transform converts a DataFrame to an array. This is my</span>
-                <span class="c1"># best attempt so far to approximate the following:</span>
-                <span class="c1"># &gt;&gt;&gt; result = x_group.copy()</span>
-                <span class="c1"># &gt;&gt;&gt; result.values = data</span>
-                <span class="c1"># which is an error as `values` cannot be set.</span>
-                <span class="n">index</span> <span class="o">=</span> <span class="n">x_group</span><span class="o">.</span><span class="n">index</span>
-                <span class="n">columns</span> <span class="o">=</span> <span class="n">x_group</span><span class="o">.</span><span class="n">columns</span>
-                <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+                    <span class="c1"># This post-processing step is required because sklearn</span>
+                    <span class="c1"># transform converts a DataFrame to an array. This is my</span>
+                    <span class="c1"># best attempt so far to approximate the following:</span>
+                    <span class="c1"># &gt;&gt;&gt; result = x_group.copy()</span>
+                    <span class="c1"># &gt;&gt;&gt; result.values = data</span>
+                    <span class="c1"># which is an error as `values` cannot be set.</span>
+                    <span class="n">index</span> <span class="o">=</span> <span class="n">x_group</span><span class="o">.</span><span class="n">index</span>
+                    <span class="n">columns</span> <span class="o">=</span> <span class="n">x_group</span><span class="o">.</span><span class="n">columns</span>
+                    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span> <span class="o">==</span> <span class="s1">&#39;ignore&#39;</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">x_group</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span> <span class="o">==</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">Error</span><span class="p">(</span>
@@ -430,8 +448,11 @@
                     <span class="c1"># Unreachable code</span>
                     <span class="k">raise</span> <span class="ne">RuntimeError</span>
 
-        <span class="k">return</span> <span class="n">X</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs_</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
-            <span class="n">_transform</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_kwargs</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">X</span>
+            <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs_</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">_transform</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_kwargs</span><span class="p">)</span>
+        <span class="p">)</span></div></div>
 </pre></div>
 
            </div>

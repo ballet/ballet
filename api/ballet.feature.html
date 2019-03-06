@@ -265,8 +265,12 @@ or the one-hot encoding of a categorical variable.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>input</strong> (<em>str</em><em>, </em><em>Collection</em><em>[</em><em>str</em><em>]</em>) – required columns from the input
 dataframe needed for the transformation</li>
-<li><strong>transformer</strong> (<em>transformer-like</em>) – instance of class that provides
-fit/transform-style learned transformer</li>
+<li><strong>transformer</strong> (<em>transformer-like</em><em>, </em><em>List</em><em>[</em><em>transformer-like</em><em>]</em>) – transformer, or
+sequence of transformers. A “transformer” is an instance of a class
+that provides a fit/transform-style learned transformation.
+Alternately, a callable can be provided, either by itself or in a
+list, in which case it will be converted into a
+<code class="docutils literal notranslate"><span class="pre">SimpleFunctionTransformer</span></code> for convenience.</li>
 <li><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – name of the feature</li>
 <li><strong>description</strong> (<em>str</em><em>, </em><em>optional</em>) – description of the feature</li>
 <li><strong>output</strong> (<em>str</em><em>, </em><em>list</em><em>[</em><em>str</em><em>]</em>) – ordered sequence of names of features

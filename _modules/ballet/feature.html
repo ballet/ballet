@@ -232,6 +232,7 @@
 <span class="kn">from</span> <span class="nn">sklearn_pandas</span> <span class="k">import</span> <span class="n">DataFrameMapper</span>
 <span class="kn">from</span> <span class="nn">sklearn_pandas.pipeline</span> <span class="k">import</span> <span class="n">TransformerPipeline</span>
 
+<span class="kn">from</span> <span class="nn">ballet.eng.base</span> <span class="k">import</span> <span class="n">SimpleFunctionTransformer</span>
 <span class="kn">from</span> <span class="nn">ballet.eng.misc</span> <span class="k">import</span> <span class="n">NullTransformer</span>
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">UnsuccessfulInputConversionError</span>
 <span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">DeepcopyMixin</span><span class="p">,</span> <span class="n">asarray2d</span><span class="p">,</span> <span class="n">indent</span><span class="p">,</span> <span class="n">quiet</span>
@@ -478,6 +479,13 @@
             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sig_fit</span><span class="o">=</span><span class="n">sig_fit</span><span class="p">))</span>
 
 
+<span class="k">def</span> <span class="nf">_replace_callable_with_transformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">transformer</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">SimpleFunctionTransformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">transformer</span>
+
+
 <div class="viewcode-block" id="Feature"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.feature.Feature">[docs]</a><span class="k">class</span> <span class="nc">Feature</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;A logical feature</span>
 
@@ -490,8 +498,12 @@
 <span class="sd">    Args:</span>
 <span class="sd">        input (str, Collection[str]): required columns from the input</span>
 <span class="sd">            dataframe needed for the transformation</span>
-<span class="sd">        transformer (transformer-like): instance of class that provides</span>
-<span class="sd">            fit/transform-style learned transformer</span>
+<span class="sd">        transformer (transformer-like, List[transformer-like]): transformer, or</span>
+<span class="sd">            sequence of transformers. A &quot;transformer&quot; is an instance of a class</span>
+<span class="sd">            that provides a fit/transform-style learned transformation.</span>
+<span class="sd">            Alternately, a callable can be provided, either by itself or in a</span>
+<span class="sd">            list, in which case it will be converted into a</span>
+<span class="sd">            ``SimpleFunctionTransformer`` for convenience.</span>
 <span class="sd">        name (str, optional): name of the feature</span>
 <span class="sd">        description (str, optional): description of the feature</span>
 <span class="sd">        output (str, list[str]): ordered sequence of names of features</span>
@@ -505,9 +517,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="nb">input</span>
 
         <span class="k">if</span> <span class="n">is_seqcont</span><span class="p">(</span><span class="n">transformer</span><span class="p">):</span>
+            <span class="n">transformer</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">_replace_callable_with_transformer</span><span class="p">,</span> <span class="n">transformer</span><span class="p">)</span>
             <span class="nb">map</span><span class="p">(</span><span class="n">_validate_transformer_api</span><span class="p">,</span> <span class="n">transformer</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span> <span class="o">=</span> <span class="n">make_robust_transformer_pipeline</span><span class="p">(</span><span class="o">*</span><span class="n">transformer</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="n">transformer</span> <span class="o">=</span> <span class="n">_replace_callable_with_transformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
             <span class="n">_validate_transformer_api</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span> <span class="o">=</span> <span class="n">DelegatingRobustTransformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
 

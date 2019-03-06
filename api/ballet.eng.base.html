@@ -267,7 +267,7 @@
 
 <dl class="class">
 <dt id="ballet.eng.base.GroupwiseTransformer">
-<em class="property">class </em><code class="descclassname">ballet.eng.base.</code><code class="descname">GroupwiseTransformer</code><span class="sig-paren">(</span><em>transformer</em>, <em>groupby_kwargs=None</em>, <em>handle_unknown='error'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/base.html#GroupwiseTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.base.GroupwiseTransformer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">ballet.eng.base.</code><code class="descname">GroupwiseTransformer</code><span class="sig-paren">(</span><em>transformer</em>, <em>groupby_kwargs=None</em>, <em>handle_unknown='error'</em>, <em>handle_error='error'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/base.html#GroupwiseTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.base.GroupwiseTransformer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ballet.eng.base.BaseTransformer" title="ballet.eng.base.BaseTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.base.BaseTransformer</span></code></a></p>
 <p>Transformer that does something different for every group</p>
 <p>For each group identified in the training set by the groupby operation,
@@ -295,6 +295,12 @@ raise an error or ignore if an unknown group is encountered during
 transform. When this parameter is set to ‘ignore’ and an unknown
 group is encountered during transform, the group’s values will be
 passed through unchanged.</li>
+<li><strong>handle_error</strong> (<em>str</em>) – ‘error’ or ‘ignore’, default=’error’. Whether to
+raise an error or ignore if an error is raised during transforming
+an individual group. When this parameter is set to ‘ignore’ and
+an error is raised when calling the transformer’s transform
+method on an individual group, the group’s values will be passed
+through unchanged.</li>
 </ul>
 </td>
 </tr>
@@ -309,7 +315,7 @@ training set, avoiding any data leakage.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sklearn.impute</span> <span class="kn">import</span> <span class="n">SimpleImputer</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">transformer</span> <span class="o">=</span> <span class="n">GroupwiseTransformer</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">),</span>
-<span class="gp">... </span>    <span class="n">groupby_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;by&#39;</span><span class="p">:</span> <span class="s1">&#39;name&#39;</span><span class="p">}</span>
+<span class="gp">... </span>    <span class="n">groupby_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="s1">&#39;name&#39;</span><span class="p">}</span>
 <span class="gp">... </span><span class="p">)</span>
 </pre></div>
 </div>
