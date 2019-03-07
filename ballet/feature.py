@@ -4,7 +4,8 @@ from inspect import signature
 
 import numpy as np
 import pandas as pd
-from funcy import identity, is_seqcont, iterable, select_values
+from funcy import cached_property, identity, is_seqcont, iterable, \
+    select_values
 from sklearn.base import TransformerMixin
 from sklearn_pandas import DataFrameMapper
 from sklearn_pandas.pipeline import TransformerPipeline
@@ -308,10 +309,12 @@ class Feature:
         self.source = source
         self.options = options if options is not None else {}
 
+    @cached_property
+    def _init_attr_list(self):
+        return list(signature(self.__init__).parameters)
+
     def __repr__(self):
-        # TODO use self.__dict__ directly, which respects insertion order
-        attr_list = ['input', 'transformer', 'name', 'description', 'output',
-                     'source', 'options']
+        attr_list = self._init_attr_list
         attrs_str = ', '.join(
             '{attr_name}={attr_val!r}'.format(
                 attr_name=attr, attr_val=getattr(self, attr)
