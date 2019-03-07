@@ -84,7 +84,7 @@ class UtilTest(
         actual = ballet.util.get_arr_desc(df)
         self.assertEqual(actual, expected)
 
-    def test_get_arr_desc_frame(self):
+    def test_get_arr_desc_object(self):
         obj = object()
         expected = 'object <no shape>'
         actual = ballet.util.get_arr_desc(obj)
@@ -213,7 +213,6 @@ class UtilTest(
         actual = numbers()
         expected = [2, 0]
         self.assertEqual(actual, expected)
-
 
     def test_load_sklearn_df(self):
         name = 'iris'

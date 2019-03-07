@@ -145,7 +145,7 @@ class GroupwiseTransformer(BaseTransformer):
         self.handle_error = handle_error
 
     def _make_transformer(self):
-        if type(self.transformer) is type or callable(self.transformer):
+        if isinstance(self.transformer, type) or callable(self.transformer):
             return self.transformer()
         else:
             return sklearn.base.clone(self.transformer)
@@ -157,10 +157,10 @@ class GroupwiseTransformer(BaseTransformer):
             raise ValueError(
                 'Invalid value for handle_unknown: {}'
                 .format(self.handle_unknown))
-        if self.handle_error not in ['error','ignore']:
+        if self.handle_error not in ['error', 'ignore']:
             raise ValueError(
                 'Invalid value for handle_error: {}'
-                    .format(self.handle_error))
+                .format(self.handle_error))
 
         # Get the groups
         grouper = X.groupby(**self.groupby_kwargs_)
@@ -208,7 +208,8 @@ class GroupwiseTransformer(BaseTransformer):
                     # which is an error as `values` cannot be set.
                     index = x_group.index
                     columns = x_group.columns
-                    return pd.DataFrame(data=data, index=index, columns=columns)
+                    return pd.DataFrame(
+                        data=data, index=index, columns=columns)
                 except Exception:
                     if self.handle_error == 'ignore':
                         return x_group

@@ -155,6 +155,7 @@ class GroupwiseTransformerTest(
 
     def test_raise_on_transform_error(self):
         exc = Exception
+
         class TransformErrorTransformer(ballet.eng.base.BaseTransformer):
             def transform(self, X, **transform_kwargs):
                 raise exc
@@ -173,6 +174,7 @@ class GroupwiseTransformerTest(
 
     def test_ignore_on_transform_error(self):
         exc = Exception
+
         class TransformErrorTransformer(ballet.eng.base.BaseTransformer):
             def transform(self, X, **transform_kwargs):
                 raise exc

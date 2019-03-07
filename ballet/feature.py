@@ -4,8 +4,8 @@ from inspect import signature
 
 import numpy as np
 import pandas as pd
-from funcy import cached_property, identity, is_seqcont, iterable, \
-    select_values
+from funcy import (
+    cached_property, identity, is_seqcont, iterable, select_values)
 from sklearn.base import TransformerMixin
 from sklearn_pandas import DataFrameMapper
 from sklearn_pandas.pipeline import TransformerPipeline
