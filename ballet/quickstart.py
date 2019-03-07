@@ -24,5 +24,4 @@ def generate_project(**kwargs):
 
 
 def main():
-    """Entry point for ballet-quickstart command line tool"""
     return generate_project()
