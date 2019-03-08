@@ -5,11 +5,9 @@ import h5py
 import numpy as np
 import pandas as pd
 
-from ballet.compat import pathlib
+from ballet.compat import pathlib, safepath
 from ballet.util.fs import splitext2
-from ballet.util.log import logger
-
-__all__ = ['read_tabular', 'write_tabular']
+from ballet.util.log import logger, stacklog
 
 
 def _check_ext(ext, expected):
@@ -39,7 +37,7 @@ def _write_tabular_pickle(obj, filepath):
     _, fn, ext = splitext2(filepath)
     _check_ext(ext, '.pkl')
     if isinstance(obj, np.ndarray):
-        with open(str(filepath), 'wb') as f:
+        with open(safepath(filepath), 'wb') as f:
             pickle.dump(obj, f)
     elif isinstance(obj, pd.core.frame.NDFrame):
         obj.to_pickle(filepath)
@@ -86,21 +84,47 @@ def _read_tabular_h5(filepath):
 def _read_tabular_pickle(filepath):
     _, fn, ext = splitext2(filepath)
     _check_ext(ext, '.pkl')
-    with open(str(filepath), 'rb') as f:
+    with open(safepath(filepath), 'rb') as f:
         return pickle.load(f)
 
 
-def save_model(model, output_dir):
-    logger.info('Saving model...')
-    os.makedirs(output_dir, exist_ok=True)
-    filepath = pathlib.Path(output_dir).joinpath('model.pkl')
-    model.dump(filepath)
-    logger.info('Saving model...DONE ({})'.format(filepath))
+def save_model(model, output_dir, name='model'):
+    _save_thing(model, output_dir, name,
+                savefn=lambda thing, fn: thing.dump(fn))
 
 
-def save_predictions(y, output_dir):
-    logger.info('Saving predictions...')
-    os.makedirs(output_dir, exist_ok=True)
-    filepath = pathlib.Path(output_dir).joinpath('predictions.pkl')
-    write_tabular(y, filepath)
-    logger.info('Saving predictions...DONE ({})'.format(filepath))
+def save_predictions(ypred, output_dir, name='predictions'):
+    """Save predictions to output directory"""
+    _save_thing(ypred, output_dir, name)
+
+
+def save_features(X, output_dir, name='features'):
+    """Save built features to output directory"""
+    _save_thing(X, output_dir, name)
+
+
+def save_targets(y, output_dir, name='target'):
+    """Save built target to output directory"""
+    _save_thing(y, output_dir, name)
+
+
+def _save_thing(thing, output_dir, name, savefn=write_tabular):
+    fn = pathlib.Path(output_dir).joinpath('{}.pkl'.format(name))
+    with stacklog(logger.info, 'Saving {} to {}'.format(name, fn)):
+        os.makedirs(output_dir, exist_ok=True)
+        savefn(thing, fn)
+
+
+def load_table_from_config(input_dir, config):
+    """Load table from table config dict
+
+    Args:
+        input_dir (path-like): directory containing input files
+        config (dict): mapping with keys 'name', 'path', and 'pd_read_kwargs'.
+
+    Returns:
+        pd.DataFrame
+    """
+    path = pathlib.Path(input_dir).joinpath(config['path'])
+    kwargs = config['pd_read_kwargs']
+    return pd.read_table(path, **kwargs)
