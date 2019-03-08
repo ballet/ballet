@@ -81,8 +81,7 @@ setup(
     description='Core functionality for lightweight, collaborative data science projects',
     entry_points = {
         'console_scripts': [
-            'ballet-quickstart=ballet.quickstart:main',
-            'ballet-update-template=ballet.update:main',
+            'ballet=ballet.cli:cli',
         ],
     },
     extras_require={
