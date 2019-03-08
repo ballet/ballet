@@ -39,7 +39,7 @@ class GFSSFValidadatorTest(unittest.TestCase):
         h_y = gfv._estimate_entropy(y)
 
         # exact copies of y should have lots of information
-        useless_z = np.reshape(np.ones(1,101), (100,1))
+        useless_z = np.ones((100,1))
         mi = gfv._estimate_conditional_information(x,y,useless_z)
         self.assertGreater(mi, h_y / 4, 'exact, non-redundant copies should have little information')
 
