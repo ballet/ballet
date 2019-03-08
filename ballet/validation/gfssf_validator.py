@@ -21,7 +21,7 @@ def _calculate_disc_entropy(X):
     return -np.sum(np.multiply(empirical_p, log_p))
 
 
-def _estimate_cont_entropy(X):
+def _estimate_cont_entropy(X, epsilon=0):
     # Based off the Kraskov Estimator for Shannon Entropy
     # https://journals.aps.org/pre/pdf/10.1103/PhysRevE.69.066138
     # Implementation based off summary here:
@@ -29,17 +29,12 @@ def _estimate_cont_entropy(X):
     n_samples, n_features = X.shape
     if n_samples <= 1:
         return 0
-    nn = NearestNeighbors(n_neighbors=NUM_NEIGHBORS)
+    nn = NearestNeighbors(metric='chebyshev', n_neighbors=NUM_NEIGHBORS, algorithm='kd_tree')
     nn.fit(X)
-    nn_distances = np.array(nn.kneighbors(X, return_distance=True, n_neighbors=NUM_NEIGHBORS))
-    sum_log_dist = 2.0 * np.sum(np.log(nn_distances[:,NUM_NEIGHBORS - 1])) * n_features / n_samples
+    ind = nn.radius_neighbors(radius=epsilon, return_distance=False)
+    nx = np.array([i.size for i in ind])
     log_vd = n_features * math.log(math.pi) - math.log(gamma(n_features / 2.0 + 1))
-    return max(
-        0,
-        sum_log_dist +
-        log_vd -
-        digamma(NUM_NEIGHBORS) +
-        digamma(n_samples))
+    return log_vd - np.mean(digamma(nx + 1)) + digamma(n_samples)
 
 
 def _is_column_discrete(col):
@@ -48,19 +43,21 @@ def _is_column_discrete(col):
     uniques = np.unique(col)
     return (uniques.size * 1.0 / col.size) < 0.05
 
+def _get_discrete_columns(X):
+    return np.apply_along_axis(_is_column_discrete, 0, X)
 
-def _estimate_entropy(X):
+def _estimate_entropy(X, epsilon=0):
     n_samples, n_features = X.shape
     if n_features < 1:
         return 0
-    disc_mask = np.apply_along_axis(_is_column_discrete, 0, X)
+    disc_mask = _get_discrete_columns(X)
     cont_mask = ~disc_mask
 
     # If our dataset is fully disc/cont, do something easier
     if np.all(disc_mask):
         return _calculate_disc_entropy(X)
     elif np.all(cont_mask):
-        return _estimate_cont_entropy(X)
+        return _estimate_cont_entropy(X, epsilon)
 
     disc_features = X[:, disc_mask]
     cont_features = X[:, cont_mask]
@@ -73,9 +70,20 @@ def _estimate_entropy(X):
         unique_mask = disc_features == uniques[i]
         selected_cont_samples = cont_features[unique_mask, :]
         conditional_cont_entropy = _estimate_cont_entropy(
-            selected_cont_samples)
+            selected_cont_samples, epsilon)
         entropy += empirical_p[i] * (conditional_cont_entropy - log_p[i])
     return entropy
+
+def _calculate_epsilon(X):
+    disc_mask = _get_discrete_columns(X)
+    if np.all(disc_mask):
+        # if all discrete columns, there's no point getting epsilon
+        return 0
+    cont_features = X[:, ~disc_mask]
+    nn = NearestNeighbors(metric='chebyshev', n_neighbors=NUM_NEIGHBORS)
+    nn.fit(cont_features)
+    distances, _ = nn.kneighbors()
+    return np.nextafter(distances[:, -1], 0)
 
 
 def _estimate_conditional_information(x, y, z):
@@ -87,10 +95,11 @@ def _estimate_conditional_information(x, y, z):
     xz = np.concatenate((x, z), axis=1)
     yz = np.concatenate((y, z), axis=1)
     xyz = np.concatenate((xz, y), axis=1)
-    h_xz = _estimate_entropy(xz)
-    h_yz = _estimate_entropy(yz)
-    h_xyz = _estimate_entropy(xyz)
-    h_z = _estimate_entropy(z)
+    epsilon = _calculate_epsilon(xyz)
+    h_xz = _estimate_entropy(xz, epsilon)
+    h_yz = _estimate_entropy(yz, epsilon)
+    h_xyz = _estimate_entropy(xyz, epsilon)
+    h_z = _estimate_entropy(z, epsilon)
     return max(0, h_xz + h_yz - h_xyz - h_z)
 
 
