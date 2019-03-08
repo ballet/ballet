@@ -107,13 +107,9 @@ def _estimate_conditional_information(x, y, z):
     xyz = np.concatenate((xz, y), axis=1)
     epsilon = _calculate_epsilon(xyz)
     h_xz = _estimate_entropy(xz, epsilon)
-    print(h_xz)
     h_yz = _estimate_entropy(yz, epsilon)
-    print(h_yz)
     h_xyz = _estimate_entropy(xyz, epsilon)
-    print(h_xyz)
     h_z = _estimate_entropy(z, epsilon)
-    print(h_z)
     return max(0, h_xz + h_yz - h_xyz - h_z)
 
 
