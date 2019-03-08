@@ -21,7 +21,7 @@ def _calculate_disc_entropy(X):
     return -np.sum(np.multiply(empirical_p, log_p))
 
 
-def _estimate_cont_entropy(X, epsilon=0):
+def _estimate_cont_entropy(X, epsilon=None):
     # Based off the Kraskov Estimator for Shannon Entropy
     # https://journals.aps.org/pre/pdf/10.1103/PhysRevE.69.066138
     # Implementation based off summary here:
@@ -30,6 +30,8 @@ def _estimate_cont_entropy(X, epsilon=0):
     n_samples, n_features = X.shape
     if n_samples <= 1:
         return 0
+    if epsilon is None:
+        epsilon = _calculate_epsilon(X)
     nn = NearestNeighbors(
         metric='chebyshev',
         n_neighbors=NUM_NEIGHBORS,
@@ -53,10 +55,12 @@ def _get_discrete_columns(X):
     return np.apply_along_axis(_is_column_discrete, 0, X)
 
 
-def _estimate_entropy(X, epsilon=0):
+def _estimate_entropy(X, epsilon=None):
     n_samples, n_features = X.shape
     if n_features < 1:
         return 0
+    if epsilon is None:
+        epsilon = _calculate_epsilon(X)
     disc_mask = _get_discrete_columns(X)
     cont_mask = ~disc_mask
     # If our dataset is fully disc/cont, do something easier
