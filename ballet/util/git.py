@@ -5,6 +5,9 @@ import git
 import requests
 from funcy import collecting, ignore, re_find, re_test
 
+from ballet.util import one_or_raise
+
+FILE_CHANGES_COMMIT_RANGE = '{a}...{b}'
 PR_REF_PATH_REGEX = re.compile(r'refs/heads/pull/(\d+)')
 
 
@@ -47,11 +50,11 @@ class LocalPullRequestBuildDiffer(PullRequestBuildDiffer):
         assert re_test(PR_REF_PATH_REGEX, self._pr_path)
 
     def _get_diff_str(self):
-        return '{from_}..{to_}'.format(from_='master', to_=self._pr_name)
+        return FILE_CHANGES_COMMIT_RANGE.format(a='master', b=self._pr_name)
 
 
 def get_diffs_by_revision(repo, from_revision, to_revision):
-    '''Get file changes between two revisions.
+    """Get file changes between two revisions.
 
     For details on specifying revisions, see `git help revisions`.
 
@@ -63,35 +66,47 @@ def get_diffs_by_revision(repo, from_revision, to_revision):
 
     Returns:
         list of git.diff.Diff identifying changes between revisions
-    '''
-    diff_str = '{from_revision}..{to_revision}'.format(
-        from_revision=from_revision, to_revision=to_revision)
+    """
+    diff_str = FILE_CHANGES_COMMIT_RANGE.format(
+        a=from_revision, b=to_revision)
     return get_diffs_by_diff_str(repo, diff_str)
 
 
 def get_diff_str_from_commits(a, b):
-    return '{a}..{b}'.format(a=a.hexsha, b=b.hexsha)
+    return FILE_CHANGES_COMMIT_RANGE.format(a=a.hexsha, b=b.hexsha)
 
 
 def get_diffs_by_diff_str(repo, diff_str):
-    '''Get file changes via a diff string.
+    """Get file changes via a diff string.
 
     For details on specifying revisions, see `git help revisions`.
 
     Args:
         repo (git.Repo): Repo object initialized with project root
-        diff_str (str): diff string identifying range of diff. For example,
-            `master..HEAD` diffs from master to HEAD, and `12345678..abcdef90`
-            compares to commits.
+        diff_str (str): diff string identifying range of diff as would be
+            interpreted by ``git diff`` command. Unfortunately only patterns of
+            the form ``a..b`` and ``a...b`` are accepted. For more details on
+            the difference between these two forms,
+            see https://stackoverflow.com/q/7251477.
 
     Returns:
-        list of git.diff.Diff identifying changes between revisions
-    '''
-    a, b = diff_str.split('..')
-    a_obj = repo.rev_parse(a)
-    b_obj = repo.rev_parse(b)
-    diffs = a_obj.diff(b_obj)
-    return diffs
+        List[git.diff.Diff]: changes between revisions
+    """
+    if not diff_str:
+        return []
+
+    regex = re.compile(
+        r'(?P<a>[a-zA-Z0-9_/-]+)\.\.(?P<thirddot>\.?)(?P<b>[a-zA-Z0-9_/-]+)')
+    result = re_find(regex, diff_str)
+    if not result:
+        raise ValueError(
+            'Expected diff str of the form \'a..b\' or \'a...b\' (got {})'
+            .format(diff_str))
+    a, b = result['a'], result['b']
+    a, b = repo.commit(a), repo.commit(b)
+    if result['thirddot']:
+        a = one_or_raise(repo.merge_base(a, b))
+    return a.diff(b)
 
 
 @ignore(Exception)
