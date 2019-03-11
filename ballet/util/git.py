@@ -7,6 +7,7 @@ from funcy import collecting, ignore, re_find, re_test
 from ballet.compat import pathlib, safepath
 from ballet.util import one_or_raise
 
+
 FILE_CHANGES_COMMIT_RANGE = '{a}...{b}'
 REV_REGEX = r'[a-zA-Z0-9_/^@{}-]+'
 COMMIT_RANGE_REGEX = re.compile(
@@ -63,20 +64,34 @@ def make_commit_range(a, b):
 
 
 def get_diff_endpoints_from_commit_range(repo, commit_range):
-    """Get file changes via a commit range
+    """Get endpoints of a diff given a commit range
 
-    For details on specifying revisions, see `git help revisions`.
+    The resulting endpoints can be diffed directly::
+
+        a, b = get_diff_endpoints_from_commit_range(repo, commit_range)
+        a.diff(b)
+
+    For details on specifying git diffs, see ``git diff --help``.
+    For details on specifying revisions, see ``git help revisions``.
 
     Args:
         repo (git.Repo): Repo object initialized with project root
-        diff_str (str): diff string identifying range of diff as would be
-            interpreted by ``git diff`` command. Unfortunately only patterns of
-            the form ``a..b`` and ``a...b`` are accepted. For more details on
-            the difference between these two forms,
-            see https://stackoverflow.com/q/7251477.
+        commit_range (str): commit range as would be interpreted by ``git
+            diff`` command. Unfortunately only patterns of the form ``a..b``
+            and ``a...b`` are accepted. Note that the latter pattern finds the
+            merge-base of a and b and uses it as the starting point for the
+            diff.
 
     Returns:
-        List[git.diff.Diff]: changes between revisions
+        Tuple[git.Commit, git.Commit]: starting commit, ending commit (
+            inclusive)
+
+    Raises:
+        ValueError: commit_range is empty or ill-formed
+
+    See also:
+
+        <https://stackoverflow.com/q/7251477>
     """
     if not commit_range:
         raise ValueError('commit_range cannot be empty')
