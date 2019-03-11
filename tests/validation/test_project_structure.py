@@ -6,10 +6,10 @@ from ballet.util.ci import TravisPullRequestBuildDiffer
 from ballet.util.git import get_diff_str_from_commits
 from ballet.validation.project_structure import ChangeCollector
 
-from ..util import make_mock_commits, mock_repo
 from .util import (
     SampleDataMixin, make_mock_project, mock_feature_api_validator,
     mock_file_change_validator, null_change_collector)
+from ..util import make_mock_commits, mock_repo
 
 
 class _CommonSetup(SampleDataMixin):

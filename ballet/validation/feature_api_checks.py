@@ -1,5 +1,5 @@
-from copy import deepcopy
 import io
+from copy import deepcopy
 
 import dill as pickle
 import numpy as np
