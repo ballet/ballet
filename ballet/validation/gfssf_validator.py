@@ -18,7 +18,8 @@ def _calculate_disc_entropy(X):
     _, counts = np.unique(X, axis=0, return_counts=True)
     empirical_p = counts * 1.0 / n_samples
     log_p = np.log(empirical_p)
-    return -np.sum(np.multiply(empirical_p, log_p))
+    entropy = -np.sum(np.multiply(empirical_p, log_p))
+    return entropy
 
 
 def _estimate_cont_entropy(X, epsilon=None):
@@ -30,18 +31,30 @@ def _estimate_cont_entropy(X, epsilon=None):
     n_samples, n_features = X.shape
     if n_samples <= 1:
         return 0
-    if epsilon is None:
-        epsilon = _calculate_epsilon(X)
     nn = NearestNeighbors(
         metric='chebyshev',
         n_neighbors=NUM_NEIGHBORS,
         algorithm='kd_tree')
     nn.fit(X)
-    ind = nn.radius_neighbors(radius=epsilon, return_distance=False)
-    nx = np.array([i.size for i in ind])
-    log_vd = n_features * math.log(math.pi) - \
-        math.log(gamma(n_features / 2.0 + 1))
-    return log_vd - np.mean(digamma(nx + 1)) + digamma(n_samples)
+    if epsilon is None:
+        # If epsilon is not provided, revert to the Kozachenko Estimator
+        n_neighbors = NUM_NEIGHBORS
+        radius = None
+        # While we have non-zero radii, calculate for a larger k
+        # Potentially expensive
+        while not np.all(radius) and n_neighbors < n_samples:
+            distances, _ = nn.kneighbors(n_neighbors=n_neighbors, return_distance=True)
+            radius = distances[:, -1]
+            n_neighbors += 1
+        if n_neighbors == n_samples:
+            # This case only happens if all samples are the same
+            # e.g. this isn't a continuous sample...
+            raise ValueError('Should not have discrete column to estimate')
+        return -digamma(n_neighbors) + digamma(n_samples) + n_features * np.mean(np.log(2 * radius))
+    else:
+        ind = nn.radius_neighbors(radius=epsilon, return_distance=False)
+        nx = np.array([i.size for i in ind])
+        return  - np.mean(digamma(nx + 1)) + digamma(n_samples)
 
 
 def _is_column_discrete(col):
@@ -59,15 +72,13 @@ def _estimate_entropy(X, epsilon=None):
     n_samples, n_features = X.shape
     if n_features < 1:
         return 0
-    if epsilon is None:
-        epsilon = _calculate_epsilon(X)
     disc_mask = _get_discrete_columns(X)
     cont_mask = ~disc_mask
     # If our dataset is fully disc/cont, do something easier
     if np.all(disc_mask):
         return _calculate_disc_entropy(X)
     elif np.all(cont_mask):
-        return _estimate_cont_entropy(X, epsilon.ravel())
+        return _estimate_cont_entropy(X, epsilon)
 
     disc_features = X[:, disc_mask]
     cont_features = X[:, cont_mask]
@@ -80,7 +91,10 @@ def _estimate_entropy(X, epsilon=None):
         unique_mask = disc_features == uniques[i]
         selected_cont_samples = np.reshape(
             cont_features[unique_mask.ravel(), :], (counts[i], -1))
-        selected_epsilon = epsilon[unique_mask]
+        if epsilon is not None:
+            selected_epsilon = epsilon[unique_mask]
+        else:
+            selected_epsilon = None
         conditional_cont_entropy = _estimate_cont_entropy(
             selected_cont_samples, selected_epsilon)
         entropy += empirical_p[i] * (conditional_cont_entropy - log_p[i])
@@ -109,23 +123,36 @@ def _estimate_conditional_information(x, y, z):
     xz = np.concatenate((x, z), axis=1)
     yz = np.concatenate((y, z), axis=1)
     xyz = np.concatenate((xz, y), axis=1)
-    epsilon = _calculate_epsilon(xyz)
+    # epsilon = _calculate_epsilon(xyz)
+    epsilon = None
+    print('estimating hxz')
     h_xz = _estimate_entropy(xz, epsilon)
+    print('entropy = {}'.format(h_xz))
+    print('estimating hyz')
     h_yz = _estimate_entropy(yz, epsilon)
+    print('entropy = {}'.format(h_yz))
+    print('estimating hxyz')
     h_xyz = _estimate_entropy(xyz, epsilon)
+    print('entropy = {}'.format(h_xyz))
+    print('estimating hz')
     h_z = _estimate_entropy(z, epsilon)
+    print('entropy = {}'.format(h_z))
     return max(0, h_xz + h_yz - h_xyz - h_z)
 
 
-def _concat_datasets(dfs_by_src, omit=None):
+def _concat_datasets(dfs_by_src, n_samples, omit=None):
     filtered_dfs = [np.array(dfs_by_src[x])
                     for x in dfs_by_src if x is not omit]
+    if len(filtered_dfs) == 0:
+        return np.zeros((n_samples, 1))
     return np.concatenate(filtered_dfs, axis=1)
 
 
 class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
     def __init__(self, X_df, y, features, lmbda_1=0, lmbda_2=0):
-        super().__init__(self, X_df, y, features)
+        if len(y.shape) < 2:
+            y = np.reshape(y, (y.size, -1))
+        super().__init__(X_df, y, features)
         if (lmbda_1 <= 0):
             lmbda_1 = _estimate_entropy(y) / 4.0
         if (lmbda_2 <= 0):
@@ -135,7 +162,7 @@ class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
 
     def judge(self, feature):
         feature_df = make_mapper([feature]).fit_transform(self.X_df, self.y)
-        _, n_feature_clms = feature_df.shape
+        n_samples, n_feature_clms = feature_df.shape
         n_feature_clms_arr = n_feature_clms
         n_feature_grps_arr = 1
         feature_dfs_by_src = {}
@@ -151,9 +178,9 @@ class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
         lmbda_2 = self.lmbda_2 / n_feature_clms_arr
         omit_in_test = [''] + [f.src for f in self.features]
         for omit in omit_in_test:
-            z = _concat_datasets(feature_dfs_by_src, omit)
+            z = _concat_datasets(feature_dfs_by_src, n_samples, omit)
             cmi = _estimate_conditional_information(feature_df, self.y, z)
-
+            print('cmi = {}'.format(cmi))
             cmi_omit = 0
             n_clms_omit = 0
             if omit is not '':
@@ -164,6 +191,7 @@ class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
             statistic = cmi - cmi_omit
             threshold = lmbda_1 + \
                 lmbda_2 * (n_feature_clms - n_clms_omit)
+            print('threshold = {}'.format(threshold))
             if statistic >= threshold:
                 return True
         return False
