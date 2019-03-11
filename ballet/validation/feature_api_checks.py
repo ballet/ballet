@@ -1,5 +1,7 @@
+import io
 from copy import deepcopy
 
+import dill as pickle
 import numpy as np
 from funcy import all_fn, isa, iterable
 
@@ -100,6 +102,24 @@ class CanDeepcopyCheck(FeatureApiCheck):
         This is needed for execution of the overall transformation pipeline
         """
         deepcopy(feature)
+
+
+class CanPickleCheck(FeatureApiCheck):
+
+    def check(self, feature):
+        """Check that the feature can be pickled
+
+        This is needed for saving the pipeline to disk
+        """
+        try:
+            buf = io.BytesIO()
+            pickle.dump(feature, buf, protocol=pickle.HIGHEST_PROTOCOL)
+            buf.seek(0)
+            new_feature = pickle.load(buf)
+            assert new_feature is not None
+            assert isinstance(new_feature, Feature)
+        finally:
+            buf.close()
 
 
 class NoMissingValuesCheck(FeatureApiCheck):

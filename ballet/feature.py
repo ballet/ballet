@@ -110,7 +110,16 @@ class DelegatingRobustTransformer(DeepcopyMixin, TransformerMixin):
         self._stored_conversion_approach = None
 
     def __getattr__(self, attr):
-        return getattr(self._transformer, attr)
+        if '_transformer' in self.__dict__:
+            return getattr(self._transformer, attr)
+        else:
+            raise AttributeError
+
+    def __getstate__(self):
+        return self.__dict__.copy()
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
 
     def __repr__(self):
         name = type(self).__name__

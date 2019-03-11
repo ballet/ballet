@@ -4,7 +4,7 @@ from funcy import decorator, ignore, lfilter
 
 from ballet.contrib import _get_contrib_feature_from_module
 from ballet.exc import (
-    Error, ConfigurationError, FeatureRejected, InvalidFeatureApi,
+    ConfigurationError, Error, FeatureRejected, InvalidFeatureApi,
     InvalidProjectStructure, SkippedValidationTest)
 from ballet.project import Project
 from ballet.util.log import logger, stacklog
@@ -12,7 +12,6 @@ from ballet.validation.feature_evaluation import (
     NoOpAcceptanceEvaluator, NoOpPruningEvaluator)
 from ballet.validation.project_structure import (
     ChangeCollector, FeatureApiValidator, FileChangeValidator)
-
 
 TEST_TYPE_ENV_VAR = 'BALLET_TEST_TYPE'
 
