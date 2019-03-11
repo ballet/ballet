@@ -95,9 +95,9 @@ def test_end_to_end(tempdir):
 
         def load_data():
             p = 15
-            q = 2
+            q = 1
             X, y, coef = make_regression(
-                n_samples=50, n_features=p, n_informative=q, coef=True,
+                n_samples=1000, n_features=p, n_informative=q, coef=True,
                 shuffle=True, random_state=1)
 
             # informative columns are 'A', 'B'
