@@ -52,7 +52,7 @@ def _estimate_cont_entropy(X, epsilon=None):
             raise ValueError('Should not have discrete column to estimate')
         return -digamma(n_neighbors) + digamma(n_samples) + n_features * np.mean(np.log(2 * radius))
     else:
-        ind = nn.radius_neighbors(radius=epsilon, return_distance=False)
+        ind = nn.radius_neighbors(radius=epsilon.ravel(), return_distance=False)
         nx = np.array([i.size for i in ind])
         return  - np.mean(digamma(nx + 1)) + digamma(n_samples)
 
@@ -123,20 +123,11 @@ def _estimate_conditional_information(x, y, z):
     xz = np.concatenate((x, z), axis=1)
     yz = np.concatenate((y, z), axis=1)
     xyz = np.concatenate((xz, y), axis=1)
-    # epsilon = _calculate_epsilon(xyz)
-    epsilon = None
-    print('estimating hxz')
+    epsilon = _calculate_epsilon(xyz)
     h_xz = _estimate_entropy(xz, epsilon)
-    print('entropy = {}'.format(h_xz))
-    print('estimating hyz')
     h_yz = _estimate_entropy(yz, epsilon)
-    print('entropy = {}'.format(h_yz))
-    print('estimating hxyz')
     h_xyz = _estimate_entropy(xyz, epsilon)
-    print('entropy = {}'.format(h_xyz))
-    print('estimating hz')
     h_z = _estimate_entropy(z, epsilon)
-    print('entropy = {}'.format(h_z))
     return max(0, h_xz + h_yz - h_xyz - h_z)
 
 
@@ -172,15 +163,14 @@ class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
                 self.X_df, self.y)
             n_feature_clms_arr += accepted_df.shape[1]
             n_feature_grps_arr += 1
-            feature_dfs_by_src[accepted_feature.src] = accepted_df
+            feature_dfs_by_src[accepted_feature.source] = accepted_df
 
         lmbda_1 = self.lmbda_1 / n_feature_grps_arr
         lmbda_2 = self.lmbda_2 / n_feature_clms_arr
-        omit_in_test = [''] + [f.src for f in self.features]
+        omit_in_test = [''] + [f.source for f in self.features]
         for omit in omit_in_test:
             z = _concat_datasets(feature_dfs_by_src, n_samples, omit)
             cmi = _estimate_conditional_information(feature_df, self.y, z)
-            print('cmi = {}'.format(cmi))
             cmi_omit = 0
             n_clms_omit = 0
             if omit is not '':
@@ -191,7 +181,6 @@ class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
             statistic = cmi - cmi_omit
             threshold = lmbda_1 + \
                 lmbda_2 * (n_feature_clms - n_clms_omit)
-            print('threshold = {}'.format(threshold))
             if statistic >= threshold:
                 return True
         return False
