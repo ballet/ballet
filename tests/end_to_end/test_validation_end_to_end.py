@@ -1,10 +1,6 @@
 import os
-<<<<<<< HEAD
-from subprocess import check_call
-=======
 import tempfile
 from subprocess import CalledProcessError, check_call
->>>>>>> update end to end testing
 from textwrap import dedent
 from types import ModuleType
 from unittest.mock import patch
@@ -97,7 +93,7 @@ def test_end_to_end(tempdir):
             p = 15
             q = 2
             X, y, coef = make_regression(
-                n_samples=1000, n_features=p, n_informative=q, coef=True,
+                n_samples=50, n_features=p, n_informative=q, coef=True,
                 shuffle=True, random_state=1)
 
             # informative columns are 'A', 'B'

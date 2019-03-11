@@ -6,6 +6,7 @@ from scipy.special import digamma, gamma
 from sklearn.neighbors import NearestNeighbors
 
 from ballet.util.log import logger
+from ballet.util import asarray2d
 from ballet.feature import make_mapper
 from ballet.validation.base import FeatureAcceptanceEvaluator
 
@@ -94,8 +95,8 @@ def _estimate_entropy(X, epsilon=None):
     elif np.all(cont_mask):
         return _estimate_cont_entropy(X, epsilon)
 
-    disc_features = X[:, disc_mask]
-    cont_features = X[:, cont_mask]
+    disc_features = asarray2d(X[:, disc_mask])
+    cont_features = asarray2d(X[:, cont_mask])
 
     entropy = 0
     uniques, counts = np.unique(disc_features, axis=0, return_counts=True)
@@ -103,8 +104,7 @@ def _estimate_entropy(X, epsilon=None):
     log_p = np.log(empirical_p)
     for i in range(counts.size):
         unique_mask = disc_features == uniques[i]
-        selected_cont_samples = np.reshape(
-            cont_features[unique_mask.ravel(), :], (counts[i], -1))
+        selected_cont_samples = cont_features[unique_mask.ravel(), :]
         if epsilon is not None:
             selected_epsilon = epsilon[unique_mask]
         else:
@@ -127,8 +127,7 @@ def _calculate_epsilon(X):
     nn.fit(cont_features)
     distances, _ = nn.kneighbors()
     epsilon = np.nextafter(distances[:, -1], 0)
-    return np.reshape(epsilon, (epsilon.size, -1))
-
+    return asarray2d(epsilon)
 
 def _estimate_conditional_information(x, y, z):
     """
@@ -152,18 +151,17 @@ def _concat_datasets(dfs_by_src, n_samples, omit=None):
                     for x in dfs_by_src if x is not omit]
     if len(filtered_dfs) == 0:
         return np.zeros((n_samples, 1))
-    return np.concatenate(filtered_dfs, axis=1)
+    return asarray2d(np.concatenate(filtered_dfs, axis=1))
 
 
 class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
     def __init__(self, X_df, y, features, lmbda_1=0, lmbda_2=0):
-        if len(y.shape) < 2:
-            y = np.reshape(y, (y.size, -1))
         super().__init__(X_df, y, features)
+        self.y = asarray2d(y)
         if (lmbda_1 <= 0):
-            lmbda_1 = _estimate_entropy(y) / 32
+            lmbda_1 = _estimate_entropy(self.y) / 32
         if (lmbda_2 <= 0):
-            lmbda_2 = _estimate_entropy(y) / 32
+            lmbda_2 = _estimate_entropy(self.y) / 32
         self.lmbda_1 = lmbda_1
         self.lmbda_2 = lmbda_2
 
