@@ -161,9 +161,9 @@ class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
             y = np.reshape(y, (y.size, -1))
         super().__init__(X_df, y, features)
         if (lmbda_1 <= 0):
-            lmbda_1 = _estimate_entropy(y) / 4.0
+            lmbda_1 = _estimate_entropy(y) / 32
         if (lmbda_2 <= 0):
-            lmbda_2 = _estimate_entropy(y) / 4.0
+            lmbda_2 = _estimate_entropy(y) / 32
         self.lmbda_1 = lmbda_1
         self.lmbda_2 = lmbda_2
 
@@ -183,7 +183,7 @@ class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
 
         lmbda_1 = self.lmbda_1 / n_feature_grps_arr
         lmbda_2 = self.lmbda_2 / n_feature_clms_arr
-        logger.info('Juding Feature using GFSSF: lambda_1={l1}, lambda_2={l2}'.format(l1=lmbda_1, l2=lmbda_2))
+        logger.info('Judging Feature using GFSSF: lambda_1={l1}, lambda_2={l2}'.format(l1=lmbda_1, l2=lmbda_2))
         omit_in_test = [''] + [f.source for f in self.features]
         for omit in omit_in_test:
             logger.debug('Testing with omitted feature: {}'.format(omit or 'None'))
