@@ -5,6 +5,7 @@ import pandas as pd
 from scipy.special import digamma, gamma
 from sklearn.neighbors import NearestNeighbors
 
+from ballet.util.log import logger
 from ballet.feature import make_mapper
 from ballet.validation.base import FeatureAcceptanceEvaluator
 
@@ -23,11 +24,13 @@ def _calculate_disc_entropy(X):
 
 
 def _estimate_cont_entropy(X, epsilon=None):
-    # Based off the Kraskov Estimator for Shannon Entropy
-    # https://journals.aps.org/pre/pdf/10.1103/PhysRevE.69.066138
-    # Implementation based off summary here:
-    # https://pdfs.semanticscholar.org/b3f6/fb5755bf1fdc0d4e97e3805399d32d433611.pdf
-    # Calculating eq. 22 minus the last term (cancels out)
+    """
+    Based off the Kraskov Estimator for Shannon Entropy
+    https://journals.aps.org/pre/pdf/10.1103/PhysRevE.69.066138
+    Implementation based off summary here:
+    https://pdfs.semanticscholar.org/b3f6/fb5755bf1fdc0d4e97e3805399d32d433611.pdf
+    Calculating eq. 22 minus the last term (cancels out)
+    """
     n_samples, n_features = X.shape
     if n_samples <= 1:
         return 0
@@ -73,6 +76,13 @@ def _get_discrete_columns(X):
 
 
 def _estimate_entropy(X, epsilon=None):
+    """
+    Estimates the entropy of a dataset.
+    When epsilon is provided, we instead calculate
+    a partial estimation based on the Kraskov Estimator
+    When epsilon is NOT provided, we calculate the 
+    Kozachenko Estimator's full estimation.
+    """
     n_samples, n_features = X.shape
     if n_features < 1:
         return 0
@@ -102,6 +112,8 @@ def _estimate_entropy(X, epsilon=None):
         conditional_cont_entropy = _estimate_cont_entropy(
             selected_cont_samples, selected_epsilon)
         entropy += empirical_p[i] * (conditional_cont_entropy - log_p[i])
+    if epsilon is None:
+        entropy = max(0, entropy)
     return entropy
 
 
@@ -171,10 +183,13 @@ class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
 
         lmbda_1 = self.lmbda_1 / n_feature_grps_arr
         lmbda_2 = self.lmbda_2 / n_feature_clms_arr
+        logger.info('Juding Feature using GFSSF: lambda_1={l1}, lambda_2={l2}'.format(l1=lmbda_1, l2=lmbda_2))
         omit_in_test = [''] + [f.source for f in self.features]
         for omit in omit_in_test:
+            logger.debug('Testing with omitted feature: {}'.format(omit or 'None'))
             z = _concat_datasets(feature_dfs_by_src, n_samples, omit)
             cmi = _estimate_conditional_information(feature_df, self.y, z)
+            logger.debug('Conditional Mutual Information Score: {}'.format(cmi))
             cmi_omit = 0
             n_clms_omit = 0
             if omit is not '':
@@ -182,9 +197,12 @@ class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
                 cmi_omit = _estimate_conditional_information(
                     omit_df, self.y, z)
                 _, n_clms_omit = omit_df.shape
+                logger.debug('Omitted CMI Score: {}'.format(cmi_omit))
             statistic = cmi - cmi_omit
             threshold = lmbda_1 + \
                 lmbda_2 * (n_feature_clms - n_clms_omit)
+            logger.debug('Calculated Threshold: {}'.format(threshold))
             if statistic >= threshold:
+                logger.debug('Succeeded while ommitting feature: {}'.format(omit or 'None'))
                 return True
         return False
