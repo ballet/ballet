@@ -7,7 +7,6 @@ from funcy import collecting, ignore, re_find, re_test
 from ballet.compat import pathlib, safepath
 from ballet.util import one_or_raise
 
-
 FILE_CHANGES_COMMIT_RANGE = '{a}...{b}'
 REV_REGEX = r'[a-zA-Z0-9_/^@{}-]+'
 COMMIT_RANGE_REGEX = re.compile(

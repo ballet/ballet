@@ -19,7 +19,7 @@ from ballet.compat import pathlib, safepath
 from ballet.util.ci import (
     TravisPullRequestBuildDiffer, get_travis_pr_num, is_travis_pr)
 from ballet.util.git import (
-    make_commit_range, get_pull_request_outcomes, get_pull_requests)
+    get_pull_request_outcomes, get_pull_requests, make_commit_range)
 from ballet.util.mod import (  # noqa F401
     import_module_at_path, import_module_from_modname,
     import_module_from_relpath, modname_to_relpath, relpath_to_modname)
