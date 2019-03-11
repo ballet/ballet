@@ -31,20 +31,24 @@ class GFSSFValidadatorTest(unittest.TestCase):
             expected_h,
             diff_val_h,
             msg='Expected entropy in x ~ Ber(0.5)')
-    
+
     def test_conditional_mutual_information(self):
         # redundant copies have little information
-        x = np.reshape(np.arange(1,101), (100,1))
-        y = np.reshape(np.arange(1,101), (100,1))
+        x = np.reshape(np.arange(1, 101), (100, 1))
+        y = np.reshape(np.arange(1, 101), (100, 1))
         h_y = gfv._estimate_entropy(y)
 
         # exact copies of y should have lots of information
-        useless_z = np.ones((100,1))
-        mi = gfv._estimate_conditional_information(x,y,useless_z)
-        self.assertGreater(mi, h_y / 4, 'exact, non-redundant copies should have little information')
+        useless_z = np.ones((100, 1))
+        mi = gfv._estimate_conditional_information(x, y, useless_z)
+        self.assertGreater(
+            mi,
+            h_y / 4,
+            'exact, non-redundant copies should have little information')
 
-        exact_z = np.reshape(np.arange(1,101), (100,1))
-        mi = gfv._estimate_conditional_information(x,y,exact_z)
-        self.assertGreater(h_y / 4, mi, 'redundant copies should have little information')
-
-
+        exact_z = np.reshape(np.arange(1, 101), (100, 1))
+        mi = gfv._estimate_conditional_information(x, y, exact_z)
+        self.assertGreater(
+            h_y / 4,
+            mi,
+            'redundant copies should have little information')

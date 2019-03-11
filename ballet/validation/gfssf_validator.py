@@ -43,18 +43,22 @@ def _estimate_cont_entropy(X, epsilon=None):
         # While we have non-zero radii, calculate for a larger k
         # Potentially expensive
         while not np.all(radius) and n_neighbors < n_samples:
-            distances, _ = nn.kneighbors(n_neighbors=n_neighbors, return_distance=True)
+            distances, _ = nn.kneighbors(
+                n_neighbors=n_neighbors, return_distance=True)
             radius = distances[:, -1]
             n_neighbors += 1
         if n_neighbors == n_samples:
             # This case only happens if all samples are the same
             # e.g. this isn't a continuous sample...
             raise ValueError('Should not have discrete column to estimate')
-        return -digamma(n_neighbors) + digamma(n_samples) + n_features * np.mean(np.log(2 * radius))
+        return -digamma(n_neighbors) + digamma(n_samples) + \
+            n_features * np.mean(np.log(2 * radius))
     else:
-        ind = nn.radius_neighbors(radius=epsilon.ravel(), return_distance=False)
+        ind = nn.radius_neighbors(
+            radius=epsilon.ravel(),
+            return_distance=False)
         nx = np.array([i.size for i in ind])
-        return  - np.mean(digamma(nx + 1)) + digamma(n_samples)
+        return - np.mean(digamma(nx + 1)) + digamma(n_samples)
 
 
 def _is_column_discrete(col):
