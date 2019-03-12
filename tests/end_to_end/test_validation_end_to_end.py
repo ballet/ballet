@@ -205,8 +205,6 @@ def test_end_to_end(tempdir):
     with pytest.raises(CalledProcessError):
         call_validate_all(pr=3)
 
-    _tempdir.cleanup()
-
 
 if __name__ == '__main__':
     import ballet.util.log
