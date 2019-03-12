@@ -1,10 +1,10 @@
 import io
 from copy import deepcopy
 
-import dill as pickle
 import numpy as np
 from funcy import all_fn, isa, iterable
 
+import dill as pickle
 from ballet.feature import Feature
 from ballet.validation.base import BaseCheck
 

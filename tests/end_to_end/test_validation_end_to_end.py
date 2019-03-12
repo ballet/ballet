@@ -4,10 +4,11 @@ from subprocess import CalledProcessError, check_call
 from textwrap import dedent
 from types import ModuleType
 from unittest.mock import patch
-import pytest
+
 import git
 import numpy as np
 import pandas as pd
+import pytest
 from sklearn_pandas import DataFrameMapper
 
 from ballet.compat import safepath
