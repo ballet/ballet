@@ -228,13 +228,20 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ballet.util.git</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">re</span>
+<span></span><span class="kn">import</span> <span class="nn">re</span>
 
 <span class="kn">import</span> <span class="nn">git</span>
 <span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">collecting</span><span class="p">,</span> <span class="n">ignore</span><span class="p">,</span> <span class="n">re_find</span><span class="p">,</span> <span class="n">re_test</span>
 
+<span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="k">import</span> <span class="n">pathlib</span><span class="p">,</span> <span class="n">safepath</span>
+<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">one_or_raise</span>
+
+<span class="n">FILE_CHANGES_COMMIT_RANGE</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{a}</span><span class="s1">...</span><span class="si">{b}</span><span class="s1">&#39;</span>
+<span class="n">REV_REGEX</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;[a-zA-Z0-9_/^@</span><span class="si">{}</span><span class="s1">-]+&#39;</span>
+<span class="n">COMMIT_RANGE_REGEX</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+    <span class="sa">r</span><span class="s1">&#39;(?P&lt;a&gt;</span><span class="si">{rev}</span><span class="s1">)\.\.(?P&lt;thirddot&gt;\.?)(?P&lt;b&gt;</span><span class="si">{rev}</span><span class="s1">)&#39;</span>
+    <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rev</span><span class="o">=</span><span class="n">REV_REGEX</span><span class="p">))</span>
 <span class="n">PR_REF_PATH_REGEX</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;refs/heads/pull/(\d+)&#39;</span><span class="p">)</span>
 
 
@@ -252,14 +259,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_environment</span><span class="p">()</span>
 
 <div class="viewcode-block" id="PullRequestBuildDiffer.diff"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.PullRequestBuildDiffer.diff">[docs]</a>    <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">diff_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_diff_str</span><span class="p">()</span>
-        <span class="n">diffs</span> <span class="o">=</span> <span class="n">get_diffs_by_diff_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="p">,</span> <span class="n">diff_str</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">diffs</span></div>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_diff_endpoints</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">a</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">b</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_check_environment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
-    <span class="k">def</span> <span class="nf">_get_diff_str</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_get_diff_endpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
@@ -276,58 +282,66 @@
     <span class="k">def</span> <span class="nf">_check_environment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">assert</span> <span class="n">re_test</span><span class="p">(</span><span class="n">PR_REF_PATH_REGEX</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pr_path</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_diff_str</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{from_}</span><span class="s1">..</span><span class="si">{to_}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">from_</span><span class="o">=</span><span class="s1">&#39;master&#39;</span><span class="p">,</span> <span class="n">to_</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_pr_name</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">_get_diff_endpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="o">.</span><span class="n">rev_parse</span><span class="p">(</span><span class="s1">&#39;master&#39;</span><span class="p">)</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="o">.</span><span class="n">rev_parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pr_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span></div>
 
 
-<div class="viewcode-block" id="get_diffs_by_revision"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.get_diffs_by_revision">[docs]</a><span class="k">def</span> <span class="nf">get_diffs_by_revision</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">from_revision</span><span class="p">,</span> <span class="n">to_revision</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Get file changes between two revisions.</span>
-
-<span class="sd">    For details on specifying revisions, see `git help revisions`.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        repo (git.Repo): Repo object initialized with project root</span>
-<span class="sd">        from_revision (str): revision identifier for the starting point of the</span>
-<span class="sd">            diff</span>
-<span class="sd">        to_revision (str): revision identifier for the ending point of the diff</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        list of git.diff.Diff identifying changes between revisions</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">diff_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{from_revision}</span><span class="s1">..</span><span class="si">{to_revision}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-        <span class="n">from_revision</span><span class="o">=</span><span class="n">from_revision</span><span class="p">,</span> <span class="n">to_revision</span><span class="o">=</span><span class="n">to_revision</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">get_diffs_by_diff_str</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">diff_str</span><span class="p">)</span></div>
+<div class="viewcode-block" id="make_commit_range"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.make_commit_range">[docs]</a><span class="k">def</span> <span class="nf">make_commit_range</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">FILE_CHANGES_COMMIT_RANGE</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_diff_str_from_commits"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.get_diff_str_from_commits">[docs]</a><span class="k">def</span> <span class="nf">get_diff_str_from_commits</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-    <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{a}</span><span class="s1">..</span><span class="si">{b}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">hexsha</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="o">.</span><span class="n">hexsha</span><span class="p">)</span></div>
+<div class="viewcode-block" id="get_diff_endpoints_from_commit_range"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.get_diff_endpoints_from_commit_range">[docs]</a><span class="k">def</span> <span class="nf">get_diff_endpoints_from_commit_range</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">commit_range</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get endpoints of a diff given a commit range</span>
 
+<span class="sd">    The resulting endpoints can be diffed directly::</span>
 
-<div class="viewcode-block" id="get_diffs_by_diff_str"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.get_diffs_by_diff_str">[docs]</a><span class="k">def</span> <span class="nf">get_diffs_by_diff_str</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">diff_str</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Get file changes via a diff string.</span>
+<span class="sd">        a, b = get_diff_endpoints_from_commit_range(repo, commit_range)</span>
+<span class="sd">        a.diff(b)</span>
 
-<span class="sd">    For details on specifying revisions, see `git help revisions`.</span>
+<span class="sd">    For details on specifying git diffs, see ``git diff --help``.</span>
+<span class="sd">    For details on specifying revisions, see ``git help revisions``.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        repo (git.Repo): Repo object initialized with project root</span>
-<span class="sd">        diff_str (str): diff string identifying range of diff. For example,</span>
-<span class="sd">            `master..HEAD` diffs from master to HEAD, and `12345678..abcdef90`</span>
-<span class="sd">            compares to commits.</span>
+<span class="sd">        commit_range (str): commit range as would be interpreted by ``git</span>
+<span class="sd">            diff`` command. Unfortunately only patterns of the form ``a..b``</span>
+<span class="sd">            and ``a...b`` are accepted. Note that the latter pattern finds the</span>
+<span class="sd">            merge-base of a and b and uses it as the starting point for the</span>
+<span class="sd">            diff.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        list of git.diff.Diff identifying changes between revisions</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">diff_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;..&#39;</span><span class="p">)</span>
-    <span class="n">a_obj</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">rev_parse</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-    <span class="n">b_obj</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">rev_parse</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-    <span class="n">diffs</span> <span class="o">=</span> <span class="n">a_obj</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">b_obj</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">diffs</span></div>
+<span class="sd">        Tuple[git.Commit, git.Commit]: starting commit, ending commit (</span>
+<span class="sd">            inclusive)</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: commit_range is empty or ill-formed</span>
+
+<span class="sd">    See also:</span>
+
+<span class="sd">        &lt;https://stackoverflow.com/q/7251477&gt;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">commit_range</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;commit_range cannot be empty&#39;</span><span class="p">)</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">re_find</span><span class="p">(</span><span class="n">COMMIT_RANGE_REGEX</span><span class="p">,</span> <span class="n">commit_range</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;Expected diff str of the form </span><span class="se">\&#39;</span><span class="s1">a..b</span><span class="se">\&#39;</span><span class="s1"> or </span><span class="se">\&#39;</span><span class="s1">a...b</span><span class="se">\&#39;</span><span class="s1"> (got </span><span class="si">{}</span><span class="s1">)&#39;</span>
+            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">commit_range</span><span class="p">))</span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">rev_parse</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">repo</span><span class="o">.</span><span class="n">rev_parse</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;thirddot&#39;</span><span class="p">]:</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">one_or_raise</span><span class="p">(</span><span class="n">repo</span><span class="o">.</span><span class="n">merge_base</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span></div>
 
 
 <div class="viewcode-block" id="get_pr_num"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.get_pr_num">[docs]</a><span class="nd">@ignore</span><span class="p">(</span><span class="ne">Exception</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">get_pr_num</span><span class="p">(</span><span class="n">repo</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">repo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">repo</span> <span class="o">=</span> <span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">search_parent_directories</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">repo</span> <span class="o">=</span> <span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">(</span><span class="n">safepath</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()),</span>
+                        <span class="n">search_parent_directories</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">pr_num</span> <span class="o">=</span> <span class="n">re_find</span><span class="p">(</span><span class="n">PR_REF_PATH_REGEX</span><span class="p">,</span> <span class="n">repo</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">ref</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">pr_num</span><span class="p">)</span></div>
 

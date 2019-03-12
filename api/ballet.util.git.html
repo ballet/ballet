@@ -268,56 +268,50 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="ballet.util.git.get_diff_str_from_commits">
-<code class="descclassname">ballet.util.git.</code><code class="descname">get_diff_str_from_commits</code><span class="sig-paren">(</span><em>a</em>, <em>b</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#get_diff_str_from_commits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.git.get_diff_str_from_commits" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="ballet.util.git.get_diffs_by_diff_str">
-<code class="descclassname">ballet.util.git.</code><code class="descname">get_diffs_by_diff_str</code><span class="sig-paren">(</span><em>repo</em>, <em>diff_str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#get_diffs_by_diff_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.git.get_diffs_by_diff_str" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get file changes via a diff string.</p>
-<p>For details on specifying revisions, see <cite>git help revisions</cite>.</p>
+<dt id="ballet.util.git.get_diff_endpoints_from_commit_range">
+<code class="descclassname">ballet.util.git.</code><code class="descname">get_diff_endpoints_from_commit_range</code><span class="sig-paren">(</span><em>repo</em>, <em>commit_range</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#get_diff_endpoints_from_commit_range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.git.get_diff_endpoints_from_commit_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get endpoints of a diff given a commit range</p>
+<p>The resulting endpoints can be diffed directly:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">get_diff_endpoints_from_commit_range</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">commit_range</span><span class="p">)</span>
+<span class="n">a</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For details on specifying git diffs, see <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">diff</span> <span class="pre">--help</span></code>.
+For details on specifying revisions, see <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">help</span> <span class="pre">revisions</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>repo</strong> (<em>git.Repo</em>) – Repo object initialized with project root</li>
-<li><strong>diff_str</strong> (<em>str</em>) – diff string identifying range of diff. For example,
-<cite>master..HEAD</cite> diffs from master to HEAD, and <cite>12345678..abcdef90</cite>
-compares to commits.</li>
+<li><strong>commit_range</strong> (<em>str</em>) – commit range as would be interpreted by <code class="docutils literal notranslate"><span class="pre">git</span>
+<span class="pre">diff</span></code> command. Unfortunately only patterns of the form <code class="docutils literal notranslate"><span class="pre">a..b</span></code>
+and <code class="docutils literal notranslate"><span class="pre">a...b</span></code> are accepted. Note that the latter pattern finds the
+merge-base of a and b and uses it as the starting point for the
+diff.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of git.diff.Diff identifying changes between revisions</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>starting commit, ending commit (</dt>
+<dd><p class="first last">inclusive)</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">Tuple[git.Commit, git.Commit]</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code> – commit_range is empty or ill-formed</p>
 </td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="function">
-<dt id="ballet.util.git.get_diffs_by_revision">
-<code class="descclassname">ballet.util.git.</code><code class="descname">get_diffs_by_revision</code><span class="sig-paren">(</span><em>repo</em>, <em>from_revision</em>, <em>to_revision</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#get_diffs_by_revision"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.git.get_diffs_by_revision" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get file changes between two revisions.</p>
-<p>For details on specifying revisions, see <cite>git help revisions</cite>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>repo</strong> (<em>git.Repo</em>) – Repo object initialized with project root</li>
-<li><strong>from_revision</strong> (<em>str</em>) – revision identifier for the starting point of the
-diff</li>
-<li><strong>to_revision</strong> (<em>str</em>) – revision identifier for the ending point of the diff</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of git.diff.Diff identifying changes between revisions</p>
-</td>
-</tr>
-</tbody>
-</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">&lt;<a class="reference external" href="https://stackoverflow.com/q/7251477">https://stackoverflow.com/q/7251477</a>&gt;</p>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -333,6 +327,11 @@ diff</li>
 <dl class="function">
 <dt id="ballet.util.git.get_pull_requests">
 <code class="descclassname">ballet.util.git.</code><code class="descname">get_pull_requests</code><span class="sig-paren">(</span><em>owner</em>, <em>repo</em>, <em>state='closed'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#get_pull_requests"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.git.get_pull_requests" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ballet.util.git.make_commit_range">
+<code class="descclassname">ballet.util.git.</code><code class="descname">make_commit_range</code><span class="sig-paren">(</span><em>a</em>, <em>b</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#make_commit_range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.git.make_commit_range" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">

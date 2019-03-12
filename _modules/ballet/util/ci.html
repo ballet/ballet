@@ -234,7 +234,8 @@
 <span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">constantly</span><span class="p">,</span> <span class="n">ignore</span><span class="p">,</span> <span class="n">post_processing</span>
 
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">UnexpectedTravisEnvironmentError</span>
-<span class="kn">from</span> <span class="nn">ballet.util.git</span> <span class="k">import</span> <span class="n">PullRequestBuildDiffer</span>
+<span class="kn">from</span> <span class="nn">ballet.util.git</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">PullRequestBuildDiffer</span><span class="p">,</span> <span class="n">get_diff_endpoints_from_commit_range</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span>
 
 
@@ -319,8 +320,9 @@
                 <span class="s1">&#39;TRAVIS_PULL_REQUEST </span><span class="si">{tpr!r}</span><span class="s1"> did not match expected </span><span class="si">{pr!r}</span><span class="s1">&#39;</span>
                 <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tpr</span><span class="o">=</span><span class="n">travis_pr_num</span><span class="p">,</span> <span class="n">pr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_get_diff_str</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">get_travis_env_or_fail</span><span class="p">(</span><span class="s1">&#39;TRAVIS_COMMIT_RANGE&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_get_diff_endpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">commit_range</span> <span class="o">=</span> <span class="n">get_travis_env_or_fail</span><span class="p">(</span><span class="s1">&#39;TRAVIS_COMMIT_RANGE&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">get_diff_endpoints_from_commit_range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="p">,</span> <span class="n">commit_range</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_detect_repo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">build_dir</span> <span class="o">=</span> <span class="n">get_travis_env_or_fail</span><span class="p">(</span><span class="s1">&#39;TRAVIS_BUILD_DIR&#39;</span><span class="p">)</span>
