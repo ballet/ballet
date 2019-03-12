@@ -19,13 +19,13 @@ from ballet.compat import pathlib, safepath
 from ballet.util.ci import (
     TravisPullRequestBuildDiffer, get_travis_pr_num, is_travis_pr)
 from ballet.util.git import (
-    get_diff_str_from_commits, get_pull_request_outcomes, get_pull_requests)
+    get_pull_request_outcomes, get_pull_requests, make_commit_range)
 from ballet.util.mod import (  # noqa F401
     import_module_at_path, import_module_from_modname,
     import_module_from_relpath, modname_to_relpath, relpath_to_modname)
 from ballet.util.testing import ArrayLikeEqualityTestingMixin
 
-from .util import make_mock_commits, mock_repo
+from .util import make_mock_commit, make_mock_commits, mock_repo
 
 
 class UtilTest(
@@ -407,6 +407,7 @@ class CiTest(unittest.TestCase):
 
     def test_travis_pull_request_build_differ(self):
         with mock_repo() as repo:
+            make_mock_commits(repo, n=3)
             pr_num = self.pr_num
             commit_range = 'HEAD^..HEAD'
 
@@ -417,16 +418,32 @@ class CiTest(unittest.TestCase):
             }
             with patch.dict('os.environ', travis_env_vars, clear=True):
                 differ = TravisPullRequestBuildDiffer(pr_num)
-                diff_str = differ._get_diff_str()
-                self.assertEqual(diff_str, commit_range)
+                expected_a = repo.rev_parse('HEAD^')
+                expected_b = repo.rev_parse('HEAD')
+                actual_a, actual_b = differ._get_diff_endpoints()
+                self.assertEqual(actual_a, expected_a)
+                self.assertEqual(actual_b, expected_b)
 
     def test_travis_pull_request_build_differ_on_mock_commits(self):
-        n = 10
+        n = 4
         i = 0
         pr_num = self.pr_num
+        feature_branch_name = 'pull/{}'.format(pr_num)
         with mock_repo() as repo:
+            make_mock_commit(repo, path='readme.txt')
+            expected_merge_base = repo.head.commit
+            feature_branch = repo.create_head(feature_branch_name)
+
+            # make commits on branch master
+            commits = make_mock_commits(repo, n=3, filename='blah{i}.txt')
+            master = repo.heads.master
+
+            # make commits on feature branch
+            feature_branch.checkout()
             commits = make_mock_commits(repo, n=n)
-            commit_range = get_diff_str_from_commits(commits[i], commits[-1])
+            end_commit = commits[-1]
+
+            commit_range = make_commit_range(master, end_commit)
 
             travis_env_vars = {
                 'TRAVIS_BUILD_DIR': repo.working_tree_dir,
@@ -435,15 +452,17 @@ class CiTest(unittest.TestCase):
             }
             with patch.dict('os.environ', travis_env_vars, clear=True):
                 differ = TravisPullRequestBuildDiffer(pr_num)
-                diff_str = differ._get_diff_str()
-                self.assertEqual(diff_str, commit_range)
+                a, b = differ._get_diff_endpoints()
+                self.assertEqual(a, expected_merge_base)
+                self.assertEqual(b, end_commit)
 
                 diffs = differ.diff()
 
-                # there should be n-1 diff objects, they should show files
-                # 1 to n-1
-                self.assertEqual(len(diffs), n - 1)
-                j = i + 1
+                # there should be n diff objects, they should show files
+                # 0 to n-1. merge base just created readme.txt, so all files
+                # on feature branch are new.
+                self.assertEqual(len(diffs), n)
+                j = i
                 for diff in diffs:
                     self.assertEqual(diff.change_type, 'A')
                     self.assertEqual(diff.b_path, 'file{j}.py'.format(j=j))
@@ -507,16 +526,15 @@ class FsTest(unittest.TestCase):
 
 class GitTest(unittest.TestCase):
 
-    @unittest.expectedFailure
-    def test_get_diffs_by_revision(self):
-        raise NotImplementedError
+    def test_make_commit_range(self):
+        a = 'abc1234'
+        b = 'def4321'
+        expected_commit_range = 'abc1234...def4321'
+        actual_commit_range = make_commit_range(a, b)
+        self.assertEqual(actual_commit_range, expected_commit_range)
 
     @unittest.expectedFailure
-    def test_get_diff_str_from_commits(self):
-        raise NotImplementedError
-
-    @unittest.expectedFailure
-    def test_get_diffs_by_diff_str(self):
+    def test_get_diff_endpoints_from_commit_range(self):
         raise NotImplementedError
 
     @unittest.expectedFailure

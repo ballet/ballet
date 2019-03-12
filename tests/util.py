@@ -63,7 +63,7 @@ class FragileTransformerPipeline(TransformerPipeline):
 
 
 def make_mock_commit(repo, kind='A', path=None, content=None):
-    '''Commits one file to repo'''
+    """Commits one file to repo"""
     if not path:
         path = 'file{}'.format(random.randint(0, 999))
 
@@ -92,7 +92,7 @@ def make_mock_commit(repo, kind='A', path=None, content=None):
 
 
 def make_mock_commits(repo, n=10, filename='file{i}.py'):
-    '''Create n sequential files/commits'''
+    """Create n sequential files/commits"""
     if '{i}' not in filename:
         raise ValueError
 
@@ -112,7 +112,7 @@ def set_ci_git_config_variables(repo):
 
 @contextmanager
 def mock_repo():
-    '''Create a new repo'''
+    """Create a new repo"""
     with tempfile.TemporaryDirectory() as tmpdir:
         dir = pathlib.Path(tmpdir)
         repo = git.Repo.init(str(dir))

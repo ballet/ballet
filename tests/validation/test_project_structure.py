@@ -3,7 +3,7 @@ from textwrap import dedent
 from unittest.mock import patch
 
 from ballet.util.ci import TravisPullRequestBuildDiffer
-from ballet.util.git import get_diff_str_from_commits
+from ballet.util.git import make_commit_range
 from ballet.validation.project_structure import ChangeCollector
 
 from .util import (
@@ -57,7 +57,7 @@ class ChangeCollectorTest(_CommonSetup, unittest.TestCase):
         with mock_repo() as repo:
             commits = make_mock_commits(repo, n=n, filename=filename)
             contrib_module_path = None
-            commit_range = get_diff_str_from_commits(
+            commit_range = make_commit_range(
                 commits[0], commits[-1])
 
             travis_env_vars = {

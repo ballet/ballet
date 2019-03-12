@@ -4,7 +4,8 @@ import git
 from funcy import constantly, ignore, post_processing
 
 from ballet.exc import UnexpectedTravisEnvironmentError
-from ballet.util.git import PullRequestBuildDiffer
+from ballet.util.git import (
+    PullRequestBuildDiffer, get_diff_endpoints_from_commit_range)
 from ballet.util.log import logger
 
 
@@ -89,8 +90,9 @@ class TravisPullRequestBuildDiffer(PullRequestBuildDiffer):
                 'TRAVIS_PULL_REQUEST {tpr!r} did not match expected {pr!r}'
                 .format(tpr=travis_pr_num, pr=self.pr_num))
 
-    def _get_diff_str(self):
-        return get_travis_env_or_fail('TRAVIS_COMMIT_RANGE')
+    def _get_diff_endpoints(self):
+        commit_range = get_travis_env_or_fail('TRAVIS_COMMIT_RANGE')
+        return get_diff_endpoints_from_commit_range(self.repo, commit_range)
 
     def _detect_repo(self):
         build_dir = get_travis_env_or_fail('TRAVIS_BUILD_DIR')

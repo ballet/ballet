@@ -116,3 +116,10 @@ class DeepcopyMixin:
         for k, v in self.__dict__.items():
             setattr(result, k, deepcopy(v, memo))
         return result
+
+
+def one_or_raise(l):
+    if len(l) == 1:
+        return l[0]
+    else:
+        raise ValueError('Expected exactly 1 element')
