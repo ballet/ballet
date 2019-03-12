@@ -25,7 +25,7 @@ from ballet.util.mod import (  # noqa F401
     import_module_from_relpath, modname_to_relpath, relpath_to_modname)
 from ballet.util.testing import ArrayLikeEqualityTestingMixin
 
-from .util import make_mock_commits, mock_repo
+from .util import make_mock_commit, make_mock_commits, mock_repo
 
 
 class UtilTest(
@@ -425,14 +425,25 @@ class CiTest(unittest.TestCase):
                 self.assertEqual(actual_b, expected_b)
 
     def test_travis_pull_request_build_differ_on_mock_commits(self):
-        n = 10
+        n = 4
         i = 0
         pr_num = self.pr_num
+        feature_branch_name = 'pull/{}'.format(pr_num)
         with mock_repo() as repo:
+            make_mock_commit(repo, path='readme.txt')
+            expected_merge_base = repo.head.commit
+            feature_branch = repo.create_head(feature_branch_name)
+
+            # make commits on branch master
+            commits = make_mock_commits(repo, n=3, filename='blah{i}.txt')
+            master = repo.heads.master
+
+            # make commits on feature branch
+            feature_branch.checkout()
             commits = make_mock_commits(repo, n=n)
-            start_commit = commits[i]
             end_commit = commits[-1]
-            commit_range = make_commit_range(start_commit, end_commit)
+
+            commit_range = make_commit_range(master, end_commit)
 
             travis_env_vars = {
                 'TRAVIS_BUILD_DIR': repo.working_tree_dir,
@@ -442,15 +453,16 @@ class CiTest(unittest.TestCase):
             with patch.dict('os.environ', travis_env_vars, clear=True):
                 differ = TravisPullRequestBuildDiffer(pr_num)
                 a, b = differ._get_diff_endpoints()
-                self.assertEqual(a, start_commit)
+                self.assertEqual(a, expected_merge_base)
                 self.assertEqual(b, end_commit)
 
                 diffs = differ.diff()
 
-                # there should be n-1 diff objects, they should show files
-                # 1 to n-1
-                self.assertEqual(len(diffs), n - 1)
-                j = i + 1
+                # there should be n diff objects, they should show files
+                # 0 to n-1. merge base just created readme.txt, so all files
+                # on feature branch are new.
+                self.assertEqual(len(diffs), n)
+                j = i
                 for diff in diffs:
                     self.assertEqual(diff.change_type, 'A')
                     self.assertEqual(diff.b_path, 'file{j}.py'.format(j=j))
