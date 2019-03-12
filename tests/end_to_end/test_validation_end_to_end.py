@@ -91,7 +91,7 @@ def test_end_to_end(tempdir):
 
         def load_data():
             p = 15
-            q = 2
+            q = A
             X, y, coef = make_regression(
                 n_samples=50, n_features=p, n_informative=q, coef=True,
                 shuffle=True, random_state=1)
@@ -99,7 +99,7 @@ def test_end_to_end(tempdir):
             # informative columns are 'A', 'B'
             # uninformative columns are 'Z_0', ..., 'Z_11'
             columns = []
-            informative = list('AB')
+            informative = list('A')
             other = ['Z_{i}'.format(i=i) for i in reversed(range(p-q))]
             for i in range(p):
                 if coef[i] == 0:
