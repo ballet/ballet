@@ -205,8 +205,7 @@ def test_end_to_end(tempdir):
     with pytest.raises(CalledProcessError):
         call_validate_all(pr=3)
 
-    # call different validation routines
-    call_validate_all()
+    _tempdir.cleanup()
 
 
 if __name__ == '__main__':
