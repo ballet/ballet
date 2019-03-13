@@ -164,10 +164,8 @@ def _compute_lmbdas(unnorm_lmbda_1, unnorm_lmbda_2, feature, acc_by_src):
     return (unnorm_lmbda_1 / num_features, unnorm_lmbda_2 / num_feature_cols)
 
 
-def _compute_threshold(lmbda_1, lmbda_2, feat_df, omit_df):
-    _, n_features = feat_df.shape
-    _, n_features_omitted = omit_df.shape
-    return lmbda_1 + lmbda_2 * (n_features - n_features_omitted)
+def _compute_threshold(lmbda_1, lmbda_2, n_feature_cols, n_omitted_cols):
+    return lmbda_1 + lmbda_2 * (n_feature_cols - n_omitted_cols)
 
 
 class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
@@ -190,7 +188,8 @@ class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
                 self.X_df, self.y)
             feature_dfs_by_src[accepted_feature.source] = accepted_df
 
-        lmbda_1, lmbda_2 = _compute_lmbdas(self.lmbda_1, self.lmbda_2, feature, feature_dfs_by_src)
+        lmbda_1, lmbda_2 = _compute_lmbdas(
+            self.lmbda_1, self.lmbda_2, feature, feature_dfs_by_src)
 
         logger.info(
             'Judging Feature using GFSSF: lambda_1={l1}, lambda_2={l2}'.format(
@@ -206,14 +205,15 @@ class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
                 'Conditional Mutual Information Score: {}'.format(cmi))
             cmi_omit = 0
             n_omit_cols = 0
-            if omit is not '':
+            if not omit:
                 omit_df = feature_dfs_by_src[omit]
                 _, n_omit_cols = omit_df.shape
                 cmi_omit = _estimate_conditional_information(
                     omit_df, self.y, z)
                 logger.debug('Omitted CMI Score: {}'.format(cmi_omit))
             statistic = cmi - cmi_omit
-            threshold = _compute_threshold(lmbda_1, lmbda_2, n_feature_cols, n_omit_cols)
+            threshold = _compute_threshold(
+                lmbda_1, lmbda_2, n_feature_cols, n_omit_cols)
             logger.debug('Calculated Threshold: {}'.format(threshold))
             if statistic >= threshold:
                 logger.debug(
