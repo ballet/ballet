@@ -89,7 +89,7 @@ def _estimate_entropy(X, epsilon=None):
         return 0
     disc_mask = _get_discrete_columns(X)
     cont_mask = ~disc_mask
-    # If our dataset is fully disc/cont, do something easier
+    # If our dataset is fully discrete/continuous, do something easier
     if np.all(disc_mask):
         return _calculate_disc_entropy(X)
     elif np.all(cont_mask):
@@ -101,7 +101,6 @@ def _estimate_entropy(X, epsilon=None):
     entropy = 0
     uniques, counts = np.unique(disc_features, axis=0, return_counts=True)
     empirical_p = counts / n_samples
-    log_p = np.log(empirical_p)
     for i in range(counts.size):
         unique_mask = disc_features == uniques[i]
         selected_cont_samples = cont_features[unique_mask.ravel(), :]
@@ -111,7 +110,8 @@ def _estimate_entropy(X, epsilon=None):
             selected_epsilon = None
         conditional_cont_entropy = _estimate_cont_entropy(
             selected_cont_samples, selected_epsilon)
-        entropy += empirical_p[i] * (conditional_cont_entropy - log_p[i])
+        entropy += empirical_p[i] * conditional_cont_entropy
+    entropy += _calculate_disc_entropy(disc_features)
     if epsilon is None:
         entropy = max(0, entropy)
     return entropy
@@ -145,6 +145,15 @@ def _estimate_conditional_information(x, y, z):
     h_xyz = _estimate_entropy(xyz, epsilon)
     h_z = _estimate_entropy(z, epsilon)
     return max(0, h_xz + h_yz - h_xyz - h_z)
+
+
+def _estimate_mutual_information(x,y):
+    xy = np.concatenate((x, y), axis=1)
+    epsilon = _calculate_epsilon(xy)
+    h_x = _estimate_entropy(x, epsilon)
+    h_y = _estimate_entropy(y, epsilon)
+    h_xy = _estimate_entropy(xy, epsilon)
+    return max(0, h_x + h_y - h_xy)
 
 
 def _concat_datasets(dfs_by_src, n_samples, omit=None):
