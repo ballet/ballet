@@ -11,7 +11,8 @@ from ballet.util.log import logger
 from ballet.validation.base import FeatureAcceptanceEvaluator
 
 NUM_NEIGHBORS = 3  # Used in the sklearn mutual information function
-
+LAMBDA_1_ADJUSTMENT = 32
+LAMBDA_2_ADJUSTMENT = 32
 
 def _calculate_disc_entropy(X):
     # An exact calculation of the dataset entropy, using empirical probability
@@ -182,9 +183,9 @@ class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
         super().__init__(X_df, y, features)
         self.y = asarray2d(y)
         if (lmbda_1 <= 0):
-            lmbda_1 = _estimate_entropy(self.y) / 32
+            lmbda_1 = _estimate_entropy(self.y) / LAMBDA_1_ADJUSTMENT
         if (lmbda_2 <= 0):
-            lmbda_2 = _estimate_entropy(self.y) / 32
+            lmbda_2 = _estimate_entropy(self.y) / LAMBDA_2_ADJUSTMENT
         self.lmbda_1 = lmbda_1
         self.lmbda_2 = lmbda_2
 
