@@ -51,10 +51,7 @@ def build(X_df=None, y_df=None):
 
     features = get_contrib_features()
     mapper_X = ballet.feature.make_mapper(features)
-    if features:
-        X = mapper_X.fit_transform(X_df)
-    else:
-        X = None
+    X = mapper_X.fit_transform(X_df)
 
     encoder_y = get_target_encoder()
     y = encoder_y.fit_transform(y_df)
