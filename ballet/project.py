@@ -43,7 +43,7 @@ def get_config_paths(package_root):
 def load_config_at_path(path):
     if path.exists() and path.is_file():
         with path.open('r') as f:
-            return yaml.load(f)
+            return yaml.load(f, Loader=yaml.SafeLoader)
     else:
         return None
 
