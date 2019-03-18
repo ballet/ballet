@@ -88,6 +88,11 @@ def estimate_entropy(X, epsilon=None):
     elif np.all(cont_mask):
         return estimate_cont_entropy(X, epsilon)
 
+    # Separate the dataset into discrete and continuous datasets d,c
+    # We use the following reworking of entropy for efficient calculation:
+    # H(c,d) = sum_{x in d} p(x) * H(c(x)) + H(d)
+    # where c(x) is a dataset that represents the rows of the cont. dataset
+    # in the same row as a disc. column with value x in the original dataset
     disc_features = asarray2d(X[:, disc_mask])
     cont_features = asarray2d(X[:, cont_mask])
 
@@ -111,6 +116,11 @@ def estimate_entropy(X, epsilon=None):
 
 
 def _calculate_epsilon(X):
+    """
+    Calculates epsilon, a subroutine for the Kraskov Estimator
+    Represents the chebyshev distance of each dataset element to its
+    K-th nearest neighbor.
+    """
     disc_mask = _get_discrete_columns(X)
     if np.all(disc_mask):
         # if all discrete columns, there's no point getting epsilon
@@ -128,6 +138,12 @@ def estimate_conditional_information(x, y, z):
     Estimates I(x;y|z) = H(x,z) + H(y,z) - H(x,y,z) - H(z)
     Is **exact** for entirely discrete columns
     and **approximate** if there are continuous columns present
+    Adapts the Kraskov Estimator for mutual information:
+    https://journals.aps.org/pre/pdf/10.1103/PhysRevE.69.066138
+    Equation 8 still holds because the epsilon terms cancel out:
+    Let d_x, represent the dimensionality of the continuous portion of x.
+    d_xz + d_yz - d_xyz - d_z = 
+    (d_x + d_z) + (d_y + d_z) - (d_x + d_y + d_z) - d_z = 0
     """
     xz = np.concatenate((x, z), axis=1)
     yz = np.concatenate((y, z), axis=1)
