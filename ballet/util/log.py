@@ -42,11 +42,11 @@ class LevelFilter(object):
 
 
 class LoggingContext(object):
-    '''
+    """
     Logging context manager
 
-    Source: <https://docs.python.org/3/howto/logging-cookbook.html #using-a-context-manager-for-selective-logging>  # noqa
-    '''
+    Source: <https://docs.python.org/3/howto/logging-cookbook.html #using-a-context-manager-for-selective-logging>
+    """  # noqa
 
     def __init__(self, logger, level=None, handler=None, close=True):
         self.logger = logger

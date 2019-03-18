@@ -137,10 +137,14 @@ def set_config_variables(repo, variables):
     """Set config variables
 
     Args:
+        repo (git.Repo): repo
         variables (dict): entries of the form 'user.email': 'you@example.com'
     """
-    for k, v in variables.items():
-        repo.git.config(k, v)
+    with repo.config_writer() as writer:
+        for k, value in variables.items():
+            section, option = k.split('.')
+            writer.set_value(section, option, value)
+        writer.release()
 
 
 def get_pull_requests(owner, repo, state='closed'):

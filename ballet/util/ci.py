@@ -1,7 +1,7 @@
 import os
 
 import git
-from funcy import complement, constantly, ignore, post_processing
+from funcy import complement
 
 from ballet.exc import UnexpectedTravisEnvironmentError
 from ballet.util.git import (
@@ -86,19 +86,24 @@ def get_travis_branch():
         return None
 
 
-@ignore(UnexpectedTravisEnvironmentError, default=False)
-@post_processing(constantly(True))
 def can_use_travis_differ():
     """Check if the required travis env vars are set for the travis differ"""
-    ensure_expected_travis_env_vars(
-        TravisPullRequestBuildDiffer.EXPECTED_TRAVIS_ENV_VARS)
+    try:
+        ensure_expected_travis_env_vars(
+            TravisPullRequestBuildDiffer.EXPECTED_TRAVIS_ENV_VARS)
+    except UnexpectedTravisEnvironmentError:
+        return False
+    else:
+        return True
 
 
 class TravisPullRequestBuildDiffer(PullRequestBuildDiffer):
 
     EXPECTED_TRAVIS_ENV_VARS = (
+        # 'TRAVIS_BRANCH',
         'TRAVIS_BUILD_DIR',
         'TRAVIS_PULL_REQUEST',
+        # 'TRAVIS_PULL_REQUEST_BRANCH',
         'TRAVIS_COMMIT_RANGE',
     )
 
