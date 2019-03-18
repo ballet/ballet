@@ -142,7 +142,7 @@ def estimate_conditional_information(x, y, z):
     https://journals.aps.org/pre/pdf/10.1103/PhysRevE.69.066138
     Equation 8 still holds because the epsilon terms cancel out:
     Let d_x, represent the dimensionality of the continuous portion of x.
-    d_xz + d_yz - d_xyz - d_z = 
+    d_xz + d_yz - d_xyz - d_z =
     (d_x + d_z) + (d_y + d_z) - (d_x + d_y + d_z) - d_z = 0
     """
     xz = np.concatenate((x, z), axis=1)
