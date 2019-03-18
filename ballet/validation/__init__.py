@@ -17,7 +17,7 @@ TEST_TYPE_ENV_VAR = 'BALLET_TEST_TYPE'
 
 
 @decorator
-def log_validation_stage(call, message):
+def validation_stage(call, message):
     call = stacklog(logger.info,
                     'Ballet Validation: {message}'.format(message=message),
                     conditions=[(SkippedValidationTest, 'SKIPPED')])(call)
@@ -86,7 +86,7 @@ def detect_target_type():
             .format(envvar=TEST_TYPE_ENV_VAR))
 
 
-@log_validation_stage('checking project structure')
+@validation_stage('checking project structure')
 def check_project_structure(project):
     if not project.on_pr():
         raise SkippedValidationTest('Not on PR')
@@ -97,7 +97,7 @@ def check_project_structure(project):
         raise InvalidProjectStructure
 
 
-@log_validation_stage('validating feature API')
+@validation_stage('validating feature API')
 def validate_feature_api(project):
     if not project.on_pr():
         raise SkippedValidationTest('Not on PR')
@@ -108,7 +108,7 @@ def validate_feature_api(project):
         raise InvalidFeatureApi
 
 
-@log_validation_stage('evaluating feature performance')
+@validation_stage('evaluating feature performance')
 def evaluate_feature_performance(project):
     if not project.on_pr():
         raise SkippedValidationTest('Not on PR')
@@ -125,7 +125,7 @@ def evaluate_feature_performance(project):
         raise FeatureRejected
 
 
-@log_validation_stage('pruning existing features')
+@validation_stage('pruning existing features')
 def prune_existing_features(project):
     if project.on_master():
         raise SkippedValidationTest('Not on master')
