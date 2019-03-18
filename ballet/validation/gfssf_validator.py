@@ -74,7 +74,7 @@ class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
                 'Conditional Mutual Information Score: {}'.format(cmi))
             cmi_omit = 0
             n_omit_cols = 0
-            if not omit:
+            if omit:
                 omit_df = feature_dfs_by_src[omit]
                 _, n_omit_cols = omit_df.shape
                 cmi_omit = estimate_conditional_information(
