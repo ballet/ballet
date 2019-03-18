@@ -3,7 +3,9 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from ballet.validation.entropy import calculate_disc_entropy, estimate_conditional_information, estimate_entropy, estimate_mutual_information
+from ballet.validation.entropy import (
+    calculate_disc_entropy, estimate_conditional_information, estimate_entropy,
+    estimate_mutual_information)
 
 
 class GFSSFValidadatorTest(unittest.TestCase):
@@ -29,29 +31,30 @@ class GFSSFValidadatorTest(unittest.TestCase):
     def test_discrete_entropy_two_values(self):
         same_val_arr_zero = np.zeros((50, 1))
         same_val_arr_ones = np.ones((50, 1))
-        # Test on a dataset that mimics a fair coin (half ones, half zeros) 
-        diff_val_arr = np.concatenate((same_val_arr_ones, same_val_arr_zero), axis=0)
+        # Test on a dataset that mimics a fair coin (half ones, half zeros)
+        diff_val_arr = np.concatenate(
+            (same_val_arr_ones, same_val_arr_zero), axis=0)
         expected_h = np.log(2)
         diff_val_h = calculate_disc_entropy(diff_val_arr)
         self.assertAlmostEqual(
             expected_h,
             diff_val_h,
             msg='Expected entropy in x ~ Ber(0.5)')
-    
+
     def test_mi_uninformative(self):
         x = np.reshape(np.arange(1, 101), (100, 1))
         y = np.ones((100, 1))
-        mi = estimate_mutual_information(x,y)
+        mi = estimate_mutual_information(x, y)
         h_z = estimate_entropy(x)
         self.assertGreater(
-            h_z / 4, 
-            mi, 
+            h_z / 4,
+            mi,
             'uninformative column should have no information')
 
     def test_mi_informative(self):
         x = np.reshape(np.arange(1, 101), (100, 1))
         y = np.reshape(np.arange(1, 101), (100, 1))
-        mi = estimate_mutual_information(x,y)
+        mi = estimate_mutual_information(x, y)
         h_y = estimate_entropy(y)
         self.assertGreater(
             mi,
@@ -66,8 +69,9 @@ class GFSSFValidadatorTest(unittest.TestCase):
         # exact copies of y should have lots of information
         useless_z = np.ones((100, 1))
         cmi = estimate_conditional_information(x, y, useless_z)
-        mi = estimate_mutual_information(x,y)
-        self.assertAlmostEqual(cmi, mi, 'uninformative z should not affect mutual information score')
+        mi = estimate_mutual_information(x, y)
+        self.assertAlmostEqual(
+            cmi, mi, 'uninformative z should not affect mutual information score')
 
     def test_cmi_redundant_info(self):
         x = np.reshape(np.arange(1, 101), (100, 1))

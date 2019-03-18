@@ -6,6 +6,7 @@ from ballet.util import asarray2d
 
 NUM_NEIGHBORS = 3  # Used in the sklearn mutual information function
 
+
 def calculate_disc_entropy(X):
     # An exact calculation of the dataset entropy, using empirical probability
     # H = sum(p_i * log2(p_i))
@@ -139,7 +140,7 @@ def estimate_conditional_information(x, y, z):
     return max(0, h_xz + h_yz - h_xyz - h_z)
 
 
-def estimate_mutual_information(x,y):
+def estimate_mutual_information(x, y):
     xy = np.concatenate((x, y), axis=1)
     epsilon = _calculate_epsilon(xy)
     h_x = estimate_entropy(x, epsilon)
