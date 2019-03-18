@@ -8,8 +8,8 @@ from ballet.exc import (
     InvalidProjectStructure, SkippedValidationTest)
 from ballet.project import Project
 from ballet.util.log import logger, stacklog
-from ballet.validation.feature_evaluation import NoOpPruningEvaluator
 from ballet.validation.gfssf_validator import GFSSFAcceptanceEvaluator
+from ballet.validation.gfssf_pruner import GFSSFPruningEvaluator
 from ballet.validation.project_structure import (
     ChangeCollector, FeatureApiValidator, FileChangeValidator)
 
@@ -135,7 +135,7 @@ def prune_existing_features(project):
 
     new_feature = get_proposed_feature(project)
     accepted_features = get_accepted_features(features, new_feature)
-    evaluator = NoOpPruningEvaluator(X_df, y, accepted_features)
+    evaluator = GFSSFPruningEvaluator(X_df, y, accepted_features)
     redundant_features = evaluator.prune(new_feature)
 
     # propose removal

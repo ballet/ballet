@@ -40,7 +40,7 @@ class GFSSFPruningEvaluator(FeatureAcceptanceEvaluator):
         self.lmbda_1 = lmbda_1
         self.lmbda_2 = lmbda_2
 
-    def judge(self, feature):
+    def prune(self, feature):
 
         feature_dfs_by_src = {}
         for accepted_feature in [feature] + self.features:
