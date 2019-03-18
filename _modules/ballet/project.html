@@ -234,8 +234,8 @@
 
 <span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="k">import</span> <span class="n">pathlib</span>
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">ConfigurationError</span>
-<span class="kn">from</span> <span class="nn">ballet.util.ci</span> <span class="k">import</span> <span class="n">get_travis_pr_num</span>
-<span class="kn">from</span> <span class="nn">ballet.util.git</span> <span class="k">import</span> <span class="n">get_pr_num</span>
+<span class="kn">from</span> <span class="nn">ballet.util.ci</span> <span class="k">import</span> <span class="n">get_travis_branch</span><span class="p">,</span> <span class="n">get_travis_pr_num</span>
+<span class="kn">from</span> <span class="nn">ballet.util.git</span> <span class="k">import</span> <span class="n">get_branch</span><span class="p">,</span> <span class="n">get_pr_num</span>
 <span class="kn">from</span> <span class="nn">ballet.util.mod</span> <span class="k">import</span> <span class="n">import_module_at_path</span>
 
 <span class="n">DEFAULT_CONFIG_NAME</span> <span class="o">=</span> <span class="s1">&#39;ballet.yml&#39;</span>
@@ -423,6 +423,17 @@
 <div class="viewcode-block" id="Project.on_pr"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.Project.on_pr">[docs]</a>    <span class="k">def</span> <span class="nf">on_pr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return whether the project has a source tree on a PR&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">branch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return whether the project is on master branch&quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">get_branch</span><span class="p">(</span><span class="n">repo</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">get_travis_branch</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+<div class="viewcode-block" id="Project.on_master"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.Project.on_master">[docs]</a>    <span class="k">def</span> <span class="nf">on_master</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">branch</span> <span class="o">==</span> <span class="s1">&#39;master&#39;</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

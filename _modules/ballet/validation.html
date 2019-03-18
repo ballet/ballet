@@ -244,8 +244,8 @@
 <span class="n">TEST_TYPE_ENV_VAR</span> <span class="o">=</span> <span class="s1">&#39;BALLET_TEST_TYPE&#39;</span>
 
 
-<div class="viewcode-block" id="log_validation_stage"><a class="viewcode-back" href="../../api/ballet.validation.html#ballet.validation.log_validation_stage">[docs]</a><span class="nd">@decorator</span>
-<span class="k">def</span> <span class="nf">log_validation_stage</span><span class="p">(</span><span class="n">call</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+<div class="viewcode-block" id="validation_stage"><a class="viewcode-back" href="../../api/ballet.validation.html#ballet.validation.validation_stage">[docs]</a><span class="nd">@decorator</span>
+<span class="k">def</span> <span class="nf">validation_stage</span><span class="p">(</span><span class="n">call</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
     <span class="n">call</span> <span class="o">=</span> <span class="n">stacklog</span><span class="p">(</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">,</span>
                     <span class="s1">&#39;Ballet Validation: </span><span class="si">{message}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">),</span>
                     <span class="n">conditions</span><span class="o">=</span><span class="p">[(</span><span class="n">SkippedValidationTest</span><span class="p">,</span> <span class="s1">&#39;SKIPPED&#39;</span><span class="p">)])(</span><span class="n">call</span><span class="p">)</span>
@@ -314,10 +314,10 @@
             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">envvar</span><span class="o">=</span><span class="n">TEST_TYPE_ENV_VAR</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="check_project_structure"><a class="viewcode-back" href="../../api/ballet.validation.html#ballet.validation.check_project_structure">[docs]</a><span class="nd">@log_validation_stage</span><span class="p">(</span><span class="s1">&#39;checking project structure&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="check_project_structure"><a class="viewcode-back" href="../../api/ballet.validation.html#ballet.validation.check_project_structure">[docs]</a><span class="nd">@validation_stage</span><span class="p">(</span><span class="s1">&#39;checking project structure&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">check_project_structure</span><span class="p">(</span><span class="n">project</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_pr</span><span class="p">():</span>
-        <span class="k">raise</span> <span class="n">SkippedValidationTest</span>
+        <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on PR&#39;</span><span class="p">)</span>
 
     <span class="n">validator</span> <span class="o">=</span> <span class="n">FileChangeValidator</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">validator</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
@@ -325,10 +325,10 @@
         <span class="k">raise</span> <span class="n">InvalidProjectStructure</span></div>
 
 
-<div class="viewcode-block" id="validate_feature_api"><a class="viewcode-back" href="../../api/ballet.validation.html#ballet.validation.validate_feature_api">[docs]</a><span class="nd">@log_validation_stage</span><span class="p">(</span><span class="s1">&#39;validating feature API&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="validate_feature_api"><a class="viewcode-back" href="../../api/ballet.validation.html#ballet.validation.validate_feature_api">[docs]</a><span class="nd">@validation_stage</span><span class="p">(</span><span class="s1">&#39;validating feature API&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">validate_feature_api</span><span class="p">(</span><span class="n">project</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_pr</span><span class="p">():</span>
-        <span class="k">raise</span> <span class="n">SkippedValidationTest</span>
+        <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on PR&#39;</span><span class="p">)</span>
 
     <span class="n">validator</span> <span class="o">=</span> <span class="n">FeatureApiValidator</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">validator</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
@@ -336,10 +336,10 @@
         <span class="k">raise</span> <span class="n">InvalidFeatureApi</span></div>
 
 
-<div class="viewcode-block" id="evaluate_feature_performance"><a class="viewcode-back" href="../../api/ballet.validation.html#ballet.validation.evaluate_feature_performance">[docs]</a><span class="nd">@log_validation_stage</span><span class="p">(</span><span class="s1">&#39;evaluating feature performance&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="evaluate_feature_performance"><a class="viewcode-back" href="../../api/ballet.validation.html#ballet.validation.evaluate_feature_performance">[docs]</a><span class="nd">@validation_stage</span><span class="p">(</span><span class="s1">&#39;evaluating feature performance&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">evaluate_feature_performance</span><span class="p">(</span><span class="n">project</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_pr</span><span class="p">():</span>
-        <span class="k">raise</span> <span class="n">SkippedValidationTest</span>
+        <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on PR&#39;</span><span class="p">)</span>
 
     <span class="n">out</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
     <span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">features</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;X_df&#39;</span><span class="p">],</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">],</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span>
@@ -353,10 +353,10 @@
         <span class="k">raise</span> <span class="n">FeatureRejected</span></div>
 
 
-<div class="viewcode-block" id="prune_existing_features"><a class="viewcode-back" href="../../api/ballet.validation.html#ballet.validation.prune_existing_features">[docs]</a><span class="nd">@log_validation_stage</span><span class="p">(</span><span class="s1">&#39;pruning existing features&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="prune_existing_features"><a class="viewcode-back" href="../../api/ballet.validation.html#ballet.validation.prune_existing_features">[docs]</a><span class="nd">@validation_stage</span><span class="p">(</span><span class="s1">&#39;pruning existing features&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">prune_existing_features</span><span class="p">(</span><span class="n">project</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">project</span><span class="o">.</span><span class="n">on_pr</span><span class="p">():</span>
-        <span class="k">raise</span> <span class="n">SkippedValidationTest</span>
+    <span class="k">if</span> <span class="n">project</span><span class="o">.</span><span class="n">on_master</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on master&#39;</span><span class="p">)</span>
 
     <span class="n">out</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
     <span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">features</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;X_df&#39;</span><span class="p">],</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">],</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span>
