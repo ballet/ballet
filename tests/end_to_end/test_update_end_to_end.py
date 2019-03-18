@@ -116,6 +116,7 @@ def check_modified_file(path, content):
 
 # Tests begin------------------------------------------------------------------
 
+@pytest.mark.slow
 def test_update_after_change_in_template(quickstart, project_template_copy):
     """Test update after changing a file in the template
 
@@ -172,6 +173,7 @@ def test_update_after_change_in_template(quickstart, project_template_copy):
     check_remotes(repo)
 
 
+@pytest.mark.slow
 def test_update_after_change_in_project(quickstart):
     """Test update after changing a file in the project itself
 
@@ -237,6 +239,7 @@ def test_update_after_change_in_project(quickstart):
     check_modified_file(modified_file_path, new_content)
 
 
+@pytest.mark.slow
 def test_update_after_conflicting_changes(quickstart, project_template_copy):
     """Test what happens when there are conflicting changes
 
@@ -276,6 +279,7 @@ def test_update_after_conflicting_changes(quickstart, project_template_copy):
     check_remotes(repo)
 
 
+@pytest.mark.slow
 def test_update_after_no_changes(quickstart):
     """Test that if there are no changes to project template, nothing happens.
 
@@ -318,6 +322,7 @@ def test_update_after_no_changes(quickstart):
     assert actual_template_commit == expected_template_commit
 
 
+@pytest.mark.slow
 def test_update_fails_with_dirty_repo(quickstart):
     tempdir = quickstart.tempdir
     project_slug = quickstart.project_slug
@@ -328,6 +333,7 @@ def test_update_fails_with_dirty_repo(quickstart):
         _run_ballet_update_template(tempdir, project_slug)
 
 
+@pytest.mark.slow
 def test_update_fails_with_missing_project_template_branch(quickstart):
     tempdir = quickstart.tempdir
     repo = quickstart.repo

@@ -7,6 +7,7 @@ from unittest.mock import patch
 import git
 import numpy as np
 import pandas as pd
+import pytest
 from sklearn_pandas import DataFrameMapper
 
 from ballet.compat import safepath
@@ -44,7 +45,8 @@ def make_feature_str(input):
     """.format(input=input)).strip()
 
 
-def test_end_to_end(tempdir):
+@pytest.mark.slow
+def test_validation_end_to_end(tempdir):
     modname = 'foo'
     extra_context = {
         'project_name': modname.capitalize(),
@@ -208,10 +210,3 @@ def test_end_to_end(tempdir):
 
     # call different validation routines
     call_validate_all()
-
-
-if __name__ == '__main__':
-    import ballet.util.log
-    ballet.util.log.enable(level='INFO')
-
-    test_end_to_end()

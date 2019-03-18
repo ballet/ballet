@@ -68,6 +68,11 @@ fix-lint: ## fix lint issues using autopep8 and isort
 test: ## run tests quickly with the default Python
 	python -m pytest
 
+.PHONY: test-fast
+test-fast:  ## run tests that are not marked as 'slow'
+	python -m pytest -m 'not slow'
+
+
 .PHONY: test-all
 test-all: ## run tests on every Python version with tox
 	tox
