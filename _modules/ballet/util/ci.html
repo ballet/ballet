@@ -231,7 +231,7 @@
 <span></span><span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">import</span> <span class="nn">git</span>
-<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">complement</span><span class="p">,</span> <span class="n">constantly</span><span class="p">,</span> <span class="n">ignore</span><span class="p">,</span> <span class="n">post_processing</span>
+<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">complement</span>
 
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">UnexpectedTravisEnvironmentError</span>
 <span class="kn">from</span> <span class="nn">ballet.util.git</span> <span class="k">import</span> <span class="p">(</span>
@@ -316,19 +316,24 @@
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="can_use_travis_differ"><a class="viewcode-back" href="../../../api/ballet.util.ci.html#ballet.util.ci.can_use_travis_differ">[docs]</a><span class="nd">@ignore</span><span class="p">(</span><span class="n">UnexpectedTravisEnvironmentError</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="nd">@post_processing</span><span class="p">(</span><span class="n">constantly</span><span class="p">(</span><span class="kc">True</span><span class="p">))</span>
-<span class="k">def</span> <span class="nf">can_use_travis_differ</span><span class="p">():</span>
+<div class="viewcode-block" id="can_use_travis_differ"><a class="viewcode-back" href="../../../api/ballet.util.ci.html#ballet.util.ci.can_use_travis_differ">[docs]</a><span class="k">def</span> <span class="nf">can_use_travis_differ</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Check if the required travis env vars are set for the travis differ&quot;&quot;&quot;</span>
-    <span class="n">ensure_expected_travis_env_vars</span><span class="p">(</span>
-        <span class="n">TravisPullRequestBuildDiffer</span><span class="o">.</span><span class="n">EXPECTED_TRAVIS_ENV_VARS</span><span class="p">)</span></div>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">ensure_expected_travis_env_vars</span><span class="p">(</span>
+            <span class="n">TravisPullRequestBuildDiffer</span><span class="o">.</span><span class="n">EXPECTED_TRAVIS_ENV_VARS</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">UnexpectedTravisEnvironmentError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
 
 
 <div class="viewcode-block" id="TravisPullRequestBuildDiffer"><a class="viewcode-back" href="../../../api/ballet.util.ci.html#ballet.util.ci.TravisPullRequestBuildDiffer">[docs]</a><span class="k">class</span> <span class="nc">TravisPullRequestBuildDiffer</span><span class="p">(</span><span class="n">PullRequestBuildDiffer</span><span class="p">):</span>
 
     <span class="n">EXPECTED_TRAVIS_ENV_VARS</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="c1"># &#39;TRAVIS_BRANCH&#39;,</span>
         <span class="s1">&#39;TRAVIS_BUILD_DIR&#39;</span><span class="p">,</span>
         <span class="s1">&#39;TRAVIS_PULL_REQUEST&#39;</span><span class="p">,</span>
+        <span class="c1"># &#39;TRAVIS_PULL_REQUEST_BRANCH&#39;,</span>
         <span class="s1">&#39;TRAVIS_COMMIT_RANGE&#39;</span><span class="p">,</span>
     <span class="p">)</span>
 

@@ -367,10 +367,14 @@
     <span class="sd">&quot;&quot;&quot;Set config variables</span>
 
 <span class="sd">    Args:</span>
+<span class="sd">        repo (git.Repo): repo</span>
 <span class="sd">        variables (dict): entries of the form &#39;user.email&#39;: &#39;you@example.com&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">variables</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">repo</span><span class="o">.</span><span class="n">git</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
+    <span class="k">with</span> <span class="n">repo</span><span class="o">.</span><span class="n">config_writer</span><span class="p">()</span> <span class="k">as</span> <span class="n">writer</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">variables</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">section</span><span class="p">,</span> <span class="n">option</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">option</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="get_pull_requests"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.get_pull_requests">[docs]</a><span class="k">def</span> <span class="nf">get_pull_requests</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="n">repo</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s1">&#39;closed&#39;</span><span class="p">):</span>
