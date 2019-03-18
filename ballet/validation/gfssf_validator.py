@@ -24,10 +24,10 @@ def _concat_datasets(dfs_by_src, n_samples, omit=None):
     return asarray2d(np.concatenate(filtered_dfs, axis=1))
 
 
-def _compute_lmbdas(unnorm_lmbda_1, unnorm_lmbda_2, feature, acc_by_src):
+def _compute_lmbdas(unnorm_lmbda_1, unnorm_lmbda_2, feature_df, acc_by_src):
     feat_srcs = acc_by_src.keys()
     num_features = 1 + len(feat_srcs)
-    num_feature_cols = feature.shape[1]
+    num_feature_cols = feature_df.shape[1]
     for acc_feat_src in feat_srcs:
         num_feature_cols += acc_by_src[acc_feat_src].shape[1]
     return (unnorm_lmbda_1 / num_features, unnorm_lmbda_2 / num_feature_cols)
@@ -58,7 +58,7 @@ class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
             feature_dfs_by_src[accepted_feature.source] = accepted_df
 
         lmbda_1, lmbda_2 = _compute_lmbdas(
-            self.lmbda_1, self.lmbda_2, feature, feature_dfs_by_src)
+            self.lmbda_1, self.lmbda_2, feature_df, feature_dfs_by_src)
 
         logger.info(
             'Judging Feature using GFSSF: lambda_1={l1}, lambda_2={l2}'.format(

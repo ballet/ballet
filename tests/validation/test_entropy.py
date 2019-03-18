@@ -8,7 +8,7 @@ from ballet.validation.entropy import (
     estimate_mutual_information)
 
 
-class GFSSFValidadatorTest(unittest.TestCase):
+class EntropyTest(unittest.TestCase):
     def setUp(self):
         pass
 
