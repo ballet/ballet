@@ -10,13 +10,7 @@ from ballet.util.log import logger
 
 
 def falsy(o):
-    if isinstance(o, str):
-        if o.lower() == 'false':
-            return True
-        elif o == '':
-            return True
-
-    return False
+    return isinstance(o, str) and (o.lower() == 'false' or o == '')
 
 
 truthy = complement(falsy)
@@ -53,7 +47,7 @@ def get_travis_pr_num():
 
     See also:
         - <https://docs.travis-ci.com/user/environment-variables/#Default-Environment-Variables>
-    """  # noqa
+    """  # noqa E501
     try:
         travis_pull_request = get_travis_env_or_fail('TRAVIS_PULL_REQUEST')
         if falsy(travis_pull_request):
@@ -73,14 +67,23 @@ def is_travis_pr():
 
 
 def get_travis_branch():
+    """Get current branch per Travis environment variables
+
+    If travis is building a PR, then TRAVIS_PULL_REQUEST is truthy and the
+    name of the branch corresponding to the PR is stored in the
+    TRAVIS_PULL_REQUEST_BRANCH environment variable. Else, the name of the
+    branch is stored in the TRAVIS_BRANCH environment variable.
+
+    See also: <https://docs.travis-ci.com/user/environment-variables/#default-environment-variables>
+    """  # noqa E501
     try:
         travis_pull_request = get_travis_env_or_fail('TRAVIS_PULL_REQUEST')
-        travis_pull_request_branch = get_travis_env_or_fail(
-            'TRAVIS_PULL_REQUEST_BRANCH')
-        travis_branch = get_travis_branch('TRAVIS_BRANCH')
         if truthy(travis_pull_request):
+            travis_pull_request_branch = get_travis_env_or_fail(
+                'TRAVIS_PULL_REQUEST_BRANCH')
             return travis_pull_request_branch
         else:
+            travis_branch = get_travis_env_or_fail('TRAVIS_BRANCH')
             return travis_branch
     except UnexpectedTravisEnvironmentError:
         return None
