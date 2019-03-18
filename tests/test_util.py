@@ -416,9 +416,31 @@ class CiTest(unittest.TestCase):
                 actual = ballet.util.ci.is_travis_pr()
                 self.assertEqual(actual, expected)
 
-    @unittest.expectedFailure
     def test_get_travis_branch(self):
-        raise NotImplementedError
+        # matrix of env dict, expected result
+        matrix = (
+            ({
+                'TRAVIS_PULL_REQUEST': 'false',
+                'TRAVIS_PULL_REQUEST_BRANCH': '',
+                'TRAVIS_BRANCH': 'master',
+              }, 'master'),
+            ({
+                'TRAVIS_PULL_REQUEST': 'false',
+                'TRAVIS_PULL_REQUEST_BRANCH': '',
+                'TRAVIS_BRANCH': 'foo',
+              }, 'foo'),
+            ({
+                'TRAVIS_PULL_REQUEST': '1',
+                'TRAVIS_PULL_REQUEST_BRANCH': 'foo',
+                'TRAVIS_BRANCH': 'master',
+            }, 'foo'),
+            ({}, None),
+        )
+
+        for env, expected in matrix:
+            with patch.dict('os.environ', env, clear=True):
+                actual = ballet.util.ci.get_travis_branch()
+                self.assertEqual(actual, expected)
 
     def test_travis_pull_request_build_differ(self):
         with mock_repo() as repo:
