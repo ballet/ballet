@@ -132,8 +132,11 @@ def prune_existing_features(project):
 
     out = project.build()
     X_df, y, features = out['X_df'], out['y'], out['features']
-    evaluator = NoOpPruningEvaluator(X_df, y, features)
-    redundant_features = evaluator.prune()
+
+    new_feature = get_proposed_feature(project)
+    accepted_features = get_accepted_features(features, new_feature)
+    evaluator = NoOpPruningEvaluator(X_df, y, accepted_features)
+    redundant_features = evaluator.prune(new_feature)
 
     # propose removal
     for feature in redundant_features:
