@@ -52,13 +52,13 @@ class GFSSFPruningEvaluator(FeatureAcceptanceEvaluator):
             self.lmbda_1, self.lmbda_2, feature_dfs_by_src)
 
         logger.info(
-            'Judging Feature using GFSSF: lambda_1={l1}, lambda_2={l2}'.format(
+            'Pruning Features using GFSSF: lambda_1={l1}, lambda_2={l2}'.format(
                 l1=lmbda_1, l2=lmbda_2))
         redundant_features = []
         for candidate_feature in self.features:
             candidate_src = candidate_feature.source
             logger.debug(
-                'Judging feature: {}'.format(
+                'Pruning feature: {}'.format(
                     candidate_src))
             candidate_df = feature_dfs_by_src[candidate_src]
             _, n_candidate_cols = candidate_df.shape
