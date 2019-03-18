@@ -89,7 +89,7 @@ def detect_target_type():
 @log_validation_stage('checking project structure')
 def check_project_structure(project):
     if not project.on_pr():
-        raise SkippedValidationTest
+        raise SkippedValidationTest('Not on PR')
 
     validator = FileChangeValidator(project)
     result = validator.validate()
@@ -100,7 +100,7 @@ def check_project_structure(project):
 @log_validation_stage('validating feature API')
 def validate_feature_api(project):
     if not project.on_pr():
-        raise SkippedValidationTest
+        raise SkippedValidationTest('Not on PR')
 
     validator = FeatureApiValidator(project)
     result = validator.validate()
@@ -111,7 +111,7 @@ def validate_feature_api(project):
 @log_validation_stage('evaluating feature performance')
 def evaluate_feature_performance(project):
     if not project.on_pr():
-        raise SkippedValidationTest
+        raise SkippedValidationTest('Not on PR')
 
     out = project.build()
     X_df, y, features = out['X_df'], out['y'], out['features']
@@ -127,8 +127,8 @@ def evaluate_feature_performance(project):
 
 @log_validation_stage('pruning existing features')
 def prune_existing_features(project):
-    if project.on_pr():
-        raise SkippedValidationTest
+    if project.on_master():
+        raise SkippedValidationTest('Not on master')
 
     out = project.build()
     X_df, y, features = out['X_df'], out['y'], out['features']

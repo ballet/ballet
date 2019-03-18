@@ -2,7 +2,7 @@ import re
 
 import git
 import requests
-from funcy import collecting, ignore, re_find, re_test
+from funcy import collecting, re_find, re_test, silent
 
 from ballet.compat import pathlib, safepath
 from ballet.util import one_or_raise
@@ -107,13 +107,25 @@ def get_diff_endpoints_from_commit_range(repo, commit_range):
     return a, b
 
 
-@ignore(Exception)
-def get_pr_num(repo=None):
+def get_repo(repo=None):
     if repo is None:
         repo = git.Repo(safepath(pathlib.Path.cwd()),
                         search_parent_directories=True)
+    return repo
+
+
+@silent
+def get_pr_num(repo=None):
+    repo = get_repo(repo)
     pr_num = re_find(PR_REF_PATH_REGEX, repo.head.ref.path)
     return int(pr_num)
+
+
+@silent
+def get_branch(repo=None):
+    repo = get_repo(repo)
+    branch = repo.head.ref.name
+    return branch
 
 
 def switch_to_new_branch(repo, name):

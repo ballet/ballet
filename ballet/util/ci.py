@@ -1,12 +1,25 @@
 import os
 
 import git
-from funcy import constantly, ignore, post_processing
+from funcy import complement, constantly, ignore, post_processing
 
 from ballet.exc import UnexpectedTravisEnvironmentError
 from ballet.util.git import (
     PullRequestBuildDiffer, get_diff_endpoints_from_commit_range)
 from ballet.util.log import logger
+
+
+def falsy(o):
+    if isinstance(o, str):
+        if o == 'false':
+            return True
+        elif o == '':
+            return True
+
+    return False
+
+
+truthy = complement(falsy)
 
 
 def get_travis_env_or_fail(name):
@@ -43,7 +56,7 @@ def get_travis_pr_num():
     """  # noqa
     try:
         travis_pull_request = get_travis_env_or_fail('TRAVIS_PULL_REQUEST')
-        if travis_pull_request == 'false':
+        if falsy(travis_pull_request):
             return None
         else:
             try:
@@ -57,6 +70,20 @@ def get_travis_pr_num():
 def is_travis_pr():
     """Check if the current job is a pull request build"""
     return get_travis_pr_num() is not None
+
+
+def get_travis_branch():
+    try:
+        travis_pull_request = get_travis_env_or_fail('TRAVIS_PULL_REQUEST')
+        travis_pull_request_branch = get_travis_env_or_fail(
+            'TRAVIS_PULL_REQUEST_BRANCH')
+        travis_branch = get_travis_branch('TRAVIS_BRANCH')
+        if truthy(travis_pull_request):
+            return travis_pull_request_branch
+        else:
+            return travis_branch
+    except UnexpectedTravisEnvironmentError:
+        return None
 
 
 @ignore(UnexpectedTravisEnvironmentError, default=False)
