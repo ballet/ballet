@@ -11,7 +11,7 @@ from ballet.util.log import logger
 
 def falsy(o):
     if isinstance(o, str):
-        if o == 'false':
+        if o.lower() == 'false':
             return True
         elif o == '':
             return True
