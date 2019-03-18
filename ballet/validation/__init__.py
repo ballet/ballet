@@ -8,8 +8,7 @@ from ballet.exc import (
     InvalidProjectStructure, SkippedValidationTest)
 from ballet.project import Project
 from ballet.util.log import logger, stacklog
-from ballet.validation.feature_evaluation import (
-    NoOpAcceptanceEvaluator, NoOpPruningEvaluator)
+from ballet.validation.feature_evaluation import NoOpPruningEvaluator
 from ballet.validation.gfssf_validator import GFSSFAcceptanceEvaluator
 from ballet.validation.project_structure import (
     ChangeCollector, FeatureApiValidator, FileChangeValidator)

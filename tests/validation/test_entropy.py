@@ -1,7 +1,6 @@
 import unittest
 
 import numpy as np
-import pandas as pd
 
 from ballet.validation.entropy import (
     calculate_disc_entropy, estimate_conditional_information, estimate_entropy,
@@ -71,7 +70,9 @@ class EntropyTest(unittest.TestCase):
         cmi = estimate_conditional_information(x, y, useless_z)
         mi = estimate_mutual_information(x, y)
         self.assertAlmostEqual(
-            cmi, mi, 'uninformative z should not affect mutual information score')
+            cmi,
+            mi,
+            'uninformative z should not affect mutual information score')
 
     def test_cmi_redundant_info(self):
         x = np.reshape(np.arange(1, 101), (100, 1))

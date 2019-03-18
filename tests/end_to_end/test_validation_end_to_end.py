@@ -1,5 +1,4 @@
 import os
-import tempfile
 from subprocess import CalledProcessError, check_call
 from textwrap import dedent
 from types import ModuleType

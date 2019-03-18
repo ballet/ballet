@@ -1,11 +1,5 @@
-import math
-
 import numpy as np
-import pandas as pd
-from scipy.special import digamma, gamma
-from sklearn.neighbors import NearestNeighbors
 
-from ballet.feature import make_mapper
 from ballet.util import asarray2d
 from ballet.util.log import logger
 from ballet.validation.base import FeatureAcceptanceEvaluator
@@ -49,7 +43,8 @@ class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
         self.lmbda_2 = lmbda_2
 
     def judge(self, feature):
-        feature_df = feature.as_dataframe_mapper().fit_transform(self.X_df, self.y)
+        feature_df = feature.as_dataframe_mapper() \
+            .fit_transform(self.X_df, self.y)
         n_samples, n_feature_cols = feature_df.shape
         feature_dfs_by_src = {}
         for accepted_feature in self.features:

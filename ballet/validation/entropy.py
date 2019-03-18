@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.special import digamma, gamma
+from scipy.special import digamma
 from sklearn.neighbors import NearestNeighbors
 
 from ballet.util import asarray2d
