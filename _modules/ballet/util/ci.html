@@ -240,13 +240,7 @@
 
 
 <div class="viewcode-block" id="falsy"><a class="viewcode-back" href="../../../api/ballet.util.ci.html#ballet.util.ci.falsy">[docs]</a><span class="k">def</span> <span class="nf">falsy</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">o</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;false&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">elif</span> <span class="n">o</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">True</span>
-
-    <span class="k">return</span> <span class="kc">False</span></div>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;false&#39;</span> <span class="ow">or</span> <span class="n">o</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">)</span></div>
 
 
 <span class="n">truthy</span> <span class="o">=</span> <span class="n">complement</span><span class="p">(</span><span class="n">falsy</span><span class="p">)</span>
@@ -283,7 +277,7 @@
 
 <span class="sd">    See also:</span>
 <span class="sd">        - &lt;https://docs.travis-ci.com/user/environment-variables/#Default-Environment-Variables&gt;</span>
-<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa</span>
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa E501</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">travis_pull_request</span> <span class="o">=</span> <span class="n">get_travis_env_or_fail</span><span class="p">(</span><span class="s1">&#39;TRAVIS_PULL_REQUEST&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">falsy</span><span class="p">(</span><span class="n">travis_pull_request</span><span class="p">):</span>
@@ -303,14 +297,23 @@
 
 
 <div class="viewcode-block" id="get_travis_branch"><a class="viewcode-back" href="../../../api/ballet.util.ci.html#ballet.util.ci.get_travis_branch">[docs]</a><span class="k">def</span> <span class="nf">get_travis_branch</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Get current branch per Travis environment variables</span>
+
+<span class="sd">    If travis is building a PR, then TRAVIS_PULL_REQUEST is truthy and the</span>
+<span class="sd">    name of the branch corresponding to the PR is stored in the</span>
+<span class="sd">    TRAVIS_PULL_REQUEST_BRANCH environment variable. Else, the name of the</span>
+<span class="sd">    branch is stored in the TRAVIS_BRANCH environment variable.</span>
+
+<span class="sd">    See also: &lt;https://docs.travis-ci.com/user/environment-variables/#default-environment-variables&gt;</span>
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa E501</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">travis_pull_request</span> <span class="o">=</span> <span class="n">get_travis_env_or_fail</span><span class="p">(</span><span class="s1">&#39;TRAVIS_PULL_REQUEST&#39;</span><span class="p">)</span>
-        <span class="n">travis_pull_request_branch</span> <span class="o">=</span> <span class="n">get_travis_env_or_fail</span><span class="p">(</span>
-            <span class="s1">&#39;TRAVIS_PULL_REQUEST_BRANCH&#39;</span><span class="p">)</span>
-        <span class="n">travis_branch</span> <span class="o">=</span> <span class="n">get_travis_branch</span><span class="p">(</span><span class="s1">&#39;TRAVIS_BRANCH&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">truthy</span><span class="p">(</span><span class="n">travis_pull_request</span><span class="p">):</span>
+            <span class="n">travis_pull_request_branch</span> <span class="o">=</span> <span class="n">get_travis_env_or_fail</span><span class="p">(</span>
+                <span class="s1">&#39;TRAVIS_PULL_REQUEST_BRANCH&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">travis_pull_request_branch</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="n">travis_branch</span> <span class="o">=</span> <span class="n">get_travis_env_or_fail</span><span class="p">(</span><span class="s1">&#39;TRAVIS_BRANCH&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">travis_branch</span>
     <span class="k">except</span> <span class="n">UnexpectedTravisEnvironmentError</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span></div>
