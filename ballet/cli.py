@@ -17,7 +17,10 @@ def quickstart():
 
 
 @cli.command('update-project-template')
-def update_project_template():
+@click.option('--push/--no-push', '-p',
+              default=False,
+              help='Push updates to remote on success')
+def update_project_template(push):
     """Update an existing ballet project from the upstream template"""
     import ballet.update
-    ballet.update.main()
+    ballet.update.main(push=push)

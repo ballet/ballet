@@ -12,13 +12,14 @@ from ballet.compat import pathlib, safepath
 from ballet.exc import ConfigurationError, Error
 from ballet.project import Project
 from ballet.quickstart import generate_project
-from ballet.util.log import logger
+from ballet.util.log import logger, stacklog
 
 PROJECT_CONTEXT_PATH = (
     pathlib.Path(__file__).resolve().parent.joinpath(
         'project_template',
         'cookiecutter.json'))
 CONTEXT_FILE_NAME = '.cookiecutter_context.json'
+DEFAULT_BRANCH = 'master'
 TEMPLATE_BRANCH = 'project-template'
 
 
@@ -66,7 +67,7 @@ def _get_full_context(cwd):
     return context['cookiecutter']
 
 
-def update_project_template():
+def update_project_template(push=False):
     cwd = pathlib.Path.cwd().resolve()
 
     # get ballet project info -- must be at project root directory with a
@@ -83,6 +84,11 @@ def update_project_template():
         raise Error(
             'Can\'t update project template with uncommitted changes. '
             'Please commit your changes and try again.')
+
+    if repo.head.ref.name != DEFAULT_BRANCH:
+        raise ConfigurationError(
+            'Must run command from branch {master}'
+            .format(master=DEFAULT_BRANCH))
 
     if TEMPLATE_BRANCH not in repo.branches:
         raise ConfigurationError(
@@ -103,7 +109,7 @@ def update_project_template():
         repo.heads[TEMPLATE_BRANCH].checkout()
         try:
             repo.git.merge(
-                remote_name + '/master',
+                remote_name + '/' + DEFAULT_BRANCH,
                 allow_unrelated_histories=True,
                 strategy_option='theirs',
                 squash=True,
@@ -121,7 +127,7 @@ def update_project_template():
             raise
         finally:
             _safe_delete_remote(repo, remote_name)
-            repo.heads.master.checkout()
+            repo.heads[DEFAULT_BRANCH].checkout()
 
     try:
         repo.git.merge(TEMPLATE_BRANCH, no_ff=True)
@@ -139,8 +145,47 @@ def update_project_template():
 
     logger.info('Update successful.')
 
+    # with default config, equivalent to:
+    # $ git push origin \
+    #       master:master \
+    #       project-template:project-template
+    if push:
+        with stacklog(logger.info, 'Pushing updates to remote'):
+            remote_name = project.get('remote')
+            remote = repo.remote(remote_name)
+            result = remote.push([
+                '{master}:{master}'.format(master=DEFAULT_BRANCH),
+                '{project_template}:{project_template}'.format(
+                    project_template=TEMPLATE_BRANCH),
+            ])
 
-def main():
+            errors = (
+                git.PushInfo.REJECTED |
+                git.PushInfo.REMOTE_REJECTED |
+                git.PushInfo.REMOTE_FAILURE |
+                git.PushInfo.ERROR
+            )
+            failures = [
+                push_info
+                for push_info in result
+                if push_info.flags & errors
+
+            ]
+            if failures:
+                for push_info in failures:
+                    logger.error(
+                        'Failed to push ref {from_ref} to {to_ref}'
+                        .format(from_ref=push_info.local_ref.name,
+                                to_ref=push_info.remote_ref.name)
+                    )
+                raise Error('Push failed')
+
+        logger.info('Push successful.')
+
+
+
+
+def main(**kwargs):
     import ballet.util.log
     ballet.util.log.enable(level='INFO', echo=False)
-    update_project_template()
+    update_project_template(**kwargs)

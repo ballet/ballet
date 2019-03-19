@@ -23,5 +23,5 @@ def generate_project(**kwargs):
     return cookiecutter(project_template_path, **kwargs)
 
 
-def main():
-    return generate_project()
+def main(**kwargs):
+    return generate_project(**kwargs)
