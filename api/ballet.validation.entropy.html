@@ -1,0 +1,519 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ballet.validation.entropy module &mdash; ballet 0.5.3-dev documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ballet.validation.feature_api_checks module" href="ballet.validation.feature_api_checks.html" />
+    <link rel="prev" title="ballet.validation.diff_checks module" href="ballet.validation.diff_checks.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> ballet
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../readme.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../readme.html#reference">Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#stable-release">Stable release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#from-source">From source</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#ballet-projects">Ballet projects</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#project-instantiation">Project instantiation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#developing-new-features">Developing new features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#validating-features">Validating features</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced Usage</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="ballet.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="ballet.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="ballet.eng.html">ballet.eng package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ballet.eng.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.modeling.html">ballet.modeling package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ballet.modeling.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.util.html">ballet.util package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ballet.util.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="reference internal" href="ballet.validation.html">ballet.validation package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="ballet.validation.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ballet.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ballet.cli.html">ballet.cli module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.compat.html">ballet.compat module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.contrib.html">ballet.contrib module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.exc.html">ballet.exc module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.feature.html">ballet.feature module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.modeler.html">ballet.modeler module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.project.html">ballet.project module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.quickstart.html">ballet.quickstart module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.update.html">ballet.update module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Development Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#types-of-contributions">Types of Contributions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#report-bugs">Report Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#fix-bugs">Fix Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#implement-features">Implement Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#write-documentation">Write Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#submit-feedback">Submit Feedback</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#get-started">Get Started!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#pull-request-guidelines">Pull Request Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#tips">Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#deploying">Deploying</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../authors.html">Credits</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../authors.html#development-lead">Development Lead</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../authors.html#contributors">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">History</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id1">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id2">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id3">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id4">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id5">0.1</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ballet</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="ballet.html">ballet package</a> &raquo;</li>
+        
+          <li><a href="ballet.validation.html">ballet.validation package</a> &raquo;</li>
+        
+      <li>ballet.validation.entropy module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/HDI-Project/ballet/blob/master/docs/api/ballet.validation.entropy.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-ballet.validation.entropy">
+<span id="ballet-validation-entropy-module"></span><h1>ballet.validation.entropy module<a class="headerlink" href="#module-ballet.validation.entropy" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="ballet.validation.entropy.calculate_disc_entropy">
+<code class="descclassname">ballet.validation.entropy.</code><code class="descname">calculate_disc_entropy</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#calculate_disc_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.calculate_disc_entropy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the exact Shannon entropy of a discrete dataset,
+using empirical probabilities according to the equation:
+$ H(X) = -sum(c in X) p(c) times log(p(c)) $
+Where $ p(c) $ is calculated as the frequency of c in X.</p>
+<p>If X’s columns logically represent continuous features,
+it is better to use the estimate_cont_entropy function.
+If you are unsure of which to use, estimate_entropy can
+take datasets of mixed discrete and continuous functions.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> (<em>array-like</em>) – An array with shape (n_samples, n_features)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A floating-point number representing the dataset entropy.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ballet.validation.entropy.estimate_conditional_information">
+<code class="descclassname">ballet.validation.entropy.</code><code class="descname">estimate_conditional_information</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#estimate_conditional_information"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.estimate_conditional_information" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimates the conditional mutual information of
+three datasets. Conditional mutual information is the
+mutual information of two datasets, given a third:</p>
+<p>$ I(x;y|z) = H(x,z) + H(y,z) - H(x,y,z) - H(z) $</p>
+<p>Where H(x) is the Shannon entropy of x. For continuous datasets,
+adapts the Kraskov Estimator [1] for mutual information.</p>
+<p>Equation 8 still holds because the epsilon terms cancel out:
+Let d_x, represent the dimensionality of the continuous portion of x.
+Then, we see that:
+d_xz + d_yz - d_xyz - d_z =
+(d_x + d_z) + (d_y + d_z) - (d_x + d_y + d_z) - d_z = 0</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>array-like</em>) – An array with shape (n_samples, n_features_x)</li>
+<li><strong>y</strong> (<em>array-like</em>) – An array with shape (n_samples, n_features_y)</li>
+<li><strong>z</strong> (<em>array-like</em>) – An array with shape (n_samples, n_features_z).
+This is the dataset being conditioned on.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>A floating point number representing the conditional</dt>
+<dd><p class="first last">mutual information of x and y given z. This calculation is
+<em>exact</em> for entirely discrete datasets and <em>approximate</em>
+if there are continuous columns present.</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>References:
+.. [1] A. Kraskov, H. Stogbauer and P. Grassberger, “Estimating mutual</p>
+<blockquote>
+<div>information”. Phys. Rev. E 69, 2004.</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="ballet.validation.entropy.estimate_cont_entropy">
+<code class="descclassname">ballet.validation.entropy.</code><code class="descname">estimate_cont_entropy</code><span class="sig-paren">(</span><em>X</em>, <em>epsilon=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#estimate_cont_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.estimate_cont_entropy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimates the Shannon entropy of a discrete dataset.
+Based off the Kraskov Estimator [1] and Kozachenko [2]
+estimators for a dataset’s Shannon entropy.</p>
+<p>The function relies on nonparametric methods based on entropy
+estimation from k-nearest neighbors distances as proposed
+in [1] and augmented in [2] for mutual information estimation.</p>
+<p>If X’s columns logically represent discrete features,
+it is better to use the calculate_disc_entropy function.
+If you are unsure of which to use, estimate_entropy can
+take datasets of mixed discrete and continuous functions.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>X</strong> (<em>array-like</em>) – An array with shape (n_samples, n_features)</li>
+<li><strong>epsilon</strong> (<em>array-like</em>) – An array with shape (n_samples, 1) that is
+the epsilon used in Kraskov Estimator. Represents the chebyshev
+distance from an element to its k-th nearest neighbor in the full
+dataset.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>A floating-point number. If epsilon is not provided,</dt>
+<dd><p class="first last">this will be the Kozacheko Estimator of the dataset’s entropy.
+If epsilon is provided, this is a partial estimation of the Kraskov
+entropy estimator. The bias is cancelled out when computing
+mutual information.</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>References:
+.. [1] A. Kraskov, H. Stogbauer and P. Grassberger, “Estimating mutual</p>
+<blockquote>
+<div>information”. Phys. Rev. E 69, 2004.</div></blockquote>
+<table class="docutils footnote" frame="void" id="id1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[2]</td><td>L. F. Kozachenko, N. N. Leonenko, “Sample Estimate of the Entropy
+of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16</td></tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ballet.validation.entropy.estimate_entropy">
+<code class="descclassname">ballet.validation.entropy.</code><code class="descname">estimate_entropy</code><span class="sig-paren">(</span><em>X</em>, <em>epsilon=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#estimate_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.estimate_entropy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimates a dataset’s Shannon entropy.</p>
+<p>This function can take datasets of mixed discrete and continuous
+features, and uses a set of heuristics to determine which functions
+to apply to each.</p>
+<p>Because this function is a subroutine in a mutual information estimator,
+we employ the Kozachenko Estimator[1] for continuous features when this
+function is _not_ used for mutual information and an adaptation of the
+Kraskov Estimator[2] when it is.</p>
+<p>Let X be made of continuous features c and discrete features d.
+To deal with both continuous and discrete features, We use the
+following reworking of entropy:</p>
+<p>$ H(X) = H(c,d) = sum_{x in d} p(x) times H(c(x)) + H(d) $</p>
+<p>Where c(x) is a dataset that represents the rows of the continuous dataset
+in the same row as a discrete column with value x in the original dataset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>X</strong> (<em>array-like</em>) – An array with shape (n_samples, n_features)</li>
+<li><strong>epsilon</strong> (<em>array-like</em>) – An array with shape (n_samples, 1) that is
+the epsilon used in Kraskov Estimator. Represents the chebyshev
+distance from an element to its k-th nearest neighbor in the full
+dataset.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>A floating-point number representing the entropy in X.</dt>
+<dd><p class="first last">If the dataset is fully discrete, an exact calculation is done.
+If this is not the case and epsilon is not provided, this
+will be the Kozacheko Estimator of the dataset’s entropy.
+If epsilon is provided, this is a partial estimation of the
+Kraskov entropy estimator. The bias is cancelled out when
+computing mutual information.</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>References:
+.. [1] A. Kraskov, H. Stogbauer and P. Grassberger, “Estimating mutual</p>
+<blockquote>
+<div>information”. Phys. Rev. E 69, 2004.</div></blockquote>
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[2]</td><td>L. F. Kozachenko, N. N. Leonenko, “Sample Estimate of the Entropy
+of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16</td></tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ballet.validation.entropy.estimate_mutual_information">
+<code class="descclassname">ballet.validation.entropy.</code><code class="descname">estimate_mutual_information</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#estimate_mutual_information"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.estimate_mutual_information" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimates the mutual information of two datasets.
+Mutual information is a measure of dependence between
+two datasets and is calculated as:</p>
+<p>$ I(x;y) = H(x) + H(y) - H(x,y)$</p>
+<p>Where H(x) is the Shannon entropy of x. For continuous datasets,
+adapts the Kraskov Estimator [1] for mutual information.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>array-like</em>) – An array with shape (n_samples, n_features_x)</li>
+<li><strong>y</strong> (<em>array-like</em>) – An array with shape (n_samples, n_features_y)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>A floating point number representing the mutual</dt>
+<dd><p class="first last">information of x and y. This calculation is <em>exact</em>
+for entirely discrete datasets and <em>approximate</em> if
+there are continuous columns present.</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>References:
+.. [1] A. Kraskov, H. Stogbauer and P. Grassberger, “Estimating mutual</p>
+<blockquote>
+<div>information”. Phys. Rev. E 69, 2004.</div></blockquote>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ballet.validation.feature_api_checks.html" class="btn btn-neutral float-right" title="ballet.validation.feature_api_checks module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ballet.validation.diff_checks.html" class="btn btn-neutral float-left" title="ballet.validation.diff_checks module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Micah Smith
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

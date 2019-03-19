@@ -236,8 +236,8 @@
     <span class="n">InvalidProjectStructure</span><span class="p">,</span> <span class="n">SkippedValidationTest</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ballet.project</span> <span class="k">import</span> <span class="n">Project</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span><span class="p">,</span> <span class="n">stacklog</span>
-<span class="kn">from</span> <span class="nn">ballet.validation.feature_evaluation</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">NoOpAcceptanceEvaluator</span><span class="p">,</span> <span class="n">NoOpPruningEvaluator</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ballet.validation.feature_evaluation</span> <span class="k">import</span> <span class="n">NoOpPruningEvaluator</span>
+<span class="kn">from</span> <span class="nn">ballet.validation.gfssf_validator</span> <span class="k">import</span> <span class="n">GFSSFAcceptanceEvaluator</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.project_structure</span> <span class="k">import</span> <span class="p">(</span>
     <span class="n">ChangeCollector</span><span class="p">,</span> <span class="n">FeatureApiValidator</span><span class="p">,</span> <span class="n">FileChangeValidator</span><span class="p">)</span>
 
@@ -346,7 +346,7 @@
 
     <span class="n">proposed_feature</span> <span class="o">=</span> <span class="n">get_proposed_feature</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
     <span class="n">accepted_features</span> <span class="o">=</span> <span class="n">get_accepted_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">proposed_feature</span><span class="p">)</span>
-    <span class="n">evaluator</span> <span class="o">=</span> <span class="n">NoOpAcceptanceEvaluator</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">accepted_features</span><span class="p">)</span>
+    <span class="n">evaluator</span> <span class="o">=</span> <span class="n">GFSSFAcceptanceEvaluator</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">accepted_features</span><span class="p">)</span>
     <span class="n">accepted</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">judge</span><span class="p">(</span><span class="n">proposed_feature</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">accepted</span><span class="p">:</span>
