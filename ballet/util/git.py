@@ -1,10 +1,17 @@
-import os
 import re
 
 import git
 import requests
-from funcy import collecting, ignore, re_find, re_test
+from funcy import collecting, re_find, re_test, silent
 
+from ballet.compat import pathlib, safepath
+from ballet.util import one_or_raise
+
+FILE_CHANGES_COMMIT_RANGE = '{a}...{b}'
+REV_REGEX = r'[a-zA-Z0-9_/^@{}-]+'
+COMMIT_RANGE_REGEX = re.compile(
+    r'(?P<a>{rev})\.\.(?P<thirddot>\.?)(?P<b>{rev})'
+    .format(rev=REV_REGEX))
 PR_REF_PATH_REGEX = re.compile(r'refs/heads/pull/(\d+)')
 
 
@@ -22,14 +29,13 @@ class PullRequestBuildDiffer:
         self._check_environment()
 
     def diff(self):
-        diff_str = self._get_diff_str()
-        diffs = get_diffs_by_diff_str(self.repo, diff_str)
-        return diffs
+        a, b = self._get_diff_endpoints()
+        return a.diff(b)
 
     def _check_environment(self):
         raise NotImplementedError
 
-    def _get_diff_str(self):
+    def _get_diff_endpoints(self):
         raise NotImplementedError
 
 
@@ -46,60 +52,80 @@ class LocalPullRequestBuildDiffer(PullRequestBuildDiffer):
     def _check_environment(self):
         assert re_test(PR_REF_PATH_REGEX, self._pr_path)
 
-    def _get_diff_str(self):
-        return '{from_}..{to_}'.format(from_='master', to_=self._pr_name)
+    def _get_diff_endpoints(self):
+        a = self.repo.rev_parse('master')
+        b = self.repo.rev_parse(self._pr_name)
+        return a, b
 
 
-def get_diffs_by_revision(repo, from_revision, to_revision):
-    '''Get file changes between two revisions.
-
-    For details on specifying revisions, see `git help revisions`.
-
-    Args:
-        repo (git.Repo): Repo object initialized with project root
-        from_revision (str): revision identifier for the starting point of the
-            diff
-        to_revision (str): revision identifier for the ending point of the diff
-
-    Returns:
-        list of git.diff.Diff identifying changes between revisions
-    '''
-    diff_str = '{from_revision}..{to_revision}'.format(
-        from_revision=from_revision, to_revision=to_revision)
-    return get_diffs_by_diff_str(repo, diff_str)
+def make_commit_range(a, b):
+    return FILE_CHANGES_COMMIT_RANGE.format(a=a, b=b)
 
 
-def get_diff_str_from_commits(a, b):
-    return '{a}..{b}'.format(a=a.hexsha, b=b.hexsha)
+def get_diff_endpoints_from_commit_range(repo, commit_range):
+    """Get endpoints of a diff given a commit range
 
+    The resulting endpoints can be diffed directly::
 
-def get_diffs_by_diff_str(repo, diff_str):
-    '''Get file changes via a diff string.
+        a, b = get_diff_endpoints_from_commit_range(repo, commit_range)
+        a.diff(b)
 
-    For details on specifying revisions, see `git help revisions`.
+    For details on specifying git diffs, see ``git diff --help``.
+    For details on specifying revisions, see ``git help revisions``.
 
     Args:
         repo (git.Repo): Repo object initialized with project root
-        diff_str (str): diff string identifying range of diff. For example,
-            `master..HEAD` diffs from master to HEAD, and `12345678..abcdef90`
-            compares to commits.
+        commit_range (str): commit range as would be interpreted by ``git
+            diff`` command. Unfortunately only patterns of the form ``a..b``
+            and ``a...b`` are accepted. Note that the latter pattern finds the
+            merge-base of a and b and uses it as the starting point for the
+            diff.
 
     Returns:
-        list of git.diff.Diff identifying changes between revisions
-    '''
-    a, b = diff_str.split('..')
-    a_obj = repo.rev_parse(a)
-    b_obj = repo.rev_parse(b)
-    diffs = a_obj.diff(b_obj)
-    return diffs
+        Tuple[git.Commit, git.Commit]: starting commit, ending commit (
+            inclusive)
+
+    Raises:
+        ValueError: commit_range is empty or ill-formed
+
+    See also:
+
+        <https://stackoverflow.com/q/7251477>
+    """
+    if not commit_range:
+        raise ValueError('commit_range cannot be empty')
+
+    result = re_find(COMMIT_RANGE_REGEX, commit_range)
+    if not result:
+        raise ValueError(
+            'Expected diff str of the form \'a..b\' or \'a...b\' (got {})'
+            .format(commit_range))
+    a, b = result['a'], result['b']
+    a, b = repo.rev_parse(a), repo.rev_parse(b)
+    if result['thirddot']:
+        a = one_or_raise(repo.merge_base(a, b))
+    return a, b
 
 
-@ignore(Exception)
-def get_pr_num(repo=None):
+def get_repo(repo=None):
     if repo is None:
-        repo = git.Repo(os.getcwd(), search_parent_directories=True)
+        repo = git.Repo(safepath(pathlib.Path.cwd()),
+                        search_parent_directories=True)
+    return repo
+
+
+@silent
+def get_pr_num(repo=None):
+    repo = get_repo(repo)
     pr_num = re_find(PR_REF_PATH_REGEX, repo.head.ref.path)
     return int(pr_num)
+
+
+@silent
+def get_branch(repo=None):
+    repo = get_repo(repo)
+    branch = repo.head.ref.name
+    return branch
 
 
 def switch_to_new_branch(repo, name):
@@ -111,10 +137,14 @@ def set_config_variables(repo, variables):
     """Set config variables
 
     Args:
+        repo (git.Repo): repo
         variables (dict): entries of the form 'user.email': 'you@example.com'
     """
-    for k, v in variables.items():
-        repo.git.config(k, v)
+    with repo.config_writer() as writer:
+        for k, value in variables.items():
+            section, option = k.split('.')
+            writer.set_value(section, option, value)
+        writer.release()
 
 
 def get_pull_requests(owner, repo, state='closed'):

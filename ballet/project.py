@@ -6,8 +6,8 @@ from funcy import get_in, memoize, partial
 
 from ballet.compat import pathlib
 from ballet.exc import ConfigurationError
-from ballet.util.ci import get_travis_pr_num
-from ballet.util.git import get_pr_num
+from ballet.util.ci import get_travis_branch, get_travis_pr_num
+from ballet.util.git import get_branch, get_pr_num
 from ballet.util.mod import import_module_at_path
 
 DEFAULT_CONFIG_NAME = 'ballet.yml'
@@ -43,7 +43,7 @@ def get_config_paths(package_root):
 def load_config_at_path(path):
     if path.exists() and path.is_file():
         with path.open('r') as f:
-            return yaml.load(f)
+            return yaml.load(f, Loader=yaml.SafeLoader)
     else:
         return None
 
@@ -195,6 +195,17 @@ class Project:
     def on_pr(self):
         """Return whether the project has a source tree on a PR"""
         return self.pr_num is not None
+
+    @property
+    def branch(self):
+        """Return whether the project is on master branch"""
+        result = get_branch(repo=self.repo)
+        if result is None:
+            result = get_travis_branch()
+        return result
+
+    def on_master(self):
+        return self.branch == 'master'
 
     @property
     def path(self):

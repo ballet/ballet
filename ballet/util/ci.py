@@ -1,11 +1,19 @@
 import os
 
 import git
-from funcy import constantly, ignore, post_processing
+from funcy import complement
 
 from ballet.exc import UnexpectedTravisEnvironmentError
-from ballet.util.git import PullRequestBuildDiffer
+from ballet.util.git import (
+    PullRequestBuildDiffer, get_diff_endpoints_from_commit_range)
 from ballet.util.log import logger
+
+
+def falsy(o):
+    return isinstance(o, str) and (o.lower() == 'false' or o == '')
+
+
+truthy = complement(falsy)
 
 
 def get_travis_env_or_fail(name):
@@ -39,10 +47,10 @@ def get_travis_pr_num():
 
     See also:
         - <https://docs.travis-ci.com/user/environment-variables/#Default-Environment-Variables>
-    """  # noqa
+    """  # noqa E501
     try:
         travis_pull_request = get_travis_env_or_fail('TRAVIS_PULL_REQUEST')
-        if travis_pull_request == 'false':
+        if falsy(travis_pull_request):
             return None
         else:
             try:
@@ -58,19 +66,47 @@ def is_travis_pr():
     return get_travis_pr_num() is not None
 
 
-@ignore(UnexpectedTravisEnvironmentError, default=False)
-@post_processing(constantly(True))
+def get_travis_branch():
+    """Get current branch per Travis environment variables
+
+    If travis is building a PR, then TRAVIS_PULL_REQUEST is truthy and the
+    name of the branch corresponding to the PR is stored in the
+    TRAVIS_PULL_REQUEST_BRANCH environment variable. Else, the name of the
+    branch is stored in the TRAVIS_BRANCH environment variable.
+
+    See also: <https://docs.travis-ci.com/user/environment-variables/#default-environment-variables>
+    """  # noqa E501
+    try:
+        travis_pull_request = get_travis_env_or_fail('TRAVIS_PULL_REQUEST')
+        if truthy(travis_pull_request):
+            travis_pull_request_branch = get_travis_env_or_fail(
+                'TRAVIS_PULL_REQUEST_BRANCH')
+            return travis_pull_request_branch
+        else:
+            travis_branch = get_travis_env_or_fail('TRAVIS_BRANCH')
+            return travis_branch
+    except UnexpectedTravisEnvironmentError:
+        return None
+
+
 def can_use_travis_differ():
     """Check if the required travis env vars are set for the travis differ"""
-    ensure_expected_travis_env_vars(
-        TravisPullRequestBuildDiffer.EXPECTED_TRAVIS_ENV_VARS)
+    try:
+        ensure_expected_travis_env_vars(
+            TravisPullRequestBuildDiffer.EXPECTED_TRAVIS_ENV_VARS)
+    except UnexpectedTravisEnvironmentError:
+        return False
+    else:
+        return True
 
 
 class TravisPullRequestBuildDiffer(PullRequestBuildDiffer):
 
     EXPECTED_TRAVIS_ENV_VARS = (
+        # 'TRAVIS_BRANCH',
         'TRAVIS_BUILD_DIR',
         'TRAVIS_PULL_REQUEST',
+        # 'TRAVIS_PULL_REQUEST_BRANCH',
         'TRAVIS_COMMIT_RANGE',
     )
 
@@ -89,8 +125,9 @@ class TravisPullRequestBuildDiffer(PullRequestBuildDiffer):
                 'TRAVIS_PULL_REQUEST {tpr!r} did not match expected {pr!r}'
                 .format(tpr=travis_pr_num, pr=self.pr_num))
 
-    def _get_diff_str(self):
-        return get_travis_env_or_fail('TRAVIS_COMMIT_RANGE')
+    def _get_diff_endpoints(self):
+        commit_range = get_travis_env_or_fail('TRAVIS_COMMIT_RANGE')
+        return get_diff_endpoints_from_commit_range(self.repo, commit_range)
 
     def _detect_repo(self):
         build_dir = get_travis_env_or_fail('TRAVIS_BUILD_DIR')

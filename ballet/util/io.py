@@ -127,4 +127,4 @@ def load_table_from_config(input_dir, config):
     """
     path = pathlib.Path(input_dir).joinpath(config['path'])
     kwargs = config['pd_read_kwargs']
-    return pd.read_table(path, **kwargs)
+    return pd.read_csv(path, **kwargs)

@@ -3,6 +3,9 @@ language: python
 python: 3.6
 
 branches:
+  only:
+  - master
+
   except:
   - project-template
 
@@ -21,5 +24,5 @@ install:
   - make install
 
 script:
-  - printenv | grep TRAVIS
+  - printenv | grep TRAVIS | sort
   - ./validate.py

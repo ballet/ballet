@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from funcy import contextmanager
 
-from ballet.util.git import get_diff_str_from_commits
+from ballet.util.git import make_commit_range
 from ballet.validation.project_structure import (
     ChangeCollector, FeatureApiValidator, FileChangeValidator)
 
@@ -71,7 +71,7 @@ def mock_file_change_validator(
     with mock_project(path_content) as repo:
         travis_build_dir = repo.working_tree_dir
         travis_pull_request = str(pr_num)
-        travis_commit_range = get_diff_str_from_commits(
+        travis_commit_range = '{}...{}'.format(
             repo.head.commit.parents[0], repo.head.commit)
 
         travis_env_vars = {
@@ -97,7 +97,7 @@ def mock_feature_api_validator(
     with mock_project(path_content) as repo:
         travis_build_dir = repo.working_tree_dir
         travis_pull_request = str(pr_num)
-        travis_commit_range = get_diff_str_from_commits(
+        travis_commit_range = make_commit_range(
             repo.head.commit.parents[0], repo.head.commit)
 
         travis_env_vars = {

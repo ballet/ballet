@@ -15,7 +15,7 @@ from ballet.eng.misc import IdentityTransformer
 from ballet.feature import Feature
 from ballet.quickstart import generate_project
 from ballet.util import get_enum_values
-from ballet.util.git import switch_to_new_branch
+from ballet.util.git import make_commit_range, switch_to_new_branch
 from ballet.util.log import logger
 from ballet.util.mod import import_module_at_path, modname_to_relpath
 from ballet.validation import TEST_TYPE_ENV_VAR, BalletTestTypes
@@ -45,7 +45,8 @@ def make_feature_str(input):
     """.format(input=input)).strip()
 
 
-def test_end_to_end(tempdir):
+@pytest.mark.slow
+def test_validation_end_to_end(tempdir):
     modname = 'foo'
     extra_context = {
         'project_name': modname.capitalize(),
@@ -133,12 +134,15 @@ def test_end_to_end(tempdir):
         }
         if pr is None:
             envvars['TRAVIS_PULL_REQUEST'] = 'false'
-            envvars['TRAVIS_COMMIT_RANGE'] = ''
+            envvars['TRAVIS_COMMIT_RANGE'] = make_commit_range(
+                repo.commit('HEAD@{-1}').hexsha, repo.commit('HEAD').hexsha)
+            envvars['TRAVIS_PULL_REQUEST_BRANCH'] = ''
+            envvars['TRAVIS_BRANCH'] = repo.heads.master.name
         else:
             envvars['TRAVIS_PULL_REQUEST'] = str(pr)
-            envvars['TRAVIS_COMMIT_RANGE'] = '{master}..{commit}'.format(
-                master='master',
-                commit=repo.commit('pull/{}'.format(pr)).hexsha)
+            envvars['TRAVIS_COMMIT_RANGE'] = make_commit_range(
+                repo.heads.master.name,
+                repo.commit('pull/{pr}'.format(pr=pr)).hexsha)
 
         with patch.dict(os.environ, envvars):
             for ballet_test_type in get_enum_values(BalletTestTypes):

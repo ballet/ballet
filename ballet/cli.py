@@ -1,7 +1,10 @@
 import click
 
+import ballet
+
 
 @click.group()
+@click.version_option(ballet.__version__)
 def cli():
     pass
 

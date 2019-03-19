@@ -13,19 +13,18 @@ from funcy import identity
 
 import ballet
 import ballet.util
+import ballet.util.ci
 import ballet.util.fs
+import ballet.util.git
 import ballet.util.io
 from ballet.compat import pathlib, safepath
-from ballet.util.ci import (
-    TravisPullRequestBuildDiffer, get_travis_pr_num, is_travis_pr)
-from ballet.util.git import (
-    get_diff_str_from_commits, get_pull_request_outcomes, get_pull_requests)
+from ballet.util.ci import TravisPullRequestBuildDiffer
 from ballet.util.mod import (  # noqa F401
     import_module_at_path, import_module_from_modname,
     import_module_from_relpath, modname_to_relpath, relpath_to_modname)
 from ballet.util.testing import ArrayLikeEqualityTestingMixin
 
-from .util import make_mock_commits, mock_repo
+from .util import make_mock_commit, make_mock_commits, mock_repo
 
 
 class UtilTest(
@@ -376,6 +375,18 @@ class CiTest(unittest.TestCase):
             'TRAVIS_COMMIT_RANGE': self.commit_range,
         }
 
+    def test_falsy(self):
+        matrix = (
+            ('false', True),  # i.e., is falsy
+            ('', True),
+            ('true', False),  # i.e, is not falsy
+            ('123', False),
+            (73, False),
+        )
+        for input, expected in matrix:
+            actual = ballet.util.ci.falsy(input)
+            self.assertEqual(actual, expected)
+
     def test_get_travis_pr_num(self):
         # matrix of env name, setting for env, expected result
         matrix = (
@@ -388,7 +399,7 @@ class CiTest(unittest.TestCase):
         )
         for env_name, env_value, expected in matrix:
             with patch.dict('os.environ', {env_name: env_value}, clear=True):
-                actual = get_travis_pr_num()
+                actual = ballet.util.ci.get_travis_pr_num()
                 self.assertEqual(actual, expected)
 
     def test_is_travis_pr(self):
@@ -402,11 +413,38 @@ class CiTest(unittest.TestCase):
         )
         for env_name, env_value, expected in matrix:
             with patch.dict('os.environ', {env_name: env_value}, clear=True):
-                actual = is_travis_pr()
+                actual = ballet.util.ci.is_travis_pr()
+                self.assertEqual(actual, expected)
+
+    def test_get_travis_branch(self):
+        # matrix of env dict, expected result
+        matrix = (
+            ({
+                'TRAVIS_PULL_REQUEST': 'false',
+                'TRAVIS_PULL_REQUEST_BRANCH': '',
+                'TRAVIS_BRANCH': 'master',
+              }, 'master'),
+            ({
+                'TRAVIS_PULL_REQUEST': 'false',
+                'TRAVIS_PULL_REQUEST_BRANCH': '',
+                'TRAVIS_BRANCH': 'foo',
+              }, 'foo'),
+            ({
+                'TRAVIS_PULL_REQUEST': '1',
+                'TRAVIS_PULL_REQUEST_BRANCH': 'foo',
+                'TRAVIS_BRANCH': 'master',
+            }, 'foo'),
+            ({}, None),
+        )
+
+        for env, expected in matrix:
+            with patch.dict('os.environ', env, clear=True):
+                actual = ballet.util.ci.get_travis_branch()
                 self.assertEqual(actual, expected)
 
     def test_travis_pull_request_build_differ(self):
         with mock_repo() as repo:
+            make_mock_commits(repo, n=3)
             pr_num = self.pr_num
             commit_range = 'HEAD^..HEAD'
 
@@ -417,16 +455,33 @@ class CiTest(unittest.TestCase):
             }
             with patch.dict('os.environ', travis_env_vars, clear=True):
                 differ = TravisPullRequestBuildDiffer(pr_num)
-                diff_str = differ._get_diff_str()
-                self.assertEqual(diff_str, commit_range)
+                expected_a = repo.rev_parse('HEAD^')
+                expected_b = repo.rev_parse('HEAD')
+                actual_a, actual_b = differ._get_diff_endpoints()
+                self.assertEqual(actual_a, expected_a)
+                self.assertEqual(actual_b, expected_b)
 
     def test_travis_pull_request_build_differ_on_mock_commits(self):
-        n = 10
+        n = 4
         i = 0
         pr_num = self.pr_num
+        feature_branch_name = 'pull/{}'.format(pr_num)
         with mock_repo() as repo:
+            make_mock_commit(repo, path='readme.txt')
+            expected_merge_base = repo.head.commit
+            feature_branch = repo.create_head(feature_branch_name)
+
+            # make commits on branch master
+            commits = make_mock_commits(repo, n=3, filename='blah{i}.txt')
+            master = repo.heads.master
+
+            # make commits on feature branch
+            feature_branch.checkout()
             commits = make_mock_commits(repo, n=n)
-            commit_range = get_diff_str_from_commits(commits[i], commits[-1])
+            end_commit = commits[-1]
+
+            commit_range = ballet.util.git.make_commit_range(
+                master, end_commit)
 
             travis_env_vars = {
                 'TRAVIS_BUILD_DIR': repo.working_tree_dir,
@@ -435,15 +490,17 @@ class CiTest(unittest.TestCase):
             }
             with patch.dict('os.environ', travis_env_vars, clear=True):
                 differ = TravisPullRequestBuildDiffer(pr_num)
-                diff_str = differ._get_diff_str()
-                self.assertEqual(diff_str, commit_range)
+                a, b = differ._get_diff_endpoints()
+                self.assertEqual(a, expected_merge_base)
+                self.assertEqual(b, end_commit)
 
                 diffs = differ.diff()
 
-                # there should be n-1 diff objects, they should show files
-                # 1 to n-1
-                self.assertEqual(len(diffs), n - 1)
-                j = i + 1
+                # there should be n diff objects, they should show files
+                # 0 to n-1. merge base just created readme.txt, so all files
+                # on feature branch are new.
+                self.assertEqual(len(diffs), n)
+                j = i
                 for diff in diffs:
                     self.assertEqual(diff.change_type, 'A')
                     self.assertEqual(diff.b_path, 'file{j}.py'.format(j=j))
@@ -507,20 +564,27 @@ class FsTest(unittest.TestCase):
 
 class GitTest(unittest.TestCase):
 
+    def test_make_commit_range(self):
+        a = 'abc1234'
+        b = 'def4321'
+        expected_commit_range = 'abc1234...def4321'
+        actual_commit_range = ballet.util.git.make_commit_range(a, b)
+        self.assertEqual(actual_commit_range, expected_commit_range)
+
     @unittest.expectedFailure
-    def test_get_diffs_by_revision(self):
+    def test_get_diff_endpoints_from_commit_range(self):
         raise NotImplementedError
 
     @unittest.expectedFailure
-    def test_get_diff_str_from_commits(self):
-        raise NotImplementedError
-
-    @unittest.expectedFailure
-    def test_get_diffs_by_diff_str(self):
+    def test_get_repo(self):
         raise NotImplementedError
 
     @unittest.expectedFailure
     def test_get_pr_num(self):
+        raise NotImplementedError
+
+    @unittest.expectedFailure
+    def test_get_branch(self):
         raise NotImplementedError
 
     @unittest.expectedFailure
@@ -536,7 +600,7 @@ class GitTest(unittest.TestCase):
         owner = 'foo'
         repo = 'bar'
         state = 'closed'
-        get_pull_requests(owner, repo, state=state)
+        ballet.util.git.get_pull_requests(owner, repo, state=state)
 
         (url, ), kwargs = mock_requests_get.call_args
         self.assertIn(owner, url)
@@ -566,7 +630,7 @@ class GitTest(unittest.TestCase):
         repo = 'bar'
 
         expected = ['accepted', 'rejected']
-        actual = get_pull_request_outcomes(owner, repo)
+        actual = ballet.util.git.get_pull_request_outcomes(owner, repo)
         self.assertEqual(actual, expected)
         mock_get_pull_requests.assert_called_once_with(
             owner, repo, state='closed')

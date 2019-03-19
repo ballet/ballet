@@ -2,9 +2,8 @@ import random
 import subprocess
 import tempfile
 
-import funcy
 import git
-from funcy import any_fn, contextmanager, merge
+from funcy import any_fn, contextmanager, ignore, merge
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn_pandas.pipeline import TransformerPipeline
 
@@ -63,7 +62,7 @@ class FragileTransformerPipeline(TransformerPipeline):
 
 
 def make_mock_commit(repo, kind='A', path=None, content=None):
-    '''Commits one file to repo'''
+    """Commits one file to repo"""
     if not path:
         path = 'file{}'.format(random.randint(0, 999))
 
@@ -92,7 +91,7 @@ def make_mock_commit(repo, kind='A', path=None, content=None):
 
 
 def make_mock_commits(repo, n=10, filename='file{i}.py'):
-    '''Create n sequential files/commits'''
+    """Create n sequential files/commits"""
     if '{i}' not in filename:
         raise ValueError
 
@@ -112,18 +111,18 @@ def set_ci_git_config_variables(repo):
 
 @contextmanager
 def mock_repo():
-    '''Create a new repo'''
-    with tempfile.TemporaryDirectory() as tmpdir:
-        dir = pathlib.Path(tmpdir)
-        repo = git.Repo.init(str(dir))
+    """Create a new repo"""
+    with tempfile.TemporaryDirectory() as tempdir:
+        tempdir = pathlib.Path(tempdir)
+        repo = git.Repo.init(str(tempdir))
         set_ci_git_config_variables(repo)
         yield repo
 
 
+@ignore((FileNotFoundError, subprocess.CalledProcessError))
 def tree(dir):
-    with funcy.suppress((FileNotFoundError, subprocess.SubprocessError)):
-        cmd = ['tree', '-A', '-n', '--charset', 'ASCII', str(dir)]
-        logger.debug('Popen({cmd!r})'.format(cmd=cmd))
-        tree_output = subprocess.check_output(cmd).decode()
-        logger.debug(tree_output)
-        return tree_output
+    cmd = ['tree', '-A', '-n', '--charset', 'ASCII', str(dir)]
+    logger.debug('Popen({cmd!r})'.format(cmd=cmd))
+    tree_output = subprocess.check_output(cmd).decode()
+    logger.debug(tree_output)
+    return tree_output
