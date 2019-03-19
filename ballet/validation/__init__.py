@@ -8,8 +8,8 @@ from ballet.exc import (
     InvalidProjectStructure, SkippedValidationTest)
 from ballet.project import Project
 from ballet.util.log import logger, stacklog
-from ballet.validation.feature_evaluation import (
-    NoOpAcceptanceEvaluator, NoOpPruningEvaluator)
+from ballet.validation.feature_evaluation import NoOpPruningEvaluator
+from ballet.validation.gfssf_validator import GFSSFAcceptanceEvaluator
 from ballet.validation.project_structure import (
     ChangeCollector, FeatureApiValidator, FileChangeValidator)
 
@@ -118,7 +118,7 @@ def evaluate_feature_performance(project):
 
     proposed_feature = get_proposed_feature(project)
     accepted_features = get_accepted_features(features, proposed_feature)
-    evaluator = NoOpAcceptanceEvaluator(X_df, y, accepted_features)
+    evaluator = GFSSFAcceptanceEvaluator(X_df, y, accepted_features)
     accepted = evaluator.judge(proposed_feature)
 
     if not accepted:

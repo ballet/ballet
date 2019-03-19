@@ -1,5 +1,5 @@
 import os
-from subprocess import check_call
+from subprocess import CalledProcessError, check_call
 from textwrap import dedent
 from types import ModuleType
 from unittest.mock import patch
@@ -92,15 +92,15 @@ def test_validation_end_to_end(tempdir):
 
         def load_data():
             p = 15
-            q = 2
+            q = 1
             X, y, coef = make_regression(
-                n_samples=50, n_features=p, n_informative=q, coef=True,
+                n_samples=500, n_features=p, n_informative=q, coef=True,
                 shuffle=True, random_state=1)
 
             # informative columns are 'A', 'B'
             # uninformative columns are 'Z_0', ..., 'Z_11'
             columns = []
-            informative = list('AB')
+            informative = list('A')
             other = ['Z_{i}'.format(i=i) for i in reversed(range(p-q))]
             for i in range(p):
                 if coef[i] == 0:
@@ -190,26 +190,28 @@ def test_validation_end_to_end(tempdir):
     featurename = 'Z_1'
     submit_feature(repo, contrib_dir, username, featurename, new_feature_str)
 
-    # if we expect this feature to succeed -- with NoOpAcceptanceEvaluator
-    call_validate_all(pr=2)
+    # if we expect this feature to fail
+    with pytest.raises(CalledProcessError):
+        call_validate_all(pr=2)
 
     # if we expect this feature to fail -- with a more reasonable evaluator
     # with pytest.raises(CalledProcessError):
     #     logger.info('Validating pull request 2, User Charlie, Feature Z_1')
     #     call_validate_all(pr=2)
 
-    # write another new feature
+    # write another new feature - redudancy
     repo.git.checkout('master')
     switch_to_new_branch(repo, 'pull/3')
-    new_feature_str = make_feature_str('B')
+    new_feature_str = make_feature_str('A')
     username = 'charlie'
-    featurename = 'B'
+    featurename = 'A'
     submit_feature(repo, contrib_dir, username, featurename, new_feature_str)
-    call_validate_all(pr=3)
+    with pytest.raises(CalledProcessError):
+        call_validate_all(pr=3)
 
-    # merge PR with master
-    repo.git.checkout('master')
-    repo.git.merge('pull/3', no_ff=True)
 
-    # call different validation routines
-    call_validate_all()
+if __name__ == '__main__':
+    import ballet.util.log
+    ballet.util.log.enable(level='INFO')
+
+    test_validation_end_to_end()
