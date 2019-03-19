@@ -66,6 +66,7 @@ def estimate_cont_entropy(X, epsilon=None):
            information". Phys. Rev. E 69, 2004.
     .. [2] L. F. Kozachenko, N. N. Leonenko, "Sample Estimate of the Entropy
            of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16
+
     """
     n_samples, n_features = X.shape
     if n_samples <= 1:
@@ -128,9 +129,9 @@ def estimate_entropy(X, epsilon=None):
     function is _not_ used for mutual information and an adaptation of the
     Kraskov Estimator[2] when it is.
 
-    To deal with both continuous and discrete features, we use the
-    following calculation: Let X be made of continuous features c and
-    discrete features d.We use the following reworking of entropy:
+    Let X be made of continuous features c and discrete features d.
+    To deal with both continuous and discrete features, We use the
+    following reworking of entropy:
 
     $ H(X) = H(c,d) = \sum_{x \in d} p(x) \times H(c(x)) + H(d) $
 
@@ -158,6 +159,7 @@ def estimate_entropy(X, epsilon=None):
            information". Phys. Rev. E 69, 2004.
     .. [2] L. F. Kozachenko, N. N. Leonenko, "Sample Estimate of the Entropy
            of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16
+
     """
     n_samples, n_features = X.shape
     if n_features < 1:
@@ -212,6 +214,7 @@ def _calculate_epsilon(X):
     References:
     .. [1] A. Kraskov, H. Stogbauer and P. Grassberger, "Estimating mutual
            information". Phys. Rev. E 69, 2004.
+
     """
     disc_mask = _get_discrete_columns(X)
     if np.all(disc_mask):
@@ -256,6 +259,7 @@ def estimate_conditional_information(x, y, z):
     References:
     .. [1] A. Kraskov, H. Stogbauer and P. Grassberger, "Estimating mutual
            information". Phys. Rev. E 69, 2004.
+
     """
     xz = np.concatenate((x, z), axis=1)
     yz = np.concatenate((y, z), axis=1)
@@ -290,6 +294,7 @@ def estimate_mutual_information(x, y):
     References:
     .. [1] A. Kraskov, H. Stogbauer and P. Grassberger, "Estimating mutual
            information". Phys. Rev. E 69, 2004.
+
     """
     xy = np.concatenate((x, y), axis=1)
     epsilon = _calculate_epsilon(xy)
