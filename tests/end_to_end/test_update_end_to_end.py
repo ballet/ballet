@@ -14,7 +14,7 @@ import ballet.update
 from ballet.compat import safepath
 from ballet.project import DEFAULT_CONFIG_NAME
 from ballet.quickstart import generate_project
-from ballet.update import TEMPLATE_BRANCH
+from ballet.update import DEFAULT_BRANCH, TEMPLATE_BRANCH
 from tests.util import tree
 
 
@@ -63,9 +63,9 @@ def project_template_copy(tempdir):
 
 # Utility methods -------------------------------------------------------------
 
-def _run_ballet_update_template(d, project_slug):
+def _run_ballet_update_template(d, project_slug, **kwargs):
     with work_in(safepath(d.joinpath(project_slug))):
-        ballet.update.update_project_template()
+        ballet.update.update_project_template(**kwargs)
 
 
 def check_remotes(repo, expected_remotes=None):
@@ -83,7 +83,7 @@ def check_remotes(repo, expected_remotes=None):
     assert actual_remote_names == expected_remote_names
 
 
-def check_branch(repo, expected_branch='master'):
+def check_branch(repo, expected_branch=DEFAULT_BRANCH):
     actual_branch = repo.head.ref.name
     assert actual_branch == expected_branch
 
@@ -343,3 +343,29 @@ def test_update_fails_with_missing_project_template_branch(quickstart):
 
     with pytest.raises(ballet.exc.ConfigurationError):
         _run_ballet_update_template(tempdir, project_slug)
+
+
+@pytest.mark.slow
+def test_update_push(quickstart, project_template_copy):
+    # TODO(mjs)
+    # make this unit tests instead
+    # update this test to test more behaviors of the push
+    # test failure by using non-existent remote locally
+    # test success by mocking bare repo locally
+    tempdir = quickstart.tempdir
+    project_slug = quickstart.project_slug
+
+    # update the project template so the update command runs to completion
+    new_content = 'foo: bar'
+    template_dir = project_template_copy
+    p = template_dir.joinpath(
+        '{{cookiecutter.project_slug}}', DEFAULT_CONFIG_NAME)
+    with p.open('a') as f:
+        f.write('\n')
+        f.write(new_content)
+        f.write('\n')
+
+    with patch('ballet.update._call_remote_push') as mock_call_push:
+        _run_ballet_update_template(tempdir, project_slug, push=True)
+
+    mock_call_push.assert_called_once()

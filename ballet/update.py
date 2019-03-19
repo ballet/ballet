@@ -67,6 +67,50 @@ def _get_full_context(cwd):
     return context['cookiecutter']
 
 
+def _call_remote_push(remote):
+    return remote.push([
+        '{master}:{master}'.format(master=DEFAULT_BRANCH),
+        '{project_template}:{project_template}'.format(
+            project_template=TEMPLATE_BRANCH),
+    ])
+
+
+@stacklog(logger.info, 'Pushing updates to remote')
+def _push(project):
+    """Push default branch and project template branch to remote
+
+    With default config (i.e. remote and branch names), equivalent to::
+
+        $ git push origin master:master project-template:project-template
+
+    Raises:
+        Error: Push failed in some way
+    """
+    repo = project.repo
+    remote_name = project.get('project', 'remote')
+    remote = repo.remote(remote_name)
+    result = _call_remote_push(remote)
+    errors = (
+        git.PushInfo.REJECTED |
+        git.PushInfo.REMOTE_REJECTED |
+        git.PushInfo.REMOTE_FAILURE |
+        git.PushInfo.ERROR
+    )
+    failures = [
+        push_info
+        for push_info in result
+        if push_info.flags & errors
+
+    ]
+    if failures:
+        for push_info in failures:
+            logger.error(
+                'Failed to push ref {from_ref} to {to_ref}'
+                .format(from_ref=push_info.local_ref.name,
+                        to_ref=push_info.remote_ref.name))
+        raise Error('Push failed')
+
+
 def update_project_template(push=False):
     cwd = pathlib.Path.cwd().resolve()
 
@@ -145,44 +189,9 @@ def update_project_template(push=False):
 
     logger.info('Update successful.')
 
-    # with default config, equivalent to:
-    # $ git push origin \
-    #       master:master \
-    #       project-template:project-template
     if push:
-        with stacklog(logger.info, 'Pushing updates to remote'):
-            remote_name = project.get('remote')
-            remote = repo.remote(remote_name)
-            result = remote.push([
-                '{master}:{master}'.format(master=DEFAULT_BRANCH),
-                '{project_template}:{project_template}'.format(
-                    project_template=TEMPLATE_BRANCH),
-            ])
-
-            errors = (
-                git.PushInfo.REJECTED |
-                git.PushInfo.REMOTE_REJECTED |
-                git.PushInfo.REMOTE_FAILURE |
-                git.PushInfo.ERROR
-            )
-            failures = [
-                push_info
-                for push_info in result
-                if push_info.flags & errors
-
-            ]
-            if failures:
-                for push_info in failures:
-                    logger.error(
-                        'Failed to push ref {from_ref} to {to_ref}'
-                        .format(from_ref=push_info.local_ref.name,
-                                to_ref=push_info.remote_ref.name)
-                    )
-                raise Error('Push failed')
-
+        _push(project)
         logger.info('Push successful.')
-
-
 
 
 def main(**kwargs):
