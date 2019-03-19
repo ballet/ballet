@@ -103,6 +103,11 @@ def estimate_cont_entropy(X, epsilon=None):
 def _is_column_discrete(col):
     # Stand-in method to figure out if column is discrete
     # Still researching good ways to do this...
+    if col.dtype == int:
+        return True
+    rounding_error = col - col.astype(int)
+    if np.allclose(rounding_error, np.zeros(col.size)):
+        return True
     uniques = np.unique(col)
     return (uniques.size / col.size) < 0.05
 
@@ -177,10 +182,10 @@ def estimate_entropy(X, epsilon=None):
     for i in range(counts.size):
         unique_mask = disc_features == uniques[i]
         selected_cont_samples = cont_features[unique_mask.ravel(), :]
-        if epsilon:
-            selected_epsilon = epsilon[unique_mask]
-        else:
+        if epsilon is None:
             selected_epsilon = None
+        else:
+            selected_epsilon = epsilon[unique_mask]
         conditional_cont_entropy = estimate_cont_entropy(
             selected_cont_samples, selected_epsilon)
         entropy += empirical_p[i] * conditional_cont_entropy
