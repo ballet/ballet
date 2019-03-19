@@ -214,4 +214,4 @@ if __name__ == '__main__':
     import ballet.util.log
     ballet.util.log.enable(level='INFO')
 
-    test_end_to_end()
+    test_validation_end_to_end()
