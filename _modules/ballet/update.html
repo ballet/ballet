@@ -240,13 +240,14 @@
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">ConfigurationError</span><span class="p">,</span> <span class="n">Error</span>
 <span class="kn">from</span> <span class="nn">ballet.project</span> <span class="k">import</span> <span class="n">Project</span>
 <span class="kn">from</span> <span class="nn">ballet.quickstart</span> <span class="k">import</span> <span class="n">generate_project</span>
-<span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span><span class="p">,</span> <span class="n">stacklog</span>
 
 <span class="n">PROJECT_CONTEXT_PATH</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span>
         <span class="s1">&#39;project_template&#39;</span><span class="p">,</span>
         <span class="s1">&#39;cookiecutter.json&#39;</span><span class="p">))</span>
 <span class="n">CONTEXT_FILE_NAME</span> <span class="o">=</span> <span class="s1">&#39;.cookiecutter_context.json&#39;</span>
+<span class="n">DEFAULT_BRANCH</span> <span class="o">=</span> <span class="s1">&#39;master&#39;</span>
 <span class="n">TEMPLATE_BRANCH</span> <span class="o">=</span> <span class="s1">&#39;project-template&#39;</span>
 
 
@@ -294,7 +295,51 @@
     <span class="k">return</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;cookiecutter&#39;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="update_project_template"><a class="viewcode-back" href="../../api/ballet.update.html#ballet.update.update_project_template">[docs]</a><span class="k">def</span> <span class="nf">update_project_template</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">_call_remote_push</span><span class="p">(</span><span class="n">remote</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">remote</span><span class="o">.</span><span class="n">push</span><span class="p">([</span>
+        <span class="s1">&#39;</span><span class="si">{master}</span><span class="s1">:</span><span class="si">{master}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">master</span><span class="o">=</span><span class="n">DEFAULT_BRANCH</span><span class="p">),</span>
+        <span class="s1">&#39;</span><span class="si">{project_template}</span><span class="s1">:</span><span class="si">{project_template}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">project_template</span><span class="o">=</span><span class="n">TEMPLATE_BRANCH</span><span class="p">),</span>
+    <span class="p">])</span>
+
+
+<span class="nd">@stacklog</span><span class="p">(</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">,</span> <span class="s1">&#39;Pushing updates to remote&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_push</span><span class="p">(</span><span class="n">project</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Push default branch and project template branch to remote</span>
+
+<span class="sd">    With default config (i.e. remote and branch names), equivalent to::</span>
+
+<span class="sd">        $ git push origin master:master project-template:project-template</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        Error: Push failed in some way</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">repo</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">repo</span>
+    <span class="n">remote_name</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;project&#39;</span><span class="p">,</span> <span class="s1">&#39;remote&#39;</span><span class="p">)</span>
+    <span class="n">remote</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="n">remote_name</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">_call_remote_push</span><span class="p">(</span><span class="n">remote</span><span class="p">)</span>
+    <span class="n">errors</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">git</span><span class="o">.</span><span class="n">PushInfo</span><span class="o">.</span><span class="n">REJECTED</span> <span class="o">|</span>
+        <span class="n">git</span><span class="o">.</span><span class="n">PushInfo</span><span class="o">.</span><span class="n">REMOTE_REJECTED</span> <span class="o">|</span>
+        <span class="n">git</span><span class="o">.</span><span class="n">PushInfo</span><span class="o">.</span><span class="n">REMOTE_FAILURE</span> <span class="o">|</span>
+        <span class="n">git</span><span class="o">.</span><span class="n">PushInfo</span><span class="o">.</span><span class="n">ERROR</span>
+    <span class="p">)</span>
+    <span class="n">failures</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">push_info</span>
+        <span class="k">for</span> <span class="n">push_info</span> <span class="ow">in</span> <span class="n">result</span>
+        <span class="k">if</span> <span class="n">push_info</span><span class="o">.</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">errors</span>
+
+    <span class="p">]</span>
+    <span class="k">if</span> <span class="n">failures</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">push_info</span> <span class="ow">in</span> <span class="n">failures</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="s1">&#39;Failed to push ref </span><span class="si">{from_ref}</span><span class="s1"> to </span><span class="si">{to_ref}</span><span class="s1">&#39;</span>
+                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">from_ref</span><span class="o">=</span><span class="n">push_info</span><span class="o">.</span><span class="n">local_ref</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                        <span class="n">to_ref</span><span class="o">=</span><span class="n">push_info</span><span class="o">.</span><span class="n">remote_ref</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="n">Error</span><span class="p">(</span><span class="s1">&#39;Push failed&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="update_project_template"><a class="viewcode-back" href="../../api/ballet.update.html#ballet.update.update_project_template">[docs]</a><span class="k">def</span> <span class="nf">update_project_template</span><span class="p">(</span><span class="n">push</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="n">cwd</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
 
     <span class="c1"># get ballet project info -- must be at project root directory with a</span>
@@ -311,6 +356,11 @@
         <span class="k">raise</span> <span class="n">Error</span><span class="p">(</span>
             <span class="s1">&#39;Can</span><span class="se">\&#39;</span><span class="s1">t update project template with uncommitted changes. &#39;</span>
             <span class="s1">&#39;Please commit your changes and try again.&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">repo</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">ref</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="n">DEFAULT_BRANCH</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span>
+            <span class="s1">&#39;Must run command from branch </span><span class="si">{master}</span><span class="s1">&#39;</span>
+            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">master</span><span class="o">=</span><span class="n">DEFAULT_BRANCH</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">TEMPLATE_BRANCH</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">repo</span><span class="o">.</span><span class="n">branches</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span>
@@ -331,7 +381,7 @@
         <span class="n">repo</span><span class="o">.</span><span class="n">heads</span><span class="p">[</span><span class="n">TEMPLATE_BRANCH</span><span class="p">]</span><span class="o">.</span><span class="n">checkout</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">repo</span><span class="o">.</span><span class="n">git</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
-                <span class="n">remote_name</span> <span class="o">+</span> <span class="s1">&#39;/master&#39;</span><span class="p">,</span>
+                <span class="n">remote_name</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">DEFAULT_BRANCH</span><span class="p">,</span>
                 <span class="n">allow_unrelated_histories</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="n">strategy_option</span><span class="o">=</span><span class="s1">&#39;theirs&#39;</span><span class="p">,</span>
                 <span class="n">squash</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -349,7 +399,7 @@
             <span class="k">raise</span>
         <span class="k">finally</span><span class="p">:</span>
             <span class="n">_safe_delete_remote</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">remote_name</span><span class="p">)</span>
-            <span class="n">repo</span><span class="o">.</span><span class="n">heads</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">checkout</span><span class="p">()</span>
+            <span class="n">repo</span><span class="o">.</span><span class="n">heads</span><span class="p">[</span><span class="n">DEFAULT_BRANCH</span><span class="p">]</span><span class="o">.</span><span class="n">checkout</span><span class="p">()</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">repo</span><span class="o">.</span><span class="n">git</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">TEMPLATE_BRANCH</span><span class="p">,</span> <span class="n">no_ff</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -365,13 +415,17 @@
             <span class="p">])</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">original_head</span><span class="o">=</span><span class="n">original_head</span><span class="p">))</span>
         <span class="k">raise</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Update successful.&#39;</span><span class="p">)</span></div>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Update successful.&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">push</span><span class="p">:</span>
+        <span class="n">_push</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Push successful.&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../api/ballet.update.html#ballet.update.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../api/ballet.update.html#ballet.update.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="kn">import</span> <span class="nn">ballet.util.log</span>
     <span class="n">ballet</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">enable</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s1">&#39;INFO&#39;</span><span class="p">,</span> <span class="n">echo</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="n">update_project_template</span><span class="p">()</span></div>
+    <span class="n">update_project_template</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
