@@ -1,6 +1,6 @@
 import shutil
 from collections import namedtuple
-from unittest.mock import patch
+from unittest.mock import ANY, patch
 
 import funcy
 import git
@@ -368,4 +368,4 @@ def test_update_push(quickstart, project_template_copy):
     with patch('ballet.update._call_remote_push') as mock_call_push:
         _run_ballet_update_template(tempdir, project_slug, push=True)
 
-    mock_call_push.assert_called_once()
+    mock_call_push.assert_called_once_with(ANY)
