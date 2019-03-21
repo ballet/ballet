@@ -13,7 +13,7 @@ from sklearn_pandas import DataFrameMapper
 from ballet.compat import safepath
 from ballet.eng.misc import IdentityTransformer
 from ballet.feature import Feature
-from ballet.quickstart import render_project_template
+from ballet.templating import render_project_template
 from ballet.util import get_enum_values
 from ballet.util.git import make_commit_range, switch_to_new_branch
 from ballet.util.log import logger

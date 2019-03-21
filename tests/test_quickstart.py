@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 
-from ballet.quickstart import main
+from ballet.templating import main
 
 
 class QuickstartTest(unittest.TestCase):

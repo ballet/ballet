@@ -11,7 +11,7 @@ from ballet import __version__ as version
 from ballet.compat import pathlib, safepath
 from ballet.exc import ConfigurationError, Error
 from ballet.project import Project
-from ballet.quickstart import render_project_template
+from ballet.templating import render_project_template
 from ballet.util.log import logger, stacklog
 
 PROJECT_CONTEXT_PATH = (

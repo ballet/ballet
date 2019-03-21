@@ -9,11 +9,11 @@ from cookiecutter.utils import work_in
 from git import GitCommandError
 
 import ballet.exc
-import ballet.quickstart
+import ballet.templating
 import ballet.update
 from ballet.compat import safepath
 from ballet.project import DEFAULT_CONFIG_NAME
-from ballet.quickstart import render_project_template
+from ballet.templating import render_project_template
 from ballet.update import DEFAULT_BRANCH, TEMPLATE_BRANCH
 from tests.util import tree
 
@@ -51,7 +51,7 @@ def quickstart(tempdir):
 
 @pytest.fixture
 def project_template_copy(tempdir):
-    old_path = ballet.quickstart._get_project_template_path()
+    old_path = ballet.templating._get_project_template_path()
     new_path = tempdir.joinpath('templates', 'project_template')
     shutil.copytree(old_path, safepath(new_path))
 

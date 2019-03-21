@@ -12,8 +12,8 @@ def cli():
 @cli.command()
 def quickstart():
     """Generate a brand-new ballet project"""
-    import ballet.quickstart
-    ballet.quickstart.main()
+    import ballet.templating
+    ballet.templating.main()
 
 
 @cli.command('update-project-template')
