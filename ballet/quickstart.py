@@ -11,7 +11,7 @@ def _get_project_template_path():
     return safepath(PROJECT_TEMPLATE_PATH)
 
 
-def generate_project(**kwargs):
+def render_project_template(**kwargs):
     """Generate a ballet project according to the project template
 
     Args:
@@ -25,4 +25,4 @@ def generate_project(**kwargs):
 
 
 def main(**kwargs):
-    return generate_project(**kwargs)
+    return render_project_template(**kwargs)

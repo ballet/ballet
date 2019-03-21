@@ -13,7 +13,7 @@ import ballet.quickstart
 import ballet.update
 from ballet.compat import safepath
 from ballet.project import DEFAULT_CONFIG_NAME
-from ballet.quickstart import generate_project
+from ballet.quickstart import render_project_template
 from ballet.update import DEFAULT_BRANCH, TEMPLATE_BRANCH
 from tests.util import tree
 
@@ -34,9 +34,9 @@ def quickstart(tempdir):
         }
 
         # ballet-quickstart
-        generate_project(no_input=True,
-                         extra_context=extra_context,
-                         output_dir=safepath(tempdir))
+        render_project_template(no_input=True,
+                                extra_context=extra_context,
+                                output_dir=safepath(tempdir))
 
         # tree .
         tree(tempdir)

@@ -13,7 +13,7 @@ from sklearn_pandas import DataFrameMapper
 from ballet.compat import safepath
 from ballet.eng.misc import IdentityTransformer
 from ballet.feature import Feature
-from ballet.quickstart import generate_project
+from ballet.quickstart import render_project_template
 from ballet.util import get_enum_values
 from ballet.util.git import make_commit_range, switch_to_new_branch
 from ballet.util.log import logger
@@ -53,8 +53,8 @@ def test_validation_end_to_end(tempdir):
         'project_slug': modname,
     }
 
-    generate_project(no_input=True, extra_context=extra_context,
-                     output_dir=tempdir)
+    render_project_template(no_input=True, extra_context=extra_context,
+                            output_dir=tempdir)
 
     # make sure we can import different modules without error
     base = tempdir.joinpath(modname)

@@ -11,7 +11,7 @@ from ballet import __version__ as version
 from ballet.compat import pathlib, safepath
 from ballet.exc import ConfigurationError, Error
 from ballet.project import Project
-from ballet.quickstart import generate_project
+from ballet.quickstart import render_project_template
 from ballet.util.log import logger, stacklog
 
 PROJECT_CONTEXT_PATH = (
@@ -39,9 +39,9 @@ def _render_project_template(cwd, tempdir):
 
     # don't dump replay files to home directory.
     with patch('cookiecutter.main.dump'):
-        return generate_project(no_input=True,
-                                extra_context=context,
-                                output_dir=safepath(tempdir))
+        return render_project_template(no_input=True,
+                                       extra_context=context,
+                                       output_dir=safepath(tempdir))
 
 
 def _get_full_context(cwd):
