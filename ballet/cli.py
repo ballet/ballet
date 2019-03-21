@@ -24,3 +24,10 @@ def update_project_template(push):
     """Update an existing ballet project from the upstream template"""
     import ballet.update
     ballet.update.main(push=push)
+
+
+@cli.command('start-new-feature')
+def start_new_feature():
+    """Start working on a new feature from a template"""
+    import ballet.templating
+    ballet.templating.render_feature_template()
