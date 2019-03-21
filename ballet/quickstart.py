@@ -3,7 +3,8 @@ from cookiecutter.main import cookiecutter
 from ballet.compat import pathlib, safepath
 
 PROJECT_TEMPLATE_PATH = (
-    pathlib.Path(__file__).resolve().parent.joinpath('project_template'))
+    pathlib.Path(__file__).resolve().parent.joinpath(
+        'templates', 'project_template'))
 
 
 def _get_project_template_path():

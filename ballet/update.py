@@ -16,6 +16,7 @@ from ballet.util.log import logger, stacklog
 
 PROJECT_CONTEXT_PATH = (
     pathlib.Path(__file__).resolve().parent.joinpath(
+        'templates',
         'project_template',
         'cookiecutter.json'))
 CONTEXT_FILE_NAME = '.cookiecutter_context.json'
