@@ -22,7 +22,7 @@ from tests.util import tree
 def quickstart(tempdir):
     """
     $ cd tempdir
-    $ ballet-quickstart
+    $ ballet quickstart
     $ tree .
     """
     # cd tempdir
@@ -33,7 +33,7 @@ def quickstart(tempdir):
             'project_slug': project_slug,
         }
 
-        # ballet-quickstart
+        # ballet quickstart
         render_project_template(no_input=True,
                                 extra_context=extra_context,
                                 output_dir=safepath(tempdir))
@@ -55,7 +55,7 @@ def project_template_copy(tempdir):
     new_path = tempdir.joinpath('templates', 'project_template')
     shutil.copytree(old_path, safepath(new_path))
 
-    with patch('ballet.quickstart._get_project_template_path') as m:
+    with patch('ballet.templating._get_project_template_path') as m:
         m.return_value = str(new_path)
         tree(new_path)
         yield new_path

@@ -22,7 +22,3 @@ def render_project_template(**kwargs):
     if 'output_dir' in kwargs:
         kwargs['output_dir'] = str(kwargs['output_dir'])
     return cookiecutter(project_template_path, **kwargs)
-
-
-def main(**kwargs):
-    return render_project_template(**kwargs)
