@@ -30,4 +30,4 @@ def update_project_template(push):
 def start_new_feature():
     """Start working on a new feature from a template"""
     import ballet.templating
-    ballet.templating.render_feature_template()
+    ballet.templating.start_new_feature()
