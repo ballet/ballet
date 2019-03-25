@@ -14,7 +14,9 @@ def quickstart():
     """Generate a brand-new ballet project"""
     import ballet.templating
     import ballet.util.log
-    ballet.util.log.enable(level='INFO', echo=False)
+    ballet.util.log.enable(level='INFO',
+                           format=ballet.util.log.SIMPLE_LOG_FORMAT,
+                           echo=False)
     ballet.templating.render_project_template()
 
 
@@ -26,7 +28,9 @@ def update_project_template(push):
     """Update an existing ballet project from the upstream template"""
     import ballet.update
     import ballet.util.log
-    ballet.util.log.enable(level='INFO', echo=False)
+    ballet.util.log.enable(level='INFO',
+                           format=ballet.util.log.SIMPLE_LOG_FORMAT,
+                           echo=False)
     ballet.update.update_project_template(push=push)
 
 
@@ -35,5 +39,7 @@ def start_new_feature():
     """Start working on a new feature from a template"""
     import ballet.templating
     import ballet.util.log
-    ballet.util.log.enable(level='INFO', echo=False)
+    ballet.util.log.enable(level='INFO',
+                           format=ballet.util.log.SIMPLE_LOG_FORMAT,
+                           echo=False)
     ballet.templating.start_new_feature()
