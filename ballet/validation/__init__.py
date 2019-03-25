@@ -4,7 +4,7 @@ from funcy import decorator, ignore, lfilter
 
 from ballet.contrib import _get_contrib_feature_from_module
 from ballet.exc import (
-    ConfigurationError, Error, FeatureRejected, InvalidFeatureApi,
+    ConfigurationError, BalletError, FeatureRejected, InvalidFeatureApi,
     InvalidProjectStructure, SkippedValidationTest)
 from ballet.project import Project
 from ballet.util.log import logger, stacklog
@@ -36,7 +36,7 @@ def get_proposed_feature(project):
     change_collector = ChangeCollector(project)
     collected_changes = change_collector.collect_changes()
     if len(collected_changes.new_feature_info) != 1:
-        raise Error
+        raise BalletError
     importer, _, _ = collected_changes.new_feature_info[0]
     # print('\n' * 5 + str(collected_changes.new_feature_info))
     module = importer()
@@ -58,7 +58,8 @@ def get_accepted_features(features, proposed_feature):
         list[Feature]: list of features with the proposed feature not in it.
 
     Raises:
-        Error: Could not deselect exactly the proposed feature.
+        ballet.exc.BalletError: Could not deselect exactly the proposed
+            feature.
     """
     def neq(feature):
         return feature.source != proposed_feature.source
@@ -68,10 +69,10 @@ def get_accepted_features(features, proposed_feature):
     if len(features) - len(result) == 1:
         return result
     elif len(result) == len(features):
-        raise Error(
+        raise BalletError(
             'Did not find match for proposed feature within \'contrib\'')
     else:
-        raise Error(
+        raise BalletError(
             'Unexpected condition (n_features={}, n_result={})'
             .format(len(features), len(result)))
 

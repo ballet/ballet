@@ -1,24 +1,24 @@
-class Error(Exception):
+class BalletError(Exception):
     """Base error for ballet"""
     pass
 
 
-class UnexpectedTravisEnvironmentError(Error):
+class UnexpectedTravisEnvironmentError(BalletError):
     """The environment within Travis CI testing was unexpected"""
     pass
 
 
-class UnsuccessfulInputConversionError(Error):
+class UnsuccessfulInputConversionError(BalletError):
     """Input-type conversion for execution within pipeline was unsuccessful"""
     pass
 
 
-class ConfigurationError(Error):
-    """Error in configuration of the ballet project"""
+class ConfigurationError(BalletError):
+    """BalletError in configuration of the ballet project"""
     pass
 
 
-class FeatureValidationError(Error):
+class FeatureValidationError(BalletError):
     """Base error for feature validation routine"""
     pass
 
@@ -38,6 +38,6 @@ class InvalidFeatureApi(FeatureValidationError):
     pass
 
 
-class SkippedValidationTest(Error):
+class SkippedValidationTest(BalletError):
     """The validation test was skipped"""
     pass

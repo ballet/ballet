@@ -55,7 +55,8 @@ def start_new_feature(**cc_kwargs):
         **cc_kwargs: options for the cookiecutter template
 
     Raises:
-        Error: the new feature has the same name as an existing one
+        ballet.exc.BalletError: the new feature has the same name as an
+            existing one
     """
     project = Project.from_path(pathlib.Path.cwd().resolve())
     contrib_dir = project.get('contrib', 'module_path')

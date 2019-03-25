@@ -9,7 +9,7 @@ from git import GitCommandError
 
 from ballet import __version__ as version
 from ballet.compat import pathlib, safepath
-from ballet.exc import ConfigurationError, Error
+from ballet.exc import ConfigurationError, BalletError
 from ballet.project import Project
 from ballet.templating import render_project_template
 from ballet.util.log import logger, stacklog
@@ -85,7 +85,7 @@ def _push(project):
         $ git push origin master:master project-template:project-template
 
     Raises:
-        Error: Push failed in some way
+        ballet.exc.BalletError: Push failed in some way
     """
     repo = project.repo
     remote_name = project.get('project', 'remote')
@@ -109,7 +109,7 @@ def _push(project):
                 'Failed to push ref {from_ref} to {to_ref}'
                 .format(from_ref=push_info.local_ref.name,
                         to_ref=push_info.remote_ref.name))
-        raise Error('Push failed')
+        raise BalletError('Push failed')
 
 
 def update_project_template(push=False):
@@ -126,7 +126,7 @@ def update_project_template(push=False):
     original_head = repo.head.commit.hexsha[:7]
 
     if repo.is_dirty():
-        raise Error(
+        raise BalletError(
             'Can\'t update project template with uncommitted changes. '
             'Please commit your changes and try again.')
 

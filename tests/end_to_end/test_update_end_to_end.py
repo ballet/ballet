@@ -281,7 +281,7 @@ def test_update_fails_with_dirty_repo(quickstart):
     with tempdir.joinpath(project_slug, DEFAULT_CONFIG_NAME).open('a') as f:
         f.write('\nfoo: bar\n')
 
-    with pytest.raises(ballet.exc.Error, match='uncommitted changes'):
+    with pytest.raises(ballet.exc.BalletError, match='uncommitted changes'):
         _run_ballet_update_template(tempdir, project_slug)
 
 

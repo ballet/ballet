@@ -4,7 +4,7 @@ import sklearn.base
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.utils.validation import check_is_fitted
 
-from ballet.exc import Error
+from ballet.exc import BalletError
 
 __all__ = [
     'BaseTransformer',
@@ -130,7 +130,7 @@ class GroupwiseTransformer(BaseTransformer):
            ... )
 
     Raises:
-        ballet.exc.Error: if handle_unknown=='error' and an unknown group is
+        ballet.exc.BalletError: if handle_unknown=='error' and an unknown group is
             encountered at transform-time.
     """
 
@@ -217,7 +217,7 @@ class GroupwiseTransformer(BaseTransformer):
                         raise
             else:
                 if self.handle_unknown == 'error':
-                    raise Error(
+                    raise BalletError(
                         'Unknown group: {group_name}'
                         .format(group_name=x_group.name))
                 elif self.handle_unknown == 'ignore':

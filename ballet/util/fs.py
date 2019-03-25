@@ -3,7 +3,7 @@ import os.path
 from shutil import copyfile, copytree
 
 from ballet.compat import PathLike, pathlib, safepath
-from ballet.exc import Error
+from ballet.exc import BalletError
 
 
 def spliceext(filepath, s):
@@ -131,7 +131,7 @@ def _synctree(src, dst, onexist):
             dstdir = dst.joinpath(relative_dir, dirname)
             if dstdir.exists():
                 if not dstdir.is_dir():
-                    raise Error
+                    raise BalletError
             else:
                 dstdir.mkdir()
 
