@@ -561,6 +561,12 @@ class FsTest(unittest.TestCase):
     def test_isemptyfile(self):
         raise NotImplementedError
 
+    def test_ispathlike(self):
+        pathlike = pathlib.Path('.')
+        self.assertTrue(ballet.util.fs.ispathlike(pathlike))
+
+        for notpathlike in [None, '/foo/bar', []]:
+            self.assertFalse(ballet.util.fs.ispathlike(notpathlike))
 
 class GitTest(unittest.TestCase):
 

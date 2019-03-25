@@ -19,6 +19,11 @@ if sys.version_info < (3, 6, 0):
 else:
     from funcy import identity
     safepath = identity
+try:
+    from os import PathLike
+except ImportError:
+    PathLike = (pathlib.Path, )
+
 
 from contextlib import redirect_stdout  # noqa F401
 try:
