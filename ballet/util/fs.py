@@ -1,11 +1,12 @@
 import os
 import os.path
-from shutil import copyfile, copytree, rmtree
+from shutil import copyfile, copytree
 
-from funcy import suppress
+from funcy import partial, suppress
 
 from ballet.compat import PathLike, pathlib, safepath
 from ballet.exc import BalletError
+from ballet.util.log import logger
 
 
 def spliceext(filepath, s):
@@ -95,9 +96,10 @@ def synctree(src, dst, onexist=None):
 
     This is more or less equivalent to::
 
-       cp -R ${src}/ ${dst}/
+       cp -n -R ${src}/ ${dst}/
 
-    If a file at the same path exists in src and dst, it is overwritten in dst.
+    If a file at the same path exists in src and dst, it is NOT overwritten
+    in dst. Pass ``onexist`` in order to raise an error on such conditions.
 
     Args:
         src (path-like): source directory
@@ -115,7 +117,7 @@ def synctree(src, dst, onexist=None):
         raise ValueError
 
     if onexist is None:
-        onexist = lambda x: None
+        def onexist(): pass
 
     _synctree(src, dst, onexist)
 
@@ -138,20 +140,25 @@ def _synctree(src, dst, onexist):
                     if not dstdir.is_dir():
                         raise BalletError
                 else:
+                    logger.debug(
+                        'Making directory: {dstdir!s}'.format(dstdir=dstdir))
                     dstdir.mkdir()
-                    cleanup.append(lambda: rmtree(dstdir, ignore_errors=True))
+                    cleanup.append(partial(os.rmdir, dstdir))
 
             for filename in filenames:
                 srcfile = root.joinpath(filename)
                 dstfile = dst.joinpath(relative_dir, filename)
                 if dstfile.exists():
                     onexist(dstfile)
-
-                copyfile(srcfile, dstfile)
-                cleanup.append(lambda: os.remove(dstfile))
+                else:
+                    logger.debug(
+                        'Copying file to destination: {dstfile!s}'
+                        .format(dstfile=dstfile))
+                    copyfile(srcfile, dstfile)
+                    cleanup.append(partial(os.unlink, dstfile))
 
     except Exception:
-        for f in reversed(cleanup):
-            with suppress(Exception):
+        with suppress(Exception):
+            for f in reversed(cleanup):
                 f()
         raise
