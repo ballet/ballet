@@ -1,7 +1,9 @@
+import os
 import os.path
+from shutil import copyfile, copytree
 
-from ballet.compat import safepath
 from ballet.compat import PathLike, pathlib, safepath
+from ballet.exc import Error
 
 
 def spliceext(filepath, s):
@@ -84,3 +86,59 @@ def ispathlike(obj):
         bool
     """
     return isinstance(obj, PathLike)
+
+
+def synctree(src, dst, onexist=None):
+    """Recursively sync files at directory src to dst
+
+    This is more or less equivalent to::
+
+       cp -R ${src}/ ${dst}/
+
+    If a file at the same path exists in src and dst, it is overwritten in dst.
+
+    Args:
+        src (path-like): source directory
+        dst (path-like): destination directory, does not need to exist
+        onexist (callable): function to call if file exists at destination,
+            takes the full path to destination file as only argument
+    """
+    src = pathlib.Path(src).resolve()
+    dst = pathlib.Path(dst).resolve()
+
+    if not src.is_dir():
+        raise ValueError
+
+    if dst.exists() and not dst.is_dir():
+        raise ValueError
+
+    if onexist is None:
+        onexist = lambda x: None
+
+    _synctree(src, dst, onexist)
+
+
+def _synctree(src, dst, onexist):
+    if not dst.exists():
+        copytree(src, dst)
+        return
+
+    for root, dirnames, filenames in os.walk(src):
+        root = pathlib.Path(root)
+        relative_dir = root.relative_to(src)
+
+        for dirname in dirnames:
+            dstdir = dst.joinpath(relative_dir, dirname)
+            if dstdir.exists():
+                if not dstdir.is_dir():
+                    raise Error
+            else:
+                dstdir.mkdir()
+
+        for filename in filenames:
+            srcfile = root.joinpath(filename)
+            dstfile = dst.joinpath(relative_dir, filename)
+            if dstfile.exists():
+                onexist(dstfile)
+
+            copyfile(srcfile, dstfile)

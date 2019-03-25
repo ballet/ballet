@@ -5,7 +5,7 @@ import tempfile
 import types
 import unittest
 from enum import Enum
-from unittest.mock import ANY, mock_open, patch
+from unittest.mock import ANY, Mock, mock_open, patch
 
 import numpy as np
 import pandas as pd
@@ -567,6 +567,21 @@ class FsTest(unittest.TestCase):
 
         for notpathlike in [None, '/foo/bar', []]:
             self.assertFalse(ballet.util.fs.ispathlike(notpathlike))
+
+    @unittest.expectedFailure
+    def test_synctree(self):
+        pass
+
+    @patch('ballet.util.fs.copytree')
+    def test__synctree_dst_not_exists(self, mock_copytree):
+        # when src is a directory that exists and dst does not exist,
+        # then copytree should be called
+        src = Mock(spec=pathlib.Path)
+        dst = Mock(spec=pathlib.Path)
+        dst.exists.return_value = False
+        ballet.util.fs._synctree(src, dst)
+        mock_copytree.assert_called_once_with(src, dst)
+
 
 class GitTest(unittest.TestCase):
 
