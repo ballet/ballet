@@ -53,11 +53,10 @@ def quickstart(tempdir):
 
 @pytest.fixture
 def project_template_copy(tempdir):
-    old_path = ballet.templating._get_project_template_path()
+    old_path = ballet.templating.PROJECT_TEMPLATE_PATH
     new_path = tempdir.joinpath('templates', 'project_template')
     shutil.copytree(old_path, safepath(new_path))
 
-    with patch('ballet.templating._get_project_template_path') as m:
-        m.return_value = str(new_path)
+    with patch('ballet.templating.PROJECT_TEMPLATE_PATH', str(new_path)):
         tree(new_path)
         yield new_path

@@ -570,7 +570,7 @@ class FsTest(unittest.TestCase):
 
     @unittest.expectedFailure
     def test_synctree(self):
-        pass
+        raise NotImplementedError
 
     @patch('ballet.util.fs.copytree')
     def test__synctree_dst_not_exists(self, mock_copytree):
@@ -579,7 +579,7 @@ class FsTest(unittest.TestCase):
         src = Mock(spec=pathlib.Path)
         dst = Mock(spec=pathlib.Path)
         dst.exists.return_value = False
-        ballet.util.fs._synctree(src, dst)
+        ballet.util.fs._synctree(src, dst, lambda x: None)
         mock_copytree.assert_called_once_with(src, dst)
 
 
