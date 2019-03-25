@@ -12,8 +12,8 @@ from ballet.compat import safepath
 from ballet.project import DEFAULT_CONFIG_NAME
 from ballet.update import DEFAULT_BRANCH, TEMPLATE_BRANCH
 
-
 # Utility methods -------------------------------------------------------------
+
 
 def _run_ballet_update_template(d, project_slug, **kwargs):
     with work_in(safepath(d.joinpath(project_slug))):

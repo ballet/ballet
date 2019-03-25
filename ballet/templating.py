@@ -6,7 +6,7 @@ from funcy import re_test, walk, walk_values, wraps
 from ballet.compat import pathlib
 from ballet.project import Project
 from ballet.util.fs import ispathlike, synctree
-from ballet.util.log import logger, stacklog
+from ballet.util.log import logger
 from ballet.validation.diff_checks import (
     FEATURE_MODULE_NAME_REGEX, SUBPACKAGE_NAME_REGEX)
 
@@ -48,9 +48,10 @@ def render_feature_template(**cc_kwargs):
 
 def _fail_if_feature_exists(dst):
     subpackage_name, feature_name = str(dst.parent), str(dst.name)
-    if (dst.is_file() and
-        re_test(SUBPACKAGE_NAME_REGEX, subpackage_name) and
-        re_test(FEATURE_MODULE_NAME_REGEX, feature_name)
+    if (
+        dst.is_file()
+        and re_test(SUBPACKAGE_NAME_REGEX, subpackage_name)
+        and re_test(FEATURE_MODULE_NAME_REGEX, feature_name)
     ):
         raise FileExistsError(
             'The feature already exists here: {dst}'

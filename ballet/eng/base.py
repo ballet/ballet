@@ -130,8 +130,8 @@ class GroupwiseTransformer(BaseTransformer):
            ... )
 
     Raises:
-        ballet.exc.BalletError: if handle_unknown=='error' and an unknown group is
-            encountered at transform-time.
+        ballet.exc.BalletError: if handle_unknown=='error' and an unknown group
+            is encountered at transform-time.
     """
 
     def __init__(self,

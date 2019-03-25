@@ -47,7 +47,7 @@ def quickstart(tempdir):
 
         yield (
             namedtuple('Quickstart', 'tempdir project_slug repo')
-                ._make((tempdir, project_slug, repo))
+            ._make((tempdir, project_slug, repo))
         )
 
 

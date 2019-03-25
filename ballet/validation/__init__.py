@@ -4,7 +4,7 @@ from funcy import decorator, ignore, lfilter
 
 from ballet.contrib import _get_contrib_feature_from_module
 from ballet.exc import (
-    ConfigurationError, BalletError, FeatureRejected, InvalidFeatureApi,
+    BalletError, ConfigurationError, FeatureRejected, InvalidFeatureApi,
     InvalidProjectStructure, SkippedValidationTest)
 from ballet.project import Project
 from ballet.util.log import logger, stacklog

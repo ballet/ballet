@@ -9,7 +9,7 @@ from git import GitCommandError
 
 from ballet import __version__ as version
 from ballet.compat import pathlib, safepath
-from ballet.exc import ConfigurationError, BalletError
+from ballet.exc import BalletError, ConfigurationError
 from ballet.project import Project
 from ballet.templating import render_project_template
 from ballet.util.log import logger, stacklog

@@ -423,12 +423,12 @@ class CiTest(unittest.TestCase):
                 'TRAVIS_PULL_REQUEST': 'false',
                 'TRAVIS_PULL_REQUEST_BRANCH': '',
                 'TRAVIS_BRANCH': 'master',
-              }, 'master'),
+            }, 'master'),
             ({
                 'TRAVIS_PULL_REQUEST': 'false',
                 'TRAVIS_PULL_REQUEST_BRANCH': '',
                 'TRAVIS_BRANCH': 'foo',
-              }, 'foo'),
+            }, 'foo'),
             ({
                 'TRAVIS_PULL_REQUEST': '1',
                 'TRAVIS_PULL_REQUEST_BRANCH': 'foo',
