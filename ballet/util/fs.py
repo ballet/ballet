@@ -124,7 +124,7 @@ def synctree(src, dst, onexist=None):
 
 def _synctree(src, dst, onexist):
     if not dst.exists():
-        copytree(src, dst)
+        copytree(safepath(src), safepath(dst))
         return
 
     cleanup = []

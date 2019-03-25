@@ -580,7 +580,17 @@ class FsTest(unittest.TestCase):
         dst = Mock(spec=pathlib.Path)
         dst.exists.return_value = False
         ballet.util.fs._synctree(src, dst, lambda x: None)
-        mock_copytree.assert_called_once_with(src, dst)
+        mock_copytree.assert_called_once_with(safepath(src), safepath(dst))
+
+    @patch('ballet.util.fs.copyfile')
+    def test__synctree(self, mock_copyfile):
+        with tempfile.TemporaryDirectory() as tempdir:
+            tempdir = pathlib.Path(tempdir)
+            src = tempdir.joinpath('x')
+            src.joinpath('a', 'b').mkdir(parents=True)
+            src.joinpath('test.txt').touch()
+
+            dst = tempdir.joinpath('y')
 
 
 class GitTest(unittest.TestCase):
