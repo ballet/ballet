@@ -3,9 +3,10 @@ import tempfile
 from cookiecutter.main import cookiecutter as _cookiecutter
 from funcy import re_test, walk, walk_values, wraps
 
-from ballet.compat import pathlib, safepath
+from ballet.compat import pathlib
 from ballet.project import Project
 from ballet.util.fs import ispathlike, synctree
+from ballet.util.log import logger, stacklog
 from ballet.validation.diff_checks import (
     FEATURE_MODULE_NAME_REGEX, SUBPACKAGE_NAME_REGEX)
 
@@ -83,3 +84,4 @@ def start_new_feature(**cc_kwargs):
         dst = contrib_dir
         synctree(src, dst, onexist=_fail_if_feature_exists)
 
+    logger.info('Start new feature successful.')

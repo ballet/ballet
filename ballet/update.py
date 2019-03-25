@@ -193,9 +193,3 @@ def update_project_template(push=False):
     if push:
         _push(project)
         logger.info('Push successful.')
-
-
-def main(**kwargs):
-    import ballet.util.log
-    ballet.util.log.enable(level='INFO', echo=False)
-    update_project_template(**kwargs)
