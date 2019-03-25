@@ -45,6 +45,17 @@ def render_feature_template(**cc_kwargs):
     return cookiecutter(feature_template_path, **cc_kwargs)
 
 
+def _fail_if_feature_exists(dst):
+    subpackage_name, feature_name = str(dst.parent), str(dst.name)
+    if (dst.is_file() and
+        re_test(SUBPACKAGE_NAME_REGEX, subpackage_name) and
+        re_test(FEATURE_MODULE_NAME_REGEX, feature_name)
+    ):
+        raise FileExistsError(
+            'The feature already exists here: {dst}'
+            .format(dst=dst))
+
+
 def start_new_feature(**cc_kwargs):
     """Start a new feature within a ballet project
 
@@ -70,15 +81,5 @@ def start_new_feature(**cc_kwargs):
         # copy into contrib dir
         src = rendered_dir
         dst = contrib_dir
+        synctree(src, dst, onexist=_fail_if_feature_exists)
 
-        def fail_if_feature_exists(dst):
-            subpackage_name, feature_name = dst.parent, dst.name
-            if (dst.is_file() and
-                re_test(SUBPACKAGE_NAME_REGEX, subpackage_name) and
-                re_test(FEATURE_MODULE_NAME_REGEX, feature_name)
-            ):
-                raise FileExistsError(
-                    'The feature already exists here: {dst}'
-                    .format(dst=dst))
-
-        synctree(src, dst, onexist=fail_if_feature_exists)

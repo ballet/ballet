@@ -1,6 +1,8 @@
 import os
 import os.path
-from shutil import copyfile, copytree
+from shutil import copyfile, copytree, rmtree
+
+from funcy import suppress
 
 from ballet.compat import PathLike, pathlib, safepath
 from ballet.exc import BalletError
@@ -123,22 +125,33 @@ def _synctree(src, dst, onexist):
         copytree(src, dst)
         return
 
-    for root, dirnames, filenames in os.walk(src):
-        root = pathlib.Path(root)
-        relative_dir = root.relative_to(src)
+    cleanup = []
 
-        for dirname in dirnames:
-            dstdir = dst.joinpath(relative_dir, dirname)
-            if dstdir.exists():
-                if not dstdir.is_dir():
-                    raise BalletError
-            else:
-                dstdir.mkdir()
+    try:
+        for root, dirnames, filenames in os.walk(src):
+            root = pathlib.Path(root)
+            relative_dir = root.relative_to(src)
 
-        for filename in filenames:
-            srcfile = root.joinpath(filename)
-            dstfile = dst.joinpath(relative_dir, filename)
-            if dstfile.exists():
-                onexist(dstfile)
+            for dirname in dirnames:
+                dstdir = dst.joinpath(relative_dir, dirname)
+                if dstdir.exists():
+                    if not dstdir.is_dir():
+                        raise BalletError
+                else:
+                    dstdir.mkdir()
+                    cleanup.append(lambda: rmtree(dstdir, ignore_errors=True))
 
-            copyfile(srcfile, dstfile)
+            for filename in filenames:
+                srcfile = root.joinpath(filename)
+                dstfile = dst.joinpath(relative_dir, filename)
+                if dstfile.exists():
+                    onexist(dstfile)
+
+                copyfile(srcfile, dstfile)
+                cleanup.append(lambda: os.remove(dstfile))
+
+    except Exception:
+        for f in reversed(cleanup):
+            with suppress(Exception):
+                f()
+        raise
