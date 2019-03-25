@@ -7,8 +7,8 @@ from ballet.project import relative_to_contrib
 from ballet.util.fs import isemptyfile
 from ballet.validation.base import BaseCheck
 
-FEATURE_MODULE_NAME_REGEX = r'feature_[a-zA-Z0-9_]+\.\w+'
-SUBPACKAGE_NAME_REGEX = r'user_[a-zA-Z0-9_]+'
+FEATURE_MODULE_NAME_REGEX = r'feature_(?P<featurename>[a-zA-Z0-9_]+)\.py'
+SUBPACKAGE_NAME_REGEX = r'user_(?P<username>[a-zA-Z0-9_]+)'
 
 
 class DiffCheck(BaseCheck):
