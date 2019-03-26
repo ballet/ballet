@@ -249,12 +249,14 @@
 <span class="sd">    take datasets of mixed discrete and continuous functions.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        X (array-like): An array with shape (n_samples, n_features)</span>
+<span class="sd">        X (array-like): An array-like (np arr, pandas df, etc.) with shape</span>
+<span class="sd">            (n_samples, n_features) or (n_samples)</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        float: A floating-point number representing the dataset entropy.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
     <span class="n">n_samples</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
     <span class="n">_</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">empirical_p</span> <span class="o">=</span> <span class="n">counts</span> <span class="o">*</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">n_samples</span>
@@ -278,7 +280,8 @@
 <span class="sd">    take datasets of mixed discrete and continuous functions.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        X (array-like): An array with shape (n_samples, n_features)</span>
+<span class="sd">        X (array-like): An array-like (np arr, pandas df, etc.) with shape</span>
+<span class="sd">            (n_samples, n_features) or (n_samples)</span>
 <span class="sd">        epsilon (array-like): An array with shape (n_samples, 1) that is</span>
 <span class="sd">            the epsilon used in Kraskov Estimator. Represents the chebyshev</span>
 <span class="sd">            distance from an element to its k-th nearest neighbor in the full</span>
@@ -298,6 +301,7 @@
 <span class="sd">           of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
     <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
     <span class="k">if</span> <span class="n">n_samples</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">0</span>
@@ -369,7 +373,8 @@
 <span class="sd">    in the same row as a discrete column with value x in the original dataset.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        X (array-like): An array with shape (n_samples, n_features)</span>
+<span class="sd">        X (array-like): An array-like (np arr, pandas df, etc.) with shape</span>
+<span class="sd">            (n_samples, n_features) or (n_samples)</span>
 <span class="sd">        epsilon (array-like): An array with shape (n_samples, 1) that is</span>
 <span class="sd">            the epsilon used in Kraskov Estimator. Represents the chebyshev</span>
 <span class="sd">            distance from an element to its k-th nearest neighbor in the full</span>
@@ -391,6 +396,7 @@
 <span class="sd">           of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
     <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
     <span class="k">if</span> <span class="n">n_features</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">0</span>
@@ -412,12 +418,12 @@
 
     <span class="c1"># $\sum_{x \in d} p(x) \times H(c(x))$</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">counts</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
-        <span class="n">unique_mask</span> <span class="o">=</span> <span class="n">disc_features</span> <span class="o">==</span> <span class="n">uniques</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="n">selected_cont_samples</span> <span class="o">=</span> <span class="n">cont_features</span><span class="p">[</span><span class="n">unique_mask</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="p">:]</span>
+        <span class="n">unique_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">disc_features</span> <span class="o">==</span> <span class="n">uniques</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">selected_cont_samples</span> <span class="o">=</span> <span class="n">cont_features</span><span class="p">[</span><span class="n">unique_mask</span><span class="p">,</span> <span class="p">:]</span>
         <span class="k">if</span> <span class="n">epsilon</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">selected_epsilon</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">selected_epsilon</span> <span class="o">=</span> <span class="n">epsilon</span><span class="p">[</span><span class="n">unique_mask</span><span class="p">]</span>
+            <span class="n">selected_epsilon</span> <span class="o">=</span> <span class="n">epsilon</span><span class="p">[</span><span class="n">unique_mask</span><span class="p">,</span> <span class="p">:]</span>
         <span class="n">conditional_cont_entropy</span> <span class="o">=</span> <span class="n">estimate_cont_entropy</span><span class="p">(</span>
             <span class="n">selected_cont_samples</span><span class="p">,</span> <span class="n">selected_epsilon</span><span class="p">)</span>
         <span class="n">entropy</span> <span class="o">+=</span> <span class="n">empirical_p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">conditional_cont_entropy</span>
