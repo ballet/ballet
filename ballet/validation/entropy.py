@@ -19,12 +19,14 @@ def calculate_disc_entropy(X):
     take datasets of mixed discrete and continuous functions.
 
     Args:
-        X (array-like): An array with shape (n_samples, n_features)
+        X (array-like): An array-like (np arr, pandas df, etc.) with shape
+            (n_samples, n_features) or (n_samples)
 
     Returns:
         float: A floating-point number representing the dataset entropy.
 
     """
+    X = asarray2d(X)
     n_samples, _ = X.shape
     _, counts = np.unique(X, axis=0, return_counts=True)
     empirical_p = counts * 1.0 / n_samples
@@ -48,7 +50,8 @@ def estimate_cont_entropy(X, epsilon=None):
     take datasets of mixed discrete and continuous functions.
 
     Args:
-        X (array-like): An array with shape (n_samples, n_features)
+        X (array-like): An array-like (np arr, pandas df, etc.) with shape
+            (n_samples, n_features) or (n_samples)
         epsilon (array-like): An array with shape (n_samples, 1) that is
             the epsilon used in Kraskov Estimator. Represents the chebyshev
             distance from an element to its k-th nearest neighbor in the full
@@ -68,6 +71,7 @@ def estimate_cont_entropy(X, epsilon=None):
            of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16
 
     """
+    X = asarray2d(X)
     n_samples, n_features = X.shape
     if n_samples <= 1:
         return 0
@@ -139,7 +143,8 @@ def estimate_entropy(X, epsilon=None):
     in the same row as a discrete column with value x in the original dataset.
 
     Args:
-        X (array-like): An array with shape (n_samples, n_features)
+        X (array-like): An array-like (np arr, pandas df, etc.) with shape
+            (n_samples, n_features) or (n_samples)
         epsilon (array-like): An array with shape (n_samples, 1) that is
             the epsilon used in Kraskov Estimator. Represents the chebyshev
             distance from an element to its k-th nearest neighbor in the full
@@ -161,6 +166,7 @@ def estimate_entropy(X, epsilon=None):
            of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16
 
     """
+    X = asarray2d(X)
     n_samples, n_features = X.shape
     if n_features < 1:
         return 0
@@ -182,12 +188,12 @@ def estimate_entropy(X, epsilon=None):
 
     # $\sum_{x \in d} p(x) \times H(c(x))$
     for i in range(counts.size):
-        unique_mask = disc_features == uniques[i]
-        selected_cont_samples = cont_features[unique_mask.ravel(), :]
+        unique_mask = np.all(disc_features == uniques[i], axis=1)
+        selected_cont_samples = cont_features[unique_mask, :]
         if epsilon is None:
             selected_epsilon = None
         else:
-            selected_epsilon = epsilon[unique_mask]
+            selected_epsilon = epsilon[unique_mask, :]
         conditional_cont_entropy = estimate_cont_entropy(
             selected_cont_samples, selected_epsilon)
         entropy += empirical_p[i] * conditional_cont_entropy
