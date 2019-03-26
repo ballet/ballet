@@ -40,6 +40,34 @@ class EntropyTest(unittest.TestCase):
             diff_val_h,
             msg='Expected entropy in x ~ Ber(0.5)')
 
+    def test_entropy_cont_disc_heuristics(self):
+        arange_disc_arr = np.arange(50)
+        arange_cont_arr = np.arange(50) + 0.5
+
+        disc_h = estimate_entropy(arange_disc_arr)
+        cont_h = estimate_entropy(arange_cont_arr)
+        self.assertNotEqual(
+            disc_h,
+            cont_h,
+            msg='Expected continuous and discrete columns to be handled differently')
+
+    def test_entropy_multiple_disc(self):
+        same_val_arr_zero = np.zeros((50, 1))
+        same_val_arr_ones = np.ones((50, 1))
+        # The 0.5 forces float => classified as continuous
+        cont_val_arange = np.arange(50) + 0.5
+        all_disc_arr = np.concatenate(
+            (same_val_arr_ones, same_val_arr_zero), axis=1)
+        mixed_val_arr = np.concatenate(
+            (all_disc_arr, cont_val_arange), axis=1)
+
+        all_disc_h = estimate_entropy(all_disc_arr)
+        mixed_h = estimate_entropy(mixed_val_arr)
+        self.assertGreater(
+            mixed_h,
+            all_disc_h,
+            meg='Expected adding continuous column increases entropy')
+
     def test_mi_uninformative(self):
         x = np.reshape(np.arange(1, 101), (100, 1))
         y = np.ones((100, 1))

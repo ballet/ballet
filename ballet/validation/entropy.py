@@ -25,6 +25,7 @@ def calculate_disc_entropy(X):
         float: A floating-point number representing the dataset entropy.
 
     """
+    X = asarray2d(X)
     n_samples, _ = X.shape
     _, counts = np.unique(X, axis=0, return_counts=True)
     empirical_p = counts * 1.0 / n_samples
@@ -68,6 +69,7 @@ def estimate_cont_entropy(X, epsilon=None):
            of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16
 
     """
+    X = asarray2d(X)
     n_samples, n_features = X.shape
     if n_samples <= 1:
         return 0
@@ -161,6 +163,7 @@ def estimate_entropy(X, epsilon=None):
            of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16
 
     """
+    X = asarray2d(X)
     n_samples, n_features = X.shape
     if n_features < 1:
         return 0
