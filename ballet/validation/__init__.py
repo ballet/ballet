@@ -1,12 +1,13 @@
 import os
 
-from funcy import decorator, ignore, lfilter
+from funcy import complement, decorator, ignore, lfilter
 
 from ballet.contrib import _get_contrib_feature_from_module
 from ballet.exc import (
     BalletError, ConfigurationError, FeatureRejected, InvalidFeatureApi,
     InvalidProjectStructure, SkippedValidationTest)
 from ballet.project import Project
+from ballet.util import one_or_raise
 from ballet.util.log import logger, stacklog
 from ballet.validation.feature_evaluation import NoOpPruningEvaluator
 from ballet.validation.gfssf_validator import GFSSFAcceptanceEvaluator
@@ -33,12 +34,25 @@ class BalletTestTypes:
 
 
 def get_proposed_feature(project):
+    """Get the proposed feature
+
+    The path of the proposed feature is determined by diffing the project
+    against a comparison branch, such as master. The feature is then imported
+    from that path and returned.
+
+    Args:
+        project (ballet.project.Project): project info
+
+    Raises:
+        ballet.exc.BalletError: more than one feature collected
+    """
     change_collector = ChangeCollector(project)
     collected_changes = change_collector.collect_changes()
-    if len(collected_changes.new_feature_info) != 1:
-        raise BalletError
-    importer, _, _ = collected_changes.new_feature_info[0]
-    # print('\n' * 5 + str(collected_changes.new_feature_info))
+    try:
+        new_feature_info = one_or_raise(collected_changes.new_feature_info)
+        importer, _, _ = new_feature_info
+    except ValueError:
+        raise BalletError('Too many features collected')
     module = importer()
     feature = _get_contrib_feature_from_module(module)
     return feature
@@ -48,23 +62,28 @@ def get_accepted_features(features, proposed_feature):
     """Deselect candidate features from list of all features
 
     Args:
-        features (Sequence[Feature]): collection of all features in the
-            ballet project: both accepted features and candidate ones that have
-            not been accepted
+        features (List[Feature]): collection of all features in the ballet
+            project: both accepted features and candidate ones that have not
+            been accepted
         proposed_feature (Feature): candidate feature that has not been
             accepted
 
     Returns:
-        list[Feature]: list of features with the proposed feature not in it.
+        List[Feature]: list of features with the proposed feature not in it.
 
     Raises:
         ballet.exc.BalletError: Could not deselect exactly the proposed
             feature.
     """
-    def neq(feature):
-        return feature.source != proposed_feature.source
+    def eq(feature):
+        """Features are equal if they have the same source
 
-    result = lfilter(neq, features)
+        At least in this implementation...
+        """
+        return feature.source == proposed_feature.source
+
+    # deselect features that match the proposed feature
+    result = lfilter(complement(eq), features)
 
     if len(features) - len(result) == 1:
         return result
