@@ -126,7 +126,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.feature.html">ballet.feature module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.modeler.html">ballet.modeler module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.project.html">ballet.project module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.quickstart.html">ballet.quickstart module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.templating.html">ballet.templating module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.update.html">ballet.update module</a></li>
 </ul>
 </li>
@@ -228,13 +228,14 @@
   <h1>Source code for ballet.validation</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">os</span>
 
-<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">decorator</span><span class="p">,</span> <span class="n">ignore</span><span class="p">,</span> <span class="n">lfilter</span>
+<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">complement</span><span class="p">,</span> <span class="n">decorator</span><span class="p">,</span> <span class="n">ignore</span><span class="p">,</span> <span class="n">lfilter</span>
 
 <span class="kn">from</span> <span class="nn">ballet.contrib</span> <span class="k">import</span> <span class="n">_get_contrib_feature_from_module</span>
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">ConfigurationError</span><span class="p">,</span> <span class="n">Error</span><span class="p">,</span> <span class="n">FeatureRejected</span><span class="p">,</span> <span class="n">InvalidFeatureApi</span><span class="p">,</span>
+    <span class="n">BalletError</span><span class="p">,</span> <span class="n">ConfigurationError</span><span class="p">,</span> <span class="n">FeatureRejected</span><span class="p">,</span> <span class="n">InvalidFeatureApi</span><span class="p">,</span>
     <span class="n">InvalidProjectStructure</span><span class="p">,</span> <span class="n">SkippedValidationTest</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ballet.project</span> <span class="k">import</span> <span class="n">Project</span>
+<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">one_or_raise</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span><span class="p">,</span> <span class="n">stacklog</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.feature_evaluation</span> <span class="k">import</span> <span class="n">NoOpPruningEvaluator</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.gfssf_validator</span> <span class="k">import</span> <span class="n">GFSSFAcceptanceEvaluator</span>
@@ -261,12 +262,25 @@
 
 
 <div class="viewcode-block" id="get_proposed_feature"><a class="viewcode-back" href="../../api/ballet.validation.html#ballet.validation.get_proposed_feature">[docs]</a><span class="k">def</span> <span class="nf">get_proposed_feature</span><span class="p">(</span><span class="n">project</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get the proposed feature</span>
+
+<span class="sd">    The path of the proposed feature is determined by diffing the project</span>
+<span class="sd">    against a comparison branch, such as master. The feature is then imported</span>
+<span class="sd">    from that path and returned.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        project (ballet.project.Project): project info</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ballet.exc.BalletError: more than one feature collected</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">change_collector</span> <span class="o">=</span> <span class="n">ChangeCollector</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
     <span class="n">collected_changes</span> <span class="o">=</span> <span class="n">change_collector</span><span class="o">.</span><span class="n">collect_changes</span><span class="p">()</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">collected_changes</span><span class="o">.</span><span class="n">new_feature_info</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">Error</span>
-    <span class="n">importer</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">collected_changes</span><span class="o">.</span><span class="n">new_feature_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="c1"># print(&#39;\n&#39; * 5 + str(collected_changes.new_feature_info))</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">new_feature_info</span> <span class="o">=</span> <span class="n">one_or_raise</span><span class="p">(</span><span class="n">collected_changes</span><span class="o">.</span><span class="n">new_feature_info</span><span class="p">)</span>
+        <span class="n">importer</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">new_feature_info</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">BalletError</span><span class="p">(</span><span class="s1">&#39;Too many features collected&#39;</span><span class="p">)</span>
     <span class="n">module</span> <span class="o">=</span> <span class="n">importer</span><span class="p">()</span>
     <span class="n">feature</span> <span class="o">=</span> <span class="n">_get_contrib_feature_from_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">feature</span></div>
@@ -276,30 +290,36 @@
     <span class="sd">&quot;&quot;&quot;Deselect candidate features from list of all features</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        features (Sequence[Feature]): collection of all features in the</span>
-<span class="sd">            ballet project: both accepted features and candidate ones that have</span>
-<span class="sd">            not been accepted</span>
+<span class="sd">        features (List[Feature]): collection of all features in the ballet</span>
+<span class="sd">            project: both accepted features and candidate ones that have not</span>
+<span class="sd">            been accepted</span>
 <span class="sd">        proposed_feature (Feature): candidate feature that has not been</span>
 <span class="sd">            accepted</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        list[Feature]: list of features with the proposed feature not in it.</span>
+<span class="sd">        List[Feature]: list of features with the proposed feature not in it.</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        Error: Could not deselect exactly the proposed feature.</span>
+<span class="sd">        ballet.exc.BalletError: Could not deselect exactly the proposed</span>
+<span class="sd">            feature.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">neq</span><span class="p">(</span><span class="n">feature</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">feature</span><span class="o">.</span><span class="n">source</span> <span class="o">!=</span> <span class="n">proposed_feature</span><span class="o">.</span><span class="n">source</span>
+    <span class="k">def</span> <span class="nf">eq</span><span class="p">(</span><span class="n">feature</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Features are equal if they have the same source</span>
 
-    <span class="n">result</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">(</span><span class="n">neq</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
+<span class="sd">        At least in this implementation...</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">feature</span><span class="o">.</span><span class="n">source</span> <span class="o">==</span> <span class="n">proposed_feature</span><span class="o">.</span><span class="n">source</span>
+
+    <span class="c1"># deselect features that match the proposed feature</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">(</span><span class="n">complement</span><span class="p">(</span><span class="n">eq</span><span class="p">),</span> <span class="n">features</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">result</span>
     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">Error</span><span class="p">(</span>
+        <span class="k">raise</span> <span class="n">BalletError</span><span class="p">(</span>
             <span class="s1">&#39;Did not find match for proposed feature within </span><span class="se">\&#39;</span><span class="s1">contrib</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">Error</span><span class="p">(</span>
+        <span class="k">raise</span> <span class="n">BalletError</span><span class="p">(</span>
             <span class="s1">&#39;Unexpected condition (n_features=</span><span class="si">{}</span><span class="s1">, n_result=</span><span class="si">{}</span><span class="s1">)&#39;</span>
             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)))</span></div>
 

@@ -126,7 +126,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.feature.html">ballet.feature module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.modeler.html">ballet.modeler module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.project.html">ballet.project module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.quickstart.html">ballet.quickstart module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.templating.html">ballet.templating module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.update.html">ballet.update module</a></li>
 </ul>
 </li>
@@ -228,9 +228,15 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ballet.util.fs</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os.path</span>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">from</span> <span class="nn">shutil</span> <span class="k">import</span> <span class="n">copyfile</span><span class="p">,</span> <span class="n">copytree</span>
 
-<span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="k">import</span> <span class="n">safepath</span>
+<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">partial</span><span class="p">,</span> <span class="n">suppress</span>
+
+<span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="k">import</span> <span class="n">pathlib</span><span class="p">,</span> <span class="n">safepath</span>
+<span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">BalletError</span>
+<span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span>
 
 
 <div class="viewcode-block" id="spliceext"><a class="viewcode-back" href="../../../api/ballet.util.fs.html#ballet.util.fs.spliceext">[docs]</a><span class="k">def</span> <span class="nf">spliceext</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
@@ -301,6 +307,79 @@
         <span class="k">return</span> <span class="n">filesize</span> <span class="o">==</span> <span class="mi">0</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="synctree"><a class="viewcode-back" href="../../../api/ballet.util.fs.html#ballet.util.fs.synctree">[docs]</a><span class="k">def</span> <span class="nf">synctree</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">onexist</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Recursively sync files at directory src to dst</span>
+
+<span class="sd">    This is more or less equivalent to::</span>
+
+<span class="sd">       cp -n -R ${src}/ ${dst}/</span>
+
+<span class="sd">    If a file at the same path exists in src and dst, it is NOT overwritten</span>
+<span class="sd">    in dst. Pass ``onexist`` in order to raise an error on such conditions.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        src (path-like): source directory</span>
+<span class="sd">        dst (path-like): destination directory, does not need to exist</span>
+<span class="sd">        onexist (callable): function to call if file exists at destination,</span>
+<span class="sd">            takes the full path to destination file as only argument</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">src</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">src</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+    <span class="n">dst</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">dst</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">src</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span>
+
+    <span class="k">if</span> <span class="n">dst</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">dst</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span>
+
+    <span class="k">if</span> <span class="n">onexist</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">onexist</span><span class="p">():</span> <span class="k">pass</span>
+
+    <span class="n">_synctree</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">onexist</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_synctree</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">onexist</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">dst</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">copytree</span><span class="p">(</span><span class="n">safepath</span><span class="p">(</span><span class="n">src</span><span class="p">),</span> <span class="n">safepath</span><span class="p">(</span><span class="n">dst</span><span class="p">))</span>
+        <span class="k">return</span>
+
+    <span class="n">cleanup</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirnames</span><span class="p">,</span> <span class="n">filenames</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">safepath</span><span class="p">(</span><span class="n">src</span><span class="p">)):</span>
+            <span class="n">root</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+            <span class="n">relative_dir</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">dirname</span> <span class="ow">in</span> <span class="n">dirnames</span><span class="p">:</span>
+                <span class="n">dstdir</span> <span class="o">=</span> <span class="n">dst</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">relative_dir</span><span class="p">,</span> <span class="n">dirname</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">dstdir</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">dstdir</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+                        <span class="k">raise</span> <span class="n">BalletError</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="s1">&#39;Making directory: </span><span class="si">{dstdir!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dstdir</span><span class="o">=</span><span class="n">dstdir</span><span class="p">))</span>
+                    <span class="n">dstdir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">()</span>
+                    <span class="n">cleanup</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">rmdir</span><span class="p">,</span> <span class="n">safepath</span><span class="p">(</span><span class="n">dstdir</span><span class="p">)))</span>
+
+            <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
+                <span class="n">srcfile</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+                <span class="n">dstfile</span> <span class="o">=</span> <span class="n">dst</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">relative_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">dstfile</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                    <span class="n">onexist</span><span class="p">(</span><span class="n">dstfile</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="s1">&#39;Copying file to destination: </span><span class="si">{dstfile!s}</span><span class="s1">&#39;</span>
+                        <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dstfile</span><span class="o">=</span><span class="n">dstfile</span><span class="p">))</span>
+                    <span class="n">copyfile</span><span class="p">(</span><span class="n">srcfile</span><span class="p">,</span> <span class="n">dstfile</span><span class="p">)</span>
+                    <span class="n">cleanup</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">,</span> <span class="n">safepath</span><span class="p">(</span><span class="n">dstfile</span><span class="p">)))</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">cleanup</span><span class="p">):</span>
+                <span class="n">f</span><span class="p">()</span>
+        <span class="k">raise</span>
 </pre></div>
 
            </div>

@@ -126,7 +126,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.feature.html">ballet.feature module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.modeler.html">ballet.modeler module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.project.html">ballet.project module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.quickstart.html">ballet.quickstart module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.templating.html">ballet.templating module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.update.html">ballet.update module</a></li>
 </ul>
 </li>
@@ -229,7 +229,7 @@
 <span></span><span class="kn">import</span> <span class="nn">sklearn.metrics</span>
 <span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">fallback</span><span class="p">,</span> <span class="n">flip</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> <span class="n">raiser</span><span class="p">,</span> <span class="n">rcompose</span><span class="p">,</span> <span class="n">select_values</span>
 
-<span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">Error</span>
+<span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">BalletError</span>
 <span class="kn">from</span> <span class="nn">ballet.modeling.constants</span> <span class="k">import</span> <span class="p">(</span>
     <span class="n">CLASSIFICATION_SCORING</span><span class="p">,</span> <span class="n">REGRESSION_SCORING</span><span class="p">,</span> <span class="n">SCORING_NAME_MAPPER</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span>
@@ -264,7 +264,7 @@
             <span class="n">from_sklearn_metrics</span><span class="p">,</span>
             <span class="n">from_import</span><span class="p">,</span>
             <span class="n">raiser</span><span class="p">(</span>
-                <span class="n">Error</span><span class="p">,</span>
+                <span class="n">BalletError</span><span class="p">,</span>
                 <span class="s1">&#39;Could not get a scorer with configuration </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)),</span>
         <span class="p">)</span>
@@ -305,7 +305,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">Error</span><span class="p">(</span><span class="s1">&#39;Could not get name from scorer&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">BalletError</span><span class="p">(</span><span class="s1">&#39;Could not get name from scorer&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

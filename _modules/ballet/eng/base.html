@@ -126,7 +126,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.feature.html">ballet.feature module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.modeler.html">ballet.modeler module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.project.html">ballet.project module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.quickstart.html">ballet.quickstart module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.templating.html">ballet.templating module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.update.html">ballet.update module</a></li>
 </ul>
 </li>
@@ -232,7 +232,7 @@
 <span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="k">import</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span>
 <span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="k">import</span> <span class="n">check_is_fitted</span>
 
-<span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">Error</span>
+<span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">BalletError</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;BaseTransformer&#39;</span><span class="p">,</span>
@@ -358,8 +358,8 @@
 <span class="sd">           ... )</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        ballet.exc.Error: if handle_unknown==&#39;error&#39; and an unknown group is</span>
-<span class="sd">            encountered at transform-time.</span>
+<span class="sd">        ballet.exc.BalletError: if handle_unknown==&#39;error&#39; and an unknown group</span>
+<span class="sd">            is encountered at transform-time.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
@@ -445,7 +445,7 @@
                         <span class="k">raise</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span> <span class="o">==</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">Error</span><span class="p">(</span>
+                    <span class="k">raise</span> <span class="n">BalletError</span><span class="p">(</span>
                         <span class="s1">&#39;Unknown group: </span><span class="si">{group_name}</span><span class="s1">&#39;</span>
                         <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group_name</span><span class="o">=</span><span class="n">x_group</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
                 <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span> <span class="o">==</span> <span class="s1">&#39;ignore&#39;</span><span class="p">:</span>

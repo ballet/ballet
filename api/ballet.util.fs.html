@@ -128,7 +128,7 @@
 <li class="toctree-l3"><a class="reference internal" href="ballet.feature.html">ballet.feature module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.modeler.html">ballet.modeler module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.project.html">ballet.project module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ballet.quickstart.html">ballet.quickstart module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.templating.html">ballet.templating module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.update.html">ballet.update module</a></li>
 </ul>
 </li>
@@ -314,6 +314,32 @@ it will be added.</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> (<em>str</em><em>, </em><em>path</em>) – file path</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ballet.util.fs.synctree">
+<code class="descclassname">ballet.util.fs.</code><code class="descname">synctree</code><span class="sig-paren">(</span><em>src</em>, <em>dst</em>, <em>onexist=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/fs.html#synctree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.fs.synctree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursively sync files at directory src to dst</p>
+<p>This is more or less equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cp -n -R ${src}/ ${dst}/
+</pre></div>
+</div>
+<p>If a file at the same path exists in src and dst, it is NOT overwritten
+in dst. Pass <code class="docutils literal notranslate"><span class="pre">onexist</span></code> in order to raise an error on such conditions.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>src</strong> (<em>path-like</em>) – source directory</li>
+<li><strong>dst</strong> (<em>path-like</em>) – destination directory, does not need to exist</li>
+<li><strong>onexist</strong> (<em>callable</em>) – function to call if file exists at destination,
+takes the full path to destination file as only argument</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
