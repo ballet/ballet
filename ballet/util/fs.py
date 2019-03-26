@@ -4,7 +4,7 @@ from shutil import copyfile, copytree
 
 from funcy import partial, suppress
 
-from ballet.compat import PathLike, pathlib, safepath
+from ballet.compat import pathlib, safepath
 from ballet.exc import BalletError
 from ballet.util.log import logger
 
@@ -77,18 +77,6 @@ def isemptyfile(filepath):
         return filesize == 0
     else:
         return False
-
-
-def ispathlike(obj):
-    """Determine if the object is path-like
-
-    Args:
-        obj: thing to test
-
-    Returns:
-        bool
-    """
-    return isinstance(obj, PathLike)
 
 
 def synctree(src, dst, onexist=None):

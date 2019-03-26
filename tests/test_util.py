@@ -561,13 +561,6 @@ class FsTest(unittest.TestCase):
     def test_isemptyfile(self):
         raise NotImplementedError
 
-    def test_ispathlike(self):
-        pathlike = pathlib.Path('.')
-        self.assertTrue(ballet.util.fs.ispathlike(pathlike))
-
-        for notpathlike in [None, '/foo/bar', []]:
-            self.assertFalse(ballet.util.fs.ispathlike(notpathlike))
-
     @patch('ballet.util.fs.copytree')
     def test__synctree_dst_not_exists(self, mock_copytree):
         # when src is a directory that exists and dst does not exist,

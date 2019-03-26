@@ -3,9 +3,9 @@ import tempfile
 from cookiecutter.main import cookiecutter as _cookiecutter
 from funcy import re_test, walk, walk_values, wraps
 
-from ballet.compat import pathlib
+from ballet.compat import PathLike, pathlib
 from ballet.project import Project
-from ballet.util.fs import ispathlike, synctree
+from ballet.util.fs import synctree
 from ballet.util.log import logger
 from ballet.validation.diff_checks import (
     FEATURE_MODULE_NAME_REGEX, SUBPACKAGE_NAME_REGEX)
@@ -16,7 +16,7 @@ PROJECT_TEMPLATE_PATH = TEMPLATES_PATH.joinpath('project_template')
 
 
 def _stringify_path(obj):
-    return str(obj) if ispathlike(obj) else obj
+    return str(obj) if isinstance(obj, PathLike) else obj
 
 
 @wraps(_cookiecutter)
