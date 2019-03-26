@@ -19,7 +19,8 @@ def calculate_disc_entropy(X):
     take datasets of mixed discrete and continuous functions.
 
     Args:
-        X (array-like): An array with shape (n_samples, n_features)
+        X (array-like): An array-like (np arr, pandas df, etc.) with shape
+            (n_samples, n_features) or (n_samples)
 
     Returns:
         float: A floating-point number representing the dataset entropy.
@@ -49,7 +50,8 @@ def estimate_cont_entropy(X, epsilon=None):
     take datasets of mixed discrete and continuous functions.
 
     Args:
-        X (array-like): An array with shape (n_samples, n_features)
+        X (array-like): An array-like (np arr, pandas df, etc.) with shape
+            (n_samples, n_features) or (n_samples)
         epsilon (array-like): An array with shape (n_samples, 1) that is
             the epsilon used in Kraskov Estimator. Represents the chebyshev
             distance from an element to its k-th nearest neighbor in the full
@@ -141,7 +143,8 @@ def estimate_entropy(X, epsilon=None):
     in the same row as a discrete column with value x in the original dataset.
 
     Args:
-        X (array-like): An array with shape (n_samples, n_features)
+        X (array-like): An array-like (np arr, pandas df, etc.) with shape
+            (n_samples, n_features) or (n_samples)
         epsilon (array-like): An array with shape (n_samples, 1) that is
             the epsilon used in Kraskov Estimator. Represents the chebyshev
             distance from an element to its k-th nearest neighbor in the full

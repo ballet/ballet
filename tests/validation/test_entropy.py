@@ -49,7 +49,7 @@ class EntropyTest(unittest.TestCase):
         self.assertNotEqual(
             disc_h,
             cont_h,
-            msg='Expected continuous and discrete columns to be handled differently')
+            msg='Expected cont, disc columns to be handled differently')
 
     def test_entropy_multiple_disc(self):
         same_val_arr_zero = np.zeros((50, 1))
