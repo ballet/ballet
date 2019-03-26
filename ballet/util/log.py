@@ -4,19 +4,22 @@ from funcy import wraps
 
 import ballet
 
-LOG_FORMAT = r'[%(asctime)s] {%(name)s: %(filename)s:%(lineno)d} %(levelname)s - %(message)s'  # noqa E501
 SIMPLE_LOG_FORMAT = r'%(asctime)s %(levelname)s - %(message)s'
+DETAIL_LOG_FORMAT = r'[%(asctime)s] {%(name)s: %(filename)s:%(lineno)d} %(levelname)s - %(message)s'  # noqa E501
 
 logger = logging.getLogger(ballet.__name__)
 _handler = None
 
 
-def enable(logger=logger, level=logging.INFO, echo=True):
+def enable(logger=logger,
+           level=logging.INFO,
+           format=DETAIL_LOG_FORMAT,
+           echo=True):
     """Enable simple console logging for this module"""
     global _handler
     if _handler is None:
         _handler = logging.StreamHandler()
-        formatter = logging.Formatter(LOG_FORMAT)
+        formatter = logging.Formatter(format)
         _handler.setFormatter(formatter)
 
     level = logging._checkLevel(level)

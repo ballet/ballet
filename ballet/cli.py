@@ -1,10 +1,10 @@
 import click
 
-import ballet
+from ballet import __version__ as version
 
 
 @click.group()
-@click.version_option(ballet.__version__)
+@click.version_option(version)
 def cli():
     pass
 
@@ -12,8 +12,12 @@ def cli():
 @cli.command()
 def quickstart():
     """Generate a brand-new ballet project"""
-    import ballet.quickstart
-    ballet.quickstart.main()
+    import ballet.templating
+    import ballet.util.log
+    ballet.util.log.enable(level='INFO',
+                           format=ballet.util.log.SIMPLE_LOG_FORMAT,
+                           echo=False)
+    ballet.templating.render_project_template()
 
 
 @cli.command('update-project-template')
@@ -23,4 +27,19 @@ def quickstart():
 def update_project_template(push):
     """Update an existing ballet project from the upstream template"""
     import ballet.update
-    ballet.update.main(push=push)
+    import ballet.util.log
+    ballet.util.log.enable(level='INFO',
+                           format=ballet.util.log.SIMPLE_LOG_FORMAT,
+                           echo=False)
+    ballet.update.update_project_template(push=push)
+
+
+@cli.command('start-new-feature')
+def start_new_feature():
+    """Start working on a new feature from a template"""
+    import ballet.templating
+    import ballet.util.log
+    ballet.util.log.enable(level='INFO',
+                           format=ballet.util.log.SIMPLE_LOG_FORMAT,
+                           echo=False)
+    ballet.templating.start_new_feature()

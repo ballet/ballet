@@ -9,13 +9,14 @@ from git import GitCommandError
 
 from ballet import __version__ as version
 from ballet.compat import pathlib, safepath
-from ballet.exc import ConfigurationError, Error
+from ballet.exc import BalletError, ConfigurationError
 from ballet.project import Project
-from ballet.quickstart import generate_project
+from ballet.templating import render_project_template
 from ballet.util.log import logger, stacklog
 
 PROJECT_CONTEXT_PATH = (
     pathlib.Path(__file__).resolve().parent.joinpath(
+        'templates',
         'project_template',
         'cookiecutter.json'))
 CONTEXT_FILE_NAME = '.cookiecutter_context.json'
@@ -38,9 +39,9 @@ def _render_project_template(cwd, tempdir):
 
     # don't dump replay files to home directory.
     with patch('cookiecutter.main.dump'):
-        return generate_project(no_input=True,
-                                extra_context=context,
-                                output_dir=safepath(tempdir))
+        return render_project_template(no_input=True,
+                                       extra_context=context,
+                                       output_dir=safepath(tempdir))
 
 
 def _get_full_context(cwd):
@@ -84,7 +85,7 @@ def _push(project):
         $ git push origin master:master project-template:project-template
 
     Raises:
-        Error: Push failed in some way
+        ballet.exc.BalletError: Push failed in some way
     """
     repo = project.repo
     remote_name = project.get('project', 'remote')
@@ -108,7 +109,7 @@ def _push(project):
                 'Failed to push ref {from_ref} to {to_ref}'
                 .format(from_ref=push_info.local_ref.name,
                         to_ref=push_info.remote_ref.name))
-        raise Error('Push failed')
+        raise BalletError('Push failed')
 
 
 def update_project_template(push=False):
@@ -125,7 +126,7 @@ def update_project_template(push=False):
     original_head = repo.head.commit.hexsha[:7]
 
     if repo.is_dirty():
-        raise Error(
+        raise BalletError(
             'Can\'t update project template with uncommitted changes. '
             'Please commit your changes and try again.')
 
@@ -192,9 +193,3 @@ def update_project_template(push=False):
     if push:
         _push(project)
         logger.info('Push successful.')
-
-
-def main(**kwargs):
-    import ballet.util.log
-    ballet.util.log.enable(level='INFO', echo=False)
-    update_project_template(**kwargs)
