@@ -568,10 +568,6 @@ class FsTest(unittest.TestCase):
         for notpathlike in [None, '/foo/bar', []]:
             self.assertFalse(ballet.util.fs.ispathlike(notpathlike))
 
-    @unittest.expectedFailure
-    def test_synctree(self):
-        raise NotImplementedError
-
     @patch('ballet.util.fs.copytree')
     def test__synctree_dst_not_exists(self, mock_copytree):
         # when src is a directory that exists and dst does not exist,
@@ -582,15 +578,39 @@ class FsTest(unittest.TestCase):
         ballet.util.fs._synctree(src, dst, lambda x: None)
         mock_copytree.assert_called_once_with(safepath(src), safepath(dst))
 
-    @patch('ballet.util.fs.copyfile')
-    def test__synctree(self, mock_copyfile):
+    def test_synctree(self):
         with tempfile.TemporaryDirectory() as tempdir:
-            tempdir = pathlib.Path(tempdir)
+            tempdir = pathlib.Path(tempdir).resolve()
+
             src = tempdir.joinpath('x')
             src.joinpath('a', 'b').mkdir(parents=True)
-            src.joinpath('test.txt').touch()
+            src.joinpath('a', 'b', 'only_in_src.txt').touch()
+            src.joinpath('a', 'c').mkdir()
 
             dst = tempdir.joinpath('y')
+            dst.joinpath('a', 'b').mkdir(parents=True)
+            dst.joinpath('a', 'only_in_dst.txt').touch()
+
+            # patch here in order to avoid messing up tempdir stuff
+            with patch('ballet.compat.pathlib.Path.mkdir') as mock_mkdir, \
+                    patch('os.unlink') as mock_unlink, \
+                    patch('os.rmdir') as mock_rmdir, \
+                    patch('ballet.util.fs.copyfile') as mock_copyfile:
+                ballet.util.fs.synctree(src, dst)
+
+        # one call to mkdir, for 'a/c'
+        mock_mkdir.assert_called_once_with()
+
+        # one call to copyfile, for 'only_in_src.txt'
+        path = ('a', 'b', 'only_in_src.txt')
+        mock_copyfile.assert_called_once_with(
+            src.joinpath(*path),
+            dst.joinpath(*path)
+        )
+
+        # no calls to cleanup
+        mock_rmdir.assert_not_called()
+        mock_unlink.assert_not_called()
 
 
 class GitTest(unittest.TestCase):
