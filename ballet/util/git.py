@@ -13,7 +13,12 @@ COMMIT_RANGE_REGEX = re.compile(
     r'(?P<a>{rev})\.\.(?P<thirddot>\.?)(?P<b>{rev})'
     .format(rev=REV_REGEX))
 PR_REF_PATH_REGEX = re.compile(r'refs/heads/pull/(\d+)')
-
+GIT_PUSH_FAILURE = (
+    git.PushInfo.REJECTED |
+    git.PushInfo.REMOTE_REJECTED |
+    git.PushInfo.REMOTE_FAILURE |
+    git.PushInfo.ERROR
+)
 
 class PullRequestBuildDiffer:
     """Diff files from this pull request against a comparison ref
@@ -173,3 +178,15 @@ def get_pull_request_outcomes(owner, repo):
             yield 'accepted'
         else:
             yield 'rejected'
+
+
+def did_git_push_succeed(push_info):
+    """Check whether a git push succeeded
+
+    A git push succeeded if it was not "rejected" or "remote rejected",
+    and if there was not a "remote failure" or an "error".
+
+    Args:
+        push_info (git.remote.PushInfo): push info
+    """
+    return push_info.flags & GIT_PUSH_FAILURE == 0

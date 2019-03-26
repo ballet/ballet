@@ -7,6 +7,7 @@ import unittest
 from enum import Enum
 from unittest.mock import ANY, Mock, mock_open, patch
 
+import git
 import numpy as np
 import pandas as pd
 from funcy import identity
@@ -678,6 +679,21 @@ class GitTest(unittest.TestCase):
         self.assertEqual(actual, expected)
         mock_get_pull_requests.assert_called_once_with(
             owner, repo, state='closed')
+
+    def test_did_git_push_succeed(self):
+        local_ref = None
+        remote_ref_string = None
+        remote = None
+
+        flags = 0
+        push_info = git.remote.PushInfo(flags, local_ref, remote_ref_string,
+                                        remote)
+        self.assertTrue(ballet.util.git.did_git_push_succeed(push_info))
+
+        flags = git.remote.PushInfo.ERROR
+        push_info = git.remote.PushInfo(flags, local_ref, remote_ref_string,
+                                        remote)
+        self.assertFalse(ballet.util.git.did_git_push_succeed(push_info))
 
 
 class IoTest(unittest.TestCase):

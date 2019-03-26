@@ -5,6 +5,7 @@ from unittest.mock import patch
 import funcy
 import git
 from cookiecutter.prompt import prompt_for_config
+from funcy import complement, lfilter
 from git import GitCommandError
 
 from ballet import __version__ as version
@@ -12,6 +13,7 @@ from ballet.compat import pathlib, safepath
 from ballet.exc import BalletError, ConfigurationError
 from ballet.project import Project
 from ballet.templating import render_project_template
+from ballet.util.git import did_git_push_succeed
 from ballet.util.log import logger, stacklog
 
 PROJECT_CONTEXT_PATH = (
@@ -91,18 +93,7 @@ def _push(project):
     remote_name = project.get('project', 'remote')
     remote = repo.remote(remote_name)
     result = _call_remote_push(remote)
-    errors = (
-        git.PushInfo.REJECTED |
-        git.PushInfo.REMOTE_REJECTED |
-        git.PushInfo.REMOTE_FAILURE |
-        git.PushInfo.ERROR
-    )
-    failures = [
-        push_info
-        for push_info in result
-        if push_info.flags & errors
-
-    ]
+    failures = lfilter(complement(did_git_push_succeed), result)
     if failures:
         for push_info in failures:
             logger.error(
