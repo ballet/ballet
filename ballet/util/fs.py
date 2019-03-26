@@ -130,7 +130,7 @@ def _synctree(src, dst, onexist):
     cleanup = []
 
     try:
-        for root, dirnames, filenames in os.walk(src):
+        for root, dirnames, filenames in os.walk(safepath(src)):
             root = pathlib.Path(root)
             relative_dir = root.relative_to(src)
 
@@ -143,7 +143,7 @@ def _synctree(src, dst, onexist):
                     logger.debug(
                         'Making directory: {dstdir!s}'.format(dstdir=dstdir))
                     dstdir.mkdir()
-                    cleanup.append(partial(os.rmdir, dstdir))
+                    cleanup.append(partial(os.rmdir, safepath(dstdir)))
 
             for filename in filenames:
                 srcfile = root.joinpath(filename)
@@ -155,7 +155,7 @@ def _synctree(src, dst, onexist):
                         'Copying file to destination: {dstfile!s}'
                         .format(dstfile=dstfile))
                     copyfile(srcfile, dstfile)
-                    cleanup.append(partial(os.unlink, dstfile))
+                    cleanup.append(partial(os.unlink, safepath(dstfile)))
 
     except Exception:
         with suppress(Exception):
