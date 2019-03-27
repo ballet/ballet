@@ -4,13 +4,12 @@ from funcy import collecting, complement, lfilter, partial, post_processing
 
 from ballet.compat import pathlib
 from ballet.contrib import _get_contrib_feature_from_module
-from ballet.util import make_plural_suffix, one_or_raise
+from ballet.util import make_plural_suffix, one_or_raise, whether_failures
 from ballet.util.ci import TravisPullRequestBuildDiffer, can_use_travis_differ
 from ballet.exc import BalletError
 from ballet.util.git import LocalPullRequestBuildDiffer
 from ballet.util.log import logger, stacklog
 from ballet.util.mod import import_module_at_path, relpath_to_modname
-from ballet.validation.base import check_from_class
 from ballet.validation.project_structure.checks import ProjectStructureCheck
 
 
@@ -212,3 +211,13 @@ class ChangeCollector:
 
 def subsample_data_for_validation(X, y):
     return X, y
+
+
+@whether_failures
+def check_from_class(check_class, obj, *checker_args, **checker_kwargs):
+    for Checker in check_class.__subclasses__():
+        check = Checker(*checker_args, **checker_kwargs).do_check
+        name = Checker.__name__
+        success = check(obj)
+        if not success:
+            yield name

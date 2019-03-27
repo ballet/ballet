@@ -7,7 +7,7 @@ from ballet.eng.base import BaseTransformer
 from ballet.eng.misc import IdentityTransformer
 from ballet.feature import Feature
 from ballet.util import has_nans
-from ballet.validation.base import check_from_class
+from ballet.validation.common import check_from_class
 from ballet.validation.feature_api.checks import (
     CanDeepcopyCheck, CanTransformCheck, FeatureApiCheck,
     HasCorrectInputTypeCheck, HasCorrectOutputDimensionsCheck,

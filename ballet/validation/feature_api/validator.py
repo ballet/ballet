@@ -1,8 +1,8 @@
 from ballet.contrib import _get_contrib_features
 from ballet.util.log import logger
-from ballet.validation.base import BaseValidator, check_from_class
+from ballet.validation.base import BaseValidator
 from ballet.validation.common import (
-    ChangeCollector, subsample_data_for_validation)
+    ChangeCollector, subsample_data_for_validation, check_from_class)
 from ballet.validation.feature_api.checks import FeatureApiCheck
 
 
