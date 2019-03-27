@@ -6,7 +6,9 @@ from ballet.validation.common import (
 from ballet.validation.feature_api.checks import FeatureApiCheck
 
 
-def validate_feature_api(feature, X, y):
+def validate_feature_api(feature, X, y, subsample=False):
+    if subsample:
+        X, y = subsample_data_for_validation(X, y)
     valid, failures = check_from_class(FeatureApiCheck, feature, X, y)
     if valid:
         logger.info(
@@ -55,6 +57,6 @@ class FeatureApiValidator(BaseValidator):
             return False
 
         return all(
-            validate_feature_api(feature, self.X, self.y)
+            validate_feature_api(feature, self.X, self.y, subsample=False)
             for feature in features
         )

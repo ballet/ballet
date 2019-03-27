@@ -200,7 +200,7 @@ class ChangeCollector:
             List[Tuple]: list of tuple of importer, module name, and module
                 path. The "importer" is a callable that returns a module
         """
-        project_root = pathlib.Path(self.repo.working_tree_dir)
+        project_root = self.project.path
         for diff in candidate_feature_diffs:
             path = diff.b_path
             modname = relpath_to_modname(path)
