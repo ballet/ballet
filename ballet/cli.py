@@ -43,3 +43,58 @@ def start_new_feature():
                            format=ballet.util.log.SIMPLE_LOG_FORMAT,
                            echo=False)
     ballet.templating.start_new_feature()
+
+
+@cli.command('validate')
+@click.option('--check-feature-api',
+              is_flag=True,
+              help='Check project structure')
+@click.option('--feature-name',
+              type=str,
+              help='Feature module name')
+@click.option('--feature-path',
+              type=click.Path(exists=True,
+                              file_okay=True,
+                              dir_okay=False,
+                              readable=True),
+              help='Relative path to feature module')
+@click.option('-v', '--verbose',
+              is_flag=True,
+              help='Show debug output')
+def validate(check_feature_api, feature_name, feature_path, verbose):
+    """Run individual validation checks"""
+    import ballet.util.log
+    level = 'INFO' if not verbose else 'DEBUG'
+    ballet.util.log.enable(level=level,
+                           format=ballet.util.log.SIMPLE_LOG_FORMAT,
+                           echo=False)
+
+    from ballet.compat import pathlib
+    from ballet.contrib import _get_contrib_feature_from_module
+    from ballet.project import Project
+    from ballet.util.mod import (
+        import_module_from_modname, import_module_from_relpath)
+    from ballet.validation.feature_api.validator import validate_feature_api
+
+    # TODO allow project root to be specified?
+    cwd = pathlib.Path.cwd()
+    project = Project.from_path(cwd)
+
+    if check_feature_api:
+
+        # import feature
+        if feature_name is not None and feature_path is None:
+            mod = import_module_from_modname(feature_name)
+        elif feature_path is not None and feature_name is None:
+            relpath = pathlib.Path(feature_path).relative_to(cwd)
+            mod = import_module_from_relpath(relpath)
+        else:
+            raise click.BadOptionUsage('Exactly one of feature-name and '
+                                       'feature-path should be specified')
+        feature = _get_contrib_feature_from_module(mod)
+
+        # load data
+        X, y = project.load_data()
+
+        # validate!
+        validate_feature_api(feature, X, y)
