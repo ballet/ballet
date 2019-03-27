@@ -243,6 +243,12 @@
     <span class="sa">r</span><span class="s1">&#39;(?P&lt;a&gt;</span><span class="si">{rev}</span><span class="s1">)\.\.(?P&lt;thirddot&gt;\.?)(?P&lt;b&gt;</span><span class="si">{rev}</span><span class="s1">)&#39;</span>
     <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rev</span><span class="o">=</span><span class="n">REV_REGEX</span><span class="p">))</span>
 <span class="n">PR_REF_PATH_REGEX</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;refs/heads/pull/(\d+)&#39;</span><span class="p">)</span>
+<span class="n">GIT_PUSH_FAILURE</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">git</span><span class="o">.</span><span class="n">PushInfo</span><span class="o">.</span><span class="n">REJECTED</span> <span class="o">|</span>
+    <span class="n">git</span><span class="o">.</span><span class="n">PushInfo</span><span class="o">.</span><span class="n">REMOTE_REJECTED</span> <span class="o">|</span>
+    <span class="n">git</span><span class="o">.</span><span class="n">PushInfo</span><span class="o">.</span><span class="n">REMOTE_FAILURE</span> <span class="o">|</span>
+    <span class="n">git</span><span class="o">.</span><span class="n">PushInfo</span><span class="o">.</span><span class="n">ERROR</span>
+<span class="p">)</span>
 
 
 <div class="viewcode-block" id="PullRequestBuildDiffer"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.PullRequestBuildDiffer">[docs]</a><span class="k">class</span> <span class="nc">PullRequestBuildDiffer</span><span class="p">:</span>
@@ -403,6 +409,18 @@
             <span class="k">yield</span> <span class="s1">&#39;accepted&#39;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">yield</span> <span class="s1">&#39;rejected&#39;</span></div>
+
+
+<div class="viewcode-block" id="did_git_push_succeed"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.did_git_push_succeed">[docs]</a><span class="k">def</span> <span class="nf">did_git_push_succeed</span><span class="p">(</span><span class="n">push_info</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check whether a git push succeeded</span>
+
+<span class="sd">    A git push succeeded if it was not &quot;rejected&quot; or &quot;remote rejected&quot;,</span>
+<span class="sd">    and if there was not a &quot;remote failure&quot; or an &quot;error&quot;.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        push_info (git.remote.PushInfo): push info</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">push_info</span><span class="o">.</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">GIT_PUSH_FAILURE</span> <span class="o">==</span> <span class="mi">0</span></div>
 </pre></div>
 
            </div>
