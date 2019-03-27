@@ -9,7 +9,7 @@ from ballet.project import Project
 from ballet.util.log import logger, stacklog
 from ballet.validation.common import (
     get_accepted_features, get_proposed_feature)
-from ballet.validation.project_structure.validator import FileChangeValidator
+from ballet.validation.project_structure.validator import ProjectStructureValidator
 from ballet.validation.feature_api.validator import FeatureApiValidator
 from ballet.validation.feature_pruning.validator import NoOpPruningEvaluator
 from ballet.validation.feature_acceptance.validator import (
@@ -49,7 +49,7 @@ def check_project_structure(project):
     if not project.on_pr():
         raise SkippedValidationTest('Not on PR')
 
-    validator = FileChangeValidator(project)
+    validator = ProjectStructureValidator(project)
     result = validator.validate()
     if not result:
         raise InvalidProjectStructure

@@ -11,7 +11,7 @@ from ballet.util.git import LocalPullRequestBuildDiffer
 from ballet.util.log import logger, stacklog
 from ballet.util.mod import import_module_at_path, relpath_to_modname
 from ballet.validation.base import check_from_class
-from ballet.validation.project_structure.checks import DiffCheck
+from ballet.validation.project_structure.checks import ProjectStructureCheck
 
 
 def get_proposed_feature(project):
@@ -154,7 +154,7 @@ class ChangeCollector:
 
         for diff in file_diffs:
             valid, failures = check_from_class(
-                DiffCheck, diff, self.project)
+                ProjectStructureCheck, diff, self.project)
             if valid:
                 if pathlib.Path(diff.b_path).parts[-1] != '__init__.py':
                     candidate_feature_diffs.append(diff)

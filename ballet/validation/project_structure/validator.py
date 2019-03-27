@@ -2,7 +2,7 @@ from ballet.validation.base import BaseValidator
 from ballet.validation.common import ChangeCollector
 
 
-class FileChangeValidator(BaseValidator):
+class ProjectStructureValidator(BaseValidator):
 
     def __init__(self, project):
         self.change_collector = ChangeCollector(project)

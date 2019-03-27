@@ -7,7 +7,7 @@ from funcy import contextmanager
 from ballet.util.git import make_commit_range
 from ballet.validation.common import ChangeCollector
 from ballet.validation.feature_api.validator import FeatureApiValidator
-from ballet.validation.project_structure.validator import FileChangeValidator
+from ballet.validation.project_structure.validator import ProjectStructureValidator
 
 from ..util import make_mock_commit, mock_repo
 
@@ -64,7 +64,7 @@ def null_change_collector(pr_num):
 def mock_file_change_validator(
     path_content, pr_num, contrib_module_path
 ):
-    """FileChangeValidator for mock repo and mock project content
+    """ProjectStructureValidator for mock repo and mock project content
 
     Args:
         path_content: iterable of (relative path, file content)
@@ -83,14 +83,14 @@ def mock_file_change_validator(
 
         with patch.dict('os.environ', travis_env_vars, clear=True):
             project = make_mock_project(repo, pr_num, contrib_module_path)
-            yield FileChangeValidator(project)
+            yield ProjectStructureValidator(project)
 
 
 @contextmanager
 def mock_feature_api_validator(
     path_content, pr_num, contrib_module_path, X, y
 ):
-    """FileChangeValidator for mock repo and mock project content
+    """ProjectStructureValidator for mock repo and mock project content
 
     Args:
         path_content: iterable of (relative path, file content)
