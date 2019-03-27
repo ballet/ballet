@@ -1,17 +1,17 @@
 from collections import namedtuple
 
-from funcy import collecting, partial, post_processing
+from funcy import collecting, complement, lfilter, partial, post_processing
 
 from ballet.compat import pathlib
-from ballet.contrib import _get_contrib_features
-from ballet.util import make_plural_suffix
+from ballet.contrib import _get_contrib_feature_from_module
+from ballet.util import make_plural_suffix, one_or_raise
 from ballet.util.ci import TravisPullRequestBuildDiffer, can_use_travis_differ
+from ballet.exc import BalletError
 from ballet.util.git import LocalPullRequestBuildDiffer
 from ballet.util.log import logger, stacklog
 from ballet.util.mod import import_module_at_path, relpath_to_modname
-from ballet.validation.base import BaseValidator, check_from_class
-from ballet.validation.diff_checks import DiffCheck
-from ballet.validation.feature_api_checks import FeatureApiCheck
+from ballet.validation.base import check_from_class
+from ballet.validation.project_structure.checks import DiffCheck
 
 
 def get_proposed_feature(project):
@@ -160,18 +160,18 @@ class ChangeCollector:
                     candidate_feature_diffs.append(diff)
                     logger.debug(
                         'Categorized {file} as CANDIDATE FEATURE MODULE'
-                            .format(file=diff.b_path))
+                        .format(file=diff.b_path))
                 else:
                     valid_init_diffs.append(diff)
                     logger.debug(
                         'Categorized {file} as VALID INIT MODULE'
-                            .format(file=diff.b_path))
+                        .format(file=diff.b_path))
             else:
                 inadmissible_files.append(diff)
                 logger.debug(
                     'Categorized {file} as INADMISSIBLE; '
                     'failures were {failures}'
-                        .format(file=diff.b_path, failures=failures))
+                    .format(file=diff.b_path, failures=failures))
 
         logger.info(
             'Admitted {} candidate feature{} '

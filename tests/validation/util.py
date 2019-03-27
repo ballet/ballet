@@ -5,8 +5,9 @@ import pandas as pd
 from funcy import contextmanager
 
 from ballet.util.git import make_commit_range
-from ballet.validation.project_structure import (
-    ChangeCollector, FeatureApiValidator, FileChangeValidator)
+from ballet.validation.common import ChangeCollector
+from ballet.validation.feature_api.validator import FeatureApiValidator
+from ballet.validation.project_structure.validator import FileChangeValidator
 
 from ..util import make_mock_commit, mock_repo
 

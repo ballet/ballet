@@ -1,18 +1,19 @@
 import os
 
-from funcy import complement, decorator, ignore, lfilter
+from funcy import decorator, ignore
 
-from ballet.contrib import _get_contrib_feature_from_module
 from ballet.exc import (
-    BalletError, ConfigurationError, FeatureRejected, InvalidFeatureApi,
+    ConfigurationError, FeatureRejected, InvalidFeatureApi,
     InvalidProjectStructure, SkippedValidationTest)
 from ballet.project import Project
-from ballet.util import one_or_raise
 from ballet.util.log import logger, stacklog
-from ballet.validation.feature_evaluation import NoOpPruningEvaluator
-from ballet.validation.gfssf_validator import GFSSFAcceptanceEvaluator
-from ballet.validation.project_structure import (
-    ChangeCollector, FeatureApiValidator, FileChangeValidator)
+from ballet.validation.common import (
+    get_accepted_features, get_proposed_feature)
+from ballet.validation.project_structure.validator import FileChangeValidator
+from ballet.validation.feature_api.validator import FeatureApiValidator
+from ballet.validation.feature_pruning.validator import NoOpPruningEvaluator
+from ballet.validation.feature_acceptance.validator import (
+    GFSSFAcceptanceEvaluator)
 
 TEST_TYPE_ENV_VAR = 'BALLET_TEST_TYPE'
 

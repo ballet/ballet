@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 from ballet.util.ci import TravisPullRequestBuildDiffer
 from ballet.util.git import make_commit_range
-from ballet.validation.project_structure import ChangeCollector
+from ballet.validation.common import ChangeCollector
 
 from .util import (
     SampleDataMixin, make_mock_project, mock_feature_api_validator,

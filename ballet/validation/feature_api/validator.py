@@ -1,3 +1,11 @@
+from ballet.contrib import _get_contrib_features
+from ballet.util.log import logger
+from ballet.validation.base import BaseValidator, check_from_class
+from ballet.validation.common import (
+    ChangeCollector, subsample_data_for_validation)
+from ballet.validation.feature_api.checks import FeatureApiCheck
+
+
 class FeatureApiValidator(BaseValidator):
 
     def __init__(self, project):
@@ -20,7 +28,7 @@ class FeatureApiValidator(BaseValidator):
             except (ImportError, SyntaxError):
                 logger.info(
                     'Validation failure: failed to import module at {}'
-                        .format(modpath))
+                    .format(modpath))
                 logger.exception('Exception details: ')
                 imported_okay = False
 
@@ -39,12 +47,12 @@ class FeatureApiValidator(BaseValidator):
                 if valid:
                     logger.info(
                         'Feature {feature!r} is valid'
-                            .format(feature=feature))
+                        .format(feature=feature))
                 else:
                     logger.info(
                         'Feature {feature!r} is NOT valid; '
                         'failures were {failures}'
-                            .format(feature=feature, failures=failures))
+                        .format(feature=feature, failures=failures))
                     result = False
 
             return result

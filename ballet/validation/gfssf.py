@@ -1,10 +1,6 @@
 import numpy as np
 
 from ballet.util import asarray2d
-from ballet.util.log import logger
-from ballet.validation.base import FeatureAcceptanceEvaluator
-from ballet.validation.entropy import (
-    estimate_conditional_information, estimate_entropy)
 
 LAMBDA_1_ADJUSTMENT = 32
 LAMBDA_2_ADJUSTMENT = 32
