@@ -14,6 +14,71 @@ from ballet.validation.diff_checks import DiffCheck
 from ballet.validation.feature_api_checks import FeatureApiCheck
 
 
+def get_proposed_feature(project):
+    """Get the proposed feature
+
+    The path of the proposed feature is determined by diffing the project
+    against a comparison branch, such as master. The feature is then imported
+    from that path and returned.
+
+    Args:
+        project (ballet.project.Project): project info
+
+    Raises:
+        ballet.exc.BalletError: more than one feature collected
+    """
+    change_collector = ChangeCollector(project)
+    collected_changes = change_collector.collect_changes()
+    try:
+        new_feature_info = one_or_raise(collected_changes.new_feature_info)
+        importer, _, _ = new_feature_info
+    except ValueError:
+        raise BalletError('Too many features collected')
+    module = importer()
+    feature = _get_contrib_feature_from_module(module)
+    return feature
+
+
+def get_accepted_features(features, proposed_feature):
+    """Deselect candidate features from list of all features
+
+    Args:
+        features (List[Feature]): collection of all features in the ballet
+            project: both accepted features and candidate ones that have not
+            been accepted
+        proposed_feature (Feature): candidate feature that has not been
+            accepted
+
+    Returns:
+        List[Feature]: list of features with the proposed feature not in it.
+
+    Raises:
+        ballet.exc.BalletError: Could not deselect exactly the proposed
+            feature.
+    """
+    def eq(feature):
+        """Features are equal if they have the same source
+
+        At least in this implementation...
+        """
+        return feature.source == proposed_feature.source
+
+    # deselect features that match the proposed feature
+    result = lfilter(complement(eq), features)
+
+    if len(features) - len(result) == 1:
+        return result
+    elif len(result) == len(features):
+        raise BalletError(
+            'Did not find match for proposed feature within \'contrib\'')
+    else:
+        raise BalletError(
+            'Unexpected condition (n_features={}, n_result={})'
+                .format(len(features), len(result)))
+
+
+
+
 def _log_collect_items(name, items):
     n = len(items)
     s = make_plural_suffix(items)
@@ -95,29 +160,29 @@ class ChangeCollector:
                     candidate_feature_diffs.append(diff)
                     logger.debug(
                         'Categorized {file} as CANDIDATE FEATURE MODULE'
-                        .format(file=diff.b_path))
+                            .format(file=diff.b_path))
                 else:
                     valid_init_diffs.append(diff)
                     logger.debug(
                         'Categorized {file} as VALID INIT MODULE'
-                        .format(file=diff.b_path))
+                            .format(file=diff.b_path))
             else:
                 inadmissible_files.append(diff)
                 logger.debug(
                     'Categorized {file} as INADMISSIBLE; '
                     'failures were {failures}'
-                    .format(file=diff.b_path, failures=failures))
+                        .format(file=diff.b_path, failures=failures))
 
         logger.info(
             'Admitted {} candidate feature{} '
             'and {} __init__ module{} '
             'and rejected {} file{}'
-            .format(len(candidate_feature_diffs),
-                    make_plural_suffix(candidate_feature_diffs),
-                    len(valid_init_diffs),
-                    make_plural_suffix(valid_init_diffs),
-                    len(inadmissible_files),
-                    make_plural_suffix(inadmissible_files)))
+                .format(len(candidate_feature_diffs),
+                        make_plural_suffix(candidate_feature_diffs),
+                        len(valid_init_diffs),
+                        make_plural_suffix(valid_init_diffs),
+                        len(inadmissible_files),
+                        make_plural_suffix(inadmissible_files)))
 
         return candidate_feature_diffs, valid_init_diffs, inadmissible_files
 
@@ -145,67 +210,5 @@ class ChangeCollector:
             yield importer, modname, modpath
 
 
-class FileChangeValidator(BaseValidator):
-
-    def __init__(self, project):
-        self.change_collector = ChangeCollector(project)
-
-    def validate(self):
-        collected_changes = self.change_collector.collect_changes()
-        return not collected_changes.inadmissible_diffs
-
-
 def subsample_data_for_validation(X, y):
     return X, y
-
-
-class FeatureApiValidator(BaseValidator):
-
-    def __init__(self, project):
-        self.change_collector = ChangeCollector(project)
-
-        X, y = project.load_data()
-        self.X, self.y = subsample_data_for_validation(X, y)
-
-    def validate(self):
-        """Collect and validate all new features"""
-
-        collected_changes = self.change_collector.collect_changes()
-
-        for importer, modname, modpath in collected_changes.new_feature_info:
-            features = []
-            imported_okay = True
-            try:
-                mod = importer()
-                features.extend(_get_contrib_features(mod))
-            except (ImportError, SyntaxError):
-                logger.info(
-                    'Validation failure: failed to import module at {}'
-                    .format(modpath))
-                logger.exception('Exception details: ')
-                imported_okay = False
-
-            if not imported_okay:
-                return False
-
-            # if no features were added at all, reject
-            if not features:
-                logger.info('Failed to collect any new features.')
-                return False
-
-            result = True
-            for feature in features:
-                valid, failures = check_from_class(
-                    FeatureApiCheck, feature, self.X, self.y)
-                if valid:
-                    logger.info(
-                        'Feature {feature!r} is valid'
-                        .format(feature=feature))
-                else:
-                    logger.info(
-                        'Feature {feature!r} is NOT valid; '
-                        'failures were {failures}'
-                        .format(feature=feature, failures=failures))
-                    result = False
-
-            return result
