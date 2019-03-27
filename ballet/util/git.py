@@ -20,6 +20,7 @@ GIT_PUSH_FAILURE = (
     git.PushInfo.ERROR
 )
 
+
 class PullRequestBuildDiffer:
     """Diff files from this pull request against a comparison ref
 
