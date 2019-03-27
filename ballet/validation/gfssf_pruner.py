@@ -2,7 +2,7 @@ import numpy as np
 
 from ballet.util import asarray2d
 from ballet.util.log import logger
-from ballet.validation.base import FeatureAcceptanceEvaluator
+from ballet.validation.base import FeaturePruningEvaluator
 from ballet.validation.entropy import (
     estimate_conditional_information, estimate_entropy)
 
@@ -29,8 +29,8 @@ def _compute_threshold(lmbda_1, lmbda_2, n_feature_cols):
     return lmbda_1 + lmbda_2 * n_feature_cols
 
 
-class GFSSFPruningEvaluator(FeatureAcceptanceEvaluator):
-    def __init__(self, X_df, y, features, lmbda_1=0., lmbda_2=0.):
+class GFSSFPruningEvaluator(FeaturePruningEvaluator):
+    def __init__(self, X_df, y, features, new_feature, lmbda_1=0., lmbda_2=0.):
         super().__init__(X_df, y, features)
         self.y = asarray2d(y)
         if (lmbda_1 <= 0):
@@ -39,11 +39,12 @@ class GFSSFPruningEvaluator(FeatureAcceptanceEvaluator):
             lmbda_2 = estimate_entropy(self.y) / LAMBDA_2_ADJUSTMENT
         self.lmbda_1 = lmbda_1
         self.lmbda_2 = lmbda_2
+        self.feature = new_feature
 
-    def prune(self, feature):
+    def prune(self):
 
         feature_dfs_by_src = {}
-        for accepted_feature in [feature] + self.features:
+        for accepted_feature in [self.feature] + self.features:
             accepted_df = accepted_feature.as_dataframe_mapper().fit_transform(
                 self.X_df, self.y)
             feature_dfs_by_src[accepted_feature.source] = accepted_df

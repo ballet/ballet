@@ -135,12 +135,13 @@ def prune_existing_features(project):
 
     new_feature = get_proposed_feature(project)
     accepted_features = get_accepted_features(features, new_feature)
-    evaluator = GFSSFPruningEvaluator(X_df, y, accepted_features)
-    redundant_features = evaluator.prune(new_feature)
+    evaluator = GFSSFPruningEvaluator(X_df, y, accepted_features, new_feature)
+    redundant_features = evaluator.prune()
 
     # propose removal
+    logger.info('Found {} features to prune: '.format(len(redundant_features)))
     for feature in redundant_features:
-        pass
+        logger.info('Found Redundant Feature: {}'.format(feature.source))
 
 
 def main(package, test_target_type=None):
