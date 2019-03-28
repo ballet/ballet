@@ -7,6 +7,7 @@ from ballet.validation.gfssf import (
     LAMBDA_1_ADJUSTMENT, LAMBDA_2_ADJUSTMENT, _compute_lmbdas,
     _compute_threshold, _concat_datasets)
 
+
 class NoOpAcceptanceEvaluator(FeatureAcceptanceEvaluator):
 
     def judge(self, feature):

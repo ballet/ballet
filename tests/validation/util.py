@@ -8,7 +8,8 @@ from ballet.compat import pathlib
 from ballet.util.git import make_commit_range
 from ballet.validation.common import ChangeCollector
 from ballet.validation.feature_api.validator import FeatureApiValidator
-from ballet.validation.project_structure.validator import ProjectStructureValidator
+from ballet.validation.project_structure.validator import (
+    ProjectStructureValidator)
 
 from ..util import make_mock_commit, mock_repo
 

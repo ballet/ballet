@@ -9,11 +9,12 @@ from ballet.project import Project
 from ballet.util.log import logger, stacklog
 from ballet.validation.common import (
     get_accepted_features, get_proposed_feature)
-from ballet.validation.project_structure.validator import ProjectStructureValidator
-from ballet.validation.feature_api.validator import FeatureApiValidator
-from ballet.validation.feature_pruning.validator import NoOpPruningEvaluator
 from ballet.validation.feature_acceptance.validator import (
     GFSSFAcceptanceEvaluator)
+from ballet.validation.feature_api.validator import FeatureApiValidator
+from ballet.validation.feature_pruning.validator import NoOpPruningEvaluator
+from ballet.validation.project_structure.validator import (
+    ProjectStructureValidator)
 
 TEST_TYPE_ENV_VAR = 'BALLET_TEST_TYPE'
 

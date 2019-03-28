@@ -53,7 +53,7 @@ def validate(ctx, debug):
     """Run individual validation checks"""
     ctx.ensure_object(dict)
 
-    from ballet.util.log import SIMPLE_LOG_FORMAT, enable, logger
+    from ballet.util.log import SIMPLE_LOG_FORMAT, enable
     if debug:
         level = 'DEBUG'
     else:
@@ -180,6 +180,7 @@ def feature_acceptance(ctx, feature_name, feature_path):
         logger.info('REJECTED')
 
     return accepted
+
 
 @validate.command('feature-pruning')
 @click.pass_context

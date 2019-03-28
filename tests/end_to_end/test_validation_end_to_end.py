@@ -18,7 +18,7 @@ from ballet.util import get_enum_values
 from ballet.util.git import make_commit_range, switch_to_new_branch
 from ballet.util.log import logger
 from ballet.util.mod import import_module_at_path, modname_to_relpath
-from ballet.validation.main import BalletTestTypes, TEST_TYPE_ENV_VAR
+from ballet.validation.main import TEST_TYPE_ENV_VAR, BalletTestTypes
 
 
 def submit_feature(repo, contrib_dir, username, featurename, new_feature_str):

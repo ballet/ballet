@@ -25,5 +25,3 @@ def _compute_lmbdas(unnorm_lmbda_1, unnorm_lmbda_2, feature_df, acc_by_src):
 
 def _compute_threshold(lmbda_1, lmbda_2, n_feature_cols, n_omitted_cols):
     return lmbda_1 + lmbda_2 * (n_feature_cols - n_omitted_cols)
-
-

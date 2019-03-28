@@ -4,9 +4,9 @@ from funcy import collecting, complement, lfilter, partial, post_processing
 
 from ballet.compat import pathlib
 from ballet.contrib import _get_contrib_feature_from_module
+from ballet.exc import BalletError
 from ballet.util import make_plural_suffix, one_or_raise, whether_failures
 from ballet.util.ci import TravisPullRequestBuildDiffer, can_use_travis_differ
-from ballet.exc import BalletError
 from ballet.util.git import LocalPullRequestBuildDiffer
 from ballet.util.log import logger, stacklog
 from ballet.util.mod import import_module_at_path, relpath_to_modname
@@ -73,7 +73,7 @@ def get_accepted_features(features, proposed_feature):
     else:
         raise BalletError(
             'Unexpected condition (n_features={}, n_result={})'
-                .format(len(features), len(result)))
+            .format(len(features), len(result)))
 
 
 def _log_collect_items(name, items):
@@ -180,12 +180,12 @@ class ChangeCollector:
             'Admitted {} candidate feature{} '
             'and {} __init__ module{} '
             'and rejected {} file{}'
-                .format(len(candidate_feature_diffs),
-                        make_plural_suffix(candidate_feature_diffs),
-                        len(valid_init_diffs),
-                        make_plural_suffix(valid_init_diffs),
-                        len(inadmissible_files),
-                        make_plural_suffix(inadmissible_files)))
+            .format(len(candidate_feature_diffs),
+                    make_plural_suffix(candidate_feature_diffs),
+                    len(valid_init_diffs),
+                    make_plural_suffix(valid_init_diffs),
+                    len(inadmissible_files),
+                    make_plural_suffix(inadmissible_files)))
 
         return candidate_feature_diffs, valid_init_diffs, inadmissible_files
 
