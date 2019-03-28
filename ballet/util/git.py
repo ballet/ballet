@@ -21,7 +21,26 @@ GIT_PUSH_FAILURE = (
 )
 
 
-class PullRequestBuildDiffer:
+class Differ:
+
+    def diff(self):
+        a, b = self._get_diff_endpoints()
+        return a.diff(b)
+
+    def _get_diff_endpoints(self):
+        raise NotImplementedError
+
+
+class CustomDiffer(Differ):
+
+    def __init__(self, endpoints):
+        self.endpoints = endpoints
+
+    def _get_diff_endpoints(self):
+        return self.endpoints
+
+
+class PullRequestBuildDiffer(Differ):
     """Diff files from this pull request against a comparison ref
 
     Args:
@@ -34,14 +53,7 @@ class PullRequestBuildDiffer:
         self.repo = repo
         self._check_environment()
 
-    def diff(self):
-        a, b = self._get_diff_endpoints()
-        return a.diff(b)
-
     def _check_environment(self):
-        raise NotImplementedError
-
-    def _get_diff_endpoints(self):
         raise NotImplementedError
 
 
