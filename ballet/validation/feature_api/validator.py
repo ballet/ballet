@@ -7,18 +7,16 @@ from ballet.validation.feature_api.checks import FeatureApiCheck
 
 
 def validate_feature_api(feature, X, y, subsample=False):
+    logger.debug('Validating feature {feature!r}'.format(feature=feature))
     if subsample:
         X, y = subsample_data_for_validation(X, y)
     valid, failures = check_from_class(FeatureApiCheck, feature, X, y)
     if valid:
-        logger.info(
-            'Feature {feature!r} is valid'
-            .format(feature=feature))
+        logger.info('Feature is valid')
     else:
         logger.info(
-            'Feature {feature!r} is NOT valid; '
-            'failures were {failures}'
-            .format(feature=feature, failures=failures))
+            'Feature is NOT valid; failures were {failures}'
+            .format(failures=failures))
     return valid
 
 
@@ -43,7 +41,7 @@ class FeatureApiValidator(BaseValidator):
                 features.extend(_get_contrib_features(mod))
             except (ImportError, SyntaxError):
                 logger.info(
-                    'Validation failure: failed to import module at {}'
+                    'Failed to import module at {}'
                     .format(modpath))
                 logger.exception('Exception details: ')
                 imported_okay = False

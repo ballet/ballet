@@ -8,5 +8,5 @@ class ProjectStructureValidator(BaseValidator):
         self.change_collector = ChangeCollector(project)
 
     def validate(self):
-        collected_changes = self.change_collector.collect_changes()
-        return not collected_changes.inadmissible_diffs
+        changes = self.change_collector.collect_changes()
+        return not changes.inadmissible_diffs

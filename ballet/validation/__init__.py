@@ -57,6 +57,7 @@ def check_project_structure(project):
 
 @validation_stage('validating feature API')
 def validate_feature_api(project):
+    """Validate feature API"""
     if not project.on_pr():
         raise SkippedValidationTest('Not on PR')
 
@@ -68,6 +69,7 @@ def validate_feature_api(project):
 
 @validation_stage('evaluating feature performance')
 def evaluate_feature_performance(project):
+    """Evaluate feature performance"""
     if not project.on_pr():
         raise SkippedValidationTest('Not on PR')
 
@@ -85,6 +87,7 @@ def evaluate_feature_performance(project):
 
 @validation_stage('pruning existing features')
 def prune_existing_features(project):
+    """Prune existing features"""
     if project.on_master():
         raise SkippedValidationTest('Not on master')
 
@@ -99,6 +102,7 @@ def prune_existing_features(project):
 
 
 def main(package, test_target_type=None):
+    """Entrypoint for ./validate.py script in ballet projects"""
     project = Project(package)
 
     if test_target_type is None:

@@ -76,8 +76,6 @@ def get_accepted_features(features, proposed_feature):
                 .format(len(features), len(result)))
 
 
-
-
 def _log_collect_items(name, items):
     n = len(items)
     s = make_plural_suffix(items)
@@ -95,21 +93,24 @@ class ChangeCollector:
     """Validate the features introduced in a proposed pull request.
 
     Args:
-        repo (git.Repo): project repo
-        pr_num (int, str): Pull request number
-        contrib_module_path (str): Relative path to contrib module
+        project (ballet.project.Project): project info
+        differ (ballet.util.git.Differ, optional): specific differ to use;
+            if not provided, will be determined automatically from the
+            environment
     """
 
-    def __init__(self, project):
+    def __init__(self, project, differ=None):
         self.project = project
-        self.repo = project.repo
-        self.pr_num = str(project.pr_num)
-        self.contrib_module_path = project.contrib_module_path
+        self.differ = differ
 
-        if can_use_travis_differ():
-            self.differ = TravisPullRequestBuildDiffer(self.pr_num)
-        else:
-            self.differ = LocalPullRequestBuildDiffer(self.pr_num, self.repo)
+        if self.differ is None:
+            if can_use_travis_differ():
+                pr_num = str(self.project.pr_num)
+                self.differ = TravisPullRequestBuildDiffer(pr_num)
+            else:
+                pr_num = str(self.project.pr_num)
+                repo = self.project.repo
+                self.differ = LocalPullRequestBuildDiffer(pr_num, repo)
 
     def collect_changes(self):
         """Collect file and feature changes
@@ -121,6 +122,9 @@ class ChangeCollector:
            changes. Admissible file changes solely contribute python files to
            the contrib subdirectory.
         3. Collect features from admissible new files.
+
+        Returns:
+            CollectedChanges
         """
 
         file_diffs = self._collect_file_diffs()
@@ -217,7 +221,7 @@ def subsample_data_for_validation(X, y):
 def check_from_class(check_class, obj, *checker_args, **checker_kwargs):
     for Checker in check_class.__subclasses__():
         check = Checker(*checker_args, **checker_kwargs).do_check
-        name = Checker.__name__
         success = check(obj)
         if not success:
+            name = Checker.__name__
             yield name
