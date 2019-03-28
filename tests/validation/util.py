@@ -36,7 +36,7 @@ def make_mock_project(repo, pr_num, contrib_module_path):
 
 
 @contextmanager
-def mock_project(path_content):
+def mock_project_content(path_content):
     with mock_repo() as repo:
         for path, content in path_content:
             make_mock_commit(repo, path=path, content=content)
@@ -69,7 +69,7 @@ def mock_file_change_validator(
     Args:
         path_content: iterable of (relative path, file content)
     """
-    with mock_project(path_content) as repo:
+    with mock_project_content(path_content) as repo:
         travis_build_dir = repo.working_tree_dir
         travis_pull_request = str(pr_num)
         travis_commit_range = '{}...{}'.format(
@@ -95,7 +95,7 @@ def mock_feature_api_validator(
     Args:
         path_content: iterable of (relative path, file content)
     """
-    with mock_project(path_content) as repo:
+    with mock_project_content(path_content) as repo:
         travis_build_dir = repo.working_tree_dir
         travis_pull_request = str(pr_num)
         travis_commit_range = make_commit_range(
