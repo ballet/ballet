@@ -6,6 +6,7 @@ from ballet import __version__ as version
 @click.group()
 @click.version_option(version)
 def cli():
+    """Command line interface for ballet projects"""
     pass
 
 
@@ -103,7 +104,12 @@ def _import_feature(feature_name, feature_path):
               help='Relative path to feature module')
 @click.pass_context
 def feature_api(ctx, feature_name, feature_path):
-    """Check Feature API"""
+    """Check Feature API
+
+    Example usage::
+
+       $ ballet validate feature-api --feature-name foo.bar.user_01.feature_01
+    """
     project = ctx.obj['project']
 
     from ballet.util.log import logger
@@ -126,7 +132,12 @@ def feature_api(ctx, feature_name, feature_path):
               help='Range of commits to diff')
 @click.pass_context
 def project_structure(ctx, commit_range):
-    """Check project structure"""
+    """Check project structure
+
+    Example usage::
+
+       $ ballet validate project-structure --commit-range master...HEAD
+    """
     project = ctx.obj['project']
     from ballet.util.git import (
         CustomDiffer, get_diff_endpoints_from_commit_range)
@@ -159,6 +170,12 @@ def project_structure(ctx, commit_range):
               help='Relative path to feature module')
 @click.pass_context
 def feature_acceptance(ctx, feature_name, feature_path):
+    """Evaluate feature acceptance
+    
+    Example usage::
+    
+       $ ballet validate --debug feature-acceptance --feature-name foo.bar.user_01.feature_01
+    """  # noqa E401
     project = ctx.obj['project']
 
     from ballet.util.log import logger
@@ -185,9 +202,15 @@ def feature_acceptance(ctx, feature_name, feature_path):
 @validate.command('feature-pruning')
 @click.pass_context
 def feature_pruning(ctx):
+    """Evaluate feature pruning
+
+    Example usage::
+
+      $ ballet validate feature-pruning
+    """
     project = ctx.obj['project']
     from ballet.util.log import logger
-    from ballet.validation import prune_existing_features
+    from ballet.validation.main import prune_existing_features
     prune_existing_features(project, force=True)
     logger.info('DONE')
     return 0
