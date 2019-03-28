@@ -67,7 +67,8 @@ class ChangeCollectorTest(_CommonSetup, unittest.TestCase):
             }
 
             with patch.dict('os.environ', travis_env_vars, clear=True):
-                project = make_mock_project(repo, self.pr_num,
+                project_path = repo.working_tree_dir
+                project = make_mock_project(repo, self.pr_num, project_path,
                                             contrib_module_path)
                 change_collector = ChangeCollector(project)
                 file_diffs = change_collector._collect_file_diffs()
