@@ -180,3 +180,13 @@ def feature_acceptance(ctx, feature_name, feature_path):
         logger.info('REJECTED')
 
     return accepted
+
+@validate.command('feature-pruning')
+@click.pass_context
+def feature_pruning(ctx):
+    project = ctx.obj['project']
+    from ballet.util.log import logger
+    from ballet.validation import prune_existing_features
+    prune_existing_features(project, force=True)
+    logger.info('DONE')
+    return 0
