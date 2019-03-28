@@ -208,10 +208,3 @@ def test_validation_end_to_end(tempdir):
     submit_feature(repo, contrib_dir, username, featurename, new_feature_str)
     with pytest.raises(CalledProcessError):
         call_validate_all(pr=3)
-
-
-if __name__ == '__main__':
-    import ballet.util.log
-    ballet.util.log.enable(level='INFO')
-
-    test_validation_end_to_end()

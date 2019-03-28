@@ -108,13 +108,13 @@ class FileChangeValidatorTest(_CommonSetup, unittest.TestCase):
         with mock_file_change_validator(
             path_content, self.pr_num, contrib_module_path
         ) as validator:
-            collected_changes = validator.change_collector.collect_changes()
-            self.assertEqual(len(collected_changes.file_diffs), 1)
-            self.assertEqual(len(collected_changes.candidate_feature_diffs), 0)
-            self.assertEqual(len(collected_changes.valid_init_diffs), 0)
-            self.assertEqual(len(collected_changes.inadmissible_diffs), 1)
+            changes = validator.change_collector.collect_changes()
+            self.assertEqual(len(changes.file_diffs), 1)
+            self.assertEqual(len(changes.candidate_feature_diffs), 0)
+            self.assertEqual(len(changes.valid_init_diffs), 0)
+            self.assertEqual(len(changes.inadmissible_diffs), 1)
             self.assertEqual(
-                collected_changes.inadmissible_diffs[0].b_path, 'invalid.py')
+                changes.inadmissible_diffs[0].b_path, 'invalid.py')
 
             # TODO
             # self.assertTrue(imported_okay)
@@ -167,11 +167,11 @@ class FeatureApiValidatorTest(_CommonSetup, unittest.TestCase):
         with mock_feature_api_validator(
             path_content, self.pr_num, contrib_module_path, self.X, self.y
         ) as validator:
-            collected_changes = validator.change_collector.collect_changes()
-            self.assertEqual(len(collected_changes.file_diffs), 1)
-            self.assertEqual(len(collected_changes.candidate_feature_diffs), 1)
-            self.assertEqual(len(collected_changes.valid_init_diffs), 0)
-            self.assertEqual(len(collected_changes.inadmissible_diffs), 0)
+            changes = validator.change_collector.collect_changes()
+            self.assertEqual(len(changes.file_diffs), 1)
+            self.assertEqual(len(changes.candidate_feature_diffs), 1)
+            self.assertEqual(len(changes.valid_init_diffs), 0)
+            self.assertEqual(len(changes.inadmissible_diffs), 0)
 
             # TODO
             # self.assertEqual(len(new_features), 1)
@@ -195,11 +195,11 @@ class FeatureApiValidatorTest(_CommonSetup, unittest.TestCase):
         with mock_feature_api_validator(
             path_content, self.pr_num, contrib_module_path, self.X, self.y
         ) as validator:
-            collected_changes = validator.change_collector.collect_changes()
-            self.assertEqual(len(collected_changes.file_diffs), 1)
-            self.assertEqual(len(collected_changes.candidate_feature_diffs), 1)
-            self.assertEqual(len(collected_changes.valid_init_diffs), 0)
-            self.assertEqual(len(collected_changes.inadmissible_diffs), 0)
+            changes = validator.change_collector.collect_changes()
+            self.assertEqual(len(changes.file_diffs), 1)
+            self.assertEqual(len(changes.candidate_feature_diffs), 1)
+            self.assertEqual(len(changes.valid_init_diffs), 0)
+            self.assertEqual(len(changes.inadmissible_diffs), 0)
 
             # TODO
             # self.assertEqual(len(new_feature_info), 0)

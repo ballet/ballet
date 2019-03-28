@@ -31,11 +31,11 @@ class FeatureApiValidator(BaseValidator):
     def validate(self):
         """Collect and validate all new features"""
 
-        collected_changes = self.change_collector.collect_changes()
+        changes = self.change_collector.collect_changes()
 
         features = []
         imported_okay = True
-        for importer, modname, modpath in collected_changes.new_feature_info:
+        for importer, modname, modpath in changes.new_feature_info:
             try:
                 mod = importer()
                 features.extend(_get_contrib_features(mod))
