@@ -45,8 +45,8 @@ def detect_target_type():
 
 
 @validation_stage('checking project structure')
-def check_project_structure(project):
-    if not project.on_pr():
+def check_project_structure(project, force=False):
+    if not force and not project.on_pr():
         raise SkippedValidationTest('Not on PR')
 
     validator = ProjectStructureValidator(project)
@@ -56,9 +56,9 @@ def check_project_structure(project):
 
 
 @validation_stage('validating feature API')
-def validate_feature_api(project):
+def validate_feature_api(project, force=False):
     """Validate feature API"""
-    if not project.on_pr():
+    if not force and not project.on_pr():
         raise SkippedValidationTest('Not on PR')
 
     validator = FeatureApiValidator(project)
@@ -68,9 +68,9 @@ def validate_feature_api(project):
 
 
 @validation_stage('evaluating feature performance')
-def evaluate_feature_performance(project):
+def evaluate_feature_performance(project, force=False):
     """Evaluate feature performance"""
-    if not project.on_pr():
+    if not force and not project.on_pr():
         raise SkippedValidationTest('Not on PR')
 
     out = project.build()
@@ -86,9 +86,9 @@ def evaluate_feature_performance(project):
 
 
 @validation_stage('pruning existing features')
-def prune_existing_features(project):
+def prune_existing_features(project, force=False):
     """Prune existing features"""
-    if project.on_master():
+    if not force and project.on_master():
         raise SkippedValidationTest('Not on master')
 
     out = project.build()
