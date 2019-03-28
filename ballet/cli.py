@@ -91,6 +91,7 @@ def _import_feature(feature_name, feature_path):
     return _get_contrib_feature_from_module(mod)
 
 
+@validate.command('feature-api')
 @click.option('--feature-name',
               type=str,
               help='Feature module name')
@@ -100,43 +101,21 @@ def _import_feature(feature_name, feature_path):
                               dir_okay=False,
                               readable=True),
               help='Relative path to feature module')
-@click.option('-v', '--verbose',
-              is_flag=True,
-              help='Show debug output')
-def validate(check_feature_api, feature_name, feature_path, verbose):
-    """Run individual validation checks"""
-    from ballet.util.log import SIMPLE_LOG_FORMAT, enable, logger
-    level = 'INFO' if not verbose else 'DEBUG'
-    enable(level=level, format=SIMPLE_LOG_FORMAT, echo=False)
+@click.pass_context
+def feature_api(ctx, feature_name, feature_path):
+    """Check Feature API"""
+    project = ctx.obj['project']
 
-    from ballet.compat import pathlib
-    from ballet.contrib import _get_contrib_feature_from_module
-    from ballet.project import Project
-    from ballet.util.mod import (
-        import_module_from_modname, import_module_from_relpath)
+    from ballet.util.log import logger
     from ballet.validation.feature_api.validator import validate_feature_api
 
-    # TODO allow project root to be specified?
-    cwd = pathlib.Path.cwd()
-    project = Project.from_path(cwd)
+    feature = _import_feature(feature_name, feature_path)
+    X, y = project.load_data()
+    valid = validate_feature_api(feature, X, y)
+    if valid:
+        logger.info('SUCCESS')
+    else:
+        logger.info('FAILURE')
 
-    if check_feature_api:
+    return valid
 
-        # import feature
-        if feature_name is not None and feature_path is None:
-            mod = import_module_from_modname(feature_name)
-        elif feature_path is not None and feature_name is None:
-            relpath = pathlib.Path(feature_path).relative_to(cwd)
-            mod = import_module_from_relpath(relpath)
-        else:
-            raise click.BadOptionUsage('Exactly one of feature-name and '
-                                       'feature-path should be specified')
-        feature = _get_contrib_feature_from_module(mod)
-
-        # load data
-        X, y = project.load_data()
-
-        # validate!
-        validate_feature_api(feature, X, y)
-
-        logger.info('Check feature API successful.')
