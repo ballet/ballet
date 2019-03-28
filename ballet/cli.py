@@ -46,11 +46,14 @@ def start_new_feature():
     ballet.templating.start_new_feature()
 
 
-@click.group(chain=True)
+@cli.group(chain=True)
 @click.option('--debug/--no-debug',
               help='Show debug output')
+@click.option('--pdb/--no-pdb',
+              'pdb_',
+              help='Drop into debugger on error')
 @click.pass_context
-def validate(ctx, debug):
+def validate(ctx, debug, pdb_):
     """Run individual validation checks"""
     ctx.ensure_object(dict)
 
@@ -69,8 +72,12 @@ def validate(ctx, debug):
     project = Project.from_path(cwd)
     ctx.obj['project'] = project
 
-
-cli.add_command(validate)
+    # TODO figure out better way to do pdb
+    if pdb_:
+        import pdb
+        ctx.obj['post_mortem'] = pdb.post_mortem
+    else:
+        ctx.obj['post_mortem'] = lambda: None
 
 
 def _import_feature(feature_name, feature_path):
@@ -102,60 +109,74 @@ def _import_feature(feature_name, feature_path):
                               dir_okay=False,
                               readable=True),
               help='Relative path to feature module')
-@click.pass_context
-def feature_api(ctx, feature_name, feature_path):
+@click.pass_obj
+def feature_api(obj, feature_name, feature_path):
     """Check Feature API
 
     Example usage::
 
        $ ballet validate feature-api --feature-name foo.bar.user_01.feature_01
     """
-    project = ctx.obj['project']
+    project = obj['project']
+    post_mortem = obj['post_mortem']
 
-    from ballet.util.log import logger
-    from ballet.validation.feature_api.validator import validate_feature_api
+    try:
+        from ballet.util.log import logger
+        from ballet.validation.feature_api.validator import validate_feature_api
 
-    feature = _import_feature(feature_name, feature_path)
-    X, y = project.load_data()
-    valid = validate_feature_api(feature, X, y)
-    if valid:
-        logger.info('SUCCESS')
-    else:
-        logger.info('FAILURE')
+        feature = _import_feature(feature_name, feature_path)
+        X, y = project.load_data()
+        valid = validate_feature_api(feature, X, y)
+        if valid:
+            logger.info('SUCCESS')
+        else:
+            logger.info('FAILURE')
 
-    return valid
+        return valid
+    except Exception as e:
+        if not isinstance(e, click.ClickException):
+            post_mortem()
+        raise
 
 
 @validate.command('project-structure')
 @click.option('--commit-range',
               type=str,
               help='Range of commits to diff')
-@click.pass_context
-def project_structure(ctx, commit_range):
+@click.pass_obj
+def project_structure(obj, commit_range):
     """Check project structure
 
     Example usage::
 
        $ ballet validate project-structure --commit-range master...HEAD
     """
-    project = ctx.obj['project']
-    from ballet.util.git import (
-        CustomDiffer, get_diff_endpoints_from_commit_range)
-    from ballet.util.log import logger
-    from ballet.validation.common import ChangeCollector
+    project = obj['project']
+    post_mortem = obj['post_mortem']
 
-    repo = project.repo
-    endpoints = get_diff_endpoints_from_commit_range(repo, commit_range)
-    differ = CustomDiffer(endpoints)
-    change_collector = ChangeCollector(project, differ)
-    changes = change_collector.collect_changes()
-    valid = not changes.inadmissible_diffs
-    if valid:
-        logger.info('SUCCESS')
-    else:
-        logger.info('FAILURE')
+    try:
+        from ballet.util.git import (
+            CustomDiffer, get_diff_endpoints_from_commit_range)
+        from ballet.util.log import logger
+        from ballet.validation.common import ChangeCollector
 
-    return valid
+        repo = project.repo
+        endpoints = get_diff_endpoints_from_commit_range(repo, commit_range)
+        differ = CustomDiffer(endpoints)
+        change_collector = ChangeCollector(project, differ)
+        changes = change_collector.collect_changes()
+        valid = not changes.inadmissible_diffs
+        if valid:
+            logger.info('SUCCESS')
+        else:
+            logger.info('FAILURE')
+
+        return valid
+    except Exception as e:
+        if not isinstance(e, click.ClickException):
+            post_mortem()
+        raise
+
 
 
 @validate.command('feature-acceptance')
@@ -168,49 +189,62 @@ def project_structure(ctx, commit_range):
                               dir_okay=False,
                               readable=True),
               help='Relative path to feature module')
-@click.pass_context
-def feature_acceptance(ctx, feature_name, feature_path):
+@click.pass_obj
+def feature_acceptance(obj, feature_name, feature_path):
     """Evaluate feature acceptance
     
     Example usage::
     
        $ ballet validate --debug feature-acceptance --feature-name foo.bar.user_01.feature_01
     """  # noqa E401
-    project = ctx.obj['project']
+    project = obj['project']
+    post_mortem = obj['post_mortem']
 
-    from ballet.util.log import logger
-    from ballet.validation.common import get_accepted_features
-    from ballet.validation.feature_acceptance.validator import (
-        GFSSFAcceptanceEvaluator)
+    try:
+        from ballet.util.log import logger
+        from ballet.validation.common import get_accepted_features
+        from ballet.validation.feature_acceptance.validator import (
+            GFSSFAcceptanceEvaluator)
 
-    out = project.build()
-    X_df, y, features = out['X_df'], out['y'], out['features']
+        out = project.build()
+        X_df, y, features = out['X_df'], out['y'], out['features']
 
-    proposed_feature = _import_feature(feature_name, feature_path)
-    accepted_features = get_accepted_features(features, proposed_feature)
-    evaluator = GFSSFAcceptanceEvaluator(X_df, y, accepted_features)
-    accepted = evaluator.judge(proposed_feature)
+        proposed_feature = _import_feature(feature_name, feature_path)
+        accepted_features = get_accepted_features(features, proposed_feature)
+        evaluator = GFSSFAcceptanceEvaluator(X_df, y, accepted_features)
+        accepted = evaluator.judge(proposed_feature)
 
-    if accepted:
-        logger.info('ACCEPTED')
-    else:
-        logger.info('REJECTED')
+        if accepted:
+            logger.info('ACCEPTED')
+        else:
+            logger.info('REJECTED')
 
-    return accepted
+        return accepted
+    except Exception as e:
+        if not isinstance(e, click.ClickException):
+            post_mortem()
+        raise
 
 
 @validate.command('feature-pruning')
-@click.pass_context
-def feature_pruning(ctx):
+@click.pass_obj
+def feature_pruning(obj):
     """Evaluate feature pruning
 
     Example usage::
 
       $ ballet validate feature-pruning
     """
-    project = ctx.obj['project']
-    from ballet.util.log import logger
-    from ballet.validation.main import prune_existing_features
-    prune_existing_features(project, force=True)
-    logger.info('DONE')
-    return 0
+    project = obj['project']
+    post_mortem = obj['post_mortem']
+
+    try:
+        from ballet.util.log import logger
+        from ballet.validation.main import prune_existing_features
+        prune_existing_features(project, force=True)
+        logger.info('DONE')
+        return 0
+    except Exception as e:
+        if not isinstance(e, click.ClickException):
+            post_mortem()
+        raise
