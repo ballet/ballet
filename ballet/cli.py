@@ -119,3 +119,64 @@ def feature_api(ctx, feature_name, feature_path):
 
     return valid
 
+
+@validate.command('project-structure')
+@click.option('--commit-range',
+              type=str,
+              help='Range of commits to diff')
+@click.pass_context
+def project_structure(ctx, commit_range):
+    """Check project structure"""
+    project = ctx.obj['project']
+    from ballet.util.git import (
+        CustomDiffer, get_diff_endpoints_from_commit_range)
+    from ballet.util.log import logger
+    from ballet.validation.common import ChangeCollector
+
+    repo = project.repo
+    endpoints = get_diff_endpoints_from_commit_range(repo, commit_range)
+    differ = CustomDiffer(endpoints)
+    change_collector = ChangeCollector(project, differ)
+    changes = change_collector.collect_changes()
+    valid = not changes.inadmissible_diffs
+    if valid:
+        logger.info('SUCCESS')
+    else:
+        logger.info('FAILURE')
+
+    return valid
+
+
+@validate.command('feature-acceptance')
+@click.option('--feature-name',
+              type=str,
+              help='Feature module name')
+@click.option('--feature-path',
+              type=click.Path(exists=True,
+                              file_okay=True,
+                              dir_okay=False,
+                              readable=True),
+              help='Relative path to feature module')
+@click.pass_context
+def feature_acceptance(ctx, feature_name, feature_path):
+    project = ctx.obj['project']
+
+    from ballet.util.log import logger
+    from ballet.validation.common import get_accepted_features
+    from ballet.validation.feature_acceptance.validator import (
+        GFSSFAcceptanceEvaluator)
+
+    out = project.build()
+    X_df, y, features = out['X_df'], out['y'], out['features']
+
+    proposed_feature = _import_feature(feature_name, feature_path)
+    accepted_features = get_accepted_features(features, proposed_feature)
+    evaluator = GFSSFAcceptanceEvaluator(X_df, y, accepted_features)
+    accepted = evaluator.judge(proposed_feature)
+
+    if accepted:
+        logger.info('ACCEPTED')
+    else:
+        logger.info('REJECTED')
+
+    return accepted
