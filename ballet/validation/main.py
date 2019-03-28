@@ -99,7 +99,9 @@ def prune_existing_features(project, force=False):
 
     # propose removal
     for feature in redundant_features:
-        pass
+        logger.debug('Would prune feature {feature!s}'.format(feature=feature))
+
+    return redundant_features
 
 
 def validate(package, test_target_type=None):

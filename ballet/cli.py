@@ -3,6 +3,20 @@ from functools import update_wrapper
 import click
 
 from ballet import __version__ as version
+from ballet.compat import pathlib
+from ballet.contrib import _get_contrib_feature_from_module
+from ballet.exc import (
+    FeatureRejected, InvalidFeatureApi, InvalidProjectStructure)
+from ballet.project import Project
+from ballet.util.git import CustomDiffer, get_diff_endpoints_from_commit_range
+from ballet.util.log import SIMPLE_LOG_FORMAT, enable, stacklog
+from ballet.util.mod import (
+    import_module_from_modname, import_module_from_relpath)
+from ballet.validation.common import ChangeCollector, get_accepted_features
+from ballet.validation.feature_acceptance.validator import (
+    GFSSFAcceptanceEvaluator)
+from ballet.validation.feature_api.validator import validate_feature_api
+from ballet.validation.main import prune_existing_features
 
 
 @click.group()
@@ -71,24 +85,23 @@ def pass_project(f):
 
 
 @cli.group(chain=True)
-@click.option('--debug/--no-debug',
+@click.option('-v', '--verbose',
+              count=True,
               help='Show debug output')
 @click.option('--pdb/--no-pdb',
               help='Drop into debugger on error')
 @click.pass_context
-def validate(ctx, debug, pdb):
+def validate(ctx, count, pdb):
     """Run individual validation checks"""
     ctx.ensure_object(dict)
 
-    from ballet.util.log import SIMPLE_LOG_FORMAT, enable
-    if debug:
-        level = 'DEBUG'
-    else:
+    if count == 0:
+        level = 'CRITICAL'
+    elif count == 1:
         level = 'INFO'
+    elif count >= 2:
+        level = 'DEBUG'
     enable(level=level, format=SIMPLE_LOG_FORMAT, echo=False)
-
-    from ballet.compat import pathlib
-    from ballet.project import Project
 
     # TODO allow project root to be specified?
     cwd = pathlib.Path.cwd()
@@ -99,11 +112,6 @@ def validate(ctx, debug, pdb):
 
 
 def _import_feature(feature_name, feature_path):
-    from ballet.compat import pathlib
-    from ballet.contrib import _get_contrib_feature_from_module
-    from ballet.util.mod import (
-        import_module_from_modname, import_module_from_relpath)
-
     # import feature
     if feature_name is not None:
         mod = import_module_from_modname(feature_name)
@@ -129,6 +137,7 @@ def _import_feature(feature_name, feature_path):
               help='Relative path to feature module')
 @pass_project
 @enable_post_mortem
+@stacklog(click.echo, 'Checking feature API')
 def feature_api(project, feature_name, feature_path):
     """Check Feature API
 
@@ -136,18 +145,12 @@ def feature_api(project, feature_name, feature_path):
 
        $ ballet validate feature-api --feature-name foo.bar.user_01.feature_01
     """
-    from ballet.util.log import logger
-    from ballet.validation.feature_api.validator import validate_feature_api
-
     feature = _import_feature(feature_name, feature_path)
     X, y = project.load_data()
     valid = validate_feature_api(feature, X, y)
-    if valid:
-        logger.info('SUCCESS')
-    else:
-        logger.info('FAILURE')
 
-    return valid
+    if not valid:
+        raise InvalidFeatureApi
 
 
 @validate.command('project-structure')
@@ -156,6 +159,7 @@ def feature_api(project, feature_name, feature_path):
               help='Range of commits to diff')
 @pass_project
 @enable_post_mortem
+@stacklog(click.echo, 'Checking project structure')
 def project_structure(project, commit_range):
     """Check project structure
 
@@ -163,10 +167,6 @@ def project_structure(project, commit_range):
 
        $ ballet validate project-structure --commit-range master...HEAD
     """
-    from ballet.util.git import (
-        CustomDiffer, get_diff_endpoints_from_commit_range)
-    from ballet.util.log import logger
-    from ballet.validation.common import ChangeCollector
 
     repo = project.repo
     endpoints = get_diff_endpoints_from_commit_range(repo, commit_range)
@@ -174,12 +174,9 @@ def project_structure(project, commit_range):
     change_collector = ChangeCollector(project, differ)
     changes = change_collector.collect_changes()
     valid = not changes.inadmissible_diffs
-    if valid:
-        logger.info('SUCCESS')
-    else:
-        logger.info('FAILURE')
 
-    return valid
+    if not valid:
+        raise InvalidProjectStructure
 
 
 @validate.command('feature-acceptance')
@@ -194,17 +191,14 @@ def project_structure(project, commit_range):
               help='Relative path to feature module')
 @pass_project
 @enable_post_mortem
+@stacklog(click.echo, 'Judging feature acceptance')
 def feature_acceptance(project, feature_name, feature_path):
-    """Evaluate feature acceptance
-    
+    """Judge feature acceptance
+
     Example usage::
-    
+
        $ ballet validate --debug feature-acceptance --feature-name foo.bar.user_01.feature_01
     """  # noqa E401
-    from ballet.util.log import logger
-    from ballet.validation.common import get_accepted_features
-    from ballet.validation.feature_acceptance.validator import (
-        GFSSFAcceptanceEvaluator)
 
     out = project.build()
     X_df, y, features = out['X_df'], out['y'], out['features']
@@ -214,17 +208,14 @@ def feature_acceptance(project, feature_name, feature_path):
     evaluator = GFSSFAcceptanceEvaluator(X_df, y, accepted_features)
     accepted = evaluator.judge(proposed_feature)
 
-    if accepted:
-        logger.info('ACCEPTED')
-    else:
-        logger.info('REJECTED')
-
-    return accepted
+    if not accepted:
+        raise FeatureRejected
 
 
 @validate.command('feature-pruning')
 @pass_project
 @enable_post_mortem
+@stacklog(click.echo, 'Pruning existing features')
 def feature_pruning(project):
     """Evaluate feature pruning
 
@@ -233,8 +224,4 @@ def feature_pruning(project):
       $ ballet validate feature-pruning
     """
 
-    from ballet.util.log import logger
-    from ballet.validation.main import prune_existing_features
     prune_existing_features(project, force=True)
-    logger.info('DONE')
-    return 0
