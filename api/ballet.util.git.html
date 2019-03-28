@@ -248,18 +248,14 @@
 <em class="property">class </em><code class="descclassname">ballet.util.git.</code><code class="descname">PullRequestBuildDiffer</code><span class="sig-paren">(</span><em>pr_num</em>, <em>repo</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#PullRequestBuildDiffer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.git.PullRequestBuildDiffer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Diff files from this pull request against a comparison ref</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>pr_num</strong> (<em>str</em><em>, </em><em>int</em>) – pull request number</li>
-<li><strong>repo</strong> (<em>git.Repo</em>) – repo</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pr_num</strong> (<em>str</em><em>, </em><em>int</em>) – pull request number</p></li>
+<li><p><strong>repo</strong> (<em>git.Repo</em>) – repo</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="method">
 <dt id="ballet.util.git.PullRequestBuildDiffer.diff">
 <code class="descname">diff</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#PullRequestBuildDiffer.diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.git.PullRequestBuildDiffer.diff" title="Permalink to this definition">¶</a></dt>
@@ -273,14 +269,11 @@
 <dd><p>Check whether a git push succeeded</p>
 <p>A git push succeeded if it was not “rejected” or “remote rejected”,
 and if there was not a “remote failure” or an “error”.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>push_info</strong> (<em>git.remote.PushInfo</em>) – push info</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>push_info</strong> (<em>git.remote.PushInfo</em>) – push info</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -299,39 +292,34 @@ and if there was not a “remote failure” or an “error”.</p>
 </div>
 <p>For details on specifying git diffs, see <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">diff</span> <span class="pre">--help</span></code>.
 For details on specifying revisions, see <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">help</span> <span class="pre">revisions</span></code>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>repo</strong> (<em>git.Repo</em>) – Repo object initialized with project root</li>
-<li><strong>commit_range</strong> (<em>str</em>) – commit range as would be interpreted by <code class="docutils literal notranslate"><span class="pre">git</span>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>repo</strong> (<em>git.Repo</em>) – Repo object initialized with project root</p></li>
+<li><p><strong>commit_range</strong> (<em>str</em>) – commit range as would be interpreted by <code class="docutils literal notranslate"><span class="pre">git</span>
 <span class="pre">diff</span></code> command. Unfortunately only patterns of the form <code class="docutils literal notranslate"><span class="pre">a..b</span></code>
 and <code class="docutils literal notranslate"><span class="pre">a...b</span></code> are accepted. Note that the latter pattern finds the
 merge-base of a and b and uses it as the starting point for the
-diff.</li>
+diff.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
-<dt>starting commit, ending commit (</dt>
-<dd><p class="first last">inclusive)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>starting commit, ending commit (</dt><dd><p>inclusive)</p>
 </dd>
 </dl>
 </p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">Tuple[git.Commit, git.Commit]</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code> – commit_range is empty or ill-formed</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Tuple[git.Commit, git.Commit]</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – commit_range is empty or ill-formed</p>
+</dd>
+</dl>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last">&lt;<a class="reference external" href="https://stackoverflow.com/q/7251477">https://stackoverflow.com/q/7251477</a>&gt;</p>
+<p class="admonition-title">See also</p>
+<p>&lt;<a class="reference external" href="https://stackoverflow.com/q/7251477">https://stackoverflow.com/q/7251477</a>&gt;</p>
 </div>
 </dd></dl>
 
@@ -364,18 +352,14 @@ diff.</li>
 <dt id="ballet.util.git.set_config_variables">
 <code class="descclassname">ballet.util.git.</code><code class="descname">set_config_variables</code><span class="sig-paren">(</span><em>repo</em>, <em>variables</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#set_config_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.git.set_config_variables" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set config variables</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>repo</strong> (<em>git.Repo</em>) – repo</li>
-<li><strong>variables</strong> (<em>dict</em>) – entries of the form ‘user.email’: <a class="reference external" href="mailto:'you&#37;&#52;&#48;example&#46;com">‘you<span>&#64;</span>example<span>&#46;</span>com</a>’</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>repo</strong> (<em>git.Repo</em>) – repo</p></li>
+<li><p><strong>variables</strong> (<em>dict</em>) – entries of the form ‘user.email’: <a class="reference external" href="mailto:'you&#37;&#52;&#48;example&#46;com">‘you<span>&#64;</span>example<span>&#46;</span>com</a>’</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">

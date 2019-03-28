@@ -248,19 +248,18 @@ Where $ p(c) $ is calculated as the frequency of c in X.</p>
 it is better to use the estimate_cont_entropy function.
 If you are unsure of which to use, estimate_entropy can
 take datasets of mixed discrete and continuous functions.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> (<em>array-like</em>) – An array-like (np arr, pandas df, etc.) with shape
-(n_samples, n_features) or (n_samples)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A floating-point number representing the dataset entropy.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em>) – An array-like (np arr, pandas df, etc.) with shape
+(n_samples, n_features) or (n_samples)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A floating-point number representing the dataset entropy.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -277,37 +276,33 @@ Let d_x, represent the dimensionality of the continuous portion of x.
 Then, we see that:
 d_xz + d_yz - d_xyz - d_z =
 (d_x + d_z) + (d_y + d_z) - (d_x + d_y + d_z) - d_z = 0</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> (<em>array-like</em>) – An array with shape (n_samples, n_features_x)</li>
-<li><strong>y</strong> (<em>array-like</em>) – An array with shape (n_samples, n_features_y)</li>
-<li><strong>z</strong> (<em>array-like</em>) – An array with shape (n_samples, n_features_z).
-This is the dataset being conditioned on.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array-like</em>) – An array with shape (n_samples, n_features_x)</p></li>
+<li><p><strong>y</strong> (<em>array-like</em>) – An array with shape (n_samples, n_features_y)</p></li>
+<li><p><strong>z</strong> (<em>array-like</em>) – An array with shape (n_samples, n_features_z).
+This is the dataset being conditioned on.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
-<dt>A floating point number representing the conditional</dt>
-<dd><p class="first last">mutual information of x and y given z. This calculation is
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A floating point number representing the conditional</dt><dd><p>mutual information of x and y given z. This calculation is
 <em>exact</em> for entirely discrete datasets and <em>approximate</em>
 if there are continuous columns present.</p>
 </dd>
 </dl>
 </p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 <p>References:
 .. [1] A. Kraskov, H. Stogbauer and P. Grassberger, “Estimating mutual</p>
 <blockquote>
-<div>information”. Phys. Rev. E 69, 2004.</div></blockquote>
+<div><p>information”. Phys. Rev. E 69, 2004.</p>
+</div></blockquote>
 </dd></dl>
 
 <dl class="function">
@@ -323,47 +318,42 @@ in [1] and augmented in [2] for mutual information estimation.</p>
 it is better to use the calculate_disc_entropy function.
 If you are unsure of which to use, estimate_entropy can
 take datasets of mixed discrete and continuous functions.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>X</strong> (<em>array-like</em>) – An array-like (np arr, pandas df, etc.) with shape
-(n_samples, n_features) or (n_samples)</li>
-<li><strong>epsilon</strong> (<em>array-like</em>) – An array with shape (n_samples, 1) that is
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>array-like</em>) – An array-like (np arr, pandas df, etc.) with shape
+(n_samples, n_features) or (n_samples)</p></li>
+<li><p><strong>epsilon</strong> (<em>array-like</em>) – An array with shape (n_samples, 1) that is
 the epsilon used in Kraskov Estimator. Represents the chebyshev
 distance from an element to its k-th nearest neighbor in the full
-dataset.</li>
+dataset.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
-<dt>A floating-point number. If epsilon is not provided,</dt>
-<dd><p class="first last">this will be the Kozacheko Estimator of the dataset’s entropy.
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A floating-point number. If epsilon is not provided,</dt><dd><p>this will be the Kozacheko Estimator of the dataset’s entropy.
 If epsilon is provided, this is a partial estimation of the Kraskov
 entropy estimator. The bias is cancelled out when computing
 mutual information.</p>
 </dd>
 </dl>
 </p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 <p>References:
 .. [1] A. Kraskov, H. Stogbauer and P. Grassberger, “Estimating mutual</p>
 <blockquote>
-<div>information”. Phys. Rev. E 69, 2004.</div></blockquote>
-<table class="docutils footnote" frame="void" id="id1" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label">[2]</td><td>L. F. Kozachenko, N. N. Leonenko, “Sample Estimate of the Entropy
-of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16</td></tr>
-</tbody>
-</table>
+<div><p>information”. Phys. Rev. E 69, 2004.</p>
+</div></blockquote>
+<dl class="footnote brackets">
+<dt class="label" id="id1"><span class="brackets">2</span></dt>
+<dd><p>L. F. Kozachenko, N. N. Leonenko, “Sample Estimate of the Entropy
+of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -383,23 +373,20 @@ following reworking of entropy:</p>
 <p>$ H(X) = H(c,d) = sum_{x in d} p(x) times H(c(x)) + H(d) $</p>
 <p>Where c(x) is a dataset that represents the rows of the continuous dataset
 in the same row as a discrete column with value x in the original dataset.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>X</strong> (<em>array-like</em>) – An array-like (np arr, pandas df, etc.) with shape
-(n_samples, n_features) or (n_samples)</li>
-<li><strong>epsilon</strong> (<em>array-like</em>) – An array with shape (n_samples, 1) that is
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>array-like</em>) – An array-like (np arr, pandas df, etc.) with shape
+(n_samples, n_features) or (n_samples)</p></li>
+<li><p><strong>epsilon</strong> (<em>array-like</em>) – An array with shape (n_samples, 1) that is
 the epsilon used in Kraskov Estimator. Represents the chebyshev
 distance from an element to its k-th nearest neighbor in the full
-dataset.</li>
+dataset.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
-<dt>A floating-point number representing the entropy in X.</dt>
-<dd><p class="first last">If the dataset is fully discrete, an exact calculation is done.
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A floating-point number representing the entropy in X.</dt><dd><p>If the dataset is fully discrete, an exact calculation is done.
 If this is not the case and epsilon is not provided, this
 will be the Kozacheko Estimator of the dataset’s entropy.
 If epsilon is provided, this is a partial estimation of the
@@ -408,24 +395,22 @@ computing mutual information.</p>
 </dd>
 </dl>
 </p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 <p>References:
 .. [1] A. Kraskov, H. Stogbauer and P. Grassberger, “Estimating mutual</p>
 <blockquote>
-<div>information”. Phys. Rev. E 69, 2004.</div></blockquote>
-<table class="docutils footnote" frame="void" id="id2" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label">[2]</td><td>L. F. Kozachenko, N. N. Leonenko, “Sample Estimate of the Entropy
-of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16</td></tr>
-</tbody>
-</table>
+<div><p>information”. Phys. Rev. E 69, 2004.</p>
+</div></blockquote>
+<dl class="footnote brackets">
+<dt class="label" id="id2"><span class="brackets">2</span></dt>
+<dd><p>L. F. Kozachenko, N. N. Leonenko, “Sample Estimate of the Entropy
+of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -437,35 +422,31 @@ two datasets and is calculated as:</p>
 <p>$ I(x;y) = H(x) + H(y) - H(x,y)$</p>
 <p>Where H(x) is the Shannon entropy of x. For continuous datasets,
 adapts the Kraskov Estimator [1] for mutual information.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> (<em>array-like</em>) – An array with shape (n_samples, n_features_x)</li>
-<li><strong>y</strong> (<em>array-like</em>) – An array with shape (n_samples, n_features_y)</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array-like</em>) – An array with shape (n_samples, n_features_x)</p></li>
+<li><p><strong>y</strong> (<em>array-like</em>) – An array with shape (n_samples, n_features_y)</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
-<dt>A floating point number representing the mutual</dt>
-<dd><p class="first last">information of x and y. This calculation is <em>exact</em>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A floating point number representing the mutual</dt><dd><p>information of x and y. This calculation is <em>exact</em>
 for entirely discrete datasets and <em>approximate</em> if
 there are continuous columns present.</p>
 </dd>
 </dl>
 </p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 <p>References:
 .. [1] A. Kraskov, H. Stogbauer and P. Grassberger, “Estimating mutual</p>
 <blockquote>
-<div>information”. Phys. Rev. E 69, 2004.</div></blockquote>
+<div><p>information”. Phys. Rev. E 69, 2004.</p>
+</div></blockquote>
 </dd></dl>
 
 </div>

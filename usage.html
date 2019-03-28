@@ -311,17 +311,17 @@ files are then committed to a new git repository. Note that the specification of
 type can be skipped (by selecting <code class="docutils literal notranslate"><span class="pre">n/a</span></code>).</p>
 <p>Let’s see what files have been created:</p>
 <ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">.gitignore</span></code>: a reference gitignore file.</li>
-<li><code class="docutils literal notranslate"><span class="pre">.travis.yml</span></code>: a <a class="reference external" href="https://travis-ci.org">Travis CI</a> configuration file pre-configured to run a ballet validation suite.</li>
-<li><code class="docutils literal notranslate"><span class="pre">README.md</span></code>: a basic README for your project.</li>
-<li><dl class="first docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">ballet.yml</span></code>: a Ballet configuration file, with details about the prediction problem, the training data, and</dt>
-<dd>location of feature engineering source code.</dd>
+<li><p><code class="docutils literal notranslate"><span class="pre">.gitignore</span></code>: a reference gitignore file.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.travis.yml</span></code>: a <a class="reference external" href="https://travis-ci.org">Travis CI</a> configuration file pre-configured to run a ballet validation suite.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">README.md</span></code>: a basic README for your project.</p></li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">ballet.yml</span></code>: a Ballet configuration file, with details about the prediction problem, the training data, and</dt><dd><p>location of feature engineering source code.</p>
+</dd>
 </dl>
 </li>
-<li>ballet_project: a Python package that implements an empty feature engineering pipeline.</li>
-<li><code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>: package dependencies</li>
-<li><code class="docutils literal notranslate"><span class="pre">validate.py</span></code>: a driver script for the validation suite that calls out to Ballet for most functionality.</li>
+<li><p>ballet_project: a Python package that implements an empty feature engineering pipeline.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>: package dependencies</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">validate.py</span></code>: a driver script for the validation suite that calls out to Ballet for most functionality.</p></li>
 </ul>
 </div>
 <div class="section" id="developing-new-features">
@@ -330,8 +330,8 @@ type can be skipped (by selecting <code class="docutils literal notranslate"><sp
 new Python subpackage under the “contrib” directory. In this example, the contrib directory is
 <code class="docutils literal notranslate"><span class="pre">ballet_project/features/contrib</span></code>, but it can be changed in <code class="docutils literal notranslate"><span class="pre">ballet.yml</span></code>.</p>
 <ul class="simple">
-<li>The new subpackage must be named like <code class="docutils literal notranslate"><span class="pre">user_&lt;github</span> <span class="pre">username&gt;</span></code>.</li>
-<li>The new submodule that will contain the feature must be named like <code class="docutils literal notranslate"><span class="pre">feature_&lt;feature</span> <span class="pre">name&gt;.py</span></code>.</li>
+<li><p>The new subpackage must be named like <code class="docutils literal notranslate"><span class="pre">user_&lt;github</span> <span class="pre">username&gt;</span></code>.</p></li>
+<li><p>The new submodule that will contain the feature must be named like <code class="docutils literal notranslate"><span class="pre">feature_&lt;feature</span> <span class="pre">name&gt;.py</span></code>.</p></li>
 </ul>
 <p>Within the feature submodule, the contributor can write arbitrary Python code. Ultimately, a single object that is an
 instance of <code class="docutils literal notranslate"><span class="pre">ballet.Feature</span></code> must be defined; it will be imported by the feature engineering pipeline.</p>
@@ -350,7 +350,7 @@ instance of <code class="docutils literal notranslate"><span class="pre">ballet.
 <h3>Validating features<a class="headerlink" href="#validating-features" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">ballet_project</span></code> repository has received a new pull request which triggers an automatic evaluation.</p>
 <ol class="arabic simple">
-<li>The PR is downloaded by an external continuous integration service, <a class="reference external" href="https://travis-ci.org">Travis CI</a>.</li>
+<li><p>The PR is downloaded by an external continuous integration service, <a class="reference external" href="https://travis-ci.org">Travis CI</a>.</p></li>
 </ol>
 <p>2. The <code class="docutils literal notranslate"><span class="pre">validate.py</span></code> script is run, which validates the proposed feature contribution using functionality within
 the <code class="docutils literal notranslate"><span class="pre">ballet.validation</span></code> module.
