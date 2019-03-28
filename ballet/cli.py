@@ -45,10 +45,52 @@ def start_new_feature():
     ballet.templating.start_new_feature()
 
 
-@cli.command('validate')
-@click.option('--check-feature-api',
-              is_flag=True,
-              help='Check project structure')
+@click.group(chain=True)
+@click.option('--debug/--no-debug',
+              help='Show debug output')
+@click.pass_context
+def validate(ctx, debug):
+    """Run individual validation checks"""
+    ctx.ensure_object(dict)
+
+    from ballet.util.log import SIMPLE_LOG_FORMAT, enable, logger
+    if debug:
+        level = 'DEBUG'
+    else:
+        level = 'INFO'
+    enable(level=level, format=SIMPLE_LOG_FORMAT, echo=False)
+
+    from ballet.compat import pathlib
+    from ballet.project import Project
+
+    # TODO allow project root to be specified?
+    cwd = pathlib.Path.cwd()
+    project = Project.from_path(cwd)
+    ctx.obj['project'] = project
+
+
+cli.add_command(validate)
+
+
+def _import_feature(feature_name, feature_path):
+    from ballet.compat import pathlib
+    from ballet.contrib import _get_contrib_feature_from_module
+    from ballet.util.mod import (
+        import_module_from_modname, import_module_from_relpath)
+
+    # import feature
+    if feature_name is not None and feature_path is None:
+        mod = import_module_from_modname(feature_name)
+    elif feature_path is not None and feature_name is None:
+        cwd = pathlib.Path.cwd().resolve()
+        relpath = pathlib.Path(feature_path).resolve().relative_to(cwd)
+        mod = import_module_from_relpath(relpath)
+    else:
+        raise click.BadOptionUsage('Exactly one of feature-name and '
+                                   'feature-path should be specified')
+    return _get_contrib_feature_from_module(mod)
+
+
 @click.option('--feature-name',
               type=str,
               help='Feature module name')
