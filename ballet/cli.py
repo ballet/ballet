@@ -63,11 +63,9 @@ def start_new_feature():
               help='Show debug output')
 def validate(check_feature_api, feature_name, feature_path, verbose):
     """Run individual validation checks"""
-    import ballet.util.log
+    from ballet.util.log import SIMPLE_LOG_FORMAT, enable, logger
     level = 'INFO' if not verbose else 'DEBUG'
-    ballet.util.log.enable(level=level,
-                           format=ballet.util.log.SIMPLE_LOG_FORMAT,
-                           echo=False)
+    enable(level=level, format=SIMPLE_LOG_FORMAT, echo=False)
 
     from ballet.compat import pathlib
     from ballet.contrib import _get_contrib_feature_from_module
@@ -98,3 +96,5 @@ def validate(check_feature_api, feature_name, feature_path, verbose):
 
         # validate!
         validate_feature_api(feature, X, y)
+
+        logger.info('Check feature API successful.')
