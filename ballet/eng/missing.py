@@ -25,6 +25,7 @@ class NullFiller(BaseTransformer):
     def __init__(self, isnull=pd.isnull, replacement=0.0):
         super().__init__()
         self.replacement = replacement
+        self.isnull = isnull
 
     def transform(self, X, **transform_kwargs):
         X = X.copy()
