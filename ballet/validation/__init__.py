@@ -8,8 +8,8 @@ from ballet.exc import (
     InvalidProjectStructure, SkippedValidationTest)
 from ballet.project import Project
 from ballet.util.log import logger, stacklog
-from ballet.validation.gfssf_validator import GFSSFAcceptanceEvaluator
 from ballet.validation.gfssf_pruner import GFSSFPruningEvaluator
+from ballet.validation.gfssf_validator import GFSSFAcceptanceEvaluator
 from ballet.validation.project_structure import (
     ChangeCollector, FeatureApiValidator, FileChangeValidator)
 
@@ -127,8 +127,8 @@ def evaluate_feature_performance(project):
 
 @validation_stage('pruning existing features')
 def prune_existing_features(project):
-    if project.on_master():
-        raise SkippedValidationTest('Not on master')
+    if not project.on_master_after_merge():
+        raise SkippedValidationTest('Not on master, after feature is added')
 
     out = project.build()
     X_df, y, features = out['X_df'], out['y'], out['features']

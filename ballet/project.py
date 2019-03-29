@@ -207,6 +207,12 @@ class Project:
     def on_master(self):
         return self.branch == 'master'
 
+    def on_master_after_merge(self):
+        if not self.on_master():
+            return False
+        else:
+            return len(self.branch.commit.parents) > 1
+
     @property
     def path(self):
         """Return the project path

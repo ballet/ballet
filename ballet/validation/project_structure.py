@@ -6,7 +6,7 @@ from ballet.compat import pathlib
 from ballet.contrib import _get_contrib_features
 from ballet.util import make_plural_suffix
 from ballet.util.ci import TravisPullRequestBuildDiffer, can_use_travis_differ
-from ballet.util.git import LocalPullRequestBuildDiffer
+from ballet.util.git import LocalMergeBuildDiffer, LocalPullRequestBuildDiffer
 from ballet.util.log import logger, stacklog
 from ballet.util.mod import import_module_at_path, relpath_to_modname
 from ballet.validation.base import BaseValidator, check_from_class
@@ -39,9 +39,11 @@ class ChangeCollector:
     def __init__(self, project):
         self.project = project
         self.repo = project.repo
-        self.pr_num = str(project.pr_num)
+        self.pr_num = str(project.pr_num) if project.pr_num else None
         self.contrib_module_path = project.contrib_module_path
 
+        if not self.pr_num:
+            self.differ = LocalMergeBuildDiffer(0, self.repo)
         if can_use_travis_differ():
             self.differ = TravisPullRequestBuildDiffer(self.pr_num)
         else:

@@ -15,7 +15,7 @@ COMMIT_RANGE_REGEX = re.compile(
 PR_REF_PATH_REGEX = re.compile(r'refs/heads/pull/(\d+)')
 
 
-class PullRequestBuildDiffer:
+class BuildDiffer:
     """Diff files from this pull request against a comparison ref
 
     Args:
@@ -39,7 +39,7 @@ class PullRequestBuildDiffer:
         raise NotImplementedError
 
 
-class LocalPullRequestBuildDiffer(PullRequestBuildDiffer):
+class LocalPullRequestBuildDiffer(BuildDiffer):
 
     @property
     def _pr_name(self):
@@ -55,6 +55,17 @@ class LocalPullRequestBuildDiffer(PullRequestBuildDiffer):
     def _get_diff_endpoints(self):
         a = self.repo.rev_parse('master')
         b = self.repo.rev_parse(self._pr_name)
+        return a, b
+
+
+class LocalMergeBuildDiffer(BuildDiffer):
+
+    def _check_environment(self):
+        assert len(self.repo.active_branch.commit.parents) == 2
+
+    def _get_diff_endpoints(self):
+        a = self.repo.active_branch.commit.parents[0]
+        b = self.repo.active_branch.commit.parents[1]
         return a, b
 
 

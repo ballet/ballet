@@ -67,7 +67,7 @@ class GFSSFPruningEvaluator(FeaturePruningEvaluator):
             cmi = estimate_conditional_information(candidate_df, self.y, z)
             logger.debug(
                 'Conditional Mutual Information Score: {}'.format(cmi))
-            statistic = cmi 
+            statistic = cmi
             threshold = _compute_threshold(
                 lmbda_1, lmbda_2, n_candidate_cols)
             logger.debug('Calculated Threshold: {}'.format(threshold))
