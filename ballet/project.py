@@ -211,7 +211,7 @@ class Project:
         if not self.on_master():
             return False
         else:
-            return len(self.branch.commit.parents) > 1
+            return len(self.repo.active_branch.commit.parents) > 1
 
     @property
     def path(self):
