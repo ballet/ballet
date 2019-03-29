@@ -60,7 +60,9 @@ def test_validation_end_to_end(tempdir):
     base = tempdir.joinpath(modname)
 
     def _import(modname):
-        relpath = modname_to_relpath(modname)
+        relpath = modname_to_relpath(modname,
+                                     project_root=base,
+                                     add_init=False)
         abspath = base.joinpath(relpath)
         return import_module_at_path(modname, abspath)
 
