@@ -42,7 +42,7 @@ class ChangeCollector:
         self.pr_num = str(project.pr_num) if project.pr_num else None
         self.contrib_module_path = project.contrib_module_path
 
-        if not self.pr_num:
+        if self.pr_num is None:
             self.differ = LocalMergeBuildDiffer(0, self.repo)
         if can_use_travis_differ():
             self.differ = TravisPullRequestBuildDiffer(self.pr_num)
