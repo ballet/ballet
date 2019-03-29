@@ -100,7 +100,7 @@ def can_use_travis_differ():
         return True
 
 
-class TravisPullRequestBuildDiffer(BuildDiffers):
+class TravisPullRequestBuildDiffer(BuildDiffer):
 
     EXPECTED_TRAVIS_ENV_VARS = (
         # 'TRAVIS_BRANCH',
