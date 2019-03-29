@@ -5,7 +5,7 @@ from funcy import complement
 
 from ballet.exc import UnexpectedTravisEnvironmentError
 from ballet.util.git import (
-    PullRequestBuildDiffer, get_diff_endpoints_from_commit_range)
+    BuildDiffer, get_diff_endpoints_from_commit_range)
 from ballet.util.log import logger
 
 
@@ -100,7 +100,7 @@ def can_use_travis_differ():
         return True
 
 
-class TravisPullRequestBuildDiffer(PullRequestBuildDiffer):
+class TravisPullRequestBuildDiffer(BuildDiffers):
 
     EXPECTED_TRAVIS_ENV_VARS = (
         # 'TRAVIS_BRANCH',
