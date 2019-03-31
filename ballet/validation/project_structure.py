@@ -131,8 +131,8 @@ class ChangeCollector:
 
         Args:
             candidate_feature_diffs (List[git.diff.Diff]): list of Diffs
-                corresponding to admissible file changes compared to comparison
-                ref
+                corresponding to admissible file changes compared to
+                comparison ref
 
         Returns:
             List[Tuple]: list of tuple of importer, module name, and module
