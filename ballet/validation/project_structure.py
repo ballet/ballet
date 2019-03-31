@@ -44,7 +44,7 @@ class ChangeCollector:
 
         if self.pr_num is None:
             self.differ = LocalMergeBuildDiffer(0, self.repo)
-        if can_use_travis_differ():
+        elif can_use_travis_differ():
             self.differ = TravisPullRequestBuildDiffer(self.pr_num)
         else:
             self.differ = LocalPullRequestBuildDiffer(self.pr_num, self.repo)
