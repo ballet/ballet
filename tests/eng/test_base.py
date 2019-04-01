@@ -128,7 +128,7 @@ class GroupwiseTransformerTest(
         X_te.loc[0, 'name'] = 'Z'  # new group
         X_te = X_te.set_index(['name', 'year'])
 
-        with self.assertRaises(ballet.exc.Error):
+        with self.assertRaises(ballet.exc.BalletError):
             trans.transform(X_te)
 
     def test_ignore_on_new_group(self):

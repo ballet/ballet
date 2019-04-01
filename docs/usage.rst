@@ -14,7 +14,7 @@ the prediction problem they are ultimately trying to solve.
 Project instantiation
 ~~~~~~~~~~~~~~~~~~~~~
 
-To instantiate a project, use the `ballet-quickstart` command:
+To instantiate a project, use the ``ballet quickstart`` command:
 
 .. code-block:: console
 

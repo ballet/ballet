@@ -3,9 +3,9 @@ import re
 import git
 import requests
 from funcy import collecting, re_find, re_test, silent
-
 from ballet.compat import pathlib, safepath
 from ballet.util import one_or_raise
+from ballet.util.git import PullRequestBuildDiffer
 
 FILE_CHANGES_COMMIT_RANGE = '{a}...{b}'
 REV_REGEX = r'[a-zA-Z0-9_/^@{}-]+'
@@ -13,9 +13,34 @@ COMMIT_RANGE_REGEX = re.compile(
     r'(?P<a>{rev})\.\.(?P<thirddot>\.?)(?P<b>{rev})'
     .format(rev=REV_REGEX))
 PR_REF_PATH_REGEX = re.compile(r'refs/heads/pull/(\d+)')
+GIT_PUSH_FAILURE = (
+    git.PushInfo.REJECTED |
+    git.PushInfo.REMOTE_REJECTED |
+    git.PushInfo.REMOTE_FAILURE |
+    git.PushInfo.ERROR
+)
 
 
-class BuildDiffer:
+class Differ:
+
+    def diff(self):
+        a, b = self._get_diff_endpoints()
+        return a.diff(b)
+
+    def _get_diff_endpoints(self):
+        raise NotImplementedError
+
+
+class CustomDiffer(Differ):
+
+    def __init__(self, endpoints):
+        self.endpoints = endpoints
+
+    def _get_diff_endpoints(self):
+        return self.endpoints
+
+
+class PullRequestBuildDiffer(Differ):
     """Diff files from this pull request against a comparison ref
 
     Args:
@@ -28,18 +53,11 @@ class BuildDiffer:
         self.repo = repo
         self._check_environment()
 
-    def diff(self):
-        a, b = self._get_diff_endpoints()
-        return a.diff(b)
-
     def _check_environment(self):
         raise NotImplementedError
 
-    def _get_diff_endpoints(self):
-        raise NotImplementedError
 
-
-class LocalPullRequestBuildDiffer(BuildDiffer):
+class LocalPullRequestBuildDiffer(PullRequestBuildDiffer):
 
     @property
     def _pr_name(self):
@@ -58,7 +76,10 @@ class LocalPullRequestBuildDiffer(BuildDiffer):
         return a, b
 
 
-class LocalMergeBuildDiffer(BuildDiffer):
+class LocalMergeBuildDiffer(Differ):
+    def __init__(self, repo):
+        self.repo = repo
+        self._check_environment()
 
     def _check_environment(self):
         assert len(self.repo.active_branch.commit.parents) == 2
@@ -184,3 +205,15 @@ def get_pull_request_outcomes(owner, repo):
             yield 'accepted'
         else:
             yield 'rejected'
+
+
+def did_git_push_succeed(push_info):
+    """Check whether a git push succeeded
+
+    A git push succeeded if it was not "rejected" or "remote rejected",
+    and if there was not a "remote failure" or an "error".
+
+    Args:
+        push_info (git.remote.PushInfo): push info
+    """
+    return push_info.flags & GIT_PUSH_FAILURE == 0

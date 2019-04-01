@@ -1,4 +1,4 @@
-import numpy as np
+import pandas as pd
 
 from ballet.eng.base import BaseTransformer, GroupedFunctionTransformer
 
@@ -18,17 +18,14 @@ class NullFiller(BaseTransformer):
 
     Args:
         isnull (callable): vectorized test of whether a value is consider null.
-            Defaults to ``np.isnan``.
+            Defaults to ``pandas.isnull``.
         replacement: replacement for each null value
     """
 
-    def __init__(self, isnull=None, replacement=0.0):
+    def __init__(self, isnull=pd.isnull, replacement=0.0):
         super().__init__()
-        if isnull is None:
-            self.isnull = np.isnan
-        else:
-            self.isnull = isnull
         self.replacement = replacement
+        self.isnull = isnull
 
     def transform(self, X, **transform_kwargs):
         X = X.copy()
@@ -41,4 +38,4 @@ class NullIndicator(BaseTransformer):
     """Indicate whether values are null or not"""
 
     def transform(self, X, **tranform_kwargs):
-        return np.isnan(X).astype(int)
+        return pd.isnull(X).astype(int)

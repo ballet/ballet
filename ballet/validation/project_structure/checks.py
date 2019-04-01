@@ -7,11 +7,11 @@ from ballet.project import relative_to_contrib
 from ballet.util.fs import isemptyfile
 from ballet.validation.base import BaseCheck
 
-FEATURE_MODULE_NAME_REGEX = r'feature_[a-zA-Z0-9_]+\.\w+'
-SUBPACKAGE_NAME_REGEX = r'user_[a-zA-Z0-9_]+'
+FEATURE_MODULE_NAME_REGEX = r'feature_(?P<featurename>[a-zA-Z0-9_]+)\.py'
+SUBPACKAGE_NAME_REGEX = r'user_(?P<username>[a-zA-Z0-9_]+)'
 
 
-class DiffCheck(BaseCheck):
+class ProjectStructureCheck(BaseCheck):
     """Base class for implementing new Feature API checks
 
     Args:
@@ -22,14 +22,14 @@ class DiffCheck(BaseCheck):
         self.project = project
 
 
-class IsAdditionCheck(DiffCheck):
+class IsAdditionCheck(ProjectStructureCheck):
 
     def check(self, diff):
         """Check that the diff represents the addition of a new file"""
         assert diff.change_type == 'A'
 
 
-class IsPythonSourceCheck(DiffCheck):
+class IsPythonSourceCheck(ProjectStructureCheck):
 
     def check(self, diff):
         """Check that the new file introduced is a python source file"""
@@ -40,7 +40,7 @@ class IsPythonSourceCheck(DiffCheck):
         )
 
 
-class WithinContribCheck(DiffCheck):
+class WithinContribCheck(ProjectStructureCheck):
 
     def check(self, diff):
         """Check that the new file is within the contrib subdirectory"""
@@ -49,7 +49,7 @@ class WithinContribCheck(DiffCheck):
         assert pathlib.Path(contrib_path) in pathlib.Path(path).parents
 
 
-class SubpackageNameCheck(DiffCheck):
+class SubpackageNameCheck(ProjectStructureCheck):
 
     def check(self, diff):
         """Check that the name of the subpackage within contrib is valid
@@ -61,7 +61,7 @@ class SubpackageNameCheck(DiffCheck):
         assert re_test(SUBPACKAGE_NAME_REGEX, subpackage_name)
 
 
-class RelativeNameDepthCheck(DiffCheck):
+class RelativeNameDepthCheck(ProjectStructureCheck):
 
     def check(self, diff):
         """Check that the new file introduced is at the proper depth
@@ -72,7 +72,7 @@ class RelativeNameDepthCheck(DiffCheck):
         assert len(relative_path.parts) == 2
 
 
-class ModuleNameCheck(DiffCheck):
+class ModuleNameCheck(ProjectStructureCheck):
 
     def check(self, diff):
         r"""Check that the new file introduced has a valid name
@@ -87,7 +87,7 @@ class ModuleNameCheck(DiffCheck):
         assert is_valid_feature_module_name or is_valid_init_module_name
 
 
-class IfInitModuleThenIsEmptyCheck(DiffCheck):
+class IfInitModuleThenIsEmptyCheck(ProjectStructureCheck):
 
     def check(self, diff):
         """Check that if the new file is __init__.py, then it is empty"""

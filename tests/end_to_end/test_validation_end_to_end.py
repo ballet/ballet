@@ -13,12 +13,12 @@ from sklearn_pandas import DataFrameMapper
 from ballet.compat import safepath
 from ballet.eng.misc import IdentityTransformer
 from ballet.feature import Feature
-from ballet.quickstart import generate_project
+from ballet.templating import render_project_template
 from ballet.util import get_enum_values
 from ballet.util.git import make_commit_range, switch_to_new_branch
 from ballet.util.log import logger
 from ballet.util.mod import import_module_at_path, modname_to_relpath
-from ballet.validation import TEST_TYPE_ENV_VAR, BalletTestTypes
+from ballet.validation.main import TEST_TYPE_ENV_VAR, BalletTestTypes
 
 
 def submit_feature(repo, contrib_dir, username, featurename, new_feature_str):
@@ -53,14 +53,16 @@ def test_validation_end_to_end(tempdir):
         'project_slug': modname,
     }
 
-    generate_project(no_input=True, extra_context=extra_context,
-                     output_dir=tempdir)
+    render_project_template(no_input=True, extra_context=extra_context,
+                            output_dir=tempdir)
 
     # make sure we can import different modules without error
     base = tempdir.joinpath(modname)
 
     def _import(modname):
-        relpath = modname_to_relpath(modname)
+        relpath = modname_to_relpath(modname,
+                                     project_root=base,
+                                     add_init=False)
         abspath = base.joinpath(relpath)
         return import_module_at_path(modname, abspath)
 
@@ -208,10 +210,3 @@ def test_validation_end_to_end(tempdir):
     submit_feature(repo, contrib_dir, username, featurename, new_feature_str)
     with pytest.raises(CalledProcessError):
         call_validate_all(pr=3)
-
-
-if __name__ == '__main__':
-    import ballet.util.log
-    ballet.util.log.enable(level='INFO')
-
-    test_validation_end_to_end()

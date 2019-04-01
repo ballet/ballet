@@ -5,8 +5,9 @@ import tempfile
 import types
 import unittest
 from enum import Enum
-from unittest.mock import ANY, mock_open, patch
+from unittest.mock import ANY, Mock, mock_open, patch
 
+import git
 import numpy as np
 import pandas as pd
 from funcy import identity
@@ -561,6 +562,50 @@ class FsTest(unittest.TestCase):
     def test_isemptyfile(self):
         raise NotImplementedError
 
+    @patch('ballet.util.fs.copytree')
+    def test__synctree_dst_not_exists(self, mock_copytree):
+        # when src is a directory that exists and dst does not exist,
+        # then copytree should be called
+        src = Mock(spec=pathlib.Path)
+        dst = Mock(spec=pathlib.Path)
+        dst.exists.return_value = False
+        ballet.util.fs._synctree(src, dst, lambda x: None)
+        mock_copytree.assert_called_once_with(safepath(src), safepath(dst))
+
+    def test_synctree(self):
+        with tempfile.TemporaryDirectory() as tempdir:
+            tempdir = pathlib.Path(tempdir).resolve()
+
+            src = tempdir.joinpath('x')
+            src.joinpath('a', 'b').mkdir(parents=True)
+            src.joinpath('a', 'b', 'only_in_src.txt').touch()
+            src.joinpath('a', 'c').mkdir()
+
+            dst = tempdir.joinpath('y')
+            dst.joinpath('a', 'b').mkdir(parents=True)
+            dst.joinpath('a', 'only_in_dst.txt').touch()
+
+            # patch here in order to avoid messing up tempdir stuff
+            with patch('ballet.compat.pathlib.Path.mkdir') as mock_mkdir, \
+                    patch('os.unlink') as mock_unlink, \
+                    patch('os.rmdir') as mock_rmdir, \
+                    patch('ballet.util.fs.copyfile') as mock_copyfile:
+                ballet.util.fs.synctree(src, dst)
+
+        # one call to mkdir, for 'a/c'
+        mock_mkdir.assert_called_once_with()
+
+        # one call to copyfile, for 'only_in_src.txt'
+        path = ('a', 'b', 'only_in_src.txt')
+        mock_copyfile.assert_called_once_with(
+            src.joinpath(*path),
+            dst.joinpath(*path)
+        )
+
+        # no calls to cleanup
+        mock_rmdir.assert_not_called()
+        mock_unlink.assert_not_called()
+
 
 class GitTest(unittest.TestCase):
 
@@ -634,6 +679,21 @@ class GitTest(unittest.TestCase):
         self.assertEqual(actual, expected)
         mock_get_pull_requests.assert_called_once_with(
             owner, repo, state='closed')
+
+    def test_did_git_push_succeed(self):
+        local_ref = None
+        remote_ref_string = None
+        remote = None
+
+        flags = 0
+        push_info = git.remote.PushInfo(flags, local_ref, remote_ref_string,
+                                        remote)
+        self.assertTrue(ballet.util.git.did_git_push_succeed(push_info))
+
+        flags = git.remote.PushInfo.ERROR
+        push_info = git.remote.PushInfo(flags, local_ref, remote_ref_string,
+                                        remote)
+        self.assertFalse(ballet.util.git.did_git_push_succeed(push_info))
 
 
 class IoTest(unittest.TestCase):
