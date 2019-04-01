@@ -5,7 +5,7 @@ from funcy import complement
 
 from ballet.exc import UnexpectedTravisEnvironmentError
 from ballet.util.git import (
-    BuildDiffer, get_diff_endpoints_from_commit_range)
+    PullRequestBuildDiffer, get_diff_endpoints_from_commit_range)
 from ballet.util.log import logger
 
 

@@ -5,7 +5,6 @@ import requests
 from funcy import collecting, re_find, re_test, silent
 from ballet.compat import pathlib, safepath
 from ballet.util import one_or_raise
-from ballet.util.git import PullRequestBuildDiffer
 
 FILE_CHANGES_COMMIT_RANGE = '{a}...{b}'
 REV_REGEX = r'[a-zA-Z0-9_/^@{}-]+'
