@@ -1,7 +1,7 @@
 import pkgutil
 import types
 
-from funcy import collecting, complement, isnone
+from funcy import collecting, notnone
 
 from ballet.feature import Feature
 from ballet.project import Project
@@ -27,12 +27,13 @@ def get_contrib_features(project_root):
     Returns:
         List[ballet.Feature]: list of Feature objects
     """
+    # TODO Project should require ModuleType
     project = Project(project_root)
     contrib = project._resolve('.features.contrib')
     return _get_contrib_features(contrib)
 
 
-@dfilter(complement(isnone))
+@dfilter(notnone)
 @collecting
 def _get_contrib_features(module):
     """Get contributed features from within given module

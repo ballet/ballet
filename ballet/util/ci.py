@@ -101,6 +101,18 @@ def can_use_travis_differ():
 
 
 class TravisPullRequestBuildDiffer(PullRequestBuildDiffer):
+    """Differ from within Travis test environment
+
+    Requires several environment variables set by Travis to work properly:
+        - TRAVIS_BUILD_DIR, to detect the git repo
+        - TRAVIS_PULL_REQUEST, to determine whether the build is on a pull
+            request
+        - TRAVIS_COMMIT_RANGE, to determine which commits to diff.
+
+    Args:
+        pr_num (int or str): pull request number
+        repo (git.Repo): repo object for the project
+    """
 
     EXPECTED_TRAVIS_ENV_VARS = (
         # 'TRAVIS_BRANCH',

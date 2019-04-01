@@ -1,17 +1,79 @@
 from collections import namedtuple
 
-from funcy import collecting, partial, post_processing
+from funcy import collecting, complement, lfilter, partial, post_processing
 
 from ballet.compat import pathlib
-from ballet.contrib import _get_contrib_features
-from ballet.util import make_plural_suffix
+from ballet.contrib import _get_contrib_feature_from_module
+from ballet.exc import BalletError
+from ballet.util import make_plural_suffix, one_or_raise, whether_failures
 from ballet.util.ci import TravisPullRequestBuildDiffer, can_use_travis_differ
 from ballet.util.git import LocalPullRequestBuildDiffer
 from ballet.util.log import logger, stacklog
 from ballet.util.mod import import_module_at_path, relpath_to_modname
-from ballet.validation.base import BaseValidator, check_from_class
-from ballet.validation.diff_checks import DiffCheck
-from ballet.validation.feature_api_checks import FeatureApiCheck
+from ballet.validation.project_structure.checks import ProjectStructureCheck
+
+
+def get_proposed_feature(project):
+    """Get the proposed feature
+
+    The path of the proposed feature is determined by diffing the project
+    against a comparison branch, such as master. The feature is then imported
+    from that path and returned.
+
+    Args:
+        project (ballet.project.Project): project info
+
+    Raises:
+        ballet.exc.BalletError: more than one feature collected
+    """
+    change_collector = ChangeCollector(project)
+    collected_changes = change_collector.collect_changes()
+    try:
+        new_feature_info = one_or_raise(collected_changes.new_feature_info)
+        importer, _, _ = new_feature_info
+    except ValueError:
+        raise BalletError('Too many features collected')
+    module = importer()
+    feature = _get_contrib_feature_from_module(module)
+    return feature
+
+
+def get_accepted_features(features, proposed_feature):
+    """Deselect candidate features from list of all features
+
+    Args:
+        features (List[Feature]): collection of all features in the ballet
+            project: both accepted features and candidate ones that have not
+            been accepted
+        proposed_feature (Feature): candidate feature that has not been
+            accepted
+
+    Returns:
+        List[Feature]: list of features with the proposed feature not in it.
+
+    Raises:
+        ballet.exc.BalletError: Could not deselect exactly the proposed
+            feature.
+    """
+    def eq(feature):
+        """Features are equal if they have the same source
+
+        At least in this implementation...
+        """
+        return feature.source == proposed_feature.source
+
+    # deselect features that match the proposed feature
+    result = lfilter(complement(eq), features)
+
+    if len(features) - len(result) == 1:
+        return result
+    elif len(result) == len(features):
+        raise BalletError(
+            'Did not find match for proposed feature within \'contrib\'')
+    else:
+        raise BalletError(
+            'Unexpected condition (n_features={}, n_result={})'
+            .format(len(features), len(result)))
 
 
 def _log_collect_items(name, items):
@@ -31,21 +93,23 @@ class ChangeCollector:
     """Validate the features introduced in a proposed pull request.
 
     Args:
-        repo (git.Repo): project repo
-        pr_num (int, str): Pull request number
-        contrib_module_path (str): Relative path to contrib module
+        project (ballet.project.Project): project info
+        differ (ballet.util.git.Differ, optional): specific differ to use;
+            if not provided, will be determined automatically from the
+            environment
     """
 
-    def __init__(self, project):
+    def __init__(self, project, differ=None):
         self.project = project
-        self.repo = project.repo
-        self.pr_num = str(project.pr_num)
-        self.contrib_module_path = project.contrib_module_path
+        self.differ = differ
 
-        if can_use_travis_differ():
-            self.differ = TravisPullRequestBuildDiffer(self.pr_num)
-        else:
-            self.differ = LocalPullRequestBuildDiffer(self.pr_num, self.repo)
+        if self.differ is None:
+            pr_num = self.project.pr_num
+            if can_use_travis_differ():
+                self.differ = TravisPullRequestBuildDiffer(pr_num)
+            else:
+                repo = self.project.repo
+                self.differ = LocalPullRequestBuildDiffer(pr_num, repo)
 
     def collect_changes(self):
         """Collect file and feature changes
@@ -57,6 +121,9 @@ class ChangeCollector:
            changes. Admissible file changes solely contribute python files to
            the contrib subdirectory.
         3. Collect features from admissible new files.
+
+        Returns:
+            CollectedChanges
         """
 
         file_diffs = self._collect_file_diffs()
@@ -89,7 +156,7 @@ class ChangeCollector:
 
         for diff in file_diffs:
             valid, failures = check_from_class(
-                DiffCheck, diff, self.project)
+                ProjectStructureCheck, diff, self.project)
             if valid:
                 if pathlib.Path(diff.b_path).parts[-1] != '__init__.py':
                     candidate_feature_diffs.append(diff)
@@ -136,7 +203,7 @@ class ChangeCollector:
             List[Tuple]: list of tuple of importer, module name, and module
                 path. The "importer" is a callable that returns a module
         """
-        project_root = pathlib.Path(self.repo.working_tree_dir)
+        project_root = self.project.path
         for diff in candidate_feature_diffs:
             path = diff.b_path
             modname = relpath_to_modname(path)
@@ -145,67 +212,15 @@ class ChangeCollector:
             yield importer, modname, modpath
 
 
-class FileChangeValidator(BaseValidator):
-
-    def __init__(self, project):
-        self.change_collector = ChangeCollector(project)
-
-    def validate(self):
-        collected_changes = self.change_collector.collect_changes()
-        return not collected_changes.inadmissible_diffs
-
-
 def subsample_data_for_validation(X, y):
     return X, y
 
 
-class FeatureApiValidator(BaseValidator):
-
-    def __init__(self, project):
-        self.change_collector = ChangeCollector(project)
-
-        X, y = project.load_data()
-        self.X, self.y = subsample_data_for_validation(X, y)
-
-    def validate(self):
-        """Collect and validate all new features"""
-
-        collected_changes = self.change_collector.collect_changes()
-
-        for importer, modname, modpath in collected_changes.new_feature_info:
-            features = []
-            imported_okay = True
-            try:
-                mod = importer()
-                features.extend(_get_contrib_features(mod))
-            except (ImportError, SyntaxError):
-                logger.info(
-                    'Validation failure: failed to import module at {}'
-                    .format(modpath))
-                logger.exception('Exception details: ')
-                imported_okay = False
-
-            if not imported_okay:
-                return False
-
-            # if no features were added at all, reject
-            if not features:
-                logger.info('Failed to collect any new features.')
-                return False
-
-            result = True
-            for feature in features:
-                valid, failures = check_from_class(
-                    FeatureApiCheck, feature, self.X, self.y)
-                if valid:
-                    logger.info(
-                        'Feature {feature!r} is valid'
-                        .format(feature=feature))
-                else:
-                    logger.info(
-                        'Feature {feature!r} is NOT valid; '
-                        'failures were {failures}'
-                        .format(feature=feature, failures=failures))
-                    result = False
-
-            return result
+@whether_failures
+def check_from_class(check_class, obj, *checker_args, **checker_kwargs):
+    for Checker in check_class.__subclasses__():
+        check = Checker(*checker_args, **checker_kwargs).do_check
+        success = check(obj)
+        if not success:
+            name = Checker.__name__
+            yield name

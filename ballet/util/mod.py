@@ -29,7 +29,7 @@ def import_module_at_path(modname, modpath):
 
     Examples:
         >>> modname = 'foo.bar.baz'
-        >>> modpath = '/home/user/foo/bar/baz.py
+        >>> modpath = '/home/user/foo/bar/baz.py'
         >>> import_module_at_path(modname, modpath)
         <module 'foo.bar.baz' from '/home/user/foo/bar/baz.py'>
 
@@ -40,12 +40,10 @@ def import_module_at_path(modname, modpath):
     """
     # TODO just keep navigating up in the source tree until an __init__.py is
     # not found?
-    # TODO resolve all paths before messing with parents
 
-    modpath = pathlib.Path(modpath)
+    modpath = pathlib.Path(modpath).resolve()
 
-    if str(modpath).endswith('__init__.py'):
-        # TODO use pathlib methods directly
+    if modpath.name == '__init__.py':
         # TODO improve debugging output with recommend change
         raise ValueError('Don\'t provide the __init__.py!')
 
@@ -53,7 +51,7 @@ def import_module_at_path(modname, modpath):
         return modpath.suffix != '.py'
 
     def has_init(dir):
-        return dir.joinpath('__init__.py').exists()
+        return dir.joinpath('__init__.py').is_file()
 
     def has_package_structure(modname, modpath):
         modparts = modname.split('.')
@@ -103,19 +101,20 @@ def relpath_to_modname(relpath):
         >>> relpath_to_modname('ballet/util/_util.py')
         'ballet.util._util'
     """
-    parts = pathlib.Path(relpath).parts
-    if parts[-1] == '__init__.py':
-        parts = parts[:-1]
-    elif parts[-1].endswith('.py'):
-        parts = list(parts)
-        parts[-1] = parts[-1].replace('.py', '')
+    # don't try to resolve!
+    p = pathlib.Path(relpath)
+
+    if p.name == '__init__.py':
+        p = p.parent
+    elif p.suffix == '.py':
+        p = p.with_suffix('')
     else:
         msg = 'Cannot convert a non-python file to a modname'
         msg_detail = 'The relpath given is: {}'.format(relpath)
         logger.error(msg + '\n' + msg_detail)
         raise ValueError(msg)
 
-    return '.'.join(parts)
+    return '.'.join(p.parts)
 
 
 def modname_to_relpath(modname, project_root=None, add_init=True):
@@ -124,21 +123,24 @@ def modname_to_relpath(modname, project_root=None, add_init=True):
     The project root is usually needed to detect if the module is a package, in
     which case the relevant file is the `__init__.py` within the subdirectory.
 
-    Args:
-        modname (str): Module name, e.g. `os.path`
-        project_root (str): Path to project root
-        add_init (bool): Whether to add `__init__.py` to the path of modules
-            that are packages. Defaults to True
-
     Example:
         >>> modname_to_relpath('foo.features')
         'foo/features.py'
         >>> modname_to_relpath('foo.features',
                                project_root='/path/to/project')
         'foo/features/__init__.py'
+
+    Args:
+        modname (str): Module name, e.g. `os.path`
+        project_root (str): Path to project root
+        add_init (bool): Whether to add `__init__.py` to the path of modules
+            that are packages. Defaults to True
+
+    Returns:
+        str
     """
     parts = modname.split('.')
-    relpath = pathlib.Path('.').joinpath(*parts)
+    relpath = pathlib.Path(*parts)
 
     # is the module a package? if so, the relpath identifies a directory
     # it is easier to check for whether a file is a directory than to try to

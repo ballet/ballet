@@ -2,10 +2,10 @@
 
 if __name__ == '__main__':
 
-    import ballet.util.log
-    import ballet.validation
+    from ballet.util.log import enable
+    from ballet.validation.main import validate
 
     import {{ cookiecutter.project_slug }}
 
-    ballet.util.log.enable(level='DEBUG', echo=False)
-    ballet.validation.main({{ cookiecutter.project_slug }})
+    enable(level='DEBUG', echo=False)
+    validate({{ cookiecutter.project_slug }})
