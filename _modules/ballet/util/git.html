@@ -113,6 +113,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.validation.html">ballet.validation package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.validation.html#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.validation.html#submodules">Submodules</a></li>
 </ul>
 </li>
@@ -251,7 +252,26 @@
 <span class="p">)</span>
 
 
-<div class="viewcode-block" id="PullRequestBuildDiffer"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.PullRequestBuildDiffer">[docs]</a><span class="k">class</span> <span class="nc">PullRequestBuildDiffer</span><span class="p">:</span>
+<div class="viewcode-block" id="Differ"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.Differ">[docs]</a><span class="k">class</span> <span class="nc">Differ</span><span class="p">:</span>
+
+<div class="viewcode-block" id="Differ.diff"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.Differ.diff">[docs]</a>    <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_diff_endpoints</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">a</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">b</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_diff_endpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="CustomDiffer"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.CustomDiffer">[docs]</a><span class="k">class</span> <span class="nc">CustomDiffer</span><span class="p">(</span><span class="n">Differ</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endpoints</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">endpoints</span> <span class="o">=</span> <span class="n">endpoints</span>
+
+    <span class="k">def</span> <span class="nf">_get_diff_endpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">endpoints</span></div>
+
+
+<div class="viewcode-block" id="PullRequestBuildDiffer"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.PullRequestBuildDiffer">[docs]</a><span class="k">class</span> <span class="nc">PullRequestBuildDiffer</span><span class="p">(</span><span class="n">Differ</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Diff files from this pull request against a comparison ref</span>
 
 <span class="sd">    Args:</span>
@@ -264,14 +284,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">repo</span> <span class="o">=</span> <span class="n">repo</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_environment</span><span class="p">()</span>
 
-<div class="viewcode-block" id="PullRequestBuildDiffer.diff"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.PullRequestBuildDiffer.diff">[docs]</a>    <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_diff_endpoints</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">a</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">b</span><span class="p">)</span></div>
-
     <span class="k">def</span> <span class="nf">_check_environment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-
-    <span class="k">def</span> <span class="nf">_get_diff_endpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 

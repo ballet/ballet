@@ -113,6 +113,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.validation.html">ballet.validation package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.validation.html#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.validation.html#submodules">Submodules</a></li>
 </ul>
 </li>
@@ -331,6 +332,18 @@
 
 
 <div class="viewcode-block" id="TravisPullRequestBuildDiffer"><a class="viewcode-back" href="../../../api/ballet.util.ci.html#ballet.util.ci.TravisPullRequestBuildDiffer">[docs]</a><span class="k">class</span> <span class="nc">TravisPullRequestBuildDiffer</span><span class="p">(</span><span class="n">PullRequestBuildDiffer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Differ from within Travis test environment</span>
+
+<span class="sd">    Requires several environment variables set by Travis to work properly:</span>
+<span class="sd">        - TRAVIS_BUILD_DIR, to detect the git repo</span>
+<span class="sd">        - TRAVIS_PULL_REQUEST, to determine whether the build is on a pull</span>
+<span class="sd">            request</span>
+<span class="sd">        - TRAVIS_COMMIT_RANGE, to determine which commits to diff.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        pr_num (int or str): pull request number</span>
+<span class="sd">        repo (git.Repo): repo object for the project</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">EXPECTED_TRAVIS_ENV_VARS</span> <span class="o">=</span> <span class="p">(</span>
         <span class="c1"># &#39;TRAVIS_BRANCH&#39;,</span>

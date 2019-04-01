@@ -115,6 +115,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.validation.html">ballet.validation package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ballet.validation.html#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ballet.validation.html#submodules">Submodules</a></li>
 </ul>
 </li>
@@ -255,7 +256,7 @@ will fail.</p></li>
 </dl>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">modname</span> <span class="o">=</span> <span class="s1">&#39;foo.bar.baz&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">modpath</span> <span class="o">=</span> <span class="s1">&#39;/home/user/foo/bar/baz.py</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">modpath</span> <span class="o">=</span> <span class="s1">&#39;/home/user/foo/bar/baz.py&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">import_module_at_path</span><span class="p">(</span><span class="n">modname</span><span class="p">,</span> <span class="n">modpath</span><span class="p">)</span>
 <span class="go">&lt;module &#39;foo.bar.baz&#39; from &#39;/home/user/foo/bar/baz.py&#39;&gt;</span>
 </pre></div>
@@ -286,6 +287,14 @@ will fail.</p></li>
 <dd><p>Convert module name to relative path.</p>
 <p>The project root is usually needed to detect if the module is a package, in
 which case the relevant file is the <cite>__init__.py</cite> within the subdirectory.</p>
+<p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">modname_to_relpath</span><span class="p">(</span><span class="s1">&#39;foo.features&#39;</span><span class="p">)</span>
+<span class="go">&#39;foo/features.py&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">modname_to_relpath</span><span class="p">(</span><span class="s1">&#39;foo.features&#39;</span><span class="p">,</span>
+<span class="go">                       project_root=&#39;/path/to/project&#39;)</span>
+<span class="go">&#39;foo/features/__init__.py&#39;</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -295,15 +304,10 @@ which case the relevant file is the <cite>__init__.py</cite> within the subdirec
 that are packages. Defaults to True</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>str</p>
+</dd>
 </dl>
-<p class="rubric">Example</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">modname_to_relpath</span><span class="p">(</span><span class="s1">&#39;foo.features&#39;</span><span class="p">)</span>
-<span class="go">&#39;foo/features.py&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">modname_to_relpath</span><span class="p">(</span><span class="s1">&#39;foo.features&#39;</span><span class="p">,</span>
-<span class="go">                       project_root=&#39;/path/to/project&#39;)</span>
-<span class="go">&#39;foo/features/__init__.py&#39;</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="function">

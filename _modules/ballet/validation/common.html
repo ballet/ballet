@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.validation.project_structure &mdash; ballet 0.5.3-dev documentation</title>
+  <title>ballet.validation.common &mdash; ballet 0.5.3-dev documentation</title>
   
 
   
@@ -113,6 +113,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.validation.html">ballet.validation package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.validation.html#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.validation.html#submodules">Submodules</a></li>
 </ul>
 </li>
@@ -210,9 +211,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-          <li><a href="../validation.html">ballet.validation</a> &raquo;</li>
-        
-      <li>ballet.validation.project_structure</li>
+      <li>ballet.validation.common</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -227,21 +226,83 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for ballet.validation.project_structure</h1><div class="highlight"><pre>
+  <h1>Source code for ballet.validation.common</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
 
-<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">collecting</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> <span class="n">post_processing</span>
+<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">collecting</span><span class="p">,</span> <span class="n">complement</span><span class="p">,</span> <span class="n">lfilter</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> <span class="n">post_processing</span>
 
 <span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="k">import</span> <span class="n">pathlib</span>
-<span class="kn">from</span> <span class="nn">ballet.contrib</span> <span class="k">import</span> <span class="n">_get_contrib_features</span>
-<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">make_plural_suffix</span>
+<span class="kn">from</span> <span class="nn">ballet.contrib</span> <span class="k">import</span> <span class="n">_get_contrib_feature_from_module</span>
+<span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">BalletError</span>
+<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">make_plural_suffix</span><span class="p">,</span> <span class="n">one_or_raise</span><span class="p">,</span> <span class="n">whether_failures</span>
 <span class="kn">from</span> <span class="nn">ballet.util.ci</span> <span class="k">import</span> <span class="n">TravisPullRequestBuildDiffer</span><span class="p">,</span> <span class="n">can_use_travis_differ</span>
 <span class="kn">from</span> <span class="nn">ballet.util.git</span> <span class="k">import</span> <span class="n">LocalPullRequestBuildDiffer</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span><span class="p">,</span> <span class="n">stacklog</span>
 <span class="kn">from</span> <span class="nn">ballet.util.mod</span> <span class="k">import</span> <span class="n">import_module_at_path</span><span class="p">,</span> <span class="n">relpath_to_modname</span>
-<span class="kn">from</span> <span class="nn">ballet.validation.base</span> <span class="k">import</span> <span class="n">BaseValidator</span><span class="p">,</span> <span class="n">check_from_class</span>
-<span class="kn">from</span> <span class="nn">ballet.validation.diff_checks</span> <span class="k">import</span> <span class="n">DiffCheck</span>
-<span class="kn">from</span> <span class="nn">ballet.validation.feature_api_checks</span> <span class="k">import</span> <span class="n">FeatureApiCheck</span>
+<span class="kn">from</span> <span class="nn">ballet.validation.project_structure.checks</span> <span class="k">import</span> <span class="n">ProjectStructureCheck</span>
+
+
+<div class="viewcode-block" id="get_proposed_feature"><a class="viewcode-back" href="../../../api/ballet.validation.common.html#ballet.validation.common.get_proposed_feature">[docs]</a><span class="k">def</span> <span class="nf">get_proposed_feature</span><span class="p">(</span><span class="n">project</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get the proposed feature</span>
+
+<span class="sd">    The path of the proposed feature is determined by diffing the project</span>
+<span class="sd">    against a comparison branch, such as master. The feature is then imported</span>
+<span class="sd">    from that path and returned.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        project (ballet.project.Project): project info</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ballet.exc.BalletError: more than one feature collected</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">change_collector</span> <span class="o">=</span> <span class="n">ChangeCollector</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
+    <span class="n">collected_changes</span> <span class="o">=</span> <span class="n">change_collector</span><span class="o">.</span><span class="n">collect_changes</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">new_feature_info</span> <span class="o">=</span> <span class="n">one_or_raise</span><span class="p">(</span><span class="n">collected_changes</span><span class="o">.</span><span class="n">new_feature_info</span><span class="p">)</span>
+        <span class="n">importer</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">new_feature_info</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">BalletError</span><span class="p">(</span><span class="s1">&#39;Too many features collected&#39;</span><span class="p">)</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">importer</span><span class="p">()</span>
+    <span class="n">feature</span> <span class="o">=</span> <span class="n">_get_contrib_feature_from_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">feature</span></div>
+
+
+<div class="viewcode-block" id="get_accepted_features"><a class="viewcode-back" href="../../../api/ballet.validation.common.html#ballet.validation.common.get_accepted_features">[docs]</a><span class="k">def</span> <span class="nf">get_accepted_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">proposed_feature</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Deselect candidate features from list of all features</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        features (List[Feature]): collection of all features in the ballet</span>
+<span class="sd">            project: both accepted features and candidate ones that have not</span>
+<span class="sd">            been accepted</span>
+<span class="sd">        proposed_feature (Feature): candidate feature that has not been</span>
+<span class="sd">            accepted</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[Feature]: list of features with the proposed feature not in it.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ballet.exc.BalletError: Could not deselect exactly the proposed</span>
+<span class="sd">            feature.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">eq</span><span class="p">(</span><span class="n">feature</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Features are equal if they have the same source</span>
+
+<span class="sd">        At least in this implementation...</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">feature</span><span class="o">.</span><span class="n">source</span> <span class="o">==</span> <span class="n">proposed_feature</span><span class="o">.</span><span class="n">source</span>
+
+    <span class="c1"># deselect features that match the proposed feature</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">(</span><span class="n">complement</span><span class="p">(</span><span class="n">eq</span><span class="p">),</span> <span class="n">features</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">result</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">BalletError</span><span class="p">(</span>
+            <span class="s1">&#39;Did not find match for proposed feature within </span><span class="se">\&#39;</span><span class="s1">contrib</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">BalletError</span><span class="p">(</span>
+            <span class="s1">&#39;Unexpected condition (n_features=</span><span class="si">{}</span><span class="s1">, n_result=</span><span class="si">{}</span><span class="s1">)&#39;</span>
+            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)))</span></div>
 
 
 <span class="k">def</span> <span class="nf">_log_collect_items</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
@@ -257,27 +318,29 @@
     <span class="s1">&#39;new_feature_info&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="ChangeCollector"><a class="viewcode-back" href="../../../api/ballet.validation.project_structure.html#ballet.validation.project_structure.ChangeCollector">[docs]</a><span class="k">class</span> <span class="nc">ChangeCollector</span><span class="p">:</span>
+<div class="viewcode-block" id="ChangeCollector"><a class="viewcode-back" href="../../../api/ballet.validation.common.html#ballet.validation.common.ChangeCollector">[docs]</a><span class="k">class</span> <span class="nc">ChangeCollector</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Validate the features introduced in a proposed pull request.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        repo (git.Repo): project repo</span>
-<span class="sd">        pr_num (int, str): Pull request number</span>
-<span class="sd">        contrib_module_path (str): Relative path to contrib module</span>
+<span class="sd">        project (ballet.project.Project): project info</span>
+<span class="sd">        differ (ballet.util.git.Differ, optional): specific differ to use;</span>
+<span class="sd">            if not provided, will be determined automatically from the</span>
+<span class="sd">            environment</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project</span><span class="p">,</span> <span class="n">differ</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">project</span> <span class="o">=</span> <span class="n">project</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">repo</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">repo</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">pr_num</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">contrib_module_path</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">contrib_module_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">differ</span> <span class="o">=</span> <span class="n">differ</span>
 
-        <span class="k">if</span> <span class="n">can_use_travis_differ</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">differ</span> <span class="o">=</span> <span class="n">TravisPullRequestBuildDiffer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">differ</span> <span class="o">=</span> <span class="n">LocalPullRequestBuildDiffer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">differ</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pr_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">pr_num</span>
+            <span class="k">if</span> <span class="n">can_use_travis_differ</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">differ</span> <span class="o">=</span> <span class="n">TravisPullRequestBuildDiffer</span><span class="p">(</span><span class="n">pr_num</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">repo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">repo</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">differ</span> <span class="o">=</span> <span class="n">LocalPullRequestBuildDiffer</span><span class="p">(</span><span class="n">pr_num</span><span class="p">,</span> <span class="n">repo</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ChangeCollector.collect_changes"><a class="viewcode-back" href="../../../api/ballet.validation.project_structure.html#ballet.validation.project_structure.ChangeCollector.collect_changes">[docs]</a>    <span class="k">def</span> <span class="nf">collect_changes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ChangeCollector.collect_changes"><a class="viewcode-back" href="../../../api/ballet.validation.common.html#ballet.validation.common.ChangeCollector.collect_changes">[docs]</a>    <span class="k">def</span> <span class="nf">collect_changes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Collect file and feature changes</span>
 
 <span class="sd">        Steps</span>
@@ -287,6 +350,9 @@
 <span class="sd">           changes. Admissible file changes solely contribute python files to</span>
 <span class="sd">           the contrib subdirectory.</span>
 <span class="sd">        3. Collect features from admissible new files.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            CollectedChanges</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">file_diffs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collect_file_diffs</span><span class="p">()</span>
@@ -319,7 +385,7 @@
 
         <span class="k">for</span> <span class="n">diff</span> <span class="ow">in</span> <span class="n">file_diffs</span><span class="p">:</span>
             <span class="n">valid</span><span class="p">,</span> <span class="n">failures</span> <span class="o">=</span> <span class="n">check_from_class</span><span class="p">(</span>
-                <span class="n">DiffCheck</span><span class="p">,</span> <span class="n">diff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">)</span>
+                <span class="n">ProjectStructureCheck</span><span class="p">,</span> <span class="n">diff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">valid</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">b_path</span><span class="p">)</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;__init__.py&#39;</span><span class="p">:</span>
                     <span class="n">candidate_feature_diffs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span>
@@ -366,7 +432,7 @@
 <span class="sd">            List[Tuple]: list of tuple of importer, module name, and module</span>
 <span class="sd">                path. The &quot;importer&quot; is a callable that returns a module</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">project_root</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="o">.</span><span class="n">working_tree_dir</span><span class="p">)</span>
+        <span class="n">project_root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">path</span>
         <span class="k">for</span> <span class="n">diff</span> <span class="ow">in</span> <span class="n">candidate_feature_diffs</span><span class="p">:</span>
             <span class="n">path</span> <span class="o">=</span> <span class="n">diff</span><span class="o">.</span><span class="n">b_path</span>
             <span class="n">modname</span> <span class="o">=</span> <span class="n">relpath_to_modname</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
@@ -375,70 +441,18 @@
             <span class="k">yield</span> <span class="n">importer</span><span class="p">,</span> <span class="n">modname</span><span class="p">,</span> <span class="n">modpath</span></div>
 
 
-<div class="viewcode-block" id="FileChangeValidator"><a class="viewcode-back" href="../../../api/ballet.validation.project_structure.html#ballet.validation.project_structure.FileChangeValidator">[docs]</a><span class="k">class</span> <span class="nc">FileChangeValidator</span><span class="p">(</span><span class="n">BaseValidator</span><span class="p">):</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">change_collector</span> <span class="o">=</span> <span class="n">ChangeCollector</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
-
-<div class="viewcode-block" id="FileChangeValidator.validate"><a class="viewcode-back" href="../../../api/ballet.validation.project_structure.html#ballet.validation.project_structure.FileChangeValidator.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">collected_changes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">change_collector</span><span class="o">.</span><span class="n">collect_changes</span><span class="p">()</span>
-        <span class="k">return</span> <span class="ow">not</span> <span class="n">collected_changes</span><span class="o">.</span><span class="n">inadmissible_diffs</span></div></div>
-
-
-<div class="viewcode-block" id="subsample_data_for_validation"><a class="viewcode-back" href="../../../api/ballet.validation.project_structure.html#ballet.validation.project_structure.subsample_data_for_validation">[docs]</a><span class="k">def</span> <span class="nf">subsample_data_for_validation</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<div class="viewcode-block" id="subsample_data_for_validation"><a class="viewcode-back" href="../../../api/ballet.validation.common.html#ballet.validation.common.subsample_data_for_validation">[docs]</a><span class="k">def</span> <span class="nf">subsample_data_for_validation</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span></div>
 
 
-<div class="viewcode-block" id="FeatureApiValidator"><a class="viewcode-back" href="../../../api/ballet.validation.project_structure.html#ballet.validation.project_structure.FeatureApiValidator">[docs]</a><span class="k">class</span> <span class="nc">FeatureApiValidator</span><span class="p">(</span><span class="n">BaseValidator</span><span class="p">):</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">change_collector</span> <span class="o">=</span> <span class="n">ChangeCollector</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
-
-        <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">load_data</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">subsample_data_for_validation</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-
-<div class="viewcode-block" id="FeatureApiValidator.validate"><a class="viewcode-back" href="../../../api/ballet.validation.project_structure.html#ballet.validation.project_structure.FeatureApiValidator.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Collect and validate all new features&quot;&quot;&quot;</span>
-
-        <span class="n">collected_changes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">change_collector</span><span class="o">.</span><span class="n">collect_changes</span><span class="p">()</span>
-
-        <span class="k">for</span> <span class="n">importer</span><span class="p">,</span> <span class="n">modname</span><span class="p">,</span> <span class="n">modpath</span> <span class="ow">in</span> <span class="n">collected_changes</span><span class="o">.</span><span class="n">new_feature_info</span><span class="p">:</span>
-            <span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">imported_okay</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">mod</span> <span class="o">=</span> <span class="n">importer</span><span class="p">()</span>
-                <span class="n">features</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_get_contrib_features</span><span class="p">(</span><span class="n">mod</span><span class="p">))</span>
-            <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">SyntaxError</span><span class="p">):</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                    <span class="s1">&#39;Validation failure: failed to import module at </span><span class="si">{}</span><span class="s1">&#39;</span>
-                    <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modpath</span><span class="p">))</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Exception details: &#39;</span><span class="p">)</span>
-                <span class="n">imported_okay</span> <span class="o">=</span> <span class="kc">False</span>
-
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">imported_okay</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">False</span>
-
-            <span class="c1"># if no features were added at all, reject</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">features</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Failed to collect any new features.&#39;</span><span class="p">)</span>
-                <span class="k">return</span> <span class="kc">False</span>
-
-            <span class="n">result</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
-                <span class="n">valid</span><span class="p">,</span> <span class="n">failures</span> <span class="o">=</span> <span class="n">check_from_class</span><span class="p">(</span>
-                    <span class="n">FeatureApiCheck</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">valid</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                        <span class="s1">&#39;Feature </span><span class="si">{feature!r}</span><span class="s1"> is valid&#39;</span>
-                        <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feature</span><span class="o">=</span><span class="n">feature</span><span class="p">))</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                        <span class="s1">&#39;Feature </span><span class="si">{feature!r}</span><span class="s1"> is NOT valid; &#39;</span>
-                        <span class="s1">&#39;failures were </span><span class="si">{failures}</span><span class="s1">&#39;</span>
-                        <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feature</span><span class="o">=</span><span class="n">feature</span><span class="p">,</span> <span class="n">failures</span><span class="o">=</span><span class="n">failures</span><span class="p">))</span>
-                    <span class="n">result</span> <span class="o">=</span> <span class="kc">False</span>
-
-            <span class="k">return</span> <span class="n">result</span></div></div>
+<div class="viewcode-block" id="check_from_class"><a class="viewcode-back" href="../../../api/ballet.validation.common.html#ballet.validation.common.check_from_class">[docs]</a><span class="nd">@whether_failures</span>
+<span class="k">def</span> <span class="nf">check_from_class</span><span class="p">(</span><span class="n">check_class</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="o">*</span><span class="n">checker_args</span><span class="p">,</span> <span class="o">**</span><span class="n">checker_kwargs</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">Checker</span> <span class="ow">in</span> <span class="n">check_class</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">():</span>
+        <span class="n">check</span> <span class="o">=</span> <span class="n">Checker</span><span class="p">(</span><span class="o">*</span><span class="n">checker_args</span><span class="p">,</span> <span class="o">**</span><span class="n">checker_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">do_check</span>
+        <span class="n">success</span> <span class="o">=</span> <span class="n">check</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">Checker</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="k">yield</span> <span class="n">name</span></div>
 </pre></div>
 
            </div>

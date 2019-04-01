@@ -115,6 +115,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.validation.html">ballet.validation package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ballet.validation.html#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ballet.validation.html#submodules">Submodules</a></li>
 </ul>
 </li>
@@ -241,6 +242,27 @@
 <dt id="ballet.util.ci.TravisPullRequestBuildDiffer">
 <em class="property">class </em><code class="descclassname">ballet.util.ci.</code><code class="descname">TravisPullRequestBuildDiffer</code><span class="sig-paren">(</span><em>pr_num</em>, <em>repo=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/ci.html#TravisPullRequestBuildDiffer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.ci.TravisPullRequestBuildDiffer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="ballet.util.git.html#ballet.util.git.PullRequestBuildDiffer" title="ballet.util.git.PullRequestBuildDiffer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.util.git.PullRequestBuildDiffer</span></code></a></p>
+<p>Differ from within Travis test environment</p>
+<dl class="simple">
+<dt>Requires several environment variables set by Travis to work properly:</dt><dd><ul class="simple">
+<li><p>TRAVIS_BUILD_DIR, to detect the git repo</p></li>
+<li><dl class="simple">
+<dt>TRAVIS_PULL_REQUEST, to determine whether the build is on a pull</dt><dd><p>request</p>
+</dd>
+</dl>
+</li>
+<li><p>TRAVIS_COMMIT_RANGE, to determine which commits to diff.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pr_num</strong> (<em>int</em><em> or </em><em>str</em>) – pull request number</p></li>
+<li><p><strong>repo</strong> (<em>git.Repo</em>) – repo object for the project</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="attribute">
 <dt id="ballet.util.ci.TravisPullRequestBuildDiffer.EXPECTED_TRAVIS_ENV_VARS">
 <code class="descname">EXPECTED_TRAVIS_ENV_VARS</code><em class="property"> = ('TRAVIS_BUILD_DIR', 'TRAVIS_PULL_REQUEST', 'TRAVIS_COMMIT_RANGE')</em><a class="headerlink" href="#ballet.util.ci.TravisPullRequestBuildDiffer.EXPECTED_TRAVIS_ENV_VARS" title="Permalink to this definition">¶</a></dt>

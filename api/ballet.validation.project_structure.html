@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.validation.project_structure module &mdash; ballet 0.5.3-dev documentation</title>
+  <title>ballet.validation.project_structure package &mdash; ballet 0.5.3-dev documentation</title>
   
 
   
@@ -35,8 +35,8 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="ballet.cli module" href="ballet.cli.html" />
-    <link rel="prev" title="ballet.validation.gfssf_validator module" href="ballet.validation.gfssf_validator.html" /> 
+    <link rel="next" title="ballet.validation.project_structure.checks module" href="ballet.validation.project_structure.checks.html" />
+    <link rel="prev" title="ballet.validation.feature_pruning.validator module" href="ballet.validation.feature_pruning.validator.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -115,7 +115,8 @@
 </ul>
 </li>
 <li class="toctree-l3 current"><a class="reference internal" href="ballet.validation.html">ballet.validation package</a><ul class="current">
-<li class="toctree-l4 current"><a class="reference internal" href="ballet.validation.html#submodules">Submodules</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="ballet.validation.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ballet.validation.html#submodules">Submodules</a></li>
 </ul>
 </li>
 </ul>
@@ -214,7 +215,7 @@
         
           <li><a href="ballet.validation.html">ballet.validation package</a> &raquo;</li>
         
-      <li>ballet.validation.project_structure module</li>
+      <li>ballet.validation.project_structure package</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -236,113 +237,16 @@
            <div itemprop="articleBody">
             
   <div class="section" id="module-ballet.validation.project_structure">
-<span id="ballet-validation-project-structure-module"></span><h1>ballet.validation.project_structure module<a class="headerlink" href="#module-ballet.validation.project_structure" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="ballet.validation.project_structure.ChangeCollector">
-<em class="property">class </em><code class="descclassname">ballet.validation.project_structure.</code><code class="descname">ChangeCollector</code><span class="sig-paren">(</span><em>project</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/project_structure.html#ChangeCollector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.project_structure.ChangeCollector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Validate the features introduced in a proposed pull request.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>repo</strong> (<em>git.Repo</em>) – project repo</p></li>
-<li><p><strong>pr_num</strong> (<em>int</em><em>, </em><em>str</em>) – Pull request number</p></li>
-<li><p><strong>contrib_module_path</strong> (<em>str</em>) – Relative path to contrib module</p></li>
+<span id="ballet-validation-project-structure-package"></span><h1>ballet.validation.project_structure package<a class="headerlink" href="#module-ballet.validation.project_structure" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ballet.validation.project_structure.checks.html">ballet.validation.project_structure.checks module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ballet.validation.project_structure.validator.html">ballet.validation.project_structure.validator module</a></li>
 </ul>
-</dd>
-</dl>
-<dl class="method">
-<dt id="ballet.validation.project_structure.ChangeCollector.collect_changes">
-<code class="descname">collect_changes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/project_structure.html#ChangeCollector.collect_changes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.project_structure.ChangeCollector.collect_changes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Collect file and feature changes</p>
-<p>Steps
-1. Collects the files that have changed in this pull request as</p>
-<blockquote>
-<div><p>compared to a comparison branch.</p>
-</div></blockquote>
-<ol class="arabic simple" start="2">
-<li><p>Categorize these file changes into admissible or inadmissible file
-changes. Admissible file changes solely contribute python files to
-the contrib subdirectory.</p></li>
-<li><p>Collect features from admissible new files.</p></li>
-</ol>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="ballet.validation.project_structure.CollectedChanges">
-<em class="property">class </em><code class="descclassname">ballet.validation.project_structure.</code><code class="descname">CollectedChanges</code><span class="sig-paren">(</span><em>file_diffs</em>, <em>candidate_feature_diffs</em>, <em>valid_init_diffs</em>, <em>inadmissible_diffs</em>, <em>new_feature_info</em><span class="sig-paren">)</span><a class="headerlink" href="#ballet.validation.project_structure.CollectedChanges" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
-<dl class="attribute">
-<dt id="ballet.validation.project_structure.CollectedChanges.candidate_feature_diffs">
-<code class="descname">candidate_feature_diffs</code><a class="headerlink" href="#ballet.validation.project_structure.CollectedChanges.candidate_feature_diffs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 1</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="ballet.validation.project_structure.CollectedChanges.file_diffs">
-<code class="descname">file_diffs</code><a class="headerlink" href="#ballet.validation.project_structure.CollectedChanges.file_diffs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 0</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="ballet.validation.project_structure.CollectedChanges.inadmissible_diffs">
-<code class="descname">inadmissible_diffs</code><a class="headerlink" href="#ballet.validation.project_structure.CollectedChanges.inadmissible_diffs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 3</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="ballet.validation.project_structure.CollectedChanges.new_feature_info">
-<code class="descname">new_feature_info</code><a class="headerlink" href="#ballet.validation.project_structure.CollectedChanges.new_feature_info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 4</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="ballet.validation.project_structure.CollectedChanges.valid_init_diffs">
-<code class="descname">valid_init_diffs</code><a class="headerlink" href="#ballet.validation.project_structure.CollectedChanges.valid_init_diffs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 2</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="ballet.validation.project_structure.FeatureApiValidator">
-<em class="property">class </em><code class="descclassname">ballet.validation.project_structure.</code><code class="descname">FeatureApiValidator</code><span class="sig-paren">(</span><em>project</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/project_structure.html#FeatureApiValidator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.project_structure.FeatureApiValidator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="ballet.validation.base.html#ballet.validation.base.BaseValidator" title="ballet.validation.base.BaseValidator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.BaseValidator</span></code></a></p>
-<dl class="method">
-<dt id="ballet.validation.project_structure.FeatureApiValidator.validate">
-<code class="descname">validate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/project_structure.html#FeatureApiValidator.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.project_structure.FeatureApiValidator.validate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Collect and validate all new features</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="ballet.validation.project_structure.FileChangeValidator">
-<em class="property">class </em><code class="descclassname">ballet.validation.project_structure.</code><code class="descname">FileChangeValidator</code><span class="sig-paren">(</span><em>project</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/project_structure.html#FileChangeValidator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.project_structure.FileChangeValidator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="ballet.validation.base.html#ballet.validation.base.BaseValidator" title="ballet.validation.base.BaseValidator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.BaseValidator</span></code></a></p>
-<dl class="method">
-<dt id="ballet.validation.project_structure.FileChangeValidator.validate">
-<code class="descname">validate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/project_structure.html#FileChangeValidator.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.project_structure.FileChangeValidator.validate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate something</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>validation succeeded</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="ballet.validation.project_structure.subsample_data_for_validation">
-<code class="descclassname">ballet.validation.project_structure.</code><code class="descname">subsample_data_for_validation</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/project_structure.html#subsample_data_for_validation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.project_structure.subsample_data_for_validation" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+</div>
+</div>
 </div>
 
 
@@ -353,10 +257,10 @@ the contrib subdirectory.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="ballet.cli.html" class="btn btn-neutral float-right" title="ballet.cli module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="ballet.validation.project_structure.checks.html" class="btn btn-neutral float-right" title="ballet.validation.project_structure.checks module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="ballet.validation.gfssf_validator.html" class="btn btn-neutral float-left" title="ballet.validation.gfssf_validator module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="ballet.validation.feature_pruning.validator.html" class="btn btn-neutral float-left" title="ballet.validation.feature_pruning.validator module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

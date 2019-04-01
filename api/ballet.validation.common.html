@@ -1,0 +1,421 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ballet.validation.common module &mdash; ballet 0.5.3-dev documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ballet.validation.entropy module" href="ballet.validation.entropy.html" />
+    <link rel="prev" title="ballet.validation.base module" href="ballet.validation.base.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> ballet
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../readme.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../readme.html#reference">Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#stable-release">Stable release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#from-source">From source</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html#ballet-projects">Ballet projects</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#project-instantiation">Project instantiation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#developing-new-features">Developing new features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage.html#validating-features">Validating features</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced Usage</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="ballet.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="ballet.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="ballet.eng.html">ballet.eng package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ballet.eng.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.modeling.html">ballet.modeling package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ballet.modeling.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.util.html">ballet.util package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ballet.util.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="reference internal" href="ballet.validation.html">ballet.validation package</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="ballet.validation.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="ballet.validation.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ballet.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ballet.cli.html">ballet.cli module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.compat.html">ballet.compat module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.contrib.html">ballet.contrib module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.exc.html">ballet.exc module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.feature.html">ballet.feature module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.modeler.html">ballet.modeler module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.project.html">ballet.project module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.templating.html">ballet.templating module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.update.html">ballet.update module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Development Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#types-of-contributions">Types of Contributions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#report-bugs">Report Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#fix-bugs">Fix Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#implement-features">Implement Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#write-documentation">Write Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#submit-feedback">Submit Feedback</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#get-started">Get Started!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#pull-request-guidelines">Pull Request Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#tips">Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#deploying">Deploying</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../authors.html">Credits</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../authors.html#development-lead">Development Lead</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../authors.html#contributors">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">History</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id1">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id2">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id3">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id4">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id5">0.1</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ballet</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="ballet.html">ballet package</a> &raquo;</li>
+        
+          <li><a href="ballet.validation.html">ballet.validation package</a> &raquo;</li>
+        
+      <li>ballet.validation.common module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/HDI-Project/ballet/blob/master/docs/api/ballet.validation.common.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-ballet.validation.common">
+<span id="ballet-validation-common-module"></span><h1>ballet.validation.common module<a class="headerlink" href="#module-ballet.validation.common" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="ballet.validation.common.ChangeCollector">
+<em class="property">class </em><code class="descclassname">ballet.validation.common.</code><code class="descname">ChangeCollector</code><span class="sig-paren">(</span><em>project</em>, <em>differ=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/common.html#ChangeCollector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.common.ChangeCollector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Validate the features introduced in a proposed pull request.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>project</strong> (<a class="reference internal" href="ballet.project.html#ballet.project.Project" title="ballet.project.Project"><em>ballet.project.Project</em></a>) – project info</p></li>
+<li><p><strong>differ</strong> (<a class="reference internal" href="ballet.util.git.html#ballet.util.git.Differ" title="ballet.util.git.Differ"><em>ballet.util.git.Differ</em></a><em>, </em><em>optional</em>) – specific differ to use;
+if not provided, will be determined automatically from the
+environment</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="ballet.validation.common.ChangeCollector.collect_changes">
+<code class="descname">collect_changes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/common.html#ChangeCollector.collect_changes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.common.ChangeCollector.collect_changes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collect file and feature changes</p>
+<p>Steps
+1. Collects the files that have changed in this pull request as</p>
+<blockquote>
+<div><p>compared to a comparison branch.</p>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>Categorize these file changes into admissible or inadmissible file
+changes. Admissible file changes solely contribute python files to
+the contrib subdirectory.</p></li>
+<li><p>Collect features from admissible new files.</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>CollectedChanges</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ballet.validation.common.CollectedChanges">
+<em class="property">class </em><code class="descclassname">ballet.validation.common.</code><code class="descname">CollectedChanges</code><span class="sig-paren">(</span><em>file_diffs</em>, <em>candidate_feature_diffs</em>, <em>valid_init_diffs</em>, <em>inadmissible_diffs</em>, <em>new_feature_info</em><span class="sig-paren">)</span><a class="headerlink" href="#ballet.validation.common.CollectedChanges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="attribute">
+<dt id="ballet.validation.common.CollectedChanges.candidate_feature_diffs">
+<code class="descname">candidate_feature_diffs</code><a class="headerlink" href="#ballet.validation.common.CollectedChanges.candidate_feature_diffs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ballet.validation.common.CollectedChanges.file_diffs">
+<code class="descname">file_diffs</code><a class="headerlink" href="#ballet.validation.common.CollectedChanges.file_diffs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ballet.validation.common.CollectedChanges.inadmissible_diffs">
+<code class="descname">inadmissible_diffs</code><a class="headerlink" href="#ballet.validation.common.CollectedChanges.inadmissible_diffs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ballet.validation.common.CollectedChanges.new_feature_info">
+<code class="descname">new_feature_info</code><a class="headerlink" href="#ballet.validation.common.CollectedChanges.new_feature_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ballet.validation.common.CollectedChanges.valid_init_diffs">
+<code class="descname">valid_init_diffs</code><a class="headerlink" href="#ballet.validation.common.CollectedChanges.valid_init_diffs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="ballet.validation.common.check_from_class">
+<code class="descclassname">ballet.validation.common.</code><code class="descname">check_from_class</code><span class="sig-paren">(</span><em>check_class</em>, <em>obj</em>, <em>*checker_args</em>, <em>**checker_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/common.html#check_from_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.common.check_from_class" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ballet.validation.common.get_accepted_features">
+<code class="descclassname">ballet.validation.common.</code><code class="descname">get_accepted_features</code><span class="sig-paren">(</span><em>features</em>, <em>proposed_feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/common.html#get_accepted_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.common.get_accepted_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deselect candidate features from list of all features</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>features</strong> (<em>List</em><em>[</em><a class="reference internal" href="ballet.feature.html#ballet.feature.Feature" title="ballet.feature.Feature"><em>Feature</em></a><em>]</em>) – collection of all features in the ballet
+project: both accepted features and candidate ones that have not
+been accepted</p></li>
+<li><p><strong>proposed_feature</strong> (<a class="reference internal" href="ballet.feature.html#ballet.feature.Feature" title="ballet.feature.Feature"><em>Feature</em></a>) – candidate feature that has not been
+accepted</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of features with the proposed feature not in it.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="ballet.feature.html#ballet.feature.Feature" title="ballet.feature.Feature">Feature</a>]</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="ballet.exc.html#ballet.exc.BalletError" title="ballet.exc.BalletError"><strong>ballet.exc.BalletError</strong></a> – Could not deselect exactly the proposed
+    feature.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ballet.validation.common.get_proposed_feature">
+<code class="descclassname">ballet.validation.common.</code><code class="descname">get_proposed_feature</code><span class="sig-paren">(</span><em>project</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/common.html#get_proposed_feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.common.get_proposed_feature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the proposed feature</p>
+<p>The path of the proposed feature is determined by diffing the project
+against a comparison branch, such as master. The feature is then imported
+from that path and returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>project</strong> (<a class="reference internal" href="ballet.project.html#ballet.project.Project" title="ballet.project.Project"><em>ballet.project.Project</em></a>) – project info</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="ballet.exc.html#ballet.exc.BalletError" title="ballet.exc.BalletError"><strong>ballet.exc.BalletError</strong></a> – more than one feature collected</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ballet.validation.common.subsample_data_for_validation">
+<code class="descclassname">ballet.validation.common.</code><code class="descname">subsample_data_for_validation</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/common.html#subsample_data_for_validation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.common.subsample_data_for_validation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ballet.validation.entropy.html" class="btn btn-neutral float-right" title="ballet.validation.entropy module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ballet.validation.base.html" class="btn btn-neutral float-left" title="ballet.validation.base module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Micah Smith
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
