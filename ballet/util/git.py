@@ -3,6 +3,7 @@ import re
 import git
 import requests
 from funcy import collecting, re_find, re_test, silent
+
 from ballet.compat import pathlib, safepath
 from ballet.util import one_or_raise
 
