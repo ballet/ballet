@@ -104,11 +104,10 @@ class ChangeCollector:
         self.differ = differ
 
         if self.differ is None:
+            pr_num = self.project.pr_num
             if can_use_travis_differ():
-                pr_num = str(self.project.pr_num)
                 self.differ = TravisPullRequestBuildDiffer(pr_num)
             else:
-                pr_num = str(self.project.pr_num)
                 repo = self.project.repo
                 self.differ = LocalPullRequestBuildDiffer(pr_num, repo)
 
