@@ -3,7 +3,7 @@ from copy import deepcopy
 
 import dill as pickle
 import numpy as np
-from funcy import all_fn, isa, iterable
+from funcy import all, all_fn, isa, iterable
 
 from ballet.feature import Feature
 from ballet.validation.base import BaseCheck
@@ -36,7 +36,7 @@ class HasCorrectInputTypeCheck(FeatureApiCheck):
         input = feature.input
         is_str = isa(str)
         is_nested_str = all_fn(
-            iterable, lambda x: all(map(is_str, x)))
+            iterable, lambda x: all(is_str, x))
         assert is_str(input) or is_nested_str(input)
 
 

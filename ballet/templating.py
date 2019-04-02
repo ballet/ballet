@@ -7,7 +7,7 @@ from ballet.compat import PathLike, pathlib
 from ballet.project import Project
 from ballet.util.fs import synctree
 from ballet.util.log import logger
-from ballet.validation.diff_checks import (
+from ballet.validation.project_structure.checks import (
     FEATURE_MODULE_NAME_REGEX, SUBPACKAGE_NAME_REGEX)
 
 TEMPLATES_PATH = pathlib.Path(__file__).resolve().parent.joinpath('templates')

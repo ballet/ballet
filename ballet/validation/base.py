@@ -2,8 +2,6 @@ from abc import ABCMeta, abstractmethod
 
 from funcy import constantly, ignore, post_processing
 
-from ballet.util import whether_failures
-
 
 class BaseValidator(metaclass=ABCMeta):
     """Base class for a generic validator"""
@@ -63,13 +61,3 @@ class BaseCheck(metaclass=ABCMeta):
     @abstractmethod
     def check(self, obj):
         pass
-
-
-@whether_failures
-def check_from_class(check_class, obj, *checker_args, **checker_kwargs):
-    for Checker in check_class.__subclasses__():
-        check = Checker(*checker_args, **checker_kwargs).do_check
-        name = Checker.__name__
-        success = check(obj)
-        if not success:
-            yield name

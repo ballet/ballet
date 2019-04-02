@@ -4,9 +4,12 @@ import numpy as np
 import pandas as pd
 from funcy import contextmanager
 
+from ballet.compat import pathlib
 from ballet.util.git import make_commit_range
-from ballet.validation.project_structure import (
-    ChangeCollector, FeatureApiValidator, FileChangeValidator)
+from ballet.validation.common import ChangeCollector
+from ballet.validation.feature_api.validator import FeatureApiValidator
+from ballet.validation.project_structure.validator import (
+    ProjectStructureValidator)
 
 from ..util import make_mock_commit, mock_repo
 
@@ -27,15 +30,16 @@ class SampleDataMixin:
         super().setUp()
 
 
-def make_mock_project(repo, pr_num, contrib_module_path):
+def make_mock_project(repo, pr_num, path, contrib_module_path):
     project = Mock(repo=repo,
-                   pr_num=pr_num,
+                   pr_num=str(pr_num),
+                   path=pathlib.Path(path),
                    contrib_module_path=contrib_module_path)
     return project
 
 
 @contextmanager
-def mock_project(path_content):
+def mock_project_content(path_content):
     with mock_repo() as repo:
         for path, content in path_content:
             make_mock_commit(repo, path=path, content=content)
@@ -55,7 +59,9 @@ def null_change_collector(pr_num):
         }
 
         with patch.dict('os.environ', travis_env_vars, clear=True):
-            project = make_mock_project(repo, pr_num, contrib_module_path)
+            project_path = repo.working_tree_dir
+            project = make_mock_project(repo, pr_num, project_path,
+                                        contrib_module_path)
             yield ChangeCollector(project)
 
 
@@ -63,12 +69,12 @@ def null_change_collector(pr_num):
 def mock_file_change_validator(
     path_content, pr_num, contrib_module_path
 ):
-    """FileChangeValidator for mock repo and mock project content
+    """ProjectStructureValidator for mock repo and mock project content
 
     Args:
         path_content: iterable of (relative path, file content)
     """
-    with mock_project(path_content) as repo:
+    with mock_project_content(path_content) as repo:
         travis_build_dir = repo.working_tree_dir
         travis_pull_request = str(pr_num)
         travis_commit_range = '{}...{}'.format(
@@ -81,20 +87,22 @@ def mock_file_change_validator(
         }
 
         with patch.dict('os.environ', travis_env_vars, clear=True):
-            project = make_mock_project(repo, pr_num, contrib_module_path)
-            yield FileChangeValidator(project)
+            project_path = repo.working_tree_dir
+            project = make_mock_project(repo, pr_num, project_path,
+                                        contrib_module_path)
+            yield ProjectStructureValidator(project)
 
 
 @contextmanager
 def mock_feature_api_validator(
     path_content, pr_num, contrib_module_path, X, y
 ):
-    """FileChangeValidator for mock repo and mock project content
+    """ProjectStructureValidator for mock repo and mock project content
 
     Args:
         path_content: iterable of (relative path, file content)
     """
-    with mock_project(path_content) as repo:
+    with mock_project_content(path_content) as repo:
         travis_build_dir = repo.working_tree_dir
         travis_pull_request = str(pr_num)
         travis_commit_range = make_commit_range(
@@ -107,6 +115,8 @@ def mock_feature_api_validator(
         }
 
         with patch.dict('os.environ', travis_env_vars, clear=True):
-            project = make_mock_project(repo, pr_num, contrib_module_path)
+            project_path = repo.working_tree_dir
+            project = make_mock_project(repo, pr_num, project_path,
+                                        contrib_module_path)
             project.load_data.return_value = X, y
             yield FeatureApiValidator(project)
