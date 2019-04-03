@@ -6,7 +6,9 @@ LAMBDA_1_ADJUSTMENT = 32
 LAMBDA_2_ADJUSTMENT = 32
 
 
-def _concat_datasets(dfs_by_src, n_samples=0, omit=[]):
+def _concat_datasets(dfs_by_src, n_samples=0, omit=None):
+    if omit is None:
+        omit = []
     filtered_dfs = [np.array(dfs_by_src[x])
                     for x in dfs_by_src if x not in omit]
     if len(filtered_dfs) == 0:
