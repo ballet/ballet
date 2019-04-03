@@ -77,16 +77,29 @@ class LocalPullRequestBuildDiffer(PullRequestBuildDiffer):
 
 
 class LocalMergeBuildDiffer(Differ):
+    """Diff files on a merge commit on the 
+    current active branch. Merge parent order is guaranteed
+    such that parent 1 is HEAD and parent 2 is topic[1]
+
+    Attributes:
+        repo (git.Repo): The repository to check the merge diff on.
+            Must be currently on a branch where the most recent commit
+            is a merge.
+    
+    References:
+        [1] https://git-scm.com/book/en/v2/Git-Tools-Advanced-Merging
+    """
+
     def __init__(self, repo):
         self.repo = repo
         self._check_environment()
 
     def _check_environment(self):
-        assert len(self.repo.active_branch.commit.parents) == 2
+        assert len(self.repo.head.commit.parents) == 2
 
     def _get_diff_endpoints(self):
-        a = self.repo.active_branch.commit.parents[0]
-        b = self.repo.active_branch.commit.parents[1]
+        a = self.repo.head.commit.parents[0]
+        b = self.repo.head.commit.parents[1]
         return a, b
 
 

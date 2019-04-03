@@ -208,10 +208,12 @@ class Project:
         return self.branch == 'master'
 
     def on_master_after_merge(self):
-        if not self.on_master():
-            return False
-        else:
-            return len(self.repo.active_branch.commit.parents) > 1
+        """Checks for two qualities of the current project:
+        1. The project repo's head is the master branch
+        2. The project repo's head commit is a merge commit.
+        """
+
+        return self.on_master() and len(self.repo.head.commit.parents) > 1
 
     @property
     def path(self):

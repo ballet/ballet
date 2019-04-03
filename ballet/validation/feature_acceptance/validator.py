@@ -15,6 +15,29 @@ class NoOpAcceptanceEvaluator(FeatureAcceptanceEvaluator):
 
 
 class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
+    """A feature acceptance evaluator that uses a modified version of
+    GFSSF[1] - specifically, lines 1 - 8 of agGFSSF where we do not
+    remove accepted but redundant features on line 8.
+
+    Attributes:
+        X_df (array-like): The dataset to build features off of.
+        y (array-like): A single-column dataset representing the target
+            feature.
+        features (array-like): an array of ballet Features that have 
+            already been accepted.
+        lmbda_1 (float): A float used in GFSSF to calculate the information
+            threshold. Default is a function of the entropy of y.
+        lmbda_2 (float): A float used in GFSSF to calculate the information
+            threshold. Default is a function of the entropy of y.
+    
+    References:
+        [1] H. Li, X. Wu, Z. Li and W. Ding, "Group Feature Selection
+            with Streaming Features," 2013 IEEE 13th International
+            Conference on Data Mining, Dallas, TX, 2013, pp. 1109-1114.
+            doi: 10.1109/ICDM.2013.137
+
+    """
+
     def __init__(self, X_df, y, features, lmbda_1=0., lmbda_2=0.):
         super().__init__(X_df, y, features)
         self.y = asarray2d(y)
