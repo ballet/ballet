@@ -77,7 +77,7 @@ class LocalPullRequestBuildDiffer(PullRequestBuildDiffer):
 
 
 class LocalMergeBuildDiffer(Differ):
-    """Diff files on a merge commit on the 
+    """Diff files on a merge commit on the
     current active branch. Merge parent order is guaranteed
     such that parent 1 is HEAD and parent 2 is topic[1]
 
@@ -85,7 +85,7 @@ class LocalMergeBuildDiffer(Differ):
         repo (git.Repo): The repository to check the merge diff on.
             Must be currently on a branch where the most recent commit
             is a merge.
-    
+
     References:
         [1] https://git-scm.com/book/en/v2/Git-Tools-Advanced-Merging
     """

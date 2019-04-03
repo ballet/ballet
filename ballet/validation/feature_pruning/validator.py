@@ -22,14 +22,14 @@ class GFSSFPruningEvaluator(FeaturePruningEvaluator):
         X_df (array-like): The dataset to build features off of.
         y (array-like): A single-column dataset representing the target
             feature.
-        features (array-like): an array of ballet Features that have 
+        features (array-like): an array of ballet Features that have
             already been accepted, to be pruned.
         new_feature (ballet.Feature): the recently accepted Feature.
         lmbda_1 (float): A float used in GFSSF to calculate the information
             threshold. Default is a function of the entropy of y.
         lmbda_2 (float): A float used in GFSSF to calculate the information
             threshold. Default is a function of the entropy of y.
-    
+
     References:
         [1] H. Li, X. Wu, Z. Li and W. Ding, "Group Feature Selection
             with Streaming Features," 2013 IEEE 13th International
