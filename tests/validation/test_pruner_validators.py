@@ -1,6 +1,4 @@
 import unittest
-from textwrap import dedent
-from unittest.mock import patch
 
 import numpy as np
 import pandas as pd
@@ -10,14 +8,7 @@ from ballet import Feature
 from ballet.eng.base import SimpleFunctionTransformer
 from ballet.eng.misc import IdentityTransformer
 from ballet.util import asarray2d
-from ballet.util.ci import TravisPullRequestBuildDiffer
-from ballet.util.git import make_commit_range
 from ballet.validation.feature_pruning.validator import GFSSFPruningEvaluator
-
-from .util import (
-    SampleDataMixin, make_mock_project, mock_feature_api_validator,
-    mock_file_change_validator, null_change_collector)
-from ..util import make_mock_commits, mock_repo
 
 
 class GFSSFPrunerTest(unittest.TestCase):
@@ -82,7 +73,7 @@ class GFSSFPrunerTest(unittest.TestCase):
             feature_weak,
             redunant_features,
             'Noisy features should be pruned')
-    
+
     def test_prune_keep_relevant(self):
         feature_1 = Feature(
             input='A',
@@ -93,14 +84,14 @@ class GFSSFPrunerTest(unittest.TestCase):
             transformer=IdentityTransformer(),
             source='2nd Feature')
         gfssf_pruner = GFSSFPruningEvaluator(
-                    self.X, self.y, [feature_1], feature_2)
+            self.X, self.y, [feature_1], feature_2)
 
         redunant_features = gfssf_pruner.prune()
         self.assertNotIn(
             feature_1,
             redunant_features,
             'Still relevant features should be pruned')
-    
+
     def test_prune_irrelevant_features(self):
         feature_1 = Feature(
             input='Z_1',
@@ -111,7 +102,7 @@ class GFSSFPrunerTest(unittest.TestCase):
             transformer=IdentityTransformer(),
             source='2nd Feature')
         gfssf_pruner = GFSSFPruningEvaluator(
-                    self.X, self.y, [feature_1], feature_2)
+            self.X, self.y, [feature_1], feature_2)
 
         redunant_features = gfssf_pruner.prune()
         self.assertIn(
