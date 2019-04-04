@@ -82,3 +82,39 @@ class GFSSFPrunerTest(unittest.TestCase):
             feature_weak,
             redunant_features,
             'Noisy features should be pruned')
+    
+    def test_prune_keep_relevant(self):
+        feature_1 = Feature(
+            input='A',
+            transformer=IdentityTransformer(),
+            source='1st Feature')
+        feature_2 = Feature(
+            input='Z_1',
+            transformer=IdentityTransformer(),
+            source='2nd Feature')
+        gfssf_pruner = GFSSFPruningEvaluator(
+                    self.X, self.y, [feature_1], feature_2)
+
+        redunant_features = gfssf_pruner.prune()
+        self.assertNotIn(
+            feature_1,
+            redunant_features,
+            'Still relevant features should be pruned')
+    
+    def test_prune_irrelevant_features(self):
+        feature_1 = Feature(
+            input='Z_1',
+            transformer=IdentityTransformer(),
+            source='1st Feature')
+        feature_2 = Feature(
+            input='A',
+            transformer=IdentityTransformer(),
+            source='2nd Feature')
+        gfssf_pruner = GFSSFPruningEvaluator(
+                    self.X, self.y, [feature_1], feature_2)
+
+        redunant_features = gfssf_pruner.prune()
+        self.assertIn(
+            feature_1,
+            redunant_features,
+            'Irrelevant features should be pruned')
