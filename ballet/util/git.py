@@ -95,7 +95,7 @@ class LocalMergeBuildDiffer(Differ):
         self._check_environment()
 
     def _check_environment(self):
-        assert len(self.repo.head.commit.parents) == 2
+        assert is_merge_commit(self.repo.head.commit)
 
     def _get_diff_endpoints(self):
         a = self.repo.head.commit.parents[0]
