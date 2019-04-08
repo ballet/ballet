@@ -7,7 +7,7 @@ from ballet.contrib import _get_contrib_feature_from_module
 from ballet.exc import BalletError
 from ballet.util import make_plural_suffix, one_or_raise, whether_failures
 from ballet.util.ci import TravisPullRequestBuildDiffer, can_use_travis_differ
-from ballet.util.git import LocalPullRequestBuildDiffer
+from ballet.util.git import LocalMergeBuildDiffer, LocalPullRequestBuildDiffer
 from ballet.util.log import logger, stacklog
 from ballet.util.mod import import_module_at_path, relpath_to_modname
 from ballet.validation.project_structure.checks import ProjectStructureCheck
@@ -105,10 +105,12 @@ class ChangeCollector:
 
         if self.differ is None:
             pr_num = self.project.pr_num
-            if can_use_travis_differ():
+            repo = self.project.repo
+            if pr_num is None:
+                self.differ = LocalMergeBuildDiffer(repo)
+            elif can_use_travis_differ():
                 self.differ = TravisPullRequestBuildDiffer(pr_num)
             else:
-                repo = self.project.repo
                 self.differ = LocalPullRequestBuildDiffer(pr_num, repo)
 
     def collect_changes(self):
@@ -196,8 +198,8 @@ class ChangeCollector:
 
         Args:
             candidate_feature_diffs (List[git.diff.Diff]): list of Diffs
-                corresponding to admissible file changes compared to comparison
-                ref
+                corresponding to admissible file changes compared to
+                comparison ref
 
         Returns:
             List[Tuple]: list of tuple of importer, module name, and module

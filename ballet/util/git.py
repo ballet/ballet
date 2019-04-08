@@ -76,6 +76,33 @@ class LocalPullRequestBuildDiffer(PullRequestBuildDiffer):
         return a, b
 
 
+class LocalMergeBuildDiffer(Differ):
+    """Diff files on a merge commit on the
+    current active branch. Merge parent order is guaranteed
+    such that parent 1 is HEAD and parent 2 is topic[1]
+
+    Attributes:
+        repo (git.Repo): The repository to check the merge diff on.
+            Must be currently on a branch where the most recent commit
+            is a merge.
+
+    References:
+        [1] https://git-scm.com/book/en/v2/Git-Tools-Advanced-Merging
+    """
+
+    def __init__(self, repo):
+        self.repo = repo
+        self._check_environment()
+
+    def _check_environment(self):
+        assert is_merge_commit(self.repo.head.commit)
+
+    def _get_diff_endpoints(self):
+        a = self.repo.head.commit.parents[0]
+        b = self.repo.head.commit.parents[1]
+        return a, b
+
+
 def make_commit_range(a, b):
     return FILE_CHANGES_COMMIT_RANGE.format(a=a, b=b)
 
@@ -149,6 +176,10 @@ def get_branch(repo=None):
 def switch_to_new_branch(repo, name):
     new_branch = repo.create_head(name)
     repo.head.ref = new_branch
+
+
+def is_merge_commit(commit):
+    return len(commit.parents) > 1
 
 
 def set_config_variables(repo, variables):
