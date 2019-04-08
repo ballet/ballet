@@ -177,6 +177,7 @@ def switch_to_new_branch(repo, name):
     new_branch = repo.create_head(name)
     repo.head.ref = new_branch
 
+
 def is_merge_commit(commit):
     return len(commit.parents) > 1
 
