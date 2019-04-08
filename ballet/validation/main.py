@@ -89,7 +89,7 @@ def evaluate_feature_performance(project, force=False):
 @validation_stage('pruning existing features')
 def prune_existing_features(project, force=False):
     """Prune existing features"""
-    if not force and project.on_master_after_merge():
+    if not force and not project.on_master_after_merge():
         raise SkippedValidationTest('Not on master')
 
     out = project.build()
