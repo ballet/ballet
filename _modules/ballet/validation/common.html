@@ -236,7 +236,7 @@
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">BalletError</span>
 <span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">make_plural_suffix</span><span class="p">,</span> <span class="n">one_or_raise</span><span class="p">,</span> <span class="n">whether_failures</span>
 <span class="kn">from</span> <span class="nn">ballet.util.ci</span> <span class="k">import</span> <span class="n">TravisPullRequestBuildDiffer</span><span class="p">,</span> <span class="n">can_use_travis_differ</span>
-<span class="kn">from</span> <span class="nn">ballet.util.git</span> <span class="k">import</span> <span class="n">LocalPullRequestBuildDiffer</span>
+<span class="kn">from</span> <span class="nn">ballet.util.git</span> <span class="k">import</span> <span class="n">LocalMergeBuildDiffer</span><span class="p">,</span> <span class="n">LocalPullRequestBuildDiffer</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span><span class="p">,</span> <span class="n">stacklog</span>
 <span class="kn">from</span> <span class="nn">ballet.util.mod</span> <span class="k">import</span> <span class="n">import_module_at_path</span><span class="p">,</span> <span class="n">relpath_to_modname</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.project_structure.checks</span> <span class="k">import</span> <span class="n">ProjectStructureCheck</span>
@@ -334,10 +334,12 @@
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">differ</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">pr_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">pr_num</span>
-            <span class="k">if</span> <span class="n">can_use_travis_differ</span><span class="p">():</span>
+            <span class="n">repo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">repo</span>
+            <span class="k">if</span> <span class="n">pr_num</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">differ</span> <span class="o">=</span> <span class="n">LocalMergeBuildDiffer</span><span class="p">(</span><span class="n">repo</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">can_use_travis_differ</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">differ</span> <span class="o">=</span> <span class="n">TravisPullRequestBuildDiffer</span><span class="p">(</span><span class="n">pr_num</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">repo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">repo</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">differ</span> <span class="o">=</span> <span class="n">LocalPullRequestBuildDiffer</span><span class="p">(</span><span class="n">pr_num</span><span class="p">,</span> <span class="n">repo</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ChangeCollector.collect_changes"><a class="viewcode-back" href="../../../api/ballet.validation.common.html#ballet.validation.common.ChangeCollector.collect_changes">[docs]</a>    <span class="k">def</span> <span class="nf">collect_changes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -425,8 +427,8 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            candidate_feature_diffs (List[git.diff.Diff]): list of Diffs</span>
-<span class="sd">                corresponding to admissible file changes compared to comparison</span>
-<span class="sd">                ref</span>
+<span class="sd">                corresponding to admissible file changes compared to</span>
+<span class="sd">                comparison ref</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List[Tuple]: list of tuple of importer, module name, and module</span>

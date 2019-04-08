@@ -307,6 +307,33 @@
         <span class="k">return</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span></div>
 
 
+<div class="viewcode-block" id="LocalMergeBuildDiffer"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.LocalMergeBuildDiffer">[docs]</a><span class="k">class</span> <span class="nc">LocalMergeBuildDiffer</span><span class="p">(</span><span class="n">Differ</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Diff files on a merge commit on the</span>
+<span class="sd">    current active branch. Merge parent order is guaranteed</span>
+<span class="sd">    such that parent 1 is HEAD and parent 2 is topic[1]</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        repo (git.Repo): The repository to check the merge diff on.</span>
+<span class="sd">            Must be currently on a branch where the most recent commit</span>
+<span class="sd">            is a merge.</span>
+
+<span class="sd">    References:</span>
+<span class="sd">        [1] https://git-scm.com/book/en/v2/Git-Tools-Advanced-Merging</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repo</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">repo</span> <span class="o">=</span> <span class="n">repo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_environment</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_check_environment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">is_merge_commit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">commit</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_diff_endpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">commit</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">commit</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span></div>
+
+
 <div class="viewcode-block" id="make_commit_range"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.make_commit_range">[docs]</a><span class="k">def</span> <span class="nf">make_commit_range</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">FILE_CHANGES_COMMIT_RANGE</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span></div>
 
@@ -380,6 +407,10 @@
 <div class="viewcode-block" id="switch_to_new_branch"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.switch_to_new_branch">[docs]</a><span class="k">def</span> <span class="nf">switch_to_new_branch</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
     <span class="n">new_branch</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">create_head</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
     <span class="n">repo</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">ref</span> <span class="o">=</span> <span class="n">new_branch</span></div>
+
+
+<div class="viewcode-block" id="is_merge_commit"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.is_merge_commit">[docs]</a><span class="k">def</span> <span class="nf">is_merge_commit</span><span class="p">(</span><span class="n">commit</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">commit</span><span class="o">.</span><span class="n">parents</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span></div>
 
 
 <div class="viewcode-block" id="set_config_variables"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.set_config_variables">[docs]</a><span class="k">def</span> <span class="nf">set_config_variables</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">variables</span><span class="p">):</span>
