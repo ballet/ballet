@@ -96,7 +96,8 @@ def prune_existing_features(project, force=False):
     X_df, y, features = out['X_df'], out['y'], out['features']
     proposed_feature = get_proposed_feature(project)
     accepted_features = get_accepted_features(features, proposed_feature)
-    evaluator = GFSSFPruningEvaluator(X_df, y, accepted_features, proposed_feature)
+    evaluator = GFSSFPruningEvaluator(
+        X_df, y, accepted_features, proposed_feature)
     redundant_features = evaluator.prune()
 
     # propose removal
