@@ -2,6 +2,8 @@ from abc import ABCMeta, abstractmethod
 
 from funcy import constantly, ignore, post_processing
 
+from ballet.util import get_subclasses
+
 
 class BaseValidator(metaclass=ABCMeta):
     """Base class for a generic validator"""
@@ -53,11 +55,32 @@ class FeaturePruningEvaluator(FeaturePerformanceEvaluator):
 
 class BaseCheck(metaclass=ABCMeta):
 
+    def do_all_checks(self, item):
+        """Check an item according to checker subclasses
+
+        For all checker subclasses (subclasses of self's class), instantiates
+        the checker class, optionally with the provided args and kwargs. Then
+        checks the item.
+
+        Args:
+            item: item to check
+
+        Returns:
+            Dict[str, bool]: mapping from check names to check outcomes
+        """
+        result = {}
+        for Checker in get_subclasses(type(self)):
+            check = Checker.check
+            name = Checker.__name__
+            outcome = check(self, item)
+            result[name] = bool(outcome)
+        return result
+
     @ignore(Exception, default=False)
     @post_processing(constantly(True))
-    def do_check(self, obj):
-        return self.check(obj)
+    def do_check(self, item):
+        return self.check(item)
 
     @abstractmethod
-    def check(self, obj):
+    def check(self, item):
         pass

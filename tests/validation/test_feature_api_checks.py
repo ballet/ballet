@@ -7,7 +7,6 @@ from ballet.eng.base import BaseTransformer
 from ballet.eng.misc import IdentityTransformer
 from ballet.feature import Feature
 from ballet.util import has_nans
-from ballet.validation.common import check_from_class
 from ballet.validation.feature_api.checks import (
     CanDeepcopyCheck, CanTransformCheck, FeatureApiCheck,
     HasCorrectInputTypeCheck, HasCorrectOutputDimensionsCheck,
@@ -17,7 +16,11 @@ from .util import SampleDataMixin
 from ..util import FragileTransformer
 
 
-class ProjectStructureTest(SampleDataMixin, unittest.TestCase):
+class FeatureApiCheckTest(SampleDataMixin, unittest.TestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.checker = FeatureApiCheck(self.X, self.y)
 
     def test_good_feature(self):
         feature = Feature(
@@ -25,8 +28,7 @@ class ProjectStructureTest(SampleDataMixin, unittest.TestCase):
             transformer=SimpleImputer(),
         )
 
-        outcomes = check_from_class(
-            FeatureApiCheck, feature, self.X, self.y)
+        outcomes = self.checker.do_all_checks(feature)
 
         valid = all(outcomes.values())
         self.assertTrue(valid)
@@ -40,8 +42,8 @@ class ProjectStructureTest(SampleDataMixin, unittest.TestCase):
             input=3,
             transformer=SimpleImputer(),
         )
-        outcomes = check_from_class(
-            FeatureApiCheck, feature, self.X, self.y)
+
+        outcomes = self.checker.do_all_checks(feature)
 
         valid = all(outcomes.values())
         self.assertFalse(valid)
@@ -56,8 +58,8 @@ class ProjectStructureTest(SampleDataMixin, unittest.TestCase):
             transformer=FragileTransformer(
                 (lambda x: True, ), (RuntimeError, ))
         )
-        outcomes = check_from_class(
-            FeatureApiCheck, feature, self.X, self.y)
+
+        outcomes = self.checker.do_all_checks(feature)
 
         valid = all(outcomes.values())
         self.assertFalse(valid)
@@ -78,8 +80,8 @@ class ProjectStructureTest(SampleDataMixin, unittest.TestCase):
             input='size',
             transformer=_WrongLengthTransformer(),
         )
-        outcomes = check_from_class(
-            FeatureApiCheck, feature, self.X, self.y)
+
+        outcomes = self.checker.do_all_checks(feature)
 
         valid = all(outcomes.values())
         self.assertFalse(valid)
@@ -95,8 +97,8 @@ class ProjectStructureTest(SampleDataMixin, unittest.TestCase):
             input='size',
             transformer=_CopyFailsTransformer(),
         )
-        outcomes = check_from_class(
-            FeatureApiCheck, feature, self.X, self.y)
+
+        outcomes = self.checker.do_all_checks(feature)
 
         valid = all(outcomes.values())
         self.assertFalse(valid)
@@ -110,8 +112,8 @@ class ProjectStructureTest(SampleDataMixin, unittest.TestCase):
             input='size',
             transformer=IdentityTransformer()
         )
-        outcomes = check_from_class(
-            FeatureApiCheck, feature, self.X, self.y)
+
+        outcomes = self.checker.do_all_checks(feature)
 
         valid = all(outcomes.values())
         self.assertFalse(valid)

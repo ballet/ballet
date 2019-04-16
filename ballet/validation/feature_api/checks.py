@@ -21,6 +21,9 @@ class FeatureApiCheck(BaseCheck):
         self.X = X_df
         self.y = y_df
 
+    def check(self, feature):
+        pass
+
 
 class IsFeatureCheck(FeatureApiCheck):
 

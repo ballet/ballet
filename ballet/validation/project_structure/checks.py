@@ -21,6 +21,9 @@ class ProjectStructureCheck(BaseCheck):
     def __init__(self, project):
         self.project = project
 
+    def check(self, diff):
+        pass
+
 
 class IsAdditionCheck(ProjectStructureCheck):
 

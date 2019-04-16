@@ -2,7 +2,7 @@ from ballet.contrib import _get_contrib_features
 from ballet.util.log import logger
 from ballet.validation.base import BaseValidator
 from ballet.validation.common import (
-    ChangeCollector, check_from_class, subsample_data_for_validation)
+    ChangeCollector, subsample_data_for_validation)
 from ballet.validation.feature_api.checks import FeatureApiCheck
 
 
@@ -10,7 +10,7 @@ def validate_feature_api(feature, X, y, subsample=False):
     logger.debug('Validating feature {feature!r}'.format(feature=feature))
     if subsample:
         X, y = subsample_data_for_validation(X, y)
-    outcomes = check_from_class(FeatureApiCheck, feature, X, y)
+    outcomes = FeatureApiCheck(X, y).do_all_checks(feature)
     valid = all(outcomes.values())
     if valid:
         logger.info('Feature is valid')

@@ -157,8 +157,7 @@ class ChangeCollector:
         inadmissible_files = []
 
         for diff in file_diffs:
-            outcomes = check_from_class(
-                ProjectStructureCheck, diff, self.project)
+            outcomes = ProjectStructureCheck(self.project).do_all_checks(diff)
             valid = all(outcomes.values())
             if valid:
                 if pathlib.Path(diff.b_path).parts[-1] != '__init__.py':
@@ -218,28 +217,3 @@ class ChangeCollector:
 
 def subsample_data_for_validation(X, y):
     return X, y
-
-
-def check_from_class(check_class, item, *checker_args, **checker_kwargs):
-    """Check an item according to some checker classes
-
-    For all checker classes (subclasses of check_class), instantiates the
-    checker class, optionally with the provided args and kwargs. Then checks
-    the item.
-
-    Args:
-        check_class (type): subclass of BaseCheck
-        item: item to check
-        *checker_args: arguments to checker classes
-        **checker_kwargs: keyword arguments to checker classes
-
-    Returns:
-        Dict[str, bool]: mapping from check names to check outcomes
-    """
-    result = {}
-    for Checker in check_class.__subclasses__():
-        check = Checker(*checker_args, **checker_kwargs).do_check
-        name = Checker.__name__
-        outcome = check(item)
-        result[name] = bool(outcome)
-    return result

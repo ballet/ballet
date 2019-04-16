@@ -6,7 +6,7 @@ from os import devnull
 import numpy as np
 import pandas as pd
 import sklearn.datasets
-from funcy import decorator, lfilter
+from funcy import decorator, lfilter, ltree_leaves
 
 from ballet.compat import redirect_stderr, redirect_stdout
 
@@ -116,3 +116,14 @@ def one_or_raise(l):
         return l[0]
     else:
         raise ValueError('Expected exactly 1 element')
+
+
+def get_subclasses(cls):
+    """Get all subclasses of cls
+
+    Source:
+       <https://funcy.readthedocs.io/en/stable/seqs.html#ltree_leaves>
+    """
+    return ltree_leaves(cls,
+                        children=type.__subclasses__,
+                        follow=type.__subclasses__)
