@@ -56,13 +56,6 @@ def make_plural_suffix(obj, suffix='s'):
         return ''
 
 
-@decorator
-def whether_failures(call):
-    """Collects failures and return (success, list_of_failures)"""
-    failures = list(call())
-    return not failures, failures
-
-
 def has_nans(obj):
     """Check if obj has any NaNs
 

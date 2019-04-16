@@ -5,7 +5,7 @@ from funcy import collecting, complement, lfilter, partial, post_processing
 from ballet.compat import pathlib
 from ballet.contrib import _get_contrib_feature_from_module
 from ballet.exc import BalletError
-from ballet.util import make_plural_suffix, one_or_raise, whether_failures
+from ballet.util import make_plural_suffix, one_or_raise
 from ballet.util.ci import TravisPullRequestBuildDiffer, can_use_travis_differ
 from ballet.util.git import LocalMergeBuildDiffer, LocalPullRequestBuildDiffer
 from ballet.util.log import logger, stacklog
@@ -157,8 +157,9 @@ class ChangeCollector:
         inadmissible_files = []
 
         for diff in file_diffs:
-            valid, failures = check_from_class(
+            outcomes = check_from_class(
                 ProjectStructureCheck, diff, self.project)
+            valid = all(outcomes.values())
             if valid:
                 if pathlib.Path(diff.b_path).parts[-1] != '__init__.py':
                     candidate_feature_diffs.append(diff)
@@ -172,6 +173,7 @@ class ChangeCollector:
                         .format(file=diff.b_path))
             else:
                 inadmissible_files.append(diff)
+                failures = [k for k in outcomes if not outcomes[k]]
                 logger.debug(
                     'Categorized {file} as INADMISSIBLE; '
                     'failures were {failures}'
@@ -218,11 +220,26 @@ def subsample_data_for_validation(X, y):
     return X, y
 
 
-@whether_failures
-def check_from_class(check_class, obj, *checker_args, **checker_kwargs):
+def check_from_class(check_class, item, *checker_args, **checker_kwargs):
+    """Check an item according to some checker classes
+
+    For all checker classes (subclasses of check_class), instantiates the
+    checker class, optionally with the provided args and kwargs. Then checks
+    the item.
+
+    Args:
+        check_class (type): subclass of BaseCheck
+        item: item to check
+        *checker_args: arguments to checker classes
+        **checker_kwargs: keyword arguments to checker classes
+
+    Returns:
+        Dict[str, bool]: mapping from check names to check outcomes
+    """
+    result = {}
     for Checker in check_class.__subclasses__():
         check = Checker(*checker_args, **checker_kwargs).do_check
-        success = check(obj)
-        if not success:
-            name = Checker.__name__
-            yield name
+        name = Checker.__name__
+        outcome = check(item)
+        result[name] = bool(outcome)
+    return result

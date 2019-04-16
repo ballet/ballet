@@ -25,9 +25,13 @@ class ProjectStructureTest(SampleDataMixin, unittest.TestCase):
             transformer=SimpleImputer(),
         )
 
-        valid, failures = check_from_class(
+        outcomes = check_from_class(
             FeatureApiCheck, feature, self.X, self.y)
+
+        valid = all(outcomes.values())
         self.assertTrue(valid)
+
+        failures = [k for k in outcomes if not outcomes[k]]
         self.assertEqual(len(failures), 0)
 
     def test_bad_feature_input(self):
@@ -36,9 +40,13 @@ class ProjectStructureTest(SampleDataMixin, unittest.TestCase):
             input=3,
             transformer=SimpleImputer(),
         )
-        valid, failures = check_from_class(
+        outcomes = check_from_class(
             FeatureApiCheck, feature, self.X, self.y)
+
+        valid = all(outcomes.values())
         self.assertFalse(valid)
+
+        failures = [k for k in outcomes if not outcomes[k]]
         self.assertIn(HasCorrectInputTypeCheck.__name__, failures)
 
     def test_bad_feature_transform_errors(self):
@@ -48,9 +56,13 @@ class ProjectStructureTest(SampleDataMixin, unittest.TestCase):
             transformer=FragileTransformer(
                 (lambda x: True, ), (RuntimeError, ))
         )
-        valid, failures = check_from_class(
+        outcomes = check_from_class(
             FeatureApiCheck, feature, self.X, self.y)
+
+        valid = all(outcomes.values())
         self.assertFalse(valid)
+
+        failures = [k for k in outcomes if not outcomes[k]]
         self.assertIn(CanTransformCheck.__name__, failures)
 
     def test_bad_feature_wrong_transform_length(self):
@@ -66,9 +78,13 @@ class ProjectStructureTest(SampleDataMixin, unittest.TestCase):
             input='size',
             transformer=_WrongLengthTransformer(),
         )
-        valid, failures = check_from_class(
+        outcomes = check_from_class(
             FeatureApiCheck, feature, self.X, self.y)
+
+        valid = all(outcomes.values())
         self.assertFalse(valid)
+
+        failures = [k for k in outcomes if not outcomes[k]]
         self.assertIn(HasCorrectOutputDimensionsCheck.__name__, failures)
 
     def test_bad_feature_deepcopy_fails(self):
@@ -79,9 +95,13 @@ class ProjectStructureTest(SampleDataMixin, unittest.TestCase):
             input='size',
             transformer=_CopyFailsTransformer(),
         )
-        valid, failures = check_from_class(
+        outcomes = check_from_class(
             FeatureApiCheck, feature, self.X, self.y)
+
+        valid = all(outcomes.values())
         self.assertFalse(valid)
+
+        failures = [k for k in outcomes if not outcomes[k]]
         self.assertIn(CanDeepcopyCheck.__name__, failures)
 
     def test_producing_missing_values_fails(self):
@@ -90,7 +110,11 @@ class ProjectStructureTest(SampleDataMixin, unittest.TestCase):
             input='size',
             transformer=IdentityTransformer()
         )
-        valid, failures = check_from_class(
+        outcomes = check_from_class(
             FeatureApiCheck, feature, self.X, self.y)
+
+        valid = all(outcomes.values())
         self.assertFalse(valid)
+
+        failures = [k for k in outcomes if not outcomes[k]]
         self.assertIn(NoMissingValuesCheck.__name__, failures)
