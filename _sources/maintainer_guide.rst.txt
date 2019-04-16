@@ -1,6 +1,6 @@
-=====
-Usage
-=====
+================
+Maintainer Guide
+================
 
 Ballet projects
 ---------------
