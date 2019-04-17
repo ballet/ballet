@@ -4,8 +4,7 @@ from unittest.mock import PropertyMock, patch
 from ballet.compat import pathlib
 from ballet.exc import ConfigurationError
 from ballet.project import (
-    DEFAULT_CONFIG_NAME, Project, get_config_path,
-    make_config_get)
+    DEFAULT_CONFIG_NAME, Project, get_config_path, make_config_get)
 
 
 class ProjectTest(unittest.TestCase):
