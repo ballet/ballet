@@ -2,7 +2,7 @@ from importlib import import_module
 
 import git
 import yaml
-from funcy import get_in, memoize, partial
+from funcy import get_in, partial
 
 from ballet.compat import pathlib
 from ballet.exc import ConfigurationError
@@ -13,31 +13,14 @@ from ballet.util.mod import import_module_at_path
 DEFAULT_CONFIG_NAME = 'ballet.yml'
 
 
-def get_config_paths(package_root):
-    """Get candidate config paths
-
-    Creates a sequence of paths that includes the package root and all of its
-    parents, as well as ~/.ballet.
+def get_config_path(project_root):
+    """Get candidate config path
 
     Args:
-        package_root (path-like): Directory of the ballet project root
+        project_root (path-like): Directory of the ballet project root
             directory, the one usually containing the ``ballet.yml`` file.
     """
-    package_root = pathlib.Path(package_root)
-
-    # parents of package directory, and the package root just in case
-    paths = [
-        d.joinpath(DEFAULT_CONFIG_NAME)
-        for d in [package_root] + list(package_root.parents)
-    ]
-
-    # home directory
-    paths.append(
-        pathlib.Path.home().joinpath('.ballet', DEFAULT_CONFIG_NAME))
-
-    # defaults in ballet repo
-
-    return paths
+    return project_root.resolve().joinpath(DEFAULT_CONFIG_NAME)
 
 
 def load_config_at_path(path):
@@ -45,80 +28,52 @@ def load_config_at_path(path):
         with path.open('r') as f:
             return yaml.load(f, Loader=yaml.SafeLoader)
     else:
-        return None
+        raise ConfigurationError("Couldn't find ballet.yml config file.")
 
 
 def load_config_in_dir(path):
-    if path.exists() and path.is_dir():
-        candidate = path.joinpath(DEFAULT_CONFIG_NAME)
-        return load_config_at_path(candidate)
+    candidate = get_config_path(path)
+    return load_config_at_path(candidate)
 
 
-@memoize
-def find_configs(package_root):
-    """Find valid ballet project config files
-
-    See if any of the candidates returned by get_config_paths are valid.
-
-    Args:
-        package_root (path-like): Directory of the ballet project root
-            directory, the one usually containing the ``ballet.yml`` file.
-
-    Returns:
-        list[tuple]: List of (dict, str) representing config
-            information and the path that information was loaded from
-
-    Raises:
-        ConfigurationError: No valid config files were found.
-    """
-    configs = []
-    for candidate in get_config_paths(package_root):
-        config = load_config_at_path(candidate)
-        if config is not None:
-            configs.append((config, candidate))
-
-    if configs:
-        return configs
-    else:
-        raise ConfigurationError("Couldn't find any ballet.yml config files.")
-
-
-def config_get(package_root, *path, default=None):
+def config_get(config, *path, default=None):
     """Get a configuration option following a path through the config
 
     Example usage:
 
-        >>> config_get('/path/to/package',
+        >>> config_get(config,
                        'problem', 'problem_type_details', 'scorer',
                        default='accuracy')
 
     Args:
-        package_root (path-like): Directory of the ballet project root
-            directory, the one usually containing the ``ballet.yml`` file.
+        config (dict): config dict
         *path (list[str]): List of config sections and options to follow.
         default (default=None): A default value to return in the case that
             the option does not exist.
     """
-    config_info = find_configs(package_root)
-
     o = object()
-    for config, _ in config_info:
-        result = get_in(config, path, default=o)
-        if result is not o:
-            return result
+    result = get_in(config, path, default=o)
+    if result is not o:
+        return result
+    else:
+        return default
 
-    return default
 
-
-def make_config_get(package_root):
+def make_config_get(conf_path):
     """Return a function to get configuration options for a specific project
 
     Args:
-        package_root (path-like): path to project root (directory containing
-            ballet.yml file)
+        conf_path (path-like): path to project's conf file (i.e. foo.conf
+            module)
     """
-    package_root = pathlib.Path(package_root).resolve()
-    return partial(config_get, package_root)
+    conf_path = pathlib.Path(conf_path).resolve()
+    if conf_path.name == 'conf.py':
+        project_root = conf_path.parent.parent
+    else:
+        raise ValueError("Must pass path to conf module")
+
+    config = load_config_in_dir(project_root)
+    return partial(config_get, config)
 
 
 def relative_to_contrib(diff, project):
@@ -170,10 +125,7 @@ class Project:
     @classmethod
     def from_path(cls, path):
         config = load_config_in_dir(path)
-        if config is None:
-            raise ConfigurationError
-
-        project_slug = get_in(config, ('project', 'slug'))
+        project_slug = config_get(config, 'project', 'slug')
         package = import_module_at_path(project_slug,
                                         path.joinpath(project_slug))
         return cls(package)
@@ -218,7 +170,7 @@ class Project:
 
     @property
     def path(self):
-        """Return the project path
+        """Return the project path (aka project root)
 
         If ``package.__file__`` is ``/foo/foo/__init__.py``, then project.path
         should be ``/foo``.
