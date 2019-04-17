@@ -113,8 +113,9 @@ def config_get(package_root, *path, default=None):
 def make_config_get(package_root):
     """Return a function to get configuration options for a specific project
 
-
-
+    Args:
+        package_root (path-like): path to project root (directory containing
+            ballet.yml file)
     """
     package_root = pathlib.Path(package_root).resolve()
     return partial(config_get, package_root)
