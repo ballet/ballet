@@ -42,7 +42,7 @@ proposed feature is accepted, it can be safely merged.
 If you'd like to [read more about Ballet](http://learningsys.org/nips18/assets/papers/15CameraReadySubmissionneurips_sysml_2018-8.pdf)
 or use it in your own work, please see:
 
-```bibtex
+```
 @inproceedings{smith2018ballet,
   author = {Smith, Micah J. and Lu, Kelvin and Veeramachaneni, Kalyan},
   title = {Ballet: A lightweight framework for open-source, collaborative feature engineering},
