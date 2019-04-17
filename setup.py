@@ -50,6 +50,7 @@ development_requirements = [
     'm2r>=0.2.0',
     'Sphinx>=1.7.1',
     'sphinx_rtd_theme>=0.2.4',
+    'sphinx-click>=1.4.1',
 
     # style check
     'flake8>=3.5.0',

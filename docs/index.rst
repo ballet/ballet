@@ -19,6 +19,7 @@
    :hidden:
 
    API Reference <api/ballet>
+   CLI Reference <cli_reference>
 
 .. toctree::
    :caption: Development Notes
