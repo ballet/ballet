@@ -6,6 +6,7 @@ from funcy import get_in, partial
 
 from ballet.compat import pathlib
 from ballet.exc import ConfigurationError
+from ballet.util import needs_path
 from ballet.util.ci import get_travis_branch, get_travis_pr_num
 from ballet.util.git import get_branch, get_pr_num, is_merge_commit
 from ballet.util.mod import import_module_at_path
@@ -13,6 +14,7 @@ from ballet.util.mod import import_module_at_path
 DEFAULT_CONFIG_NAME = 'ballet.yml'
 
 
+@needs_path
 def get_config_path(project_root):
     """Get candidate config path
 
@@ -23,7 +25,16 @@ def get_config_path(project_root):
     return project_root.resolve().joinpath(DEFAULT_CONFIG_NAME)
 
 
+@needs_path
 def load_config_at_path(path):
+    """Load config at exact path
+
+    Args:
+        path (path-like): path to config file
+
+    Returns:
+        dict: config dict
+    """
     if path.exists() and path.is_file():
         with path.open('r') as f:
             return yaml.load(f, Loader=yaml.SafeLoader)
@@ -31,7 +42,16 @@ def load_config_at_path(path):
         raise ConfigurationError("Couldn't find ballet.yml config file.")
 
 
+@needs_path
 def load_config_in_dir(path):
+    """Load config in containing directory
+
+    Args:
+        path (path-like): path to containing directory of config file
+
+    Returns:
+        dict: config dict
+    """
     candidate = get_config_path(path)
     return load_config_at_path(candidate)
 
@@ -59,6 +79,15 @@ def config_get(config, *path, default=None):
         return default
 
 
+@needs_path
+def _get_project_root_from_conf_path(conf_path):
+    if conf_path.name == 'conf.py':
+        return conf_path.parent.parent.resolve()
+    else:
+        raise ValueError("Must pass path to conf module")
+
+
+@needs_path
 def make_config_get(conf_path):
     """Return a function to get configuration options for a specific project
 
@@ -66,12 +95,7 @@ def make_config_get(conf_path):
         conf_path (path-like): path to project's conf file (i.e. foo.conf
             module)
     """
-    conf_path = pathlib.Path(conf_path).resolve()
-    if conf_path.name == 'conf.py':
-        project_root = conf_path.parent.parent
-    else:
-        raise ValueError("Must pass path to conf module")
-
+    project_root = _get_project_root_from_conf_path(conf_path)
     config = load_config_in_dir(project_root)
     return partial(config_get, config)
 
