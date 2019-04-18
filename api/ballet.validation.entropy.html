@@ -92,12 +92,21 @@
 <p class="caption"><span class="caption-text">User Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../maintainer_guide.html">Maintainer Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../maintainer_guide.html#ballet-projects">Ballet projects</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../maintainer_guide.html#creating-a-ballet-project">Creating a Ballet project</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#project-instantiation">Project instantiation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#developing-new-features">Developing new features</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#validating-features">Validating features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#project-installation">Project installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#collaboration-via-git-and-github">Collaboration via git and GitHub</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#enabling-continuous-integration">Enabling continuous integration</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../maintainer_guide.html#developing-new-features">Developing new features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#validating-features">Validating features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#pruning-features">Pruning features</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../maintainer_guide.html#applying-the-feature-engineering-pipeline">Applying the feature engineering pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../maintainer_guide.html#updating-the-framework">Updating the framework</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../contributor_guide.html">Contributor Guide</a></li>
@@ -137,6 +146,12 @@
 <li class="toctree-l3"><a class="reference internal" href="ballet.update.html">ballet.update module</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli_reference.html">CLI Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cli_reference.html#ballet-quickstart">quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_reference.html#ballet-start-new-feature">start-new-feature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_reference.html#ballet-update-project-template">update-project-template</a></li>
 </ul>
 </li>
 </ul>
@@ -270,10 +285,12 @@ take datasets of mixed discrete and continuous functions.</p>
 <dl class="function">
 <dt id="ballet.validation.entropy.estimate_conditional_information">
 <code class="descclassname">ballet.validation.entropy.</code><code class="descname">estimate_conditional_information</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#estimate_conditional_information"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.estimate_conditional_information" title="Permalink to this definition">¶</a></dt>
-<dd><p>Estimates the conditional mutual information of
-three datasets. Conditional mutual information is the
+<dd><p>Estimate the conditional mutual information of three datasets.</p>
+<p>Conditional mutual information is the
 mutual information of two datasets, given a third:</p>
-<p>$ I(x;y|z) = H(x,z) + H(y,z) - H(x,y,z) - H(z) $</p>
+<blockquote>
+<div><p>$ I(x;y|z) = H(x,z) + H(y,z) - H(x,y,z) - H(z) $</p>
+</div></blockquote>
 <p>Where H(x) is the Shannon entropy of x. For continuous datasets,
 adapts the Kraskov Estimator [1] for mutual information.</p>
 <p>Equation 8 still holds because the epsilon terms cancel out:
@@ -303,18 +320,20 @@ if there are continuous columns present.</p>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
-<p>References:
-.. [1] A. Kraskov, H. Stogbauer and P. Grassberger, “Estimating mutual</p>
-<blockquote>
-<div><p>information”. Phys. Rev. E 69, 2004.</p>
-</div></blockquote>
+<p>References:</p>
+<dl class="footnote brackets">
+<dt class="label" id="id1"><span class="brackets">1</span></dt>
+<dd><p>A. Kraskov, H. Stogbauer and P. Grassberger, “Estimating mutual
+information”. Phys. Rev. E 69, 2004.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="ballet.validation.entropy.estimate_cont_entropy">
 <code class="descclassname">ballet.validation.entropy.</code><code class="descname">estimate_cont_entropy</code><span class="sig-paren">(</span><em>X</em>, <em>epsilon=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#estimate_cont_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.estimate_cont_entropy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Estimates the Shannon entropy of a discrete dataset.
-Based off the Kraskov Estimator [1] and Kozachenko [2]
+<dd><p>Estimate the Shannon entropy of a discrete dataset.</p>
+<p>Based off the Kraskov Estimator [1] and Kozachenko [2]
 estimators for a dataset’s Shannon entropy.</p>
 <p>The function relies on nonparametric methods based on entropy
 estimation from k-nearest neighbors distances as proposed
@@ -348,13 +367,13 @@ mutual information.</p>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
-<p>References:
-.. [1] A. Kraskov, H. Stogbauer and P. Grassberger, “Estimating mutual</p>
-<blockquote>
-<div><p>information”. Phys. Rev. E 69, 2004.</p>
-</div></blockquote>
+<p>References:</p>
 <dl class="footnote brackets">
-<dt class="label" id="id1"><span class="brackets">2</span></dt>
+<dt class="label" id="id2"><span class="brackets">1</span></dt>
+<dd><p>A. Kraskov, H. Stogbauer and P. Grassberger, “Estimating mutual
+information”. Phys. Rev. E 69, 2004.</p>
+</dd>
+<dt class="label" id="id3"><span class="brackets">2</span></dt>
 <dd><p>L. F. Kozachenko, N. N. Leonenko, “Sample Estimate of the Entropy
 of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16</p>
 </dd>
@@ -364,7 +383,7 @@ of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16</p>
 <dl class="function">
 <dt id="ballet.validation.entropy.estimate_entropy">
 <code class="descclassname">ballet.validation.entropy.</code><code class="descname">estimate_entropy</code><span class="sig-paren">(</span><em>X</em>, <em>epsilon=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#estimate_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.estimate_entropy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Estimates a dataset’s Shannon entropy.</p>
+<dd><p>Estimate a dataset’s Shannon entropy.</p>
 <p>This function can take datasets of mixed discrete and continuous
 features, and uses a set of heuristics to determine which functions
 to apply to each.</p>
@@ -405,15 +424,15 @@ computing mutual information.</p>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
-<p>References:
-.. [1] A. Kraskov, H. Stogbauer and P. Grassberger, “Estimating mutual</p>
-<blockquote>
-<div><p>information”. Phys. Rev. E 69, 2004.</p>
-</div></blockquote>
+<p>References:</p>
 <dl class="footnote brackets">
-<dt class="label" id="id2"><span class="brackets">2</span></dt>
+<dt class="label" id="id4"><span class="brackets">1</span></dt>
+<dd><p>A. Kraskov, H. Stogbauer and P. Grassberger, “Estimating mutual
+information”. Phys. Rev. E 69, 2004.</p>
+</dd>
+<dt class="label" id="id5"><span class="brackets">2</span></dt>
 <dd><p>L. F. Kozachenko, N. N. Leonenko, “Sample Estimate of the Entropy
-of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16</p>
+of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -421,10 +440,12 @@ of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16</p>
 <dl class="function">
 <dt id="ballet.validation.entropy.estimate_mutual_information">
 <code class="descclassname">ballet.validation.entropy.</code><code class="descname">estimate_mutual_information</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#estimate_mutual_information"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.estimate_mutual_information" title="Permalink to this definition">¶</a></dt>
-<dd><p>Estimates the mutual information of two datasets.
-Mutual information is a measure of dependence between
+<dd><p>Estimate the mutual information of two datasets.</p>
+<p>Mutual information is a measure of dependence between
 two datasets and is calculated as:</p>
-<p>$ I(x;y) = H(x) + H(y) - H(x,y)$</p>
+<blockquote>
+<div><p>$I(x;y) = H(x) + H(y) - H(x,y)$</p>
+</div></blockquote>
 <p>Where H(x) is the Shannon entropy of x. For continuous datasets,
 adapts the Kraskov Estimator [1] for mutual information.</p>
 <dl class="field-list simple">
@@ -447,11 +468,13 @@ there are continuous columns present.</p>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
-<p>References:
-.. [1] A. Kraskov, H. Stogbauer and P. Grassberger, “Estimating mutual</p>
-<blockquote>
-<div><p>information”. Phys. Rev. E 69, 2004.</p>
-</div></blockquote>
+<p>References:</p>
+<dl class="footnote brackets">
+<dt class="label" id="id6"><span class="brackets">1</span></dt>
+<dd><p>A. Kraskov, H. Stogbauer and P. Grassberger, “Estimating mutual
+information”. Phys. Rev. E 69, 2004.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>

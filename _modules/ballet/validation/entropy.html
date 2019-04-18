@@ -90,12 +90,21 @@
 <p class="caption"><span class="caption-text">User Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../maintainer_guide.html">Maintainer Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../maintainer_guide.html#ballet-projects">Ballet projects</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../maintainer_guide.html#creating-a-ballet-project">Creating a Ballet project</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#project-instantiation">Project instantiation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#developing-new-features">Developing new features</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#validating-features">Validating features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#project-installation">Project installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#collaboration-via-git-and-github">Collaboration via git and GitHub</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#enabling-continuous-integration">Enabling continuous integration</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../maintainer_guide.html#developing-new-features">Developing new features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#validating-features">Validating features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#pruning-features">Pruning features</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../maintainer_guide.html#applying-the-feature-engineering-pipeline">Applying the feature engineering pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../maintainer_guide.html#updating-the-framework">Updating the framework</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributor_guide.html">Contributor Guide</a></li>
@@ -135,6 +144,12 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.update.html">ballet.update module</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cli_reference.html">CLI Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../cli_reference.html#ballet-quickstart">quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cli_reference.html#ballet-start-new-feature">start-new-feature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cli_reference.html#ballet-update-project-template">update-project-template</a></li>
 </ul>
 </li>
 </ul>
@@ -269,7 +284,8 @@
 
 
 <div class="viewcode-block" id="estimate_cont_entropy"><a class="viewcode-back" href="../../../api/ballet.validation.entropy.html#ballet.validation.entropy.estimate_cont_entropy">[docs]</a><span class="k">def</span> <span class="nf">estimate_cont_entropy</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Estimates the Shannon entropy of a discrete dataset.</span>
+    <span class="sd">&quot;&quot;&quot;Estimate the Shannon entropy of a discrete dataset.</span>
+
 <span class="sd">    Based off the Kraskov Estimator [1] and Kozachenko [2]</span>
 <span class="sd">    estimators for a dataset&#39;s Shannon entropy.</span>
 
@@ -298,6 +314,7 @@
 <span class="sd">            mutual information.</span>
 
 <span class="sd">    References:</span>
+
 <span class="sd">    .. [1] A. Kraskov, H. Stogbauer and P. Grassberger, &quot;Estimating mutual</span>
 <span class="sd">           information&quot;. Phys. Rev. E 69, 2004.</span>
 <span class="sd">    .. [2] L. F. Kozachenko, N. N. Leonenko, &quot;Sample Estimate of the Entropy</span>
@@ -355,7 +372,7 @@
 
 
 <div class="viewcode-block" id="estimate_entropy"><a class="viewcode-back" href="../../../api/ballet.validation.entropy.html#ballet.validation.entropy.estimate_entropy">[docs]</a><span class="k">def</span> <span class="nf">estimate_entropy</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Estimates a dataset&#39;s Shannon entropy.</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Estimate a dataset&#39;s Shannon entropy.</span>
 
 <span class="sd">    This function can take datasets of mixed discrete and continuous</span>
 <span class="sd">    features, and uses a set of heuristics to determine which functions</span>
@@ -393,11 +410,11 @@
 <span class="sd">            computing mutual information.</span>
 
 <span class="sd">    References:</span>
+
 <span class="sd">    .. [1] A. Kraskov, H. Stogbauer and P. Grassberger, &quot;Estimating mutual</span>
 <span class="sd">           information&quot;. Phys. Rev. E 69, 2004.</span>
 <span class="sd">    .. [2] L. F. Kozachenko, N. N. Leonenko, &quot;Sample Estimate of the Entropy</span>
-<span class="sd">           of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16</span>
-
+<span class="sd">           of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">X</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
     <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
@@ -451,6 +468,7 @@
 <span class="sd">            epsilon as described above.</span>
 
 <span class="sd">    References:</span>
+
 <span class="sd">    .. [1] A. Kraskov, H. Stogbauer and P. Grassberger, &quot;Estimating mutual</span>
 <span class="sd">           information&quot;. Phys. Rev. E 69, 2004.</span>
 
@@ -468,11 +486,12 @@
 
 
 <div class="viewcode-block" id="estimate_conditional_information"><a class="viewcode-back" href="../../../api/ballet.validation.entropy.html#ballet.validation.entropy.estimate_conditional_information">[docs]</a><span class="k">def</span> <span class="nf">estimate_conditional_information</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Estimates the conditional mutual information of</span>
-<span class="sd">    three datasets. Conditional mutual information is the</span>
+    <span class="sd">&quot;&quot;&quot; Estimate the conditional mutual information of three datasets.</span>
+
+<span class="sd">    Conditional mutual information is the</span>
 <span class="sd">    mutual information of two datasets, given a third:</span>
 
-<span class="sd">    $ I(x;y|z) = H(x,z) + H(y,z) - H(x,y,z) - H(z) $</span>
+<span class="sd">        $ I(x;y|z) = H(x,z) + H(y,z) - H(x,y,z) - H(z) $</span>
 
 <span class="sd">    Where H(x) is the Shannon entropy of x. For continuous datasets,</span>
 <span class="sd">    adapts the Kraskov Estimator [1] for mutual information.</span>
@@ -496,9 +515,9 @@
 <span class="sd">            if there are continuous columns present.</span>
 
 <span class="sd">    References:</span>
+
 <span class="sd">    .. [1] A. Kraskov, H. Stogbauer and P. Grassberger, &quot;Estimating mutual</span>
 <span class="sd">           information&quot;. Phys. Rev. E 69, 2004.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">xz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">z</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">yz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -512,11 +531,12 @@
 
 
 <div class="viewcode-block" id="estimate_mutual_information"><a class="viewcode-back" href="../../../api/ballet.validation.entropy.html#ballet.validation.entropy.estimate_mutual_information">[docs]</a><span class="k">def</span> <span class="nf">estimate_mutual_information</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Estimates the mutual information of two datasets.</span>
+    <span class="sd">&quot;&quot;&quot;Estimate the mutual information of two datasets.</span>
+
 <span class="sd">    Mutual information is a measure of dependence between</span>
 <span class="sd">    two datasets and is calculated as:</span>
 
-<span class="sd">    $ I(x;y) = H(x) + H(y) - H(x,y)$</span>
+<span class="sd">        $I(x;y) = H(x) + H(y) - H(x,y)$</span>
 
 <span class="sd">    Where H(x) is the Shannon entropy of x. For continuous datasets,</span>
 <span class="sd">    adapts the Kraskov Estimator [1] for mutual information.</span>
@@ -524,6 +544,7 @@
 <span class="sd">    Args:</span>
 <span class="sd">        x (array-like): An array with shape (n_samples, n_features_x)</span>
 <span class="sd">        y (array-like): An array with shape (n_samples, n_features_y)</span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">        float: A floating point number representing the mutual</span>
 <span class="sd">            information of x and y. This calculation is *exact*</span>
@@ -531,9 +552,9 @@
 <span class="sd">            there are continuous columns present.</span>
 
 <span class="sd">    References:</span>
-<span class="sd">    .. [1] A. Kraskov, H. Stogbauer and P. Grassberger, &quot;Estimating mutual</span>
-<span class="sd">           information&quot;. Phys. Rev. E 69, 2004.</span>
 
+<span class="sd">    .. [1] A. Kraskov, H. Stogbauer and P. Grassberger, &quot;Estimating mutual</span>
+<span class="sd">      information&quot;. Phys. Rev. E 69, 2004.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">xy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">epsilon</span> <span class="o">=</span> <span class="n">_calculate_epsilon</span><span class="p">(</span><span class="n">xy</span><span class="p">)</span>

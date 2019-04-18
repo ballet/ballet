@@ -92,12 +92,21 @@
 <p class="caption"><span class="caption-text">User Guides</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Maintainer Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#ballet-projects">Ballet projects</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#creating-a-ballet-project">Creating a Ballet project</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#project-instantiation">Project instantiation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#developing-new-features">Developing new features</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#validating-features">Validating features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#project-installation">Project installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#collaboration-via-git-and-github">Collaboration via git and GitHub</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#enabling-continuous-integration">Enabling continuous integration</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#developing-new-features">Developing new features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#validating-features">Validating features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pruning-features">Pruning features</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#applying-the-feature-engineering-pipeline">Applying the feature engineering pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#updating-the-framework">Updating the framework</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributor_guide.html">Contributor Guide</a></li>
@@ -137,6 +146,12 @@
 <li class="toctree-l3"><a class="reference internal" href="api/ballet.update.html">ballet.update module</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cli_reference.html">CLI Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cli_reference.html#ballet-quickstart">quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_reference.html#ballet-start-new-feature">start-new-feature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_reference.html#ballet-update-project-template">update-project-template</a></li>
 </ul>
 </li>
 </ul>
@@ -238,21 +253,34 @@
             
   <div class="section" id="maintainer-guide">
 <h1>Maintainer Guide<a class="headerlink" href="#maintainer-guide" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="ballet-projects">
-<h2>Ballet projects<a class="headerlink" href="#ballet-projects" title="Permalink to this headline">¶</a></h2>
-<p>In this section, we will describe how the Ballet framework can be leveraged for a hypothetical
-collaborative feature engineering project, which we will call ballet-project.</p>
-<p>Before creating ballet-project, the maintainer must have a training dataset used for developing features and details about
-the prediction problem they are ultimately trying to solve.</p>
+<div class="section" id="creating-a-ballet-project">
+<h2>Creating a Ballet project<a class="headerlink" href="#creating-a-ballet-project" title="Permalink to this headline">¶</a></h2>
+<p>You and your hundred smartest colleagues want to collaborate on a feature engineering project. How
+will you organize your work? You are in the right place to learn. With the Ballet framework,
+contributors to your project will write self-contained feature engineering source code. Then,
+Ballet will take care of the rest: submitting proposed features as pull requests to your GitHub
+repository, carefully validating the proposed features, and combining all of the accepted features
+into a single feature engineering pipeline.</p>
+<p>In this section, we will describe how the Ballet framework can be leveraged for your project, which
+we will call <code class="docutils literal notranslate"><span class="pre">myproject</span></code>.</p>
+<div class="section" id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h3>
+<p>Before creating the project, the maintainer must have a training dataset used for developing
+features and details about the prediction problem they are ultimately trying to solve.</p>
+<p>Then, <a class="reference external" href="Installation.html">install Ballet</a> on your development machine.</p>
+<p>For some functionality, you may also want to make a GitHub API token accessible to Ballet. See
+<a class="reference external" href="https://github.com/settings/tokens">Personal access tokens</a>. Paste your token in <code class="docutils literal notranslate"><span class="pre">$HOME/.github/token.txt</span></code>. (Definitely do not
+save it in any git-tracked files in your project.)</p>
+</div>
 <div class="section" id="project-instantiation">
 <h3>Project instantiation<a class="headerlink" href="#project-instantiation" title="Permalink to this headline">¶</a></h3>
 <p>To instantiate a project, use the <code class="docutils literal notranslate"><span class="pre">ballet</span> <span class="pre">quickstart</span></code> command:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> ballet-quickstart
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> ballet quickstart
 <span class="go">full_name [Your Name]: Jane Developer</span>
 <span class="go">email [you@example.com]: jane@developer.org</span>
-<span class="go">github_username [jane]: jane_developer</span>
-<span class="go">project_name [Predict Foo]: Predict house prices</span>
-<span class="go">project_slug [predict_house_prices]: ballet_project</span>
+<span class="go">github_owner [jane]: jane_developer</span>
+<span class="go">project_name [Predict Foo]: Predict my thing</span>
+<span class="go">project_slug [predict_my_thing]: myproject</span>
 <span class="go">Select problem_type:</span>
 <span class="go">1 - classification</span>
 <span class="go">2 - regression</span>
@@ -295,72 +323,159 @@ the prediction problem they are ultimately trying to solve.</p>
 <span class="go">6 - neg_median_absolute_error</span>
 <span class="go">7 - r2</span>
 <span class="go">Choose from 1, 2, 3, 4, 5, 6, 7 (1, 2, 3, 4, 5, 6, 7) [1]: 5</span>
-<span class="go">Initialized empty Git repository in /tmp/ballet_project/.git/</span>
-<span class="go">[master (root-commit) 95a70e9] Automatically generated files from ballet-quickstart</span>
-<span class="go"> 11 files changed, 252 insertions(+)</span>
-<span class="go"> create mode 100644 .gitignore</span>
-<span class="go"> create mode 100644 .travis.yml</span>
-<span class="go"> create mode 100644 README.md</span>
-<span class="go"> create mode 100644 ballet.yml</span>
-<span class="go"> create mode 100644 ballet_project/__init__.py</span>
-<span class="go"> create mode 100644 ballet_project/conf.py</span>
-<span class="go"> create mode 100644 ballet_project/features/__init__.py</span>
-<span class="go"> create mode 100644 ballet_project/features/contrib/__init__.py</span>
-<span class="go"> create mode 100644 ballet_project/load_data.py</span>
-<span class="go"> create mode 100644 requirements.txt</span>
-<span class="go"> create mode 100755 validate.py</span>
 </pre></div>
 </div>
-<p>This command uses <a class="reference external" href="https://cookiecutter.readthedocs.io/en/latest">cookiecutter</a> to render a templated project using information supplied by the user. The resulting
-files are then committed to a new git repository. Note that the specification of a scorer for the not-chosen problem
-type can be skipped (by selecting <code class="docutils literal notranslate"><span class="pre">n/a</span></code>).</p>
-<p>Let’s see what files have been created:</p>
+<p>This command uses <a class="reference external" href="https://cookiecutter.readthedocs.io/en/latest">cookiecutter</a> to render a project template using information supplied by the
+project maintainer. The resulting files are then committed to a new git repository. Note that the
+specification of a scorer for the not-chosen problem type can be skipped (by selecting <code class="docutils literal notranslate"><span class="pre">n/a</span></code>).</p>
+<p>Let’s see what files have we have created:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> tree -a myproject/ -I .git
+<span class="go">myproject/</span>
+<span class="go">├── .cookiecutter_context.json</span>
+<span class="go">├── .gitignore</span>
+<span class="go">├── .travis.yml</span>
+<span class="go">├── Makefile</span>
+<span class="go">├── README.md</span>
+<span class="go">├── ballet.yml</span>
+<span class="go">├── myproject</span>
+<span class="go">│   ├── __init__.py</span>
+<span class="go">│   ├── conf.py</span>
+<span class="go">│   ├── features</span>
+<span class="go">│   │   ├── __init__.py</span>
+<span class="go">│   │   └── contrib</span>
+<span class="go">│   │       └── __init__.py</span>
+<span class="go">│   └── load_data.py</span>
+<span class="go">├── setup.py</span>
+<span class="go">└── validate.py</span>
+</pre></div>
+</div>
+<p>Importantly, by keeping this project structure intact, Ballet will be able to automatically care
+for your feature engineering pipeline.</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">.gitignore</span></code>: a reference gitignore file.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">.travis.yml</span></code>: a <a class="reference external" href="https://travis-ci.org">Travis CI</a> configuration file pre-configured to run a ballet validation suite.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">README.md</span></code>: a basic README for your project.</p></li>
-<li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">ballet.yml</span></code>: a Ballet configuration file, with details about the prediction problem, the training data, and</dt><dd><p>location of feature engineering source code.</p>
-</dd>
-</dl>
-</li>
-<li><p>ballet_project: a Python package that implements an empty feature engineering pipeline.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>: package dependencies</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">validate.py</span></code>: a driver script for the validation suite that calls out to Ballet for most functionality.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ballet.yml</span></code>: a Ballet configuration file, with details about the prediction problem, the
+training data, and location of feature engineering source code.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.travis.yml</span></code>: a <a class="reference external" href="https://travis-ci.org">Travis CI</a> configuration file pre-configured to run a Ballet validation
+suite.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">validate.py</span></code>: a driver script for the validation suite that calls out to Ballet for most
+functionality.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">myproject/load_data.py</span></code>: this is where you will write code to load training data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">myproject/features/contrib</span></code>: this is where the features created by your project’s
+contributors will live.</p></li>
 </ul>
+</div>
+<div class="section" id="project-installation">
+<h3>Project installation<a class="headerlink" href="#project-installation" title="Permalink to this headline">¶</a></h3>
+<p>For local development, you can then install your project. This will make your feature
+engineering pipeline accessible in interactive settings (Python interpreter, Jupyter notebook)
+and as a command-line tool.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">cd</span> myproject
+<span class="gp">$</span> conda create -n myproject -y <span class="o">&amp;&amp;</span> conda activate myproject  <span class="c1"># or your preferred environment tool</span>
+<span class="gp">(myproject) $</span> make install
+</pre></div>
+</div>
+</div>
+<div class="section" id="collaboration-via-git-and-github">
+<h3>Collaboration via git and GitHub<a class="headerlink" href="#collaboration-via-git-and-github" title="Permalink to this headline">¶</a></h3>
+<p>Under the hood, contributors will collaborate using the powerful functionality provided by git
+and GitHub. In fact, after the quickstart step, you already have a git-tracked repository and a
+git remote set up.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">cd</span> myproject
+
+<span class="gp">$</span> git log
+<span class="go">commit 5c8ec6773aff4030fc1256a7c9e13675d620bb6e (HEAD -&gt; master, project-template)</span>
+<span class="go">Author: Jane Developer &lt;jane@developer.org&gt;</span>
+<span class="go">Date:   Tue Apr 16 17:27:44 2019 -0400</span>
+
+<span class="go">    Automatically generated files from ballet-quickstart</span>
+
+<span class="gp">$</span> git remote -v
+<span class="go">origin       git@github.com:jane_developer/myproject (fetch)</span>
+<span class="go">origin       git@github.com:jane_developer/myproject (push)</span>
+</pre></div>
+</div>
+<p>Next, you must create the matching GitHub project, <code class="docutils literal notranslate"><span class="pre">myproject</span></code>, under the account of the
+<code class="docutils literal notranslate"><span class="pre">github_owner</span></code> that you specified earlier (in this case, <code class="docutils literal notranslate"><span class="pre">jane_developer</span></code>). Do not
+initialize the project with any sample files that GitHub offers.</p>
+<p>After you having created the project on GitHub, push your local copy.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> git push origin master
+</pre></div>
+</div>
+</div>
+<div class="section" id="enabling-continuous-integration">
+<h3>Enabling continuous integration<a class="headerlink" href="#enabling-continuous-integration" title="Permalink to this headline">¶</a></h3>
+<p>Ballet makes uses of the continuous integration service <a class="reference external" href="https://travis-ci.org">Travis CI</a> in order to validate code
+that contributors propose as well as perform streaming logical feature selection. You must
+enable Travis CI for your project on GitHub by <a class="reference external" href="https://docs.travis-ci.com/user/tutorial/#to-get-started-with-travis-ci">following these simple directions</a>. You can skip any steps that have
+to do with customizing the <code class="docutils literal notranslate"><span class="pre">.travis.yml</span></code> file, as we have already done that for you in the
+quickstart.</p>
+</div>
 </div>
 <div class="section" id="developing-new-features">
-<h3>Developing new features<a class="headerlink" href="#developing-new-features" title="Permalink to this headline">¶</a></h3>
-<p>A contributors wants to develop a new feature for inclusion in the project. First, they fork the project and create a
-new Python subpackage under the “contrib” directory. In this example, the contrib directory is
-<code class="docutils literal notranslate"><span class="pre">ballet_project/features/contrib</span></code>, but it can be changed in <code class="docutils literal notranslate"><span class="pre">ballet.yml</span></code>.</p>
-<ul class="simple">
-<li><p>The new subpackage must be named like <code class="docutils literal notranslate"><span class="pre">user_&lt;github</span> <span class="pre">username&gt;</span></code>.</p></li>
-<li><p>The new submodule that will contain the feature must be named like <code class="docutils literal notranslate"><span class="pre">feature_&lt;feature</span> <span class="pre">name&gt;.py</span></code>.</p></li>
-</ul>
-<p>Within the feature submodule, the contributor can write arbitrary Python code. Ultimately, a single object that is an
-instance of <code class="docutils literal notranslate"><span class="pre">ballet.Feature</span></code> must be defined; it will be imported by the feature engineering pipeline.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ballet.eng</span>
-<span class="kn">from</span> <span class="nn">ballet</span> <span class="kn">import</span> <span class="n">Feature</span>
-
-<span class="nb">input</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span>
-<span class="n">transformer</span> <span class="o">=</span> <span class="n">ballet</span><span class="o">.</span><span class="n">eng</span><span class="o">.</span><span class="n">misc</span><span class="o">.</span><span class="n">IdentityTransformer</span><span class="p">()</span>
-<span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="n">transformer</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>In this example, a feature is defined that will receive column <code class="docutils literal notranslate"><span class="pre">'A'</span></code> from the data and passes it through unmodified.</p>
-<p>The contributor now commits their changes and creates a <a class="reference external" href="https://help.github.com/articles/about-pull-requests/">pull request</a> to the <code class="docutils literal notranslate"><span class="pre">ballet_project</span></code> repository.</p>
-</div>
+<h2>Developing new features<a class="headerlink" href="#developing-new-features" title="Permalink to this headline">¶</a></h2>
+<p>At this point, your feature engineering pipeline contains no features. How will your
+contributors add more?</p>
+<p>Using any of a number of development workflows, contributors write new features and submit them
+to your project for validation. For more details on the contributor workflow, see <a href="#id1"><span class="problematic" id="id2">`Contributor
+Guide`_</span></a>.</p>
 <div class="section" id="validating-features">
 <h3>Validating features<a class="headerlink" href="#validating-features" title="Permalink to this headline">¶</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">ballet_project</span></code> repository has received a new pull request which triggers an automatic evaluation.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">myproject</span></code> repository has received a new pull request which triggers an automatic
+evaluation.</p>
 <ol class="arabic simple">
-<li><p>The PR is downloaded by an external continuous integration service, <a class="reference external" href="https://travis-ci.org">Travis CI</a>.</p></li>
+<li><p>The PR is examined by the CI service.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">validate.py</span></code> script is run, which validates the proposed feature contribution using
+functionality within the <code class="docutils literal notranslate"><span class="pre">ballet.validation</span></code> package.</p></li>
+<li><p>If the feature can be validated successfully, the PR passes, and the proposed feature can be
+merged into the project.</p></li>
 </ol>
-<p>2. The <code class="docutils literal notranslate"><span class="pre">validate.py</span></code> script is run, which validates the proposed feature contribution using functionality within
-the <code class="docutils literal notranslate"><span class="pre">ballet.validation</span></code> module.
-3. If the feature can be validated successfully, the PR passes, and the proposed feature can be merged into the project.</p>
 </div>
+<div class="section" id="pruning-features">
+<h3>Pruning features<a class="headerlink" href="#pruning-features" title="Permalink to this headline">¶</a></h3>
+<p>Once a feature has been accepted and merged into your project’s master branch, it may mean that
+an older feature has now become “redundant”: the new feature is providing all of the information
+contained in the old feature, and more.</p>
+<ol class="arabic simple">
+<li><p>Each commit to master is examined by the CI service.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">validate.py</span></code> script is run and automatically determines whether the commit is a merge
+commit that comes from merging an accepted feature.</p></li>
+<li><p>If so, then the set of existing features is pruned to remove redundant features.</p></li>
+<li><p>Pruned features are automatically deleted from your source repository by an automated service.</p></li>
+</ol>
+</div>
+</div>
+<div class="section" id="applying-the-feature-engineering-pipeline">
+<h2>Applying the feature engineering pipeline<a class="headerlink" href="#applying-the-feature-engineering-pipeline" title="Permalink to this headline">¶</a></h2>
+<p>As your repository fills with features, your feature engineering pipeline is always available to
+engineer features from new data points or datasets.</p>
+<p>For interactive usage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">myproject</span>
+
+<span class="c1"># load training data and fit pipeline</span>
+<span class="n">X_df_tr</span><span class="p">,</span> <span class="n">y_df_tr</span> <span class="o">=</span> <span class="n">myproject</span><span class="o">.</span><span class="n">load_data</span><span class="o">.</span><span class="n">load_data</span><span class="p">()</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">myproject</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">X_df_tr</span><span class="p">,</span> <span class="n">y_df_tr</span><span class="p">)</span>
+<span class="n">mapper_X</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;mapper_X&#39;</span><span class="p">]</span>
+<span class="n">mapper_y</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;mapper_y&#39;</span><span class="p">]</span>
+
+<span class="c1"># load new data and apply pipeline</span>
+<span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span> <span class="o">=</span> <span class="n">myproject</span><span class="o">.</span><span class="n">load_data</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">input_dir</span><span class="o">=</span><span class="s1">&#39;/path/to/new/data&#39;</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">mapper_X</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_df</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">mapper_y</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">y_df</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For command-line usage:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> myproject-engineer-features path/to/test/data path/to/features/output
+</pre></div>
+</div>
+</div>
+<div class="section" id="updating-the-framework">
+<h2>Updating the framework<a class="headerlink" href="#updating-the-framework" title="Permalink to this headline">¶</a></h2>
+<p>If there are updates to the Ballet framework after you have started working on your project, you
+can access them in two ways.</p>
+<p>First, you can update the <code class="docutils literal notranslate"><span class="pre">ballet</span></code> package using the usual <code class="docutils literal notranslate"><span class="pre">pip</span></code> mechanism, via <code class="docutils literal notranslate"><span class="pre">make</span>
+<span class="pre">install</span></code>.</p>
+<p>Second, if their have been updates to the project template used to create new projects, you can
+incorporate these improvements into your own project with the <code class="docutils literal notranslate"><span class="pre">ballet</span> <span class="pre">update-project-template</span></code>
+command. Its usage is described in more detail <a class="reference external" href="cli_reference.html#ballet-update-project-template">here</a>.</p>
 </div>
 </div>
 

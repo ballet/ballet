@@ -91,12 +91,21 @@
 <p class="caption"><span class="caption-text">User Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="maintainer_guide.html">Maintainer Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="maintainer_guide.html#ballet-projects">Ballet projects</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="maintainer_guide.html#creating-a-ballet-project">Creating a Ballet project</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="maintainer_guide.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="maintainer_guide.html#project-instantiation">Project instantiation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="maintainer_guide.html#developing-new-features">Developing new features</a></li>
-<li class="toctree-l3"><a class="reference internal" href="maintainer_guide.html#validating-features">Validating features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maintainer_guide.html#project-installation">Project installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maintainer_guide.html#collaboration-via-git-and-github">Collaboration via git and GitHub</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maintainer_guide.html#enabling-continuous-integration">Enabling continuous integration</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="maintainer_guide.html#developing-new-features">Developing new features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="maintainer_guide.html#validating-features">Validating features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maintainer_guide.html#pruning-features">Pruning features</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="maintainer_guide.html#applying-the-feature-engineering-pipeline">Applying the feature engineering pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="maintainer_guide.html#updating-the-framework">Updating the framework</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributor_guide.html">Contributor Guide</a></li>
@@ -136,6 +145,12 @@
 <li class="toctree-l3"><a class="reference internal" href="api/ballet.update.html">ballet.update module</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cli_reference.html">CLI Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cli_reference.html#ballet-quickstart">quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_reference.html#ballet-start-new-feature">start-new-feature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_reference.html#ballet-update-project-template">update-project-template</a></li>
 </ul>
 </li>
 </ul>
@@ -239,7 +254,8 @@
 <h1 id="index">Index</h1>
 
 <div class="genindex-jumpbox">
- <a href="#A"><strong>A</strong></a>
+ <a href="#Symbols"><strong>Symbols</strong></a>
+ | <a href="#A"><strong>A</strong></a>
  | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
@@ -265,6 +281,28 @@
  | <a href="#Y"><strong>Y</strong></a>
  
 </div>
+<h2 id="Symbols">Symbols</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    --version
+
+      <ul>
+        <li><a href="cli_reference.html#cmdoption-ballet-version">ballet command line option</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    -p, --push, --no-push
+
+      <ul>
+        <li><a href="cli_reference.html#cmdoption-ballet-update-project-template-p">ballet-update-project-template command line option</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -316,6 +354,20 @@
 </li>
       <li><a href="api/ballet.html#module-ballet">ballet (module)</a>
 </li>
+      <li>
+    ballet command line option
+
+      <ul>
+        <li><a href="cli_reference.html#cmdoption-ballet-version">--version</a>
+</li>
+      </ul></li>
+      <li>
+    ballet-update-project-template command line option
+
+      <ul>
+        <li><a href="cli_reference.html#cmdoption-ballet-update-project-template-p">-p, --push, --no-push</a>
+</li>
+      </ul></li>
       <li><a href="api/ballet.cli.html#module-ballet.cli">ballet.cli (module)</a>
 </li>
       <li><a href="api/ballet.compat.html#module-ballet.compat">ballet.compat (module)</a>
@@ -362,12 +414,12 @@
 </li>
       <li><a href="api/ballet.util.git.html#module-ballet.util.git">ballet.util.git (module)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/ballet.util.io.html#module-ballet.util.io">ballet.util.io (module)</a>
 </li>
       <li><a href="api/ballet.util.log.html#module-ballet.util.log">ballet.util.log (module)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/ballet.util.mod.html#module-ballet.util.mod">ballet.util.mod (module)</a>
 </li>
       <li><a href="api/ballet.util.testing.html#module-ballet.util.testing">ballet.util.testing (module)</a>
@@ -624,8 +676,6 @@
 </li>
       <li><a href="api/ballet.util.log.html#ballet.util.log.LevelFilter.filter">filter() (ballet.util.log.LevelFilter method)</a>
 </li>
-      <li><a href="api/ballet.project.html#ballet.project.find_configs">find_configs() (in module ballet.project)</a>
-</li>
       <li><a href="api/ballet.eng.base.html#ballet.eng.base.GroupwiseTransformer.fit">fit() (ballet.eng.base.GroupwiseTransformer method)</a>
 
       <ul>
@@ -656,7 +706,7 @@
 </li>
       <li><a href="api/ballet.util.git.html#ballet.util.git.get_branch">get_branch() (in module ballet.util.git)</a>
 </li>
-      <li><a href="api/ballet.project.html#ballet.project.get_config_paths">get_config_paths() (in module ballet.project)</a>
+      <li><a href="api/ballet.project.html#ballet.project.get_config_path">get_config_path() (in module ballet.project)</a>
 </li>
       <li><a href="api/ballet.contrib.html#ballet.contrib.get_contrib_features">get_contrib_features() (in module ballet.contrib)</a>
 </li>
@@ -857,6 +907,8 @@
       <li><a href="api/ballet.modeling.scoring.html#ballet.modeling.scoring.ScorerInfo.name">name (ballet.modeling.scoring.ScorerInfo attribute)</a>
 </li>
       <li><a href="api/ballet.eng.misc.html#ballet.eng.misc.NamedFramer">NamedFramer (class in ballet.eng.misc)</a>
+</li>
+      <li><a href="api/ballet.util.html#ballet.util.needs_path">needs_path() (in module ballet.util)</a>
 </li>
       <li><a href="api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator.new_feature">new_feature (ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator attribute)</a>
 </li>
