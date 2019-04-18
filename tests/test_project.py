@@ -2,65 +2,50 @@ import unittest
 from unittest.mock import PropertyMock, patch
 
 from ballet.compat import pathlib
-from ballet.exc import ConfigurationError
 from ballet.project import (
-    DEFAULT_CONFIG_NAME, Project, find_configs, get_config_paths,
-    make_config_get)
+    DEFAULT_CONFIG_NAME, Project, get_config_path, make_config_get)
 
 
 class ProjectTest(unittest.TestCase):
 
-    def test_get_config_paths(self):
+    def test_get_config_path(self):
         package_root = "."
-        config_paths = get_config_paths(package_root)
+        path = get_config_path(package_root)
 
-        self.assertGreater(len(config_paths), 0)
+        self.assertIn(DEFAULT_CONFIG_NAME, str(path))
 
-        for path in config_paths:
-            self.assertIn(DEFAULT_CONFIG_NAME, str(path))
+    @unittest.expectedFailure
+    def test_load_config_at_path(self):
+        raise NotImplementedError
 
-    @patch('ballet.project.get_config_paths')
-    def test_find_configs_no_paths_fails(self, mock_get_config_paths):
-        mock_get_config_paths.return_value = []
-        package_root = None
-        with self.assertRaises(ConfigurationError):
-            find_configs(package_root)
+    @unittest.expectedFailure
+    def test_load_config_in_dir(self):
+        raise NotImplementedError
 
-    @patch('ballet.project.get_config_paths')
-    def test_find_configs_no_valid_paths_fails(self, mock_get_config_paths):
-        mock_get_config_paths.return_value = [
-            pathlib.Path('/foo', 'bar', 'baz', DEFAULT_CONFIG_NAME)
-        ]
-        package_root = None
-        with self.assertRaises(ConfigurationError):
-            find_configs(package_root)
+    @unittest.expectedFailure
+    def test_config_get(self):
+        raise NotImplementedError
 
     @patch.object(pathlib, 'Path')
-    @patch('ballet.project.find_configs')
-    def test_config_get(self, mock_find_configs, mock_Path):
-        config1 = {
+    @patch('ballet.project._get_project_root_from_conf_path')
+    @patch('ballet.project.load_config_at_path')
+    def test_make_config_get(self,
+                             mock_load_config_at_path,
+                             mock_get_project_root_from_conf_path,
+                             mock_Path):
+        config = {
             'problem': {
                 'name': 'foo',
                 'kind': 'Z',
             },
         }
-        path1 = None
-        config2 = {
-            'problem': {
-                'name': 'bar',
-                'type': 'A',
-            },
-        }
-        path2 = None
-        config_info = [(config1, path1), (config2, path2)]
-        mock_find_configs.return_value = config_info
+        mock_load_config_at_path.return_value = config
 
-        package_root = None
-        get = make_config_get(package_root)
+        conf_path = None
+        get = make_config_get(conf_path)
 
         self.assertEqual(get('problem', 'name'), 'foo')
         self.assertEqual(get('problem', 'kind'), 'Z')
-        self.assertEqual(get('problem', 'type'), 'A')
 
         # with default
         self.assertEqual(get('nonexistent', 'path', default=3), 3)
