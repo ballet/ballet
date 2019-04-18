@@ -19,6 +19,7 @@ from ballet.validation.project_structure.validator import (
 TEST_TYPE_ENV_VAR = 'BALLET_TEST_TYPE'
 PRUNER_MESSAGE = 'Found Redundant Feature: '
 
+
 @decorator
 def validation_stage(call, message):
     call = stacklog(logger.info,
