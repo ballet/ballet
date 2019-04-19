@@ -17,6 +17,7 @@ from ballet.validation.project_structure.validator import (
     ProjectStructureValidator)
 
 TEST_TYPE_ENV_VAR = 'BALLET_TEST_TYPE'
+PRUNER_MESSAGE = 'Found Redundant Feature: '
 
 
 @decorator
@@ -102,7 +103,7 @@ def prune_existing_features(project, force=False):
 
     # propose removal
     for feature in redundant_features:
-        logger.debug('Would prune feature {feature!s}'.format(feature=feature))
+        logger.debug(PRUNER_MESSAGE + feature.source)
 
     return redundant_features
 
