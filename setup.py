@@ -13,6 +13,7 @@ with open('HISTORY.md') as history_file:
 
 requirements = [
     'baytune>=0.2.1',
+    'black',
     'cookiecutter',
     'Click>=6.0',
     'dill',
