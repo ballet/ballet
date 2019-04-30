@@ -790,6 +790,8 @@ class IoTest(unittest.TestCase):
 
 class CodeTest(unittest.TestCase):
 
+    @unittest.skipIf(sys.version_info < (3, 6),
+                     "black requires py36 or higher")
     def test_blacken_code(self):
         input = '''\
         l = [1,
