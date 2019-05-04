@@ -12,11 +12,12 @@ from ballet.validation.common import (
 from ballet.validation.feature_acceptance.validator import (
     GFSSFAcceptanceEvaluator)
 from ballet.validation.feature_api.validator import FeatureApiValidator
-from ballet.validation.feature_pruning.validator import NoOpPruningEvaluator
+from ballet.validation.feature_pruning.validator import GFSSFPruningEvaluator
 from ballet.validation.project_structure.validator import (
     ProjectStructureValidator)
 
 TEST_TYPE_ENV_VAR = 'BALLET_TEST_TYPE'
+PRUNER_MESSAGE = 'Found Redundant Feature: '
 
 
 @decorator
@@ -89,17 +90,20 @@ def evaluate_feature_performance(project, force=False):
 @validation_stage('pruning existing features')
 def prune_existing_features(project, force=False):
     """Prune existing features"""
-    if not force and project.on_master():
+    if not force and not project.on_master_after_merge():
         raise SkippedValidationTest('Not on master')
 
     out = project.build()
     X_df, y, features = out['X_df'], out['y'], out['features']
-    evaluator = NoOpPruningEvaluator(X_df, y, features)
+    proposed_feature = get_proposed_feature(project)
+    accepted_features = get_accepted_features(features, proposed_feature)
+    evaluator = GFSSFPruningEvaluator(
+        X_df, y, accepted_features, proposed_feature)
     redundant_features = evaluator.prune()
 
     # propose removal
     for feature in redundant_features:
-        logger.debug('Would prune feature {feature!s}'.format(feature=feature))
+        logger.debug(PRUNER_MESSAGE + feature.source)
 
     return redundant_features
 

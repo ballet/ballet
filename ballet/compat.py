@@ -38,3 +38,9 @@ except ImportError:
             yield f
         finally:
             sys.stderr = oldstream
+
+# black compatibility - only installable for python 3.6+
+try:
+    import black
+except ImportError:
+    black = None

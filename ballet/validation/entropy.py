@@ -36,7 +36,8 @@ def calculate_disc_entropy(X):
 
 
 def estimate_cont_entropy(X, epsilon=None):
-    """Estimates the Shannon entropy of a discrete dataset.
+    """Estimate the Shannon entropy of a discrete dataset.
+
     Based off the Kraskov Estimator [1] and Kozachenko [2]
     estimators for a dataset's Shannon entropy.
 
@@ -65,6 +66,7 @@ def estimate_cont_entropy(X, epsilon=None):
             mutual information.
 
     References:
+
     .. [1] A. Kraskov, H. Stogbauer and P. Grassberger, "Estimating mutual
            information". Phys. Rev. E 69, 2004.
     .. [2] L. F. Kozachenko, N. N. Leonenko, "Sample Estimate of the Entropy
@@ -122,7 +124,7 @@ def _get_discrete_columns(X):
 
 
 def estimate_entropy(X, epsilon=None):
-    r"""Estimates a dataset's Shannon entropy.
+    r"""Estimate a dataset's Shannon entropy.
 
     This function can take datasets of mixed discrete and continuous
     features, and uses a set of heuristics to determine which functions
@@ -160,11 +162,11 @@ def estimate_entropy(X, epsilon=None):
             computing mutual information.
 
     References:
+
     .. [1] A. Kraskov, H. Stogbauer and P. Grassberger, "Estimating mutual
            information". Phys. Rev. E 69, 2004.
     .. [2] L. F. Kozachenko, N. N. Leonenko, "Sample Estimate of the Entropy
-           of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16
-
+           of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16.
     """
     X = asarray2d(X)
     n_samples, n_features = X.shape
@@ -218,6 +220,7 @@ def _calculate_epsilon(X):
             epsilon as described above.
 
     References:
+
     .. [1] A. Kraskov, H. Stogbauer and P. Grassberger, "Estimating mutual
            information". Phys. Rev. E 69, 2004.
 
@@ -235,11 +238,12 @@ def _calculate_epsilon(X):
 
 
 def estimate_conditional_information(x, y, z):
-    """ Estimates the conditional mutual information of
-    three datasets. Conditional mutual information is the
+    """ Estimate the conditional mutual information of three datasets.
+
+    Conditional mutual information is the
     mutual information of two datasets, given a third:
 
-    $ I(x;y|z) = H(x,z) + H(y,z) - H(x,y,z) - H(z) $
+        $ I(x;y|z) = H(x,z) + H(y,z) - H(x,y,z) - H(z) $
 
     Where H(x) is the Shannon entropy of x. For continuous datasets,
     adapts the Kraskov Estimator [1] for mutual information.
@@ -263,9 +267,9 @@ def estimate_conditional_information(x, y, z):
             if there are continuous columns present.
 
     References:
+
     .. [1] A. Kraskov, H. Stogbauer and P. Grassberger, "Estimating mutual
            information". Phys. Rev. E 69, 2004.
-
     """
     xz = np.concatenate((x, z), axis=1)
     yz = np.concatenate((y, z), axis=1)
@@ -279,11 +283,12 @@ def estimate_conditional_information(x, y, z):
 
 
 def estimate_mutual_information(x, y):
-    """ Estimates the mutual information of two datasets.
+    """Estimate the mutual information of two datasets.
+
     Mutual information is a measure of dependence between
     two datasets and is calculated as:
 
-    $ I(x;y) = H(x) + H(y) - H(x,y)$
+        $I(x;y) = H(x) + H(y) - H(x,y)$
 
     Where H(x) is the Shannon entropy of x. For continuous datasets,
     adapts the Kraskov Estimator [1] for mutual information.
@@ -291,6 +296,7 @@ def estimate_mutual_information(x, y):
     Args:
         x (array-like): An array with shape (n_samples, n_features_x)
         y (array-like): An array with shape (n_samples, n_features_y)
+
     Returns:
         float: A floating point number representing the mutual
             information of x and y. This calculation is *exact*
@@ -298,9 +304,9 @@ def estimate_mutual_information(x, y):
             there are continuous columns present.
 
     References:
-    .. [1] A. Kraskov, H. Stogbauer and P. Grassberger, "Estimating mutual
-           information". Phys. Rev. E 69, 2004.
 
+    .. [1] A. Kraskov, H. Stogbauer and P. Grassberger, "Estimating mutual
+      information". Phys. Rev. E 69, 2004.
     """
     xy = np.concatenate((x, y), axis=1)
     epsilon = _calculate_epsilon(xy)

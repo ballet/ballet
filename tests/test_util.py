@@ -20,6 +20,7 @@ import ballet.util.git
 import ballet.util.io
 from ballet.compat import pathlib, safepath
 from ballet.util.ci import TravisPullRequestBuildDiffer
+from ballet.util.code import blacken_code
 from ballet.util.mod import (  # noqa F401
     import_module_at_path, import_module_from_modname,
     import_module_from_relpath, modname_to_relpath, relpath_to_modname)
@@ -785,3 +786,21 @@ class IoTest(unittest.TestCase):
     @unittest.expectedFailure
     def test_save_predictions(self):
         raise NotImplementedError
+
+
+class CodeTest(unittest.TestCase):
+
+    @unittest.skipIf(sys.version_info < (3, 6),
+                     "black requires py36 or higher")
+    def test_blacken_code(self):
+        input = '''\
+        l = [1,
+             2,
+             3,
+        ]
+        '''.strip()
+
+        expected = 'l = [1, 2, 3]'.strip()
+        actual = blacken_code(input).strip()
+
+        self.assertEqual(actual, expected)

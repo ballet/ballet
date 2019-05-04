@@ -6,13 +6,20 @@
 
    Overview <readme>
    installation
-   usage
+
+.. toctree::
+   :caption: User Guides
+   :hidden:
+
+   Maintainer Guide <maintainer_guide>
+   Contributor Guide <contributor_guide>
 
 .. toctree::
    :caption: Advanced Usage
    :hidden:
 
    API Reference <api/ballet>
+   CLI Reference <cli_reference>
 
 .. toctree::
    :caption: Development Notes

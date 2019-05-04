@@ -6,9 +6,9 @@ from os import devnull
 import numpy as np
 import pandas as pd
 import sklearn.datasets
-from funcy import decorator, lfilter
+from funcy import decorator, lfilter, wraps
 
-from ballet.compat import redirect_stderr, redirect_stdout
+from ballet.compat import pathlib, redirect_stderr, redirect_stdout
 
 RANDOM_STATE = 1754
 
@@ -123,3 +123,12 @@ def one_or_raise(l):
         return l[0]
     else:
         raise ValueError('Expected exactly 1 element')
+
+
+def needs_path(f):
+    """Wraps a function that accepts path-like to give it a pathlib.Path"""
+    @wraps(f)
+    def wrapped(pathlike, *args, **kwargs):
+        path = pathlib.Path(pathlike)
+        return f(path, *args, **kwargs)
+    return wrapped
