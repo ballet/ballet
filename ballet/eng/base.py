@@ -286,4 +286,4 @@ class ConditionalTransformer(BaseTransformer):
         else:
             raise TypeError(
                 "Couldn't apply transformer on features in {}."
-                    .format(get_arr_desc(X)))
+                .format(get_arr_desc(X)))

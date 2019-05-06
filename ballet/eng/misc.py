@@ -37,6 +37,7 @@ class BoxCoxTransformer(ConditionalTransformer):
     See also:
         https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.boxcox1p.html
     """
+
     def __init__(self, threshold, lmbda=0):
         def condition(X):
             return abs(skew(X)) > threshold
