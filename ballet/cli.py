@@ -91,15 +91,15 @@ def pass_project(f):
 @click.option('--pdb/--no-pdb',
               help='Drop into debugger on error')
 @click.pass_context
-def validate(ctx, count, pdb):
+def validate(ctx, verbose, pdb):
     """Run individual validation checks"""
     ctx.ensure_object(dict)
 
-    if count == 0:
+    if verbose == 0:
         level = 'CRITICAL'
-    elif count == 1:
+    elif verbose == 1:
         level = 'INFO'
-    elif count >= 2:
+    elif verbose >= 2:
         level = 'DEBUG'
     enable(level=level, format=SIMPLE_LOG_FORMAT, echo=False)
 
