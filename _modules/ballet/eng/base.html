@@ -247,15 +247,18 @@
             
   <h1>Source code for ballet.eng.base</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">funcy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">sklearn.base</span>
 <span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="k">import</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span>
 <span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="k">import</span> <span class="n">check_is_fitted</span>
 
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">BalletError</span>
+<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">get_arr_desc</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;BaseTransformer&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ConditionalTransformer&#39;</span><span class="p">,</span>
     <span class="s1">&#39;GroupedFunctionTransformer&#39;</span><span class="p">,</span>
     <span class="s1">&#39;GroupwiseTransformer&#39;</span><span class="p">,</span>
     <span class="s1">&#39;NoFitMixin&#39;</span><span class="p">,</span>
@@ -479,6 +482,59 @@
             <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs_</span><span class="p">)</span>
             <span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">_transform</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_kwargs</span><span class="p">)</span>
         <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ConditionalTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.ConditionalTransformer">[docs]</a><span class="k">class</span> <span class="nc">ConditionalTransformer</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Transform columns that satisfy a condition during training</span>
+
+<span class="sd">    In the fit stage, determines which variables (columns) satisfy the</span>
+<span class="sd">    condition. In the transform stage, applies the given transformation to</span>
+<span class="sd">    the selected columns, passing through the complement unchanged.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        condition (callable): condition</span>
+<span class="sd">        f (callable):</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">trans</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">condition</span> <span class="o">=</span> <span class="n">condition</span>
+        <span class="c1"># 1. can&#39;t call it transform because conflicts with method name</span>
+        <span class="c1"># 2. can&#39;t call it transform and assign to a different attribute</span>
+        <span class="c1"># because sklearn.clone would complain</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="n">trans</span>
+
+<div class="viewcode-block" id="ConditionalTransformer.fit"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.ConditionalTransformer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">fit_args</span><span class="p">):</span>
+        <span class="c1"># features_to_transform_ is a bool or array[bool]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">features_to_transform_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">condition</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="ConditionalTransformer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.ConditionalTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_args</span><span class="p">):</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;features_to_transform_&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_to_transform_</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trans</span><span class="p">(</span>
+                <span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_to_transform_</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">X</span>
+        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trans</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_to_transform_</span> <span class="k">else</span> <span class="n">X</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_to_transform_</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features_to_transform_</span><span class="p">,</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">putmask</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">trans</span><span class="p">(</span>
+                    <span class="n">X</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_to_transform_</span><span class="p">]))</span>
+            <span class="k">return</span> <span class="n">X</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_to_transform_</span><span class="p">:</span>
+            <span class="c1"># if we wouldn&#39;t otherwise have known what to do, we can pass</span>
+            <span class="c1"># through X if transformation was not necessary anyways</span>
+            <span class="k">return</span> <span class="n">X</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Couldn&#39;t apply transformer on features in </span><span class="si">{}</span><span class="s2">.&quot;</span>
+                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">get_arr_desc</span><span class="p">(</span><span class="n">X</span><span class="p">)))</span></div></div>
 </pre></div>
 
            </div>
