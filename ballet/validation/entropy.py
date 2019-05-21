@@ -3,6 +3,7 @@ from scipy.special import digamma
 from sklearn.neighbors import NearestNeighbors
 
 from ballet.util import asarray2d
+from ballet.util.log import logger
 
 NUM_NEIGHBORS = 3  # Used in the sklearn mutual information function
 
@@ -279,6 +280,10 @@ def estimate_conditional_information(x, y, z):
     h_yz = estimate_entropy(yz, epsilon)
     h_xyz = estimate_entropy(xyz, epsilon)
     h_z = estimate_entropy(z, epsilon)
+    logger.debug('H(X,Z): {}'.format(h_xz))
+    logger.debug('H(Y,Z): {}'.format(h_yz))
+    logger.debug('H(X,Y,Z): {}'.format(h_xyz))
+    logger.debug('H(Z): {}'.format(h_z))
     return max(0, h_xz + h_yz - h_xyz - h_z)
 
 
