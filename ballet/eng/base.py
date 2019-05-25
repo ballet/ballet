@@ -244,8 +244,8 @@ class ConditionalTransformer(BaseTransformer):
     the selected columns, passing through the complement unchanged.
 
     Args:
-        condition (callable): condition
-        f (callable):
+        condition (callable): condition function
+        trans (callable): transform function
     """
 
     def __init__(self, condition, trans):
