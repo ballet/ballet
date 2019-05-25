@@ -251,6 +251,7 @@
 <span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="k">import</span> <span class="n">NearestNeighbors</span>
 
 <span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">asarray2d</span>
+<span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span>
 
 <span class="n">NUM_NEIGHBORS</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># Used in the sklearn mutual information function</span>
 
@@ -527,6 +528,10 @@
     <span class="n">h_yz</span> <span class="o">=</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="n">yz</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
     <span class="n">h_xyz</span> <span class="o">=</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
     <span class="n">h_z</span> <span class="o">=</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;H(X,Z): </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">h_xz</span><span class="p">))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;H(Y,Z): </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">h_yz</span><span class="p">))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;H(X,Y,Z): </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">h_xyz</span><span class="p">))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;H(Z): </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">h_z</span><span class="p">))</span>
     <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">h_xz</span> <span class="o">+</span> <span class="n">h_yz</span> <span class="o">-</span> <span class="n">h_xyz</span> <span class="o">-</span> <span class="n">h_z</span><span class="p">)</span></div>
 
 

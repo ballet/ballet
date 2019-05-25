@@ -313,6 +313,8 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
             <span class="s1">&#39;Judging Feature using GFSSF: lambda_1=</span><span class="si">{l1}</span><span class="s1">, lambda_2=</span><span class="si">{l2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">l1</span><span class="o">=</span><span class="n">lmbda_1</span><span class="p">,</span> <span class="n">l2</span><span class="o">=</span><span class="n">lmbda_2</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;Candidate Feature Shape: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">candidate_df</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
         <span class="n">omit_in_test</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">source</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">omit</span> <span class="ow">in</span> <span class="n">omit_in_test</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
@@ -321,6 +323,9 @@
             <span class="n">z</span> <span class="o">=</span> <span class="n">_concat_datasets</span><span class="p">(</span>
                 <span class="n">feature_dfs_by_src</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="p">[</span>
                     <span class="n">candidate_source</span><span class="p">,</span> <span class="n">omit</span><span class="p">])</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s1">&#39;Calculating CMI of candidate feature:&#39;</span>
+            <span class="p">)</span>
             <span class="n">cmi</span> <span class="o">=</span> <span class="n">estimate_conditional_information</span><span class="p">(</span><span class="n">candidate_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                 <span class="s1">&#39;Conditional Mutual Information Score: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cmi</span><span class="p">))</span>
@@ -329,9 +334,13 @@
             <span class="k">if</span> <span class="n">omit</span><span class="p">:</span>
                 <span class="n">omit_df</span> <span class="o">=</span> <span class="n">feature_dfs_by_src</span><span class="p">[</span><span class="n">omit</span><span class="p">]</span>
                 <span class="n">_</span><span class="p">,</span> <span class="n">n_omit_cols</span> <span class="o">=</span> <span class="n">omit_df</span><span class="o">.</span><span class="n">shape</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="s1">&#39;Calculating CMI of ommitted feature:&#39;</span>
+                <span class="p">)</span>
                 <span class="n">cmi_omit</span> <span class="o">=</span> <span class="n">estimate_conditional_information</span><span class="p">(</span>
                     <span class="n">omit_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Omitted CMI Score: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cmi_omit</span><span class="p">))</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Omitted Feature Shape: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">omit_df</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
             <span class="n">statistic</span> <span class="o">=</span> <span class="n">cmi</span> <span class="o">-</span> <span class="n">cmi_omit</span>
             <span class="n">threshold</span> <span class="o">=</span> <span class="n">_compute_threshold</span><span class="p">(</span>
                 <span class="n">lmbda_1</span><span class="p">,</span> <span class="n">lmbda_2</span><span class="p">,</span> <span class="n">n_candidate_cols</span><span class="p">,</span> <span class="n">n_omit_cols</span><span class="p">)</span>
