@@ -4,7 +4,7 @@ import numpy as np
 
 from ballet.util import asarray2d
 from ballet.validation.entropy import (
-    calculate_disc_entropy, estimate_conditional_information, estimate_entropy,
+    estimate_disc_entropy, estimate_conditional_information, estimate_entropy,
     estimate_mutual_information)
 
 
@@ -14,7 +14,7 @@ class EntropyTest(unittest.TestCase):
 
     def test_discrete_entropy_all_ones(self):
         same_val_arr_ones = np.ones((50, 1))
-        same_val_h = calculate_disc_entropy(same_val_arr_ones)
+        same_val_h = estimate_disc_entropy(same_val_arr_ones)
         self.assertEqual(0, same_val_h, 'Expected all ones to be zero entropy')
 
     def test_discrete_entropy_all_same(self):
@@ -22,7 +22,7 @@ class EntropyTest(unittest.TestCase):
         same_val_arr_ones = np.ones((50, 1))
         same_multi_val_arr = np.concatenate(
             (same_val_arr_ones, same_val_arr_zero), axis=1)
-        same_multi_val_h = calculate_disc_entropy(same_multi_val_arr)
+        same_multi_val_h = estimate_disc_entropy(same_multi_val_arr)
         self.assertEqual(
             0,
             same_multi_val_h,
@@ -35,7 +35,7 @@ class EntropyTest(unittest.TestCase):
         diff_val_arr = np.concatenate(
             (same_val_arr_ones, same_val_arr_zero), axis=0)
         expected_h = np.log(2)
-        diff_val_h = calculate_disc_entropy(diff_val_arr)
+        diff_val_h = estimate_disc_entropy(diff_val_arr)
         self.assertAlmostEqual(
             expected_h,
             diff_val_h,

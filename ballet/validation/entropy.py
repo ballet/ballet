@@ -1,70 +1,73 @@
 import numpy as np
+import scipy.stats
 from scipy.special import digamma
 from sklearn.neighbors import NearestNeighbors
 
 from ballet.util import asarray2d
 from ballet.util.log import logger
 
-NUM_NEIGHBORS = 3  # Used in the sklearn mutual information function
+NUM_NEIGHBORS = 3  # Used by sklearn NearestNeighbors
 
 
-def calculate_disc_entropy(X):
-    r"""Calculates the exact Shannon entropy of a discrete dataset,
-    using empirical probabilities according to the equation:
-    $ H(X) = -\sum(c \in X) p(c) \times \log(p(c)) $
-    Where $ p(c) $ is calculated as the frequency of c in X.
+def estimate_disc_entropy(x):
+    r"""Estimate the Shannon entropy of a discrete dataset.
 
-    If X's columns logically represent continuous features,
-    it is better to use the estimate_cont_entropy function.
-    If you are unsure of which to use, estimate_entropy can
-    take datasets of mixed discrete and continuous functions.
+    The Shannon entropy of a discrete random variable :math:`Z` with support
+    :math:`\mathbb{Z}` and density :math:`P_Z` is given as
+
+    .. math::
+        H(Z) = -\sum_{z \in \mathbb{Z}} P_Z(z) \log(P_Z(z))
+
+    Here, since we do not know :math:`P_Z`, we estimate :math:`\hat{P}_Z`, the
+    empirical probability, calculated as the frequency in the dataset x.
+
+    If x's columns logically represent continuous features, it is better to use
+    the `estimate_cont_entropy` function. If you are unsure of which to use,
+    `estimate_entropy` can take datasets of mixed discrete and continuous
+    functions.
 
     Args:
-        X (array-like): An array-like (np arr, pandas df, etc.) with shape
-            (n_samples, n_features) or (n_samples)
+        x (array-like): Dataset with shape (n_samples, n_features) or
+            (n_samples, )
 
     Returns:
-        float: A floating-point number representing the dataset entropy.
-
+        float: the dataset entropy.
     """
-    X = asarray2d(X)
-    n_samples, _ = X.shape
-    _, counts = np.unique(X, axis=0, return_counts=True)
-    empirical_p = counts * 1.0 / n_samples
-    log_p = np.log(empirical_p)
-    entropy = -np.sum(np.multiply(empirical_p, log_p))
-    return entropy
+    x = asarray2d(x)
+    n_samples, _ = x.shape
+    _, counts = np.unique(x, axis=0, return_counts=True)
+    pk = counts * 1.0 / n_samples
+    return scipy.stats.entropy(pk)
 
 
-def estimate_cont_entropy(X, epsilon=None):
-    """Estimate the Shannon entropy of a discrete dataset.
+def estimate_cont_entropy(x, epsilon=None):
+    """Estimate the differential entropy of a continuous dataset.
 
-    Based off the Kraskov Estimator [1] and Kozachenko [2]
-    estimators for a dataset's Shannon entropy.
+    Based off the Kraskov Estimator [1] and Kozachenko [2] estimators for a
+    dataset's differential entropy. If epsilon is not provided, this will be the
+    Kozacheko Estimator of the dataset's entropy. If epsilon is provided, this
+    is a partial estimation of the Kraskov entropy estimator. The bias is
+    cancelled out when computing mutual information.
 
-    The function relies on nonparametric methods based on entropy
-    estimation from k-nearest neighbors distances as proposed
-    in [1] and augmented in [2] for mutual information estimation.
+    The function relies on nonparametric methods based on entropy estimation
+    from k-nearest neighbors distances as proposed in [1] and augmented in [2]
+    for mutual information estimation.
 
-    If X's columns logically represent discrete features,
-    it is better to use the calculate_disc_entropy function.
-    If you are unsure of which to use, estimate_entropy can
-    take datasets of mixed discrete and continuous functions.
+    If X's columns logically represent discrete features, it is better to use
+    the estimate_disc_entropy function. If you are unsure of which to use,
+    estimate_entropy can take datasets of mixed discrete and continuous
+    functions.
 
     Args:
-        X (array-like): An array-like (np arr, pandas df, etc.) with shape
-            (n_samples, n_features) or (n_samples)
+        x (array-like): Dataset with shape (n_samples, n_features) or
+            (n_samples, )
         epsilon (array-like): An array with shape (n_samples, 1) that is
-            the epsilon used in Kraskov Estimator. Represents the chebyshev
+            the epsilon used in Kraskov Estimator. Represents the Chebyshev
             distance from an element to its k-th nearest neighbor in the full
             dataset.
 
     Returns:
-        float: A floating-point number. If epsilon is not provided,
-            this will be the Kozacheko Estimator of the dataset's entropy.
-            If epsilon is provided, this is a partial estimation of the Kraskov
-            entropy estimator. The bias is cancelled out when computing
-            mutual information.
+        float: differential entropy of the dataset
 
     References:
 
@@ -74,15 +77,15 @@ def estimate_cont_entropy(X, epsilon=None):
            of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16
 
     """
-    X = asarray2d(X)
-    n_samples, n_features = X.shape
+    x = asarray2d(x)
+    n_samples, n_features = x.shape
     if n_samples <= 1:
         return 0
     nn = NearestNeighbors(
         metric='chebyshev',
         n_neighbors=NUM_NEIGHBORS,
         algorithm='kd_tree')
-    nn.fit(X)
+    nn.fit(x)
     if epsilon is None:
         # If epsilon is not provided, revert to the Kozachenko Estimator
         n_neighbors = NUM_NEIGHBORS
@@ -120,47 +123,46 @@ def _is_column_discrete(col):
     return (uniques.size / col.size) < 0.05
 
 
-def _get_discrete_columns(X):
-    return np.apply_along_axis(_is_column_discrete, 0, X)
+def _get_discrete_columns(x):
+    return np.apply_along_axis(_is_column_discrete, 0, x)
 
 
-def estimate_entropy(X, epsilon=None):
-    r"""Estimate a dataset's Shannon entropy.
+def estimate_entropy(x, epsilon=None):
+    r"""Estimate dataset entropy.
 
-    This function can take datasets of mixed discrete and continuous
-    features, and uses a set of heuristics to determine which functions
-    to apply to each.
+    This function can take datasets of mixed discrete and continuous features,
+    and uses a set of heuristics to determine which functions to apply to each.
+    If the dataset is fully discrete, an exact calculation is done. If this is
+    not the case and epsilon is not provided, this will be the Kozacheko
+    Estimator of the dataset's entropy. If epsilon is provided, this is a
+    partial estimation of the Kraskov entropy estimator. The bias is cancelled
+    out when computing mutual information.
 
     Because this function is a subroutine in a mutual information estimator,
     we employ the Kozachenko Estimator[1] for continuous features when this
     function is _not_ used for mutual information and an adaptation of the
     Kraskov Estimator[2] when it is.
 
-    Let X be made of continuous features c and discrete features d.
+    Let x be made of continuous features c and discrete features d.
     To deal with both continuous and discrete features, We use the
     following reworking of entropy:
 
-    $ H(X) = H(c,d) = \sum_{x \in d} p(x) \times H(c(x)) + H(d) $
+    .. math::
+       H(X) = H(c,d) = \sum_{x \in d} p(x) H(c(x)) + H(d)
 
     Where c(x) is a dataset that represents the rows of the continuous dataset
     in the same row as a discrete column with value x in the original dataset.
 
     Args:
-        X (array-like): An array-like (np arr, pandas df, etc.) with shape
-            (n_samples, n_features) or (n_samples)
+        x (array-like): Dataset with shape (n_samples, n_features) or
+            (n_samples, )
         epsilon (array-like): An array with shape (n_samples, 1) that is
             the epsilon used in Kraskov Estimator. Represents the chebyshev
             distance from an element to its k-th nearest neighbor in the full
             dataset.
 
     Returns:
-        float: A floating-point number representing the entropy in X.
-            If the dataset is fully discrete, an exact calculation is done.
-            If this is not the case and epsilon is not provided, this
-            will be the Kozacheko Estimator of the dataset's entropy.
-            If epsilon is provided, this is a partial estimation of the
-            Kraskov entropy estimator. The bias is cancelled out when
-            computing mutual information.
+        float: Dataset entropy of X.
 
     References:
 
@@ -169,27 +171,27 @@ def estimate_entropy(X, epsilon=None):
     .. [2] L. F. Kozachenko, N. N. Leonenko, "Sample Estimate of the Entropy
            of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16.
     """
-    X = asarray2d(X)
-    n_samples, n_features = X.shape
+    x = asarray2d(x)
+    n_samples, n_features = x.shape
     if n_features < 1:
         return 0
-    disc_mask = _get_discrete_columns(X)
+    disc_mask = _get_discrete_columns(x)
     cont_mask = ~disc_mask
     # If our dataset is fully discrete/continuous, do something easier
     if np.all(disc_mask):
-        return calculate_disc_entropy(X)
+        return estimate_disc_entropy(x)
     elif np.all(cont_mask):
-        return estimate_cont_entropy(X, epsilon)
+        return estimate_cont_entropy(x, epsilon)
 
     # Separate the dataset into discrete and continuous datasets d,c
-    disc_features = asarray2d(X[:, disc_mask])
-    cont_features = asarray2d(X[:, cont_mask])
+    disc_features = asarray2d(x[:, disc_mask])
+    cont_features = asarray2d(x[:, cont_mask])
 
     entropy = 0
     uniques, counts = np.unique(disc_features, axis=0, return_counts=True)
     empirical_p = counts / n_samples
 
-    # $\sum_{x \in d} p(x) \times H(c(x))$
+    # $\sum_{x \in d} p(x) H(c(x))$
     for i in range(counts.size):
         unique_mask = np.all(disc_features == uniques[i], axis=1)
         selected_cont_samples = cont_features[unique_mask, :]
@@ -202,16 +204,17 @@ def estimate_entropy(X, epsilon=None):
         entropy += empirical_p[i] * conditional_cont_entropy
 
     # H(d)
-    entropy += calculate_disc_entropy(disc_features)
+    entropy += estimate_disc_entropy(disc_features)
     if epsilon is None:
         entropy = max(0, entropy)
     return entropy
 
 
-def _calculate_epsilon(X):
-    """Calculates epsilon, a subroutine for the Kraskov Estimator [1]
-    Represents the chebyshev distance of each dataset element to its
-    K-th nearest neighbor.
+def _calculate_epsilon(x):
+    """Calculate epsilon from Kraskov Estimator
+
+    Represents the Chebyshev distance of each dataset element to its
+    k-th nearest neighbor.
 
     Args:
         X (array-like): An array with shape (n_samples, n_features)
@@ -226,11 +229,11 @@ def _calculate_epsilon(X):
            information". Phys. Rev. E 69, 2004.
 
     """
-    disc_mask = _get_discrete_columns(X)
+    disc_mask = _get_discrete_columns(x)
     if np.all(disc_mask):
         # if all discrete columns, there's no point getting epsilon
         return 0
-    cont_features = X[:, ~disc_mask]
+    cont_features = x[:, ~disc_mask]
     nn = NearestNeighbors(metric='chebyshev', n_neighbors=NUM_NEIGHBORS)
     nn.fit(cont_features)
     distances, _ = nn.kneighbors()
@@ -239,21 +242,33 @@ def _calculate_epsilon(X):
 
 
 def estimate_conditional_information(x, y, z):
-    """ Estimate the conditional mutual information of three datasets.
+    r"""Estimate the conditional mutual information of x and y given z
 
-    Conditional mutual information is the
-    mutual information of two datasets, given a third:
+    Conditional mutual information is the mutual information of two datasets,
+    given a third:
 
-        $ I(x;y|z) = H(x,z) + H(y,z) - H(x,y,z) - H(z) $
+    .. math::
+       I(x;y|z) = H(x,z) + H(y,z) - H(x,y,z) - H(z)
 
-    Where H(x) is the Shannon entropy of x. For continuous datasets,
-    adapts the Kraskov Estimator [1] for mutual information.
+    Where :math:`H(X)` is the Shannon entropy of dataset :math:`X`. For
+    continuous datasets, adapts the Kraskov Estimator [1] for mutual
+    information.
 
-    Equation 8 still holds because the epsilon terms cancel out:
-    Let d_x, represent the dimensionality of the continuous portion of x.
-    Then, we see that:
-    d_xz + d_yz - d_xyz - d_z =
-    (d_x + d_z) + (d_y + d_z) - (d_x + d_y + d_z) - d_z = 0
+    Equation 8 from [1] holds because the epsilon terms cancel out.
+    Let :math:`d_x`, represent the dimensionality of the continuous portion of
+    x. Then, we see that:
+
+    .. math::
+       :nowrap:
+
+       \begin{align}
+       d_{xz} + d_{yz} - d_{xyz} - d_z
+           &= (d_x + d_z) + (d_y + d_z) - (d_x + d_y + d_z) - d_z \\
+           &= 0
+       \end{align}
+
+    This calculation is *exact* for entirely discrete datasets and
+    *approximate* if there are continuous columns present.
 
     Args:
         x (array-like): An array with shape (n_samples, n_features_x)
@@ -262,10 +277,7 @@ def estimate_conditional_information(x, y, z):
             This is the dataset being conditioned on.
 
     Returns:
-        float: A floating point number representing the conditional
-            mutual information of x and y given z. This calculation is
-            *exact* for entirely discrete datasets and *approximate*
-            if there are continuous columns present.
+        float: conditional mutual information of x and y given z.
 
     References:
 
@@ -288,25 +300,25 @@ def estimate_conditional_information(x, y, z):
 
 
 def estimate_mutual_information(x, y):
-    """Estimate the mutual information of two datasets.
+    r"""Estimate the mutual information of two datasets.
 
     Mutual information is a measure of dependence between
     two datasets and is calculated as:
 
-        $I(x;y) = H(x) + H(y) - H(x,y)$
+    .. math::
+       I(x;y) = H(x) + H(y) - H(x,y)
 
     Where H(x) is the Shannon entropy of x. For continuous datasets,
-    adapts the Kraskov Estimator [1] for mutual information.
+    adapts the Kraskov Estimator [1] for mutual information. This calculation
+    is *exact* for entirely discrete datasets and *approximate* if there are
+    continuous columns present.
 
     Args:
         x (array-like): An array with shape (n_samples, n_features_x)
         y (array-like): An array with shape (n_samples, n_features_y)
 
     Returns:
-        float: A floating point number representing the mutual
-            information of x and y. This calculation is *exact*
-            for entirely discrete datasets and *approximate* if
-            there are continuous columns present.
+        float: mutual information of x and y
 
     References:
 
