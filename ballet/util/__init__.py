@@ -9,6 +9,7 @@ import sklearn.datasets
 from funcy import decorator, lfilter, wraps
 
 from ballet.compat import pathlib, redirect_stderr, redirect_stdout
+from ballet.exc import BalletWarning
 
 RANDOM_STATE = 1754
 
@@ -132,3 +133,8 @@ def needs_path(f):
         path = pathlib.Path(pathlike)
         return f(path, *args, **kwargs)
     return wrapped
+
+
+def warn(msg):
+    """Issue a warning message of category BalletWarning"""
+    warnings.warn(msg, category=BalletWarning)

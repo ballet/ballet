@@ -2,16 +2,10 @@ from ballet.util import asarray2d
 from ballet.util.log import logger
 from ballet.validation.base import FeaturePruningEvaluator
 from ballet.validation.entropy import (
-    estimate_conditional_information,
-    estimate_entropy
-)
+    estimate_conditional_information, estimate_entropy)
 from ballet.validation.gfssf import (
-    LAMBDA_1_ADJUSTMENT,
-    LAMBDA_2_ADJUSTMENT,
-    _compute_lmbdas,
-    _compute_threshold,
-    _concat_datasets,
-)
+    LAMBDA_1_ADJUSTMENT, LAMBDA_2_ADJUSTMENT, _compute_lmbdas,
+    _compute_threshold, _concat_datasets)
 
 
 class NoOpPruningEvaluator(FeaturePruningEvaluator):

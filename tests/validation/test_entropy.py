@@ -4,53 +4,59 @@ import numpy as np
 
 from ballet.util import asarray2d
 from ballet.validation.entropy import (
-    estimate_disc_entropy, estimate_conditional_information, estimate_entropy,
-    estimate_mutual_information)
+    estimate_conditional_information, estimate_cont_entropy,
+    estimate_disc_entropy, estimate_entropy, estimate_mutual_information,
+    is_column_cont, is_column_disc)
 
 
 class EntropyTest(unittest.TestCase):
-    def setUp(self):
-        pass
 
-    def test_discrete_entropy_all_ones(self):
+    def test_disc_entropy_constant_vals_1d(self):
+        """If x (column vector) is constant, then H(x) = 0"""
         same_val_arr_ones = np.ones((50, 1))
-        same_val_h = estimate_disc_entropy(same_val_arr_ones)
-        self.assertEqual(0, same_val_h, 'Expected all ones to be zero entropy')
+        H_hat = estimate_disc_entropy(same_val_arr_ones)
+        self.assertEqual(0, H_hat)
 
-    def test_discrete_entropy_all_same(self):
+    def test_disc_entropy_constant_vals_2d(self):
+        """If each column in x (matrix), then H(x) = 0"""
         same_val_arr_zero = np.zeros((50, 1))
         same_val_arr_ones = np.ones((50, 1))
         same_multi_val_arr = np.concatenate(
             (same_val_arr_ones, same_val_arr_zero), axis=1)
-        same_multi_val_h = estimate_disc_entropy(same_multi_val_arr)
-        self.assertEqual(
-            0,
-            same_multi_val_h,
-            msg='Expected all same values to be zero entropy')
+        H_hat = estimate_disc_entropy(same_multi_val_arr)
+        self.assertEqual(0, H_hat)
 
-    def test_discrete_entropy_two_values(self):
+    def test_disc_entropy_two_values(self):
+        """Entropy of fair coin ~= log(2)"""
         same_val_arr_zero = np.zeros((50, 1))
         same_val_arr_ones = np.ones((50, 1))
-        # Test on a dataset that mimics a fair coin (half ones, half zeros)
         diff_val_arr = np.concatenate(
             (same_val_arr_ones, same_val_arr_zero), axis=0)
+
         expected_h = np.log(2)
-        diff_val_h = estimate_disc_entropy(diff_val_arr)
-        self.assertAlmostEqual(
-            expected_h,
-            diff_val_h,
-            msg='Expected entropy in x ~ Ber(0.5)')
+        H_hat = estimate_disc_entropy(diff_val_arr)
+        self.assertAlmostEqual(expected_h, H_hat)
 
-    def test_entropy_cont_disc_heuristics(self):
-        arange_disc_arr = asarray2d(np.arange(50))
-        arange_cont_arr = asarray2d(np.arange(50) + 0.5)
+    def test_is_column_disc(self):
+        x = asarray2d(np.arange(50))
+        result = is_column_disc(x)
+        self.assertTrue(result)
 
-        disc_h = estimate_entropy(arange_disc_arr)
-        cont_h = estimate_entropy(arange_cont_arr)
+    def test_is_column_cont(self):
+        x = asarray2d(np.arange(50) + 0.5)
+        result = is_column_cont(x)
+        self.assertTrue(result)
+
+    def test_cont_disc_entropy_differs(self):
+        """Expect cont, disc columns to have different entropy"""
+        disc = asarray2d(np.arange(50))
+        cont = asarray2d(np.arange(50) + 0.5)
+
         self.assertNotEqual(
-            disc_h,
-            cont_h,
-            msg='Expected cont, disc columns to be handled differently')
+            estimate_cont_entropy(disc), estimate_disc_entropy(disc))
+
+        self.assertNotEqual(
+            estimate_cont_entropy(cont), estimate_disc_entropy(cont))
 
     def test_entropy_multiple_disc(self):
         same_val_arr_zero = np.zeros((50, 1))
@@ -70,7 +76,7 @@ class EntropyTest(unittest.TestCase):
             msg='Expected adding continuous column increases entropy')
 
     def test_mi_uninformative(self):
-        x = np.reshape(np.arange(1, 101), (100, 1))
+        x = np.reshape(np.arange(1, 101), (-1, 1))
         y = np.ones((100, 1))
         mi = estimate_mutual_information(x, y)
         h_z = estimate_entropy(x)
@@ -80,8 +86,8 @@ class EntropyTest(unittest.TestCase):
             'uninformative column should have no information')
 
     def test_mi_informative(self):
-        x = np.reshape(np.arange(1, 101), (100, 1))
-        y = np.reshape(np.arange(1, 101), (100, 1))
+        x = np.reshape(np.arange(1, 101), (-1, 1))
+        y = np.reshape(np.arange(1, 101), (-1, 1))
         mi = estimate_mutual_information(x, y)
         h_y = estimate_entropy(y)
         self.assertGreater(
@@ -91,8 +97,8 @@ class EntropyTest(unittest.TestCase):
 
     def test_cmi_high_info_uninformative_z(self):
         # redundant copies have little information
-        x = np.reshape(np.arange(1, 101), (100, 1))
-        y = np.reshape(np.arange(1, 101), (100, 1))
+        x = np.reshape(np.arange(1, 101), (-1, 1))
+        y = np.reshape(np.arange(1, 101), (-1, 1))
 
         # exact copies of y should have lots of information
         useless_z = np.ones((100, 1))
@@ -104,9 +110,9 @@ class EntropyTest(unittest.TestCase):
             'uninformative z should not affect mutual information score')
 
     def test_cmi_redundant_info(self):
-        x = np.reshape(np.arange(1, 101), (100, 1))
-        y = np.reshape(np.arange(1, 101), (100, 1))
-        exact_z = np.reshape(np.arange(1, 101), (100, 1))
+        x = np.reshape(np.arange(1, 101), (-1, 1))
+        y = np.reshape(np.arange(1, 101), (-1, 1))
+        exact_z = np.reshape(np.arange(1, 101), (-1, 1))
 
         h_y = estimate_entropy(y)
         cmi = estimate_conditional_information(x, y, exact_z)
