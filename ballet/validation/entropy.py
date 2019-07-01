@@ -1,4 +1,5 @@
 import numpy as np
+import pkg_resources
 import scipy.stats
 from scipy.special import digamma, gamma
 from sklearn.neighbors import NearestNeighbors
@@ -55,9 +56,7 @@ def _compute_volume_unit_ball(d, metric):
             'metric {metric} not supported'.format(metric=metric))
 
 
-def _estimate_cont_entropy_kozachenko_leonenko(x,
-                                               n_neighbors=N_NEIGHBORS,
-                                               metric='chebyshev'):
+def _estimate_cont_entropy_KL(x, n_neighbors=N_NEIGHBORS, metric='chebyshev'):
     x = asarray2d(x)
     k = n_neighbors
     n, d = x.shape
@@ -78,7 +77,11 @@ def _estimate_cont_entropy_kozachenko_leonenko(x,
     return H_hat
 
 
-def estimate_cont_entropy(x, epsilon=None, n_neighbors=N_NEIGHBORS):
+def estimate_cont_entropy(x,
+                          epsilon=None,
+                          n_neighbors=N_NEIGHBORS,
+                          metric='chebyshev',
+                          partial=False):
     """Estimate the differential entropy of a continuous dataset.
 
     Based off the Kraskov Estimator [1] and Kozachenko [2] estimators for a
@@ -117,37 +120,29 @@ def estimate_cont_entropy(x, epsilon=None, n_neighbors=N_NEIGHBORS):
            of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16
 
     """
+    if not partial:
+        return _estimate_cont_entropy_KL(x, n_neighbors, metric)
+    else:
+        return _estimate_cont_entropy_kraskov(x, epsilon, n_neighbors, metric)
+
+
+def _estimate_cont_entropy_kraskov(x, epsilon, metric):
+    """Kraskov et al, Eq 22"""
     x = asarray2d(x)
-    k = n_neighbors
     n, d = x.shape
+    radius = epsilon.ravel()
     if n <= 1:
         return 0
-    nn = NearestNeighbors(
-        metric='chebyshev',
-        n_neighbors=k,
-        algorithm='kd_tree')
+    nn = NearestNeighbors(radius=radius, metric=metric, algorithm='kdtree')
     nn.fit(x)
-    if epsilon is None:
-        # If epsilon is not provided, revert to the Kozachenko Estimator
-        radius = 0
-        # While we have non-zero radii, calculate for a larger k
-        # Potentially expensive
-        while not np.all(radius) and k < n:
-            distances, _ = nn.kneighbors(
-                n_neighbors=k, return_distance=True)
-            radius = distances[:, -1]
-            k += 1
-        if k == n:
-            # This case only happens if all samples are the same
-            # e.g. this isn't a continuous sample...
-            raise ValueError('Should not have discrete column to estimate')
-        return -digamma(k) + digamma(n) + d * np.mean(np.log(2 * radius))
-    else:
-        ind = nn.radius_neighbors(
-            radius=epsilon.ravel(),
-            return_distance=False)
-        nx = np.array([i.size for i in ind])
-        return - np.mean(digamma(nx + 1)) + digamma(n)
+    ind = nn.radius_neighbors()
+    nx = np.array([i.size for i in ind])
+    c_d = _compute_volume_unit_ball(d, metric)
+    H_hat = (
+        -np.mean(digamma(nx + 1)) + digamma(n) + np.log(c_d)
+        + d * np.mean(np.log(epsilon))
+    )
+    return H_hat
 
 
 def is_column_disc(col):
@@ -239,11 +234,11 @@ def estimate_entropy(x, epsilon=None):
     disc_mask = _get_disc_columns(x)
     cont_mask = ~disc_mask
 
-    # if all columns are disc, use specific estimator
+    # if all columns are disc, use one estimator
     if np.all(disc_mask):
         return estimate_disc_entropy(x)
 
-    # if all columns are cont, use specific estimator
+    # if all columns are cont, use one estimator
     if np.all(cont_mask):
         return estimate_cont_entropy(x, epsilon)
 
@@ -257,12 +252,12 @@ def estimate_entropy(x, epsilon=None):
     # H(c|d) = \sum_{x \in d} p(x) H(c(x))
     H_c_d = 0
     for i in range(d_counts.size):
-        unique_mask = np.all(d == d_uniques[i], axis=1)
-        selected_cont_samples = c[unique_mask, :]
+        mask = np.all(d == d_uniques[i], axis=1)
+        selected_cont_samples = c[mask, :]
         if epsilon is None:
             selected_epsilon = None
         else:
-            selected_epsilon = epsilon[unique_mask, :]
+            selected_epsilon = epsilon[mask, :]
         conditional_cont_entropy = estimate_cont_entropy(
             selected_cont_samples, selected_epsilon)
         H_c_d += pk[i] * conditional_cont_entropy
@@ -272,10 +267,9 @@ def estimate_entropy(x, epsilon=None):
 
     H = H_d + H_c_d
 
-    if epsilon is None:
-        if H < 0:
-            logger.warn('Entropy should be non-negative')
-            H = 0
+    if H < 0:
+        logger.warn('Entropy should be non-negative')
+        H = 0
 
     return H
 
