@@ -4,9 +4,9 @@ import numpy as np
 
 from ballet.util import asarray2d
 from ballet.validation.entropy import (
-    estimate_conditional_information, estimate_cont_entropy,
-    estimate_disc_entropy, estimate_entropy, estimate_mutual_information,
-    is_column_cont, is_column_disc)
+    _estimate_cont_entropy, _estimate_disc_entropy, _is_column_cont,
+    _is_column_disc, estimate_conditional_information, estimate_entropy,
+    estimate_mutual_information)
 
 
 class EntropyTest(unittest.TestCase):
@@ -14,7 +14,7 @@ class EntropyTest(unittest.TestCase):
     def test_disc_entropy_constant_vals_1d(self):
         """If x (column vector) is constant, then H(x) = 0"""
         same_val_arr_ones = np.ones((50, 1))
-        H_hat = estimate_disc_entropy(same_val_arr_ones)
+        H_hat = _estimate_disc_entropy(same_val_arr_ones)
         self.assertEqual(0, H_hat)
 
     def test_disc_entropy_constant_vals_2d(self):
@@ -23,7 +23,7 @@ class EntropyTest(unittest.TestCase):
         same_val_arr_ones = np.ones((50, 1))
         same_multi_val_arr = np.concatenate(
             (same_val_arr_ones, same_val_arr_zero), axis=1)
-        H_hat = estimate_disc_entropy(same_multi_val_arr)
+        H_hat = _estimate_disc_entropy(same_multi_val_arr)
         self.assertEqual(0, H_hat)
 
     def test_disc_entropy_two_values(self):
@@ -34,17 +34,17 @@ class EntropyTest(unittest.TestCase):
             (same_val_arr_ones, same_val_arr_zero), axis=0)
 
         expected_h = np.log(2)
-        H_hat = estimate_disc_entropy(diff_val_arr)
+        H_hat = _estimate_disc_entropy(diff_val_arr)
         self.assertAlmostEqual(expected_h, H_hat)
 
     def test_is_column_disc(self):
         x = asarray2d(np.arange(50))
-        result = is_column_disc(x)
+        result = _is_column_disc(x)
         self.assertTrue(result)
 
     def test_is_column_cont(self):
         x = asarray2d(np.arange(50) + 0.5)
-        result = is_column_cont(x)
+        result = _is_column_cont(x)
         self.assertTrue(result)
 
     def test_cont_disc_entropy_differs(self):
@@ -53,10 +53,10 @@ class EntropyTest(unittest.TestCase):
         cont = asarray2d(np.arange(50) + 0.5)
 
         self.assertNotEqual(
-            estimate_cont_entropy(disc), estimate_disc_entropy(disc))
+            _estimate_cont_entropy(disc), _estimate_disc_entropy(disc))
 
         self.assertNotEqual(
-            estimate_cont_entropy(cont), estimate_disc_entropy(cont))
+            _estimate_cont_entropy(cont), _estimate_disc_entropy(cont))
 
     def test_entropy_multiple_disc(self):
         same_val_arr_zero = np.zeros((50, 1))
