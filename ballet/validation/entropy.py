@@ -14,7 +14,7 @@ __all__ = (
 )
 
 N_NEIGHBORS = 3   # hyperparameter k from Kraskov estimator
-NEIGHBORS_ALGORITHM = 'kdtree'
+NEIGHBORS_ALGORITHM = 'kd_tree'
 NEIGHBORS_METRIC = 'chebyshev'
 DISC_COL_UNIQUE_VAL_THRESH = 0.05
 
@@ -121,12 +121,13 @@ def _compute_epsilon_kraskov(x, n_neighbors=N_NEIGHBORS):
     cont_features = x[:, ~disc_mask]
     nn = _make_neighbors(n_neighbors=n_neighbors)
     nn.fit(cont_features)
-    distances, _ = nn.kneighbors()
-    epsilon = np.nextafter(distances[:, -1], 0)
+    dist, _ = nn.kneighbors()
+    dist = dist[:, -1]  # distances to kth nearest points
+    epsilon = np.nextafter(dist, 0)
     return asarray2d(epsilon)
 
 
-def _compute_epsilon_kl(x, n_neighbors):
+def _compute_epsilon_kl(x, n_neighbors=N_NEIGHBORS):
     """Calculate epsilon """
     n, d = x.shape
     k = n_neighbors
@@ -143,7 +144,7 @@ def _compute_epsilon_kl(x, n_neighbors):
     if k == n:
         # This case only happens if all samples are the same
         # e.g. this isn't a continuous sample...
-        raise ValueError("All samples were the same, can't calculate espilon")
+        raise ValueError("All samples were the same, can't calculate epsilon")
 
     epsilon = 2 * distances
 
@@ -155,9 +156,14 @@ def _compute_n_points_within_epsilon(x, epsilon):
     radius = epsilon.ravel()
     nn = _make_neighbors(radius=radius)
     nn.fit(x)
-    ind = nn.radius_neighbors()
+    ind = nn.radius_neighbors(return_distance=False)
     nx = np.array([i.size for i in ind])
     return nx
+
+
+def _recover_k_from_epsilon(x, epsilon):
+    nx = _compute_n_points_within_epsilon(x, epsilon)
+    return min(nx)
 
 
 # Entropy estimation
@@ -386,7 +392,7 @@ def estimate_conditional_information(x, y, z):
     continuous datasets, adapts the Kraskov Estimator [1] for mutual
     information.
 
-    Equation 8 from [1] holds because the epsilon terms cancel out.
+    Eq 8 from [1] holds because the epsilon terms cancel out.
     Let :math:`d_x`, represent the dimensionality of the continuous portion of
     x. Then, we see that:
 
