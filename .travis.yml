@@ -8,28 +8,31 @@ matrix:
   include:
     - python: 3.7
       dist: xenial
-      sudo: true
 
 install: pip install -U tox-travis codecov
 script: tox
 after_success: codecov
 
-deploy:
-  - provider: pypi
-    distributions: sdist bdist_wheel
-    user: micahjsmith
-    password:
-      secure: "mLibqiLrgLb1esoPJlPsYjWKzv41Doe/z27jnC8ZTKq+nEd0gTLFPEDsqum0PaKs0lrqNoeyRQBCn/y24PrSWWua4CygcrvWW/k18tewpogNACkgS2oG0SY+/mqGpIyT4G6KV+jlweAxX7BhTg83frvc5HwRnT3HyHFYOH9Z5zpU5lX4fdBVLzQZJgkGeNcA7rlYDG31aHmiWdf5UQrVfSyJk/rabfKnENGbUHibkCDkVOOlGKUFXzn0sZfD+5Hmezvv+WlpE4172hNCkJIhNu10jqm4SzdRwZqPt3VimLBWVFVghike0MLnRxx4ELM4gtuLgvtPa4PcwJyjnz184LxbYALxEQ97sUuJtGOvB8P6MPyymNNzKCheAtUvdftnfsuLzCBcz0AhdNaoqbgeIDVl0BpowBXAVDQk/I8xyFiAIS5CE5HE13FCiTwxEeToC1fKYQfm7k1s6cUBelSK5PtYcLTJ2u6GFs+hFX2bBBWI8+OaQUntj7w8wzdKYYdkBi/cBk+l99+qYbDeugtNtVVzwX9BHHRqhFemcNCwxOUFWf5ABlxg0jhgC55eEw5igpqrCjhVpzYlP8VM3zsZDCfI4HNMvoFxIh5Th70+fzM/tuaiC2naC7AEkcB6pgJP3fuXy5fxI+B0a94FetfhEGw1JcQwzZeEfUwe9nhLM9I="
-    on:
-      tags: true
-      repo: HDI-Project/ballet
-      python: 3.6
-  - provider: pages
-    skip-cleanup: true
-    github-token: "$GITHUB_TOKEN"
-    keep-history: true
-    local-dir: docs/_build/html
-    target-branch: gh-pages
-    on:
-      branch: master
-      python: 3.6
+jobs:
+  include:
+    - stage: deploy
+      script: skip
+      deploy:
+        - provider: pypi
+          distributions: sdist bdist_wheel
+          user: micahjsmith
+          password:
+            secure: "mLibqiLrgLb1esoPJlPsYjWKzv41Doe/z27jnC8ZTKq+nEd0gTLFPEDsqum0PaKs0lrqNoeyRQBCn/y24PrSWWua4CygcrvWW/k18tewpogNACkgS2oG0SY+/mqGpIyT4G6KV+jlweAxX7BhTg83frvc5HwRnT3HyHFYOH9Z5zpU5lX4fdBVLzQZJgkGeNcA7rlYDG31aHmiWdf5UQrVfSyJk/rabfKnENGbUHibkCDkVOOlGKUFXzn0sZfD+5Hmezvv+WlpE4172hNCkJIhNu10jqm4SzdRwZqPt3VimLBWVFVghike0MLnRxx4ELM4gtuLgvtPa4PcwJyjnz184LxbYALxEQ97sUuJtGOvB8P6MPyymNNzKCheAtUvdftnfsuLzCBcz0AhdNaoqbgeIDVl0BpowBXAVDQk/I8xyFiAIS5CE5HE13FCiTwxEeToC1fKYQfm7k1s6cUBelSK5PtYcLTJ2u6GFs+hFX2bBBWI8+OaQUntj7w8wzdKYYdkBi/cBk+l99+qYbDeugtNtVVzwX9BHHRqhFemcNCwxOUFWf5ABlxg0jhgC55eEw5igpqrCjhVpzYlP8VM3zsZDCfI4HNMvoFxIh5Th70+fzM/tuaiC2naC7AEkcB6pgJP3fuXy5fxI+B0a94FetfhEGw1JcQwzZeEfUwe9nhLM9I="
+          on:
+            tags: true
+            repo: HDI-Project/ballet
+            python: 3.6
+        - provider: pages
+          skip-cleanup: true
+          github-token: "$GITHUB_TOKEN"
+          keep-history: true
+          local-dir: docs/_build/html
+          target-branch: gh-pages
+          on:
+            branch: master
+            python: 3.6
