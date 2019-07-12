@@ -1,4 +1,5 @@
 import json
+import pathlib
 import tempfile
 from unittest.mock import patch
 
@@ -9,7 +10,7 @@ from funcy import complement, lfilter
 from git import GitCommandError
 
 from ballet import __version__ as version
-from ballet.compat import pathlib, safepath
+from ballet.compat import safepath
 from ballet.exc import BalletError, ConfigurationError
 from ballet.project import Project
 from ballet.templating import render_project_template

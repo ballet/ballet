@@ -1,3 +1,4 @@
+import pathlib
 import warnings
 from copy import deepcopy
 from enum import Enum
@@ -8,7 +9,7 @@ import pandas as pd
 import sklearn.datasets
 from funcy import decorator, lfilter, wraps
 
-from ballet.compat import pathlib, redirect_stderr, redirect_stdout
+from ballet.compat import redirect_stderr, redirect_stdout
 
 RANDOM_STATE = 1754
 

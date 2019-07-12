@@ -1,5 +1,6 @@
 import copy
 import os
+import pathlib
 import sys
 import tempfile
 import types
@@ -18,7 +19,7 @@ import ballet.util.ci
 import ballet.util.fs
 import ballet.util.git
 import ballet.util.io
-from ballet.compat import pathlib, safepath
+from ballet.compat import safepath
 from ballet.util.ci import TravisPullRequestBuildDiffer
 from ballet.util.code import blacken_code
 from ballet.util.mod import (  # noqa F401
@@ -587,7 +588,7 @@ class FsTest(unittest.TestCase):
             dst.joinpath('a', 'only_in_dst.txt').touch()
 
             # patch here in order to avoid messing up tempdir stuff
-            with patch('ballet.compat.pathlib.Path.mkdir') as mock_mkdir, \
+            with patch('pathlib.Path.mkdir') as mock_mkdir, \
                     patch('os.unlink') as mock_unlink, \
                     patch('os.rmdir') as mock_rmdir, \
                     patch('ballet.util.fs.copyfile') as mock_copyfile:

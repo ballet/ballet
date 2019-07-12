@@ -1,8 +1,8 @@
 import importlib.machinery
+import pathlib
 
 from funcy import re_test
 
-from ballet.compat import pathlib
 from ballet.project import relative_to_contrib
 from ballet.util.fs import isemptyfile
 from ballet.validation.base import BaseCheck

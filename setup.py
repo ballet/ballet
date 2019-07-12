@@ -21,9 +21,7 @@ requirements = [
     'gitpython',
     'h5py',
     'numpy',
-    'pandas; python_version>="3.5"',  # hack
-    'pandas<0.21; python_version<"3.5"',  # hack
-    'pathlib2>=2.1.0; python_version<"3.5"',
+    'pandas',
     'pyyaml',
     'requests',
     'scikit_learn>=0.20',
@@ -74,7 +72,6 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
     ],
@@ -96,7 +93,7 @@ setup(
     keywords='ballet',
     name='ballet',
     packages=find_packages(include=['ballet', 'ballet.*']),
-    python_requires='>=3.4',
+    python_requires='>=3.5',
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,

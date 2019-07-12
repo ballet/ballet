@@ -1,3 +1,6 @@
+import sys
+
+
 # sklearn compatibility
 try:
     from sklearn.impute import SimpleImputer
@@ -5,12 +8,6 @@ except ImportError:
     import sklearn.preprocessing
     SimpleImputer = sklearn.preprocessing.Imputer
 
-# pathlib compatibility
-import sys
-if sys.version_info < (3, 5):
-    import pathlib2 as pathlib
-else:
-    import pathlib  # noqa F401
 
 if sys.version_info < (3, 6):
     safepath = str
@@ -18,10 +15,12 @@ else:
     from funcy import identity as _identity
     safepath = _identity
 
+
 try:
     from os import PathLike
 except ImportError:
-    PathLike = (pathlib.Path, )
+    from pathlib import Path
+    PathLike = (Path, )
 
 
 # redirect_stderr new in 3.5
@@ -38,6 +37,7 @@ except ImportError:
             yield f
         finally:
             sys.stderr = oldstream
+
 
 # black compatibility - only installable for python 3.6+
 try:

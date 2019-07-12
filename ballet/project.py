@@ -1,10 +1,10 @@
+import pathlib
 from importlib import import_module
 
 import git
 import yaml
 from funcy import get_in, partial
 
-from ballet.compat import pathlib
 from ballet.exc import ConfigurationError
 from ballet.util import needs_path
 from ballet.util.ci import get_travis_branch, get_travis_pr_num
