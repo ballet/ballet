@@ -8,6 +8,7 @@ matrix:
   include:
     - python: 3.7
       dist: xenial
+      sudo: true
 
 install: pip install -U tox-travis codecov
 script: tox
@@ -16,6 +17,7 @@ after_success: codecov
 jobs:
   include:
     - stage: deploy
+      python: 3.6
       script: skip
       deploy:
         - provider: pypi
@@ -26,7 +28,6 @@ jobs:
           on:
             tags: true
             repo: HDI-Project/ballet
-            python: 3.6
         - provider: pages
           skip-cleanup: true
           github-token: "$GITHUB_TOKEN"
@@ -35,4 +36,3 @@ jobs:
           target-branch: gh-pages
           on:
             branch: master
-            python: 3.6
