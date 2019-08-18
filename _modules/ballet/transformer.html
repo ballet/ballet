@@ -1,0 +1,553 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ballet.transformer &mdash; ballet 0.5.3-dev documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> ballet
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../readme.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../readme.html#reference">Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#stable-release">Stable release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#from-source">From source</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../maintainer_guide.html">Maintainer Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../maintainer_guide.html#creating-a-ballet-project">Creating a Ballet project</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#project-instantiation">Project instantiation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#project-installation">Project installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#collaboration-via-git-and-github">Collaboration via git and GitHub</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#enabling-continuous-integration">Enabling continuous integration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../maintainer_guide.html#developing-new-features">Developing new features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#validating-features">Validating features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#pruning-features">Pruning features</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../maintainer_guide.html#applying-the-feature-engineering-pipeline">Applying the feature engineering pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../maintainer_guide.html#updating-the-framework">Updating the framework</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributor_guide.html">Contributor Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced Usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ballet.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/ballet.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.eng.html">ballet.eng package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/ballet.eng.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.modeling.html">ballet.modeling package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/ballet.modeling.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.util.html">ballet.util package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/ballet.util.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.validation.html">ballet.validation package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/ballet.validation.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/ballet.validation.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/ballet.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.cli.html">ballet.cli module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.compat.html">ballet.compat module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.contrib.html">ballet.contrib module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.exc.html">ballet.exc module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.feature.html">ballet.feature module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.modeler.html">ballet.modeler module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.pipeline.html">ballet.pipeline module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.project.html">ballet.project module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.templating.html">ballet.templating module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.transformer.html">ballet.transformer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.update.html">ballet.update module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli_reference.html">CLI Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_reference.html#ballet-quickstart">quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_reference.html#ballet-start-new-feature">start-new-feature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_reference.html#ballet-update-project-template">update-project-template</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Development Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#types-of-contributions">Types of Contributions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#report-bugs">Report Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#fix-bugs">Fix Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#implement-features">Implement Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#write-documentation">Write Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#submit-feedback">Submit Feedback</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#get-started">Get Started!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#pull-request-guidelines">Pull Request Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#tips">Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#deploying">Deploying</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">Credits</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../authors.html#development-lead">Development Lead</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../authors.html#contributors">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id1">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id2">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id3">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id4">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id5">0.1</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ballet</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>ballet.transformer</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ballet.transformer</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Counter</span><span class="p">,</span> <span class="n">namedtuple</span>
+<span class="kn">from</span> <span class="nn">inspect</span> <span class="k">import</span> <span class="n">signature</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">identity</span><span class="p">,</span> <span class="n">is_seqcont</span><span class="p">,</span> <span class="n">select_values</span>
+<span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="k">import</span> <span class="n">TransformerMixin</span>
+<span class="kn">from</span> <span class="nn">sklearn_pandas.pipeline</span> <span class="k">import</span> <span class="n">TransformerPipeline</span>
+
+<span class="kn">from</span> <span class="nn">ballet.eng.base</span> <span class="k">import</span> <span class="n">SimpleFunctionTransformer</span>
+<span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">UnsuccessfulInputConversionError</span>
+<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">DeepcopyMixin</span><span class="p">,</span> <span class="n">asarray2d</span><span class="p">,</span> <span class="n">indent</span><span class="p">,</span> <span class="n">quiet</span>
+<span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span>
+
+
+<div class="viewcode-block" id="make_robust_transformer"><a class="viewcode-back" href="../../api/ballet.transformer.html#ballet.transformer.make_robust_transformer">[docs]</a><span class="k">def</span> <span class="nf">make_robust_transformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">is_seqcont</span><span class="p">(</span><span class="n">transformer</span><span class="p">):</span>
+        <span class="n">transformer</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">_replace_callable_with_transformer</span><span class="p">,</span> <span class="n">transformer</span><span class="p">)</span>
+        <span class="nb">map</span><span class="p">(</span><span class="n">_validate_transformer_api</span><span class="p">,</span> <span class="n">transformer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">make_robust_transformer_pipeline</span><span class="p">(</span><span class="o">*</span><span class="n">transformer</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">transformer</span> <span class="o">=</span> <span class="n">_replace_callable_with_transformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
+        <span class="n">_validate_transformer_api</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">DelegatingRobustTransformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_name_estimators</span><span class="p">(</span><span class="n">estimators</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate names for estimators.</span>
+
+<span class="sd">    Adapted from sklearn.pipeline._name_estimators</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="n">estimator</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">DelegatingRobustTransformer</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">get_name</span><span class="p">(</span><span class="n">estimator</span><span class="o">.</span><span class="n">_transformer</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">estimator</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="n">names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">get_name</span><span class="p">,</span> <span class="n">estimators</span><span class="p">))</span>
+    <span class="n">counter</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">names</span><span class="p">))</span>
+    <span class="n">counter</span> <span class="o">=</span> <span class="n">select_values</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="n">counter</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">estimators</span><span class="p">))):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">counter</span><span class="p">:</span>
+            <span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="s2">&quot;-</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">counter</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="n">counter</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">estimators</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="make_transformer_pipeline"><a class="viewcode-back" href="../../api/ballet.transformer.html#ballet.transformer.make_transformer_pipeline">[docs]</a><span class="k">def</span> <span class="nf">make_transformer_pipeline</span><span class="p">(</span><span class="o">*</span><span class="n">steps</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Construct a TransformerPipeline from the given estimators.</span>
+
+<span class="sd">    Source: sklearn_pandas.cont_method</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">TransformerPipeline</span><span class="p">(</span><span class="n">_name_estimators</span><span class="p">(</span><span class="n">steps</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="make_robust_transformer_pipeline"><a class="viewcode-back" href="../../api/ballet.transformer.html#ballet.transformer.make_robust_transformer_pipeline">[docs]</a><span class="k">def</span> <span class="nf">make_robust_transformer_pipeline</span><span class="p">(</span><span class="o">*</span><span class="n">steps</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Construct a transformer pipeline of DelegatingRobustTransformers&quot;&quot;&quot;</span>
+    <span class="n">steps</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">DelegatingRobustTransformer</span><span class="p">,</span> <span class="n">steps</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">make_transformer_pipeline</span><span class="p">(</span><span class="o">*</span><span class="n">steps</span><span class="p">)</span></div>
+
+
+<span class="n">ConversionApproach</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;ConversionApproach&#39;</span><span class="p">,</span> <span class="s1">&#39;name convert caught&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="DelegatingRobustTransformer"><a class="viewcode-back" href="../../api/ballet.transformer.html#ballet.transformer.DelegatingRobustTransformer">[docs]</a><span class="k">class</span> <span class="nc">DelegatingRobustTransformer</span><span class="p">(</span><span class="n">DeepcopyMixin</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Robust transformer that delegates to underlying transformer</span>
+
+<span class="sd">    This transformer is robust against different typed and shaped input data.</span>
+<span class="sd">    It tries a variety of input data conversion approaches and passes the</span>
+<span class="sd">    result to the underlying transformer, using the first approach that works.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        transformer: a transformer object with fit and transform methods</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        UnsuccessfulInputConversionError: If none of the conversion approaches</span>
+<span class="sd">            work.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">DEFAULT_CAUGHT</span> <span class="o">=</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">)</span>
+
+    <span class="n">CONVERSION_APPROACHES</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">ConversionApproach</span><span class="p">(</span><span class="s1">&#39;identity&#39;</span><span class="p">,</span> <span class="n">identity</span><span class="p">,</span> <span class="n">DEFAULT_CAUGHT</span><span class="p">),</span>
+        <span class="n">ConversionApproach</span><span class="p">(</span><span class="s1">&#39;series&#39;</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">DEFAULT_CAUGHT</span><span class="p">),</span>
+        <span class="n">ConversionApproach</span><span class="p">(</span><span class="s1">&#39;dataframe&#39;</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">DEFAULT_CAUGHT</span><span class="p">),</span>
+        <span class="n">ConversionApproach</span><span class="p">(</span><span class="s1">&#39;array&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">,</span> <span class="n">DEFAULT_CAUGHT</span><span class="p">),</span>
+        <span class="n">ConversionApproach</span><span class="p">(</span><span class="s1">&#39;asarray2d&#39;</span><span class="p">,</span> <span class="n">asarray2d</span><span class="p">,</span> <span class="p">()),</span>
+    <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformer</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transformer</span> <span class="o">=</span> <span class="n">transformer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stored_conversion_approach</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;_transformer&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_transformer</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{name}</span><span class="s1">(</span><span class="si">{transformer!r}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_transformer</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_tname</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_transformer</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+
+<div class="viewcode-block" id="DelegatingRobustTransformer.fit"><a class="viewcode-back" href="../../api/ballet.transformer.html#ballet.transformer.DelegatingRobustTransformer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># don&#39;t return the result of transformer.fit because it is the</span>
+        <span class="c1"># underlying transformer, not this robust transformer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_call_robust</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_transformer</span><span class="o">.</span><span class="n">fit</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># instead, return this robust transformer</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="DelegatingRobustTransformer.transform"><a class="viewcode-back" href="../../api/ballet.transformer.html#ballet.transformer.DelegatingRobustTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_robust</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_call_with_convert</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">convert</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">method</span><span class="p">(</span><span class="n">convert</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">y</span><span class="o">=</span><span class="n">convert</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">method</span><span class="p">(</span><span class="n">convert</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="nd">@quiet</span>
+    <span class="k">def</span> <span class="nf">_call_robust</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stored_conversion_approach</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">approach</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stored_conversion_approach</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log_attempt_using_stored_approach</span><span class="p">(</span><span class="n">approach</span><span class="p">)</span>
+            <span class="n">convert</span> <span class="o">=</span> <span class="n">approach</span><span class="o">.</span><span class="n">convert</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_with_convert</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">convert</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log_success_using_stored_approach</span><span class="p">(</span><span class="n">approach</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">result</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log_failure_using_stored_approach</span><span class="p">(</span><span class="n">approach</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+                <span class="k">raise</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">approach</span> <span class="ow">in</span> <span class="n">DelegatingRobustTransformer</span><span class="o">.</span><span class="n">CONVERSION_APPROACHES</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_log_attempt</span><span class="p">(</span><span class="n">approach</span><span class="p">)</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_with_convert</span><span class="p">(</span>
+                        <span class="n">method</span><span class="p">,</span> <span class="n">approach</span><span class="o">.</span><span class="n">convert</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_log_success</span><span class="p">(</span><span class="n">approach</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_stored_conversion_approach</span> <span class="o">=</span> <span class="n">approach</span>
+                    <span class="k">return</span> <span class="n">result</span>
+                <span class="k">except</span> <span class="n">approach</span><span class="o">.</span><span class="n">caught</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_log_catch</span><span class="p">(</span><span class="n">approach</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_log_error</span><span class="p">(</span><span class="n">approach</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+                    <span class="k">raise</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log_failure_no_more_approaches</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">UnsuccessfulInputConversionError</span>
+
+    <span class="k">def</span> <span class="nf">_log_attempt_using_stored_approach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">approach</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{tname}</span><span class="s1">: &#39;</span>
+            <span class="s1">&#39;Attempting to convert using stored, &#39;</span>
+            <span class="s1">&#39;previously-successful approach </span><span class="si">{approach.name!r}</span><span class="s1">&#39;</span>
+            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="p">,</span> <span class="n">approach</span><span class="o">=</span><span class="n">approach</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_log_failure_using_stored_approach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">approach</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+        <span class="n">pretty_tb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_pretty_tb</span><span class="p">()</span>
+        <span class="n">exc_name</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{tname}</span><span class="s1">: &#39;</span>
+            <span class="s1">&#39;Conversion unexpectedly failed using stored, &#39;</span>
+            <span class="s1">&#39;previously-successful approach </span><span class="si">{approach.name!r}</span><span class="s1"> &#39;</span>
+            <span class="s1">&#39;because of error </span><span class="si">{exc_name!r}</span><span class="se">\n\n</span><span class="si">{tb}</span><span class="s1">&#39;</span>
+            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="p">,</span> <span class="n">approach</span><span class="o">=</span><span class="n">approach</span><span class="p">,</span> <span class="n">exc_name</span><span class="o">=</span><span class="n">exc_name</span><span class="p">,</span>
+                    <span class="n">tb</span><span class="o">=</span><span class="n">pretty_tb</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_log_success_using_stored_approach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">approach</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{tname}</span><span class="s1">: &#39;</span>
+            <span class="s1">&#39;Conversion with stored, previously-successful approach &#39;</span>
+            <span class="s1">&#39;</span><span class="si">{approach.name!r}</span><span class="s1"> succeeded!&#39;</span>
+            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="p">,</span> <span class="n">approach</span><span class="o">=</span><span class="n">approach</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_log_attempt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">approach</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{tname}</span><span class="s1">: &#39;</span>
+            <span class="s1">&#39;Attempting to convert using approach </span><span class="si">{approach.name!r}</span><span class="s1">...&#39;</span>
+            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="p">,</span> <span class="n">approach</span><span class="o">=</span><span class="n">approach</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_get_pretty_tb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">tb</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+        <span class="n">pretty_tb</span> <span class="o">=</span> <span class="n">indent</span><span class="p">(</span><span class="n">tb</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pretty_tb</span>
+
+    <span class="k">def</span> <span class="nf">_log_catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">approach</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+        <span class="n">pretty_tb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_pretty_tb</span><span class="p">()</span>
+        <span class="n">exc_name</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{tname}</span><span class="s1">: &#39;</span>
+            <span class="s1">&#39;Conversion approach </span><span class="si">{approach.name!r}</span><span class="s1"> didn</span><span class="se">\&#39;</span><span class="s1">t work, &#39;</span>
+            <span class="s1">&#39;caught exception </span><span class="si">{exc_name!r}</span><span class="se">\n\n</span><span class="si">{tb}</span><span class="s1">&#39;</span>
+            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="p">,</span> <span class="n">approach</span><span class="o">=</span><span class="n">approach</span><span class="p">,</span> <span class="n">exc_name</span><span class="o">=</span><span class="n">exc_name</span><span class="p">,</span>
+                    <span class="n">tb</span><span class="o">=</span><span class="n">pretty_tb</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_log_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">approach</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+        <span class="n">pretty_tb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_pretty_tb</span><span class="p">()</span>
+        <span class="n">exc_name</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{tname}</span><span class="s1">: &#39;</span>
+            <span class="s1">&#39;Conversion failed during </span><span class="si">{approach.name!r}</span><span class="s1"> because of &#39;</span>
+            <span class="s1">&#39;an unrecoverable error </span><span class="si">{exc_name!r}</span><span class="se">\n\n</span><span class="si">{tb}</span><span class="s1">&#39;</span>
+            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="p">,</span> <span class="n">approach</span><span class="o">=</span><span class="n">approach</span><span class="p">,</span> <span class="n">exc_name</span><span class="o">=</span><span class="n">exc_name</span><span class="p">,</span>
+                    <span class="n">tb</span><span class="o">=</span><span class="n">pretty_tb</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_log_success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">approach</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{tname}</span><span class="s1">: &#39;</span>
+            <span class="s1">&#39;Conversion approach </span><span class="si">{approach.name!r}</span><span class="s1"> succeeded!&#39;</span>
+            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="p">,</span> <span class="n">approach</span><span class="o">=</span><span class="n">approach</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_log_failure_no_more_approaches</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Conversion failed, and we</span><span class="se">\&#39;</span><span class="s1">re not sure why...&#39;</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_validate_transformer_api</span><span class="p">(</span><span class="n">transformer</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
+        <span class="nb">hasattr</span><span class="p">(</span><span class="n">transformer</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="s1">&#39;transform&#39;</span><span class="p">,</span> <span class="s1">&#39;fit_transform&#39;</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Transformer object missing required attribute&#39;</span><span class="p">)</span>
+
+    <span class="n">sig_fit</span> <span class="o">=</span> <span class="n">signature</span><span class="p">(</span><span class="n">transformer</span><span class="o">.</span><span class="n">fit</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;(X, y=None&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">sig_fit</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;Invalid signature for transformer.fit: </span><span class="si">{sig_fit}</span><span class="s1">&#39;</span>
+            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sig_fit</span><span class="o">=</span><span class="n">sig_fit</span><span class="p">))</span>
+
+    <span class="n">sig_transform</span> <span class="o">=</span> <span class="n">signature</span><span class="p">(</span><span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;(X&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">sig_transform</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;Invalid signature for transformer.transform: </span><span class="si">{sig_transform}</span><span class="s1">&#39;</span>
+            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sig_fit</span><span class="o">=</span><span class="n">sig_fit</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">_replace_callable_with_transformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">transformer</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">SimpleFunctionTransformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">transformer</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Micah Smith
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

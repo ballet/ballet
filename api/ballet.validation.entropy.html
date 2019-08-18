@@ -141,8 +141,10 @@
 <li class="toctree-l3"><a class="reference internal" href="ballet.exc.html">ballet.exc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.feature.html">ballet.feature module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.modeler.html">ballet.modeler module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.pipeline.html">ballet.pipeline module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.project.html">ballet.project module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.templating.html">ballet.templating module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.transformer.html">ballet.transformer module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.update.html">ballet.update module</a></li>
 </ul>
 </li>
@@ -259,7 +261,7 @@
 <span id="ballet-validation-entropy-module"></span><h1>ballet.validation.entropy module<a class="headerlink" href="#module-ballet.validation.entropy" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="ballet.validation.entropy.calculate_disc_entropy">
-<code class="descclassname">ballet.validation.entropy.</code><code class="descname">calculate_disc_entropy</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#calculate_disc_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.calculate_disc_entropy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.validation.entropy.</code><code class="sig-name descname">calculate_disc_entropy</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#calculate_disc_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.calculate_disc_entropy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the exact Shannon entropy of a discrete dataset,
 using empirical probabilities according to the equation:
 $ H(X) = -sum(c in X) p(c) times log(p(c)) $
@@ -284,7 +286,7 @@ take datasets of mixed discrete and continuous functions.</p>
 
 <dl class="function">
 <dt id="ballet.validation.entropy.estimate_conditional_information">
-<code class="descclassname">ballet.validation.entropy.</code><code class="descname">estimate_conditional_information</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#estimate_conditional_information"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.estimate_conditional_information" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.validation.entropy.</code><code class="sig-name descname">estimate_conditional_information</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">z</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#estimate_conditional_information"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.estimate_conditional_information" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimate the conditional mutual information of three datasets.</p>
 <p>Conditional mutual information is the
 mutual information of two datasets, given a third:</p>
@@ -331,7 +333,7 @@ information”. Phys. Rev. E 69, 2004.</p>
 
 <dl class="function">
 <dt id="ballet.validation.entropy.estimate_cont_entropy">
-<code class="descclassname">ballet.validation.entropy.</code><code class="descname">estimate_cont_entropy</code><span class="sig-paren">(</span><em>X</em>, <em>epsilon=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#estimate_cont_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.estimate_cont_entropy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.validation.entropy.</code><code class="sig-name descname">estimate_cont_entropy</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">epsilon=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#estimate_cont_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.estimate_cont_entropy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimate the Shannon entropy of a discrete dataset.</p>
 <p>Based off the Kraskov Estimator [1] and Kozachenko [2]
 estimators for a dataset’s Shannon entropy.</p>
@@ -382,7 +384,7 @@ of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16</p>
 
 <dl class="function">
 <dt id="ballet.validation.entropy.estimate_entropy">
-<code class="descclassname">ballet.validation.entropy.</code><code class="descname">estimate_entropy</code><span class="sig-paren">(</span><em>X</em>, <em>epsilon=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#estimate_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.estimate_entropy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.validation.entropy.</code><code class="sig-name descname">estimate_entropy</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">epsilon=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#estimate_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.estimate_entropy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimate a dataset’s Shannon entropy.</p>
 <p>This function can take datasets of mixed discrete and continuous
 features, and uses a set of heuristics to determine which functions
@@ -439,7 +441,7 @@ of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16.</p>
 
 <dl class="function">
 <dt id="ballet.validation.entropy.estimate_mutual_information">
-<code class="descclassname">ballet.validation.entropy.</code><code class="descname">estimate_mutual_information</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#estimate_mutual_information"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.estimate_mutual_information" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.validation.entropy.</code><code class="sig-name descname">estimate_mutual_information</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#estimate_mutual_information"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.estimate_mutual_information" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimate the mutual information of two datasets.</p>
 <p>Mutual information is a measure of dependence between
 two datasets and is calculated as:</p>

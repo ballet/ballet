@@ -139,8 +139,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.exc.html">ballet.exc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.feature.html">ballet.feature module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.modeler.html">ballet.modeler module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.pipeline.html">ballet.pipeline module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.project.html">ballet.project module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.templating.html">ballet.templating module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.transformer.html">ballet.transformer module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.update.html">ballet.update module</a></li>
 </ul>
 </li>
@@ -246,279 +248,14 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ballet.feature</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">traceback</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Counter</span><span class="p">,</span> <span class="n">namedtuple</span>
-<span class="kn">from</span> <span class="nn">inspect</span> <span class="k">import</span> <span class="n">signature</span>
+<span></span><span class="kn">from</span> <span class="nn">inspect</span> <span class="k">import</span> <span class="n">signature</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">cached_property</span><span class="p">,</span> <span class="n">identity</span><span class="p">,</span> <span class="n">is_seqcont</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">select_values</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="k">import</span> <span class="n">TransformerMixin</span>
-<span class="kn">from</span> <span class="nn">sklearn_pandas</span> <span class="k">import</span> <span class="n">DataFrameMapper</span>
-<span class="kn">from</span> <span class="nn">sklearn_pandas.pipeline</span> <span class="k">import</span> <span class="n">TransformerPipeline</span>
+<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">cached_property</span>
 
-<span class="kn">from</span> <span class="nn">ballet.eng.base</span> <span class="k">import</span> <span class="n">SimpleFunctionTransformer</span>
-<span class="kn">from</span> <span class="nn">ballet.eng.misc</span> <span class="k">import</span> <span class="n">NullTransformer</span>
-<span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">UnsuccessfulInputConversionError</span>
-<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">DeepcopyMixin</span><span class="p">,</span> <span class="n">asarray2d</span><span class="p">,</span> <span class="n">indent</span><span class="p">,</span> <span class="n">quiet</span>
-<span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span>
+<span class="kn">import</span> <span class="nn">ballet.pipeline</span>
+<span class="kn">from</span> <span class="nn">ballet.transformer</span> <span class="k">import</span> <span class="n">make_robust_transformer</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;make_mapper&#39;</span><span class="p">,</span> <span class="s1">&#39;Feature&#39;</span><span class="p">]</span>
-
-
-<div class="viewcode-block" id="make_mapper"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.feature.make_mapper">[docs]</a><span class="k">def</span> <span class="nf">make_mapper</span><span class="p">(</span><span class="n">features</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Make a DataFrameMapper from a feature or list of features</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        features (Union[Feature, List[Feature]]): feature or list of features</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        DataFrameMapper: mapper made from features</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">features</span><span class="p">:</span>
-        <span class="n">features</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="p">[],</span> <span class="n">transformer</span><span class="o">=</span><span class="n">NullTransformer</span><span class="p">())</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">iterable</span><span class="p">(</span><span class="n">features</span><span class="p">):</span>
-        <span class="n">features</span> <span class="o">=</span> <span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="p">)</span>
-    <span class="k">return</span> <span class="n">DataFrameMapper</span><span class="p">(</span>
-        <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">as_input_transformer_tuple</span><span class="p">()</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">features</span><span class="p">],</span>
-        <span class="n">input_df</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
-
-
-<span class="k">def</span> <span class="nf">_name_estimators</span><span class="p">(</span><span class="n">estimators</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generate names for estimators.</span>
-
-<span class="sd">    Adapted from sklearn.pipeline._name_estimators</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="n">estimator</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">DelegatingRobustTransformer</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">get_name</span><span class="p">(</span><span class="n">estimator</span><span class="o">.</span><span class="n">_transformer</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">estimator</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-
-    <span class="n">names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">get_name</span><span class="p">,</span> <span class="n">estimators</span><span class="p">))</span>
-    <span class="n">counter</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">names</span><span class="p">))</span>
-    <span class="n">counter</span> <span class="o">=</span> <span class="n">select_values</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="n">counter</span><span class="p">)</span>
-
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">estimators</span><span class="p">))):</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">counter</span><span class="p">:</span>
-            <span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="s2">&quot;-</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">counter</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
-            <span class="n">counter</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
-
-    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">estimators</span><span class="p">))</span>
-
-
-<span class="k">def</span> <span class="nf">make_transformer_pipeline</span><span class="p">(</span><span class="o">*</span><span class="n">steps</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Construct a TransformerPipeline from the given estimators.</span>
-
-<span class="sd">    Source: sklearn_pandas.make_transformer_pipeline</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">TransformerPipeline</span><span class="p">(</span><span class="n">_name_estimators</span><span class="p">(</span><span class="n">steps</span><span class="p">))</span>
-
-
-<span class="k">def</span> <span class="nf">make_robust_transformer_pipeline</span><span class="p">(</span><span class="o">*</span><span class="n">steps</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Construct a transformer pipeline of DelegatingRobustTransformers&quot;&quot;&quot;</span>
-    <span class="n">steps</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">DelegatingRobustTransformer</span><span class="p">,</span> <span class="n">steps</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">make_transformer_pipeline</span><span class="p">(</span><span class="o">*</span><span class="n">steps</span><span class="p">)</span>
-
-
-<span class="n">ConversionApproach</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;ConversionApproach&#39;</span><span class="p">,</span> <span class="s1">&#39;name convert caught&#39;</span><span class="p">)</span>
-
-
-<span class="k">class</span> <span class="nc">DelegatingRobustTransformer</span><span class="p">(</span><span class="n">DeepcopyMixin</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Robust transformer that delegates to underlying transformer</span>
-
-<span class="sd">    This transformer is robust against different typed and shaped input data.</span>
-<span class="sd">    It tries a variety of input data conversion approaches and passes the</span>
-<span class="sd">    result to the underlying transformer, using the first approach that works.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        transformer: a transformer object with fit and transform methods</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        UnsuccessfulInputConversionError: If none of the conversion approaches</span>
-<span class="sd">            work.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">DEFAULT_CAUGHT</span> <span class="o">=</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">)</span>
-
-    <span class="n">CONVERSION_APPROACHES</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">ConversionApproach</span><span class="p">(</span><span class="s1">&#39;identity&#39;</span><span class="p">,</span> <span class="n">identity</span><span class="p">,</span> <span class="n">DEFAULT_CAUGHT</span><span class="p">),</span>
-        <span class="n">ConversionApproach</span><span class="p">(</span><span class="s1">&#39;series&#39;</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">DEFAULT_CAUGHT</span><span class="p">),</span>
-        <span class="n">ConversionApproach</span><span class="p">(</span><span class="s1">&#39;dataframe&#39;</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">DEFAULT_CAUGHT</span><span class="p">),</span>
-        <span class="n">ConversionApproach</span><span class="p">(</span><span class="s1">&#39;array&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">,</span> <span class="n">DEFAULT_CAUGHT</span><span class="p">),</span>
-        <span class="n">ConversionApproach</span><span class="p">(</span><span class="s1">&#39;asarray2d&#39;</span><span class="p">,</span> <span class="n">asarray2d</span><span class="p">,</span> <span class="p">()),</span>
-    <span class="p">]</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformer</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_transformer</span> <span class="o">=</span> <span class="n">transformer</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_stored_conversion_approach</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-        <span class="k">if</span> <span class="s1">&#39;_transformer&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_transformer</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span>
-
-    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
-        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{name}</span><span class="s1">(</span><span class="si">{transformer!r}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_transformer</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_tname</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_transformer</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
-
-    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="c1"># don&#39;t return the result of transformer.fit because it is the</span>
-        <span class="c1"># underlying transformer, not this robust transformer</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_call_robust</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_transformer</span><span class="o">.</span><span class="n">fit</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
-
-        <span class="c1"># instead, return this robust transformer</span>
-        <span class="k">return</span> <span class="bp">self</span>
-
-    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_robust</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_call_with_convert</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">convert</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">method</span><span class="p">(</span><span class="n">convert</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">y</span><span class="o">=</span><span class="n">convert</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">method</span><span class="p">(</span><span class="n">convert</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="nd">@quiet</span>
-    <span class="k">def</span> <span class="nf">_call_robust</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stored_conversion_approach</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">approach</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stored_conversion_approach</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log_attempt_using_stored_approach</span><span class="p">(</span><span class="n">approach</span><span class="p">)</span>
-            <span class="n">convert</span> <span class="o">=</span> <span class="n">approach</span><span class="o">.</span><span class="n">convert</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_with_convert</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">convert</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_log_success_using_stored_approach</span><span class="p">(</span><span class="n">approach</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">result</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_log_failure_using_stored_approach</span><span class="p">(</span><span class="n">approach</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
-                <span class="k">raise</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">approach</span> <span class="ow">in</span> <span class="n">DelegatingRobustTransformer</span><span class="o">.</span><span class="n">CONVERSION_APPROACHES</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_log_attempt</span><span class="p">(</span><span class="n">approach</span><span class="p">)</span>
-                    <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_with_convert</span><span class="p">(</span>
-                        <span class="n">method</span><span class="p">,</span> <span class="n">approach</span><span class="o">.</span><span class="n">convert</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_log_success</span><span class="p">(</span><span class="n">approach</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_stored_conversion_approach</span> <span class="o">=</span> <span class="n">approach</span>
-                    <span class="k">return</span> <span class="n">result</span>
-                <span class="k">except</span> <span class="n">approach</span><span class="o">.</span><span class="n">caught</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_log_catch</span><span class="p">(</span><span class="n">approach</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
-                    <span class="k">continue</span>
-                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_log_error</span><span class="p">(</span><span class="n">approach</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
-                    <span class="k">raise</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log_failure_no_more_approaches</span><span class="p">()</span>
-            <span class="k">raise</span> <span class="n">UnsuccessfulInputConversionError</span>
-
-    <span class="k">def</span> <span class="nf">_log_attempt_using_stored_approach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">approach</span><span class="p">):</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="s1">&#39;</span><span class="si">{tname}</span><span class="s1">: &#39;</span>
-            <span class="s1">&#39;Attempting to convert using stored, &#39;</span>
-            <span class="s1">&#39;previously-successful approach </span><span class="si">{approach.name!r}</span><span class="s1">&#39;</span>
-            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="p">,</span> <span class="n">approach</span><span class="o">=</span><span class="n">approach</span><span class="p">))</span>
-
-    <span class="k">def</span> <span class="nf">_log_failure_using_stored_approach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">approach</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
-        <span class="n">pretty_tb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_pretty_tb</span><span class="p">()</span>
-        <span class="n">exc_name</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="s1">&#39;</span><span class="si">{tname}</span><span class="s1">: &#39;</span>
-            <span class="s1">&#39;Conversion unexpectedly failed using stored, &#39;</span>
-            <span class="s1">&#39;previously-successful approach </span><span class="si">{approach.name!r}</span><span class="s1"> &#39;</span>
-            <span class="s1">&#39;because of error </span><span class="si">{exc_name!r}</span><span class="se">\n\n</span><span class="si">{tb}</span><span class="s1">&#39;</span>
-            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="p">,</span> <span class="n">approach</span><span class="o">=</span><span class="n">approach</span><span class="p">,</span> <span class="n">exc_name</span><span class="o">=</span><span class="n">exc_name</span><span class="p">,</span>
-                    <span class="n">tb</span><span class="o">=</span><span class="n">pretty_tb</span><span class="p">))</span>
-
-    <span class="k">def</span> <span class="nf">_log_success_using_stored_approach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">approach</span><span class="p">):</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="s1">&#39;</span><span class="si">{tname}</span><span class="s1">: &#39;</span>
-            <span class="s1">&#39;Conversion with stored, previously-successful approach &#39;</span>
-            <span class="s1">&#39;</span><span class="si">{approach.name!r}</span><span class="s1"> succeeded!&#39;</span>
-            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="p">,</span> <span class="n">approach</span><span class="o">=</span><span class="n">approach</span><span class="p">))</span>
-
-    <span class="k">def</span> <span class="nf">_log_attempt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">approach</span><span class="p">):</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="s1">&#39;</span><span class="si">{tname}</span><span class="s1">: &#39;</span>
-            <span class="s1">&#39;Attempting to convert using approach </span><span class="si">{approach.name!r}</span><span class="s1">...&#39;</span>
-            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="p">,</span> <span class="n">approach</span><span class="o">=</span><span class="n">approach</span><span class="p">))</span>
-
-    <span class="k">def</span> <span class="nf">_get_pretty_tb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">tb</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
-        <span class="n">pretty_tb</span> <span class="o">=</span> <span class="n">indent</span><span class="p">(</span><span class="n">tb</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">pretty_tb</span>
-
-    <span class="k">def</span> <span class="nf">_log_catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">approach</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
-        <span class="n">pretty_tb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_pretty_tb</span><span class="p">()</span>
-        <span class="n">exc_name</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="s1">&#39;</span><span class="si">{tname}</span><span class="s1">: &#39;</span>
-            <span class="s1">&#39;Conversion approach </span><span class="si">{approach.name!r}</span><span class="s1"> didn</span><span class="se">\&#39;</span><span class="s1">t work, &#39;</span>
-            <span class="s1">&#39;caught exception </span><span class="si">{exc_name!r}</span><span class="se">\n\n</span><span class="si">{tb}</span><span class="s1">&#39;</span>
-            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="p">,</span> <span class="n">approach</span><span class="o">=</span><span class="n">approach</span><span class="p">,</span> <span class="n">exc_name</span><span class="o">=</span><span class="n">exc_name</span><span class="p">,</span>
-                    <span class="n">tb</span><span class="o">=</span><span class="n">pretty_tb</span><span class="p">))</span>
-
-    <span class="k">def</span> <span class="nf">_log_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">approach</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
-        <span class="n">pretty_tb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_pretty_tb</span><span class="p">()</span>
-        <span class="n">exc_name</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="s1">&#39;</span><span class="si">{tname}</span><span class="s1">: &#39;</span>
-            <span class="s1">&#39;Conversion failed during </span><span class="si">{approach.name!r}</span><span class="s1"> because of &#39;</span>
-            <span class="s1">&#39;an unrecoverable error </span><span class="si">{exc_name!r}</span><span class="se">\n\n</span><span class="si">{tb}</span><span class="s1">&#39;</span>
-            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="p">,</span> <span class="n">approach</span><span class="o">=</span><span class="n">approach</span><span class="p">,</span> <span class="n">exc_name</span><span class="o">=</span><span class="n">exc_name</span><span class="p">,</span>
-                    <span class="n">tb</span><span class="o">=</span><span class="n">pretty_tb</span><span class="p">))</span>
-
-    <span class="k">def</span> <span class="nf">_log_success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">approach</span><span class="p">):</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="s1">&#39;</span><span class="si">{tname}</span><span class="s1">: &#39;</span>
-            <span class="s1">&#39;Conversion approach </span><span class="si">{approach.name!r}</span><span class="s1"> succeeded!&#39;</span>
-            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="p">,</span> <span class="n">approach</span><span class="o">=</span><span class="n">approach</span><span class="p">))</span>
-
-    <span class="k">def</span> <span class="nf">_log_failure_no_more_approaches</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Conversion failed, and we</span><span class="se">\&#39;</span><span class="s1">re not sure why...&#39;</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_validate_transformer_api</span><span class="p">(</span><span class="n">transformer</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
-        <span class="nb">hasattr</span><span class="p">(</span><span class="n">transformer</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="s1">&#39;transform&#39;</span><span class="p">,</span> <span class="s1">&#39;fit_transform&#39;</span><span class="p">]</span>
-    <span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Transformer object missing required attribute&#39;</span><span class="p">)</span>
-
-    <span class="n">sig_fit</span> <span class="o">=</span> <span class="n">signature</span><span class="p">(</span><span class="n">transformer</span><span class="o">.</span><span class="n">fit</span><span class="p">)</span>
-    <span class="k">if</span> <span class="s1">&#39;(X, y=None&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">sig_fit</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s1">&#39;Invalid signature for transformer.fit: </span><span class="si">{sig_fit}</span><span class="s1">&#39;</span>
-            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sig_fit</span><span class="o">=</span><span class="n">sig_fit</span><span class="p">))</span>
-
-    <span class="n">sig_transform</span> <span class="o">=</span> <span class="n">signature</span><span class="p">(</span><span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
-    <span class="k">if</span> <span class="s1">&#39;(X&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">sig_transform</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s1">&#39;Invalid signature for transformer.transform: </span><span class="si">{sig_transform}</span><span class="s1">&#39;</span>
-            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sig_fit</span><span class="o">=</span><span class="n">sig_fit</span><span class="p">))</span>
-
-
-<span class="k">def</span> <span class="nf">_replace_callable_with_transformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">transformer</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">SimpleFunctionTransformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">transformer</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Feature&#39;</span><span class="p">,</span> <span class="p">)</span>
 
 
 <div class="viewcode-block" id="Feature"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.feature.Feature">[docs]</a><span class="k">class</span> <span class="nc">Feature</span><span class="p">:</span>
@@ -550,16 +287,7 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="nb">input</span>
-
-        <span class="k">if</span> <span class="n">is_seqcont</span><span class="p">(</span><span class="n">transformer</span><span class="p">):</span>
-            <span class="n">transformer</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">_replace_callable_with_transformer</span><span class="p">,</span> <span class="n">transformer</span><span class="p">)</span>
-            <span class="nb">map</span><span class="p">(</span><span class="n">_validate_transformer_api</span><span class="p">,</span> <span class="n">transformer</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span> <span class="o">=</span> <span class="n">make_robust_transformer_pipeline</span><span class="p">(</span><span class="o">*</span><span class="n">transformer</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">transformer</span> <span class="o">=</span> <span class="n">_replace_callable_with_transformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
-            <span class="n">_validate_transformer_api</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span> <span class="o">=</span> <span class="n">DelegatingRobustTransformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span> <span class="o">=</span> <span class="n">make_robust_transformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">output</span>  <span class="c1"># unused</span>
@@ -582,13 +310,11 @@
 
 <div class="viewcode-block" id="Feature.as_input_transformer_tuple"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.feature.Feature.as_input_transformer_tuple">[docs]</a>    <span class="k">def</span> <span class="nf">as_input_transformer_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return an tuple for passing to DataFrameMapper constructor&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;alias&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">})</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;alias&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">}</span></div>
 
-<div class="viewcode-block" id="Feature.as_dataframe_mapper"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.feature.Feature.as_dataframe_mapper">[docs]</a>    <span class="k">def</span> <span class="nf">as_dataframe_mapper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return standalone DataFrameMapper with this feature&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">DataFrameMapper</span><span class="p">([</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">as_input_transformer_tuple</span><span class="p">()</span>
-        <span class="p">],</span> <span class="n">input_df</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div></div>
+<div class="viewcode-block" id="Feature.as_feature_engineering_pipeline"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.feature.Feature.as_feature_engineering_pipeline">[docs]</a>    <span class="k">def</span> <span class="nf">as_feature_engineering_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return standalone FeatureEngineeringPipeline with this feature&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ballet</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">FeatureEngineeringPipeline</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

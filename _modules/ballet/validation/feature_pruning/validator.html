@@ -139,8 +139,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.exc.html">ballet.exc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.feature.html">ballet.feature module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.modeler.html">ballet.modeler module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.pipeline.html">ballet.pipeline module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.project.html">ballet.project module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.templating.html">ballet.templating module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.transformer.html">ballet.transformer module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.update.html">ballet.update module</a></li>
 </ul>
 </li>
@@ -250,16 +252,10 @@
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.base</span> <span class="k">import</span> <span class="n">FeaturePruningEvaluator</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.entropy</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">estimate_conditional_information</span><span class="p">,</span>
-    <span class="n">estimate_entropy</span>
-<span class="p">)</span>
+    <span class="n">estimate_conditional_information</span><span class="p">,</span> <span class="n">estimate_entropy</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.gfssf</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">LAMBDA_1_ADJUSTMENT</span><span class="p">,</span>
-    <span class="n">LAMBDA_2_ADJUSTMENT</span><span class="p">,</span>
-    <span class="n">_compute_lmbdas</span><span class="p">,</span>
-    <span class="n">_compute_threshold</span><span class="p">,</span>
-    <span class="n">_concat_datasets</span><span class="p">,</span>
-<span class="p">)</span>
+    <span class="n">LAMBDA_1_ADJUSTMENT</span><span class="p">,</span> <span class="n">LAMBDA_2_ADJUSTMENT</span><span class="p">,</span> <span class="n">_compute_lmbdas</span><span class="p">,</span>
+    <span class="n">_compute_threshold</span><span class="p">,</span> <span class="n">_concat_datasets</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="NoOpPruningEvaluator"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.NoOpPruningEvaluator">[docs]</a><span class="k">class</span> <span class="nc">NoOpPruningEvaluator</span><span class="p">(</span><span class="n">FeaturePruningEvaluator</span><span class="p">):</span>
@@ -316,9 +312,8 @@
 
         <span class="n">feature_dfs_by_src</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">accepted_feature</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">feature</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
-            <span class="n">accepted_df</span> <span class="o">=</span> <span class="n">accepted_feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
-            <span class="p">)</span>
+            <span class="n">accepted_df</span> <span class="o">=</span> <span class="n">accepted_feature</span><span class="o">.</span><span class="n">as_feature_engineering_pipeline</span><span class="p">(</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
             <span class="n">feature_dfs_by_src</span><span class="p">[</span><span class="n">accepted_feature</span><span class="o">.</span><span class="n">source</span><span class="p">]</span> <span class="o">=</span> <span class="n">accepted_df</span>
 
         <span class="n">lmbda_1</span><span class="p">,</span> <span class="n">lmbda_2</span> <span class="o">=</span> <span class="n">_compute_lmbdas</span><span class="p">(</span>

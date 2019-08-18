@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.modeling.problem module &mdash; ballet 0.5.3-dev documentation</title>
+  <title>ballet.transformer module &mdash; ballet 0.5.3-dev documentation</title>
   
 
   
@@ -35,8 +35,8 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="ballet.modeling.scoring module" href="ballet.modeling.scoring.html" />
-    <link rel="prev" title="ballet.modeling.io_transformers module" href="ballet.modeling.io_transformers.html" /> 
+    <link rel="next" title="ballet.update module" href="ballet.update.html" />
+    <link rel="prev" title="ballet.templating module" href="ballet.templating.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -114,13 +114,13 @@
 <p class="caption"><span class="caption-text">Advanced Usage</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="ballet.html">API Reference</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="ballet.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ballet.html#subpackages">Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="ballet.eng.html">ballet.eng package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="ballet.eng.html#submodules">Submodules</a></li>
 </ul>
 </li>
-<li class="toctree-l3 current"><a class="reference internal" href="ballet.modeling.html">ballet.modeling package</a><ul class="current">
-<li class="toctree-l4 current"><a class="reference internal" href="ballet.modeling.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.modeling.html">ballet.modeling package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ballet.modeling.html#submodules">Submodules</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.util.html">ballet.util package</a><ul>
@@ -134,7 +134,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="ballet.html#submodules">Submodules</a><ul>
+<li class="toctree-l2 current"><a class="reference internal" href="ballet.html#submodules">Submodules</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="ballet.cli.html">ballet.cli module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.compat.html">ballet.compat module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.contrib.html">ballet.contrib module</a></li>
@@ -144,7 +144,7 @@
 <li class="toctree-l3"><a class="reference internal" href="ballet.pipeline.html">ballet.pipeline module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.project.html">ballet.project module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.templating.html">ballet.templating module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ballet.transformer.html">ballet.transformer module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ballet.transformer module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.update.html">ballet.update module</a></li>
 </ul>
 </li>
@@ -234,16 +234,14 @@
         
           <li><a href="ballet.html">ballet package</a> &raquo;</li>
         
-          <li><a href="ballet.modeling.html">ballet.modeling package</a> &raquo;</li>
-        
-      <li>ballet.modeling.problem module</li>
+      <li>ballet.transformer module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
             
-              <a href="https://github.com/HDI-Project/ballet/blob/master/docs/api/ballet.modeling.problem.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/HDI-Project/ballet/blob/master/docs/api/ballet.transformer.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -257,76 +255,87 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-ballet.modeling.problem">
-<span id="ballet-modeling-problem-module"></span><h1>ballet.modeling.problem module<a class="headerlink" href="#module-ballet.modeling.problem" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-ballet.transformer">
+<span id="ballet-transformer-module"></span><h1>ballet.transformer module<a class="headerlink" href="#module-ballet.transformer" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
-<dt id="ballet.modeling.problem.BinaryClassificationProblem">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.modeling.problem.</code><code class="sig-name descname">BinaryClassificationProblem</code><a class="reference internal" href="../_modules/ballet/modeling/problem.html#BinaryClassificationProblem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.modeling.problem.BinaryClassificationProblem" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#ballet.modeling.problem.ClassificationProblem" title="ballet.modeling.problem.ClassificationProblem"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.modeling.problem.ClassificationProblem</span></code></a></p>
-<dl class="attribute">
-<dt id="ballet.modeling.problem.BinaryClassificationProblem.binary_classification">
-<code class="sig-name descname">binary_classification</code><em class="property"> = True</em><a class="headerlink" href="#ballet.modeling.problem.BinaryClassificationProblem.binary_classification" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="ballet.transformer.ConversionApproach">
+<em class="property">class </em><code class="sig-prename descclassname">ballet.transformer.</code><code class="sig-name descname">ConversionApproach</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">convert</em>, <em class="sig-param">caught</em><span class="sig-paren">)</span><a class="headerlink" href="#ballet.transformer.ConversionApproach" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="method">
+<dt id="ballet.transformer.ConversionApproach.caught">
+<em class="property">property </em><code class="sig-name descname">caught</code><a class="headerlink" href="#ballet.transformer.ConversionApproach.caught" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ballet.transformer.ConversionApproach.convert">
+<em class="property">property </em><code class="sig-name descname">convert</code><a class="headerlink" href="#ballet.transformer.ConversionApproach.convert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ballet.transformer.ConversionApproach.name">
+<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#ballet.transformer.ConversionApproach.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="class">
-<dt id="ballet.modeling.problem.ClassificationProblem">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.modeling.problem.</code><code class="sig-name descname">ClassificationProblem</code><a class="reference internal" href="../_modules/ballet/modeling/problem.html#ClassificationProblem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.modeling.problem.ClassificationProblem" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#ballet.modeling.problem.ProblemType" title="ballet.modeling.problem.ProblemType"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.modeling.problem.ProblemType</span></code></a></p>
+<dt id="ballet.transformer.DelegatingRobustTransformer">
+<em class="property">class </em><code class="sig-prename descclassname">ballet.transformer.</code><code class="sig-name descname">DelegatingRobustTransformer</code><span class="sig-paren">(</span><em class="sig-param">transformer</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/transformer.html#DelegatingRobustTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.transformer.DelegatingRobustTransformer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ballet.util.html#ballet.util.DeepcopyMixin" title="ballet.util.DeepcopyMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.util.DeepcopyMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.TransformerMixin</span></code></p>
+<p>Robust transformer that delegates to underlying transformer</p>
+<p>This transformer is robust against different typed and shaped input data.
+It tries a variety of input data conversion approaches and passes the
+result to the underlying transformer, using the first approach that works.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>transformer</strong> – a transformer object with fit and transform methods</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="ballet.exc.html#ballet.exc.UnsuccessfulInputConversionError" title="ballet.exc.UnsuccessfulInputConversionError"><strong>UnsuccessfulInputConversionError</strong></a> – If none of the conversion approaches
+    work.</p>
+</dd>
+</dl>
 <dl class="attribute">
-<dt id="ballet.modeling.problem.ClassificationProblem.classification">
-<code class="sig-name descname">classification</code><em class="property"> = True</em><a class="headerlink" href="#ballet.modeling.problem.ClassificationProblem.classification" title="Permalink to this definition">¶</a></dt>
+<dt id="ballet.transformer.DelegatingRobustTransformer.CONVERSION_APPROACHES">
+<code class="sig-name descname">CONVERSION_APPROACHES</code><em class="property"> = [ConversionApproach(name='identity', convert=&lt;function identity&gt;, caught=(&lt;class 'ValueError'&gt;, &lt;class 'TypeError'&gt;)), ConversionApproach(name='series', convert=&lt;class 'pandas.core.series.Series'&gt;, caught=(&lt;class 'ValueError'&gt;, &lt;class 'TypeError'&gt;)), ConversionApproach(name='dataframe', convert=&lt;class 'pandas.core.frame.DataFrame'&gt;, caught=(&lt;class 'ValueError'&gt;, &lt;class 'TypeError'&gt;)), ConversionApproach(name='array', convert=&lt;function asarray&gt;, caught=(&lt;class 'ValueError'&gt;, &lt;class 'TypeError'&gt;)), ConversionApproach(name='asarray2d', convert=&lt;function asarray2d&gt;, caught=())]</em><a class="headerlink" href="#ballet.transformer.DelegatingRobustTransformer.CONVERSION_APPROACHES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ballet.transformer.DelegatingRobustTransformer.DEFAULT_CAUGHT">
+<code class="sig-name descname">DEFAULT_CAUGHT</code><em class="property"> = (&lt;class 'ValueError'&gt;, &lt;class 'TypeError'&gt;)</em><a class="headerlink" href="#ballet.transformer.DelegatingRobustTransformer.DEFAULT_CAUGHT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ballet.transformer.DelegatingRobustTransformer.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/transformer.html#DelegatingRobustTransformer.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.transformer.DelegatingRobustTransformer.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ballet.transformer.DelegatingRobustTransformer.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/transformer.html#DelegatingRobustTransformer.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.transformer.DelegatingRobustTransformer.transform" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="ballet.modeling.problem.MulticlassClassificationProblem">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.modeling.problem.</code><code class="sig-name descname">MulticlassClassificationProblem</code><a class="reference internal" href="../_modules/ballet/modeling/problem.html#MulticlassClassificationProblem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.modeling.problem.MulticlassClassificationProblem" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#ballet.modeling.problem.ClassificationProblem" title="ballet.modeling.problem.ClassificationProblem"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.modeling.problem.ClassificationProblem</span></code></a></p>
-<dl class="attribute">
-<dt id="ballet.modeling.problem.MulticlassClassificationProblem.multi_classification">
-<code class="sig-name descname">multi_classification</code><em class="property"> = True</em><a class="headerlink" href="#ballet.modeling.problem.MulticlassClassificationProblem.multi_classification" title="Permalink to this definition">¶</a></dt>
+<dl class="function">
+<dt id="ballet.transformer.make_robust_transformer">
+<code class="sig-prename descclassname">ballet.transformer.</code><code class="sig-name descname">make_robust_transformer</code><span class="sig-paren">(</span><em class="sig-param">transformer</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/transformer.html#make_robust_transformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.transformer.make_robust_transformer" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="function">
+<dt id="ballet.transformer.make_robust_transformer_pipeline">
+<code class="sig-prename descclassname">ballet.transformer.</code><code class="sig-name descname">make_robust_transformer_pipeline</code><span class="sig-paren">(</span><em class="sig-param">*steps</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/transformer.html#make_robust_transformer_pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.transformer.make_robust_transformer_pipeline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a transformer pipeline of DelegatingRobustTransformers</p>
 </dd></dl>
 
-<dl class="class">
-<dt id="ballet.modeling.problem.ProblemType">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.modeling.problem.</code><code class="sig-name descname">ProblemType</code><a class="reference internal" href="../_modules/ballet/modeling/problem.html#ProblemType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.modeling.problem.ProblemType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="attribute">
-<dt id="ballet.modeling.problem.ProblemType.binary_classification">
-<code class="sig-name descname">binary_classification</code><em class="property"> = False</em><a class="headerlink" href="#ballet.modeling.problem.ProblemType.binary_classification" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ballet.modeling.problem.ProblemType.classification">
-<code class="sig-name descname">classification</code><em class="property"> = False</em><a class="headerlink" href="#ballet.modeling.problem.ProblemType.classification" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ballet.modeling.problem.ProblemType.multi_classification">
-<code class="sig-name descname">multi_classification</code><em class="property"> = False</em><a class="headerlink" href="#ballet.modeling.problem.ProblemType.multi_classification" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ballet.modeling.problem.ProblemType.regression">
-<code class="sig-name descname">regression</code><em class="property"> = False</em><a class="headerlink" href="#ballet.modeling.problem.ProblemType.regression" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="ballet.modeling.problem.RegressionProblem">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.modeling.problem.</code><code class="sig-name descname">RegressionProblem</code><a class="reference internal" href="../_modules/ballet/modeling/problem.html#RegressionProblem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.modeling.problem.RegressionProblem" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#ballet.modeling.problem.ProblemType" title="ballet.modeling.problem.ProblemType"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.modeling.problem.ProblemType</span></code></a></p>
-<dl class="attribute">
-<dt id="ballet.modeling.problem.RegressionProblem.regression">
-<code class="sig-name descname">regression</code><em class="property"> = True</em><a class="headerlink" href="#ballet.modeling.problem.RegressionProblem.regression" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<dl class="function">
+<dt id="ballet.transformer.make_transformer_pipeline">
+<code class="sig-prename descclassname">ballet.transformer.</code><code class="sig-name descname">make_transformer_pipeline</code><span class="sig-paren">(</span><em class="sig-param">*steps</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/transformer.html#make_transformer_pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.transformer.make_transformer_pipeline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a TransformerPipeline from the given estimators.</p>
+<p>Source: sklearn_pandas.cont_method</p>
 </dd></dl>
 
 </div>
@@ -339,10 +348,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="ballet.modeling.scoring.html" class="btn btn-neutral float-right" title="ballet.modeling.scoring module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="ballet.update.html" class="btn btn-neutral float-right" title="ballet.update module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="ballet.modeling.io_transformers.html" class="btn btn-neutral float-left" title="ballet.modeling.io_transformers module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="ballet.templating.html" class="btn btn-neutral float-left" title="ballet.templating module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

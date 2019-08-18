@@ -139,8 +139,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.exc.html">ballet.exc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.feature.html">ballet.feature module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.modeler.html">ballet.modeler module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.pipeline.html">ballet.pipeline module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.project.html">ballet.project module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.templating.html">ballet.templating module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.transformer.html">ballet.transformer module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.update.html">ballet.update module</a></li>
 </ul>
 </li>
@@ -246,11 +248,11 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ballet.validation.common</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
+<span></span><span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
 
 <span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">collecting</span><span class="p">,</span> <span class="n">complement</span><span class="p">,</span> <span class="n">lfilter</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> <span class="n">post_processing</span>
 
-<span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="k">import</span> <span class="n">pathlib</span>
 <span class="kn">from</span> <span class="nn">ballet.contrib</span> <span class="k">import</span> <span class="n">_get_contrib_feature_from_module</span>
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">BalletError</span>
 <span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">make_plural_suffix</span><span class="p">,</span> <span class="n">one_or_raise</span><span class="p">,</span> <span class="n">whether_failures</span>

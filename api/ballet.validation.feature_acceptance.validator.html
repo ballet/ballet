@@ -141,8 +141,10 @@
 <li class="toctree-l3"><a class="reference internal" href="ballet.exc.html">ballet.exc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.feature.html">ballet.feature module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.modeler.html">ballet.modeler module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.pipeline.html">ballet.pipeline module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.project.html">ballet.project module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.templating.html">ballet.templating module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.transformer.html">ballet.transformer module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.update.html">ballet.update module</a></li>
 </ul>
 </li>
@@ -261,14 +263,14 @@
 <span id="ballet-validation-feature-acceptance-validator-module"></span><h1>ballet.validation.feature_acceptance.validator module<a class="headerlink" href="#module-ballet.validation.feature_acceptance.validator" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator">
-<em class="property">class </em><code class="descclassname">ballet.validation.feature_acceptance.validator.</code><code class="descname">GFSSFAcceptanceEvaluator</code><span class="sig-paren">(</span><em>X_df</em>, <em>y</em>, <em>features</em>, <em>lmbda_1=0.0</em>, <em>lmbda_2=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_acceptance/validator.html#GFSSFAcceptanceEvaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.validation.feature_acceptance.validator.</code><code class="sig-name descname">GFSSFAcceptanceEvaluator</code><span class="sig-paren">(</span><em class="sig-param">X_df</em>, <em class="sig-param">y</em>, <em class="sig-param">features</em>, <em class="sig-param">lmbda_1=0.0</em>, <em class="sig-param">lmbda_2=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_acceptance/validator.html#GFSSFAcceptanceEvaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="ballet.validation.base.html#ballet.validation.base.FeatureAcceptanceEvaluator" title="ballet.validation.base.FeatureAcceptanceEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.FeatureAcceptanceEvaluator</span></code></a></p>
 <p>A feature acceptance evaluator that uses a modified version of
 GFSSF[1] - specifically, lines 1 - 8 of agGFSSF where we do not
 remove accepted but redundant features on line 8.</p>
 <dl class="attribute">
 <dt id="ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator.X_df">
-<code class="descname">X_df</code><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator.X_df" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">X_df</code><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator.X_df" title="Permalink to this definition">¶</a></dt>
 <dd><p>The dataset to build features off of.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -279,7 +281,7 @@ remove accepted but redundant features on line 8.</p>
 
 <dl class="attribute">
 <dt id="ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator.y">
-<code class="descname">y</code><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator.y" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">y</code><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator.y" title="Permalink to this definition">¶</a></dt>
 <dd><p>A single-column dataset representing the target
 feature.</p>
 <dl class="field-list simple">
@@ -291,7 +293,7 @@ feature.</p>
 
 <dl class="attribute">
 <dt id="ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator.features">
-<code class="descname">features</code><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator.features" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">features</code><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator.features" title="Permalink to this definition">¶</a></dt>
 <dd><p>an array of ballet Features that have
 already been accepted.</p>
 <dl class="field-list simple">
@@ -303,7 +305,7 @@ already been accepted.</p>
 
 <dl class="attribute">
 <dt id="ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator.lmbda_1">
-<code class="descname">lmbda_1</code><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator.lmbda_1" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">lmbda_1</code><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator.lmbda_1" title="Permalink to this definition">¶</a></dt>
 <dd><p>A float used in GFSSF to calculate the information
 threshold. Default is a function of the entropy of y.</p>
 <dl class="field-list simple">
@@ -315,7 +317,7 @@ threshold. Default is a function of the entropy of y.</p>
 
 <dl class="attribute">
 <dt id="ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator.lmbda_2">
-<code class="descname">lmbda_2</code><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator.lmbda_2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">lmbda_2</code><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator.lmbda_2" title="Permalink to this definition">¶</a></dt>
 <dd><p>A float used in GFSSF to calculate the information
 threshold. Default is a function of the entropy of y.</p>
 <dl class="field-list simple">
@@ -334,7 +336,7 @@ doi: 10.1109/ICDM.2013.137</p>
 </dl>
 <dl class="method">
 <dt id="ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator.judge">
-<code class="descname">judge</code><span class="sig-paren">(</span><em>candidate_feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_acceptance/validator.html#GFSSFAcceptanceEvaluator.judge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator.judge" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">judge</code><span class="sig-paren">(</span><em class="sig-param">candidate_feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_acceptance/validator.html#GFSSFAcceptanceEvaluator.judge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator.judge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Judge whether feature should be accepted</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -350,11 +352,11 @@ doi: 10.1109/ICDM.2013.137</p>
 
 <dl class="class">
 <dt id="ballet.validation.feature_acceptance.validator.NoOpAcceptanceEvaluator">
-<em class="property">class </em><code class="descclassname">ballet.validation.feature_acceptance.validator.</code><code class="descname">NoOpAcceptanceEvaluator</code><span class="sig-paren">(</span><em>X_df</em>, <em>y</em>, <em>features</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_acceptance/validator.html#NoOpAcceptanceEvaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.NoOpAcceptanceEvaluator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.validation.feature_acceptance.validator.</code><code class="sig-name descname">NoOpAcceptanceEvaluator</code><span class="sig-paren">(</span><em class="sig-param">X_df</em>, <em class="sig-param">y</em>, <em class="sig-param">features</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_acceptance/validator.html#NoOpAcceptanceEvaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.NoOpAcceptanceEvaluator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="ballet.validation.base.html#ballet.validation.base.FeatureAcceptanceEvaluator" title="ballet.validation.base.FeatureAcceptanceEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.FeatureAcceptanceEvaluator</span></code></a></p>
 <dl class="method">
 <dt id="ballet.validation.feature_acceptance.validator.NoOpAcceptanceEvaluator.judge">
-<code class="descname">judge</code><span class="sig-paren">(</span><em>feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_acceptance/validator.html#NoOpAcceptanceEvaluator.judge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.NoOpAcceptanceEvaluator.judge" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">judge</code><span class="sig-paren">(</span><em class="sig-param">feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_acceptance/validator.html#NoOpAcceptanceEvaluator.judge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.NoOpAcceptanceEvaluator.judge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Judge whether feature should be accepted</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>

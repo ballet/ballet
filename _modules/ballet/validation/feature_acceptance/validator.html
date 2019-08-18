@@ -139,8 +139,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.exc.html">ballet.exc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.feature.html">ballet.feature module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.modeler.html">ballet.modeler module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.pipeline.html">ballet.pipeline module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.project.html">ballet.project module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.templating.html">ballet.templating module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.transformer.html">ballet.transformer module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.update.html">ballet.update module</a></li>
 </ul>
 </li>
@@ -299,8 +301,9 @@
 <div class="viewcode-block" id="GFSSFAcceptanceEvaluator.judge"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator.judge">[docs]</a>    <span class="k">def</span> <span class="nf">judge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">candidate_feature</span><span class="p">):</span>
         <span class="n">feature_dfs_by_src</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="p">[</span><span class="n">candidate_feature</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
-            <span class="n">feature_df</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_dataframe_mapper</span><span class="p">()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+            <span class="n">feature_df</span> <span class="o">=</span> <span class="p">(</span><span class="n">feature</span>
+                          <span class="o">.</span><span class="n">as_feature_engineering_pipeline</span><span class="p">()</span>
+                          <span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
             <span class="n">feature_dfs_by_src</span><span class="p">[</span><span class="n">feature</span><span class="o">.</span><span class="n">source</span><span class="p">]</span> <span class="o">=</span> <span class="n">feature_df</span>
 
         <span class="n">candidate_source</span> <span class="o">=</span> <span class="n">candidate_feature</span><span class="o">.</span><span class="n">source</span>

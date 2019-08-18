@@ -141,8 +141,10 @@
 <li class="toctree-l3"><a class="reference internal" href="ballet.exc.html">ballet.exc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.feature.html">ballet.feature module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.modeler.html">ballet.modeler module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.pipeline.html">ballet.pipeline module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.project.html">ballet.project module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.templating.html">ballet.templating module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.transformer.html">ballet.transformer module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.update.html">ballet.update module</a></li>
 </ul>
 </li>
@@ -259,7 +261,7 @@
 <span id="ballet-util-mod-module"></span><h1>ballet.util.mod module<a class="headerlink" href="#module-ballet.util.mod" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="ballet.util.mod.import_module_at_path">
-<code class="descclassname">ballet.util.mod.</code><code class="descname">import_module_at_path</code><span class="sig-paren">(</span><em>modname</em>, <em>modpath</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/mod.html#import_module_at_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.mod.import_module_at_path" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.util.mod.</code><code class="sig-name descname">import_module_at_path</code><span class="sig-paren">(</span><em class="sig-param">modname</em>, <em class="sig-param">modpath</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/mod.html#import_module_at_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.mod.import_module_at_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Import module from path that may not be on system path</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -290,19 +292,19 @@ will fail.</p></li>
 
 <dl class="function">
 <dt id="ballet.util.mod.import_module_from_modname">
-<code class="descclassname">ballet.util.mod.</code><code class="descname">import_module_from_modname</code><span class="sig-paren">(</span><em>modname</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/mod.html#import_module_from_modname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.mod.import_module_from_modname" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.util.mod.</code><code class="sig-name descname">import_module_from_modname</code><span class="sig-paren">(</span><em class="sig-param">modname</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/mod.html#import_module_from_modname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.mod.import_module_from_modname" title="Permalink to this definition">¶</a></dt>
 <dd><p>Import module</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="ballet.util.mod.import_module_from_relpath">
-<code class="descclassname">ballet.util.mod.</code><code class="descname">import_module_from_relpath</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/mod.html#import_module_from_relpath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.mod.import_module_from_relpath" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.util.mod.</code><code class="sig-name descname">import_module_from_relpath</code><span class="sig-paren">(</span><em class="sig-param">path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/mod.html#import_module_from_relpath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.mod.import_module_from_relpath" title="Permalink to this definition">¶</a></dt>
 <dd><p>Import module at relative path to project root</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="ballet.util.mod.modname_to_relpath">
-<code class="descclassname">ballet.util.mod.</code><code class="descname">modname_to_relpath</code><span class="sig-paren">(</span><em>modname</em>, <em>project_root=None</em>, <em>add_init=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/mod.html#modname_to_relpath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.mod.modname_to_relpath" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.util.mod.</code><code class="sig-name descname">modname_to_relpath</code><span class="sig-paren">(</span><em class="sig-param">modname</em>, <em class="sig-param">project_root=None</em>, <em class="sig-param">add_init=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/mod.html#modname_to_relpath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.mod.modname_to_relpath" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert module name to relative path.</p>
 <p>The project root is usually needed to detect if the module is a package, in
 which case the relevant file is the <cite>__init__.py</cite> within the subdirectory.</p>
@@ -331,7 +333,7 @@ that are packages. Defaults to True</p></li>
 
 <dl class="function">
 <dt id="ballet.util.mod.relpath_to_modname">
-<code class="descclassname">ballet.util.mod.</code><code class="descname">relpath_to_modname</code><span class="sig-paren">(</span><em>relpath</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/mod.html#relpath_to_modname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.mod.relpath_to_modname" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.util.mod.</code><code class="sig-name descname">relpath_to_modname</code><span class="sig-paren">(</span><em class="sig-param">relpath</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/mod.html#relpath_to_modname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.mod.relpath_to_modname" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert relative path to module name</p>
 <p>Within a project, a path to the source file is uniquely identified with a
 module name. Relative paths of the form ‘foo/bar’ are <em>not</em> converted to
