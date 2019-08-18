@@ -8,9 +8,9 @@ from ballet.project import Project
 from ballet.util import dfilter
 from ballet.util.log import logger
 
-__all__ = [
+__all__ = (
     'get_contrib_features',
-]
+)
 
 
 def get_contrib_features(project_root):

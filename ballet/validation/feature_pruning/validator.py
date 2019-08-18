@@ -2,16 +2,10 @@ from ballet.util import asarray2d
 from ballet.util.log import logger
 from ballet.validation.base import FeaturePruningEvaluator
 from ballet.validation.entropy import (
-    estimate_conditional_information,
-    estimate_entropy
-)
+    estimate_conditional_information, estimate_entropy)
 from ballet.validation.gfssf import (
-    LAMBDA_1_ADJUSTMENT,
-    LAMBDA_2_ADJUSTMENT,
-    _compute_lmbdas,
-    _compute_threshold,
-    _concat_datasets,
-)
+    LAMBDA_1_ADJUSTMENT, LAMBDA_2_ADJUSTMENT, _compute_lmbdas,
+    _compute_threshold, _concat_datasets)
 
 
 class NoOpPruningEvaluator(FeaturePruningEvaluator):
@@ -68,9 +62,8 @@ class GFSSFPruningEvaluator(FeaturePruningEvaluator):
 
         feature_dfs_by_src = {}
         for accepted_feature in [self.feature] + self.features:
-            accepted_df = accepted_feature.as_dataframe_mapper().fit_transform(
-                self.X_df, self.y
-            )
+            accepted_df = accepted_feature.as_feature_engineering_pipeline(
+            ).fit_transform(self.X_df, self.y)
             feature_dfs_by_src[accepted_feature.source] = accepted_df
 
         lmbda_1, lmbda_2 = _compute_lmbdas(
