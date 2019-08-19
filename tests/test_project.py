@@ -1,7 +1,7 @@
+import pathlib
 import unittest
 from unittest.mock import PropertyMock, patch
 
-from ballet.compat import pathlib
 from ballet.project import (
     DEFAULT_CONFIG_NAME, Project, get_config_path, make_config_get)
 

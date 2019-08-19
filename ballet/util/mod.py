@@ -1,7 +1,7 @@
 import importlib
+import pathlib
 import pkgutil
 
-from ballet.compat import pathlib
 from ballet.util.log import logger
 
 

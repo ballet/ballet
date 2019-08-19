@@ -1,3 +1,4 @@
+import pathlib
 import shutil
 import tempfile
 from collections import namedtuple
@@ -8,7 +9,7 @@ import pytest
 from cookiecutter.utils import work_in
 
 import ballet
-from ballet.compat import pathlib, safepath
+from ballet.compat import safepath
 from ballet.templating import render_project_template
 from tests.util import tree
 

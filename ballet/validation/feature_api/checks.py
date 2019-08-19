@@ -52,15 +52,15 @@ class HasTransformerInterfaceCheck(FeatureApiCheck):
 class CanMakeMapperCheck(FeatureApiCheck):
 
     def check(self, feature):
-        """Check that the feature can be converted to a DataFrameMapper"""
-        feature.as_dataframe_mapper()
+        """Check that the feature can be converted to a FEP"""
+        feature.as_feature_engineering_pipeline()
 
 
 class CanFitCheck(FeatureApiCheck):
 
     def check(self, feature):
         """Check that fit can be called on reference data"""
-        mapper = feature.as_dataframe_mapper()
+        mapper = feature.as_feature_engineering_pipeline()
         mapper.fit(self.X, y=self.y)
 
 
@@ -68,7 +68,7 @@ class CanTransformCheck(FeatureApiCheck):
 
     def check(self, feature):
         """Check that transform can be called on reference data"""
-        mapper = feature.as_dataframe_mapper()
+        mapper = feature.as_feature_engineering_pipeline()
         mapper.fit(self.X, y=self.y)
         mapper.transform(self.X)
 
@@ -77,7 +77,7 @@ class CanFitTransformCheck(FeatureApiCheck):
 
     def check(self, feature):
         """Check that fit_transform can be called on reference data"""
-        mapper = feature.as_dataframe_mapper()
+        mapper = feature.as_feature_engineering_pipeline()
         mapper.fit_transform(self.X, y=self.y)
 
 
@@ -89,7 +89,7 @@ class HasCorrectOutputDimensionsCheck(FeatureApiCheck):
         For input X, an n x p array, a n x q array should be produced,
         where q is the number of features produced by the logical feature.
         """
-        mapper = feature.as_dataframe_mapper()
+        mapper = feature.as_feature_engineering_pipeline()
         X = mapper.fit_transform(self.X, y=self.y)
         assert self.X.shape[0] == X.shape[0]
 
@@ -126,7 +126,7 @@ class NoMissingValuesCheck(FeatureApiCheck):
 
     def check(self, feature):
         """Check that the output of the transformer has no missing values"""
-        mapper = feature.as_dataframe_mapper()
+        mapper = feature.as_feature_engineering_pipeline()
         X = mapper.fit_transform(self.X, y=self.y)
         assert not np.any(np.isnan(X))
 
@@ -135,6 +135,6 @@ class NoInfiniteValuesCheck(FeatureApiCheck):
 
     def check(self, feature):
         """Check that the output of the transformer has no non-finite values"""
-        mapper = feature.as_dataframe_mapper()
+        mapper = feature.as_feature_engineering_pipeline()
         X = mapper.fit_transform(self.X, y=self.y)
         assert not np.any(np.isinf(X))

@@ -1,10 +1,11 @@
 import os
 import os.path
+import pathlib
 from shutil import copyfile, copytree
 
 from funcy import partial, suppress
 
-from ballet.compat import pathlib, safepath
+from ballet.compat import safepath
 from ballet.exc import BalletError
 from ballet.util.log import logger
 

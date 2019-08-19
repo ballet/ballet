@@ -62,9 +62,8 @@ class GFSSFPruningEvaluator(FeaturePruningEvaluator):
 
         feature_dfs_by_src = {}
         for accepted_feature in [self.feature] + self.features:
-            accepted_df = accepted_feature.as_dataframe_mapper().fit_transform(
-                self.X_df, self.y
-            )
+            accepted_df = accepted_feature.as_feature_engineering_pipeline(
+            ).fit_transform(self.X_df, self.y)
             feature_dfs_by_src[accepted_feature.source] = accepted_df
 
         lmbda_1, lmbda_2 = _compute_lmbdas(

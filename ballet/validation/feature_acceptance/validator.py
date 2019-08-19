@@ -51,8 +51,9 @@ class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
     def judge(self, candidate_feature):
         feature_dfs_by_src = {}
         for feature in [candidate_feature] + self.features:
-            feature_df = feature.as_dataframe_mapper().fit_transform(
-                self.X_df, self.y)
+            feature_df = (feature
+                          .as_feature_engineering_pipeline()
+                          .fit_transform(self.X_df, self.y))
             feature_dfs_by_src[feature.source] = feature_df
 
         candidate_source = candidate_feature.source

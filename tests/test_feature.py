@@ -4,11 +4,12 @@ import funcy
 import numpy as np
 import pandas as pd
 import sklearn.preprocessing
-from sklearn_pandas import DataFrameMapper
 
 from ballet.compat import SimpleImputer
 from ballet.eng.misc import IdentityTransformer
-from ballet.feature import DelegatingRobustTransformer, Feature, make_mapper
+from ballet.feature import Feature
+from ballet.pipeline import FeatureEngineeringPipeline
+from ballet.transformer import DelegatingRobustTransformer
 from ballet.util import asarray2d
 
 from .util import FragileTransformer, FragileTransformerPipeline
@@ -170,32 +171,35 @@ class FeatureTest(unittest.TestCase):
         self.assertIsInstance(tup, tuple)
         self.assertEqual(len(tup), 3)
 
-    def test_feature_as_dataframe_mapper(self):
+    def test_feature_as_feature_engineering_pipeline(self):
         feature = Feature(self.input, self.transformer)
-        mapper = feature.as_dataframe_mapper()
-        self.assertIsInstance(mapper, DataFrameMapper)
+        mapper = feature.as_feature_engineering_pipeline()
+        self.assertIsInstance(mapper, FeatureEngineeringPipeline)
 
-    def test_make_mapper(self):
+
+class FeatureEngineeringPipelineTest(FeatureTest):
+
+    def test_init_seqcont(self):
         feature = Feature(self.input, self.transformer)
         features = [feature]
-        mapper = make_mapper(features)
-        self.assertIsInstance(mapper, DataFrameMapper)
+        mapper = FeatureEngineeringPipeline(features)
+        self.assertIsInstance(mapper, FeatureEngineeringPipeline)
 
-    def test_make_mapper_scalar(self):
+    def test_init_scalar(self):
         feature = Feature(self.input, self.transformer)
-        mapper = make_mapper(feature)
-        self.assertIsInstance(mapper, DataFrameMapper)
+        mapper = FeatureEngineeringPipeline(feature)
+        self.assertIsInstance(mapper, FeatureEngineeringPipeline)
 
-    def test_mapper_fit(self):
+    def test_fit(self):
         feature = Feature(self.input, self.transformer)
-        mapper = make_mapper(feature)
+        mapper = FeatureEngineeringPipeline(feature)
         df = pd.util.testing.makeCustomDataframe(5, 2)
         df.columns = ['foo', 'bar']
         mapper.fit(df)
 
-    def test_mapper_transform(self):
+    def test_transform(self):
         feature = Feature(self.input, self.transformer)
-        mapper = make_mapper(feature)
+        mapper = FeatureEngineeringPipeline(feature)
         df = pd.util.testing.makeCustomDataframe(5, 2)
         df.columns = ['foo', 'bar']
         mapper.fit(df)

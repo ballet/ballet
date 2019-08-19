@@ -1,8 +1,8 @@
+import pathlib
 from collections import namedtuple
 
 from funcy import collecting, complement, lfilter, partial, post_processing
 
-from ballet.compat import pathlib
 from ballet.contrib import _get_contrib_feature_from_module
 from ballet.exc import BalletError
 from ballet.util import make_plural_suffix, one_or_raise, whether_failures

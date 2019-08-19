@@ -1,10 +1,10 @@
+import pathlib
 from unittest.mock import Mock, patch
 
 import numpy as np
 import pandas as pd
 from funcy import contextmanager
 
-from ballet.compat import pathlib
 from ballet.util.git import make_commit_range
 from ballet.validation.common import ChangeCollector
 from ballet.validation.feature_api.validator import FeatureApiValidator

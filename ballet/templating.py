@@ -1,9 +1,10 @@
+import pathlib
 import tempfile
 
 from cookiecutter.main import cookiecutter as _cookiecutter
 from funcy import re_test, walk, walk_values, wraps
 
-from ballet.compat import PathLike, pathlib
+from ballet.compat import PathLike
 from ballet.project import Project
 from ballet.util.fs import synctree
 from ballet.util.log import logger

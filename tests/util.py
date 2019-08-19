@@ -1,3 +1,4 @@
+import pathlib
 import random
 import subprocess
 import tempfile
@@ -7,7 +8,6 @@ from funcy import any_fn, contextmanager, ignore, merge
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn_pandas.pipeline import TransformerPipeline
 
-from ballet.compat import pathlib
 from ballet.eng.misc import IdentityTransformer
 from ballet.util.git import set_config_variables
 from ballet.util.log import logger

@@ -8,11 +8,11 @@ import git
 import numpy as np
 import pandas as pd
 import pytest
-from sklearn_pandas import DataFrameMapper
 
 from ballet.compat import safepath
 from ballet.eng.misc import IdentityTransformer
 from ballet.feature import Feature
+from ballet.pipeline import FeatureEngineeringPipeline
 from ballet.templating import render_project_template
 from ballet.util import get_enum_values
 from ballet.util.git import make_commit_range, switch_to_new_branch
@@ -85,7 +85,7 @@ def test_validation_end_to_end(tempdir):
         X_df.columns = ['A', 'B']
         out = foo_features.build(X_df=X_df, y_df=[])
         assert np.shape(out['X']) == (5, 1)
-        assert isinstance(out['mapper_X'], DataFrameMapper)
+        assert isinstance(out['mapper_X'], FeatureEngineeringPipeline)
 
     # write a new version of foo.load_data.load_data
     new_load_data_str = dedent("""
