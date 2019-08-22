@@ -1,6 +1,8 @@
+import numbers
+
 import numpy as np
 import scipy.stats
-from funcy import decorator
+from funcy import decorator, suppress
 from scipy.special import digamma, gamma
 from sklearn.neighbors import NearestNeighbors
 
@@ -21,12 +23,12 @@ DISC_COL_UNIQUE_VAL_THRESH = 0.05
 
 @decorator
 def nonnegative(call, name=None):
+    """Warn if the function's return value is negative and set it to 0"""
     result = call()
-    if result < 0:
-        msg = '{result} should be non-negative.'.format(
-            result=name or 'Result')
-        logger.warn(msg)
-        result = 0
+    with suppress(TypeError):
+        if result < 0:
+            logger.warning('%s should be non-negative.', name or 'Result')
+            result = 0
     return result
 
 
@@ -39,9 +41,11 @@ def _make_neighbors(**kwargs):
 
 
 def _compute_empirical_probability(x):
+    x = asarray2d(x)
     n, _ = x.shape
-    _, counts = np.unique(x, axis=0, return_counts=True)
-    return counts * 1.0 / n
+    uniques, counts = np.unique(x, axis=0, return_counts=True)
+    pk = counts * 1.0 / n
+    return pk, uniques
 
 
 def _compute_volume_unit_ball(d, metric=NEIGHBORS_METRIC):
@@ -59,7 +63,7 @@ def _is_column_disc(col):
     # Heuristic to decide if column is discrete
 
     # Integer columns are discrete
-    if col.dtype is int:
+    if issubclass(col.dtype.type, numbers.Integral):
         return True
 
     # Real-valued columns that are close to integer values are discrete
@@ -85,21 +89,10 @@ def _get_disc_columns(x):
 
 # Computing epsilon
 
-def _compute_epsilon(x, cont_method):
-    # TODO
-    if cont_method == 'kraskov':
-        _compute_epsilon_kraskov(x)
-    elif cont_method == 'kl':
-        _compute_epsilon_kl(x)
-    else:
-        raise ValueError
-
-
-def _compute_epsilon_kraskov(x, n_neighbors=N_NEIGHBORS):
+def _compute_epsilon(x):
     """Calculate epsilon from Kraskov Estimator
 
-    Represents the Chebyshev distance of each dataset element to its
-    k-th nearest neighbor.
+    Represents twice the distance of each element to its k-th nearest neighbor.
 
     Args:
         X (array-like): An array with shape (n_samples, n_features)
@@ -114,56 +107,39 @@ def _compute_epsilon_kraskov(x, n_neighbors=N_NEIGHBORS):
            information". Phys. Rev. E 69, 2004.
 
     """
+    k = N_NEIGHBORS
+    n, _ = x.shape
+
     disc_mask = _get_disc_columns(x)
     if np.all(disc_mask):
-        # if all discrete columns, there's no point getting epsilon
-        return 0
-    cont_features = x[:, ~disc_mask]
-    nn = _make_neighbors(n_neighbors=n_neighbors)
-    nn.fit(cont_features)
-    dist, _ = nn.kneighbors()
-    dist = dist[:, -1]  # distances to kth nearest points
-    epsilon = np.nextafter(dist, 0)
+        # if no continuous columns, there's no point getting epsilon
+        return np.nan
+    c = x[:, ~disc_mask]
+
+    nn = _make_neighbors(n_neighbors=k)
+    nn.fit(c)
+    distances = np.zeros(n)
+
+    # if the kth neighbor is at distance 0, then we are in trouble
+    # but we can try the trick of increasing k if we don't use the old
+    # value of k sometime later
+    while not np.all(distances) and k < n:
+        distances, _ = nn.kneighbors(n_neighbors=k)
+        distances = distances[:, -1]  # distances to k-nearest neighbor
+        k += 1
+
+    epsilon = 2. * np.nextafter(distances, 0)
     return asarray2d(epsilon)
 
 
-def _compute_epsilon_kl(x, n_neighbors=N_NEIGHBORS):
-    """Calculate epsilon """
-    n, d = x.shape
-    k = n_neighbors
-    nn = _make_neighbors(n_neighbors=k)
-    nn.fit(x)
-    distances = 0
-    # While we have non-zero radii, calculate for a larger k
-    # Potentially expensive
-    while not np.all(distances) and k < n:
-        distances, _ = nn.kneighbors(n_neighbors=k, return_distance=True)
-        distances = distances[:, -1]
-        k += 1
-
-    if k == n:
-        # This case only happens if all samples are the same
-        # e.g. this isn't a continuous sample...
-        raise ValueError("All samples were the same, can't calculate epsilon")
-
-    epsilon = 2 * distances
-
-    return epsilon
-
-
-def _compute_n_points_within_epsilon(x, epsilon):
+def _compute_n_points_within_radius(x, radius):
     """Compute the number of points within a distance of epsilon"""
-    radius = epsilon.ravel()
+    radius = radius.ravel()
     nn = _make_neighbors(radius=radius)
     nn.fit(x)
     ind = nn.radius_neighbors(return_distance=False)
     nx = np.array([i.size for i in ind])
     return nx
-
-
-def _recover_k_from_epsilon(x, epsilon):
-    nx = _compute_n_points_within_epsilon(x, epsilon)
-    return min(nx)
 
 
 # Entropy estimation
@@ -197,15 +173,12 @@ def _estimate_disc_entropy(x):
     return scipy.stats.entropy(pk)
 
 
-def _estimate_cont_entropy(x, cont_method, epsilon,
-                           n_neighbors=N_NEIGHBORS):
+def _estimate_cont_entropy(x, epsilon):
     """Estimate the differential entropy of a continuous dataset.
 
-    Based off the Kraskov Estimator [1] and Kozachenko [2] estimators for a
-    dataset's differential entropy. If epsilon is not provided, this will be
-    the Kozacheko Estimator of the dataset's entropy. If epsilon is provided,
-    this is a partial estimation of the Kraskov entropy estimator. The bias is
-    cancelled out when computing mutual information.
+    Based off the Kraskov Estimator [1] for a dataset's differential entropy.
+    If epsilon is provided, this is a partial estimation of the Kraskov entropy
+    estimator. The bias is cancelled out when computing mutual information.
 
     The function relies on nonparametric methods based on entropy estimation
     from k-nearest neighbors distances as proposed in [1] and augmented in [2]
@@ -213,7 +186,7 @@ def _estimate_cont_entropy(x, cont_method, epsilon,
 
     If X's columns logically represent discrete features, it is better to use
     the _estimate_disc_entropy function. If you are unsure of which to use,
-    estimate_entropy can take datasets of mixed discrete and continuous
+    _estimate_entropy can take datasets of mixed discrete and continuous
     functions.
 
     Args:
@@ -223,8 +196,6 @@ def _estimate_cont_entropy(x, cont_method, epsilon,
             the epsilon used in Kraskov Estimator. Represents the Chebyshev
             distance from an element to its k-th nearest neighbor in the full
             dataset.
-        n_neighbors (int): number of neighbors to use in Kraskov estimator (
-            hyperparameter k)
 
     Returns:
         float: differential entropy of the dataset
@@ -233,57 +204,78 @@ def _estimate_cont_entropy(x, cont_method, epsilon,
 
     .. [1] A. Kraskov, H. Stogbauer and P. Grassberger, "Estimating mutual
            information". Phys. Rev. E 69, 2004.
-    .. [2] L. F. Kozachenko, N. N. Leonenko, "Sample Estimate of the Entropy
-           of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16
 
     """
-    if cont_method == 'kl':
-        return _estimate_cont_entropy_kl(x, epsilon, n_neighbors)
-    elif cont_method == 'kraskov':
-        return _estimate_cont_entropy_kraskov(x, epsilon, n_neighbors)
-    else:
-        raise ValueError(
-            'Invalid method: {cont_method}'
-            .format(cont_method=cont_method))
-
-
-def _estimate_cont_entropy_kl(x, epsilon, n_neighbors=N_NEIGHBORS):
-    """Kraskov et al, Eq 20"""
-    # TODO(mjs) - figure out how to provide epsilon and k
-    x = asarray2d(x)
-    k = n_neighbors
-    n, d = x.shape
-    # eps_i is twice the distance from x_i to its kth neighbor
-    eps = _compute_epsilon_kl(x, k)
-    c_d = _compute_volume_unit_ball(d, NEIGHBORS_METRIC)
-    return -digamma(k) + digamma(n) + np.log(c_d) + d * np.mean(np.log(eps))
-
-
-def _estimate_cont_entropy_kraskov(x, epsilon):
-    """Kraskov et al, Eq 22"""
     x = asarray2d(x)
     n, d = x.shape
-    nx = _compute_n_points_within_epsilon(x, epsilon)
+    nx = _compute_n_points_within_radius(x, epsilon/2.0)
     c_d = _compute_volume_unit_ball(d)
     return -np.mean(digamma(nx + 1)) + digamma(n) + np.log(c_d) \
         + d * np.mean(np.log(epsilon))
 
 
-def _estimate_entropy(x, cont_method, epsilon):
+def _estimate_entropy(x, epsilon):
+    """Estimate dataset entropy."""
+    x = asarray2d(x)
+    n, d = x.shape
+
+    # not enough data
+    if n <= 1 or d == 0:
+        return 0
+
+    disc_mask = _get_disc_columns(x)
+    cont_mask = ~disc_mask
+
+    # if all columns are disc, use discrete-specific estimator
+    if np.all(disc_mask):
+        return _estimate_disc_entropy(x)
+
+    # if all columns are cont, use continuous-specific estimator
+    if np.all(cont_mask):
+        return _estimate_cont_entropy(x, epsilon)
+
+    # Separate the dataset into discrete and continuous datasets d and c
+    d = asarray2d(x[:, disc_mask])
+    c = asarray2d(x[:, cont_mask])
+
+    # H(c|d)
+    H_c_d = _estimate_conditional_entropy(c, d, epsilon)
+
+    # H(d)
+    H_d = _estimate_disc_entropy(d)
+
+    return H_d + H_c_d
+
+
+def _estimate_conditional_entropy(c, d, epsilon):
+    """Estimate H(c|d) where c is continuous and d is discrete"""
+    # H(c|d) = \sum_{i} p(d_i) H(c|d=d_i)
+    # where we i ranges over unique values of d and c_d_i is the
+    # rows of c where d == d_i.
+    pk = _compute_empirical_probability(d)
+    uniques, _ = np.unique(d, axis=0, return_counts=True)
+    H_c_d = 0.0
+    for i, d_i in enumerate(uniques):
+        mask = np.all(d == d_i, axis=1)
+        c_di = c[mask, :]
+        # TODO add logging here about small sample size
+        epsilon_di = epsilon[mask, :]
+        H_c_di = _estimate_cont_entropy(c_di, epsilon_di)
+        H_c_d += pk[i] * H_c_di
+    return H_c_d
+
+
+# Public API
+
+@nonnegative(name='Entropy')
+def estimate_entropy(x):
     r"""Estimate dataset entropy.
 
     This function can take datasets of mixed discrete and continuous features,
-    and uses a set of heuristics to determine which functions to apply to each.
-    If the dataset is fully discrete, an exact calculation is done. If this is
-    not the case and epsilon is not provided, this will be the Kozacheko
-    Estimator of the dataset's entropy. If epsilon is provided, this is a
-    partial estimation of the Kraskov entropy estimator. The bias is cancelled
-    out when computing mutual information.
-
-    Because this function is a subroutine in a mutual information estimator,
-    we employ the Kozachenko Estimator[1] for continuous features when this
-    function is _not_ used for mutual information and an adaptation of the
-    Kraskov Estimator[2] when it is.
+    and uses a set of heuristics to determine which functions to apply to
+    each. Discrete (Shannon) entropy is estimated via the empirical
+    probability mass function. Continuous (differential) entropy is
+    estimated via the Kraskov estimator [1].
 
     Let x be made of continuous features c and discrete features d.
     To deal with both continuous and discrete features, We use the
@@ -317,65 +309,10 @@ def _estimate_entropy(x, cont_method, epsilon):
 
     .. [1] A. Kraskov, H. Stogbauer and P. Grassberger, "Estimating mutual
            information". Phys. Rev. E 69, 2004.
-    .. [2] L. F. Kozachenko, N. N. Leonenko, "Sample Estimate of the Entropy
-           of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16.
     """
     x = asarray2d(x)
-    n, d = x.shape
-
-    # not enough data
-    if n <= 1 or d == 0:
-        return 0
-
-    disc_mask = _get_disc_columns(x)
-    cont_mask = ~disc_mask
-
-    # if all columns are disc, use one estimator
-    if np.all(disc_mask):
-        return _estimate_disc_entropy(x)
-
-    # if all columns are cont, use one estimator
-    if np.all(cont_mask):
-        return _estimate_cont_entropy(x, cont_method, epsilon)
-
-    # Separate the dataset into discrete and continuous datasets d,c
-    d = asarray2d(x[:, disc_mask])
-    c = asarray2d(x[:, cont_mask])
-
-    # H(c|d)
-    H_c_d = _estimate_conditional_entropy(c, d, cont_method, epsilon)
-
-    # H(d)
-    H_d = _estimate_disc_entropy(d)
-
-    return H_d + H_c_d
-
-
-def _estimate_conditional_entropy(c, d, cont_method, epsilon):
-    """Estimate H(c|d) where c is continuous and d is discrete"""
-    # H(c|d) = \sum_{i} p(d_i) H(c|d=d_i)
-    # where we i ranges over unique values of d and c_d_i is the
-    # rows of c where d == d_i.
-    pk = _compute_empirical_probability(d)
-    uniques, _ = np.unique(d, axis=0, return_counts=True)
-    H_c_d = 0.0
-    for i, d_i in enumerate(uniques):
-        mask = np.all(d == d_i, axis=1)
-        c_di = c[mask, :]
-        eps_di = epsilon[mask, :]
-        H_c_di = _estimate_cont_entropy(c_di, cont_method, eps_di)
-        H_c_d += pk[i] * H_c_di
-    return H_c_d
-
-
-# Public API
-
-@nonnegative(name='Entropy')
-def estimate_entropy(x):
-    x = asarray2d(x)
-    cont_method = 'kl'
-    epsilon = _compute_epsilon(x, cont_method)
-    return _estimate_entropy(x, cont_method, epsilon)
+    epsilon = _compute_epsilon(x)
+    return _estimate_entropy(x, epsilon)
 
 
 @nonnegative(name='Conditional mutual information')
@@ -421,20 +358,19 @@ def estimate_conditional_information(x, y, z):
     """
     xz = np.concatenate((x, z), axis=1)
     yz = np.concatenate((y, z), axis=1)
-    xyz = np.concatenate((xz, y), axis=1)
+    xyz = np.concatenate((x, y, z), axis=1)
 
-    cont_method = 'kraskov'
-    epsilon = _compute_epsilon(xyz, cont_method)
+    epsilon = _compute_epsilon(xyz)
 
-    H_xz = _estimate_entropy(xz, cont_method, epsilon)
-    H_yz = _estimate_entropy(yz, cont_method, epsilon)
-    H_xyz = _estimate_entropy(xyz, cont_method, epsilon)
-    H_z = _estimate_entropy(z, cont_method, epsilon)
+    H_xz = _estimate_entropy(xz, epsilon)
+    H_yz = _estimate_entropy(yz, epsilon)
+    H_xyz = _estimate_entropy(xyz, epsilon)
+    H_z = _estimate_entropy(z, epsilon)
 
-    logger.debug('H(X,Z): {}'.format(H_xz))
-    logger.debug('H(Y,Z): {}'.format(H_yz))
-    logger.debug('H(X,Y,Z): {}'.format(H_xyz))
-    logger.debug('H(Z): {}'.format(H_z))
+    logger.debug('H(X,Z): %s', H_xz)
+    logger.debug('H(Y,Z): %s', H_yz)
+    logger.debug('H(X,Y,Z): %s', H_xyz)
+    logger.debug('H(Z): %s', H_z)
 
     return H_xz + H_yz - H_xyz - H_z
 
@@ -465,9 +401,8 @@ def estimate_mutual_information(x, y):
       information". Phys. Rev. E 69, 2004.
     """
     xy = np.concatenate((x, y), axis=1)
-    cont_method = 'kraskov'
-    epsilon = _compute_epsilon(xy, cont_method)
-    H_x = _estimate_entropy(x, cont_method, epsilon)
-    H_y = _estimate_entropy(y, cont_method, epsilon)
-    H_xy = _estimate_entropy(xy, cont_method, epsilon)
+    epsilon = _compute_epsilon(xy)
+    H_x = _estimate_entropy(x, epsilon)
+    H_y = _estimate_entropy(y, epsilon)
+    H_xy = _estimate_entropy(xy, epsilon)
     return H_x + H_y - H_xy

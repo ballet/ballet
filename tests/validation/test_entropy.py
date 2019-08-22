@@ -43,14 +43,14 @@ class EntropyTest(unittest.TestCase):
         self.assertTrue(result)
 
     def test_is_column_cont(self):
-        x = asarray2d(np.arange(50) + 0.5)
+        x = asarray2d(np.random.rand(50))
         result = _is_column_cont(x)
         self.assertTrue(result)
 
     def test_cont_disc_entropy_differs(self):
         """Expect cont, disc columns to have different entropy"""
         disc = asarray2d(np.arange(50))
-        cont = asarray2d(np.arange(50) + 0.5)
+        cont = disc + 0.5
 
         self.assertNotEqual(
             _estimate_cont_entropy(disc), _estimate_disc_entropy(disc))
