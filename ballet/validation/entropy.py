@@ -32,8 +32,8 @@ def nonnegative(call, name=None):
             if name is None:
                 try:
                     pieces = call._func.__name__.split('_')[1:]
-                    name = map(str.capitalize, pieces).join(' ')
-                except Exception:
+                    name = ''.join(map(str.capitalize, pieces))
+                except RuntimeError:
                     name = 'Result'
             logger.warning('%s should be non-negative.', name)
     return result
@@ -139,9 +139,9 @@ def _compute_epsilon(x):
     return asarray2d(epsilon)
 
 
-def _compute_n_points_within_radius(x, radius):
-    """Compute the number of points within a distance of epsilon"""
-    radius = radius.ravel()
+def _compute_n_points_within_radius(x, d):
+    """Compute the number of points within a distance of d"""
+    radius = d.ravel()
     nn = _make_neighbors(radius=radius)
     nn.fit(x)
     ind = nn.radius_neighbors(return_distance=False)

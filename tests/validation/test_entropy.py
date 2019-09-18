@@ -3,13 +3,38 @@ import unittest
 import numpy as np
 
 from ballet.util import asarray2d
+from ballet.util.log import logger
 from ballet.validation.entropy import (
     _compute_epsilon, _estimate_cont_entropy, _estimate_disc_entropy,
     _is_column_cont, _is_column_disc, estimate_conditional_information,
-    estimate_entropy, estimate_mutual_information)
+    estimate_entropy, estimate_mutual_information, nonnegative)
 
 
 class EntropyTest(unittest.TestCase):
+
+    def test_nonnegative_positive_output(self):
+        @nonnegative()
+        def func():
+            return 1
+
+        self.assertEqual(1, func())
+
+    def test_nonnegative_negative_output(self):
+        @nonnegative(name="Result")
+        def func():
+            return -1
+
+        self.assertEqual(0, func())
+
+    def test_nonnegative_negative_introspection(self):
+        @nonnegative()
+        def estimate_something():
+            return -1
+
+        with self.assertLogs(logger.name, 'WARNING') as cm:
+            estimate_something()
+        self.assertEqual(1, len(cm.output))
+        self.assertIn("Something", cm.output[0])
 
     def test_disc_entropy_constant_vals_1d(self):
         """If x (column vector) is constant, then H(x) = 0"""
@@ -56,7 +81,7 @@ class EntropyTest(unittest.TestCase):
             _estimate_cont_entropy(disc, epsilon), _estimate_disc_entropy(
                 disc))
 
-    def test_cont_disc_entropy_differs_disc(self):
+    def test_cont_disc_entropy_differs_cont(self):
         """Expect cont, disc columns to have different entropy"""
         cont = asarray2d(np.arange(50)) + 0.5
         epsilon = _compute_epsilon(cont)
