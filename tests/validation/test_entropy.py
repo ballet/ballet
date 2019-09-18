@@ -4,7 +4,8 @@ import numpy as np
 
 from ballet.util import asarray2d
 from ballet.validation.entropy import (
-    _estimate_cont_entropy, _estimate_disc_entropy, _is_column_cont,
+    _estimate_cont_entropy, _estimate_disc_entropy, _compute_epsilon,
+    _is_column_cont,
     _is_column_disc, estimate_conditional_information, estimate_entropy,
     estimate_mutual_information)
 
@@ -47,16 +48,22 @@ class EntropyTest(unittest.TestCase):
         result = _is_column_cont(x)
         self.assertTrue(result)
 
-    def test_cont_disc_entropy_differs(self):
+    def test_cont_disc_entropy_differs_disc(self):
         """Expect cont, disc columns to have different entropy"""
         disc = asarray2d(np.arange(50))
-        cont = disc + 0.5
+        epsilon = _compute_epsilon(disc)
 
         self.assertNotEqual(
-            _estimate_cont_entropy(disc), _estimate_disc_entropy(disc))
+            _estimate_cont_entropy(disc, epsilon), _estimate_disc_entropy(
+                disc))
 
+    def test_cont_disc_entropy_differs_disc(self):
+        """Expect cont, disc columns to have different entropy"""
+        cont = asarray2d(np.arange(50)) + 0.5
+        epsilon = _compute_epsilon(cont)
         self.assertNotEqual(
-            _estimate_cont_entropy(cont), _estimate_disc_entropy(cont))
+            _estimate_cont_entropy(cont, epsilon), _estimate_disc_entropy(
+                cont))
 
     def test_entropy_multiple_disc(self):
         same_val_arr_zero = np.zeros((50, 1))

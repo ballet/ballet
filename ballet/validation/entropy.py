@@ -27,8 +27,15 @@ def nonnegative(call, name=None):
     result = call()
     with suppress(TypeError):
         if result < 0:
-            logger.warning('%s should be non-negative.', name or 'Result')
             result = 0
+            # Format a nice log message
+            if name is None:
+                try:
+                    pieces = call._func.__name__.split('_')[1:]
+                    name = map(str.capitalize, pieces).join(' ')
+                except Exception:
+                    name = 'Result'
+            logger.warning('%s should be non-negative.', name)
     return result
 
 
@@ -43,9 +50,9 @@ def _make_neighbors(**kwargs):
 def _compute_empirical_probability(x):
     x = asarray2d(x)
     n, _ = x.shape
-    uniques, counts = np.unique(x, axis=0, return_counts=True)
+    events, counts = np.unique(x, axis=0, return_counts=True)
     pk = counts * 1.0 / n
-    return pk, uniques
+    return pk, events
 
 
 def _compute_volume_unit_ball(d, metric=NEIGHBORS_METRIC):
@@ -60,7 +67,7 @@ def _compute_volume_unit_ball(d, metric=NEIGHBORS_METRIC):
 
 
 def _is_column_disc(col):
-    # Heuristic to decide if column is discrete
+    # Heuristics to decide if column is discrete
 
     # Integer columns are discrete
     if issubclass(col.dtype.type, numbers.Integral):
@@ -169,7 +176,7 @@ def _estimate_disc_entropy(x):
         float: the dataset entropy.
     """
     x = asarray2d(x)
-    pk = _compute_empirical_probability(x)
+    pk, _ = _compute_empirical_probability(x)
     return scipy.stats.entropy(pk)
 
 
@@ -252,22 +259,21 @@ def _estimate_conditional_entropy(c, d, epsilon):
     # H(c|d) = \sum_{i} p(d_i) H(c|d=d_i)
     # where we i ranges over unique values of d and c_d_i is the
     # rows of c where d == d_i.
-    pk = _compute_empirical_probability(d)
-    uniques, _ = np.unique(d, axis=0, return_counts=True)
+    pk, events = _compute_empirical_probability(d)
     H_c_d = 0.0
-    for i, d_i in enumerate(uniques):
+    for i, (p_i, d_i) in enumerate(zip(pk, events)):
         mask = np.all(d == d_i, axis=1)
         c_di = c[mask, :]
         # TODO add logging here about small sample size
         epsilon_di = epsilon[mask, :]
         H_c_di = _estimate_cont_entropy(c_di, epsilon_di)
-        H_c_d += pk[i] * H_c_di
+        H_c_d += p_i * H_c_di
     return H_c_d
 
 
 # Public API
 
-@nonnegative(name='Entropy')
+@nonnegative()
 def estimate_entropy(x):
     r"""Estimate dataset entropy.
 
@@ -315,7 +321,7 @@ def estimate_entropy(x):
     return _estimate_entropy(x, epsilon)
 
 
-@nonnegative(name='Conditional mutual information')
+@nonnegative()
 def estimate_conditional_information(x, y, z):
     r"""Estimate the conditional mutual information of x and y given z
 
@@ -375,7 +381,7 @@ def estimate_conditional_information(x, y, z):
     return H_xz + H_yz - H_xyz - H_z
 
 
-@nonnegative(name='Mutual information')
+@nonnegative()
 def estimate_mutual_information(x, y):
     r"""Estimate the mutual information of two datasets.
 
