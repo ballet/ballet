@@ -5,9 +5,11 @@ import numpy as np
 from ballet.util import asarray2d
 from ballet.util.log import logger
 from ballet.validation.entropy import (
+    NEIGHBORS_ALGORITHM, NEIGHBORS_METRIC,
     _compute_epsilon, _estimate_cont_entropy, _estimate_disc_entropy,
     _is_column_cont, _is_column_disc, estimate_conditional_information,
-    estimate_entropy, estimate_mutual_information, nonnegative)
+    estimate_entropy, estimate_mutual_information, _make_neighbors,
+    nonnegative)
 
 
 class EntropyTest(unittest.TestCase):
@@ -35,6 +37,11 @@ class EntropyTest(unittest.TestCase):
             estimate_something()
         self.assertEqual(1, len(cm.output))
         self.assertIn("Something", cm.output[0])
+
+    def test_make_neighbors(self):
+        nn = _make_neighbors()
+        self.assertEqual(NEIGHBORS_ALGORITHM, nn.algorithm)
+        self.assertEqual(NEIGHBORS_METRIC, nn.metric)
 
     def test_disc_entropy_constant_vals_1d(self):
         """If x (column vector) is constant, then H(x) = 0"""
