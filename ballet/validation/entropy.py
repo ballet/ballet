@@ -48,6 +48,17 @@ def _make_neighbors(**kwargs):
 
 
 def _compute_empirical_probability(x):
+    """Compute empirical probability of events in x
+
+    Args:
+        x: array-like
+
+    Returns:
+        pk: array-like of shape (K,) where where p[k] is the probability of
+            event k
+        events: array-like of shape (K, m) where each event is a vector of
+            length m and there are K unique events
+    """
     x = asarray2d(x)
     n, _ = x.shape
     events, counts = np.unique(x, axis=0, return_counts=True)
