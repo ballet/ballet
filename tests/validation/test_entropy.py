@@ -4,10 +4,9 @@ import numpy as np
 
 from ballet.util import asarray2d
 from ballet.validation.entropy import (
-    _estimate_cont_entropy, _estimate_disc_entropy, _compute_epsilon,
-    _is_column_cont,
-    _is_column_disc, estimate_conditional_information, estimate_entropy,
-    estimate_mutual_information)
+    _compute_epsilon, _estimate_cont_entropy, _estimate_disc_entropy,
+    _is_column_cont, _is_column_disc, estimate_conditional_information,
+    estimate_entropy, estimate_mutual_information)
 
 
 class EntropyTest(unittest.TestCase):

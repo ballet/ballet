@@ -215,7 +215,7 @@ def _estimate_cont_entropy(x, epsilon):
     """
     x = asarray2d(x)
     n, d = x.shape
-    nx = _compute_n_points_within_radius(x, epsilon/2.0)
+    nx = _compute_n_points_within_radius(x, epsilon / 2.0)
     c_d = _compute_volume_unit_ball(d)
     return -np.mean(digamma(nx + 1)) + digamma(n) + np.log(c_d) \
         + d * np.mean(np.log(epsilon))

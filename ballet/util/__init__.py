@@ -139,4 +139,3 @@ def needs_path(f):
 def warn(msg):
     """Issue a warning message of category BalletWarning"""
     warnings.warn(msg, category=BalletWarning)
-
