@@ -247,7 +247,7 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ballet.validation.feature_api.validator</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">ballet.contrib</span> <span class="k">import</span> <span class="n">_get_contrib_features</span>
+<span></span><span class="kn">from</span> <span class="nn">ballet.contrib</span> <span class="k">import</span> <span class="n">_collect_contrib_features</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.base</span> <span class="k">import</span> <span class="n">BaseValidator</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.common</span> <span class="k">import</span> <span class="p">(</span>
@@ -287,7 +287,7 @@
         <span class="k">for</span> <span class="n">importer</span><span class="p">,</span> <span class="n">modname</span><span class="p">,</span> <span class="n">modpath</span> <span class="ow">in</span> <span class="n">changes</span><span class="o">.</span><span class="n">new_feature_info</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">mod</span> <span class="o">=</span> <span class="n">importer</span><span class="p">()</span>
-                <span class="n">features</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_get_contrib_features</span><span class="p">(</span><span class="n">mod</span><span class="p">))</span>
+                <span class="n">features</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_collect_contrib_features</span><span class="p">(</span><span class="n">mod</span><span class="p">))</span>
             <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">SyntaxError</span><span class="p">):</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                     <span class="s1">&#39;Failed to import module at </span><span class="si">{}</span><span class="s1">&#39;</span>

@@ -258,12 +258,12 @@
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s1">&#39;get_contrib_features&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;collect_contrib_features&#39;</span><span class="p">,</span>
 <span class="p">)</span>
 
 
-<div class="viewcode-block" id="get_contrib_features"><a class="viewcode-back" href="../../api/ballet.contrib.html#ballet.contrib.get_contrib_features">[docs]</a><span class="k">def</span> <span class="nf">get_contrib_features</span><span class="p">(</span><span class="n">project_root</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Get contributed features for a project at project_root</span>
+<div class="viewcode-block" id="collect_contrib_features"><a class="viewcode-back" href="../../api/ballet.contrib.html#ballet.contrib.collect_contrib_features">[docs]</a><span class="k">def</span> <span class="nf">collect_contrib_features</span><span class="p">(</span><span class="n">project_root</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Collect contributed features for a project at project_root</span>
 
 <span class="sd">    For a project ``foo``, walks modules within the ``foo.features.contrib``</span>
 <span class="sd">    subpackage. A single object that is an instance of ``ballet.Feature`` is</span>
@@ -279,13 +279,13 @@
     <span class="c1"># TODO Project should require ModuleType</span>
     <span class="n">project</span> <span class="o">=</span> <span class="n">Project</span><span class="p">(</span><span class="n">project_root</span><span class="p">)</span>
     <span class="n">contrib</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">_resolve</span><span class="p">(</span><span class="s1">&#39;.features.contrib&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">_get_contrib_features</span><span class="p">(</span><span class="n">contrib</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_collect_contrib_features</span><span class="p">(</span><span class="n">contrib</span><span class="p">)</span></div>
 
 
 <span class="nd">@dfilter</span><span class="p">(</span><span class="n">notnone</span><span class="p">)</span>
 <span class="nd">@collecting</span>
-<span class="k">def</span> <span class="nf">_get_contrib_features</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Get contributed features from within given module</span>
+<span class="k">def</span> <span class="nf">_collect_contrib_features</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Collect contributed features from within given module</span>
 
 <span class="sd">    Be very careful with untrusted code. The module/package will be</span>
 <span class="sd">    walked, every submodule will be imported, and all the code therein will be</span>
@@ -303,15 +303,15 @@
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">ModuleType</span><span class="p">):</span>
         <span class="c1"># any module that has a __path__ attribute is also a package</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="s1">&#39;__path__&#39;</span><span class="p">):</span>
-            <span class="k">yield from</span> <span class="n">_get_contrib_features_from_package</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+            <span class="k">yield from</span> <span class="n">_collect_contrib_features_from_package</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">yield</span> <span class="n">_get_contrib_feature_from_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">_collect_contrib_feature_from_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Input is not a module&#39;</span><span class="p">)</span>
 
 
 <span class="nd">@collecting</span>
-<span class="k">def</span> <span class="nf">_get_contrib_features_from_package</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_collect_contrib_features_from_package</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
         <span class="s1">&#39;Walking package path </span><span class="si">{path}</span><span class="s1"> to detect modules...&#39;</span>
         <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">package</span><span class="o">.</span><span class="n">__path__</span><span class="p">))</span>
@@ -329,10 +329,10 @@
                 <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modname</span><span class="o">=</span><span class="n">modname</span><span class="p">))</span>
             <span class="k">continue</span>
 
-        <span class="k">yield</span> <span class="n">_get_contrib_feature_from_module</span><span class="p">(</span><span class="n">mod</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">_collect_contrib_feature_from_module</span><span class="p">(</span><span class="n">mod</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_get_contrib_feature_from_module</span><span class="p">(</span><span class="n">mod</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_collect_contrib_feature_from_module</span><span class="p">(</span><span class="n">mod</span><span class="p">):</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
         <span class="s1">&#39;Trying to import contributed feature from module </span><span class="si">{modname}</span><span class="s1">...&#39;</span>
         <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modname</span><span class="o">=</span><span class="n">mod</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
