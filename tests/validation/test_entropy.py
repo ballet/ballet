@@ -6,12 +6,11 @@ from ballet.util import asarray2d
 from ballet.util.log import logger
 from ballet.util.testing import ArrayLikeEqualityTestingMixin
 from ballet.validation.entropy import (
-    NEIGHBORS_ALGORITHM, NEIGHBORS_METRIC,
-    _compute_empirical_probability,
-    _compute_epsilon, _estimate_cont_entropy, _estimate_disc_entropy,
-    _is_column_cont, _is_column_disc, estimate_conditional_information,
-    estimate_entropy, estimate_mutual_information, _make_neighbors,
-    nonnegative)
+    NEIGHBORS_ALGORITHM, NEIGHBORS_METRIC, _compute_empirical_probability,
+    _compute_epsilon, _compute_volume_unit_ball, _estimate_cont_entropy,
+    _estimate_disc_entropy, _is_column_cont, _is_column_disc, _make_neighbors,
+    estimate_conditional_information, estimate_entropy,
+    estimate_mutual_information, nonnegative)
 
 
 class EntropyTest(ArrayLikeEqualityTestingMixin, unittest.TestCase):
@@ -47,12 +46,26 @@ class EntropyTest(ArrayLikeEqualityTestingMixin, unittest.TestCase):
 
     def test_compute_empirical_probability(self):
         x = [1, 1, 2, 3, 2, 1, 1, 2]
-        expected_pk = np.array([4/8, 3/8, 1/8])
+        expected_pk = np.array([4 / 8, 3 / 8, 1 / 8])
         expected_events = np.array([[1], [2], [3]])
         pk, events = _compute_empirical_probability(x)
 
         self.assertArrayEqual(expected_pk, pk)
         self.assertArrayEqual(expected_events, events)
+
+    def test_compute_volume_unit_ball_chebyshev(self):
+        metric = 'chebyshev'
+        expected_volume = 1
+        for d in [1, 2, 5, 11]:
+            volume = _compute_volume_unit_ball(d, metric=metric)
+            self.assertEqual(expected_volume, volume)
+
+    def test_compute_volume_unit_ball_euclidean(self):
+        metric = 'euclidean'
+        volume_upper_bound = 1
+        for d in [1, 2, 5, 11]:
+            volume = _compute_volume_unit_ball(d, metric=metric)
+            self.assertLessEqual(volume, volume_upper_bound)
 
     def test_disc_entropy_constant_vals_1d(self):
         """If x (column vector) is constant, then H(x) = 0"""
