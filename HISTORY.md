@@ -19,7 +19,7 @@
 ## 0.2
 
 * Implement `ArrayLikeEqualityTestingMixin`
-* Implement `get_contrib_features`
+* Implement `collect_contrib_features`
 
 ## 0.1
 

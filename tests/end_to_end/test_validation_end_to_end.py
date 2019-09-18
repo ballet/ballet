@@ -72,13 +72,13 @@ def test_validation_end_to_end(tempdir):
     foo_features = _import('foo.features')
     assert isinstance(foo_features, ModuleType)
 
-    get_contrib_features = foo_features.get_contrib_features
-    features = get_contrib_features()
+    collect_contrib_features = foo_features.collect_contrib_features
+    features = collect_contrib_features()
     assert len(features) == 0
 
     # first providing a mock feature, call build
     with patch.object(
-        foo_features, 'get_contrib_features',
+        foo_features, 'collect_contrib_features',
         return_value=[Feature(input='A', transformer=IdentityTransformer())]
     ):
         X_df = pd.util.testing.makeCustomDataframe(5, 2)

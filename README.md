@@ -36,18 +36,3 @@ features are useful and that they can be safely integrated into your project. If
 proposed feature is accepted, it can be safely merged.
 
 <img src="./docs/_static/feature_lifecycle.png" alt="Ballet Feature Lifecycle" width="500" />
-
-## Reference
-
-If you'd like to [read more about Ballet](http://learningsys.org/nips18/assets/papers/15CameraReadySubmissionneurips_sysml_2018-8.pdf)
-or use it in your own work, please see:
-
-```
-@inproceedings{smith2018ballet,
-  author = {Smith, Micah J. and Lu, Kelvin and Veeramachaneni, Kalyan},
-  title = {Ballet: A lightweight framework for open-source, collaborative feature engineering},
-  booktitle= {Workshop on Systems for ML at NeuRIPS 2018},
-  year = {2018}
-  url = {http://learningsys.org/nips18/assets/papers/15CameraReadySubmissionneurips_sysml_2018-8.pdf},
-}
-```

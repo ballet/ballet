@@ -128,7 +128,7 @@ class Project:
     - ``get`` (``prj.conf.get``)
     - ``load_data`` (``prj.load_data.load_data``)
     - ``build`` (``prj.features.build``)
-    - ``get_contrib_features`` (``prj.features.get_contrib_features``)
+    - ``collect_contrib_features`` (``prj.features.collect_contrib_features``)
 
     Args:
         package (ModuleType): python package representing imported ballet
@@ -140,7 +140,7 @@ class Project:
         'get': ('.conf', 'get'),
         'load_data': ('.load_data', 'load_data'),
         'build': ('.features', 'build'),
-        'get_contrib_features': ('.features', 'get_contrib_features')
+        'collect_contrib_features': ('.features', 'collect_contrib_features')
     }
 
     def __init__(self, package):

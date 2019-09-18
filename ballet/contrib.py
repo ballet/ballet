@@ -9,12 +9,12 @@ from ballet.util import dfilter
 from ballet.util.log import logger
 
 __all__ = (
-    'get_contrib_features',
+    'collect_contrib_features',
 )
 
 
-def get_contrib_features(project_root):
-    """Get contributed features for a project at project_root
+def collect_contrib_features(project_root):
+    """Collect contributed features for a project at project_root
 
     For a project ``foo``, walks modules within the ``foo.features.contrib``
     subpackage. A single object that is an instance of ``ballet.Feature`` is
@@ -30,13 +30,13 @@ def get_contrib_features(project_root):
     # TODO Project should require ModuleType
     project = Project(project_root)
     contrib = project._resolve('.features.contrib')
-    return _get_contrib_features(contrib)
+    return _collect_contrib_features(contrib)
 
 
 @dfilter(notnone)
 @collecting
-def _get_contrib_features(module):
-    """Get contributed features from within given module
+def _collect_contrib_features(module):
+    """Collect contributed features from within given module
 
     Be very careful with untrusted code. The module/package will be
     walked, every submodule will be imported, and all the code therein will be
@@ -54,15 +54,15 @@ def _get_contrib_features(module):
     if isinstance(module, types.ModuleType):
         # any module that has a __path__ attribute is also a package
         if hasattr(module, '__path__'):
-            yield from _get_contrib_features_from_package(module)
+            yield from _collect_contrib_features_from_package(module)
         else:
-            yield _get_contrib_feature_from_module(module)
+            yield _collect_contrib_feature_from_module(module)
     else:
         raise ValueError('Input is not a module')
 
 
 @collecting
-def _get_contrib_features_from_package(package):
+def _collect_contrib_features_from_package(package):
     logger.debug(
         'Walking package path {path} to detect modules...'
         .format(path=package.__path__))
@@ -80,10 +80,10 @@ def _get_contrib_features_from_package(package):
                 .format(modname=modname))
             continue
 
-        yield _get_contrib_feature_from_module(mod)
+        yield _collect_contrib_feature_from_module(mod)
 
 
-def _get_contrib_feature_from_module(mod):
+def _collect_contrib_feature_from_module(mod):
     logger.debug(
         'Trying to import contributed feature from module {modname}...'
         .format(modname=mod.__name__))

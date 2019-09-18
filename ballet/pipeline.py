@@ -6,13 +6,10 @@ from ballet.eng.misc import NullTransformer
 
 
 class FeatureEngineeringPipeline(DataFrameMapper):
-    """Make a DataFrameMapper from a feature or list of features
+    """Feature engineering pipeline
 
     Args:
         features (Union[Feature, List[Feature]]): feature or list of features
-
-    Returns:
-        DataFrameMapper: mapper made from features
     """
 
     def __init__(self, features):
