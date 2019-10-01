@@ -5,6 +5,7 @@ import scipy.stats
 from funcy import decorator, suppress
 from scipy.special import digamma, gamma
 from sklearn.neighbors import NearestNeighbors
+from sklearn.utils import check_consistent_length
 
 from ballet.util import asarray2d
 from ballet.util.log import logger
@@ -15,8 +16,8 @@ __all__ = (
     'estimate_mutual_information',
 )
 
-N_NEIGHBORS = 3   # hyperparameter k from Kraskov estimator
-NEIGHBORS_ALGORITHM = 'kd_tree'
+N_NEIGHBORS = 3   # hyperparameter k from KSG estimator
+NEIGHBORS_ALGORITHM = 'auto'
 NEIGHBORS_METRIC = 'chebyshev'
 DISC_COL_UNIQUE_VAL_THRESH = 0.05
 
@@ -108,12 +109,12 @@ def _get_disc_columns(x):
 # Computing epsilon
 
 def _compute_epsilon(x):
-    """Calculate epsilon from Kraskov Estimator
+    """Calculate epsilon from KSG Estimator
 
     Represents twice the distance of each element to its k-th nearest neighbor.
 
     Args:
-        X (array-like): An array with shape (n_samples, n_features)
+        x (array-like): An array with shape (n_samples, n_features)
 
     Returns:
         array-like: An array with shape (n_samples, 1) representing
@@ -126,12 +127,12 @@ def _compute_epsilon(x):
 
     """
     k = N_NEIGHBORS
-    n, _ = x.shape
+    n = x.shape[0]
 
     disc_mask = _get_disc_columns(x)
     if np.all(disc_mask):
         # if no continuous columns, there's no point getting epsilon
-        return np.nan
+        return -np.inf
     c = x[:, ~disc_mask]
 
     nn = _make_neighbors(n_neighbors=k)
@@ -146,17 +147,46 @@ def _compute_epsilon(x):
         distances = distances[:, -1]  # distances to k-nearest neighbor
         k += 1
 
-    epsilon = 2. * np.nextafter(distances, 0)
-    return asarray2d(epsilon)
+    return asarray2d(2.* distances)
 
 
-def _compute_n_points_within_radius(x, d):
-    """Compute the number of points within a distance of d"""
-    radius = d.ravel()
-    nn = _make_neighbors(radius=radius)
+def _compute_n_points_within_radius_i(nn, x_i, radius_i):
+    if x_i.shape[0] != 1 or radius_i.shape[0] != 1:
+        raise ValueError
+
+    # adjustment as radius_neighbors would find exact matches
+    radius_i = np.nextafter(radius_i, 0)
+
+    ind = nn.radius_neighbors(X=x_i, radius=radius_i, return_distance=False)
+    return ind[0].size
+
+
+def _ithrow(x, i):
+    # seem to need to index as x[i:i+1, :] to get a (1,m) row array.
+    return x[i:i+1,:]
+
+
+def _compute_n_points_within_radius(x, radius):
+    """Compute the number of points strictly within some radius
+
+    Note that points lying exactly on the radius are not counted.
+
+    Args:
+        x (array-like): data of shape (n_instances, n_features)
+        radius (array-like): radius from each point of shape (n_instances, 1)
+    """
+    check_consistent_length(x, radius)
+    n = x.shape[0]
+
+    nn = _make_neighbors()
     nn.fit(x)
-    ind = nn.radius_neighbors(return_distance=False)
-    nx = np.array([i.size for i in ind])
+
+    # this will be slow
+    nx = np.array([
+        _compute_n_points_within_radius_i(nn, _ithrow(x, i), radius[i])
+        for i in range(n)
+    ])
+
     return nx
 
 
@@ -194,8 +224,8 @@ def _estimate_disc_entropy(x):
 def _estimate_cont_entropy(x, epsilon):
     """Estimate the differential entropy of a continuous dataset.
 
-    Based off the Kraskov Estimator [1] for a dataset's differential entropy.
-    If epsilon is provided, this is a partial estimation of the Kraskov entropy
+    Based off the KSG Estimator [1] for a dataset's differential entropy.
+    If epsilon is provided, this is a partial estimation of the KSG entropy
     estimator. The bias is cancelled out when computing mutual information.
 
     The function relies on nonparametric methods based on entropy estimation
@@ -211,7 +241,7 @@ def _estimate_cont_entropy(x, epsilon):
         x (array-like): Dataset with shape (n_samples, n_features) or
             (n_samples, )
         epsilon (array-like): An array with shape (n_samples, 1) that is
-            the epsilon used in Kraskov Estimator. Represents the Chebyshev
+            the epsilon used in KSG Estimator. Represents the Chebyshev
             distance from an element to its k-th nearest neighbor in the full
             dataset.
 
@@ -292,7 +322,7 @@ def estimate_entropy(x):
     and uses a set of heuristics to determine which functions to apply to
     each. Discrete (Shannon) entropy is estimated via the empirical
     probability mass function. Continuous (differential) entropy is
-    estimated via the Kraskov estimator [1].
+    estimated via the KSG estimator [1].
 
     Let x be made of continuous features c and discrete features d.
     To deal with both continuous and discrete features, We use the
@@ -315,7 +345,7 @@ def estimate_entropy(x):
         x (array-like): Dataset with shape (n_samples, n_features) or
             (n_samples, )
         epsilon (array-like): An array with shape (n_samples, 1) that is
-            the epsilon used in Kraskov Estimator. Represents the chebyshev
+            the epsilon used in KSG Estimator. Represents the chebyshev
             distance from an element to its k-th nearest neighbor in the full
             dataset.
 
@@ -343,7 +373,7 @@ def estimate_conditional_information(x, y, z):
        I(x;y|z) = H(x,z) + H(y,z) - H(x,y,z) - H(z)
 
     Where :math:`H(X)` is the Shannon entropy of dataset :math:`X`. For
-    continuous datasets, adapts the Kraskov Estimator [1] for mutual
+    continuous datasets, adapts the KSG Estimator [1] for mutual
     information.
 
     Eq 8 from [1] holds because the epsilon terms cancel out.
@@ -403,7 +433,7 @@ def estimate_mutual_information(x, y):
        I(x;y) = H(x) + H(y) - H(x,y)
 
     Where H(x) is the Shannon entropy of x. For continuous datasets,
-    adapts the Kraskov Estimator [1] for mutual information.
+    adapts the KSG Estimator [1] for mutual information.
 
     Args:
         x (array-like): An array with shape (n_samples, n_features_x)
