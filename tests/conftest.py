@@ -44,13 +44,12 @@ def quickstart(tempdir):
         # tree .
         tree(tempdir)
 
-        project = Project.from_path(tempdir)
-        path = project.path
+        project = Project.from_path(tempdir.joinpath(project_slug))
         repo = project.repo
 
         yield (
-            namedtuple('Quickstart', 'project path project_slug repo')
-            ._make((project, path, project_slug, repo))
+            namedtuple('Quickstart', 'project tempdir project_slug repo')
+            ._make((project, tempdir, project_slug, repo))
         )
 
 
