@@ -10,19 +10,27 @@ import pandas.util.testing as pdt
 EPSILON = 1e-4
 
 
+@funcy.decorator
+def withfailure(call, format):
+    try:
+        call()
+    except AssertionError:
+        standardMsg = format.format(
+            *_common_shorten_repr(call.first, call.second))
+        msg = call.self._formatMessage(call.msg, standardMsg)
+        raise call.self.fail(msg)
+
+
 class ArrayLikeEqualityTestingMixin:
     """Mix-in to enable comparisons of array-like objects in unit tests"""
 
+
+    @withfailure('{} != {}')
     def assertArrayEqual(self, first, second, msg=None):
         """Test that arrays first and second are equal"""
-        try:
-            npt.assert_array_equal(first, second, verbose=False)
-        except AssertionError:
-            standardMsg = '{} != {}'.format(
-                *_common_shorten_repr(first, second))
-            msg = self._formatMessage(msg, standardMsg)
-            raise self.failureException(msg)
+        npt.assert_array_equal(first, second, verbose=False)
 
+    @withfailure('{} == {}')
     def assertArrayNotEqual(self, first, second, msg=None):
         """Test that arrays first and second are not equal"""
         try:
@@ -30,11 +38,9 @@ class ArrayLikeEqualityTestingMixin:
         except AssertionError:
             pass
         else:
-            standardMsg = '{} == {}'.format(
-                *_common_shorten_repr(first, second))
-            msg = self._formatMessage(msg, standardMsg)
-            raise self.failureException(msg)
+            raise AssertionError
 
+    @withfailure('{} !≈ {}')
     def assertArrayAlmostEqual(
             self, first, second, places=6, msg=None, delta=None):
         """Test that arrays first and second are almost equal
@@ -64,15 +70,10 @@ class ArrayLikeEqualityTestingMixin:
         if delta is not None:
             places = int(-np.log10(delta) + np.log10(1.5))
 
-        try:
-            npt.assert_array_almost_equal(
-                first, second, decimal=places, verbose=False)
-        except AssertionError:
-            standardMsg = '{} != {}'.format(
-                *_common_shorten_repr(first, second))
-            msg = self._formatMessage(msg, standardMsg)
-            raise self.failureException(msg)
+        npt.assert_array_almost_equal(
+            first, second, decimal=places, verbose=False)
 
+    @withfailure('{} ≈ {}')
     def assertArrayNotAlmostEqual(
             self, first, second, places=6, msg=None, delta=None):
         """Test that arrays first and second are not almost equal"""
@@ -86,10 +87,7 @@ class ArrayLikeEqualityTestingMixin:
         except AssertionError:
             pass
         else:
-            standardMsg = '{} == {}'.format(
-                *_common_shorten_repr(first, second))
-            msg = self._formatMessage(msg, standardMsg)
-            raise self.failureException(msg)
+            raise AssertionError
 
     def assertFrameEqual(self, first, second, msg=None, **kwargs):
         """Test that DataFrames first and second are equal"""
@@ -159,25 +157,18 @@ class ArrayLikeEqualityTestingMixin:
             # it's great that they are uncomparable types :)
             pass
 
+    @withfailure('{} != {}')
     def _assertPandasEqual(self, func, first, second, msg=None, **kwargs):
-        try:
-            func(first, second, **kwargs)
-        except AssertionError:
-            standardMsg = '{} != {}'.format(
-                *_common_shorten_repr(first, second))
-            msg = self._formatMessage(msg, standardMsg)
-            raise self.failureException(msg)
+        func(first, second, **kwargs)
 
+    @withfailure('{} == {}')
     def _assertPandasNotEqual(self, func, first, second, msg=None, **kwargs):
         try:
             func(first, second, **kwargs)
         except AssertionError:
             pass
         else:
-            standardMsg = '{} == {}'.format(
-                *_common_shorten_repr(first, second))
-            msg = self._formatMessage(msg, standardMsg)
-            raise self.failureException(msg)
+            raise AssertionError
 
 
 @funcy.contextmanager
