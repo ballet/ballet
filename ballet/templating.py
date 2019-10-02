@@ -59,21 +59,26 @@ def _fail_if_feature_exists(dst):
             .format(dst=dst))
 
 
-def start_new_feature(**cc_kwargs):
+def start_new_feature(contrib_dir=None, **cc_kwargs):
     """Start a new feature within a ballet project
+
+    By default, will prompt the user for input using cookiecutter's input
+    interface.
 
     Renders the feature template into a temporary directory, then copies the
     feature files into the proper path within the contrib directory.
 
     Args:
+        contrib_dir: directory under which to place contributed features
         **cc_kwargs: options for the cookiecutter template
 
     Raises:
         ballet.exc.BalletError: the new feature has the same name as an
             existing one
     """
-    project = Project.from_path(pathlib.Path.cwd().resolve())
-    contrib_dir = project.get('contrib', 'module_path')
+    if contrib_dir is None:
+        project = Project.from_path(pathlib.Path.cwd().resolve())
+        contrib_dir = project.get('contrib', 'module_path')
 
     with tempfile.TemporaryDirectory() as tempdir:
         # render feature template
