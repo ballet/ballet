@@ -4,12 +4,12 @@ import tempfile
 from collections import namedtuple
 from unittest.mock import patch
 
-import git
 import pytest
 from cookiecutter.utils import work_in
 
 import ballet
 from ballet.compat import safepath
+from ballet.project import Project
 from ballet.templating import render_project_template
 from tests.util import tree
 
@@ -44,11 +44,13 @@ def quickstart(tempdir):
         # tree .
         tree(tempdir)
 
-        repo = git.Repo(safepath(tempdir.joinpath(project_slug)))
+        project = Project.from_path(tempdir)
+        path = project.path
+        repo = project.repo
 
         yield (
-            namedtuple('Quickstart', 'tempdir project_slug repo')
-            ._make((tempdir, project_slug, repo))
+            namedtuple('Quickstart', 'project path project_slug repo')
+            ._make((project, path, project_slug, repo))
         )
 
 
