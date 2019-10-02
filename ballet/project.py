@@ -148,6 +148,12 @@ class Project:
 
     @classmethod
     def from_path(cls, path):
+        """Create a Project instance from an fs path to the containing dir
+
+        Args:
+            path (PathLike): path to directory that contains the
+                project
+        """
         config = load_config_in_dir(path)
         project_slug = config_get(config, 'project', 'slug')
         package = import_module_at_path(project_slug,
