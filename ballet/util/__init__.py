@@ -121,10 +121,12 @@ class DeepcopyMixin:
 
 
 def one_or_raise(l):
-    if len(l) == 1:
+    n = len(l)
+    if n == 1:
         return l[0]
     else:
-        raise ValueError('Expected exactly 1 element')
+        raise ValueError('Expected exactly 1 element, but got {n}'
+                         .format(n=n))
 
 
 def needs_path(f):
