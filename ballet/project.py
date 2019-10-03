@@ -115,6 +115,12 @@ def relative_to_contrib(diff, project):
     return path.relative_to(contrib_path)
 
 
+@needs_path
+def make_feature_path(contrib_dir, username, featurename):
+    return contrib_dir.joinpath(
+        'user_{}'.format(username), 'feature_{}.py'.format(featurename))
+
+
 class Project:
     """Encapsulate information on a ballet project
 
