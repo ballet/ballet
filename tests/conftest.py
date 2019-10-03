@@ -33,6 +33,7 @@ def quickstart(tempdir):
 
         project_slug = 'foo'
         extra_context = {
+            'project_name': project_slug.capitalize(),
             'project_slug': project_slug,
         }
 
