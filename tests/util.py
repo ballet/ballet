@@ -102,10 +102,10 @@ def make_mock_commits(repo, n=10, filename='file{i}.py'):
     return commits
 
 
-def set_ci_git_config_variables(repo):
+def set_ci_git_config_variables(repo, name='Foo Bar', email='foo@bar.com'):
     set_config_variables(repo, {
-        'user.name': 'Foo Bar',
-        'user.email': 'foo@bar.com',
+        'user.name': name,
+        'user.email': email,
     })
 
 
@@ -126,3 +126,29 @@ def tree(dir):
     tree_output = subprocess.check_output(cmd).decode()
     logger.debug(tree_output)
     return tree_output
+
+
+def load_regression_data(n_informative=1, n_uninformative=14, n_samples=500):
+    import pandas as pd
+    from sklearn.datasets import make_regression
+
+    q = n_informative
+    p = n_informative + n_uninformative
+    X, y, coef = make_regression(
+        n_samples=n_samples, n_features=p, n_informative=q, coef=True,
+        shuffle=True, random_state=1)
+
+    # informative columns are 'A_0', 'A_1', ...
+    informative = ['A_{i}'.format(i=i) for i in range(n_informative)]
+
+    # uninformative columns are 'Z_0', 'Z_1', ...
+    uninformative = ['Z_{i}'.format(i=i) for i in range(n_uninformative)]
+
+    columns = [
+        informative.pop(0) if c != 0 else uninformative.pop(0)
+        for c in coef
+    ]
+
+    X_df = pd.DataFrame(data=X, columns=columns)
+    y_df = pd.Series(y)
+    return X_df, y_df
