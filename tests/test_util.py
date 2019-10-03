@@ -21,7 +21,7 @@ import ballet.util.git
 import ballet.util.io
 from ballet.compat import safepath
 from ballet.util.ci import TravisPullRequestBuildDiffer
-from ballet.util.code import blacken_code
+from ballet.util.code import blacken_code, get_source  # noqa F401
 from ballet.util.mod import (  # noqa F401
     import_module_at_path, import_module_from_modname,
     import_module_from_relpath, modname_to_relpath, relpath_to_modname)
@@ -608,7 +608,6 @@ class FsTest(unittest.TestCase):
         ballet.util.fs._synctree(src, dst, lambda x: None)
 
 
-
 class GitTest(unittest.TestCase):
 
     def test_make_commit_range(self):
@@ -805,3 +804,7 @@ class CodeTest(unittest.TestCase):
         actual = blacken_code(input).strip()
 
         self.assertEqual(actual, expected)
+
+    @unittest.expectedFailure
+    def test_get_source(self):
+        raise NotImplementedError
