@@ -89,6 +89,7 @@ def start_new_feature(contrib_dir=None, **cc_kwargs):
         # copy into contrib dir
         src = rendered_dir
         dst = contrib_dir
-        synctree(src, dst, onexist=_fail_if_feature_exists)
+        result = synctree(src, dst, onexist=_fail_if_feature_exists)
 
     logger.info('Start new feature successful.')
+    return result
