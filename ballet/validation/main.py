@@ -103,7 +103,7 @@ def prune_existing_features(project, force=False):
 
     # propose removal
     for feature in redundant_features:
-        logger.debug(PRUNER_MESSAGE + feature.source)
+        logger.info(PRUNER_MESSAGE + feature.source)
 
     return redundant_features
 

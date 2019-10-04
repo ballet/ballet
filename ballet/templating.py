@@ -91,5 +91,16 @@ def start_new_feature(contrib_dir=None, **cc_kwargs):
         dst = contrib_dir
         result = synctree(src, dst, onexist=_fail_if_feature_exists)
 
-    logger.info('Start new feature successful.')
+    _log_start_new_feature_success(result)
+
     return result
+
+
+def _log_start_new_feature_success(result):
+    logger.info('Start new feature successful.')
+    for (name, kind) in result:
+        if kind == 'file' and '__init__' not in str(name):
+            relname = pathlib.Path(name).relative_to(pathlib.Path.cwd())
+            logger.info('Created {}'.format(relname))
+
+

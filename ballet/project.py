@@ -160,6 +160,7 @@ class Project:
             path (PathLike): path to directory that contains the
                 project
         """
+        path = pathlib.Path(path)
         config = load_config_in_dir(path)
         project_slug = config_get(config, 'project', 'slug')
         package = import_module_at_path(project_slug,
@@ -197,9 +198,14 @@ class Project:
         return self.branch == 'master'
 
     def on_master_after_merge(self):
-        """Checks for two qualities of the current project:
+        """Check the repo HEAD is on master after a merge commit
+
+        Checks for two qualities of the current project:
         1. The project repo's head is the master branch
         2. The project repo's head commit is a merge commit.
+
+        Note that fast-forward style merges will not cause the second condition
+        to evaluate to true.
         """
 
         return self.on_master() and is_merge_commit(self.repo.head.commit)
