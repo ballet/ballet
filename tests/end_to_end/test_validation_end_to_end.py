@@ -49,6 +49,7 @@ def make_feature_str(input):
     """.format(input=input)).strip()
 
 
+@pytest.mark.skip
 @pytest.mark.slow
 def test_validation_end_to_end(quickstart):
     project = quickstart.project
