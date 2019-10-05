@@ -95,6 +95,12 @@ def synctree(src, dst, onexist=None):
         dst (path-like): destination directory, does not need to exist
         onexist (callable): function to call if file exists at destination,
             takes the full path to destination file as only argument
+
+    Returns:
+        List[Tuple[PathLike,str]]: changes made by synctree, list of tuples of
+            the form ("/absolute/path/to/file", "<kind>") where the change
+            kind is one of "dir" (new directory was created) or "file" (new
+            file was created).
     """
     src = pathlib.Path(src).resolve()
     dst = pathlib.Path(dst).resolve()
@@ -108,16 +114,12 @@ def synctree(src, dst, onexist=None):
     if onexist is None:
         def onexist(): pass
 
-    _synctree(src, dst, onexist)
+    return _synctree(src, dst, onexist)
 
 
 def _synctree(src, dst, onexist):
-    if not dst.exists():
-        copytree(safepath(src), safepath(dst))
-        return
-
+    result = []
     cleanup = []
-
     try:
         for root, dirnames, filenames in os.walk(safepath(src)):
             root = pathlib.Path(root)
@@ -132,6 +134,7 @@ def _synctree(src, dst, onexist):
                     logger.debug(
                         'Making directory: {dstdir!s}'.format(dstdir=dstdir))
                     dstdir.mkdir()
+                    result.append((dstdir, 'dir'))
                     cleanup.append(partial(os.rmdir, safepath(dstdir)))
 
             for filename in filenames:
@@ -144,6 +147,7 @@ def _synctree(src, dst, onexist):
                         'Copying file to destination: {dstfile!s}'
                         .format(dstfile=dstfile))
                     copyfile(srcfile, dstfile)
+                    result.append((dstfile, 'file'))
                     cleanup.append(partial(os.unlink, safepath(dstfile)))
 
     except Exception:
@@ -151,3 +155,5 @@ def _synctree(src, dst, onexist):
             for f in reversed(cleanup):
                 f()
         raise
+
+    return result

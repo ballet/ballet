@@ -25,6 +25,7 @@ requirements = [
     'pyyaml',
     'requests',
     'scikit_learn>=0.20',
+    'scipy',
     'sklearn_pandas',
 ]
 
