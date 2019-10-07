@@ -7,7 +7,6 @@ from ballet.eng.base import SimpleFunctionTransformer
 from ballet.eng.misc import IdentityTransformer
 from ballet.util import asarray2d
 from ballet.validation.feature_pruning.validator import GFSSFPruningEvaluator
-
 from tests.util import load_regression_data
 
 

@@ -8,9 +8,9 @@ from ballet.util.log import logger
 from ballet.util.testing import ArrayLikeEqualityTestingMixin
 from ballet.validation.entropy import (
     NEIGHBORS_ALGORITHM, NEIGHBORS_METRIC, _compute_empirical_probability,
-    _compute_epsilon, _compute_n_points_within_radius_i, _compute_volume_unit_ball,
-    _estimate_cont_entropy,
-    _estimate_disc_entropy, _is_column_cont, _is_column_disc, _make_neighbors,
+    _compute_epsilon, _compute_n_points_within_radius_i,
+    _compute_volume_unit_ball, _estimate_cont_entropy, _estimate_disc_entropy,
+    _is_column_cont, _is_column_disc, _make_neighbors,
     estimate_conditional_information, estimate_entropy,
     estimate_mutual_information, nonnegative)
 
@@ -46,7 +46,6 @@ class EntropyTest(ArrayLikeEqualityTestingMixin, unittest.TestCase):
         self.assertEqual(NEIGHBORS_ALGORITHM, nn.algorithm)
         self.assertEqual(NEIGHBORS_METRIC, nn.metric)
 
-
     def test_compute_nx_i(self):
         # Note the chebyshev distance is used
         n = 5
@@ -75,12 +74,11 @@ class EntropyTest(ArrayLikeEqualityTestingMixin, unittest.TestCase):
 
         nn = _make_neighbors().fit(x)
         for i in range(n):
-            x_i = x[i:i+1,:]  # require a (1,m) row array
+            x_i = x[i:i + 1, :]  # require a (1,m) row array
             radius_i = radius[i]
             nx_i = _compute_n_points_within_radius_i(nn, x_i, radius_i)
             expected_nx_i = expected_nx[i]
             self.assertEqual(expected_nx_i, nx_i)
-
 
     def test_compute_empirical_probability(self):
         x = [1, 1, 2, 3, 2, 1, 1, 2]

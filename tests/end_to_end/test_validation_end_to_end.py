@@ -20,7 +20,6 @@ from ballet.util.git import make_commit_range, switch_to_new_branch
 from ballet.util.log import logger
 from ballet.util.mod import import_module_at_path, modname_to_relpath
 from ballet.validation.main import TEST_TYPE_ENV_VAR, BalletTestTypes
-
 from tests.util import load_regression_data
 
 

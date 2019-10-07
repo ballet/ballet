@@ -147,7 +147,7 @@ def _compute_epsilon(x):
         distances = distances[:, -1]  # distances to k-nearest neighbor
         k += 1
 
-    return asarray2d(2.* distances)
+    return asarray2d(2. * distances)
 
 
 def _compute_n_points_within_radius_i(nn, x_i, radius_i):
@@ -163,7 +163,7 @@ def _compute_n_points_within_radius_i(nn, x_i, radius_i):
 
 def _ithrow(x, i):
     # seem to need to index as x[i:i+1, :] to get a (1,m) row array.
-    return x[i:i+1,:]
+    return x[i:i + 1, :]
 
 
 def _compute_n_points_within_radius(x, radius):

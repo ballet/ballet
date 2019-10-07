@@ -84,7 +84,7 @@ def _get_source(f, filename, symbolname, seen):
     for symbolname in f.__code__.co_names:
         obj = f.__globals__.get(symbolname)
         if obj and inspect.isfunction(obj):
-                yield from _get_source(obj, filename, symbolname, seen)
+            yield from _get_source(obj, filename, symbolname, seen)
 
     # get source of self
     yield inspect.getsource(f)
