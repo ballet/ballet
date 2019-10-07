@@ -25,6 +25,7 @@
         <script type="text/javascript" src="../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -261,32 +262,37 @@
 <span class="n">EPSILON</span> <span class="o">=</span> <span class="mf">1e-4</span>
 
 
+<div class="viewcode-block" id="withfailure"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.withfailure">[docs]</a><span class="nd">@funcy</span><span class="o">.</span><span class="n">decorator</span>
+<span class="k">def</span> <span class="nf">withfailure</span><span class="p">(</span><span class="n">call</span><span class="p">,</span> <span class="nb">format</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">call</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+        <span class="n">standardMsg</span> <span class="o">=</span> <span class="nb">format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">_common_shorten_repr</span><span class="p">(</span><span class="n">call</span><span class="o">.</span><span class="n">first</span><span class="p">,</span> <span class="n">call</span><span class="o">.</span><span class="n">second</span><span class="p">))</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">self</span><span class="o">.</span><span class="n">_formatMessage</span><span class="p">(</span><span class="n">call</span><span class="o">.</span><span class="n">msg</span><span class="p">,</span> <span class="n">standardMsg</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">call</span><span class="o">.</span><span class="n">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="ArrayLikeEqualityTestingMixin"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin">[docs]</a><span class="k">class</span> <span class="nc">ArrayLikeEqualityTestingMixin</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Mix-in to enable comparisons of array-like objects in unit tests&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="ArrayLikeEqualityTestingMixin.assertArrayEqual"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin.assertArrayEqual">[docs]</a>    <span class="k">def</span> <span class="nf">assertArrayEqual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ArrayLikeEqualityTestingMixin.assertArrayEqual"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin.assertArrayEqual">[docs]</a>    <span class="nd">@withfailure</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> != </span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">assertArrayEqual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Test that arrays first and second are equal&quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">npt</span><span class="o">.</span><span class="n">assert_array_equal</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
-            <span class="n">standardMsg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> != </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="o">*</span><span class="n">_common_shorten_repr</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">))</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_formatMessage</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">standardMsg</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">failureException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+        <span class="n">npt</span><span class="o">.</span><span class="n">assert_array_equal</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayLikeEqualityTestingMixin.assertArrayNotEqual"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin.assertArrayNotEqual">[docs]</a>    <span class="k">def</span> <span class="nf">assertArrayNotEqual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ArrayLikeEqualityTestingMixin.assertArrayNotEqual"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin.assertArrayNotEqual">[docs]</a>    <span class="nd">@withfailure</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> == </span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">assertArrayNotEqual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Test that arrays first and second are not equal&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">npt</span><span class="o">.</span><span class="n">assert_array_equal</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">standardMsg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> == </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="o">*</span><span class="n">_common_shorten_repr</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">))</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_formatMessage</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">standardMsg</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">failureException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">AssertionError</span></div>
 
-<div class="viewcode-block" id="ArrayLikeEqualityTestingMixin.assertArrayAlmostEqual"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin.assertArrayAlmostEqual">[docs]</a>    <span class="k">def</span> <span class="nf">assertArrayAlmostEqual</span><span class="p">(</span>
+<div class="viewcode-block" id="ArrayLikeEqualityTestingMixin.assertArrayAlmostEqual"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin.assertArrayAlmostEqual">[docs]</a>    <span class="nd">@withfailure</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> !≈ </span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">assertArrayAlmostEqual</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Test that arrays first and second are almost equal</span>
 
@@ -315,16 +321,11 @@
         <span class="k">if</span> <span class="n">delta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">places</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">1.5</span><span class="p">))</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">npt</span><span class="o">.</span><span class="n">assert_array_almost_equal</span><span class="p">(</span>
-                <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">decimal</span><span class="o">=</span><span class="n">places</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
-            <span class="n">standardMsg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> != </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="o">*</span><span class="n">_common_shorten_repr</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">))</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_formatMessage</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">standardMsg</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">failureException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+        <span class="n">npt</span><span class="o">.</span><span class="n">assert_array_almost_equal</span><span class="p">(</span>
+            <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">decimal</span><span class="o">=</span><span class="n">places</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayLikeEqualityTestingMixin.assertArrayNotAlmostEqual"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin.assertArrayNotAlmostEqual">[docs]</a>    <span class="k">def</span> <span class="nf">assertArrayNotAlmostEqual</span><span class="p">(</span>
+<div class="viewcode-block" id="ArrayLikeEqualityTestingMixin.assertArrayNotAlmostEqual"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin.assertArrayNotAlmostEqual">[docs]</a>    <span class="nd">@withfailure</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> ≈ </span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">assertArrayNotAlmostEqual</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Test that arrays first and second are not almost equal&quot;&quot;&quot;</span>
 
@@ -337,10 +338,7 @@
         <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">standardMsg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> == </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="o">*</span><span class="n">_common_shorten_repr</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">))</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_formatMessage</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">standardMsg</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">failureException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">AssertionError</span></div>
 
 <div class="viewcode-block" id="ArrayLikeEqualityTestingMixin.assertFrameEqual"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin.assertFrameEqual">[docs]</a>    <span class="k">def</span> <span class="nf">assertFrameEqual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Test that DataFrames first and second are equal&quot;&quot;&quot;</span>
@@ -410,25 +408,18 @@
             <span class="c1"># it&#39;s great that they are uncomparable types :)</span>
             <span class="k">pass</span></div>
 
+    <span class="nd">@withfailure</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> != </span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_assertPandasEqual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">func</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
-            <span class="n">standardMsg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> != </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="o">*</span><span class="n">_common_shorten_repr</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">))</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_formatMessage</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">standardMsg</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">failureException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">func</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
+    <span class="nd">@withfailure</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> == </span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_assertPandasNotEqual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">func</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">standardMsg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> == </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="o">*</span><span class="n">_common_shorten_repr</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">))</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_formatMessage</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">standardMsg</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">failureException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">AssertionError</span></div>
 
 
 <div class="viewcode-block" id="seeded"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.seeded">[docs]</a><span class="nd">@funcy</span><span class="o">.</span><span class="n">contextmanager</span>

@@ -25,6 +25,7 @@
         <script type="text/javascript" src="../_static/underscore.js"></script>
         <script type="text/javascript" src="../_static/doctools.js"></script>
         <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -259,47 +260,25 @@
   <div class="section" id="module-ballet.validation.entropy">
 <span id="ballet-validation-entropy-module"></span><h1>ballet.validation.entropy module<a class="headerlink" href="#module-ballet.validation.entropy" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="ballet.validation.entropy.calculate_disc_entropy">
-<code class="sig-prename descclassname">ballet.validation.entropy.</code><code class="sig-name descname">calculate_disc_entropy</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#calculate_disc_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.calculate_disc_entropy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the exact Shannon entropy of a discrete dataset,
-using empirical probabilities according to the equation:
-$ H(X) = -sum(c in X) p(c) times log(p(c)) $
-Where $ p(c) $ is calculated as the frequency of c in X.</p>
-<p>If X’s columns logically represent continuous features,
-it is better to use the estimate_cont_entropy function.
-If you are unsure of which to use, estimate_entropy can
-take datasets of mixed discrete and continuous functions.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em>) – An array-like (np arr, pandas df, etc.) with shape
-(n_samples, n_features) or (n_samples)</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A floating-point number representing the dataset entropy.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
 <dt id="ballet.validation.entropy.estimate_conditional_information">
 <code class="sig-prename descclassname">ballet.validation.entropy.</code><code class="sig-name descname">estimate_conditional_information</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">z</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#estimate_conditional_information"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.estimate_conditional_information" title="Permalink to this definition">¶</a></dt>
-<dd><p>Estimate the conditional mutual information of three datasets.</p>
-<p>Conditional mutual information is the
-mutual information of two datasets, given a third:</p>
-<blockquote>
-<div><p>$ I(x;y|z) = H(x,z) + H(y,z) - H(x,y,z) - H(z) $</p>
-</div></blockquote>
-<p>Where H(x) is the Shannon entropy of x. For continuous datasets,
-adapts the Kraskov Estimator [1] for mutual information.</p>
-<p>Equation 8 still holds because the epsilon terms cancel out:
-Let d_x, represent the dimensionality of the continuous portion of x.
-Then, we see that:
-d_xz + d_yz - d_xyz - d_z =
-(d_x + d_z) + (d_y + d_z) - (d_x + d_y + d_z) - d_z = 0</p>
-<dl class="field-list simple">
+<dd><p>Estimate the conditional mutual information of x and y given z</p>
+<p>Conditional mutual information is the mutual information of two datasets,
+given a third:</p>
+<div class="math notranslate nohighlight">
+\[I(x;y|z) = H(x,z) + H(y,z) - H(x,y,z) - H(z)\]</div>
+<p>Where <span class="math notranslate nohighlight">\(H(X)\)</span> is the Shannon entropy of dataset <span class="math notranslate nohighlight">\(X\)</span>. For
+continuous datasets, adapts the KSG Estimator [1] for mutual
+information.</p>
+<p>Eq 8 from [1] holds because the epsilon terms cancel out.
+Let <span class="math notranslate nohighlight">\(d_x\)</span>, represent the dimensionality of the continuous portion of
+x. Then, we see that:</p>
+<div class="math notranslate nohighlight">
+\begin{align}
+d_{xz} + d_{yz} - d_{xyz} - d_z
+    &amp;= (d_x + d_z) + (d_y + d_z) - (d_x + d_y + d_z) - d_z \\
+    &amp;= 0
+\end{align}</div><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array-like</em>) – An array with shape (n_samples, n_features_x)</p></li>
@@ -309,13 +288,7 @@ This is the dataset being conditioned on.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>A floating point number representing the conditional</dt><dd><p>mutual information of x and y given z. This calculation is
-<em>exact</em> for entirely discrete datasets and <em>approximate</em>
-if there are continuous columns present.</p>
-</dd>
-</dl>
-</p>
+<dd class="field-even"><p>conditional mutual information of x and y given z.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>
@@ -331,38 +304,38 @@ information”. Phys. Rev. E 69, 2004.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="ballet.validation.entropy.estimate_cont_entropy">
-<code class="sig-prename descclassname">ballet.validation.entropy.</code><code class="sig-name descname">estimate_cont_entropy</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">epsilon=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#estimate_cont_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.estimate_cont_entropy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Estimate the Shannon entropy of a discrete dataset.</p>
-<p>Based off the Kraskov Estimator [1] and Kozachenko [2]
-estimators for a dataset’s Shannon entropy.</p>
-<p>The function relies on nonparametric methods based on entropy
-estimation from k-nearest neighbors distances as proposed
-in [1] and augmented in [2] for mutual information estimation.</p>
-<p>If X’s columns logically represent discrete features,
-it is better to use the calculate_disc_entropy function.
-If you are unsure of which to use, estimate_entropy can
-take datasets of mixed discrete and continuous functions.</p>
+<dt id="ballet.validation.entropy.estimate_entropy">
+<code class="sig-prename descclassname">ballet.validation.entropy.</code><code class="sig-name descname">estimate_entropy</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#estimate_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.estimate_entropy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate dataset entropy.</p>
+<p>This function can take datasets of mixed discrete and continuous features,
+and uses a set of heuristics to determine which functions to apply to
+each. Discrete (Shannon) entropy is estimated via the empirical
+probability mass function. Continuous (differential) entropy is
+estimated via the KSG estimator [1].</p>
+<p>Let x be made of continuous features c and discrete features d.
+To deal with both continuous and discrete features, We use the
+following reworking of entropy:</p>
+<div class="math notranslate nohighlight">
+\begin{align}
+H(x) &amp;= H(c,d) \\
+     &amp;= H(d) + H(c | d) \\
+     &amp;= \sum_{x \in d} p(x) H(c(x)) + H(d),
+\end{align}</div><p>where <span class="math notranslate nohighlight">\(c(x)\)</span> is a dataset that represents the rows of the continuous
+dataset in the same row as a discrete column with value x in the original
+dataset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>array-like</em>) – An array-like (np arr, pandas df, etc.) with shape
-(n_samples, n_features) or (n_samples)</p></li>
+<li><p><strong>x</strong> (<em>array-like</em>) – Dataset with shape (n_samples, n_features) or
+(n_samples, )</p></li>
 <li><p><strong>epsilon</strong> (<em>array-like</em>) – An array with shape (n_samples, 1) that is
-the epsilon used in Kraskov Estimator. Represents the chebyshev
+the epsilon used in KSG Estimator. Represents the chebyshev
 distance from an element to its k-th nearest neighbor in the full
 dataset.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>A floating-point number. If epsilon is not provided,</dt><dd><p>this will be the Kozacheko Estimator of the dataset’s entropy.
-If epsilon is provided, this is a partial estimation of the Kraskov
-entropy estimator. The bias is cancelled out when computing
-mutual information.</p>
-</dd>
-</dl>
-</p>
+<dd class="field-even"><p>Dataset entropy of X.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>
@@ -374,67 +347,6 @@ mutual information.</p>
 <dd><p>A. Kraskov, H. Stogbauer and P. Grassberger, “Estimating mutual
 information”. Phys. Rev. E 69, 2004.</p>
 </dd>
-<dt class="label" id="id3"><span class="brackets">2</span></dt>
-<dd><p>L. F. Kozachenko, N. N. Leonenko, “Sample Estimate of the Entropy
-of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="ballet.validation.entropy.estimate_entropy">
-<code class="sig-prename descclassname">ballet.validation.entropy.</code><code class="sig-name descname">estimate_entropy</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">epsilon=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#estimate_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.estimate_entropy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Estimate a dataset’s Shannon entropy.</p>
-<p>This function can take datasets of mixed discrete and continuous
-features, and uses a set of heuristics to determine which functions
-to apply to each.</p>
-<p>Because this function is a subroutine in a mutual information estimator,
-we employ the Kozachenko Estimator[1] for continuous features when this
-function is _not_ used for mutual information and an adaptation of the
-Kraskov Estimator[2] when it is.</p>
-<p>Let X be made of continuous features c and discrete features d.
-To deal with both continuous and discrete features, We use the
-following reworking of entropy:</p>
-<p>$ H(X) = H(c,d) = sum_{x in d} p(x) times H(c(x)) + H(d) $</p>
-<p>Where c(x) is a dataset that represents the rows of the continuous dataset
-in the same row as a discrete column with value x in the original dataset.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>array-like</em>) – An array-like (np arr, pandas df, etc.) with shape
-(n_samples, n_features) or (n_samples)</p></li>
-<li><p><strong>epsilon</strong> (<em>array-like</em>) – An array with shape (n_samples, 1) that is
-the epsilon used in Kraskov Estimator. Represents the chebyshev
-distance from an element to its k-th nearest neighbor in the full
-dataset.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>A floating-point number representing the entropy in X.</dt><dd><p>If the dataset is fully discrete, an exact calculation is done.
-If this is not the case and epsilon is not provided, this
-will be the Kozacheko Estimator of the dataset’s entropy.
-If epsilon is provided, this is a partial estimation of the
-Kraskov entropy estimator. The bias is cancelled out when
-computing mutual information.</p>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-<p>References:</p>
-<dl class="footnote brackets">
-<dt class="label" id="id4"><span class="brackets">1</span></dt>
-<dd><p>A. Kraskov, H. Stogbauer and P. Grassberger, “Estimating mutual
-information”. Phys. Rev. E 69, 2004.</p>
-</dd>
-<dt class="label" id="id5"><span class="brackets">2</span></dt>
-<dd><p>L. F. Kozachenko, N. N. Leonenko, “Sample Estimate of the Entropy
-of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16.</p>
-</dd>
 </dl>
 </dd></dl>
 
@@ -444,11 +356,10 @@ of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16.</p>
 <dd><p>Estimate the mutual information of two datasets.</p>
 <p>Mutual information is a measure of dependence between
 two datasets and is calculated as:</p>
-<blockquote>
-<div><p>$I(x;y) = H(x) + H(y) - H(x,y)$</p>
-</div></blockquote>
+<div class="math notranslate nohighlight">
+\[I(x;y) = H(x) + H(y) - H(x,y)\]</div>
 <p>Where H(x) is the Shannon entropy of x. For continuous datasets,
-adapts the Kraskov Estimator [1] for mutual information.</p>
+adapts the KSG Estimator [1] for mutual information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -457,13 +368,7 @@ adapts the Kraskov Estimator [1] for mutual information.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>A floating point number representing the mutual</dt><dd><p>information of x and y. This calculation is <em>exact</em>
-for entirely discrete datasets and <em>approximate</em> if
-there are continuous columns present.</p>
-</dd>
-</dl>
-</p>
+<dd class="field-even"><p>mutual information of x and y</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>
@@ -471,7 +376,7 @@ there are continuous columns present.</p>
 </dl>
 <p>References:</p>
 <dl class="footnote brackets">
-<dt class="label" id="id6"><span class="brackets">1</span></dt>
+<dt class="label" id="id3"><span class="brackets">1</span></dt>
 <dd><p>A. Kraskov, H. Stogbauer and P. Grassberger, “Estimating mutual
 information”. Phys. Rev. E 69, 2004.</p>
 </dd>

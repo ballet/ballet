@@ -25,6 +25,7 @@
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -364,6 +365,12 @@
     <span class="k">return</span> <span class="n">path</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">contrib_path</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="make_feature_path"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.make_feature_path">[docs]</a><span class="nd">@needs_path</span>
+<span class="k">def</span> <span class="nf">make_feature_path</span><span class="p">(</span><span class="n">contrib_dir</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">featurename</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">contrib_dir</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span>
+        <span class="s1">&#39;user_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">username</span><span class="p">),</span> <span class="s1">&#39;feature_</span><span class="si">{}</span><span class="s1">.py&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">featurename</span><span class="p">))</span></div>
+
+
 <div class="viewcode-block" id="Project"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.Project">[docs]</a><span class="k">class</span> <span class="nc">Project</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Encapsulate information on a ballet project</span>
 
@@ -397,6 +404,13 @@
 
 <div class="viewcode-block" id="Project.from_path"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.Project.from_path">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_path</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a Project instance from an fs path to the containing dir</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path (PathLike): path to directory that contains the</span>
+<span class="sd">                project</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="n">config</span> <span class="o">=</span> <span class="n">load_config_in_dir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="n">project_slug</span> <span class="o">=</span> <span class="n">config_get</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s1">&#39;project&#39;</span><span class="p">,</span> <span class="s1">&#39;slug&#39;</span><span class="p">)</span>
         <span class="n">package</span> <span class="o">=</span> <span class="n">import_module_at_path</span><span class="p">(</span><span class="n">project_slug</span><span class="p">,</span>
@@ -434,9 +448,14 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">branch</span> <span class="o">==</span> <span class="s1">&#39;master&#39;</span></div>
 
 <div class="viewcode-block" id="Project.on_master_after_merge"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.Project.on_master_after_merge">[docs]</a>    <span class="k">def</span> <span class="nf">on_master_after_merge</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Checks for two qualities of the current project:</span>
+        <span class="sd">&quot;&quot;&quot;Check the repo HEAD is on master after a merge commit</span>
+
+<span class="sd">        Checks for two qualities of the current project:</span>
 <span class="sd">        1. The project repo&#39;s head is the master branch</span>
 <span class="sd">        2. The project repo&#39;s head commit is a merge commit.</span>
+
+<span class="sd">        Note that fast-forward style merges will not cause the second condition</span>
+<span class="sd">        to evaluate to true.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_master</span><span class="p">()</span> <span class="ow">and</span> <span class="n">is_merge_commit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">commit</span><span class="p">)</span></div>

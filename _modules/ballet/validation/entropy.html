@@ -25,6 +25,7 @@
         <script type="text/javascript" src="../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -247,223 +248,123 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ballet.validation.entropy</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="k">import</span> <span class="n">digamma</span>
+<span></span><span class="kn">import</span> <span class="nn">numbers</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.stats</span>
+<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">decorator</span><span class="p">,</span> <span class="n">suppress</span>
+<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="k">import</span> <span class="n">digamma</span><span class="p">,</span> <span class="n">gamma</span>
 <span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="k">import</span> <span class="n">NearestNeighbors</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils</span> <span class="k">import</span> <span class="n">check_consistent_length</span>
 
 <span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">asarray2d</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span>
 
-<span class="n">NUM_NEIGHBORS</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># Used in the sklearn mutual information function</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s1">&#39;estimate_conditional_information&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;estimate_entropy&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;estimate_mutual_information&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">N_NEIGHBORS</span> <span class="o">=</span> <span class="mi">3</span>   <span class="c1"># hyperparameter k from KSG estimator</span>
+<span class="n">NEIGHBORS_ALGORITHM</span> <span class="o">=</span> <span class="s1">&#39;auto&#39;</span>
+<span class="n">NEIGHBORS_METRIC</span> <span class="o">=</span> <span class="s1">&#39;chebyshev&#39;</span>
+<span class="n">DISC_COL_UNIQUE_VAL_THRESH</span> <span class="o">=</span> <span class="mf">0.05</span>
 
 
-<div class="viewcode-block" id="calculate_disc_entropy"><a class="viewcode-back" href="../../../api/ballet.validation.entropy.html#ballet.validation.entropy.calculate_disc_entropy">[docs]</a><span class="k">def</span> <span class="nf">calculate_disc_entropy</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculates the exact Shannon entropy of a discrete dataset,</span>
-<span class="sd">    using empirical probabilities according to the equation:</span>
-<span class="sd">    $ H(X) = -\sum(c \in X) p(c) \times \log(p(c)) $</span>
-<span class="sd">    Where $ p(c) $ is calculated as the frequency of c in X.</span>
-
-<span class="sd">    If X&#39;s columns logically represent continuous features,</span>
-<span class="sd">    it is better to use the estimate_cont_entropy function.</span>
-<span class="sd">    If you are unsure of which to use, estimate_entropy can</span>
-<span class="sd">    take datasets of mixed discrete and continuous functions.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        X (array-like): An array-like (np arr, pandas df, etc.) with shape</span>
-<span class="sd">            (n_samples, n_features) or (n_samples)</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        float: A floating-point number representing the dataset entropy.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">X</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-    <span class="n">n_samples</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
-    <span class="n">_</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">empirical_p</span> <span class="o">=</span> <span class="n">counts</span> <span class="o">*</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">n_samples</span>
-    <span class="n">log_p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">empirical_p</span><span class="p">)</span>
-    <span class="n">entropy</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">empirical_p</span><span class="p">,</span> <span class="n">log_p</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">entropy</span></div>
+<span class="nd">@decorator</span>
+<span class="k">def</span> <span class="nf">nonnegative</span><span class="p">(</span><span class="n">call</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Warn if the function&#39;s return value is negative and set it to 0&quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">call</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># Format a nice log message</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">pieces</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">_func</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">capitalize</span><span class="p">,</span> <span class="n">pieces</span><span class="p">))</span>
+                <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Result&#39;</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> should be non-negative.&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
 
 
-<div class="viewcode-block" id="estimate_cont_entropy"><a class="viewcode-back" href="../../../api/ballet.validation.entropy.html#ballet.validation.entropy.estimate_cont_entropy">[docs]</a><span class="k">def</span> <span class="nf">estimate_cont_entropy</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Estimate the Shannon entropy of a discrete dataset.</span>
+<span class="c1"># Helpers</span>
 
-<span class="sd">    Based off the Kraskov Estimator [1] and Kozachenko [2]</span>
-<span class="sd">    estimators for a dataset&#39;s Shannon entropy.</span>
+<span class="k">def</span> <span class="nf">_make_neighbors</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">NearestNeighbors</span><span class="p">(</span><span class="n">algorithm</span><span class="o">=</span><span class="n">NEIGHBORS_ALGORITHM</span><span class="p">,</span>
+                            <span class="n">metric</span><span class="o">=</span><span class="n">NEIGHBORS_METRIC</span><span class="p">,</span>
+                            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-<span class="sd">    The function relies on nonparametric methods based on entropy</span>
-<span class="sd">    estimation from k-nearest neighbors distances as proposed</span>
-<span class="sd">    in [1] and augmented in [2] for mutual information estimation.</span>
 
-<span class="sd">    If X&#39;s columns logically represent discrete features,</span>
-<span class="sd">    it is better to use the calculate_disc_entropy function.</span>
-<span class="sd">    If you are unsure of which to use, estimate_entropy can</span>
-<span class="sd">    take datasets of mixed discrete and continuous functions.</span>
+<span class="k">def</span> <span class="nf">_compute_empirical_probability</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute empirical probability of events in x</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        X (array-like): An array-like (np arr, pandas df, etc.) with shape</span>
-<span class="sd">            (n_samples, n_features) or (n_samples)</span>
-<span class="sd">        epsilon (array-like): An array with shape (n_samples, 1) that is</span>
-<span class="sd">            the epsilon used in Kraskov Estimator. Represents the chebyshev</span>
-<span class="sd">            distance from an element to its k-th nearest neighbor in the full</span>
-<span class="sd">            dataset.</span>
+<span class="sd">        x: array-like</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        float: A floating-point number. If epsilon is not provided,</span>
-<span class="sd">            this will be the Kozacheko Estimator of the dataset&#39;s entropy.</span>
-<span class="sd">            If epsilon is provided, this is a partial estimation of the Kraskov</span>
-<span class="sd">            entropy estimator. The bias is cancelled out when computing</span>
-<span class="sd">            mutual information.</span>
-
-<span class="sd">    References:</span>
-
-<span class="sd">    .. [1] A. Kraskov, H. Stogbauer and P. Grassberger, &quot;Estimating mutual</span>
-<span class="sd">           information&quot;. Phys. Rev. E 69, 2004.</span>
-<span class="sd">    .. [2] L. F. Kozachenko, N. N. Leonenko, &quot;Sample Estimate of the Entropy</span>
-<span class="sd">           of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16</span>
-
+<span class="sd">        pk: array-like of shape (K,) where where p[k] is the probability of</span>
+<span class="sd">            event k</span>
+<span class="sd">        events: array-like of shape (K, m) where each event is a vector of</span>
+<span class="sd">            length m and there are K unique events</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">X</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-    <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
-    <span class="k">if</span> <span class="n">n_samples</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">0</span>
-    <span class="n">nn</span> <span class="o">=</span> <span class="n">NearestNeighbors</span><span class="p">(</span>
-        <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;chebyshev&#39;</span><span class="p">,</span>
-        <span class="n">n_neighbors</span><span class="o">=</span><span class="n">NUM_NEIGHBORS</span><span class="p">,</span>
-        <span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;kd_tree&#39;</span><span class="p">)</span>
-    <span class="n">nn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">epsilon</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># If epsilon is not provided, revert to the Kozachenko Estimator</span>
-        <span class="n">n_neighbors</span> <span class="o">=</span> <span class="n">NUM_NEIGHBORS</span>
-        <span class="n">radius</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="c1"># While we have non-zero radii, calculate for a larger k</span>
-        <span class="c1"># Potentially expensive</span>
-        <span class="k">while</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">radius</span><span class="p">)</span> <span class="ow">and</span> <span class="n">n_neighbors</span> <span class="o">&lt;</span> <span class="n">n_samples</span><span class="p">:</span>
-            <span class="n">distances</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">kneighbors</span><span class="p">(</span>
-                <span class="n">n_neighbors</span><span class="o">=</span><span class="n">n_neighbors</span><span class="p">,</span> <span class="n">return_distance</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="n">radius</span> <span class="o">=</span> <span class="n">distances</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">n_neighbors</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">if</span> <span class="n">n_neighbors</span> <span class="o">==</span> <span class="n">n_samples</span><span class="p">:</span>
-            <span class="c1"># This case only happens if all samples are the same</span>
-            <span class="c1"># e.g. this isn&#39;t a continuous sample...</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Should not have discrete column to estimate&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="o">-</span><span class="n">digamma</span><span class="p">(</span><span class="n">n_neighbors</span><span class="p">)</span> <span class="o">+</span> <span class="n">digamma</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span> <span class="o">+</span> \
-            <span class="n">n_features</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">radius</span><span class="p">))</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">n</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">events</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">pk</span> <span class="o">=</span> <span class="n">counts</span> <span class="o">*</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">n</span>
+    <span class="k">return</span> <span class="n">pk</span><span class="p">,</span> <span class="n">events</span>
+
+
+<span class="k">def</span> <span class="nf">_compute_volume_unit_ball</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">NEIGHBORS_METRIC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute volume of a d-dimensional unit ball in R^d with given metric&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">metric</span> <span class="o">==</span> <span class="s1">&#39;chebyshev&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">metric</span> <span class="o">==</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">d</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">gamma</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">d</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="o">**</span><span class="n">d</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">ind</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">radius_neighbors</span><span class="p">(</span>
-            <span class="n">radius</span><span class="o">=</span><span class="n">epsilon</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span>
-            <span class="n">return_distance</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">nx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span><span class="o">.</span><span class="n">size</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ind</span><span class="p">])</span>
-        <span class="k">return</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">digamma</span><span class="p">(</span><span class="n">nx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="o">+</span> <span class="n">digamma</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span></div>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;metric </span><span class="si">{metric}</span><span class="s1"> not supported&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_is_column_discrete</span><span class="p">(</span><span class="n">col</span><span class="p">):</span>
-    <span class="c1"># Stand-in method to figure out if column is discrete</span>
-    <span class="c1"># Still researching good ways to do this...</span>
-    <span class="k">if</span> <span class="n">col</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_is_column_disc</span><span class="p">(</span><span class="n">col</span><span class="p">):</span>
+    <span class="c1"># Heuristics to decide if column is discrete</span>
+
+    <span class="c1"># Integer columns are discrete</span>
+    <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">col</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="c1"># Real-valued columns that are close to integer values are discrete</span>
     <span class="n">rounding_error</span> <span class="o">=</span> <span class="n">col</span> <span class="o">-</span> <span class="n">col</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">rounding_error</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">col</span><span class="o">.</span><span class="n">size</span><span class="p">)):</span>
         <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="c1"># Columns with a small fraction of distinct values are discrete</span>
     <span class="n">uniques</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">uniques</span><span class="o">.</span><span class="n">size</span> <span class="o">/</span> <span class="n">col</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.05</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">uniques</span><span class="o">.</span><span class="n">size</span> <span class="o">/</span> <span class="n">col</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">DISC_COL_UNIQUE_VAL_THRESH</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="kc">False</span>
 
 
-<span class="k">def</span> <span class="nf">_get_discrete_columns</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">_is_column_discrete</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_is_column_cont</span><span class="p">(</span><span class="n">col</span><span class="p">):</span>
+    <span class="k">return</span> <span class="ow">not</span> <span class="n">_is_column_disc</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="estimate_entropy"><a class="viewcode-back" href="../../../api/ballet.validation.entropy.html#ballet.validation.entropy.estimate_entropy">[docs]</a><span class="k">def</span> <span class="nf">estimate_entropy</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Estimate a dataset&#39;s Shannon entropy.</span>
+<span class="k">def</span> <span class="nf">_get_disc_columns</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">_is_column_disc</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 
-<span class="sd">    This function can take datasets of mixed discrete and continuous</span>
-<span class="sd">    features, and uses a set of heuristics to determine which functions</span>
-<span class="sd">    to apply to each.</span>
 
-<span class="sd">    Because this function is a subroutine in a mutual information estimator,</span>
-<span class="sd">    we employ the Kozachenko Estimator[1] for continuous features when this</span>
-<span class="sd">    function is _not_ used for mutual information and an adaptation of the</span>
-<span class="sd">    Kraskov Estimator[2] when it is.</span>
+<span class="c1"># Computing epsilon</span>
 
-<span class="sd">    Let X be made of continuous features c and discrete features d.</span>
-<span class="sd">    To deal with both continuous and discrete features, We use the</span>
-<span class="sd">    following reworking of entropy:</span>
+<span class="k">def</span> <span class="nf">_compute_epsilon</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate epsilon from KSG Estimator</span>
 
-<span class="sd">    $ H(X) = H(c,d) = \sum_{x \in d} p(x) \times H(c(x)) + H(d) $</span>
-
-<span class="sd">    Where c(x) is a dataset that represents the rows of the continuous dataset</span>
-<span class="sd">    in the same row as a discrete column with value x in the original dataset.</span>
+<span class="sd">    Represents twice the distance of each element to its k-th nearest neighbor.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        X (array-like): An array-like (np arr, pandas df, etc.) with shape</span>
-<span class="sd">            (n_samples, n_features) or (n_samples)</span>
-<span class="sd">        epsilon (array-like): An array with shape (n_samples, 1) that is</span>
-<span class="sd">            the epsilon used in Kraskov Estimator. Represents the chebyshev</span>
-<span class="sd">            distance from an element to its k-th nearest neighbor in the full</span>
-<span class="sd">            dataset.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        float: A floating-point number representing the entropy in X.</span>
-<span class="sd">            If the dataset is fully discrete, an exact calculation is done.</span>
-<span class="sd">            If this is not the case and epsilon is not provided, this</span>
-<span class="sd">            will be the Kozacheko Estimator of the dataset&#39;s entropy.</span>
-<span class="sd">            If epsilon is provided, this is a partial estimation of the</span>
-<span class="sd">            Kraskov entropy estimator. The bias is cancelled out when</span>
-<span class="sd">            computing mutual information.</span>
-
-<span class="sd">    References:</span>
-
-<span class="sd">    .. [1] A. Kraskov, H. Stogbauer and P. Grassberger, &quot;Estimating mutual</span>
-<span class="sd">           information&quot;. Phys. Rev. E 69, 2004.</span>
-<span class="sd">    .. [2] L. F. Kozachenko, N. N. Leonenko, &quot;Sample Estimate of the Entropy</span>
-<span class="sd">           of a Random Vector:, Probl. Peredachi Inf., 23:2 (1987), 9-16.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">X</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-    <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
-    <span class="k">if</span> <span class="n">n_features</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">0</span>
-    <span class="n">disc_mask</span> <span class="o">=</span> <span class="n">_get_discrete_columns</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-    <span class="n">cont_mask</span> <span class="o">=</span> <span class="o">~</span><span class="n">disc_mask</span>
-    <span class="c1"># If our dataset is fully discrete/continuous, do something easier</span>
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">disc_mask</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">calculate_disc_entropy</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">cont_mask</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">estimate_cont_entropy</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
-
-    <span class="c1"># Separate the dataset into discrete and continuous datasets d,c</span>
-    <span class="n">disc_features</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="n">disc_mask</span><span class="p">])</span>
-    <span class="n">cont_features</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="n">cont_mask</span><span class="p">])</span>
-
-    <span class="n">entropy</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">uniques</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">disc_features</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">empirical_p</span> <span class="o">=</span> <span class="n">counts</span> <span class="o">/</span> <span class="n">n_samples</span>
-
-    <span class="c1"># $\sum_{x \in d} p(x) \times H(c(x))$</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">counts</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
-        <span class="n">unique_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">disc_features</span> <span class="o">==</span> <span class="n">uniques</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">selected_cont_samples</span> <span class="o">=</span> <span class="n">cont_features</span><span class="p">[</span><span class="n">unique_mask</span><span class="p">,</span> <span class="p">:]</span>
-        <span class="k">if</span> <span class="n">epsilon</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">selected_epsilon</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">selected_epsilon</span> <span class="o">=</span> <span class="n">epsilon</span><span class="p">[</span><span class="n">unique_mask</span><span class="p">,</span> <span class="p">:]</span>
-        <span class="n">conditional_cont_entropy</span> <span class="o">=</span> <span class="n">estimate_cont_entropy</span><span class="p">(</span>
-            <span class="n">selected_cont_samples</span><span class="p">,</span> <span class="n">selected_epsilon</span><span class="p">)</span>
-        <span class="n">entropy</span> <span class="o">+=</span> <span class="n">empirical_p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">conditional_cont_entropy</span>
-
-    <span class="c1"># H(d)</span>
-    <span class="n">entropy</span> <span class="o">+=</span> <span class="n">calculate_disc_entropy</span><span class="p">(</span><span class="n">disc_features</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">epsilon</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">entropy</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">entropy</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">entropy</span></div>
-
-
-<span class="k">def</span> <span class="nf">_calculate_epsilon</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Calculates epsilon, a subroutine for the Kraskov Estimator [1]</span>
-<span class="sd">    Represents the chebyshev distance of each dataset element to its</span>
-<span class="sd">    K-th nearest neighbor.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        X (array-like): An array with shape (n_samples, n_features)</span>
+<span class="sd">        x (array-like): An array with shape (n_samples, n_features)</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        array-like: An array with shape (n_samples, 1) representing</span>
@@ -475,34 +376,268 @@
 <span class="sd">           information&quot;. Phys. Rev. E 69, 2004.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">disc_mask</span> <span class="o">=</span> <span class="n">_get_discrete_columns</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">N_NEIGHBORS</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">disc_mask</span> <span class="o">=</span> <span class="n">_get_disc_columns</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">disc_mask</span><span class="p">):</span>
-        <span class="c1"># if all discrete columns, there&#39;s no point getting epsilon</span>
+        <span class="c1"># if no continuous columns, there&#39;s no point getting epsilon</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:,</span> <span class="o">~</span><span class="n">disc_mask</span><span class="p">]</span>
+
+    <span class="n">nn</span> <span class="o">=</span> <span class="n">_make_neighbors</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+    <span class="n">distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+    <span class="c1"># if the kth neighbor is at distance 0, then we are in trouble</span>
+    <span class="c1"># but we can try the trick of increasing k if we don&#39;t use the old</span>
+    <span class="c1"># value of k sometime later</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span> <span class="ow">and</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
+        <span class="n">distances</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">kneighbors</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+        <span class="n">distances</span> <span class="o">=</span> <span class="n">distances</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># distances to k-nearest neighbor</span>
+        <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">asarray2d</span><span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">distances</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_compute_n_points_within_radius_i</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">x_i</span><span class="p">,</span> <span class="n">radius_i</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">x_i</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">radius_i</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span>
+
+    <span class="c1"># adjustment as radius_neighbors would find exact matches</span>
+    <span class="n">radius_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nextafter</span><span class="p">(</span><span class="n">radius_i</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">ind</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">radius_neighbors</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">x_i</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">radius_i</span><span class="p">,</span> <span class="n">return_distance</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
+
+
+<span class="k">def</span> <span class="nf">_ithrow</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="c1"># seem to need to index as x[i:i+1, :] to get a (1,m) row array.</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
+
+
+<span class="k">def</span> <span class="nf">_compute_n_points_within_radius</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute the number of points strictly within some radius</span>
+
+<span class="sd">    Note that points lying exactly on the radius are not counted.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x (array-like): data of shape (n_instances, n_features)</span>
+<span class="sd">        radius (array-like): radius from each point of shape (n_instances, 1)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">check_consistent_length</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">nn</span> <span class="o">=</span> <span class="n">_make_neighbors</span><span class="p">()</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="c1"># this will be slow</span>
+    <span class="n">nx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="n">_compute_n_points_within_radius_i</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">_ithrow</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">i</span><span class="p">),</span> <span class="n">radius</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">nx</span>
+
+
+<span class="c1"># Entropy estimation</span>
+
+<span class="k">def</span> <span class="nf">_estimate_disc_entropy</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Estimate the Shannon entropy of a discrete dataset.</span>
+
+<span class="sd">    The Shannon entropy of a discrete random variable :math:`Z` with support</span>
+<span class="sd">    :math:`\mathbb{Z}` and density :math:`P_Z` is given as</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        H(Z) = -\sum_{z \in \mathbb{Z}} P_Z(z) \log(P_Z(z))</span>
+
+<span class="sd">    Here, since we do not know :math:`P_Z`, we estimate :math:`\hat{P}_Z`, the</span>
+<span class="sd">    empirical probability, calculated as the frequency in the dataset x.</span>
+
+<span class="sd">    If x&#39;s columns logically represent continuous features, it is better to use</span>
+<span class="sd">    the `_estimate_cont_entropy` function. If you are unsure of which to use,</span>
+<span class="sd">    `estimate_entropy` can take datasets of mixed discrete and continuous</span>
+<span class="sd">    functions.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x (array-like): Dataset with shape (n_samples, n_features) or</span>
+<span class="sd">            (n_samples, )</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: the dataset entropy.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">pk</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_compute_empirical_probability</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">entropy</span><span class="p">(</span><span class="n">pk</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_estimate_cont_entropy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Estimate the differential entropy of a continuous dataset.</span>
+
+<span class="sd">    Based off the KSG Estimator [1] for a dataset&#39;s differential entropy.</span>
+<span class="sd">    If epsilon is provided, this is a partial estimation of the KSG entropy</span>
+<span class="sd">    estimator. The bias is cancelled out when computing mutual information.</span>
+
+<span class="sd">    The function relies on nonparametric methods based on entropy estimation</span>
+<span class="sd">    from k-nearest neighbors distances as proposed in [1] and augmented in [2]</span>
+<span class="sd">    for mutual information estimation.</span>
+
+<span class="sd">    If X&#39;s columns logically represent discrete features, it is better to use</span>
+<span class="sd">    the _estimate_disc_entropy function. If you are unsure of which to use,</span>
+<span class="sd">    _estimate_entropy can take datasets of mixed discrete and continuous</span>
+<span class="sd">    functions.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x (array-like): Dataset with shape (n_samples, n_features) or</span>
+<span class="sd">            (n_samples, )</span>
+<span class="sd">        epsilon (array-like): An array with shape (n_samples, 1) that is</span>
+<span class="sd">            the epsilon used in KSG Estimator. Represents the Chebyshev</span>
+<span class="sd">            distance from an element to its k-th nearest neighbor in the full</span>
+<span class="sd">            dataset.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: differential entropy of the dataset</span>
+
+<span class="sd">    References:</span>
+
+<span class="sd">    .. [1] A. Kraskov, H. Stogbauer and P. Grassberger, &quot;Estimating mutual</span>
+<span class="sd">           information&quot;. Phys. Rev. E 69, 2004.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">n</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">nx</span> <span class="o">=</span> <span class="n">_compute_n_points_within_radius</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">epsilon</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
+    <span class="n">c_d</span> <span class="o">=</span> <span class="n">_compute_volume_unit_ball</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">digamma</span><span class="p">(</span><span class="n">nx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="o">+</span> <span class="n">digamma</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">c_d</span><span class="p">)</span> \
+        <span class="o">+</span> <span class="n">d</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">epsilon</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">_estimate_entropy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Estimate dataset entropy.&quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">n</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="c1"># not enough data</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">0</span>
-    <span class="n">cont_features</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="o">~</span><span class="n">disc_mask</span><span class="p">]</span>
-    <span class="n">nn</span> <span class="o">=</span> <span class="n">NearestNeighbors</span><span class="p">(</span><span class="n">metric</span><span class="o">=</span><span class="s1">&#39;chebyshev&#39;</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="n">NUM_NEIGHBORS</span><span class="p">)</span>
-    <span class="n">nn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">cont_features</span><span class="p">)</span>
-    <span class="n">distances</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">kneighbors</span><span class="p">()</span>
-    <span class="n">epsilon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nextafter</span><span class="p">(</span><span class="n">distances</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">asarray2d</span><span class="p">(</span><span class="n">epsilon</span><span class="p">)</span>
+
+    <span class="n">disc_mask</span> <span class="o">=</span> <span class="n">_get_disc_columns</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">cont_mask</span> <span class="o">=</span> <span class="o">~</span><span class="n">disc_mask</span>
+
+    <span class="c1"># if all columns are disc, use discrete-specific estimator</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">disc_mask</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_estimate_disc_entropy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="c1"># if all columns are cont, use continuous-specific estimator</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">cont_mask</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_estimate_cont_entropy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
+
+    <span class="c1"># Separate the dataset into discrete and continuous datasets d and c</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="n">x</span><span class="p">[:,</span> <span class="n">disc_mask</span><span class="p">])</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="n">x</span><span class="p">[:,</span> <span class="n">cont_mask</span><span class="p">])</span>
+
+    <span class="c1"># H(c|d)</span>
+    <span class="n">H_c_d</span> <span class="o">=</span> <span class="n">_estimate_conditional_entropy</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
+
+    <span class="c1"># H(d)</span>
+    <span class="n">H_d</span> <span class="o">=</span> <span class="n">_estimate_disc_entropy</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">H_d</span> <span class="o">+</span> <span class="n">H_c_d</span>
 
 
-<div class="viewcode-block" id="estimate_conditional_information"><a class="viewcode-back" href="../../../api/ballet.validation.entropy.html#ballet.validation.entropy.estimate_conditional_information">[docs]</a><span class="k">def</span> <span class="nf">estimate_conditional_information</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Estimate the conditional mutual information of three datasets.</span>
+<span class="k">def</span> <span class="nf">_estimate_conditional_entropy</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Estimate H(c|d) where c is continuous and d is discrete&quot;&quot;&quot;</span>
+    <span class="c1"># H(c|d) = \sum_{i} p(d_i) H(c|d=d_i)</span>
+    <span class="c1"># where we i ranges over unique values of d and c_d_i is the</span>
+    <span class="c1"># rows of c where d == d_i.</span>
+    <span class="n">pk</span><span class="p">,</span> <span class="n">events</span> <span class="o">=</span> <span class="n">_compute_empirical_probability</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="n">H_c_d</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">p_i</span><span class="p">,</span> <span class="n">d_i</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">pk</span><span class="p">,</span> <span class="n">events</span><span class="p">)):</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">d</span> <span class="o">==</span> <span class="n">d_i</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">c_di</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="c1"># TODO add logging here about small sample size</span>
+        <span class="n">epsilon_di</span> <span class="o">=</span> <span class="n">epsilon</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">H_c_di</span> <span class="o">=</span> <span class="n">_estimate_cont_entropy</span><span class="p">(</span><span class="n">c_di</span><span class="p">,</span> <span class="n">epsilon_di</span><span class="p">)</span>
+        <span class="n">H_c_d</span> <span class="o">+=</span> <span class="n">p_i</span> <span class="o">*</span> <span class="n">H_c_di</span>
+    <span class="k">return</span> <span class="n">H_c_d</span>
 
-<span class="sd">    Conditional mutual information is the</span>
-<span class="sd">    mutual information of two datasets, given a third:</span>
 
-<span class="sd">        $ I(x;y|z) = H(x,z) + H(y,z) - H(x,y,z) - H(z) $</span>
+<span class="c1"># Public API</span>
 
-<span class="sd">    Where H(x) is the Shannon entropy of x. For continuous datasets,</span>
-<span class="sd">    adapts the Kraskov Estimator [1] for mutual information.</span>
+<div class="viewcode-block" id="estimate_entropy"><a class="viewcode-back" href="../../../api/ballet.validation.entropy.html#ballet.validation.entropy.estimate_entropy">[docs]</a><span class="nd">@nonnegative</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">estimate_entropy</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Estimate dataset entropy.</span>
 
-<span class="sd">    Equation 8 still holds because the epsilon terms cancel out:</span>
-<span class="sd">    Let d_x, represent the dimensionality of the continuous portion of x.</span>
-<span class="sd">    Then, we see that:</span>
-<span class="sd">    d_xz + d_yz - d_xyz - d_z =</span>
-<span class="sd">    (d_x + d_z) + (d_y + d_z) - (d_x + d_y + d_z) - d_z = 0</span>
+<span class="sd">    This function can take datasets of mixed discrete and continuous features,</span>
+<span class="sd">    and uses a set of heuristics to determine which functions to apply to</span>
+<span class="sd">    each. Discrete (Shannon) entropy is estimated via the empirical</span>
+<span class="sd">    probability mass function. Continuous (differential) entropy is</span>
+<span class="sd">    estimated via the KSG estimator [1].</span>
+
+<span class="sd">    Let x be made of continuous features c and discrete features d.</span>
+<span class="sd">    To deal with both continuous and discrete features, We use the</span>
+<span class="sd">    following reworking of entropy:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       :nowrap:</span>
+
+<span class="sd">       \begin{align}</span>
+<span class="sd">       H(x) &amp;= H(c,d) \\</span>
+<span class="sd">            &amp;= H(d) + H(c | d) \\</span>
+<span class="sd">            &amp;= \sum_{x \in d} p(x) H(c(x)) + H(d),</span>
+<span class="sd">       \end{align}</span>
+
+<span class="sd">    where :math:`c(x)` is a dataset that represents the rows of the continuous</span>
+<span class="sd">    dataset in the same row as a discrete column with value x in the original</span>
+<span class="sd">    dataset.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x (array-like): Dataset with shape (n_samples, n_features) or</span>
+<span class="sd">            (n_samples, )</span>
+<span class="sd">        epsilon (array-like): An array with shape (n_samples, 1) that is</span>
+<span class="sd">            the epsilon used in KSG Estimator. Represents the chebyshev</span>
+<span class="sd">            distance from an element to its k-th nearest neighbor in the full</span>
+<span class="sd">            dataset.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: Dataset entropy of X.</span>
+
+<span class="sd">    References:</span>
+
+<span class="sd">    .. [1] A. Kraskov, H. Stogbauer and P. Grassberger, &quot;Estimating mutual</span>
+<span class="sd">           information&quot;. Phys. Rev. E 69, 2004.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">epsilon</span> <span class="o">=</span> <span class="n">_compute_epsilon</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_estimate_entropy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="estimate_conditional_information"><a class="viewcode-back" href="../../../api/ballet.validation.entropy.html#ballet.validation.entropy.estimate_conditional_information">[docs]</a><span class="nd">@nonnegative</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">estimate_conditional_information</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Estimate the conditional mutual information of x and y given z</span>
+
+<span class="sd">    Conditional mutual information is the mutual information of two datasets,</span>
+<span class="sd">    given a third:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       I(x;y|z) = H(x,z) + H(y,z) - H(x,y,z) - H(z)</span>
+
+<span class="sd">    Where :math:`H(X)` is the Shannon entropy of dataset :math:`X`. For</span>
+<span class="sd">    continuous datasets, adapts the KSG Estimator [1] for mutual</span>
+<span class="sd">    information.</span>
+
+<span class="sd">    Eq 8 from [1] holds because the epsilon terms cancel out.</span>
+<span class="sd">    Let :math:`d_x`, represent the dimensionality of the continuous portion of</span>
+<span class="sd">    x. Then, we see that:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       :nowrap:</span>
+
+<span class="sd">       \begin{align}</span>
+<span class="sd">       d_{xz} + d_{yz} - d_{xyz} - d_z</span>
+<span class="sd">           &amp;= (d_x + d_z) + (d_y + d_z) - (d_x + d_y + d_z) - d_z \\</span>
+<span class="sd">           &amp;= 0</span>
+<span class="sd">       \end{align}</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        x (array-like): An array with shape (n_samples, n_features_x)</span>
@@ -511,10 +646,7 @@
 <span class="sd">            This is the dataset being conditioned on.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        float: A floating point number representing the conditional</span>
-<span class="sd">            mutual information of x and y given z. This calculation is</span>
-<span class="sd">            *exact* for entirely discrete datasets and *approximate*</span>
-<span class="sd">            if there are continuous columns present.</span>
+<span class="sd">        float: conditional mutual information of x and y given z.</span>
 
 <span class="sd">    References:</span>
 
@@ -523,39 +655,42 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">xz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">z</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">yz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">xz</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">epsilon</span> <span class="o">=</span> <span class="n">_calculate_epsilon</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
-    <span class="n">h_xz</span> <span class="o">=</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="n">xz</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
-    <span class="n">h_yz</span> <span class="o">=</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="n">yz</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
-    <span class="n">h_xyz</span> <span class="o">=</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
-    <span class="n">h_z</span> <span class="o">=</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;H(X,Z): </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">h_xz</span><span class="p">))</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;H(Y,Z): </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">h_yz</span><span class="p">))</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;H(X,Y,Z): </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">h_xyz</span><span class="p">))</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;H(Z): </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">h_z</span><span class="p">))</span>
-    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">h_xz</span> <span class="o">+</span> <span class="n">h_yz</span> <span class="o">-</span> <span class="n">h_xyz</span> <span class="o">-</span> <span class="n">h_z</span><span class="p">)</span></div>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">epsilon</span> <span class="o">=</span> <span class="n">_compute_epsilon</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+
+    <span class="n">H_xz</span> <span class="o">=</span> <span class="n">_estimate_entropy</span><span class="p">(</span><span class="n">xz</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
+    <span class="n">H_yz</span> <span class="o">=</span> <span class="n">_estimate_entropy</span><span class="p">(</span><span class="n">yz</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
+    <span class="n">H_xyz</span> <span class="o">=</span> <span class="n">_estimate_entropy</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
+    <span class="n">H_z</span> <span class="o">=</span> <span class="n">_estimate_entropy</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;H(X,Z): </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">H_xz</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;H(Y,Z): </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">H_yz</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;H(X,Y,Z): </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">H_xyz</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;H(Z): </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">H_z</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">H_xz</span> <span class="o">+</span> <span class="n">H_yz</span> <span class="o">-</span> <span class="n">H_xyz</span> <span class="o">-</span> <span class="n">H_z</span></div>
 
 
-<div class="viewcode-block" id="estimate_mutual_information"><a class="viewcode-back" href="../../../api/ballet.validation.entropy.html#ballet.validation.entropy.estimate_mutual_information">[docs]</a><span class="k">def</span> <span class="nf">estimate_mutual_information</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Estimate the mutual information of two datasets.</span>
+<div class="viewcode-block" id="estimate_mutual_information"><a class="viewcode-back" href="../../../api/ballet.validation.entropy.html#ballet.validation.entropy.estimate_mutual_information">[docs]</a><span class="nd">@nonnegative</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">estimate_mutual_information</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Estimate the mutual information of two datasets.</span>
 
 <span class="sd">    Mutual information is a measure of dependence between</span>
 <span class="sd">    two datasets and is calculated as:</span>
 
-<span class="sd">        $I(x;y) = H(x) + H(y) - H(x,y)$</span>
+<span class="sd">    .. math::</span>
+<span class="sd">       I(x;y) = H(x) + H(y) - H(x,y)</span>
 
 <span class="sd">    Where H(x) is the Shannon entropy of x. For continuous datasets,</span>
-<span class="sd">    adapts the Kraskov Estimator [1] for mutual information.</span>
+<span class="sd">    adapts the KSG Estimator [1] for mutual information.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        x (array-like): An array with shape (n_samples, n_features_x)</span>
 <span class="sd">        y (array-like): An array with shape (n_samples, n_features_y)</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        float: A floating point number representing the mutual</span>
-<span class="sd">            information of x and y. This calculation is *exact*</span>
-<span class="sd">            for entirely discrete datasets and *approximate* if</span>
-<span class="sd">            there are continuous columns present.</span>
+<span class="sd">        float: mutual information of x and y</span>
 
 <span class="sd">    References:</span>
 
@@ -563,11 +698,11 @@
 <span class="sd">      information&quot;. Phys. Rev. E 69, 2004.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">xy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">epsilon</span> <span class="o">=</span> <span class="n">_calculate_epsilon</span><span class="p">(</span><span class="n">xy</span><span class="p">)</span>
-    <span class="n">h_x</span> <span class="o">=</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
-    <span class="n">h_y</span> <span class="o">=</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
-    <span class="n">h_xy</span> <span class="o">=</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">h_x</span> <span class="o">+</span> <span class="n">h_y</span> <span class="o">-</span> <span class="n">h_xy</span><span class="p">)</span></div>
+    <span class="n">epsilon</span> <span class="o">=</span> <span class="n">_compute_epsilon</span><span class="p">(</span><span class="n">xy</span><span class="p">)</span>
+    <span class="n">H_x</span> <span class="o">=</span> <span class="n">_estimate_entropy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
+    <span class="n">H_y</span> <span class="o">=</span> <span class="n">_estimate_entropy</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
+    <span class="n">H_xy</span> <span class="o">=</span> <span class="n">_estimate_entropy</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">H_x</span> <span class="o">+</span> <span class="n">H_y</span> <span class="o">-</span> <span class="n">H_xy</span></div>
 </pre></div>
 
            </div>

@@ -25,6 +25,7 @@
         <script type="text/javascript" src="../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -249,7 +250,10 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ballet.util.code</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">platform</span>
+<span></span><span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+
+<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">notnone</span>
 
 <span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="k">import</span> <span class="n">black</span>
 
@@ -280,6 +284,62 @@
     <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">black</span><span class="o">.</span><span class="n">format_file_contents</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">fast</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_source"><a class="viewcode-back" href="../../../api/ballet.util.code.html#ballet.util.code.get_source">[docs]</a><span class="k">def</span> <span class="nf">get_source</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Extract the source code from a given function.</span>
+
+<span class="sd">    Recursively extracts the source code for all local functions called by</span>
+<span class="sd">    given function. The resulting source code is encoded in utf-8.</span>
+
+<span class="sd">    Known limitation: Cannot use on function defined interactively in normal</span>
+<span class="sd">    Python terminal. (Functions defined interactively in IPython are okay.)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        f: function</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: extracted source code</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        NotImplementedError: if the function was defined interactively</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">_get_source</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="vm">__code__</span><span class="o">.</span><span class="n">co_filename</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="n">notnone</span><span class="p">,</span> <span class="n">code</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+
+    <span class="c1"># post-processing</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="n">code</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">blacken_code</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">code</span></div>
+
+
+<span class="k">def</span> <span class="nf">_get_source</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">symbolname</span><span class="p">,</span> <span class="n">seen</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+    <span class="c1"># known limitation: cannot use from stdin</span>
+    <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="vm">__code__</span><span class="o">.</span><span class="n">co_filename</span> <span class="o">==</span> <span class="s1">&#39;&lt;stdin&gt;&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s1">&#39;Cannot use </span><span class="si">{name!r}</span><span class="s1"> on function defined interactively.&#39;</span>
+            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;get_source&#39;</span><span class="p">))</span>
+
+    <span class="c1"># if f was not defined in the same file, return code to import it</span>
+    <span class="c1"># TODO</span>
+    <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="vm">__code__</span><span class="o">.</span><span class="n">co_filename</span> <span class="o">!=</span> <span class="n">filename</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="c1"># get source of referenced symbols</span>
+    <span class="k">for</span> <span class="n">symbolname</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="vm">__code__</span><span class="o">.</span><span class="n">co_names</span><span class="p">:</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="vm">__globals__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">symbolname</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">obj</span> <span class="ow">and</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isfunction</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+            <span class="k">yield from</span> <span class="n">_get_source</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">symbolname</span><span class="p">,</span> <span class="n">seen</span><span class="p">)</span>
+
+    <span class="c1"># get source of self</span>
+    <span class="k">yield</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getsource</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 </pre></div>
 
            </div>

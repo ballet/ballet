@@ -25,6 +25,7 @@
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -308,21 +309,26 @@
             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dst</span><span class="o">=</span><span class="n">dst</span><span class="p">))</span>
 
 
-<div class="viewcode-block" id="start_new_feature"><a class="viewcode-back" href="../../api/ballet.templating.html#ballet.templating.start_new_feature">[docs]</a><span class="k">def</span> <span class="nf">start_new_feature</span><span class="p">(</span><span class="o">**</span><span class="n">cc_kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="start_new_feature"><a class="viewcode-back" href="../../api/ballet.templating.html#ballet.templating.start_new_feature">[docs]</a><span class="k">def</span> <span class="nf">start_new_feature</span><span class="p">(</span><span class="n">contrib_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">cc_kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Start a new feature within a ballet project</span>
+
+<span class="sd">    By default, will prompt the user for input using cookiecutter&#39;s input</span>
+<span class="sd">    interface.</span>
 
 <span class="sd">    Renders the feature template into a temporary directory, then copies the</span>
 <span class="sd">    feature files into the proper path within the contrib directory.</span>
 
 <span class="sd">    Args:</span>
+<span class="sd">        contrib_dir: directory under which to place contributed features</span>
 <span class="sd">        **cc_kwargs: options for the cookiecutter template</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        ballet.exc.BalletError: the new feature has the same name as an</span>
 <span class="sd">            existing one</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">project</span> <span class="o">=</span> <span class="n">Project</span><span class="o">.</span><span class="n">from_path</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span>
-    <span class="n">contrib_dir</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;contrib&#39;</span><span class="p">,</span> <span class="s1">&#39;module_path&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">contrib_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">project</span> <span class="o">=</span> <span class="n">Project</span><span class="o">.</span><span class="n">from_path</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span>
+        <span class="n">contrib_dir</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;contrib&#39;</span><span class="p">,</span> <span class="s1">&#39;module_path&#39;</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tempdir</span><span class="p">:</span>
         <span class="c1"># render feature template</span>
@@ -333,9 +339,19 @@
         <span class="c1"># copy into contrib dir</span>
         <span class="n">src</span> <span class="o">=</span> <span class="n">rendered_dir</span>
         <span class="n">dst</span> <span class="o">=</span> <span class="n">contrib_dir</span>
-        <span class="n">synctree</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">onexist</span><span class="o">=</span><span class="n">_fail_if_feature_exists</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">synctree</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">onexist</span><span class="o">=</span><span class="n">_fail_if_feature_exists</span><span class="p">)</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Start new feature successful.&#39;</span><span class="p">)</span></div>
+    <span class="n">_log_start_new_feature_success</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<span class="k">def</span> <span class="nf">_log_start_new_feature_success</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Start new feature successful.&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">kind</span><span class="p">)</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;file&#39;</span> <span class="ow">and</span> <span class="s1">&#39;__init__&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+            <span class="n">relname</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">())</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Created </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">relname</span><span class="p">))</span>
 </pre></div>
 
            </div>

@@ -25,6 +25,7 @@
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -259,6 +260,7 @@
 <span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">decorator</span><span class="p">,</span> <span class="n">lfilter</span><span class="p">,</span> <span class="n">wraps</span>
 
 <span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="k">import</span> <span class="n">redirect_stderr</span><span class="p">,</span> <span class="n">redirect_stdout</span>
+<span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">BalletWarning</span>
 
 <span class="n">RANDOM_STATE</span> <span class="o">=</span> <span class="mi">1754</span>
 
@@ -369,10 +371,12 @@
 
 
 <div class="viewcode-block" id="one_or_raise"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.one_or_raise">[docs]</a><span class="k">def</span> <span class="nf">one_or_raise</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Expected exactly 1 element&#39;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Expected exactly 1 element, but got </span><span class="si">{n}</span><span class="s1">&#39;</span>
+                         <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="needs_path"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.needs_path">[docs]</a><span class="k">def</span> <span class="nf">needs_path</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
@@ -382,6 +386,11 @@
         <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">pathlike</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">wrapped</span></div>
+
+
+<div class="viewcode-block" id="warn"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.warn">[docs]</a><span class="k">def</span> <span class="nf">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Issue a warning message of category BalletWarning&quot;&quot;&quot;</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">BalletWarning</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
