@@ -14,12 +14,10 @@ from ballet.feature import Feature
 from ballet.pipeline import FeatureEngineeringPipeline
 from ballet.project import make_feature_path
 from ballet.templating import start_new_feature
-from ballet.util import get_enum_values
 from ballet.util.code import get_source
 from ballet.util.git import make_commit_range, switch_to_new_branch
 from ballet.util.log import logger
 from ballet.util.mod import import_module_at_path, modname_to_relpath
-from ballet.validation.main import TEST_TYPE_ENV_VAR, BalletTestTypes
 from tests.util import load_regression_data
 
 
@@ -96,11 +94,6 @@ def test_validation_end_to_end(quickstart):
     repo.index.commit('Load mock regression dataset')
 
     # call different validation routines
-    def call_validate(ballet_test_type):
-        with patch.dict(os.environ,
-                        {TEST_TYPE_ENV_VAR: ballet_test_type}):
-            check_call('ballet validate', cwd=safepath(base), env=os.environ)
-
     def call_validate_all(pr=None):
         envvars = {
             'TRAVIS_BUILD_DIR': repo.working_tree_dir,
@@ -118,8 +111,8 @@ def test_validation_end_to_end(quickstart):
                 repo.commit('pull/{pr}'.format(pr=pr)).hexsha)
 
         with patch.dict(os.environ, envvars):
-            for ballet_test_type in get_enum_values(BalletTestTypes):
-                call_validate(ballet_test_type)
+            cmd = 'ballet validate -A'
+            check_call(cmd, cwd=safepath(base), env=os.environ)
 
     call_validate_all()
 

@@ -1,11 +1,8 @@
-import os
-
 from funcy import decorator, ignore
 
 from ballet.exc import (
-    ConfigurationError, FeatureRejected, InvalidFeatureApi,
-    InvalidProjectStructure, SkippedValidationTest)
-from ballet.project import Project
+    FeatureRejected, InvalidFeatureApi, InvalidProjectStructure,
+    SkippedValidationTest)
 from ballet.util.log import logger, stacklog
 from ballet.validation.common import (
     get_accepted_features, get_proposed_feature)
@@ -27,23 +24,6 @@ def validation_stage(call, message):
                     conditions=[(SkippedValidationTest, 'SKIPPED')])(call)
     call = ignore(SkippedValidationTest)(call)
     return call()
-
-
-class BalletTestTypes:
-    PROJECT_STRUCTURE_VALIDATION = 'project_structure_validation'
-    FEATURE_API_VALIDATION = 'feature_api_validation'
-    FEATURE_ACCEPTANCE_EVALUTION = 'feature_acceptance_evaluation'
-    FEATURE_PRUNING_EVALUATION = 'feature_pruning_evaluation'
-
-
-def detect_target_type():
-    if TEST_TYPE_ENV_VAR in os.environ:
-        return os.environ[TEST_TYPE_ENV_VAR]
-    else:
-        raise ConfigurationError(
-            'Could not detect test target type: '
-            'missing environment variable {envvar}'
-            .format(envvar=TEST_TYPE_ENV_VAR))
 
 
 @validation_stage('checking project structure')
@@ -108,21 +88,17 @@ def prune_existing_features(project, force=False):
     return redundant_features
 
 
-def validate(project, test_target_type=None):
+def validate(project,
+             _check_project_structure,
+             _check_feature_api,
+             _evaluate_feature_acceptance,
+             _evaluate_feature_pruning):
     """Entrypoint for 'ballet validate' command in ballet projects"""
-    if test_target_type is None:
-        test_target_type = detect_target_type()
-
-    if test_target_type == BalletTestTypes.PROJECT_STRUCTURE_VALIDATION:
+    if _check_project_structure:
         check_project_structure(project)
-    elif test_target_type == BalletTestTypes.FEATURE_API_VALIDATION:
+    if _check_feature_api:
         validate_feature_api(project)
-    elif test_target_type == BalletTestTypes.FEATURE_ACCEPTANCE_EVALUTION:
+    if _evaluate_feature_acceptance:
         evaluate_feature_performance(project)
-    elif test_target_type == (
-            BalletTestTypes.FEATURE_PRUNING_EVALUATION):
+    if _evaluate_feature_pruning:
         prune_existing_features(project)
-    else:
-        raise NotImplementedError(
-            'Unsupported test target type: {test_target_type}'
-            .format(test_target_type=test_target_type))
