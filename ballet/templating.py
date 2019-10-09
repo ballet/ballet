@@ -5,7 +5,7 @@ from cookiecutter.main import cookiecutter as _cookiecutter
 from funcy import re_test, walk, walk_values, wraps
 
 from ballet.compat import PathLike
-from ballet.project import Project
+from ballet.project import Project, detect_github_username
 from ballet.util.fs import synctree
 from ballet.util.log import logger
 from ballet.validation.project_structure.checks import (
@@ -79,6 +79,11 @@ def start_new_feature(contrib_dir=None, **cc_kwargs):
     if contrib_dir is None:
         project = Project.from_path(pathlib.Path.cwd().resolve())
         contrib_dir = project.get('contrib', 'module_path')
+
+    # inject default username into context
+    default_username = detect_github_username(project)
+    ec = cc_kwargs.setdefault('extra_context', {})
+    ec['_default_username'] = default_username
 
     with tempfile.TemporaryDirectory() as tempdir:
         # render feature template

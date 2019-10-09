@@ -141,3 +141,13 @@ def needs_path(f):
 def warn(msg):
     """Issue a warning message of category BalletWarning"""
     warnings.warn(msg, category=BalletWarning)
+
+
+@decorator
+def raiseifnone(call):
+    """Decorate a function to raise a ValueError if result is None"""
+    result = call()
+    if result is None:
+        raise ValueError
+    else:
+        return result

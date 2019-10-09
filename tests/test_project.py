@@ -1,9 +1,10 @@
 import pathlib
 import unittest
-from unittest.mock import PropertyMock, patch
+from unittest.mock import ANY, PropertyMock, patch
 
 from ballet.project import (
-    DEFAULT_CONFIG_NAME, Project, get_config_path, make_config_get)
+    DEFAULT_CONFIG_NAME, Project, detect_github_username, get_config_path,
+    make_config_get)
 
 
 class ProjectTest(unittest.TestCase):
@@ -49,6 +50,24 @@ class ProjectTest(unittest.TestCase):
 
         # with default
         self.assertEqual(get('nonexistent', 'path', default=3), 3)
+
+    @patch('ballet.project.Project.repo', new_callable=PropertyMock)
+    def test_detect_github_username_config(self, mock_project_repo):
+        expected_username = 'Foo Bar'
+
+        # output of project.repo.config_reader().get_value(...)
+        mock_get_value = (mock_project_repo
+                          .return_value
+                          .config_reader
+                          .return_value
+                          .get_value)
+        mock_get_value.return_value = expected_username
+
+        project = Project(None)
+        username = detect_github_username(project)
+        self.assertEqual(expected_username, username)
+
+        mock_get_value.assert_called_with('github', 'user', default=ANY)
 
     @patch('ballet.project.Project.repo', new_callable=PropertyMock)
     @patch('ballet.project.get_pr_num')
