@@ -107,8 +107,7 @@ Let's see what files have we have created:
    │   │   └── contrib
    │   │       └── __init__.py
    │   └── load_data.py
-   ├── setup.py
-   └── validate.py
+   └── setup.py
 
 Importantly, by keeping this project structure intact, Ballet will be able to automatically care
 for your feature engineering pipeline.
@@ -117,8 +116,6 @@ for your feature engineering pipeline.
   training data, and location of feature engineering source code.
 * ``.travis.yml``: a `Travis CI`_ configuration file pre-configured to run a Ballet validation
   suite.
-* ``validate.py``: a driver script for the validation suite that calls out to Ballet for most
-  functionality.
 * ``myproject/load_data.py``: this is where you will write code to load training data
 * ``myproject/features/contrib``: this is where the features created by your project's
   contributors will live.
@@ -197,7 +194,7 @@ The ``myproject`` repository has received a new pull request which triggers an a
 evaluation.
 
 1. The PR is examined by the CI service.
-2. The ``validate.py`` script is run, which validates the proposed feature contribution using
+2. The ``ballet validate`` command is run, which validates the proposed feature contribution using
    functionality within the ``ballet.validation`` package.
 3. If the feature can be validated successfully, the PR passes, and the proposed feature can be
    merged into the project.
@@ -210,8 +207,8 @@ an older feature has now become "redundant": the new feature is providing all of
 contained in the old feature, and more.
 
 1. Each commit to master is examined by the CI service.
-2. The ``validate.py`` script is run and automatically determines whether the commit is a merge
-   commit that comes from merging an accepted feature.
+2. The ``ballet validate`` command is run and automatically determines whether the commit is a
+   merge commit that comes from merging an accepted feature.
 3. If so, then the set of existing features is pruned to remove redundant features.
 4. Pruned features are automatically deleted from your source repository by an automated service.
 

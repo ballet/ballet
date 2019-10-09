@@ -108,10 +108,8 @@ def prune_existing_features(project, force=False):
     return redundant_features
 
 
-def validate(package, test_target_type=None):
-    """Entrypoint for ./validate.py script in ballet projects"""
-    project = Project(package)
-
+def validate(project, test_target_type=None):
+    """Entrypoint for 'ballet validate' command in ballet projects"""
     if test_target_type is None:
         test_target_type = detect_target_type()
 

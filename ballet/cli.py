@@ -43,3 +43,18 @@ def start_new_feature():
                            format=ballet.util.log.SIMPLE_LOG_FORMAT,
                            echo=False)
     ballet.templating.start_new_feature()
+
+@cli.command('validate')
+def validate():
+    """Validate a project changes from a branch"""
+    import pathlib
+
+    import ballet.project
+    import ballet.util.log
+    import ballet.validation.main
+    ballet.util.log.enable(level='DEBUG',
+                           format=ballet.util.log.SIMPLE_LOG_FORMAT,
+                           echo=False)
+    cwd = pathlib.Path.cwd()
+    project = ballet.project.Project.from_path(cwd)
+    ballet.validation.main(project)

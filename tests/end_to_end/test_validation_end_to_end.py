@@ -99,7 +99,7 @@ def test_validation_end_to_end(quickstart):
     def call_validate(ballet_test_type):
         with patch.dict(os.environ,
                         {TEST_TYPE_ENV_VAR: ballet_test_type}):
-            check_call('./validate.py', cwd=safepath(base), env=os.environ)
+            check_call('ballet validate', cwd=safepath(base), env=os.environ)
 
     def call_validate_all(pr=None):
         envvars = {
