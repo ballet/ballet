@@ -27,7 +27,7 @@ def validation_stage(call, message):
 
 
 @validation_stage('checking project structure')
-def check_project_structure(project, force=False):
+def _check_project_structure(project, force=False):
     if not force and not project.on_pr():
         raise SkippedValidationTest('Not on PR')
 
@@ -38,7 +38,7 @@ def check_project_structure(project, force=False):
 
 
 @validation_stage('validating feature API')
-def validate_feature_api(project, force=False):
+def _validate_feature_api(project, force=False):
     """Validate feature API"""
     if not force and not project.on_pr():
         raise SkippedValidationTest('Not on PR')
@@ -50,7 +50,7 @@ def validate_feature_api(project, force=False):
 
 
 @validation_stage('evaluating feature performance')
-def evaluate_feature_performance(project, force=False):
+def _evaluate_feature_performance(project, force=False):
     """Evaluate feature performance"""
     if not force and not project.on_pr():
         raise SkippedValidationTest('Not on PR')
@@ -68,7 +68,7 @@ def evaluate_feature_performance(project, force=False):
 
 
 @validation_stage('pruning existing features')
-def prune_existing_features(project, force=False):
+def _prune_existing_features(project, force=False):
     """Prune existing features"""
     if not force and not project.on_master_after_merge():
         raise SkippedValidationTest('Not on master')
@@ -89,16 +89,16 @@ def prune_existing_features(project, force=False):
 
 
 def validate(project,
-             _check_project_structure,
-             _check_feature_api,
-             _evaluate_feature_acceptance,
-             _evaluate_feature_pruning):
+             check_project_structure,
+             check_feature_api,
+             evaluate_feature_acceptance,
+             evaluate_feature_pruning):
     """Entrypoint for 'ballet validate' command in ballet projects"""
-    if _check_project_structure:
-        check_project_structure(project)
-    if _check_feature_api:
-        validate_feature_api(project)
-    if _evaluate_feature_acceptance:
-        evaluate_feature_performance(project)
-    if _evaluate_feature_pruning:
-        prune_existing_features(project)
+    if check_project_structure:
+        _check_project_structure(project)
+    if check_feature_api:
+        _validate_feature_api(project)
+    if evaluate_feature_acceptance:
+        _evaluate_feature_performance(project)
+    if evaluate_feature_pruning:
+        _prune_existing_features(project)
