@@ -73,7 +73,7 @@ class ProjectStructureTest(SampleDataMixin, unittest.TestCase):
 
     def test_bad_feature_deepcopy_fails(self):
         class _CopyFailsTransformer(IdentityTransformer):
-            def __deepcopy__(self):
+            def __deepcopy__(self, memo):
                 raise RuntimeError
         feature = Feature(
             input='size',

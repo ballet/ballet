@@ -28,7 +28,7 @@ def nonnegative(call, name=None):
     result = call()
     with suppress(TypeError):
         if result < 0:
-            result = 0
+            result = 0.0
             # Format a nice log message
             if name is None:
                 try:
@@ -236,6 +236,10 @@ def _estimate_cont_entropy(x, epsilon):
     the _estimate_disc_entropy function. If you are unsure of which to use,
     _estimate_entropy can take datasets of mixed discrete and continuous
     functions.
+
+    Observe that differential entropy is *not* the "extension" of the
+    Shannon entropy and thus it does not exhibit some properties like
+    non-negativity (i.e. values below zero are possible).
 
     Args:
         x (array-like): Dataset with shape (n_samples, n_features) or
