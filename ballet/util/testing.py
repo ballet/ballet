@@ -24,7 +24,6 @@ def withfailure(call, format):
 class ArrayLikeEqualityTestingMixin:
     """Mix-in to enable comparisons of array-like objects in unit tests"""
 
-
     @withfailure('{} != {}')
     def assertArrayEqual(self, first, second, msg=None):
         """Test that arrays first and second are equal"""

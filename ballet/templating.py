@@ -107,5 +107,3 @@ def _log_start_new_feature_success(result):
         if kind == 'file' and '__init__' not in str(name):
             relname = pathlib.Path(name).relative_to(pathlib.Path.cwd())
             logger.info('Created {}'.format(relname))
-
-

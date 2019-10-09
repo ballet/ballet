@@ -4,7 +4,7 @@ from importlib import import_module
 
 import git
 import yaml
-from funcy import fallback, get_in, re_find, partial
+from funcy import fallback, get_in, partial, re_find
 
 from ballet.exc import ConfigurationError
 from ballet.util import needs_path, raiseifnone

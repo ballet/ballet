@@ -1,7 +1,7 @@
 import os
 import os.path
 import pathlib
-from shutil import copyfile, copytree
+from shutil import copyfile
 
 from funcy import partial, suppress
 

@@ -3,7 +3,7 @@ import unittest
 from unittest.mock import patch
 
 from ballet.templating import (
-    _stringify_path, render_project_template, render_feature_template)
+    _stringify_path, render_feature_template, render_project_template)
 
 
 class TemplatingTest(unittest.TestCase):
