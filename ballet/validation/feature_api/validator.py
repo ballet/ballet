@@ -1,4 +1,4 @@
-from ballet.contrib import _get_contrib_features
+from ballet.contrib import _collect_contrib_features
 from ballet.util.log import logger
 from ballet.validation.base import BaseValidator
 from ballet.validation.common import (
@@ -38,7 +38,7 @@ class FeatureApiValidator(BaseValidator):
         for importer, modname, modpath in changes.new_feature_info:
             try:
                 mod = importer()
-                features.extend(_get_contrib_features(mod))
+                features.extend(_collect_contrib_features(mod))
             except (ImportError, SyntaxError):
                 logger.info(
                     'Failed to import module at {}'

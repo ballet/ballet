@@ -4,34 +4,37 @@ from textwrap import dedent
 from types import ModuleType
 from unittest.mock import patch
 
-import git
 import numpy as np
 import pandas as pd
 import pytest
-from sklearn_pandas import DataFrameMapper
 
 from ballet.compat import safepath
 from ballet.eng.misc import IdentityTransformer
 from ballet.feature import Feature
-from ballet.templating import render_project_template
+from ballet.pipeline import FeatureEngineeringPipeline
+from ballet.project import make_feature_path
+from ballet.templating import start_new_feature
 from ballet.util import get_enum_values
+from ballet.util.code import get_source
 from ballet.util.git import make_commit_range, switch_to_new_branch
 from ballet.util.log import logger
 from ballet.util.mod import import_module_at_path, modname_to_relpath
 from ballet.validation.main import TEST_TYPE_ENV_VAR, BalletTestTypes
+from tests.util import load_regression_data
 
 
 def submit_feature(repo, contrib_dir, username, featurename, new_feature_str):
-    feature_path = contrib_dir.joinpath(
-        'user_{}'.format(username), 'feature_{}.py'.format(featurename))
-    feature_path.parent.mkdir(exist_ok=True)
-    init_path = feature_path.parent.joinpath('__init__.py')
-
-    init_path.touch()
+    feature_path = make_feature_path(contrib_dir, username, featurename)
+    cc_kwargs = {
+        'extra_context': {'username': username, 'featurename': featurename},
+        'no_input': True,
+    }
+    result = start_new_feature(contrib_dir=contrib_dir, **cc_kwargs)
     with feature_path.open('w') as f:
         f.write(new_feature_str)
 
-    repo.index.add([str(init_path), str(feature_path)])
+    added_files = [str(fn) for (fn, kind) in result if kind == 'file']
+    repo.index.add(added_files)
     repo.index.commit('Add {} feature'.format(feature_path))
 
 
@@ -39,25 +42,19 @@ def make_feature_str(input):
     return dedent("""
         from ballet import Feature
         from ballet.eng.misc import IdentityTransformer
-        input = '{input}'
+        input = {input!r}
         transformer = IdentityTransformer()
         feature = Feature(input, transformer)
     """.format(input=input)).strip()
 
 
+@pytest.mark.skip
 @pytest.mark.slow
-def test_validation_end_to_end(tempdir):
+def test_validation_end_to_end(quickstart):
+    project = quickstart.project
     modname = 'foo'
-    extra_context = {
-        'project_name': modname.capitalize(),
-        'project_slug': modname,
-    }
-
-    render_project_template(no_input=True, extra_context=extra_context,
-                            output_dir=tempdir)
-
-    # make sure we can import different modules without error
-    base = tempdir.joinpath(modname)
+    base = project.path
+    repo = project.repo
 
     def _import(modname):
         relpath = modname_to_relpath(modname,
@@ -72,55 +69,29 @@ def test_validation_end_to_end(tempdir):
     foo_features = _import('foo.features')
     assert isinstance(foo_features, ModuleType)
 
-    get_contrib_features = foo_features.get_contrib_features
-    features = get_contrib_features()
+    collect_contrib_features = foo_features.collect_contrib_features
+    features = collect_contrib_features()
     assert len(features) == 0
 
     # first providing a mock feature, call build
     with patch.object(
-        foo_features, 'get_contrib_features',
-        return_value=[Feature(input='A', transformer=IdentityTransformer())]
+        foo_features, 'collect_contrib_features',
+        return_value=[Feature(input='A_1', transformer=IdentityTransformer())]
     ):
         X_df = pd.util.testing.makeCustomDataframe(5, 2)
-        X_df.columns = ['A', 'B']
+        X_df.columns = ['A_0', 'A_1']
         out = foo_features.build(X_df=X_df, y_df=[])
         assert np.shape(out['X']) == (5, 1)
-        assert isinstance(out['mapper_X'], DataFrameMapper)
+        assert isinstance(out['mapper_X'], FeatureEngineeringPipeline)
 
     # write a new version of foo.load_data.load_data
-    new_load_data_str = dedent("""
-        import pandas as pd
-        from sklearn.datasets import make_regression
-
-        def load_data():
-            p = 15
-            q = 1
-            X, y, coef = make_regression(
-                n_samples=500, n_features=p, n_informative=q, coef=True,
-                shuffle=True, random_state=1)
-
-            # informative columns are 'A', 'B'
-            # uninformative columns are 'Z_0', ..., 'Z_11'
-            columns = []
-            informative = list('A')
-            other = ['Z_{i}'.format(i=i) for i in reversed(range(p-q))]
-            for i in range(p):
-                if coef[i] == 0:
-                    columns.append(other.pop())
-                else:
-                    columns.append(informative.pop())
-
-            X_df = pd.DataFrame(data=X, columns=columns)
-            y_df = pd.Series(y)
-            return X_df, y_df
-    """).strip()
+    new_load_data_str = get_source(load_regression_data)
 
     p = base.joinpath(modname, 'load_data.py')
     with p.open('w') as f:
         f.write(new_load_data_str)
 
     # commit changes
-    repo = git.Repo(safepath(base))
     repo.index.add([str(p)])
     repo.index.commit('Load mock regression dataset')
 
@@ -152,23 +123,13 @@ def test_validation_end_to_end(tempdir):
 
     call_validate_all()
 
-    # write a new feature
-    contrib_dir = base.joinpath(modname, 'features', 'contrib')
-
-    # new_feature_str = make_feature_str('Z_0')
-    # username = 'alice'
-    # featurename = 'Z_0'
-    # submit_feature(repo, contrib_dir, username, featurename, new_feature_str)
-
-    # # call different validation routines
-    call_validate_all()
-
     # branch to a fake PR and write a new feature
+    contrib_dir = base.joinpath(modname, 'features', 'contrib')
     logger.info('Switching to pull request 1, User Bob, Feature A')
     switch_to_new_branch(repo, 'pull/1')
-    new_feature_str = make_feature_str('A')
+    new_feature_str = make_feature_str('A_0')
     username = 'bob'
-    featurename = 'A'
+    featurename = 'A_0'
     submit_feature(repo, contrib_dir, username, featurename, new_feature_str)
 
     # call different validation routines
@@ -194,19 +155,16 @@ def test_validation_end_to_end(tempdir):
 
     # if we expect this feature to fail
     with pytest.raises(CalledProcessError):
+        logger.info('Validating pull request 2, User Charlie, Feature Z_1')
         call_validate_all(pr=2)
-
-    # if we expect this feature to fail -- with a more reasonable evaluator
-    # with pytest.raises(CalledProcessError):
-    #     logger.info('Validating pull request 2, User Charlie, Feature Z_1')
-    #     call_validate_all(pr=2)
 
     # write another new feature - redudancy
     repo.git.checkout('master')
     switch_to_new_branch(repo, 'pull/3')
-    new_feature_str = make_feature_str('A')
+    new_feature_str = make_feature_str('A_0')
     username = 'charlie'
-    featurename = 'A'
+    featurename = 'A_0'
     submit_feature(repo, contrib_dir, username, featurename, new_feature_str)
+
     with pytest.raises(CalledProcessError):
         call_validate_all(pr=3)

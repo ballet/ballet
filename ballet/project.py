@@ -1,12 +1,13 @@
+import pathlib
+import sys
 from importlib import import_module
 
 import git
 import yaml
-from funcy import get_in, partial
+from funcy import fallback, get_in, partial, re_find
 
-from ballet.compat import pathlib
 from ballet.exc import ConfigurationError
-from ballet.util import needs_path
+from ballet.util import needs_path, raiseifnone
 from ballet.util.ci import get_travis_branch, get_travis_pr_num
 from ballet.util.git import get_branch, get_pr_num, is_merge_commit
 from ballet.util.mod import import_module_at_path
@@ -115,6 +116,44 @@ def relative_to_contrib(diff, project):
     return path.relative_to(contrib_path)
 
 
+@needs_path
+def make_feature_path(contrib_dir, username, featurename):
+    return contrib_dir.joinpath(
+        'user_{}'.format(username), 'feature_{}.py'.format(featurename))
+
+
+def detect_github_username(project):
+    """Detect github username
+
+    Looks in the following order:
+    1. github.user git config variable
+    2. git remote origin
+    3. $USER
+    4. 'username'
+    """
+    @raiseifnone
+    def get_config_variable():
+        return project.repo.config_reader().get_value(
+            'github', 'user', default=None)
+
+    @raiseifnone
+    def get_remote():
+        url = list(project.repo.remote('origin').urls)[0]
+        # protocol:user/repo, i.e. 'git@github.com:HDI-Project/ballet'
+        return re_find(r'.+:(.+)/.+', url)
+
+    @raiseifnone
+    def get_user_env():
+        return sys.environ.get('USER')
+
+    def get_default():
+        return 'username'
+
+    return fallback(
+        get_config_variable, get_remote, get_user_env, (get_default, ())
+    )
+
+
 class Project:
     """Encapsulate information on a ballet project
 
@@ -128,7 +167,7 @@ class Project:
     - ``get`` (``prj.conf.get``)
     - ``load_data`` (``prj.load_data.load_data``)
     - ``build`` (``prj.features.build``)
-    - ``get_contrib_features`` (``prj.features.get_contrib_features``)
+    - ``collect_contrib_features`` (``prj.features.collect_contrib_features``)
 
     Args:
         package (ModuleType): python package representing imported ballet
@@ -140,7 +179,7 @@ class Project:
         'get': ('.conf', 'get'),
         'load_data': ('.load_data', 'load_data'),
         'build': ('.features', 'build'),
-        'get_contrib_features': ('.features', 'get_contrib_features')
+        'collect_contrib_features': ('.features', 'collect_contrib_features')
     }
 
     def __init__(self, package):
@@ -148,6 +187,13 @@ class Project:
 
     @classmethod
     def from_path(cls, path):
+        """Create a Project instance from an fs path to the containing dir
+
+        Args:
+            path (PathLike): path to directory that contains the
+                project
+        """
+        path = pathlib.Path(path)
         config = load_config_in_dir(path)
         project_slug = config_get(config, 'project', 'slug')
         package = import_module_at_path(project_slug,
@@ -185,9 +231,14 @@ class Project:
         return self.branch == 'master'
 
     def on_master_after_merge(self):
-        """Checks for two qualities of the current project:
+        """Check the repo HEAD is on master after a merge commit
+
+        Checks for two qualities of the current project:
         1. The project repo's head is the master branch
         2. The project repo's head commit is a merge commit.
+
+        Note that fast-forward style merges will not cause the second condition
+        to evaluate to true.
         """
 
         return self.on_master() and is_merge_commit(self.repo.head.commit)

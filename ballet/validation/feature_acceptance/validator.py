@@ -51,8 +51,9 @@ class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
     def judge(self, candidate_feature):
         feature_dfs_by_src = {}
         for feature in [candidate_feature] + self.features:
-            feature_df = feature.as_dataframe_mapper().fit_transform(
-                self.X_df, self.y)
+            feature_df = (feature
+                          .as_feature_engineering_pipeline()
+                          .fit_transform(self.X_df, self.y))
             feature_dfs_by_src[feature.source] = feature_df
 
         candidate_source = candidate_feature.source
@@ -65,6 +66,8 @@ class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
         logger.info(
             'Judging Feature using GFSSF: lambda_1={l1}, lambda_2={l2}'.format(
                 l1=lmbda_1, l2=lmbda_2))
+        logger.info(
+            'Candidate Feature Shape: {}'.format(candidate_df.shape))
         omit_in_test = [''] + [f.source for f in self.features]
         for omit in omit_in_test:
             logger.debug(
@@ -73,6 +76,9 @@ class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
             z = _concat_datasets(
                 feature_dfs_by_src, n_samples, [
                     candidate_source, omit])
+            logger.debug(
+                'Calculating CMI of candidate feature:'
+            )
             cmi = estimate_conditional_information(candidate_df, self.y, z)
             logger.debug(
                 'Conditional Mutual Information Score: {}'.format(cmi))
@@ -81,9 +87,13 @@ class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
             if omit:
                 omit_df = feature_dfs_by_src[omit]
                 _, n_omit_cols = omit_df.shape
+                logger.debug(
+                    'Calculating CMI of ommitted feature:'
+                )
                 cmi_omit = estimate_conditional_information(
                     omit_df, self.y, z)
                 logger.debug('Omitted CMI Score: {}'.format(cmi_omit))
+                logger.debug('Omitted Feature Shape: {}'.format(omit_df.shape))
             statistic = cmi - cmi_omit
             threshold = _compute_threshold(
                 lmbda_1, lmbda_2, n_candidate_cols, n_omit_cols)

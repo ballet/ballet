@@ -1,9 +1,9 @@
+import pathlib
 from collections import namedtuple
 
 from funcy import collecting, complement, lfilter, partial, post_processing
 
-from ballet.compat import pathlib
-from ballet.contrib import _get_contrib_feature_from_module
+from ballet.contrib import _collect_contrib_feature_from_module
 from ballet.exc import BalletError
 from ballet.util import make_plural_suffix, one_or_raise, whether_failures
 from ballet.util.ci import TravisPullRequestBuildDiffer, can_use_travis_differ
@@ -34,7 +34,7 @@ def get_proposed_feature(project):
     except ValueError:
         raise BalletError('Too many features collected')
     module = importer()
-    feature = _get_contrib_feature_from_module(module)
+    feature = _collect_contrib_feature_from_module(module)
     return feature
 
 

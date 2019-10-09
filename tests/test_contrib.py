@@ -1,11 +1,11 @@
+import pathlib
 import tempfile
 import unittest
 from textwrap import dedent
 
 from funcy import contextmanager
 
-from ballet.compat import pathlib
-from ballet.contrib import _get_contrib_features
+from ballet.contrib import _collect_contrib_features
 from ballet.util.mod import import_module_at_path
 
 
@@ -44,23 +44,23 @@ def create_contrib_modules_at_dir(dirname, modcontent, n=1):
 
 class ContribTest(unittest.TestCase):
 
-    def test_get_contrib_features_stdlib(self):
+    def test_collect_contrib_features_stdlib(self):
         # give a nonsense *module*, shouldn't import anything. this is a bad
         # test because it relies on module not defining certain names
         import math
-        features = _get_contrib_features(math)
+        features = _collect_contrib_features(math)
 
         # features should be an empty list
         self.assertEqual(len(features), 0)
 
-    def test_get_contrib_features_thirdparty(self):
+    def test_collect_contrib_features_thirdparty(self):
         # give a nonsense *package*, shouldn't import anything. this is a bad
         # test because it relies on module not defining certain names
         import funcy
-        features = _get_contrib_features(funcy)
+        features = _collect_contrib_features(funcy)
         self.assertEqual(len(features), 0)
 
-    def test_get_contrib_features_generated(self):
+    def test_collect_contrib_features_generated(self):
         n = 4
         content = dedent(
             '''
@@ -82,5 +82,5 @@ class ContribTest(unittest.TestCase):
             modpath.mkdir()
             create_contrib_modules_at_dir(modpath, content, n=n)
             mod = import_module_at_path(modname, modpath)
-            features = _get_contrib_features(mod)
+            features = _collect_contrib_features(mod)
             yield mod, features

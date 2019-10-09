@@ -1,3 +1,4 @@
+import pathlib
 import warnings
 from copy import deepcopy
 from enum import Enum
@@ -8,7 +9,8 @@ import pandas as pd
 import sklearn.datasets
 from funcy import decorator, lfilter, wraps
 
-from ballet.compat import pathlib, redirect_stderr, redirect_stdout
+from ballet.compat import redirect_stderr, redirect_stdout
+from ballet.exc import BalletWarning
 
 RANDOM_STATE = 1754
 
@@ -119,10 +121,12 @@ class DeepcopyMixin:
 
 
 def one_or_raise(l):
-    if len(l) == 1:
+    n = len(l)
+    if n == 1:
         return l[0]
     else:
-        raise ValueError('Expected exactly 1 element')
+        raise ValueError('Expected exactly 1 element, but got {n}'
+                         .format(n=n))
 
 
 def needs_path(f):
@@ -132,3 +136,18 @@ def needs_path(f):
         path = pathlib.Path(pathlike)
         return f(path, *args, **kwargs)
     return wrapped
+
+
+def warn(msg):
+    """Issue a warning message of category BalletWarning"""
+    warnings.warn(msg, category=BalletWarning)
+
+
+@decorator
+def raiseifnone(call):
+    """Decorate a function to raise a ValueError if result is None"""
+    result = call()
+    if result is None:
+        raise ValueError
+    else:
+        return result

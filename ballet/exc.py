@@ -1,3 +1,8 @@
+class BalletWarning(UserWarning):
+    """Base warning for ballet"""
+    pass
+
+
 class BalletError(Exception):
     """Base error for ballet"""
     pass

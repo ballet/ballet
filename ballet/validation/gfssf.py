@@ -2,8 +2,8 @@ import numpy as np
 
 from ballet.util import asarray2d
 
-LAMBDA_1_ADJUSTMENT = 32
-LAMBDA_2_ADJUSTMENT = 32
+LAMBDA_1_ADJUSTMENT = 64
+LAMBDA_2_ADJUSTMENT = 64
 
 
 def _concat_datasets(dfs_by_src, n_samples=0, omit=None):

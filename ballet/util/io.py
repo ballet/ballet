@@ -1,11 +1,12 @@
 import os
+import pathlib
 import pickle
 
 import h5py
 import numpy as np
 import pandas as pd
 
-from ballet.compat import pathlib, safepath
+from ballet.compat import safepath
 from ballet.util.fs import splitext2
 from ballet.util.log import logger, stacklog
 

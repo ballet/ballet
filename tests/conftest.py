@@ -1,14 +1,15 @@
+import pathlib
 import shutil
 import tempfile
 from collections import namedtuple
 from unittest.mock import patch
 
-import git
 import pytest
 from cookiecutter.utils import work_in
 
 import ballet
-from ballet.compat import pathlib, safepath
+from ballet.compat import safepath
+from ballet.project import Project
 from ballet.templating import render_project_template
 from tests.util import tree
 
@@ -32,6 +33,7 @@ def quickstart(tempdir):
 
         project_slug = 'foo'
         extra_context = {
+            'project_name': project_slug.capitalize(),
             'project_slug': project_slug,
         }
 
@@ -43,11 +45,12 @@ def quickstart(tempdir):
         # tree .
         tree(tempdir)
 
-        repo = git.Repo(safepath(tempdir.joinpath(project_slug)))
+        project = Project.from_path(tempdir.joinpath(project_slug))
+        repo = project.repo
 
         yield (
-            namedtuple('Quickstart', 'tempdir project_slug repo')
-            ._make((tempdir, project_slug, repo))
+            namedtuple('Quickstart', 'project tempdir project_slug repo')
+            ._make((project, tempdir, project_slug, repo))
         )
 
 

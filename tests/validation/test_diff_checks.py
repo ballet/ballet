@@ -1,7 +1,7 @@
+import pathlib
 import unittest
 from unittest.mock import Mock, create_autospec
 
-from ballet.compat import pathlib
 from ballet.project import Project, relative_to_contrib
 from ballet.validation.project_structure.checks import (
     IsAdditionCheck, IsPythonSourceCheck, ModuleNameCheck,

@@ -1,13 +1,16 @@
 import funcy
+import numpy as np
 import pandas as pd
 import sklearn.base
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.utils.validation import check_is_fitted
 
 from ballet.exc import BalletError
+from ballet.util import get_arr_desc
 
 __all__ = [
     'BaseTransformer',
+    'ConditionalTransformer',
     'GroupedFunctionTransformer',
     'GroupwiseTransformer',
     'NoFitMixin',
@@ -231,3 +234,56 @@ class GroupwiseTransformer(BaseTransformer):
             .groupby(**self.groupby_kwargs_)
             .apply(_transform, **transform_kwargs)
         )
+
+
+class ConditionalTransformer(BaseTransformer):
+    """Transform columns that satisfy a condition during training
+
+    In the fit stage, determines which variables (columns) satisfy the
+    condition. In the transform stage, applies the given transformation to
+    the selected columns, passing through the complement unchanged.
+
+    Args:
+        condition (callable): condition function
+        trans (callable): transform function
+    """
+
+    def __init__(self, condition, trans):
+        super().__init__()
+        self.condition = condition
+        # 1. can't call it transform because conflicts with method name
+        # 2. can't call it transform and assign to a different attribute
+        # because sklearn.clone would complain
+        self.trans = trans
+
+    def fit(self, X, y=None, **fit_args):
+        # features_to_transform_ is a bool or array[bool]
+        self.features_to_transform_ = self.condition(X)
+        return self
+
+    def transform(self, X, **transform_args):
+        check_is_fitted(self, 'features_to_transform_')
+
+        if isinstance(X, pd.DataFrame):
+            X = X.copy()
+            X.loc[:, self.features_to_transform_] = self.trans(
+                X.loc[:, self.features_to_transform_])
+            return X
+        elif np.ndim(X) == 1:
+            return self.trans(X) if self.features_to_transform_ else X
+        elif isinstance(X, np.ndarray):
+            if self.features_to_transform_.any():
+                X = X.copy()
+                X = X.astype('float')
+                mask = np.tile(self.features_to_transform_, (X.shape[0], 1))
+                np.putmask(X, mask, self.trans(
+                    X[:, self.features_to_transform_]))
+            return X
+        elif not self.features_to_transform_:
+            # if we wouldn't otherwise have known what to do, we can pass
+            # through X if transformation was not necessary anyways
+            return X
+        else:
+            raise TypeError(
+                "Couldn't apply transformer on features in {}."
+                .format(get_arr_desc(X)))

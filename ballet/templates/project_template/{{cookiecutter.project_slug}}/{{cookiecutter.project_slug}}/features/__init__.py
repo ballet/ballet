@@ -5,6 +5,7 @@ import ballet.contrib
 import ballet.util.mod
 import click
 from ballet.eng.misc import IdentityTransformer
+from ballet.pipeline import FeatureEngineeringPipeline
 from ballet.util.io import save_features, save_targets
 from ballet.util.log import stacklog
 
@@ -15,13 +16,13 @@ from {{ cookiecutter.project_slug }}.load_data import load_data
 logger = logging.getLogger(__name__)
 
 
-def get_contrib_features():
+def collect_contrib_features():
     """Get contrib features for this project
 
     Returns:
         List[ballet.Feature]: list of Feature objects
     """
-    return ballet.contrib.get_contrib_features({{cookiecutter.project_slug}})
+    return ballet.contrib.collect_contrib_features({{cookiecutter.project_slug}})
 
 
 def get_target_encoder():
@@ -49,8 +50,8 @@ def build(X_df=None, y_df=None):
     if y_df is None:
         _, y_df = load_data()
 
-    features = get_contrib_features()
-    mapper_X = ballet.feature.make_mapper(features)
+    features = collect_contrib_features()
+    mapper_X = FeatureEngineeringPipeline(features)
     X = mapper_X.fit_transform(X_df)
 
     encoder_y = get_target_encoder()

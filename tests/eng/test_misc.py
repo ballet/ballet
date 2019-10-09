@@ -83,7 +83,7 @@ class TestMisc(ArrayLikeEqualityTestingMixin, unittest.TestCase):
         for obj in [index, ser, df, arr]:
             trans = ballet.eng.misc.NamedFramer(name)
             result = trans.fit_transform(obj)
-            self.assertTrue(isinstance(result, pd.DataFrame))
+            self.assertIsInstance(result, pd.DataFrame)
             self.assertEqual(result.shape[1], 1)
             self.assertEqual(result.columns, [name])
 

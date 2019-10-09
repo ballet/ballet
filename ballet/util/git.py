@@ -1,10 +1,11 @@
+import pathlib
 import re
 
 import git
 import requests
 from funcy import collecting, re_find, re_test, silent
 
-from ballet.compat import pathlib, safepath
+from ballet.compat import safepath
 from ballet.util import one_or_raise
 
 FILE_CHANGES_COMMIT_RANGE = '{a}...{b}'
