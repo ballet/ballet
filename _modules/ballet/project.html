@@ -249,14 +249,15 @@
             
   <h1>Source code for ballet.project</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">importlib</span> <span class="k">import</span> <span class="n">import_module</span>
 
 <span class="kn">import</span> <span class="nn">git</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
-<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">get_in</span><span class="p">,</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">fallback</span><span class="p">,</span> <span class="n">get_in</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> <span class="n">re_find</span>
 
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">ConfigurationError</span>
-<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">needs_path</span>
+<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">needs_path</span><span class="p">,</span> <span class="n">raiseifnone</span>
 <span class="kn">from</span> <span class="nn">ballet.util.ci</span> <span class="k">import</span> <span class="n">get_travis_branch</span><span class="p">,</span> <span class="n">get_travis_pr_num</span>
 <span class="kn">from</span> <span class="nn">ballet.util.git</span> <span class="k">import</span> <span class="n">get_branch</span><span class="p">,</span> <span class="n">get_pr_num</span><span class="p">,</span> <span class="n">is_merge_commit</span>
 <span class="kn">from</span> <span class="nn">ballet.util.mod</span> <span class="k">import</span> <span class="n">import_module_at_path</span>
@@ -369,6 +370,38 @@
 <span class="k">def</span> <span class="nf">make_feature_path</span><span class="p">(</span><span class="n">contrib_dir</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">featurename</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">contrib_dir</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span>
         <span class="s1">&#39;user_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">username</span><span class="p">),</span> <span class="s1">&#39;feature_</span><span class="si">{}</span><span class="s1">.py&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">featurename</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="detect_github_username"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.detect_github_username">[docs]</a><span class="k">def</span> <span class="nf">detect_github_username</span><span class="p">(</span><span class="n">project</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Detect github username</span>
+
+<span class="sd">    Looks in the following order:</span>
+<span class="sd">    1. github.user git config variable</span>
+<span class="sd">    2. git remote origin</span>
+<span class="sd">    3. $USER</span>
+<span class="sd">    4. &#39;username&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@raiseifnone</span>
+    <span class="k">def</span> <span class="nf">get_config_variable</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">project</span><span class="o">.</span><span class="n">repo</span><span class="o">.</span><span class="n">config_reader</span><span class="p">()</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span>
+            <span class="s1">&#39;github&#39;</span><span class="p">,</span> <span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="nd">@raiseifnone</span>
+    <span class="k">def</span> <span class="nf">get_remote</span><span class="p">():</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">repo</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="s1">&#39;origin&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">urls</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># protocol:user/repo, i.e. &#39;git@github.com:HDI-Project/ballet&#39;</span>
+        <span class="k">return</span> <span class="n">re_find</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;.+:(.+)/.+&#39;</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+
+    <span class="nd">@raiseifnone</span>
+    <span class="k">def</span> <span class="nf">get_user_env</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">sys</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;USER&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_default</span><span class="p">():</span>
+        <span class="k">return</span> <span class="s1">&#39;username&#39;</span>
+
+    <span class="k">return</span> <span class="n">fallback</span><span class="p">(</span>
+        <span class="n">get_config_variable</span><span class="p">,</span> <span class="n">get_remote</span><span class="p">,</span> <span class="n">get_user_env</span><span class="p">,</span> <span class="p">(</span><span class="n">get_default</span><span class="p">,</span> <span class="p">())</span>
+    <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Project"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.Project">[docs]</a><span class="k">class</span> <span class="nc">Project</span><span class="p">:</span>

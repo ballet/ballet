@@ -391,6 +391,16 @@
 <div class="viewcode-block" id="warn"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.warn">[docs]</a><span class="k">def</span> <span class="nf">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Issue a warning message of category BalletWarning&quot;&quot;&quot;</span>
     <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">BalletWarning</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="raiseifnone"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.raiseifnone">[docs]</a><span class="nd">@decorator</span>
+<span class="k">def</span> <span class="nf">raiseifnone</span><span class="p">(</span><span class="n">call</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Decorate a function to raise a ValueError if result is None&quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">call</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">result</span></div>
 </pre></div>
 
            </div>
