@@ -152,6 +152,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../cli_reference.html#ballet-quickstart">quickstart</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../cli_reference.html#ballet-start-new-feature">start-new-feature</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../cli_reference.html#ballet-update-project-template">update-project-template</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cli_reference.html#ballet-validate">validate</a></li>
 </ul>
 </li>
 </ul>
@@ -248,14 +249,11 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ballet.validation.main</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
-
-<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">decorator</span><span class="p">,</span> <span class="n">ignore</span>
+<span></span><span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">decorator</span><span class="p">,</span> <span class="n">ignore</span>
 
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">ConfigurationError</span><span class="p">,</span> <span class="n">FeatureRejected</span><span class="p">,</span> <span class="n">InvalidFeatureApi</span><span class="p">,</span>
-    <span class="n">InvalidProjectStructure</span><span class="p">,</span> <span class="n">SkippedValidationTest</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">ballet.project</span> <span class="k">import</span> <span class="n">Project</span>
+    <span class="n">FeatureRejected</span><span class="p">,</span> <span class="n">InvalidFeatureApi</span><span class="p">,</span> <span class="n">InvalidProjectStructure</span><span class="p">,</span>
+    <span class="n">SkippedValidationTest</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span><span class="p">,</span> <span class="n">stacklog</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.common</span> <span class="k">import</span> <span class="p">(</span>
     <span class="n">get_accepted_features</span><span class="p">,</span> <span class="n">get_proposed_feature</span><span class="p">)</span>
@@ -279,36 +277,19 @@
     <span class="k">return</span> <span class="n">call</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="BalletTestTypes"><a class="viewcode-back" href="../../../api/ballet.validation.main.html#ballet.validation.main.BalletTestTypes">[docs]</a><span class="k">class</span> <span class="nc">BalletTestTypes</span><span class="p">:</span>
-    <span class="n">PROJECT_STRUCTURE_VALIDATION</span> <span class="o">=</span> <span class="s1">&#39;project_structure_validation&#39;</span>
-    <span class="n">FEATURE_API_VALIDATION</span> <span class="o">=</span> <span class="s1">&#39;feature_api_validation&#39;</span>
-    <span class="n">FEATURE_ACCEPTANCE_EVALUTION</span> <span class="o">=</span> <span class="s1">&#39;feature_acceptance_evaluation&#39;</span>
-    <span class="n">FEATURE_PRUNING_EVALUATION</span> <span class="o">=</span> <span class="s1">&#39;feature_pruning_evaluation&#39;</span></div>
-
-
-<div class="viewcode-block" id="detect_target_type"><a class="viewcode-back" href="../../../api/ballet.validation.main.html#ballet.validation.main.detect_target_type">[docs]</a><span class="k">def</span> <span class="nf">detect_target_type</span><span class="p">():</span>
-    <span class="k">if</span> <span class="n">TEST_TYPE_ENV_VAR</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">TEST_TYPE_ENV_VAR</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span>
-            <span class="s1">&#39;Could not detect test target type: &#39;</span>
-            <span class="s1">&#39;missing environment variable </span><span class="si">{envvar}</span><span class="s1">&#39;</span>
-            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">envvar</span><span class="o">=</span><span class="n">TEST_TYPE_ENV_VAR</span><span class="p">))</span></div>
-
-
-<div class="viewcode-block" id="check_project_structure"><a class="viewcode-back" href="../../../api/ballet.validation.main.html#ballet.validation.main.check_project_structure">[docs]</a><span class="nd">@validation_stage</span><span class="p">(</span><span class="s1">&#39;checking project structure&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">check_project_structure</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="nd">@validation_stage</span><span class="p">(</span><span class="s1">&#39;checking project structure&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_check_project_structure</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_pr</span><span class="p">():</span>
         <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on PR&#39;</span><span class="p">)</span>
 
     <span class="n">validator</span> <span class="o">=</span> <span class="n">ProjectStructureValidator</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">validator</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">InvalidProjectStructure</span></div>
+        <span class="k">raise</span> <span class="n">InvalidProjectStructure</span>
 
 
-<div class="viewcode-block" id="validate_feature_api"><a class="viewcode-back" href="../../../api/ballet.validation.main.html#ballet.validation.main.validate_feature_api">[docs]</a><span class="nd">@validation_stage</span><span class="p">(</span><span class="s1">&#39;validating feature API&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">validate_feature_api</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="nd">@validation_stage</span><span class="p">(</span><span class="s1">&#39;validating feature API&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_validate_feature_api</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Validate feature API&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_pr</span><span class="p">():</span>
         <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on PR&#39;</span><span class="p">)</span>
@@ -316,11 +297,11 @@
     <span class="n">validator</span> <span class="o">=</span> <span class="n">FeatureApiValidator</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">validator</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">InvalidFeatureApi</span></div>
+        <span class="k">raise</span> <span class="n">InvalidFeatureApi</span>
 
 
-<div class="viewcode-block" id="evaluate_feature_performance"><a class="viewcode-back" href="../../../api/ballet.validation.main.html#ballet.validation.main.evaluate_feature_performance">[docs]</a><span class="nd">@validation_stage</span><span class="p">(</span><span class="s1">&#39;evaluating feature performance&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">evaluate_feature_performance</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="nd">@validation_stage</span><span class="p">(</span><span class="s1">&#39;evaluating feature performance&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_evaluate_feature_performance</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Evaluate feature performance&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_pr</span><span class="p">():</span>
         <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on PR&#39;</span><span class="p">)</span>
@@ -334,11 +315,11 @@
     <span class="n">accepted</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">judge</span><span class="p">(</span><span class="n">proposed_feature</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">accepted</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">FeatureRejected</span></div>
+        <span class="k">raise</span> <span class="n">FeatureRejected</span>
 
 
-<div class="viewcode-block" id="prune_existing_features"><a class="viewcode-back" href="../../../api/ballet.validation.main.html#ballet.validation.main.prune_existing_features">[docs]</a><span class="nd">@validation_stage</span><span class="p">(</span><span class="s1">&#39;pruning existing features&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">prune_existing_features</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="nd">@validation_stage</span><span class="p">(</span><span class="s1">&#39;pruning existing features&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_prune_existing_features</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Prune existing features&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_master_after_merge</span><span class="p">():</span>
         <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on master&#39;</span><span class="p">)</span>
@@ -355,29 +336,23 @@
     <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">redundant_features</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">PRUNER_MESSAGE</span> <span class="o">+</span> <span class="n">feature</span><span class="o">.</span><span class="n">source</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">redundant_features</span></div>
+    <span class="k">return</span> <span class="n">redundant_features</span>
 
 
-<div class="viewcode-block" id="validate"><a class="viewcode-back" href="../../../api/ballet.validation.main.html#ballet.validation.main.validate">[docs]</a><span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">test_target_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Entrypoint for ./validate.py script in ballet projects&quot;&quot;&quot;</span>
-    <span class="n">project</span> <span class="o">=</span> <span class="n">Project</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">test_target_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">test_target_type</span> <span class="o">=</span> <span class="n">detect_target_type</span><span class="p">()</span>
-
-    <span class="k">if</span> <span class="n">test_target_type</span> <span class="o">==</span> <span class="n">BalletTestTypes</span><span class="o">.</span><span class="n">PROJECT_STRUCTURE_VALIDATION</span><span class="p">:</span>
-        <span class="n">check_project_structure</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">test_target_type</span> <span class="o">==</span> <span class="n">BalletTestTypes</span><span class="o">.</span><span class="n">FEATURE_API_VALIDATION</span><span class="p">:</span>
-        <span class="n">validate_feature_api</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">test_target_type</span> <span class="o">==</span> <span class="n">BalletTestTypes</span><span class="o">.</span><span class="n">FEATURE_ACCEPTANCE_EVALUTION</span><span class="p">:</span>
-        <span class="n">evaluate_feature_performance</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">test_target_type</span> <span class="o">==</span> <span class="p">(</span>
-            <span class="n">BalletTestTypes</span><span class="o">.</span><span class="n">FEATURE_PRUNING_EVALUATION</span><span class="p">):</span>
-        <span class="n">prune_existing_features</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-            <span class="s1">&#39;Unsupported test target type: </span><span class="si">{test_target_type}</span><span class="s1">&#39;</span>
-            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_target_type</span><span class="o">=</span><span class="n">test_target_type</span><span class="p">))</span></div>
+<div class="viewcode-block" id="validate"><a class="viewcode-back" href="../../../api/ballet.validation.main.html#ballet.validation.main.validate">[docs]</a><span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="n">project</span><span class="p">,</span>
+             <span class="n">check_project_structure</span><span class="p">,</span>
+             <span class="n">check_feature_api</span><span class="p">,</span>
+             <span class="n">evaluate_feature_acceptance</span><span class="p">,</span>
+             <span class="n">evaluate_feature_pruning</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Entrypoint for &#39;ballet validate&#39; command in ballet projects&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">check_project_structure</span><span class="p">:</span>
+        <span class="n">_check_project_structure</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">check_feature_api</span><span class="p">:</span>
+        <span class="n">_validate_feature_api</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">evaluate_feature_acceptance</span><span class="p">:</span>
+        <span class="n">_evaluate_feature_performance</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">evaluate_feature_pruning</span><span class="p">:</span>
+        <span class="n">_prune_existing_features</span><span class="p">(</span><span class="n">project</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

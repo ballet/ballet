@@ -154,6 +154,7 @@
 <li class="toctree-l2"><a class="reference internal" href="cli_reference.html#ballet-quickstart">quickstart</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli_reference.html#ballet-start-new-feature">start-new-feature</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli_reference.html#ballet-update-project-template">update-project-template</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_reference.html#ballet-validate">validate</a></li>
 </ul>
 </li>
 </ul>
@@ -347,8 +348,7 @@ specification of a scorer for the not-chosen problem type can be skipped (by sel
 <span class="go">│   │   └── contrib</span>
 <span class="go">│   │       └── __init__.py</span>
 <span class="go">│   └── load_data.py</span>
-<span class="go">├── setup.py</span>
-<span class="go">└── validate.py</span>
+<span class="go">└── setup.py</span>
 </pre></div>
 </div>
 <p>Importantly, by keeping this project structure intact, Ballet will be able to automatically care
@@ -358,8 +358,6 @@ for your feature engineering pipeline.</p>
 training data, and location of feature engineering source code.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">.travis.yml</span></code>: a <a class="reference external" href="https://travis-ci.org">Travis CI</a> configuration file pre-configured to run a Ballet validation
 suite.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">validate.py</span></code>: a driver script for the validation suite that calls out to Ballet for most
-functionality.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">myproject/load_data.py</span></code>: this is where you will write code to load training data</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">myproject/features/contrib</span></code>: this is where the features created by your project’s
 contributors will live.</p></li>
@@ -425,7 +423,7 @@ Guide`_</span></a>.</p>
 evaluation.</p>
 <ol class="arabic simple">
 <li><p>The PR is examined by the CI service.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">validate.py</span></code> script is run, which validates the proposed feature contribution using
+<li><p>The <code class="docutils literal notranslate"><span class="pre">ballet</span> <span class="pre">validate</span></code> command is run, which validates the proposed feature contribution using
 functionality within the <code class="docutils literal notranslate"><span class="pre">ballet.validation</span></code> package.</p></li>
 <li><p>If the feature can be validated successfully, the PR passes, and the proposed feature can be
 merged into the project.</p></li>
@@ -438,8 +436,8 @@ an older feature has now become “redundant”: the new feature is providing al
 contained in the old feature, and more.</p>
 <ol class="arabic simple">
 <li><p>Each commit to master is examined by the CI service.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">validate.py</span></code> script is run and automatically determines whether the commit is a merge
-commit that comes from merging an accepted feature.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">ballet</span> <span class="pre">validate</span></code> command is run and automatically determines whether the commit is a
+merge commit that comes from merging an accepted feature.</p></li>
 <li><p>If so, then the set of existing features is pruned to remove redundant features.</p></li>
 <li><p>Pruned features are automatically deleted from your source repository by an automated service.</p></li>
 </ol>
