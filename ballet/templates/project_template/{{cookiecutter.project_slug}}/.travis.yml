@@ -12,17 +12,17 @@ branches:
 matrix:
   include:
     - name: "Project structure validation"
-      env: BALLET_TEST_TYPE=project_structure_validation
+      env: BALLET_CHECK_PROJECT_STRUCTURE=true
     - name: "Feature API validation"
-      env: BALLET_TEST_TYPE=feature_api_validation
+      env: BALLET_CHECK_FEATURE_API=true
     - name: "Feature acceptance evaluation"
-      env: BALLET_TEST_TYPE=feature_acceptance_evaluation
+      env: BALLET_EVALUATE_FEATURE_ACCEPTANCE=true
     - name: "Feature pruning evaluation"
-      env: BALLET_TEST_TYPE=feature_pruning_evaluation
+      env: BALLET_EVALUATE_FEATURE_PRUNING=true
 
 install:
   - make install
 
 script:
   - printenv | grep TRAVIS | sort
-  - ./validate.py
+  - ballet validate
