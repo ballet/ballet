@@ -13,7 +13,7 @@ from ballet.validation.feature_pruning.validator import GFSSFPruningEvaluator
 from ballet.validation.project_structure.validator import (
     ProjectStructureValidator)
 
-TEST_TYPE_ENV_VAR = 'BALLET_TEST_TYPE'
+# helpful for log parsing
 PRUNER_MESSAGE = 'Found Redundant Feature: '
 
 
