@@ -794,13 +794,12 @@ class CodeTest(unittest.TestCase):
                      "black requires py36 or higher")
     def test_blacken_code(self):
         input = '''\
-        l = [1,
-             2,
-             3,
-        ]
+        x = {  'a':37,'b':42,
+
+        'c':927}
         '''.strip()
 
-        expected = 'l = [1, 2, 3]'.strip()
+        expected = 'x = {"a": 37, "b": 42, "c": 927}'.strip()
         actual = blacken_code(input).strip()
 
         self.assertEqual(actual, expected)
