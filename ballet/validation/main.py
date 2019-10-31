@@ -59,8 +59,8 @@ def _evaluate_feature_performance(project, force=False):
 
     proposed_feature = get_proposed_feature(project)
     accepted_features = get_accepted_features(features, proposed_feature)
-    evaluator = GFSSFAccepter(X_df, y, accepted_features)
-    accepted = evaluator.judge(proposed_feature)
+    evaluator = GFSSFAccepter(X_df, y, accepted_features, proposed_feature)
+    accepted = evaluator.judge()
 
     if not accepted:
         raise FeatureRejected
@@ -76,11 +76,10 @@ def _prune_existing_features(project, force=False):
     X_df, y, features = out['X_df'], out['y'], out['features']
     proposed_feature = get_proposed_feature(project)
     accepted_features = get_accepted_features(features, proposed_feature)
-    evaluator = GFSSFPruner(
-        X_df, y, accepted_features, proposed_feature)
+    evaluator = GFSSFPruner(X_df, y, accepted_features, proposed_feature)
     redundant_features = evaluator.prune()
 
-    # propose removal
+    # "propose removal"
     for feature in redundant_features:
         logger.info(PRUNER_MESSAGE + feature.source)
 

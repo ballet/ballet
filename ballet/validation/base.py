@@ -19,10 +19,11 @@ class BaseValidator(metaclass=ABCMeta):
 class FeaturePerformanceEvaluator(metaclass=ABCMeta):
     """Evaluate the performance of features from an ML point-of-view"""
 
-    def __init__(self, X_df, y, features):
+    def __init__(self, X_df, y, features, candidate_feature):
         self.X_df = X_df
         self.y = y
         self.features = features
+        self.candidate_feature = candidate_feature
 
     def __str__(self):
         return self.__class__.__name__
@@ -31,7 +32,7 @@ class FeaturePerformanceEvaluator(metaclass=ABCMeta):
 class FeatureAcceptanceMixin(metaclass=ABCMeta):
 
     @abstractmethod
-    def judge(self, feature):
+    def judge(self):
         """Judge whether feature should be accepted
 
         Returns:

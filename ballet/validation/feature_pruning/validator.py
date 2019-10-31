@@ -55,27 +55,19 @@ class GFSSFPruner(FeaturePruner):
 
     """
 
-    def __init__(
-            self,
-            X_df,
-            y,
-            features,
-            new_feature,
-            lmbda_1=0.0,
-            lmbda_2=0.0):
-        super().__init__(X_df, y, features)
-        self.y = asarray2d(y)
+    def __init__(self, *args, lmbda_1=0.0, lmbda_2=0.0):
+        super().__init__(*args)
+        self.y = asarray2d(self.y)
         if lmbda_1 <= 0:
             lmbda_1 = estimate_entropy(self.y) / LAMBDA_1_ADJUSTMENT
         if lmbda_2 <= 0:
             lmbda_2 = estimate_entropy(self.y) / LAMBDA_2_ADJUSTMENT
         self.lmbda_1 = lmbda_1
         self.lmbda_2 = lmbda_2
-        self.feature = new_feature
 
     def prune(self):
         feature_dfs_by_src = {}
-        for accepted_feature in [self.feature] + self.features:
+        for accepted_feature in [self.candidate_feature] + self.features:
             accepted_df = accepted_feature.as_feature_engineering_pipeline(
             ).fit_transform(self.X_df, self.y)
             feature_dfs_by_src[accepted_feature.source] = accepted_df

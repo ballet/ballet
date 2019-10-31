@@ -14,7 +14,7 @@ from ballet.validation.gfssf import (
 
 class NoOpAccepter(FeatureAccepter):
 
-    def judge(self, feature):
+    def judge(self):
         logger.info('Judging feature using {}'.format(self))
         return True
 
@@ -22,7 +22,7 @@ class NoOpAccepter(FeatureAccepter):
 class RandomAccepter(FeatureAcceptanceMixin,
                      RandomFeaturePerformanceEvaluator):
 
-    def judge(self, feature):
+    def judge(self):
         """Accept feature with probability p"""
         logger.info('Judging feature using {}'.format(self))
         with seeded(self.seed):
@@ -53,9 +53,9 @@ class GFSSFAccepter(FeatureAccepter):
 
     """
 
-    def __init__(self, X_df, y, features, lmbda_1=0., lmbda_2=0.):
-        super().__init__(X_df, y, features)
-        self.y = asarray2d(y)
+    def __init__(self, *args, lmbda_1=0., lmbda_2=0.):
+        super().__init__(*args)
+        self.y = asarray2d(self.y)
         if (lmbda_1 <= 0):
             lmbda_1 = estimate_entropy(self.y) / LAMBDA_1_ADJUSTMENT
         if (lmbda_2 <= 0):
@@ -69,16 +69,16 @@ class GFSSFAccepter(FeatureAccepter):
             lmbda_1=self.lmbda_1,
             lmbda_2=self.lmbda_2)
 
-    def judge(self, candidate_feature):
+    def judge(self):
         logger.info('Judging Feature using {}'.format(self))
         feature_dfs_by_src = {}
-        for feature in [candidate_feature] + self.features:
+        for feature in [self.candidate_feature] + self.features:
             feature_df = (feature
                           .as_feature_engineering_pipeline()
                           .fit_transform(self.X_df, self.y))
             feature_dfs_by_src[feature.source] = feature_df
 
-        candidate_source = candidate_feature.source
+        candidate_source = self.candidate_feature.source
         candidate_df = feature_dfs_by_src[candidate_source]
         n_samples, n_candidate_cols = feature_df.shape
 
