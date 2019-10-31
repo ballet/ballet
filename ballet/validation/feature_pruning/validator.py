@@ -3,7 +3,8 @@ import random
 from ballet.util import asarray2d
 from ballet.util.log import logger
 from ballet.util.testing import seeded
-from ballet.validation.base import FeaturePruner
+from ballet.validation.base import FeaturePruner, FeaturePruningMixin
+from ballet.validation.common import RandomFeaturePerformanceEvaluator
 from ballet.validation.entropy import (
     estimate_conditional_information, estimate_entropy)
 from ballet.validation.gfssf import (
@@ -13,17 +14,15 @@ from ballet.validation.gfssf import (
 
 class NoOpPruner(FeaturePruner):
     def prune(self):
+        logger.info('Pruning features using {!s}'.format(self))
         return []
 
 
-class RandomPruner(FeaturePruner):
-    def __init__(self, *args, p=0.3, seed=None):
-        super().__init__(*args)
-        self.p = p
-        self.seed = seed
+class RandomPruner(FeaturePruningMixin, RandomFeaturePerformanceEvaluator):
 
     def prune(self):
         """With probability p, select a random feature to prune"""
+        logger.info('Pruning features using {!s}'.format(self))
         with seeded(self.seed):
             if random.uniform(0, 1) < self.p:
                 return random.choice(self.features)
@@ -75,7 +74,6 @@ class GFSSFPruner(FeaturePruner):
         self.feature = new_feature
 
     def prune(self):
-
         feature_dfs_by_src = {}
         for accepted_feature in [self.feature] + self.features:
             accepted_df = accepted_feature.as_feature_engineering_pipeline(
@@ -91,6 +89,14 @@ class GFSSFPruner(FeaturePruner):
                 l1=lmbda_1, l2=lmbda_2
             )
         )
+
+        logger.info(
+            "Pruning features using GFSSF: lambda_1={l1}, lambda_2={"
+            "l2}".format(
+                l1=lmbda_1, l2=lmbda_2
+            )
+        )
+
         redundant_features = []
         for candidate_feature in self.features:
             candidate_src = candidate_feature.source

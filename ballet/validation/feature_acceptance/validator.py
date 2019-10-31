@@ -3,7 +3,8 @@ import random
 from ballet.util import asarray2d
 from ballet.util.log import logger
 from ballet.util.testing import seeded
-from ballet.validation.base import FeatureAccepter
+from ballet.validation.base import FeatureAcceptanceMixin, FeatureAccepter
+from ballet.validation.common import RandomFeaturePerformanceEvaluator
 from ballet.validation.entropy import (
     estimate_conditional_information, estimate_entropy)
 from ballet.validation.gfssf import (
@@ -14,19 +15,12 @@ from ballet.validation.gfssf import (
 class NoOpAccepter(FeatureAccepter):
 
     def judge(self, feature):
+        logger.info('Judging feature using {}'.format(self))
         return True
 
 
-class RandomAccepter(FeatureAccepter):
-
-    def __init__(self, *args, p=0.3, seed=None):
-        super().__init__(*args)
-        self.p = p
-        self.seed = seed
-
-    def __str__(self):
-        return '{str}: p={p}, seed={seed}'.format(
-            str=super().__str__(self), p=self.p, seed=self.seed)
+class RandomAccepter(FeatureAcceptanceMixin,
+                     RandomFeaturePerformanceEvaluator):
 
     def judge(self, feature):
         """Accept feature with probability p"""
@@ -69,7 +63,14 @@ class GFSSFAccepter(FeatureAccepter):
         self.lmbda_1 = lmbda_1
         self.lmbda_2 = lmbda_2
 
+    def __str__(self):
+        return '{str}: lmbda_1={lmbda_1}, lmbda_2={lmbda_2}'.format(
+            str=super().__str__(),
+            lmbda_1=self.lmbda_1,
+            lmbda_2=self.lmbda_2)
+
     def judge(self, candidate_feature):
+        logger.info('Judging Feature using {}'.format(self))
         feature_dfs_by_src = {}
         for feature in [candidate_feature] + self.features:
             feature_df = (feature
@@ -85,9 +86,6 @@ class GFSSFAccepter(FeatureAccepter):
             self.lmbda_1, self.lmbda_2, feature_dfs_by_src)
 
         logger.info(
-            'Judging Feature using GFSSF: lambda_1={l1}, lambda_2={l2}'.format(
-                l1=lmbda_1, l2=lmbda_2))
-        logger.info(
             'Candidate Feature Shape: {}'.format(candidate_df.shape))
         omit_in_test = [''] + [f.source for f in self.features]
         for omit in omit_in_test:
@@ -97,9 +95,7 @@ class GFSSFAccepter(FeatureAccepter):
             z = _concat_datasets(
                 feature_dfs_by_src, n_samples, [
                     candidate_source, omit])
-            logger.debug(
-                'Calculating CMI of candidate feature:'
-            )
+            logger.debug('Calculating CMI of candidate feature:')
             cmi = estimate_conditional_information(candidate_df, self.y, z)
             logger.debug(
                 'Conditional Mutual Information Score: {}'.format(cmi))

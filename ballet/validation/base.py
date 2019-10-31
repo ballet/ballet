@@ -24,9 +24,11 @@ class FeaturePerformanceEvaluator(metaclass=ABCMeta):
         self.y = y
         self.features = features
 
+    def __str__(self):
+        return self.__class__.__name__
 
-class FeatureAccepter(FeaturePerformanceEvaluator):
-    """Accept/reject a feature to the project based on its performance"""
+
+class FeatureAcceptanceMixin(metaclass=ABCMeta):
 
     @abstractmethod
     def judge(self, feature):
@@ -38,8 +40,7 @@ class FeatureAccepter(FeaturePerformanceEvaluator):
         pass
 
 
-class FeaturePruner(FeaturePerformanceEvaluator):
-    """Prune features after acceptance based on their performance"""
+class FeaturePruningMixin(metaclass=ABCMeta):
 
     @abstractmethod
     def prune(self):
@@ -49,6 +50,16 @@ class FeaturePruner(FeaturePerformanceEvaluator):
             list: list of features to remove
         """
         pass
+
+
+class FeatureAccepter(FeatureAcceptanceMixin, FeaturePerformanceEvaluator):
+    """Accept/reject a feature to the project based on its performance"""
+    pass
+
+
+class FeaturePruner(FeaturePruningMixin, FeaturePerformanceEvaluator):
+    """Prune features after acceptance based on their performance"""
+    pass
 
 
 class BaseCheck(metaclass=ABCMeta):
