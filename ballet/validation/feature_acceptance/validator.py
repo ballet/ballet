@@ -1,5 +1,8 @@
+import random
+
 from ballet.util import asarray2d
 from ballet.util.log import logger
+from ballet.util.testing import seeded
 from ballet.validation.base import FeatureAccepter
 from ballet.validation.entropy import (
     estimate_conditional_information, estimate_entropy)
@@ -12,6 +15,24 @@ class NoOpAccepter(FeatureAccepter):
 
     def judge(self, feature):
         return True
+
+
+class RandomAccepter(FeatureAccepter):
+
+    def __init__(self, *args, p=0.3, seed=None):
+        super().__init__(*args)
+        self.p = p
+        self.seed = seed
+
+    def __str__(self):
+        return '{str}: p={p}, seed={seed}'.format(
+            str=super().__str__(self), p=self.p, seed=self.seed)
+
+    def judge(self, feature):
+        """Accept feature with probability p"""
+        logger.info('Judging feature using {}'.format(self))
+        with seeded(self.seed):
+            return random.uniform(0, 1) < self.p
 
 
 class GFSSFAccepter(FeatureAccepter):
