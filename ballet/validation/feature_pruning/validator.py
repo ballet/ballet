@@ -1,5 +1,8 @@
+import random
+
 from ballet.util import asarray2d
 from ballet.util.log import logger
+from ballet.util.testing import seeded
 from ballet.validation.base import FeaturePruner
 from ballet.validation.entropy import (
     estimate_conditional_information, estimate_entropy)
@@ -11,6 +14,19 @@ from ballet.validation.gfssf import (
 class NoOpPruner(FeaturePruner):
     def prune(self):
         return []
+
+
+class RandomPruner(FeaturePruner):
+    def __init__(self, *args, p=0.3, seed=None):
+        super().__init__(*args)
+        self.p = p
+        self.seed = seed
+
+    def prune(self):
+        """With probability p, select a random feature to prune"""
+        with seeded(self.seed):
+            if random.uniform(0, 1) < self.p:
+                return random.choice(self.features)
 
 
 CMI_MESSAGE = "Calculating CMI of feature and target cond. on accpt features"
