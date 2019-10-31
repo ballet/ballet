@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import MagicMock, patch
 
 import numpy as np
 
@@ -6,8 +7,46 @@ from ballet import Feature
 from ballet.eng.base import SimpleFunctionTransformer
 from ballet.eng.misc import IdentityTransformer
 from ballet.util import asarray2d
-from ballet.validation.feature_pruning.validator import GFSSFPruner
+from ballet.validation.feature_pruning.validator import (
+    GFSSFPruner, NoOpPruner, RandomPruner)
 from tests.util import load_regression_data
+
+
+class NoOpPrunerTest(unittest.TestCase):
+
+    def test_pruner(self):
+        X = None
+        y = None
+        existing_features = []
+        feature = []
+
+        expected = []
+
+        pruner = NoOpPruner(X, y, existing_features, feature)
+        actual = pruner.prune()
+
+        self.assertEqual(expected, actual)
+
+
+class RandomPrunerTest(unittest.TestCase):
+
+    @patch('random.choice')
+    @patch('random.uniform')
+    def test_pruner(self, mock_uniform, mock_choice):
+        existing_features = [MagicMock(), MagicMock()]
+
+        mock_uniform.return_value = 0.0  # makes sure pruning is performed
+        mock_choice.return_value = existing_features[0]  # the pruned feature
+        expected = [existing_features[0]]
+
+        X = None
+        y = None
+        feature = None
+
+        pruner = RandomPruner(X, y, existing_features, feature)
+        actual = pruner.prune()
+
+        self.assertEqual(expected, actual)
 
 
 class GFSSFPrunerTest(unittest.TestCase):

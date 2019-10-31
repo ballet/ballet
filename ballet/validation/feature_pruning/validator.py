@@ -25,7 +25,7 @@ class RandomPruner(FeaturePruningMixin, RandomFeaturePerformanceEvaluator):
         logger.info('Pruning features using {!s}'.format(self))
         with seeded(self.seed):
             if random.uniform(0, 1) < self.p:
-                return random.choice(self.features)
+                return [random.choice(self.features)]
 
 
 CMI_MESSAGE = "Calculating CMI of feature and target cond. on accpt features"
