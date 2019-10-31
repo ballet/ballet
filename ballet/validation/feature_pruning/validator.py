@@ -1,6 +1,6 @@
 from ballet.util import asarray2d
 from ballet.util.log import logger
-from ballet.validation.base import FeaturePruningEvaluator
+from ballet.validation.base import FeaturePruner
 from ballet.validation.entropy import (
     estimate_conditional_information, estimate_entropy)
 from ballet.validation.gfssf import (
@@ -8,7 +8,7 @@ from ballet.validation.gfssf import (
     _compute_threshold, _concat_datasets)
 
 
-class NoOpPruningEvaluator(FeaturePruningEvaluator):
+class NoOpPruner(FeaturePruner):
     def prune(self):
         return []
 
@@ -16,7 +16,7 @@ class NoOpPruningEvaluator(FeaturePruningEvaluator):
 CMI_MESSAGE = "Calculating CMI of feature and target cond. on accpt features"
 
 
-class GFSSFPruningEvaluator(FeaturePruningEvaluator):
+class GFSSFPruner(FeaturePruner):
     """A feature pruning evaluator that uses a modified version of
     GFSSF[1] - specifically, lines 12-13 of agGFSSF.
 

@@ -25,7 +25,7 @@ class FeaturePerformanceEvaluator(metaclass=ABCMeta):
         self.features = features
 
 
-class FeatureAcceptanceEvaluator(FeaturePerformanceEvaluator):
+class FeatureAccepter(FeaturePerformanceEvaluator):
     """Accept/reject a feature to the project based on its performance"""
 
     @abstractmethod
@@ -38,7 +38,7 @@ class FeatureAcceptanceEvaluator(FeaturePerformanceEvaluator):
         pass
 
 
-class FeaturePruningEvaluator(FeaturePerformanceEvaluator):
+class FeaturePruner(FeaturePerformanceEvaluator):
     """Prune features after acceptance based on their performance"""
 
     @abstractmethod

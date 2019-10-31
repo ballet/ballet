@@ -1,6 +1,6 @@
 from ballet.util import asarray2d
 from ballet.util.log import logger
-from ballet.validation.base import FeatureAcceptanceEvaluator
+from ballet.validation.base import FeatureAccepter
 from ballet.validation.entropy import (
     estimate_conditional_information, estimate_entropy)
 from ballet.validation.gfssf import (
@@ -8,13 +8,13 @@ from ballet.validation.gfssf import (
     _compute_threshold, _concat_datasets)
 
 
-class NoOpAcceptanceEvaluator(FeatureAcceptanceEvaluator):
+class NoOpAccepter(FeatureAccepter):
 
     def judge(self, feature):
         return True
 
 
-class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
+class GFSSFAccepter(FeatureAccepter):
     """A feature acceptance evaluator that uses a modified version of
     GFSSF[1] - specifically, lines 1 - 8 of agGFSSF where we do not
     remove accepted but redundant features on line 8.
