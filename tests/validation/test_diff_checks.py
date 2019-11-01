@@ -1,26 +1,36 @@
 import pathlib
 import unittest
-from unittest.mock import Mock, create_autospec
+from unittest.mock import Mock
 
-from ballet.project import Project, relative_to_contrib
+from ballet.project import relative_to_contrib
 from ballet.validation.project_structure.checks import (
     IsAdditionCheck, IsPythonSourceCheck, ModuleNameCheck,
     RelativeNameDepthCheck, SubpackageNameCheck, WithinContribCheck)
+
+from .util import make_mock_project
 
 
 class DiffCheckTest(unittest.TestCase):
 
     def setUp(self):
         self.contrib_module_path = 'foo/features/contrib'
-        self.project = create_autospec(
-            Project, contrib_module_path=self.contrib_module_path)
+        self.project = make_mock_project(
+            None, None, '', self.contrib_module_path)
 
     def test_relative_to_contrib(self):
         diff = Mock(b_path='foo/features/contrib/abc.py')
-        project = self.project
+
+        project = Mock()
+        def mock_get(path):
+            if path == 'contrib.module_path':
+                return self.contrib_module_path
+            else:
+                raise KeyError
+        project.config.get.side_effect = mock_get
 
         expected = pathlib.Path('abc.py')
         actual = relative_to_contrib(diff, project)
+
         self.assertEqual(actual, expected)
 
     def test_is_addition_check(self):
