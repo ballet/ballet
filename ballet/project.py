@@ -6,6 +6,7 @@ import git
 from dynaconf import LazySettings
 from funcy import cached_property, fallback, re_find
 
+from ballet.compat import safepath
 from ballet.exc import ConfigurationError
 from ballet.util import needs_path, raiseifnone
 from ballet.util.ci import get_travis_branch, get_travis_pr_num
@@ -36,8 +37,8 @@ def load_config_at_path(path):
     if path.exists() and path.is_file():
         options = DYNACONF_OPTIONS.copy()
         options.update({
-            'ROOT_PATH_FOR_DYNACONF': path.parent,
-            'SETTINGS_FILE_FOR_DYNACONF': path.name,
+            'ROOT_PATH_FOR_DYNACONF': safepath(path.parent),
+            'SETTINGS_FILE_FOR_DYNACONF': safepath(path.name),
         })
         return LazySettings(**options)
     else:
