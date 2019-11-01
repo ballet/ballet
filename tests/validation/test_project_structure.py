@@ -162,7 +162,8 @@ class FeatureApiValidatorTest(_CommonSetup, unittest.TestCase):
             ('src/foo/__init__.py', None),
             ('src/foo/contrib/__init__.py', None),
             ('src/foo/contrib/user_foo/__init__.py', None),
-            ('src/foo/contrib/user_foo/feature_bar.py', self.invalid_feature_str),
+            ('src/foo/contrib/user_foo/feature_bar.py',
+             self.invalid_feature_str),
         ]
         contrib_module_path = 'src/foo/contrib/'
         with mock_feature_api_validator(

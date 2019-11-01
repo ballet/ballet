@@ -20,6 +20,7 @@ def validation_stage(call, message):
     call = ignore(SkippedValidationTest)(call)
     return call()
 
+
 def load_class(project, config_key):
     path = project.config.get(config_key)
     modname, clsname = path.rsplit('.', maxsplit=1)
