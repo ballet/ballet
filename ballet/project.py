@@ -3,8 +3,8 @@ import sys
 from importlib import import_module
 
 import git
-import yaml
-from funcy import fallback, get_in, partial, re_find
+from dynaconf import LazySettings
+from funcy import cached_property, fallback, re_find
 
 from ballet.exc import ConfigurationError
 from ballet.util import needs_path, raiseifnone
@@ -13,17 +13,14 @@ from ballet.util.git import get_branch, get_pr_num, is_merge_commit
 from ballet.util.mod import import_module_at_path
 
 DEFAULT_CONFIG_NAME = 'ballet.yml'
+DYNACONF_OPTIONS = {
+    'ENVVAR_PREFIX_FOR_DYNACONF': 'BALLET',
+    'SETTINGS_FILE_FOR_DYNACONF': DEFAULT_CONFIG_NAME,
+    'YAML_LOADER': 'safe_load',
+}
 
 
-@needs_path
-def get_config_path(project_root):
-    """Get candidate config path
-
-    Args:
-        project_root (path-like): Directory of the ballet project root
-            directory, the one usually containing the ``ballet.yml`` file.
-    """
-    return project_root.resolve().joinpath(DEFAULT_CONFIG_NAME)
+config = LazySettings(**DYNACONF_OPTIONS)
 
 
 @needs_path
@@ -37,8 +34,12 @@ def load_config_at_path(path):
         dict: config dict
     """
     if path.exists() and path.is_file():
-        with path.open('r') as f:
-            return yaml.load(f, Loader=yaml.SafeLoader)
+        options = DYNACONF_OPTIONS.copy()
+        options.update({
+            'ROOT_PATH_FOR_DYNACONF': path.parent,
+            'SETTINGS_FILE_FOR_DYNACONF': path.name,
+        })
+        return LazySettings()
     else:
         raise ConfigurationError("Couldn't find ballet.yml config file.")
 
@@ -53,52 +54,7 @@ def load_config_in_dir(path):
     Returns:
         dict: config dict
     """
-    candidate = get_config_path(path)
-    return load_config_at_path(candidate)
-
-
-def config_get(config, *path, default=None):
-    """Get a configuration option following a path through the config
-
-    Example usage:
-
-        >>> config_get(config,
-                       'problem', 'problem_type_details', 'scorer',
-                       default='accuracy')
-
-    Args:
-        config (dict): config dict
-        *path (list[str]): List of config sections and options to follow.
-        default (default=None): A default value to return in the case that
-            the option does not exist.
-    """
-    o = object()
-    result = get_in(config, path, default=o)
-    if result is not o:
-        return result
-    else:
-        return default
-
-
-@needs_path
-def _get_project_root_from_conf_path(conf_path):
-    if conf_path.name == 'conf.py':
-        return conf_path.parent.parent.resolve()
-    else:
-        raise ValueError("Must pass path to conf module")
-
-
-@needs_path
-def make_config_get(conf_path):
-    """Return a function to get configuration options for a specific project
-
-    Args:
-        conf_path (path-like): path to project's conf file (i.e. foo.conf
-            module)
-    """
-    project_root = _get_project_root_from_conf_path(conf_path)
-    config = load_config_in_dir(project_root)
-    return partial(config_get, config)
+    return load_config_at_path(path.joinpath(DEFAULT_CONFIG_NAME))
 
 
 def relative_to_contrib(diff, project):
@@ -163,8 +119,6 @@ class Project:
     In addition to the defined methods and properties, the following functions
     of the project can be accessed as attributes of a class instance, where
     ``prj`` refers to the python module of the underlying ballet project:
-    - ``conf`` (``prj.conf``)
-    - ``get`` (``prj.conf.get``)
     - ``load_data`` (``prj.load_data.load_data``)
     - ``build`` (``prj.features.build``)
     - ``collect_contrib_features`` (``prj.features.collect_contrib_features``)
@@ -175,8 +129,6 @@ class Project:
     """
 
     attr_map = {
-        'conf': ('.conf', None),
-        'get': ('.conf', 'get'),
         'load_data': ('.load_data', 'load_data'),
         'build': ('.features', 'build'),
         'collect_contrib_features': ('.features', 'collect_contrib_features')
@@ -184,6 +136,10 @@ class Project:
 
     def __init__(self, package):
         self.package = package
+
+    @cached_property
+    def config(self):
+        return load_config_in_dir(self.path)
 
     @classmethod
     def from_path(cls, path):
@@ -195,7 +151,7 @@ class Project:
         """
         path = pathlib.Path(path)
         config = load_config_in_dir(path)
-        project_slug = config_get(config, 'project', 'slug')
+        project_slug = config.project.slug
         package = import_module_at_path(project_slug,
                                         path.joinpath(project_slug))
         return cls(package)
@@ -215,6 +171,7 @@ class Project:
             result = get_travis_pr_num()
         return result
 
+    @property
     def on_pr(self):
         """Return whether the project has a source tree on a PR"""
         return self.pr_num is not None
@@ -227,9 +184,11 @@ class Project:
             result = get_travis_branch()
         return result
 
+    @property
     def on_master(self):
         return self.branch == 'master'
 
+    @property
     def on_master_after_merge(self):
         """Check the repo HEAD is on master after a merge commit
 
@@ -241,7 +200,7 @@ class Project:
         to evaluate to true.
         """
 
-        return self.on_master() and is_merge_commit(self.repo.head.commit)
+        return self.on_master and is_merge_commit(self.repo.head.commit)
 
     @property
     def path(self):
@@ -256,11 +215,6 @@ class Project:
     def repo(self):
         """Return a git.Repo object corresponding to this project"""
         return git.Repo(self.path, search_parent_directories=True)
-
-    @property
-    def contrib_module_path(self):
-        """Return the path to the project's contrib module"""
-        return self.get('contrib', 'module_path')
 
     def __getattr__(self, attr):
         if attr in Project.attr_map:

@@ -45,7 +45,7 @@ class WithinContribCheck(ProjectStructureCheck):
     def check(self, diff):
         """Check that the new file is within the contrib subdirectory"""
         path = diff.b_path
-        contrib_path = self.project.contrib_module_path
+        contrib_path = self.project.config.contrib.module_path
         assert pathlib.Path(contrib_path) in pathlib.Path(path).parents
 
 

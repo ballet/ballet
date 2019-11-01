@@ -27,7 +27,7 @@ def validation_stage(call, message):
 
 @validation_stage('checking project structure')
 def _check_project_structure(project, force=False):
-    if not force and not project.on_pr():
+    if not force and not project.on_pr:
         raise SkippedValidationTest('Not on PR')
 
     validator = ProjectStructureValidator(project)
@@ -39,7 +39,7 @@ def _check_project_structure(project, force=False):
 @validation_stage('validating feature API')
 def _validate_feature_api(project, force=False):
     """Validate feature API"""
-    if not force and not project.on_pr():
+    if not force and not project.on_pr:
         raise SkippedValidationTest('Not on PR')
 
     validator = FeatureApiValidator(project)
@@ -51,7 +51,7 @@ def _validate_feature_api(project, force=False):
 @validation_stage('evaluating feature performance')
 def _evaluate_feature_performance(project, force=False):
     """Evaluate feature performance"""
-    if not force and not project.on_pr():
+    if not force and not project.on_pr:
         raise SkippedValidationTest('Not on PR')
 
     out = project.build()
@@ -59,8 +59,8 @@ def _evaluate_feature_performance(project, force=False):
 
     proposed_feature = get_proposed_feature(project)
     accepted_features = get_accepted_features(features, proposed_feature)
-    evaluator = GFSSFAccepter(X_df, y, accepted_features, proposed_feature)
-    accepted = evaluator.judge()
+    accepter = GFSSFAccepter(X_df, y, accepted_features, proposed_feature)
+    accepted = accepter.judge()
 
     if not accepted:
         raise FeatureRejected
@@ -69,15 +69,15 @@ def _evaluate_feature_performance(project, force=False):
 @validation_stage('pruning existing features')
 def _prune_existing_features(project, force=False):
     """Prune existing features"""
-    if not force and not project.on_master_after_merge():
+    if not force and not project.on_master_after_merge:
         raise SkippedValidationTest('Not on master')
 
     out = project.build()
     X_df, y, features = out['X_df'], out['y'], out['features']
     proposed_feature = get_proposed_feature(project)
     accepted_features = get_accepted_features(features, proposed_feature)
-    evaluator = GFSSFPruner(X_df, y, accepted_features, proposed_feature)
-    redundant_features = evaluator.prune()
+    pruner = GFSSFPruner(X_df, y, accepted_features, proposed_feature)
+    redundant_features = pruner.prune()
 
     # "propose removal"
     for feature in redundant_features:
