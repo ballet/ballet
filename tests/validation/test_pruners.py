@@ -18,7 +18,7 @@ class NoOpPrunerTest(unittest.TestCase):
         X = None
         y = None
         existing_features = []
-        feature = []
+        feature = None
 
         expected = []
 

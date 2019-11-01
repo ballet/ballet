@@ -77,16 +77,8 @@ class GFSSFPruner(FeaturePruner):
         )
 
         logger.info(
-            "Prune Features using GFSSF: lambda_1={l1}, lambda_2={l2}".format(
-                l1=lmbda_1, l2=lmbda_2
-            )
-        )
-
-        logger.info(
-            "Pruning features using GFSSF: lambda_1={l1}, lambda_2={"
-            "l2}".format(
-                l1=lmbda_1, l2=lmbda_2
-            )
+            "Pruning features using GFSSF: lambda_1={l1}, lambda_2={l2}"
+            .format(l1=lmbda_1, l2=lmbda_2)
         )
 
         redundant_features = []

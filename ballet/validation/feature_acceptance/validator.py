@@ -16,7 +16,7 @@ class NoOpAccepter(FeatureAccepter):
 
     def judge(self):
         logger.info('Judging feature using {}'.format(self))
-        return True
+        return False
 
 
 class RandomAccepter(FeatureAcceptanceMixin,
@@ -56,9 +56,9 @@ class GFSSFAccepter(FeatureAccepter):
     def __init__(self, *args, lmbda_1=0., lmbda_2=0.):
         super().__init__(*args)
         self.y = asarray2d(self.y)
-        if (lmbda_1 <= 0):
+        if lmbda_1 <= 0:
             lmbda_1 = estimate_entropy(self.y) / LAMBDA_1_ADJUSTMENT
-        if (lmbda_2 <= 0):
+        if lmbda_2 <= 0:
             lmbda_2 = estimate_entropy(self.y) / LAMBDA_2_ADJUSTMENT
         self.lmbda_1 = lmbda_1
         self.lmbda_2 = lmbda_2
@@ -117,7 +117,7 @@ class GFSSFAccepter(FeatureAccepter):
             logger.debug('Calculated Threshold: {}'.format(threshold))
             if statistic >= threshold:
                 logger.debug(
-                    'Succeeded while ommitting feature: {}'.format(
+                    'Succeeded while omitting feature: {}'.format(
                         omit or 'None'))
                 return True
         return False
