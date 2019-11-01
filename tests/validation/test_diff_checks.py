@@ -21,6 +21,7 @@ class DiffCheckTest(unittest.TestCase):
         diff = Mock(b_path='foo/features/contrib/abc.py')
 
         project = Mock()
+
         def mock_get(path):
             if path == 'contrib.module_path':
                 return self.contrib_module_path

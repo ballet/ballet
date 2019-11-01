@@ -82,8 +82,8 @@ def start_new_feature(contrib_dir=None, **cc_kwargs):
 
     # inject default username into context
     default_username = detect_github_username(project)
-    ec = cc_kwargs.setdefault('extra_context', {})
-    ec['_default_username'] = default_username
+    cc_kwargs.setdefault('extra_context', {})
+    cc_kwargs['extra_context'].update({'_default_username': default_username})
 
     with tempfile.TemporaryDirectory() as tempdir:
         # render feature template
