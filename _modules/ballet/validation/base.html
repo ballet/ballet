@@ -270,17 +270,20 @@
 <div class="viewcode-block" id="FeaturePerformanceEvaluator"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.FeaturePerformanceEvaluator">[docs]</a><span class="k">class</span> <span class="nc">FeaturePerformanceEvaluator</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Evaluate the performance of features from an ML point-of-view&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">features</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">candidate_feature</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">X_df</span> <span class="o">=</span> <span class="n">X_df</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">features</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">candidate_feature</span> <span class="o">=</span> <span class="n">candidate_feature</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span></div>
 
 
-<div class="viewcode-block" id="FeatureAcceptanceEvaluator"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.FeatureAcceptanceEvaluator">[docs]</a><span class="k">class</span> <span class="nc">FeatureAcceptanceEvaluator</span><span class="p">(</span><span class="n">FeaturePerformanceEvaluator</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Accept/reject a feature to the project based on its performance&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="FeatureAcceptanceMixin"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.FeatureAcceptanceMixin">[docs]</a><span class="k">class</span> <span class="nc">FeatureAcceptanceMixin</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
 
-<div class="viewcode-block" id="FeatureAcceptanceEvaluator.judge"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.FeatureAcceptanceEvaluator.judge">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">judge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+<div class="viewcode-block" id="FeatureAcceptanceMixin.judge"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.FeatureAcceptanceMixin.judge">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">judge</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Judge whether feature should be accepted</span>
 
 <span class="sd">        Returns:</span>
@@ -289,10 +292,9 @@
         <span class="k">pass</span></div></div>
 
 
-<div class="viewcode-block" id="FeaturePruningEvaluator"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.FeaturePruningEvaluator">[docs]</a><span class="k">class</span> <span class="nc">FeaturePruningEvaluator</span><span class="p">(</span><span class="n">FeaturePerformanceEvaluator</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Prune features after acceptance based on their performance&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="FeaturePruningMixin"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.FeaturePruningMixin">[docs]</a><span class="k">class</span> <span class="nc">FeaturePruningMixin</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
 
-<div class="viewcode-block" id="FeaturePruningEvaluator.prune"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.FeaturePruningEvaluator.prune">[docs]</a>    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="FeaturePruningMixin.prune"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.FeaturePruningMixin.prune">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">prune</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Prune existing features</span>
 
@@ -300,6 +302,16 @@
 <span class="sd">            list: list of features to remove</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div></div>
+
+
+<div class="viewcode-block" id="FeatureAccepter"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.FeatureAccepter">[docs]</a><span class="k">class</span> <span class="nc">FeatureAccepter</span><span class="p">(</span><span class="n">FeatureAcceptanceMixin</span><span class="p">,</span> <span class="n">FeaturePerformanceEvaluator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Accept/reject a feature to the project based on its performance&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="FeaturePruner"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.FeaturePruner">[docs]</a><span class="k">class</span> <span class="nc">FeaturePruner</span><span class="p">(</span><span class="n">FeaturePruningMixin</span><span class="p">,</span> <span class="n">FeaturePerformanceEvaluator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Prune features after acceptance based on their performance&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="BaseCheck"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.BaseCheck">[docs]</a><span class="k">class</span> <span class="nc">BaseCheck</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>

@@ -254,9 +254,10 @@
 <span class="kn">from</span> <span class="nn">importlib</span> <span class="k">import</span> <span class="n">import_module</span>
 
 <span class="kn">import</span> <span class="nn">git</span>
-<span class="kn">import</span> <span class="nn">yaml</span>
-<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">fallback</span><span class="p">,</span> <span class="n">get_in</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> <span class="n">re_find</span>
+<span class="kn">from</span> <span class="nn">dynaconf</span> <span class="k">import</span> <span class="n">LazySettings</span>
+<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">cached_property</span><span class="p">,</span> <span class="n">fallback</span><span class="p">,</span> <span class="n">re_find</span>
 
+<span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="k">import</span> <span class="n">safepath</span>
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">ConfigurationError</span>
 <span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">needs_path</span><span class="p">,</span> <span class="n">raiseifnone</span>
 <span class="kn">from</span> <span class="nn">ballet.util.ci</span> <span class="k">import</span> <span class="n">get_travis_branch</span><span class="p">,</span> <span class="n">get_travis_pr_num</span>
@@ -264,17 +265,14 @@
 <span class="kn">from</span> <span class="nn">ballet.util.mod</span> <span class="k">import</span> <span class="n">import_module_at_path</span>
 
 <span class="n">DEFAULT_CONFIG_NAME</span> <span class="o">=</span> <span class="s1">&#39;ballet.yml&#39;</span>
+<span class="n">DYNACONF_OPTIONS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;ENVVAR_PREFIX_FOR_DYNACONF&#39;</span><span class="p">:</span> <span class="s1">&#39;BALLET&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;SETTINGS_FILE_FOR_DYNACONF&#39;</span><span class="p">:</span> <span class="n">DEFAULT_CONFIG_NAME</span><span class="p">,</span>
+    <span class="s1">&#39;YAML_LOADER&#39;</span><span class="p">:</span> <span class="s1">&#39;safe_load&#39;</span><span class="p">,</span>
+<span class="p">}</span>
 
 
-<div class="viewcode-block" id="get_config_path"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.get_config_path">[docs]</a><span class="nd">@needs_path</span>
-<span class="k">def</span> <span class="nf">get_config_path</span><span class="p">(</span><span class="n">project_root</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Get candidate config path</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        project_root (path-like): Directory of the ballet project root</span>
-<span class="sd">            directory, the one usually containing the ``ballet.yml`` file.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">project_root</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">DEFAULT_CONFIG_NAME</span><span class="p">)</span></div>
+<span class="n">config</span> <span class="o">=</span> <span class="n">LazySettings</span><span class="p">(</span><span class="o">**</span><span class="n">DYNACONF_OPTIONS</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="load_config_at_path"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.load_config_at_path">[docs]</a><span class="nd">@needs_path</span>
@@ -288,8 +286,12 @@
 <span class="sd">        dict: config dict</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-        <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">Loader</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">SafeLoader</span><span class="p">)</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">DYNACONF_OPTIONS</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+            <span class="s1">&#39;ROOT_PATH_FOR_DYNACONF&#39;</span><span class="p">:</span> <span class="n">safepath</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">parent</span><span class="p">),</span>
+            <span class="s1">&#39;SETTINGS_FILE_FOR_DYNACONF&#39;</span><span class="p">:</span> <span class="n">safepath</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+        <span class="p">})</span>
+        <span class="k">return</span> <span class="n">LazySettings</span><span class="p">(</span><span class="o">**</span><span class="n">options</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span><span class="s2">&quot;Couldn&#39;t find ballet.yml config file.&quot;</span><span class="p">)</span></div>
 
@@ -304,52 +306,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        dict: config dict</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">candidate</span> <span class="o">=</span> <span class="n">get_config_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">load_config_at_path</span><span class="p">(</span><span class="n">candidate</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="config_get"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.config_get">[docs]</a><span class="k">def</span> <span class="nf">config_get</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="o">*</span><span class="n">path</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Get a configuration option following a path through the config</span>
-
-<span class="sd">    Example usage:</span>
-
-<span class="sd">        &gt;&gt;&gt; config_get(config,</span>
-<span class="sd">                       &#39;problem&#39;, &#39;problem_type_details&#39;, &#39;scorer&#39;,</span>
-<span class="sd">                       default=&#39;accuracy&#39;)</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        config (dict): config dict</span>
-<span class="sd">        *path (list[str]): List of config sections and options to follow.</span>
-<span class="sd">        default (default=None): A default value to return in the case that</span>
-<span class="sd">            the option does not exist.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">o</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">get_in</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">o</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">o</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">result</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">default</span></div>
-
-
-<span class="nd">@needs_path</span>
-<span class="k">def</span> <span class="nf">_get_project_root_from_conf_path</span><span class="p">(</span><span class="n">conf_path</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">conf_path</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;conf.py&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">conf_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must pass path to conf module&quot;</span><span class="p">)</span>
-
-
-<div class="viewcode-block" id="make_config_get"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.make_config_get">[docs]</a><span class="nd">@needs_path</span>
-<span class="k">def</span> <span class="nf">make_config_get</span><span class="p">(</span><span class="n">conf_path</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return a function to get configuration options for a specific project</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        conf_path (path-like): path to project&#39;s conf file (i.e. foo.conf</span>
-<span class="sd">            module)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">project_root</span> <span class="o">=</span> <span class="n">_get_project_root_from_conf_path</span><span class="p">(</span><span class="n">conf_path</span><span class="p">)</span>
-    <span class="n">config</span> <span class="o">=</span> <span class="n">load_config_in_dir</span><span class="p">(</span><span class="n">project_root</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="n">config_get</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">load_config_at_path</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">DEFAULT_CONFIG_NAME</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="relative_to_contrib"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.relative_to_contrib">[docs]</a><span class="k">def</span> <span class="nf">relative_to_contrib</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">project</span><span class="p">):</span>
@@ -363,7 +320,7 @@
 <span class="sd">        Path</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">b_path</span><span class="p">)</span>
-    <span class="n">contrib_path</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">contrib_module_path</span>
+    <span class="n">contrib_path</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;contrib.module_path&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">path</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">contrib_path</span><span class="p">)</span></div>
 
 
@@ -414,8 +371,6 @@
 <span class="sd">    In addition to the defined methods and properties, the following functions</span>
 <span class="sd">    of the project can be accessed as attributes of a class instance, where</span>
 <span class="sd">    ``prj`` refers to the python module of the underlying ballet project:</span>
-<span class="sd">    - ``conf`` (``prj.conf``)</span>
-<span class="sd">    - ``get`` (``prj.conf.get``)</span>
 <span class="sd">    - ``load_data`` (``prj.load_data.load_data``)</span>
 <span class="sd">    - ``build`` (``prj.features.build``)</span>
 <span class="sd">    - ``collect_contrib_features`` (``prj.features.collect_contrib_features``)</span>
@@ -426,8 +381,6 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">attr_map</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;conf&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;.conf&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-        <span class="s1">&#39;get&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;.conf&#39;</span><span class="p">,</span> <span class="s1">&#39;get&#39;</span><span class="p">),</span>
         <span class="s1">&#39;load_data&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;.load_data&#39;</span><span class="p">,</span> <span class="s1">&#39;load_data&#39;</span><span class="p">),</span>
         <span class="s1">&#39;build&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;.features&#39;</span><span class="p">,</span> <span class="s1">&#39;build&#39;</span><span class="p">),</span>
         <span class="s1">&#39;collect_contrib_features&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;.features&#39;</span><span class="p">,</span> <span class="s1">&#39;collect_contrib_features&#39;</span><span class="p">)</span>
@@ -435,6 +388,10 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">package</span> <span class="o">=</span> <span class="n">package</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">load_config_in_dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Project.from_path"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.Project.from_path">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_path</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
@@ -446,9 +403,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="n">config</span> <span class="o">=</span> <span class="n">load_config_in_dir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="n">project_slug</span> <span class="o">=</span> <span class="n">config_get</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s1">&#39;project&#39;</span><span class="p">,</span> <span class="s1">&#39;slug&#39;</span><span class="p">)</span>
+        <span class="n">project_slug</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;project.slug&#39;</span><span class="p">)</span>
         <span class="n">package</span> <span class="o">=</span> <span class="n">import_module_at_path</span><span class="p">(</span><span class="n">project_slug</span><span class="p">,</span>
-                                        <span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">project_slug</span><span class="p">))</span>
+                                        <span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">,</span> <span class="n">project_slug</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">package</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_resolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">modname</span><span class="p">,</span> <span class="n">attr</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -466,9 +423,10 @@
             <span class="n">result</span> <span class="o">=</span> <span class="n">get_travis_pr_num</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">result</span>
 
-<div class="viewcode-block" id="Project.on_pr"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.Project.on_pr">[docs]</a>    <span class="k">def</span> <span class="nf">on_pr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">on_pr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return whether the project has a source tree on a PR&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">branch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -478,10 +436,12 @@
             <span class="n">result</span> <span class="o">=</span> <span class="n">get_travis_branch</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">result</span>
 
-<div class="viewcode-block" id="Project.on_master"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.Project.on_master">[docs]</a>    <span class="k">def</span> <span class="nf">on_master</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">branch</span> <span class="o">==</span> <span class="s1">&#39;master&#39;</span></div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">on_master</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">branch</span> <span class="o">==</span> <span class="s1">&#39;master&#39;</span>
 
-<div class="viewcode-block" id="Project.on_master_after_merge"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.Project.on_master_after_merge">[docs]</a>    <span class="k">def</span> <span class="nf">on_master_after_merge</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">on_master_after_merge</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check the repo HEAD is on master after a merge commit</span>
 
 <span class="sd">        Checks for two qualities of the current project:</span>
@@ -492,26 +452,22 @@
 <span class="sd">        to evaluate to true.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_master</span><span class="p">()</span> <span class="ow">and</span> <span class="n">is_merge_commit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">commit</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_master</span> <span class="ow">and</span> <span class="n">is_merge_commit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">commit</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the project path (aka project root)</span>
 
-<span class="sd">        If ``package.__file__`` is ``/foo/foo/__init__.py``, then project.path</span>
+<span class="sd">        If ``package.__file__`` is ``/foo/src/foo/__init__.py``,</span>
+<span class="sd">        then project.path</span>
 <span class="sd">        should be ``/foo``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span>
+        <span class="k">return</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">repo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a git.Repo object corresponding to this project&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">search_parent_directories</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">contrib_module_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the path to the project&#39;s contrib module&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;contrib&#39;</span><span class="p">,</span> <span class="s1">&#39;module_path&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">Project</span><span class="o">.</span><span class="n">attr_map</span><span class="p">:</span>

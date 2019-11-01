@@ -263,14 +263,14 @@
   <div class="section" id="module-ballet.validation.feature_pruning.validator">
 <span id="ballet-validation-feature-pruning-validator-module"></span><h1>ballet.validation.feature_pruning.validator module<a class="headerlink" href="#module-ballet.validation.feature_pruning.validator" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
-<dt id="ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.validation.feature_pruning.validator.</code><code class="sig-name descname">GFSSFPruningEvaluator</code><span class="sig-paren">(</span><em class="sig-param">X_df</em>, <em class="sig-param">y</em>, <em class="sig-param">features</em>, <em class="sig-param">new_feature</em>, <em class="sig-param">lmbda_1=0.0</em>, <em class="sig-param">lmbda_2=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_pruning/validator.html#GFSSFPruningEvaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="ballet.validation.base.html#ballet.validation.base.FeaturePruningEvaluator" title="ballet.validation.base.FeaturePruningEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.FeaturePruningEvaluator</span></code></a></p>
+<dt id="ballet.validation.feature_pruning.validator.GFSSFPruner">
+<em class="property">class </em><code class="sig-prename descclassname">ballet.validation.feature_pruning.validator.</code><code class="sig-name descname">GFSSFPruner</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">lmbda_1=0.0</em>, <em class="sig-param">lmbda_2=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_pruning/validator.html#GFSSFPruner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_pruning.validator.GFSSFPruner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ballet.validation.base.html#ballet.validation.base.FeaturePruner" title="ballet.validation.base.FeaturePruner"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.FeaturePruner</span></code></a></p>
 <p>A feature pruning evaluator that uses a modified version of
 GFSSF[1] - specifically, lines 12-13 of agGFSSF.</p>
 <dl class="attribute">
-<dt id="ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator.X_df">
-<code class="sig-name descname">X_df</code><a class="headerlink" href="#ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator.X_df" title="Permalink to this definition">¶</a></dt>
+<dt id="ballet.validation.feature_pruning.validator.GFSSFPruner.X_df">
+<code class="sig-name descname">X_df</code><a class="headerlink" href="#ballet.validation.feature_pruning.validator.GFSSFPruner.X_df" title="Permalink to this definition">¶</a></dt>
 <dd><p>The dataset to build features off of.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -280,8 +280,8 @@ GFSSF[1] - specifically, lines 12-13 of agGFSSF.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator.y">
-<code class="sig-name descname">y</code><a class="headerlink" href="#ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator.y" title="Permalink to this definition">¶</a></dt>
+<dt id="ballet.validation.feature_pruning.validator.GFSSFPruner.y">
+<code class="sig-name descname">y</code><a class="headerlink" href="#ballet.validation.feature_pruning.validator.GFSSFPruner.y" title="Permalink to this definition">¶</a></dt>
 <dd><p>A single-column dataset representing the target
 feature.</p>
 <dl class="field-list simple">
@@ -292,8 +292,8 @@ feature.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator.features">
-<code class="sig-name descname">features</code><a class="headerlink" href="#ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator.features" title="Permalink to this definition">¶</a></dt>
+<dt id="ballet.validation.feature_pruning.validator.GFSSFPruner.features">
+<code class="sig-name descname">features</code><a class="headerlink" href="#ballet.validation.feature_pruning.validator.GFSSFPruner.features" title="Permalink to this definition">¶</a></dt>
 <dd><p>an array of ballet Features that have
 already been accepted, to be pruned.</p>
 <dl class="field-list simple">
@@ -304,8 +304,8 @@ already been accepted, to be pruned.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator.new_feature">
-<code class="sig-name descname">new_feature</code><a class="headerlink" href="#ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator.new_feature" title="Permalink to this definition">¶</a></dt>
+<dt id="ballet.validation.feature_pruning.validator.GFSSFPruner.new_feature">
+<code class="sig-name descname">new_feature</code><a class="headerlink" href="#ballet.validation.feature_pruning.validator.GFSSFPruner.new_feature" title="Permalink to this definition">¶</a></dt>
 <dd><p>the recently accepted Feature.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -315,8 +315,8 @@ already been accepted, to be pruned.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator.lmbda_1">
-<code class="sig-name descname">lmbda_1</code><a class="headerlink" href="#ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator.lmbda_1" title="Permalink to this definition">¶</a></dt>
+<dt id="ballet.validation.feature_pruning.validator.GFSSFPruner.lmbda_1">
+<code class="sig-name descname">lmbda_1</code><a class="headerlink" href="#ballet.validation.feature_pruning.validator.GFSSFPruner.lmbda_1" title="Permalink to this definition">¶</a></dt>
 <dd><p>A float used in GFSSF to calculate the information
 threshold. Default is a function of the entropy of y.</p>
 <dl class="field-list simple">
@@ -327,8 +327,8 @@ threshold. Default is a function of the entropy of y.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator.lmbda_2">
-<code class="sig-name descname">lmbda_2</code><a class="headerlink" href="#ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator.lmbda_2" title="Permalink to this definition">¶</a></dt>
+<dt id="ballet.validation.feature_pruning.validator.GFSSFPruner.lmbda_2">
+<code class="sig-name descname">lmbda_2</code><a class="headerlink" href="#ballet.validation.feature_pruning.validator.GFSSFPruner.lmbda_2" title="Permalink to this definition">¶</a></dt>
 <dd><p>A float used in GFSSF to calculate the information
 threshold. Default is a function of the entropy of y.</p>
 <dl class="field-list simple">
@@ -346,8 +346,8 @@ doi: 10.1109/ICDM.2013.137</p>
 </dd>
 </dl>
 <dl class="method">
-<dt id="ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator.prune">
-<code class="sig-name descname">prune</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_pruning/validator.html#GFSSFPruningEvaluator.prune"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator.prune" title="Permalink to this definition">¶</a></dt>
+<dt id="ballet.validation.feature_pruning.validator.GFSSFPruner.prune">
+<code class="sig-name descname">prune</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_pruning/validator.html#GFSSFPruner.prune"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_pruning.validator.GFSSFPruner.prune" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prune existing features</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -362,12 +362,12 @@ doi: 10.1109/ICDM.2013.137</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="ballet.validation.feature_pruning.validator.NoOpPruningEvaluator">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.validation.feature_pruning.validator.</code><code class="sig-name descname">NoOpPruningEvaluator</code><span class="sig-paren">(</span><em class="sig-param">X_df</em>, <em class="sig-param">y</em>, <em class="sig-param">features</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_pruning/validator.html#NoOpPruningEvaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_pruning.validator.NoOpPruningEvaluator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="ballet.validation.base.html#ballet.validation.base.FeaturePruningEvaluator" title="ballet.validation.base.FeaturePruningEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.FeaturePruningEvaluator</span></code></a></p>
+<dt id="ballet.validation.feature_pruning.validator.NoOpPruner">
+<em class="property">class </em><code class="sig-prename descclassname">ballet.validation.feature_pruning.validator.</code><code class="sig-name descname">NoOpPruner</code><span class="sig-paren">(</span><em class="sig-param">X_df</em>, <em class="sig-param">y</em>, <em class="sig-param">features</em>, <em class="sig-param">candidate_feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_pruning/validator.html#NoOpPruner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_pruning.validator.NoOpPruner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ballet.validation.base.html#ballet.validation.base.FeaturePruner" title="ballet.validation.base.FeaturePruner"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.FeaturePruner</span></code></a></p>
 <dl class="method">
-<dt id="ballet.validation.feature_pruning.validator.NoOpPruningEvaluator.prune">
-<code class="sig-name descname">prune</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_pruning/validator.html#NoOpPruningEvaluator.prune"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_pruning.validator.NoOpPruningEvaluator.prune" title="Permalink to this definition">¶</a></dt>
+<dt id="ballet.validation.feature_pruning.validator.NoOpPruner.prune">
+<code class="sig-name descname">prune</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_pruning/validator.html#NoOpPruner.prune"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_pruning.validator.NoOpPruner.prune" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prune existing features</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -377,6 +377,18 @@ doi: 10.1109/ICDM.2013.137</p>
 <dd class="field-even"><p>list</p>
 </dd>
 </dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ballet.validation.feature_pruning.validator.RandomPruner">
+<em class="property">class </em><code class="sig-prename descclassname">ballet.validation.feature_pruning.validator.</code><code class="sig-name descname">RandomPruner</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">p=0.3</em>, <em class="sig-param">seed=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_pruning/validator.html#RandomPruner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_pruning.validator.RandomPruner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ballet.validation.base.html#ballet.validation.base.FeaturePruningMixin" title="ballet.validation.base.FeaturePruningMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.FeaturePruningMixin</span></code></a>, <a class="reference internal" href="ballet.validation.common.html#ballet.validation.common.RandomFeaturePerformanceEvaluator" title="ballet.validation.common.RandomFeaturePerformanceEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.common.RandomFeaturePerformanceEvaluator</span></code></a></p>
+<dl class="method">
+<dt id="ballet.validation.feature_pruning.validator.RandomPruner.prune">
+<code class="sig-name descname">prune</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_pruning/validator.html#RandomPruner.prune"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_pruning.validator.RandomPruner.prune" title="Permalink to this definition">¶</a></dt>
+<dd><p>With probability p, select a random feature to prune</p>
 </dd></dl>
 
 </dd></dl>

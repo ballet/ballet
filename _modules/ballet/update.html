@@ -342,7 +342,7 @@
 <span class="sd">        ballet.exc.BalletError: Push failed in some way</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">repo</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">repo</span>
-    <span class="n">remote_name</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;project&#39;</span><span class="p">,</span> <span class="s1">&#39;remote&#39;</span><span class="p">)</span>
+    <span class="n">remote_name</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;project.remote&#39;</span><span class="p">)</span>
     <span class="n">remote</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="n">remote_name</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">_call_remote_push</span><span class="p">(</span><span class="n">remote</span><span class="p">)</span>
     <span class="n">failures</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">(</span><span class="n">complement</span><span class="p">(</span><span class="n">did_git_push_succeed</span><span class="p">),</span> <span class="n">result</span><span class="p">)</span>

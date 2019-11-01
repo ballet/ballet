@@ -255,14 +255,9 @@
     <span class="n">FeatureRejected</span><span class="p">,</span> <span class="n">InvalidFeatureApi</span><span class="p">,</span> <span class="n">InvalidProjectStructure</span><span class="p">,</span>
     <span class="n">SkippedValidationTest</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span><span class="p">,</span> <span class="n">stacklog</span>
+<span class="kn">from</span> <span class="nn">ballet.util.mod</span> <span class="k">import</span> <span class="n">import_module_from_modname</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.common</span> <span class="k">import</span> <span class="p">(</span>
     <span class="n">get_accepted_features</span><span class="p">,</span> <span class="n">get_proposed_feature</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">ballet.validation.feature_acceptance.validator</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">GFSSFAcceptanceEvaluator</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">ballet.validation.feature_api.validator</span> <span class="k">import</span> <span class="n">FeatureApiValidator</span>
-<span class="kn">from</span> <span class="nn">ballet.validation.feature_pruning.validator</span> <span class="k">import</span> <span class="n">GFSSFPruningEvaluator</span>
-<span class="kn">from</span> <span class="nn">ballet.validation.project_structure.validator</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">ProjectStructureValidator</span><span class="p">)</span>
 
 <span class="c1"># helpful for log parsing</span>
 <span class="n">PRUNER_MESSAGE</span> <span class="o">=</span> <span class="s1">&#39;Found Redundant Feature: &#39;</span>
@@ -277,12 +272,20 @@
     <span class="k">return</span> <span class="n">call</span><span class="p">()</span></div>
 
 
+<div class="viewcode-block" id="load_class"><a class="viewcode-back" href="../../../api/ballet.validation.main.html#ballet.validation.main.load_class">[docs]</a><span class="k">def</span> <span class="nf">load_class</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">config_key</span><span class="p">):</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">config_key</span><span class="p">)</span>
+    <span class="n">modname</span><span class="p">,</span> <span class="n">clsname</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">mod</span> <span class="o">=</span> <span class="n">import_module_from_modname</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">clsname</span><span class="p">)</span></div>
+
+
 <span class="nd">@validation_stage</span><span class="p">(</span><span class="s1">&#39;checking project structure&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">_check_project_structure</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_pr</span><span class="p">():</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_pr</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on PR&#39;</span><span class="p">)</span>
 
-    <span class="n">validator</span> <span class="o">=</span> <span class="n">ProjectStructureValidator</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
+    <span class="n">Validator</span> <span class="o">=</span> <span class="n">load_class</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.project_structure_validator&#39;</span><span class="p">)</span>
+    <span class="n">validator</span> <span class="o">=</span> <span class="n">Validator</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">validator</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">InvalidProjectStructure</span>
@@ -291,10 +294,11 @@
 <span class="nd">@validation_stage</span><span class="p">(</span><span class="s1">&#39;validating feature API&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">_validate_feature_api</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Validate feature API&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_pr</span><span class="p">():</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_pr</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on PR&#39;</span><span class="p">)</span>
 
-    <span class="n">validator</span> <span class="o">=</span> <span class="n">FeatureApiValidator</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
+    <span class="n">Validator</span> <span class="o">=</span> <span class="n">load_class</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.feature_api_validator&#39;</span><span class="p">)</span>
+    <span class="n">validator</span> <span class="o">=</span> <span class="n">Validator</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">validator</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">InvalidFeatureApi</span>
@@ -303,7 +307,7 @@
 <span class="nd">@validation_stage</span><span class="p">(</span><span class="s1">&#39;evaluating feature performance&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">_evaluate_feature_performance</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Evaluate feature performance&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_pr</span><span class="p">():</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_pr</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on PR&#39;</span><span class="p">)</span>
 
     <span class="n">out</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
@@ -311,8 +315,10 @@
 
     <span class="n">proposed_feature</span> <span class="o">=</span> <span class="n">get_proposed_feature</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
     <span class="n">accepted_features</span> <span class="o">=</span> <span class="n">get_accepted_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">proposed_feature</span><span class="p">)</span>
-    <span class="n">evaluator</span> <span class="o">=</span> <span class="n">GFSSFAcceptanceEvaluator</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">accepted_features</span><span class="p">)</span>
-    <span class="n">accepted</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">judge</span><span class="p">(</span><span class="n">proposed_feature</span><span class="p">)</span>
+
+    <span class="n">Accepter</span> <span class="o">=</span> <span class="n">load_class</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.feature_accepter&#39;</span><span class="p">)</span>
+    <span class="n">accepter</span> <span class="o">=</span> <span class="n">Accepter</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">accepted_features</span><span class="p">,</span> <span class="n">proposed_feature</span><span class="p">)</span>
+    <span class="n">accepted</span> <span class="o">=</span> <span class="n">accepter</span><span class="o">.</span><span class="n">judge</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">accepted</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">FeatureRejected</span>
@@ -321,18 +327,19 @@
 <span class="nd">@validation_stage</span><span class="p">(</span><span class="s1">&#39;pruning existing features&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">_prune_existing_features</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Prune existing features&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_master_after_merge</span><span class="p">():</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_master_after_merge</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on master&#39;</span><span class="p">)</span>
 
     <span class="n">out</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
     <span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">features</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;X_df&#39;</span><span class="p">],</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">],</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span>
     <span class="n">proposed_feature</span> <span class="o">=</span> <span class="n">get_proposed_feature</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
     <span class="n">accepted_features</span> <span class="o">=</span> <span class="n">get_accepted_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">proposed_feature</span><span class="p">)</span>
-    <span class="n">evaluator</span> <span class="o">=</span> <span class="n">GFSSFPruningEvaluator</span><span class="p">(</span>
-        <span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">accepted_features</span><span class="p">,</span> <span class="n">proposed_feature</span><span class="p">)</span>
-    <span class="n">redundant_features</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">prune</span><span class="p">()</span>
 
-    <span class="c1"># propose removal</span>
+    <span class="n">Pruner</span> <span class="o">=</span> <span class="n">load_class</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.feature_pruner&#39;</span><span class="p">)</span>
+    <span class="n">pruner</span> <span class="o">=</span> <span class="n">Pruner</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">accepted_features</span><span class="p">,</span> <span class="n">proposed_feature</span><span class="p">)</span>
+    <span class="n">redundant_features</span> <span class="o">=</span> <span class="n">pruner</span><span class="o">.</span><span class="n">prune</span><span class="p">()</span>
+
+    <span class="c1"># &quot;propose removal&quot;</span>
     <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">redundant_features</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">PRUNER_MESSAGE</span> <span class="o">+</span> <span class="n">feature</span><span class="o">.</span><span class="n">source</span><span class="p">)</span>
 

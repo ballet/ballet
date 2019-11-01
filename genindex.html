@@ -288,7 +288,7 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li>
-    --check-all &lt;check_all&gt;
+    --check-all
 
       <ul>
         <li><a href="cli_reference.html#cmdoption-ballet-validate-a">ballet-validate command line option</a>
@@ -463,7 +463,7 @@
     ballet-validate command line option
 
       <ul>
-        <li><a href="cli_reference.html#cmdoption-ballet-validate-a">--check-all &lt;check_all&gt;</a>
+        <li><a href="cli_reference.html#cmdoption-ballet-validate-a">--check-all</a>
 </li>
         <li><a href="cli_reference.html#cmdoption-ballet-validate-check-feature-api">--check-feature-api</a>
 </li>
@@ -694,11 +694,9 @@
 </li>
       <li><a href="api/ballet.eng.base.html#ballet.eng.base.ConditionalTransformer">ConditionalTransformer (class in ballet.eng.base)</a>
 </li>
-      <li><a href="api/ballet.project.html#ballet.project.config_get">config_get() (in module ballet.project)</a>
+      <li><a href="api/ballet.project.html#ballet.project.Project.config">config (ballet.project.Project attribute)</a>
 </li>
       <li><a href="api/ballet.exc.html#ballet.exc.ConfigurationError">ConfigurationError</a>
-</li>
-      <li><a href="api/ballet.project.html#ballet.project.Project.contrib_module_path">contrib_module_path() (ballet.project.Project property)</a>
 </li>
       <li><a href="api/ballet.transformer.html#ballet.transformer.DelegatingRobustTransformer.CONVERSION_APPROACHES">CONVERSION_APPROACHES (ballet.transformer.DelegatingRobustTransformer attribute)</a>
 </li>
@@ -774,7 +772,9 @@
 </li>
       <li><a href="api/ballet.feature.html#ballet.feature.Feature">Feature (class in ballet.feature)</a>
 </li>
-      <li><a href="api/ballet.validation.base.html#ballet.validation.base.FeatureAcceptanceEvaluator">FeatureAcceptanceEvaluator (class in ballet.validation.base)</a>
+      <li><a href="api/ballet.validation.base.html#ballet.validation.base.FeatureAcceptanceMixin">FeatureAcceptanceMixin (class in ballet.validation.base)</a>
+</li>
+      <li><a href="api/ballet.validation.base.html#ballet.validation.base.FeatureAccepter">FeatureAccepter (class in ballet.validation.base)</a>
 </li>
       <li><a href="api/ballet.validation.feature_api.checks.html#ballet.validation.feature_api.checks.FeatureApiCheck">FeatureApiCheck (class in ballet.validation.feature_api.checks)</a>
 </li>
@@ -784,20 +784,22 @@
 </li>
       <li><a href="api/ballet.validation.base.html#ballet.validation.base.FeaturePerformanceEvaluator">FeaturePerformanceEvaluator (class in ballet.validation.base)</a>
 </li>
-      <li><a href="api/ballet.validation.base.html#ballet.validation.base.FeaturePruningEvaluator">FeaturePruningEvaluator (class in ballet.validation.base)</a>
+      <li><a href="api/ballet.validation.base.html#ballet.validation.base.FeaturePruner">FeaturePruner (class in ballet.validation.base)</a>
+</li>
+      <li><a href="api/ballet.validation.base.html#ballet.validation.base.FeaturePruningMixin">FeaturePruningMixin (class in ballet.validation.base)</a>
 </li>
       <li><a href="api/ballet.exc.html#ballet.exc.FeatureRejected">FeatureRejected</a>
 </li>
-      <li><a href="api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator.features">features (ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator attribute)</a>
+      <li><a href="api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.GFSSFAccepter.features">features (ballet.validation.feature_acceptance.validator.GFSSFAccepter attribute)</a>
 
       <ul>
-        <li><a href="api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator.features">(ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator attribute)</a>
+        <li><a href="api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.GFSSFPruner.features">(ballet.validation.feature_pruning.validator.GFSSFPruner attribute)</a>
 </li>
       </ul></li>
-      <li><a href="api/ballet.modeling.io_transformers.html#ballet.modeling.io_transformers.FeatureTypeTransformer">FeatureTypeTransformer (class in ballet.modeling.io_transformers)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/ballet.modeling.io_transformers.html#ballet.modeling.io_transformers.FeatureTypeTransformer">FeatureTypeTransformer (class in ballet.modeling.io_transformers)</a>
+</li>
       <li><a href="api/ballet.exc.html#ballet.exc.FeatureValidationError">FeatureValidationError</a>
 </li>
       <li><a href="api/ballet.validation.common.html#ballet.validation.common.CollectedChanges.file_diffs">file_diffs() (ballet.validation.common.CollectedChanges property)</a>
@@ -836,8 +838,6 @@
 </li>
       <li><a href="api/ballet.util.git.html#ballet.util.git.get_branch">get_branch() (in module ballet.util.git)</a>
 </li>
-      <li><a href="api/ballet.project.html#ballet.project.get_config_path">get_config_path() (in module ballet.project)</a>
-</li>
       <li><a href="api/ballet.util.git.html#ballet.util.git.get_diff_endpoints_from_commit_range">get_diff_endpoints_from_commit_range() (in module ballet.util.git)</a>
 </li>
       <li><a href="api/ballet.util.html#ballet.util.get_enum_keys">get_enum_keys() (in module ballet.util)</a>
@@ -852,10 +852,10 @@
 </li>
       <li><a href="api/ballet.util.git.html#ballet.util.git.get_pull_requests">get_pull_requests() (in module ballet.util.git)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/ballet.util.git.html#ballet.util.git.get_repo">get_repo() (in module ballet.util.git)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/ballet.modeling.scoring.html#ballet.modeling.scoring.get_scorer_names_for_problem_type">get_scorer_names_for_problem_type() (in module ballet.modeling.scoring)</a>
 </li>
       <li><a href="api/ballet.util.code.html#ballet.util.code.get_source">get_source() (in module ballet.util.code)</a>
@@ -872,9 +872,9 @@
         <li><a href="api/ballet.modeler.html#ballet.modeler.SelfTuningRandomForestMixin.get_tunables">(ballet.modeler.SelfTuningRandomForestMixin method)</a>
 </li>
       </ul></li>
-      <li><a href="api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator">GFSSFAcceptanceEvaluator (class in ballet.validation.feature_acceptance.validator)</a>
+      <li><a href="api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.GFSSFAccepter">GFSSFAccepter (class in ballet.validation.feature_acceptance.validator)</a>
 </li>
-      <li><a href="api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator">GFSSFPruningEvaluator (class in ballet.validation.feature_pruning.validator)</a>
+      <li><a href="api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.GFSSFPruner">GFSSFPruner (class in ballet.validation.feature_pruning.validator)</a>
 </li>
       <li><a href="api/ballet.eng.base.html#ballet.eng.base.GroupedFunctionTransformer">GroupedFunctionTransformer (class in ballet.eng.base)</a>
 </li>
@@ -946,12 +946,14 @@
 <h2 id="J">J</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/ballet.validation.base.html#ballet.validation.base.FeatureAcceptanceEvaluator.judge">judge() (ballet.validation.base.FeatureAcceptanceEvaluator method)</a>
+      <li><a href="api/ballet.validation.base.html#ballet.validation.base.FeatureAcceptanceMixin.judge">judge() (ballet.validation.base.FeatureAcceptanceMixin method)</a>
 
       <ul>
-        <li><a href="api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator.judge">(ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator method)</a>
+        <li><a href="api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.GFSSFAccepter.judge">(ballet.validation.feature_acceptance.validator.GFSSFAccepter method)</a>
 </li>
-        <li><a href="api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.NoOpAcceptanceEvaluator.judge">(ballet.validation.feature_acceptance.validator.NoOpAcceptanceEvaluator method)</a>
+        <li><a href="api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.NoOpAccepter.judge">(ballet.validation.feature_acceptance.validator.NoOpAccepter method)</a>
+</li>
+        <li><a href="api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.RandomAccepter.judge">(ballet.validation.feature_acceptance.validator.RandomAccepter method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -964,19 +966,21 @@
 </li>
       <li><a href="api/ballet.util.log.html#ballet.util.log.LevelFilter">LevelFilter (class in ballet.util.log)</a>
 </li>
-      <li><a href="api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator.lmbda_1">lmbda_1 (ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator attribute)</a>
+      <li><a href="api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.GFSSFAccepter.lmbda_1">lmbda_1 (ballet.validation.feature_acceptance.validator.GFSSFAccepter attribute)</a>
 
       <ul>
-        <li><a href="api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator.lmbda_1">(ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator attribute)</a>
+        <li><a href="api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.GFSSFPruner.lmbda_1">(ballet.validation.feature_pruning.validator.GFSSFPruner attribute)</a>
 </li>
       </ul></li>
-      <li><a href="api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator.lmbda_2">lmbda_2 (ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator attribute)</a>
+      <li><a href="api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.GFSSFAccepter.lmbda_2">lmbda_2 (ballet.validation.feature_acceptance.validator.GFSSFAccepter attribute)</a>
 
       <ul>
-        <li><a href="api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator.lmbda_2">(ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator attribute)</a>
+        <li><a href="api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.GFSSFPruner.lmbda_2">(ballet.validation.feature_pruning.validator.GFSSFPruner attribute)</a>
 </li>
       </ul></li>
       <li><a href="api/ballet.modeler.html#ballet.modeler.Modeler.load">load() (ballet.modeler.Modeler method)</a>
+</li>
+      <li><a href="api/ballet.validation.main.html#ballet.validation.main.load_class">load_class() (in module ballet.validation.main)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -1003,8 +1007,6 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/ballet.util.git.html#ballet.util.git.make_commit_range">make_commit_range() (in module ballet.util.git)</a>
-</li>
-      <li><a href="api/ballet.project.html#ballet.project.make_config_get">make_config_get() (in module ballet.project)</a>
 </li>
       <li><a href="api/ballet.project.html#ballet.project.make_feature_path">make_feature_path() (in module ballet.project)</a>
 </li>
@@ -1050,7 +1052,7 @@
 </li>
       <li><a href="api/ballet.util.html#ballet.util.needs_path">needs_path() (in module ballet.util)</a>
 </li>
-      <li><a href="api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator.new_feature">new_feature (ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator attribute)</a>
+      <li><a href="api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.GFSSFPruner.new_feature">new_feature (ballet.validation.feature_pruning.validator.GFSSFPruner attribute)</a>
 </li>
       <li><a href="api/ballet.validation.common.html#ballet.validation.common.CollectedChanges.new_feature_info">new_feature_info() (ballet.validation.common.CollectedChanges property)</a>
 </li>
@@ -1062,9 +1064,9 @@
 </li>
       <li><a href="api/ballet.validation.feature_api.checks.html#ballet.validation.feature_api.checks.NoMissingValuesCheck">NoMissingValuesCheck (class in ballet.validation.feature_api.checks)</a>
 </li>
-      <li><a href="api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.NoOpAcceptanceEvaluator">NoOpAcceptanceEvaluator (class in ballet.validation.feature_acceptance.validator)</a>
+      <li><a href="api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.NoOpAccepter">NoOpAccepter (class in ballet.validation.feature_acceptance.validator)</a>
 </li>
-      <li><a href="api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.NoOpPruningEvaluator">NoOpPruningEvaluator (class in ballet.validation.feature_pruning.validator)</a>
+      <li><a href="api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.NoOpPruner">NoOpPruner (class in ballet.validation.feature_pruning.validator)</a>
 </li>
       <li><a href="api/ballet.eng.missing.html#ballet.eng.missing.NullFiller">NullFiller (class in ballet.eng.missing)</a>
 </li>
@@ -1076,13 +1078,13 @@
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/ballet.project.html#ballet.project.Project.on_master">on_master() (ballet.project.Project method)</a>
+      <li><a href="api/ballet.project.html#ballet.project.Project.on_master">on_master() (ballet.project.Project property)</a>
 </li>
-      <li><a href="api/ballet.project.html#ballet.project.Project.on_master_after_merge">on_master_after_merge() (ballet.project.Project method)</a>
+      <li><a href="api/ballet.project.html#ballet.project.Project.on_master_after_merge">on_master_after_merge() (ballet.project.Project property)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/ballet.project.html#ballet.project.Project.on_pr">on_pr() (ballet.project.Project method)</a>
+      <li><a href="api/ballet.project.html#ballet.project.Project.on_pr">on_pr() (ballet.project.Project property)</a>
 </li>
       <li><a href="api/ballet.util.html#ballet.util.one_or_raise">one_or_raise() (in module ballet.util)</a>
 </li>
@@ -1110,12 +1112,14 @@
 </li>
       <li><a href="api/ballet.validation.project_structure.validator.html#ballet.validation.project_structure.validator.ProjectStructureValidator">ProjectStructureValidator (class in ballet.validation.project_structure.validator)</a>
 </li>
-      <li><a href="api/ballet.validation.base.html#ballet.validation.base.FeaturePruningEvaluator.prune">prune() (ballet.validation.base.FeaturePruningEvaluator method)</a>
+      <li><a href="api/ballet.validation.base.html#ballet.validation.base.FeaturePruningMixin.prune">prune() (ballet.validation.base.FeaturePruningMixin method)</a>
 
       <ul>
-        <li><a href="api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator.prune">(ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator method)</a>
+        <li><a href="api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.GFSSFPruner.prune">(ballet.validation.feature_pruning.validator.GFSSFPruner method)</a>
 </li>
-        <li><a href="api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.NoOpPruningEvaluator.prune">(ballet.validation.feature_pruning.validator.NoOpPruningEvaluator method)</a>
+        <li><a href="api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.NoOpPruner.prune">(ballet.validation.feature_pruning.validator.NoOpPruner method)</a>
+</li>
+        <li><a href="api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.RandomPruner.prune">(ballet.validation.feature_pruning.validator.RandomPruner method)</a>
 </li>
       </ul></li>
       <li><a href="api/ballet.util.git.html#ballet.util.git.PullRequestBuildDiffer">PullRequestBuildDiffer (class in ballet.util.git)</a>
@@ -1136,6 +1140,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/ballet.util.html#ballet.util.raiseifnone">raiseifnone() (in module ballet.util)</a>
 </li>
+      <li><a href="api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.RandomAccepter">RandomAccepter (class in ballet.validation.feature_acceptance.validator)</a>
+</li>
+      <li><a href="api/ballet.validation.common.html#ballet.validation.common.RandomFeaturePerformanceEvaluator">RandomFeaturePerformanceEvaluator (class in ballet.validation.common)</a>
+</li>
+      <li><a href="api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.RandomPruner">RandomPruner (class in ballet.validation.feature_pruning.validator)</a>
+</li>
       <li><a href="api/ballet.util.io.html#ballet.util.io.read_tabular">read_tabular() (in module ballet.util.io)</a>
 </li>
       <li><a href="api/ballet.modeling.problem.html#ballet.modeling.problem.ProblemType.regression">regression (ballet.modeling.problem.ProblemType attribute)</a>
@@ -1146,10 +1156,10 @@
       </ul></li>
       <li><a href="api/ballet.modeling.problem.html#ballet.modeling.problem.RegressionProblem">RegressionProblem (class in ballet.modeling.problem)</a>
 </li>
-      <li><a href="api/ballet.project.html#ballet.project.relative_to_contrib">relative_to_contrib() (in module ballet.project)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/ballet.project.html#ballet.project.relative_to_contrib">relative_to_contrib() (in module ballet.project)</a>
+</li>
       <li><a href="api/ballet.validation.project_structure.checks.html#ballet.validation.project_structure.checks.RelativeNameDepthCheck">RelativeNameDepthCheck (class in ballet.validation.project_structure.checks)</a>
 </li>
       <li><a href="api/ballet.util.mod.html#ballet.util.mod.relpath_to_modname">relpath_to_modname() (in module ballet.util.mod)</a>
@@ -1334,10 +1344,10 @@
 <h2 id="X">X</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator.X_df">X_df (ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator attribute)</a>
+      <li><a href="api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.GFSSFAccepter.X_df">X_df (ballet.validation.feature_acceptance.validator.GFSSFAccepter attribute)</a>
 
       <ul>
-        <li><a href="api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator.X_df">(ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator attribute)</a>
+        <li><a href="api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.GFSSFPruner.X_df">(ballet.validation.feature_pruning.validator.GFSSFPruner attribute)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -1346,10 +1356,10 @@
 <h2 id="Y">Y</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator.y">y (ballet.validation.feature_acceptance.validator.GFSSFAcceptanceEvaluator attribute)</a>
+      <li><a href="api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.GFSSFAccepter.y">y (ballet.validation.feature_acceptance.validator.GFSSFAccepter attribute)</a>
 
       <ul>
-        <li><a href="api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator.y">(ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator attribute)</a>
+        <li><a href="api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.GFSSFPruner.y">(ballet.validation.feature_pruning.validator.GFSSFPruner attribute)</a>
 </li>
       </ul></li>
   </ul></td>

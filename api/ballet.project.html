@@ -268,8 +268,6 @@ information from within the ballet.validation package.</p>
 <p>In addition to the defined methods and properties, the following functions
 of the project can be accessed as attributes of a class instance, where
 <code class="docutils literal notranslate"><span class="pre">prj</span></code> refers to the python module of the underlying ballet project:
-- <code class="docutils literal notranslate"><span class="pre">conf</span></code> (<code class="docutils literal notranslate"><span class="pre">prj.conf</span></code>)
-- <code class="docutils literal notranslate"><span class="pre">get</span></code> (<code class="docutils literal notranslate"><span class="pre">prj.conf.get</span></code>)
 - <code class="docutils literal notranslate"><span class="pre">load_data</span></code> (<code class="docutils literal notranslate"><span class="pre">prj.load_data.load_data</span></code>)
 - <code class="docutils literal notranslate"><span class="pre">build</span></code> (<code class="docutils literal notranslate"><span class="pre">prj.features.build</span></code>)
 - <code class="docutils literal notranslate"><span class="pre">collect_contrib_features</span></code> (<code class="docutils literal notranslate"><span class="pre">prj.features.collect_contrib_features</span></code>)</p>
@@ -281,7 +279,7 @@ project</p>
 </dl>
 <dl class="attribute">
 <dt id="ballet.project.Project.attr_map">
-<code class="sig-name descname">attr_map</code><em class="property"> = {'build': ('.features', 'build'), 'collect_contrib_features': ('.features', 'collect_contrib_features'), 'conf': ('.conf', None), 'get': ('.conf', 'get'), 'load_data': ('.load_data', 'load_data')}</em><a class="headerlink" href="#ballet.project.Project.attr_map" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">attr_map</code><em class="property"> = {'build': ('.features', 'build'), 'collect_contrib_features': ('.features', 'collect_contrib_features'), 'load_data': ('.load_data', 'load_data')}</em><a class="headerlink" href="#ballet.project.Project.attr_map" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -290,11 +288,10 @@ project</p>
 <dd><p>Return whether the project is on master branch</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="ballet.project.Project.contrib_module_path">
-<em class="property">property </em><code class="sig-name descname">contrib_module_path</code><a class="headerlink" href="#ballet.project.Project.contrib_module_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the path to the project’s contrib module</p>
-</dd></dl>
+<dl class="attribute">
+<dt id="ballet.project.Project.config">
+<code class="sig-name descname">config</code><a class="headerlink" href="#ballet.project.Project.config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="ballet.project.Project.from_path">
@@ -310,12 +307,12 @@ project</p>
 
 <dl class="method">
 <dt id="ballet.project.Project.on_master">
-<code class="sig-name descname">on_master</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/project.html#Project.on_master"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.project.Project.on_master" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">on_master</code><a class="headerlink" href="#ballet.project.Project.on_master" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="ballet.project.Project.on_master_after_merge">
-<code class="sig-name descname">on_master_after_merge</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/project.html#Project.on_master_after_merge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.project.Project.on_master_after_merge" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">on_master_after_merge</code><a class="headerlink" href="#ballet.project.Project.on_master_after_merge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check the repo HEAD is on master after a merge commit</p>
 <p>Checks for two qualities of the current project:
 1. The project repo’s head is the master branch
@@ -326,7 +323,7 @@ to evaluate to true.</p>
 
 <dl class="method">
 <dt id="ballet.project.Project.on_pr">
-<code class="sig-name descname">on_pr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/project.html#Project.on_pr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.project.Project.on_pr" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">on_pr</code><a class="headerlink" href="#ballet.project.Project.on_pr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return whether the project has a source tree on a PR</p>
 </dd></dl>
 
@@ -334,7 +331,8 @@ to evaluate to true.</p>
 <dt id="ballet.project.Project.path">
 <em class="property">property </em><code class="sig-name descname">path</code><a class="headerlink" href="#ballet.project.Project.path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the project path (aka project root)</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">package.__file__</span></code> is <code class="docutils literal notranslate"><span class="pre">/foo/foo/__init__.py</span></code>, then project.path
+<p>If <code class="docutils literal notranslate"><span class="pre">package.__file__</span></code> is <code class="docutils literal notranslate"><span class="pre">/foo/src/foo/__init__.py</span></code>,
+then project.path
 should be <code class="docutils literal notranslate"><span class="pre">/foo</span></code>.</p>
 </dd></dl>
 
@@ -353,28 +351,6 @@ should be <code class="docutils literal notranslate"><span class="pre">/foo</spa
 </dd></dl>
 
 <dl class="function">
-<dt id="ballet.project.config_get">
-<code class="sig-prename descclassname">ballet.project.</code><code class="sig-name descname">config_get</code><span class="sig-paren">(</span><em class="sig-param">config</em>, <em class="sig-param">*path</em>, <em class="sig-param">default=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/project.html#config_get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.project.config_get" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a configuration option following a path through the config</p>
-<p>Example usage:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">config_get</span><span class="p">(</span><span class="n">config</span><span class="p">,</span>
-<span class="go">               &#39;problem&#39;, &#39;problem_type_details&#39;, &#39;scorer&#39;,</span>
-<span class="go">               default=&#39;accuracy&#39;)</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>config</strong> (<em>dict</em>) – config dict</p></li>
-<li><p><strong>*path</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – List of config sections and options to follow.</p></li>
-<li><p><strong>default</strong> (<em>default=None</em>) – A default value to return in the case that
-the option does not exist.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
 <dt id="ballet.project.detect_github_username">
 <code class="sig-prename descclassname">ballet.project.</code><code class="sig-name descname">detect_github_username</code><span class="sig-paren">(</span><em class="sig-param">project</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/project.html#detect_github_username"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.project.detect_github_username" title="Permalink to this definition">¶</a></dt>
 <dd><p>Detect github username</p>
@@ -383,18 +359,6 @@ the option does not exist.</p></li>
 2. git remote origin
 3. $USER
 4. ‘username’</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="ballet.project.get_config_path">
-<code class="sig-prename descclassname">ballet.project.</code><code class="sig-name descname">get_config_path</code><span class="sig-paren">(</span><em class="sig-param">project_root</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/project.html#get_config_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.project.get_config_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get candidate config path</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>project_root</strong> (<em>path-like</em>) – Directory of the ballet project root
-directory, the one usually containing the <code class="docutils literal notranslate"><span class="pre">ballet.yml</span></code> file.</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="function">
@@ -427,18 +391,6 @@ directory, the one usually containing the <code class="docutils literal notransl
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="ballet.project.make_config_get">
-<code class="sig-prename descclassname">ballet.project.</code><code class="sig-name descname">make_config_get</code><span class="sig-paren">(</span><em class="sig-param">conf_path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/project.html#make_config_get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.project.make_config_get" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a function to get configuration options for a specific project</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>conf_path</strong> (<em>path-like</em>) – path to project’s conf file (i.e. foo.conf
-module)</p>
 </dd>
 </dl>
 </dd></dl>

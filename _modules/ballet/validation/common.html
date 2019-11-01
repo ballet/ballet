@@ -261,6 +261,7 @@
 <span class="kn">from</span> <span class="nn">ballet.util.git</span> <span class="k">import</span> <span class="n">LocalMergeBuildDiffer</span><span class="p">,</span> <span class="n">LocalPullRequestBuildDiffer</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span><span class="p">,</span> <span class="n">stacklog</span>
 <span class="kn">from</span> <span class="nn">ballet.util.mod</span> <span class="k">import</span> <span class="n">import_module_at_path</span><span class="p">,</span> <span class="n">relpath_to_modname</span>
+<span class="kn">from</span> <span class="nn">ballet.validation.base</span> <span class="k">import</span> <span class="n">FeaturePerformanceEvaluator</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.project_structure.checks</span> <span class="k">import</span> <span class="n">ProjectStructureCheck</span>
 
 
@@ -477,6 +478,18 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="n">Checker</span><span class="o">.</span><span class="vm">__name__</span>
             <span class="k">yield</span> <span class="n">name</span></div>
+
+
+<div class="viewcode-block" id="RandomFeaturePerformanceEvaluator"><a class="viewcode-back" href="../../../api/ballet.validation.common.html#ballet.validation.common.RandomFeaturePerformanceEvaluator">[docs]</a><span class="k">class</span> <span class="nc">RandomFeaturePerformanceEvaluator</span><span class="p">(</span><span class="n">FeaturePerformanceEvaluator</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">p</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{str}</span><span class="s1">: p=</span><span class="si">{p}</span><span class="s1">, seed=</span><span class="si">{seed}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="nb">str</span><span class="o">=</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__str__</span><span class="p">(),</span> <span class="n">p</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

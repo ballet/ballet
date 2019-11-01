@@ -249,9 +249,13 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ballet.validation.feature_pruning.validator</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">asarray2d</span>
+<span></span><span class="kn">import</span> <span class="nn">random</span>
+
+<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">asarray2d</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">ballet.validation.base</span> <span class="k">import</span> <span class="n">FeaturePruningEvaluator</span>
+<span class="kn">from</span> <span class="nn">ballet.util.testing</span> <span class="k">import</span> <span class="n">seeded</span>
+<span class="kn">from</span> <span class="nn">ballet.validation.base</span> <span class="k">import</span> <span class="n">FeaturePruner</span><span class="p">,</span> <span class="n">FeaturePruningMixin</span>
+<span class="kn">from</span> <span class="nn">ballet.validation.common</span> <span class="k">import</span> <span class="n">RandomFeaturePerformanceEvaluator</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.entropy</span> <span class="k">import</span> <span class="p">(</span>
     <span class="n">estimate_conditional_information</span><span class="p">,</span> <span class="n">estimate_entropy</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.gfssf</span> <span class="k">import</span> <span class="p">(</span>
@@ -259,15 +263,26 @@
     <span class="n">_compute_threshold</span><span class="p">,</span> <span class="n">_concat_datasets</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="NoOpPruningEvaluator"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.NoOpPruningEvaluator">[docs]</a><span class="k">class</span> <span class="nc">NoOpPruningEvaluator</span><span class="p">(</span><span class="n">FeaturePruningEvaluator</span><span class="p">):</span>
-<div class="viewcode-block" id="NoOpPruningEvaluator.prune"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.NoOpPruningEvaluator.prune">[docs]</a>    <span class="k">def</span> <span class="nf">prune</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="NoOpPruner"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.NoOpPruner">[docs]</a><span class="k">class</span> <span class="nc">NoOpPruner</span><span class="p">(</span><span class="n">FeaturePruner</span><span class="p">):</span>
+<div class="viewcode-block" id="NoOpPruner.prune"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.NoOpPruner.prune">[docs]</a>    <span class="k">def</span> <span class="nf">prune</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Pruning features using </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
         <span class="k">return</span> <span class="p">[]</span></div></div>
+
+
+<div class="viewcode-block" id="RandomPruner"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.RandomPruner">[docs]</a><span class="k">class</span> <span class="nc">RandomPruner</span><span class="p">(</span><span class="n">FeaturePruningMixin</span><span class="p">,</span> <span class="n">RandomFeaturePerformanceEvaluator</span><span class="p">):</span>
+
+<div class="viewcode-block" id="RandomPruner.prune"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.RandomPruner.prune">[docs]</a>    <span class="k">def</span> <span class="nf">prune</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;With probability p, select a random feature to prune&quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Pruning features using </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="k">with</span> <span class="n">seeded</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)]</span></div></div>
 
 
 <span class="n">CMI_MESSAGE</span> <span class="o">=</span> <span class="s2">&quot;Calculating CMI of feature and target cond. on accpt features&quot;</span>
 
 
-<div class="viewcode-block" id="GFSSFPruningEvaluator"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator">[docs]</a><span class="k">class</span> <span class="nc">GFSSFPruningEvaluator</span><span class="p">(</span><span class="n">FeaturePruningEvaluator</span><span class="p">):</span>
+<div class="viewcode-block" id="GFSSFPruner"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.GFSSFPruner">[docs]</a><span class="k">class</span> <span class="nc">GFSSFPruner</span><span class="p">(</span><span class="n">FeaturePruner</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A feature pruning evaluator that uses a modified version of</span>
 <span class="sd">    GFSSF[1] - specifically, lines 12-13 of agGFSSF.</span>
 
@@ -291,28 +306,19 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">X_df</span><span class="p">,</span>
-            <span class="n">y</span><span class="p">,</span>
-            <span class="n">features</span><span class="p">,</span>
-            <span class="n">new_feature</span><span class="p">,</span>
-            <span class="n">lmbda_1</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
-            <span class="n">lmbda_2</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">lmbda_1</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">lmbda_2</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">lmbda_1</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">lmbda_1</span> <span class="o">=</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">LAMBDA_1_ADJUSTMENT</span>
         <span class="k">if</span> <span class="n">lmbda_2</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">lmbda_2</span> <span class="o">=</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">LAMBDA_2_ADJUSTMENT</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lmbda_1</span> <span class="o">=</span> <span class="n">lmbda_1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lmbda_2</span> <span class="o">=</span> <span class="n">lmbda_2</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">feature</span> <span class="o">=</span> <span class="n">new_feature</span>
 
-<div class="viewcode-block" id="GFSSFPruningEvaluator.prune"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.GFSSFPruningEvaluator.prune">[docs]</a>    <span class="k">def</span> <span class="nf">prune</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-
+<div class="viewcode-block" id="GFSSFPruner.prune"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.GFSSFPruner.prune">[docs]</a>    <span class="k">def</span> <span class="nf">prune</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">feature_dfs_by_src</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">accepted_feature</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">feature</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">accepted_feature</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">candidate_feature</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
             <span class="n">accepted_df</span> <span class="o">=</span> <span class="n">accepted_feature</span><span class="o">.</span><span class="n">as_feature_engineering_pipeline</span><span class="p">(</span>
             <span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
             <span class="n">feature_dfs_by_src</span><span class="p">[</span><span class="n">accepted_feature</span><span class="o">.</span><span class="n">source</span><span class="p">]</span> <span class="o">=</span> <span class="n">accepted_df</span>
@@ -322,10 +328,10 @@
         <span class="p">)</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot;Prune Features using GFSSF: lambda_1=</span><span class="si">{l1}</span><span class="s2">, lambda_2=</span><span class="si">{l2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">l1</span><span class="o">=</span><span class="n">lmbda_1</span><span class="p">,</span> <span class="n">l2</span><span class="o">=</span><span class="n">lmbda_2</span>
-            <span class="p">)</span>
+            <span class="s2">&quot;Pruning features using GFSSF: lambda_1=</span><span class="si">{l1}</span><span class="s2">, lambda_2=</span><span class="si">{l2}</span><span class="s2">&quot;</span>
+            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">l1</span><span class="o">=</span><span class="n">lmbda_1</span><span class="p">,</span> <span class="n">l2</span><span class="o">=</span><span class="n">lmbda_2</span><span class="p">)</span>
         <span class="p">)</span>
+
         <span class="n">redundant_features</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">candidate_feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
             <span class="n">candidate_src</span> <span class="o">=</span> <span class="n">candidate_feature</span><span class="o">.</span><span class="n">source</span>

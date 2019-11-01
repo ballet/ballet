@@ -329,12 +329,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">contrib_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">project</span> <span class="o">=</span> <span class="n">Project</span><span class="o">.</span><span class="n">from_path</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span>
-        <span class="n">contrib_dir</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;contrib&#39;</span><span class="p">,</span> <span class="s1">&#39;module_path&#39;</span><span class="p">)</span>
+        <span class="n">contrib_dir</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;contrib.module_path&#39;</span><span class="p">)</span>
 
     <span class="c1"># inject default username into context</span>
     <span class="n">default_username</span> <span class="o">=</span> <span class="n">detect_github_username</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
-    <span class="n">ec</span> <span class="o">=</span> <span class="n">cc_kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;extra_context&#39;</span><span class="p">,</span> <span class="p">{})</span>
-    <span class="n">ec</span><span class="p">[</span><span class="s1">&#39;_default_username&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">default_username</span>
+    <span class="n">cc_kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;extra_context&#39;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">cc_kwargs</span><span class="p">[</span><span class="s1">&#39;extra_context&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;_default_username&#39;</span><span class="p">:</span> <span class="n">default_username</span><span class="p">})</span>
 
     <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tempdir</span><span class="p">:</span>
         <span class="c1"># render feature template</span>
