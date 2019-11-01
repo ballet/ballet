@@ -66,7 +66,7 @@ fix-lint: ## fix lint issues using autopep8 and isort
 
 .PHONY: test
 test: ## run tests quickly with the default Python
-	python -m pytest --basetemp=${ENVTMP}
+	python -m pytest --basetemp=${ENVTMP} --cov=ballet
 
 .PHONY: test-fast
 test-fast:  ## run tests that are not marked as 'slow'
@@ -75,11 +75,11 @@ test-fast:  ## run tests that are not marked as 'slow'
 
 .PHONY: test-all
 test-all: ## run tests on every Python version with tox
-	tox
+	tox -r
 
 .PHONY: coverage
 coverage: ## check code coverage quickly with the default Python
-	coverage run -m pytest
+	coverage run --source ballet -m pytest
 	coverage report -m
 	coverage html
 	$(BROWSER) htmlcov/index.html
