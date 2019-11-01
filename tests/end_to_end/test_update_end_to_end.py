@@ -98,6 +98,8 @@ def test_update_after_change_in_template(quickstart, project_template_copy):
     template_dir = project_template_copy
 
     modified_file_path = tempdir.joinpath(project_slug, DEFAULT_CONFIG_NAME)
+
+    # need to indent
     new_content = 'foo: bar'
 
     # add foo: bar to project template
@@ -105,6 +107,7 @@ def test_update_after_change_in_template(quickstart, project_template_copy):
                               DEFAULT_CONFIG_NAME)
     with p.open('a') as f:
         f.write('\n')
+        f.write(' ' * 2)  # indent under `default` key
         f.write(new_content)
         f.write('\n')
 

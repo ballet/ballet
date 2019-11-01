@@ -1,43 +1,45 @@
-project:
-  name: {{ cookiecutter.project_name }}
-  owner: {{ cookiecutter.github_owner }}
-  slug: {{ cookiecutter.project_slug }}
-  remote: origin
-
-problem:
-  problem_type: {{ cookiecutter.problem_type }}
-  problem_type_details:
-    scorer: {% if cookiecutter.problem_type == 'classification' %}{{ cookiecutter.classification_scorer }}{% else %}{{ cookiecutter.regression_scorer }}{% endif %}
-    classification_type: {% if cookiecutter.problem_type == 'classification' %}{{ cookiecutter.classification_type }}{% endif %}
-
-contrib:
-  module_name: {{ cookiecutter.project_slug }}.features.contrib
-  module_path: {{ cookiecutter.project_slug }}/features/contrib
-
-data:
-  s3_bucket: todo
-  s3_bucket_region: todo
-  train: data/train
-  entities_table_name: entities
-  targets_table_name: targets
-
-tables:
-  -
-    name: entities
-    path: entities.csv
-    pd_read_kwargs:
-      index_col: 0
-      header: 0
-      sep: ","
-  -
-    name: targets
-    path: targets.csv
-    pd_read_kwargs:
-      index_col: 0
-      header: 0
-      sep: ","
-
-github:
-  pruning_action: {{ cookiecutter.pruning_action }}
-  auto_merge_accepted_features: {{ cookiecutter.auto_merge_accepted_features }}
-  auto_close_rejected_features: {{ cookiecutter.auto_close_rejected_features }}
+default:
+  version: {{ cookiecutter._ballet_version }}
+  project:
+    name: {{ cookiecutter.project_name }}
+    owner: {{ cookiecutter.github_owner }}
+    slug: {{ cookiecutter.project_slug }}
+    remote: origin
+  problem:
+    problem_type: {{ cookiecutter.problem_type }}
+    problem_type_details:
+      scorer: {% if cookiecutter.problem_type == 'classification' %}{{ cookiecutter.classification_scorer }}{% else %}{{ cookiecutter.regression_scorer }}{% endif %}
+      classification_type: {% if cookiecutter.problem_type == 'classification' %}{{ cookiecutter.classification_type }}{% endif %}
+  contrib:
+    module_name: {{ cookiecutter.project_slug }}.features.contrib
+    module_path: src/{{ cookiecutter.project_slug }}/features/contrib
+  validation:
+    project_structure_validator: ballet.validation.project_structure.validator.ProjectStructureValidator
+    feature_api_validator: ballet.validation.feature_api.validator.FeatureApiValidator
+    feature_accepter: ballet.validation.feature_acceptance.validator.GFSSFFeatureAccepter
+    feature_pruner: ballet.validation.feature_pruning.validator.GFSSFFeaturePruner
+  github:
+    pruning_action: {{ cookiecutter.pruning_action }}
+    auto_merge_accepted_features: {{ cookiecutter.auto_merge_accepted_features }}
+    auto_close_rejected_features: {{ cookiecutter.auto_close_rejected_features }}
+  data:
+    s3_bucket:
+    s3_bucket_region:
+    train: data/train
+    entities_table_name: entities
+    targets_table_name: targets
+    tables:
+      -
+        name: entities
+        path: entities.csv
+        pd_read_kwargs:
+          index_col: 0
+          header: 0
+          sep: ","
+      -
+        name: targets
+        path: targets.csv
+        pd_read_kwargs:
+          index_col: 0
+          header: 0
+          sep: ","

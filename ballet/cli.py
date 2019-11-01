@@ -47,6 +47,7 @@ def start_new_feature():
 
 @cli.command('validate')
 @click.option('--check-all', '-A',
+              is_flag=True,
               default=False)
 @click.option('--check-project-structure/--no-check-project-structure',
               envvar='BALLET_CHECK_PROJECT_STRUCTURE',

@@ -99,13 +99,13 @@ class FileChangeValidatorTest(_CommonSetup, unittest.TestCase):
     def test_validation_failure_inadmissible_file_diffs(self):
         path_content = [
             ('readme.txt', None),
-            ('src/__init__.py', None),
-            ('src/contrib/__init__.py', None),
-            ('src/contrib/user_foo/feature_bar.py', None),
-            ('src/contrib/user_foo/__init__.py', None),
+            ('src/foo/__init__.py', None),
+            ('src/foo/contrib/__init__.py', None),
+            ('src/foo/contrib/user_foo/feature_bar.py', None),
+            ('src/foo/contrib/user_foo/__init__.py', None),
             ('invalid.py', None),
         ]
-        contrib_module_path = 'src/contrib/'
+        contrib_module_path = 'src/foo/contrib/'
         with mock_file_change_validator(
             path_content, self.pr_num, contrib_module_path
         ) as validator:
@@ -126,12 +126,12 @@ class FileChangeValidatorTest(_CommonSetup, unittest.TestCase):
     def test_validation_success(self):
         path_content = [
             ('bob.xml', '<hello>'),
-            ('src/__init__.py', None),
-            ('src/contrib/__init__.py', None),
-            ('src/contrib/user_foo/__init__.py', None),
-            ('src/contrib/user_foo/feature_bar.py', None),
+            ('src/foo/__init__.py', None),
+            ('src/foo/contrib/__init__.py', None),
+            ('src/foo/contrib/user_foo/__init__.py', None),
+            ('src/foo/contrib/user_foo/feature_bar.py', None),
         ]
-        contrib_module_path = 'src/contrib/'
+        contrib_module_path = 'src/foo/contrib/'
         with mock_file_change_validator(
             path_content, self.pr_num, contrib_module_path
         ) as validator:
@@ -144,12 +144,12 @@ class FeatureApiValidatorTest(_CommonSetup, unittest.TestCase):
     def test_validation_failure_no_features_found(self):
         path_content = [
             ('readme.txt', None),
-            ('src/__init__.py', None),
-            ('src/contrib/__init__.py', None),
-            ('src/contrib/user_foo/__init__.py', None),
-            ('src/contrib/user_foo/feature_bar.py', None),
+            ('src/foo/__init__.py', None),
+            ('src/foo/contrib/__init__.py', None),
+            ('src/foo/contrib/user_foo/__init__.py', None),
+            ('src/foo/contrib/user_foo/feature_bar.py', None),
         ]
-        contrib_module_path = 'src/contrib/'
+        contrib_module_path = 'src/foo/contrib/'
         with mock_feature_api_validator(
             path_content, self.pr_num, contrib_module_path, self.X, self.y
         ) as validator:
@@ -159,12 +159,13 @@ class FeatureApiValidatorTest(_CommonSetup, unittest.TestCase):
     def test_validation_failure_invalid_feature(self):
         path_content = [
             ('foo.jpg', None),
-            ('src/__init__.py', None),
-            ('src/contrib/__init__.py', None),
-            ('src/contrib/user_foo/__init__.py', None),
-            ('src/contrib/user_foo/feature_bar.py', self.invalid_feature_str),
+            ('src/foo/__init__.py', None),
+            ('src/foo/contrib/__init__.py', None),
+            ('src/foo/contrib/user_foo/__init__.py', None),
+            ('src/foo/contrib/user_foo/feature_bar.py',
+             self.invalid_feature_str),
         ]
-        contrib_module_path = 'src/contrib/'
+        contrib_module_path = 'src/foo/contrib/'
         with mock_feature_api_validator(
             path_content, self.pr_num, contrib_module_path, self.X, self.y
         ) as validator:
@@ -187,12 +188,12 @@ class FeatureApiValidatorTest(_CommonSetup, unittest.TestCase):
         ''').strip()
         path_content = [
             ('foo.jpg', None),
-            ('src/__init__.py', None),
-            ('src/contrib/__init__.py', None),
-            ('src/contrib/user_foo/__init__.py', None),
-            ('src/contrib/user_foo/feature_baz.py', import_error_str),
+            ('src/foo/__init__.py', None),
+            ('src/foo/contrib/__init__.py', None),
+            ('src/foo/contrib/user_foo/__init__.py', None),
+            ('src/foo/contrib/user_foo/feature_baz.py', import_error_str),
         ]
-        contrib_module_path = 'src/contrib/'
+        contrib_module_path = 'src/foo/contrib/'
         with mock_feature_api_validator(
             path_content, self.pr_num, contrib_module_path, self.X, self.y
         ) as validator:

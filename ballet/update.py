@@ -91,7 +91,7 @@ def _push(project):
         ballet.exc.BalletError: Push failed in some way
     """
     repo = project.repo
-    remote_name = project.get('project', 'remote')
+    remote_name = project.config.get('project.remote')
     remote = repo.remote(remote_name)
     result = _call_remote_push(remote)
     failures = lfilter(complement(did_git_push_succeed), result)

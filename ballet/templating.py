@@ -78,12 +78,12 @@ def start_new_feature(contrib_dir=None, **cc_kwargs):
     """
     if contrib_dir is None:
         project = Project.from_path(pathlib.Path.cwd().resolve())
-        contrib_dir = project.get('contrib', 'module_path')
+        contrib_dir = project.config.get('contrib.module_path')
 
     # inject default username into context
     default_username = detect_github_username(project)
-    ec = cc_kwargs.setdefault('extra_context', {})
-    ec['_default_username'] = default_username
+    cc_kwargs.setdefault('extra_context', {})
+    cc_kwargs['extra_context'].update({'_default_username': default_username})
 
     with tempfile.TemporaryDirectory() as tempdir:
         # render feature template

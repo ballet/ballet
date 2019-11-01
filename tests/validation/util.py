@@ -1,10 +1,11 @@
 import pathlib
-from unittest.mock import Mock, patch
+from unittest.mock import MagicMock, create_autospec, patch
 
 import numpy as np
 import pandas as pd
 from funcy import contextmanager
 
+from ballet.project import Project
 from ballet.util.git import make_commit_range
 from ballet.validation.common import ChangeCollector
 from ballet.validation.feature_api.validator import FeatureApiValidator
@@ -31,10 +32,25 @@ class SampleDataMixin:
 
 
 def make_mock_project(repo, pr_num, path, contrib_module_path):
-    project = Mock(repo=repo,
-                   pr_num=str(pr_num),
-                   path=pathlib.Path(path),
-                   contrib_module_path=contrib_module_path)
+    def mock_get(key):
+        if key == 'contrib.module_path':
+            return contrib_module_path
+        else:
+            raise KeyError
+    config = MagicMock()
+    config.get.side_effect = mock_get
+
+    project = create_autospec(Project)
+    project.repo = repo
+    project.pr_num = str(pr_num)
+    project.path = pathlib.Path(path)
+    project.config = config
+
+    # in attr map
+    project.load_data = MagicMock()
+    project.build = MagicMock()
+    project.collect_contrib_features = MagicMock()
+
     return project
 
 

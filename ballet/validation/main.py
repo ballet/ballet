@@ -4,13 +4,9 @@ from ballet.exc import (
     FeatureRejected, InvalidFeatureApi, InvalidProjectStructure,
     SkippedValidationTest)
 from ballet.util.log import logger, stacklog
+from ballet.util.mod import import_module_from_modname
 from ballet.validation.common import (
     get_accepted_features, get_proposed_feature)
-from ballet.validation.feature_acceptance.validator import GFSSFAccepter
-from ballet.validation.feature_api.validator import FeatureApiValidator
-from ballet.validation.feature_pruning.validator import GFSSFPruner
-from ballet.validation.project_structure.validator import (
-    ProjectStructureValidator)
 
 # helpful for log parsing
 PRUNER_MESSAGE = 'Found Redundant Feature: '
@@ -25,12 +21,20 @@ def validation_stage(call, message):
     return call()
 
 
+def load_class(project, config_key):
+    path = project.config.get(config_key)
+    modname, clsname = path.rsplit('.', maxsplit=1)
+    mod = import_module_from_modname(modname)
+    return getattr(mod, clsname)
+
+
 @validation_stage('checking project structure')
 def _check_project_structure(project, force=False):
-    if not force and not project.on_pr():
+    if not force and not project.on_pr:
         raise SkippedValidationTest('Not on PR')
 
-    validator = ProjectStructureValidator(project)
+    Validator = load_class(project, 'validation.project_structure_validator')
+    validator = Validator(project)
     result = validator.validate()
     if not result:
         raise InvalidProjectStructure
@@ -39,10 +43,11 @@ def _check_project_structure(project, force=False):
 @validation_stage('validating feature API')
 def _validate_feature_api(project, force=False):
     """Validate feature API"""
-    if not force and not project.on_pr():
+    if not force and not project.on_pr:
         raise SkippedValidationTest('Not on PR')
 
-    validator = FeatureApiValidator(project)
+    Validator = load_class(project, 'validation.feature_api_validator')
+    validator = Validator(project)
     result = validator.validate()
     if not result:
         raise InvalidFeatureApi
@@ -51,7 +56,7 @@ def _validate_feature_api(project, force=False):
 @validation_stage('evaluating feature performance')
 def _evaluate_feature_performance(project, force=False):
     """Evaluate feature performance"""
-    if not force and not project.on_pr():
+    if not force and not project.on_pr:
         raise SkippedValidationTest('Not on PR')
 
     out = project.build()
@@ -59,8 +64,10 @@ def _evaluate_feature_performance(project, force=False):
 
     proposed_feature = get_proposed_feature(project)
     accepted_features = get_accepted_features(features, proposed_feature)
-    evaluator = GFSSFAccepter(X_df, y, accepted_features, proposed_feature)
-    accepted = evaluator.judge()
+
+    Accepter = load_class(project, 'validation.feature_accepter')
+    accepter = Accepter(X_df, y, accepted_features, proposed_feature)
+    accepted = accepter.judge()
 
     if not accepted:
         raise FeatureRejected
@@ -69,15 +76,17 @@ def _evaluate_feature_performance(project, force=False):
 @validation_stage('pruning existing features')
 def _prune_existing_features(project, force=False):
     """Prune existing features"""
-    if not force and not project.on_master_after_merge():
+    if not force and not project.on_master_after_merge:
         raise SkippedValidationTest('Not on master')
 
     out = project.build()
     X_df, y, features = out['X_df'], out['y'], out['features']
     proposed_feature = get_proposed_feature(project)
     accepted_features = get_accepted_features(features, proposed_feature)
-    evaluator = GFSSFPruner(X_df, y, accepted_features, proposed_feature)
-    redundant_features = evaluator.prune()
+
+    Pruner = load_class(project, 'validation.feature_pruner')
+    pruner = Pruner(X_df, y, accepted_features, proposed_feature)
+    redundant_features = pruner.prune()
 
     # "propose removal"
     for feature in redundant_features:
