@@ -10,6 +10,7 @@ from ballet.util.ci import TravisPullRequestBuildDiffer, can_use_travis_differ
 from ballet.util.git import LocalMergeBuildDiffer, LocalPullRequestBuildDiffer
 from ballet.util.log import logger, stacklog
 from ballet.util.mod import import_module_at_path, relpath_to_modname
+from ballet.validation.base import FeaturePerformanceEvaluator
 from ballet.validation.project_structure.checks import ProjectStructureCheck
 
 
@@ -226,3 +227,15 @@ def check_from_class(check_class, obj, *checker_args, **checker_kwargs):
         if not success:
             name = Checker.__name__
             yield name
+
+
+class RandomFeaturePerformanceEvaluator(FeaturePerformanceEvaluator):
+
+    def __init__(self, *args, p=0.3, seed=None):
+        super().__init__(*args)
+        self.p = p
+        self.seed = seed
+
+    def __str__(self):
+        return '{str}: p={p}, seed={seed}'.format(
+            str=super().__str__(), p=self.p, seed=self.seed)

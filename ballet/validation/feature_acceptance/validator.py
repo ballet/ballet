@@ -1,6 +1,10 @@
+import random
+
 from ballet.util import asarray2d
 from ballet.util.log import logger
-from ballet.validation.base import FeatureAcceptanceEvaluator
+from ballet.util.testing import seeded
+from ballet.validation.base import FeatureAcceptanceMixin, FeatureAccepter
+from ballet.validation.common import RandomFeaturePerformanceEvaluator
 from ballet.validation.entropy import (
     estimate_conditional_information, estimate_entropy)
 from ballet.validation.gfssf import (
@@ -8,13 +12,24 @@ from ballet.validation.gfssf import (
     _compute_threshold, _concat_datasets)
 
 
-class NoOpAcceptanceEvaluator(FeatureAcceptanceEvaluator):
+class NoOpAccepter(FeatureAccepter):
 
-    def judge(self, feature):
-        return True
+    def judge(self):
+        logger.info('Judging feature using {}'.format(self))
+        return False
 
 
-class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
+class RandomAccepter(FeatureAcceptanceMixin,
+                     RandomFeaturePerformanceEvaluator):
+
+    def judge(self):
+        """Accept feature with probability p"""
+        logger.info('Judging feature using {}'.format(self))
+        with seeded(self.seed):
+            return random.uniform(0, 1) < self.p
+
+
+class GFSSFAccepter(FeatureAccepter):
     """A feature acceptance evaluator that uses a modified version of
     GFSSF[1] - specifically, lines 1 - 8 of agGFSSF where we do not
     remove accepted but redundant features on line 8.
@@ -38,34 +53,38 @@ class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
 
     """
 
-    def __init__(self, X_df, y, features, lmbda_1=0., lmbda_2=0.):
-        super().__init__(X_df, y, features)
-        self.y = asarray2d(y)
-        if (lmbda_1 <= 0):
+    def __init__(self, *args, lmbda_1=0., lmbda_2=0.):
+        super().__init__(*args)
+        self.y = asarray2d(self.y)
+        if lmbda_1 <= 0:
             lmbda_1 = estimate_entropy(self.y) / LAMBDA_1_ADJUSTMENT
-        if (lmbda_2 <= 0):
+        if lmbda_2 <= 0:
             lmbda_2 = estimate_entropy(self.y) / LAMBDA_2_ADJUSTMENT
         self.lmbda_1 = lmbda_1
         self.lmbda_2 = lmbda_2
 
-    def judge(self, candidate_feature):
+    def __str__(self):
+        return '{str}: lmbda_1={lmbda_1}, lmbda_2={lmbda_2}'.format(
+            str=super().__str__(),
+            lmbda_1=self.lmbda_1,
+            lmbda_2=self.lmbda_2)
+
+    def judge(self):
+        logger.info('Judging Feature using {}'.format(self))
         feature_dfs_by_src = {}
-        for feature in [candidate_feature] + self.features:
+        for feature in [self.candidate_feature] + self.features:
             feature_df = (feature
                           .as_feature_engineering_pipeline()
                           .fit_transform(self.X_df, self.y))
             feature_dfs_by_src[feature.source] = feature_df
 
-        candidate_source = candidate_feature.source
+        candidate_source = self.candidate_feature.source
         candidate_df = feature_dfs_by_src[candidate_source]
         n_samples, n_candidate_cols = feature_df.shape
 
         lmbda_1, lmbda_2 = _compute_lmbdas(
             self.lmbda_1, self.lmbda_2, feature_dfs_by_src)
 
-        logger.info(
-            'Judging Feature using GFSSF: lambda_1={l1}, lambda_2={l2}'.format(
-                l1=lmbda_1, l2=lmbda_2))
         logger.info(
             'Candidate Feature Shape: {}'.format(candidate_df.shape))
         omit_in_test = [''] + [f.source for f in self.features]
@@ -76,9 +95,7 @@ class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
             z = _concat_datasets(
                 feature_dfs_by_src, n_samples, [
                     candidate_source, omit])
-            logger.debug(
-                'Calculating CMI of candidate feature:'
-            )
+            logger.debug('Calculating CMI of candidate feature:')
             cmi = estimate_conditional_information(candidate_df, self.y, z)
             logger.debug(
                 'Conditional Mutual Information Score: {}'.format(cmi))
@@ -100,7 +117,7 @@ class GFSSFAcceptanceEvaluator(FeatureAcceptanceEvaluator):
             logger.debug('Calculated Threshold: {}'.format(threshold))
             if statistic >= threshold:
                 logger.debug(
-                    'Succeeded while ommitting feature: {}'.format(
+                    'Succeeded while omitting feature: {}'.format(
                         omit or 'None'))
                 return True
         return False

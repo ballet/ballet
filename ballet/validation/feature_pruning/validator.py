@@ -1,6 +1,10 @@
+import random
+
 from ballet.util import asarray2d
 from ballet.util.log import logger
-from ballet.validation.base import FeaturePruningEvaluator
+from ballet.util.testing import seeded
+from ballet.validation.base import FeaturePruner, FeaturePruningMixin
+from ballet.validation.common import RandomFeaturePerformanceEvaluator
 from ballet.validation.entropy import (
     estimate_conditional_information, estimate_entropy)
 from ballet.validation.gfssf import (
@@ -8,15 +12,26 @@ from ballet.validation.gfssf import (
     _compute_threshold, _concat_datasets)
 
 
-class NoOpPruningEvaluator(FeaturePruningEvaluator):
+class NoOpPruner(FeaturePruner):
     def prune(self):
+        logger.info('Pruning features using {!s}'.format(self))
         return []
+
+
+class RandomPruner(FeaturePruningMixin, RandomFeaturePerformanceEvaluator):
+
+    def prune(self):
+        """With probability p, select a random feature to prune"""
+        logger.info('Pruning features using {!s}'.format(self))
+        with seeded(self.seed):
+            if random.uniform(0, 1) < self.p:
+                return [random.choice(self.features)]
 
 
 CMI_MESSAGE = "Calculating CMI of feature and target cond. on accpt features"
 
 
-class GFSSFPruningEvaluator(FeaturePruningEvaluator):
+class GFSSFPruner(FeaturePruner):
     """A feature pruning evaluator that uses a modified version of
     GFSSF[1] - specifically, lines 12-13 of agGFSSF.
 
@@ -40,28 +55,19 @@ class GFSSFPruningEvaluator(FeaturePruningEvaluator):
 
     """
 
-    def __init__(
-            self,
-            X_df,
-            y,
-            features,
-            new_feature,
-            lmbda_1=0.0,
-            lmbda_2=0.0):
-        super().__init__(X_df, y, features)
-        self.y = asarray2d(y)
+    def __init__(self, *args, lmbda_1=0.0, lmbda_2=0.0):
+        super().__init__(*args)
+        self.y = asarray2d(self.y)
         if lmbda_1 <= 0:
             lmbda_1 = estimate_entropy(self.y) / LAMBDA_1_ADJUSTMENT
         if lmbda_2 <= 0:
             lmbda_2 = estimate_entropy(self.y) / LAMBDA_2_ADJUSTMENT
         self.lmbda_1 = lmbda_1
         self.lmbda_2 = lmbda_2
-        self.feature = new_feature
 
     def prune(self):
-
         feature_dfs_by_src = {}
-        for accepted_feature in [self.feature] + self.features:
+        for accepted_feature in [self.candidate_feature] + self.features:
             accepted_df = accepted_feature.as_feature_engineering_pipeline(
             ).fit_transform(self.X_df, self.y)
             feature_dfs_by_src[accepted_feature.source] = accepted_df
@@ -71,10 +77,10 @@ class GFSSFPruningEvaluator(FeaturePruningEvaluator):
         )
 
         logger.info(
-            "Prune Features using GFSSF: lambda_1={l1}, lambda_2={l2}".format(
-                l1=lmbda_1, l2=lmbda_2
-            )
+            "Pruning features using GFSSF: lambda_1={l1}, lambda_2={l2}"
+            .format(l1=lmbda_1, l2=lmbda_2)
         )
+
         redundant_features = []
         for candidate_feature in self.features:
             candidate_src = candidate_feature.source
