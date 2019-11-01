@@ -153,7 +153,7 @@ class Project:
         config = load_config_in_dir(path)
         project_slug = config.get('project.slug')
         package = import_module_at_path(project_slug,
-                                        path.joinpath(project_slug))
+                                        path.joinpath('src', project_slug))
         return cls(package)
 
     def _resolve(self, modname, attr=None):
@@ -206,10 +206,11 @@ class Project:
     def path(self):
         """Return the project path (aka project root)
 
-        If ``package.__file__`` is ``/foo/foo/__init__.py``, then project.path
+        If ``package.__file__`` is ``/foo/src/foo/__init__.py``,
+        then project.path
         should be ``/foo``.
         """
-        return pathlib.Path(self.package.__file__).resolve().parent.parent
+        return pathlib.Path(self.package.__file__).resolve().parents[2]
 
     @property
     def repo(self):
