@@ -39,7 +39,7 @@ def load_config_at_path(path):
             'ROOT_PATH_FOR_DYNACONF': path.parent,
             'SETTINGS_FILE_FOR_DYNACONF': path.name,
         })
-        return LazySettings()
+        return LazySettings(**options)
     else:
         raise ConfigurationError("Couldn't find ballet.yml config file.")
 
@@ -68,7 +68,7 @@ def relative_to_contrib(diff, project):
         Path
     """
     path = pathlib.Path(diff.b_path)
-    contrib_path = project.contrib_module_path
+    contrib_path = project.config.get('contrib.module_path')
     return path.relative_to(contrib_path)
 
 
@@ -151,7 +151,7 @@ class Project:
         """
         path = pathlib.Path(path)
         config = load_config_in_dir(path)
-        project_slug = config.project.slug
+        project_slug = config.get('project.slug')
         package = import_module_at_path(project_slug,
                                         path.joinpath(project_slug))
         return cls(package)
