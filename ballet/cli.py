@@ -5,18 +5,33 @@ from ballet import __version__ as version
 
 @click.group()
 @click.version_option(version)
-def cli():
-    pass
+@click.option('-v', '--verbose',
+              count=True,
+              help='Increase verbosity')
+@click.option('-q', '--quiet',
+              count=True,
+              help='Decrease verbosity'
+              )
+def cli(verbose, quiet):
+    """Entry point for CLI"""
+    import ballet.util.log
+    # Process logging
+    count = verbose - quiet
+    if count <= -1:
+        level = 'CRITICAL'
+    elif count == 0:
+        level = 'INFO'
+    else:
+        level = 'DEBUG'
+    ballet.util.log.enable(level=level,
+                           format=ballet.util.log.SIMPLE_LOG_FORMAT,
+                           echo=False)
 
 
 @cli.command()
 def quickstart():
     """Generate a brand-new ballet project"""
     import ballet.templating
-    import ballet.util.log
-    ballet.util.log.enable(level='INFO',
-                           format=ballet.util.log.SIMPLE_LOG_FORMAT,
-                           echo=False)
     ballet.templating.render_project_template()
 
 
@@ -27,10 +42,6 @@ def quickstart():
 def update_project_template(push):
     """Update an existing ballet project from the upstream template"""
     import ballet.update
-    import ballet.util.log
-    ballet.util.log.enable(level='INFO',
-                           format=ballet.util.log.SIMPLE_LOG_FORMAT,
-                           echo=False)
     ballet.update.update_project_template(push=push)
 
 
@@ -38,10 +49,6 @@ def update_project_template(push):
 def start_new_feature():
     """Start working on a new feature from a template"""
     import ballet.templating
-    import ballet.util.log
-    ballet.util.log.enable(level='INFO',
-                           format=ballet.util.log.SIMPLE_LOG_FORMAT,
-                           echo=False)
     ballet.templating.start_new_feature()
 
 
@@ -70,9 +77,11 @@ def validate(check_all, check_project_structure, check_feature_api,
     import ballet.project
     import ballet.validation.main
 
+    # over-write logging settings?
     ballet.util.log.enable(level='DEBUG',
                            format=ballet.util.log.SIMPLE_LOG_FORMAT,
                            echo=False)
+
     cwd = pathlib.Path.cwd()
     project = ballet.project.Project.from_path(cwd)
     ballet.validation.main.validate(
