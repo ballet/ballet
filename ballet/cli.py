@@ -1,6 +1,7 @@
 import click
 
 from ballet import __version__ as version
+from ballet.util.log import stacklog
 
 
 @click.group()
@@ -29,6 +30,7 @@ def cli(verbose, quiet):
 
 
 @cli.command()
+@stacklog(click.echo, 'Generating new ballet project')
 def quickstart():
     """Generate a brand-new ballet project"""
     import ballet.templating
@@ -39,6 +41,7 @@ def quickstart():
 @click.option('--push/--no-push', '-p',
               default=False,
               help='Push updates to remote on success')
+@stacklog(click.echo, 'Updating project template')
 def update_project_template(push):
     """Update an existing ballet project from the upstream template"""
     import ballet.update
@@ -46,6 +49,7 @@ def update_project_template(push):
 
 
 @cli.command('start-new-feature')
+@stacklog(click.echo, 'Starting new feature')
 def start_new_feature():
     """Start working on a new feature from a template"""
     import ballet.templating
@@ -68,6 +72,7 @@ def start_new_feature():
 @click.option('--evaluate-feature-pruning/--no-evaluate-feature-pruning',
               envvar='BALLET_EVALUATE_FEATURE_PRUNING',
               default=False)
+@stacklog(click.echo, 'Validating project')
 def validate(check_all, check_project_structure, check_feature_api,
              evaluate_feature_acceptance, evaluate_feature_pruning):
     """Validate a project changes from a branch"""

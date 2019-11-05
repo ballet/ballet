@@ -157,7 +157,7 @@ def update_project_template(push=False):
             commit_message = _make_template_branch_merge_commit_message()
             repo.git.commit(m=commit_message)
         except GitCommandError:
-            logger.exception(
+            logger.critical(
                 'Could not merge changes into {template_branch} branch, '
                 'update failed'
                 .format(template_branch=TEMPLATE_BRANCH))
@@ -170,7 +170,7 @@ def update_project_template(push=False):
         repo.git.merge(TEMPLATE_BRANCH, no_ff=True)
     except GitCommandError as e:
         if 'merge conflict' in str(e).lower():
-            logger.info('\n'.join([
+            logger.critical('\n'.join([
                 'Update failed due to a merge conflict.',
                 'Fix conflicts, and then complete merge manually:',
                 '    $ git add .',
@@ -180,8 +180,5 @@ def update_project_template(push=False):
             ]).format(original_head=original_head))
         raise
 
-    logger.info('Update successful.')
-
     if push:
         _push(project)
-        logger.info('Push successful.')
