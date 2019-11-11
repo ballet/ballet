@@ -14,7 +14,7 @@ from ballet.util.log import stacklog
               help='Decrease verbosity'
               )
 def cli(verbose, quiet):
-    """Entry point for CLI"""
+    """The Ballet command line interface"""
     import ballet.util.log
     # Process logging
     count = verbose - quiet
@@ -75,7 +75,7 @@ def start_new_feature():
 @stacklog(click.echo, 'Validating project')
 def validate(check_all, check_project_structure, check_feature_api,
              evaluate_feature_acceptance, evaluate_feature_pruning):
-    """Validate a project changes from a branch"""
+    """Validate project changes from a candidate branch"""
     import pathlib
 
     import ballet.util.log

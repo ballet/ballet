@@ -9,8 +9,8 @@ from ballet.pipeline import FeatureEngineeringPipeline
 from ballet.util.io import save_features, save_targets
 from ballet.util.log import stacklog
 
-import {{ cookiecutter.project_slug }}
-from {{ cookiecutter.project_slug }}.load_data import load_data
+import {{ cookiecutter.package_slug }}
+from {{ cookiecutter.package_slug }}.load_data import load_data
 
 
 logger = logging.getLogger(__name__)
@@ -22,7 +22,7 @@ def collect_contrib_features():
     Returns:
         List[ballet.Feature]: list of Feature objects
     """
-    return ballet.contrib.collect_contrib_features({{cookiecutter.project_slug}})
+    return ballet.contrib.collect_contrib_features({{ cookiecutter.package_slug }})
 
 
 def get_target_encoder():

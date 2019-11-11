@@ -38,6 +38,7 @@ test_requirements = [
     'coverage>=4.5.1',
     'pytest>=3.4.2',
     'pytest-cov>=2.6',
+    'pytest-virtualenv>=1.7.0',
     'tox>=2.9.1',
 ]
 

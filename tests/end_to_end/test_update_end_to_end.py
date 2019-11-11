@@ -48,7 +48,7 @@ def check_commit_message_on_template(repo):
 
 
 def check_commit_message_on_master(repo):
-    expected_commit_message = 'Merge branch \'{template_branch}\''.format(
+    expected_commit_message = 'Merge branch {template_branch!r}'.format(
         template_branch=TEMPLATE_BRANCH)
     commit = repo.head.commit
     check_commit_message(commit, expected_commit_message)

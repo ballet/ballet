@@ -15,21 +15,28 @@ export PRINT_HELP_PYSCRIPT
 help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
-.PHONY: clean-build
-clean-build: ## remove build artifacts
+.PHONY: clean
+clean:  _clean-build _clean-pyc ## clean build artifacts and remove Python file artifacts
+
+.PHONY: _clean-build
+_clean-build:
 	rm -fr build/
 	rm -fr dist/
 	rm -fr .eggs/
 	find . -name '*.egg-info' -exec rm -fr {} +
 	find . -name '*.egg' -exec rm -f {} +
 
-.PHONY: clean-pyc
-clean-pyc: ## remove Python file artifacts
+.PHONY: _clean-pyc
+_clean-pyc:
 	find . -name '*.pyc' -exec rm -f {} +
 	find . -name '*.pyo' -exec rm -f {} +
 	find . -name '*~' -exec rm -f {} +
 	find . -name '__pycache__' -exec rm -fr {} +
 
 .PHONY: install
-install: clean-build clean-pyc ## install the package to the active Python's site-packages
+install: clean ## install the package to the active Python's site-packages
 	pip install -e .
+
+.PHONY: check
+check: ## check which python is installed
+	which -a python || echo NONE

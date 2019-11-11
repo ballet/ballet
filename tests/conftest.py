@@ -31,10 +31,12 @@ def quickstart(tempdir):
     # cd tempdir
     with work_in(safepath(tempdir)):
 
-        project_slug = 'foo'
+        project_slug = 'foo-bar'
+        package_slug = 'foo_bar'
         extra_context = {
             'project_name': project_slug.capitalize(),
             'project_slug': project_slug,
+            'package_slug': package_slug,
         }
 
         # ballet quickstart
@@ -49,8 +51,8 @@ def quickstart(tempdir):
         repo = project.repo
 
         yield (
-            namedtuple('Quickstart', 'project tempdir project_slug repo')
-            ._make((project, tempdir, project_slug, repo))
+            namedtuple('Quickstart', 'project tempdir project_slug package_slug repo')
+            ._make((project, tempdir, project_slug, package_slug, repo))
         )
 
 

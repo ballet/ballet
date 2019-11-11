@@ -152,9 +152,9 @@ class Project:
         """
         path = pathlib.Path(path)
         config = load_config_in_dir(path)
-        project_slug = config.get('project.slug')
-        package = import_module_at_path(project_slug,
-                                        path.joinpath('src', project_slug))
+        package_slug = config.get('project.package_slug')
+        package = import_module_at_path(package_slug,
+                                        path.joinpath('src', package_slug))
         return cls(package)
 
     def _resolve(self, modname, attr=None):

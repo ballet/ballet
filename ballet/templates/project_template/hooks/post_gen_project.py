@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 
 import git
+import json
+import pathlib
 
+from ballet.util.log import logger
 from ballet.update import TEMPLATE_BRANCH
 
 
@@ -20,8 +23,27 @@ def create_git_repo():
     repo.create_head(TEMPLATE_BRANCH)
 
 
+def clean_cookiecutter_context():
+    fn = pathlib.Path('.cookiecutter_context.json')
+    with open(fn, 'r') as f:
+        j = json.load(f)
+
+    # strip _template key
+    j['cookiecutter'].pop('_template')
+
+    with open(fn, 'w') as f:
+        json.dump(j, f)
+
+
+def echo():
+    fn = pathlib.Path.cwd().absolute()
+    logger.info('New project created in {}'.format(fn))
+
+
 def main():
+    clean_cookiecutter_context()
     create_git_repo()
+    echo()
 
 
 if __name__ == '__main__':
