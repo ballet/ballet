@@ -259,3 +259,4 @@ command. Its usage is described in more detail `here <cli_reference
 .. _`Travis CI`: https://travis-ci.org
 .. _`pull request`: https://help.github.com/articles/about-pull-requests/
 .. _`Personal access tokens`: https://github.com/settings/tokens
+.. _`Contributor Guide`: contributor_guide.html

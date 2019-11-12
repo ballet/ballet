@@ -36,7 +36,3 @@ _clean-pyc:
 .PHONY: install
 install: clean ## install the package to the active Python's site-packages
 	pip install -e .
-
-.PHONY: check
-check: ## check which python is installed
-	which -a python || echo NONE

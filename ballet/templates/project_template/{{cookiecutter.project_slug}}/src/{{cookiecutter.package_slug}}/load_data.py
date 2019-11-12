@@ -5,7 +5,7 @@ from funcy import some, where
 def load_data(input_dir=None):
     """Load data"""
     if input_dir is not None:
-        tables = config.get('tables')
+        tables = config.get('data.tables')
 
         entities_table_name = config.get('data.entities_table_name')
         entities_config = some(where(tables, name=entities_table_name))

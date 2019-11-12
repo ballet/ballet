@@ -4,6 +4,10 @@
 Installation
 ============
 
+The Ballet framework is distributed as a Python package available on PyPI. The package includes
+
+- the ballet CLI
+- the ballet Python SDK
 
 Stable release
 --------------
