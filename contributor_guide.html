@@ -257,16 +257,33 @@
             
   <div class="section" id="contributor-guide">
 <h1>Contributor Guide<a class="headerlink" href="#contributor-guide" title="Permalink to this headline">¶</a></h1>
-<p>A contributors wants to develop a new feature for inclusion in the project. First, they fork the project and create a
-new Python subpackage under the “contrib” directory. In this example, the contrib directory is
-<code class="docutils literal notranslate"><span class="pre">ballet_project/features/contrib</span></code>, but it can be changed in <code class="docutils literal notranslate"><span class="pre">ballet.yml</span></code>.</p>
-<ul class="simple">
+<p>If you are on this page, you are probably thinking about contributing to a Ballet
+feature engineering collaboration. Welcome!</p>
+<p>Here are the steps to develop a new feature for inclusion in a Ballet project.</p>
+<ol class="arabic">
+<li><p>Fork the project and clone your fork in your local development environment.</p></li>
+<li><p>Create a new Python module within the project’s “contrib” directory that will hold your feature:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The contrib directory is usually named something like <code class="docutils literal notranslate"><span class="pre">src/ballet_project/features/contrib</span></code>.</p></li>
 <li><p>The new subpackage must be named like <code class="docutils literal notranslate"><span class="pre">user_&lt;github</span> <span class="pre">username&gt;</span></code>.</p></li>
 <li><p>The new submodule that will contain the feature must be named like <code class="docutils literal notranslate"><span class="pre">feature_&lt;feature</span> <span class="pre">name&gt;.py</span></code>.</p></li>
 </ul>
-<p>Within the feature submodule, the contributor can write arbitrary Python code. Ultimately, a single object that is an
-instance of <code class="docutils literal notranslate"><span class="pre">ballet.Feature</span></code> must be defined; it will be imported by the feature engineering pipeline.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ballet.eng</span>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you have the <a class="reference external" href="https://hdi-project.github.io/ballet/installation.html">ballet CLI</a> installed, you can run <code class="docutils literal notranslate"><span class="pre">ballet</span> <span class="pre">start-new-feature</span></code> to
+create this file skeleton automatically!</p>
+</div>
+</div></blockquote>
+</li>
+<li><p>Write your feature. We call the code you write to extract one group of related feature values
+a <em>logical feature</em>. Within your feature submodule, you can write arbitrary Python code.
+Ultimately, a single object that is an instance of <code class="docutils literal notranslate"><span class="pre">ballet.Feature</span></code> must be defined; it will
+be imported by the feature engineering pipeline.</p>
+<p>In this example, a feature is defined that will receive column <code class="docutils literal notranslate"><span class="pre">'A'</span></code> from the data and passes
+it through unmodified.</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ballet.eng</span>
 <span class="kn">from</span> <span class="nn">ballet</span> <span class="kn">import</span> <span class="n">Feature</span>
 
 <span class="nb">input</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span>
@@ -274,8 +291,14 @@ instance of <code class="docutils literal notranslate"><span class="pre">ballet.
 <span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="n">transformer</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>In this example, a feature is defined that will receive column <code class="docutils literal notranslate"><span class="pre">'A'</span></code> from the data and passes it through unmodified.</p>
-<p>The contributor now commits their changes and creates a <a href="#id1"><span class="problematic" id="id2">`pull request`_</span></a> to the <code class="docutils literal notranslate"><span class="pre">ballet_project</span></code> repository.</p>
+</div></blockquote>
+</li>
+<li><p>Submit your feature. Commit your changes and create a pull request to the project repository.</p></li>
+</ol>
+<div class="figure align-default" id="id1">
+<a class="reference internal image-reference" href="https://upload.wikimedia.org/wikipedia/en/f/f8/Internet_dog.jpg"><img alt="&quot;On the internet, nobody knows you're a dog&quot; cartoon" src="https://upload.wikimedia.org/wikipedia/en/f/f8/Internet_dog.jpg" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">Image from <em>The New Yorker</em> cartoon by Peter Steiner, 1993, via Wikipedia.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
 </div>
 
 

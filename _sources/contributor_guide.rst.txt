@@ -2,25 +2,47 @@
 Contributor Guide
 =================
 
-A contributors wants to develop a new feature for inclusion in the project. First, they fork the project and create a
-new Python subpackage under the "contrib" directory. In this example, the contrib directory is
-``ballet_project/features/contrib``, but it can be changed in ``ballet.yml``.
+If you are on this page, you are probably thinking about contributing to a Ballet
+feature engineering collaboration. Welcome!
 
-* The new subpackage must be named like ``user_<github username>``.
-* The new submodule that will contain the feature must be named like ``feature_<feature name>.py``.
+Here are the steps to develop a new feature for inclusion in a Ballet project.
 
-Within the feature submodule, the contributor can write arbitrary Python code. Ultimately, a single object that is an
-instance of ``ballet.Feature`` must be defined; it will be imported by the feature engineering pipeline.
+1. Fork the project and clone your fork in your local development environment.
+2. Create a new Python module within the project's "contrib" directory that will hold your feature:
 
-.. code-block:: python
+    * The contrib directory is usually named something like ``src/ballet_project/features/contrib``.
+    * The new subpackage must be named like ``user_<github username>``.
+    * The new submodule that will contain the feature must be named like ``feature_<feature name>.py``.
 
-   import ballet.eng
-   from ballet import Feature
+    .. note::
 
-   input = 'A'
-   transformer = ballet.eng.misc.IdentityTransformer()
-   feature = Feature(input=input, transformer=transformer)
+      If you have the `ballet CLI`_ installed, you can run ``ballet start-new-feature`` to
+      create this file skeleton automatically!
 
-In this example, a feature is defined that will receive column ``'A'`` from the data and passes it through unmodified.
+3. Write your feature. We call the code you write to extract one group of related feature values
+   a *logical feature*. Within your feature submodule, you can write arbitrary Python code.
+   Ultimately, a single object that is an instance of ``ballet.Feature`` must be defined; it will
+   be imported by the feature engineering pipeline.
 
-The contributor now commits their changes and creates a `pull request`_ to the ``ballet_project`` repository.
+   In this example, a feature is defined that will receive column ``'A'`` from the data and passes
+   it through unmodified.
+
+    .. code-block:: python
+
+       import ballet.eng
+       from ballet import Feature
+
+       input = 'A'
+       transformer = ballet.eng.misc.IdentityTransformer()
+       feature = Feature(input=input, transformer=transformer)
+
+
+4. Submit your feature. Commit your changes and create a pull request to the project repository.
+
+.. figure:: https://upload.wikimedia.org/wikipedia/en/f/f8/Internet_dog.jpg
+   :width: 300
+   :alt: "On the internet, nobody knows you're a dog" cartoon
+
+   Image from *The New Yorker* cartoon by Peter Steiner, 1993, via Wikipedia.
+
+.. _ballet CLI: https://hdi-project.github.io/ballet/installation.html
