@@ -260,6 +260,22 @@ class UtilTest(
         b = B(1)
         copy.deepcopy(b)
 
+    def test_falsy(self):
+        matrix = (
+            ('false', True),  # i.e., is falsy
+            ('', True),
+            ('true', False),  # i.e, is not falsy
+            ('123', False),
+            (73, False),
+        )
+        for input, expected in matrix:
+            actual = ballet.util.falsy(input)
+            self.assertEqual(expected, actual)
+
+            # truthy is complement of falsy
+            actual = ballet.util.truthy(input)
+            self.assertNotEqual(expected, actual)
+
 
 class ModTest(unittest.TestCase):
 
@@ -377,18 +393,6 @@ class CiTest(unittest.TestCase):
             'TRAVIS_PULL_REQUEST': str(self.pr_num),
             'TRAVIS_COMMIT_RANGE': self.commit_range,
         }
-
-    def test_falsy(self):
-        matrix = (
-            ('false', True),  # i.e., is falsy
-            ('', True),
-            ('true', False),  # i.e, is not falsy
-            ('123', False),
-            (73, False),
-        )
-        for input, expected in matrix:
-            actual = ballet.util.ci.falsy(input)
-            self.assertEqual(actual, expected)
 
     def test_get_travis_pr_num(self):
         # matrix of env name, setting for env, expected result

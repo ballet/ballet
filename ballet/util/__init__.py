@@ -7,7 +7,7 @@ from os import devnull
 import numpy as np
 import pandas as pd
 import sklearn.datasets
-from funcy import decorator, lfilter, wraps
+from funcy import complement, decorator, lfilter, wraps
 
 from ballet.compat import redirect_stderr, redirect_stdout
 from ballet.exc import BalletWarning
@@ -151,3 +151,10 @@ def raiseifnone(call):
         raise ValueError
     else:
         return result
+
+
+def falsy(o):
+    return isinstance(o, str) and (o.lower() == 'false' or o == '')
+
+
+truthy = complement(falsy)

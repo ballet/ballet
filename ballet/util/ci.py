@@ -1,19 +1,12 @@
 import os
 
 import git
-from funcy import complement
 
 from ballet.exc import UnexpectedTravisEnvironmentError
+from ballet.util import falsy, truthy
 from ballet.util.git import (
     PullRequestBuildDiffer, get_diff_endpoints_from_commit_range)
 from ballet.util.log import logger
-
-
-def falsy(o):
-    return isinstance(o, str) and (o.lower() == 'false' or o == '')
-
-
-truthy = complement(falsy)
 
 
 def get_travis_env_or_fail(name):
