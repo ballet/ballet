@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 requirements = [
-    'ballet @ git+https://github.com/HDI-Project/ballet@master',
+    'ballet>=0.5.3-dev',
     'Click>=6.0',
 ]
 
