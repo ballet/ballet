@@ -254,19 +254,17 @@
 <span></span><span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">import</span> <span class="nn">git</span>
-<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">complement</span>
 
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">UnexpectedTravisEnvironmentError</span>
+<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">falsy</span><span class="p">,</span> <span class="n">truthy</span>
 <span class="kn">from</span> <span class="nn">ballet.util.git</span> <span class="k">import</span> <span class="p">(</span>
     <span class="n">PullRequestBuildDiffer</span><span class="p">,</span> <span class="n">get_diff_endpoints_from_commit_range</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span>
 
 
-<div class="viewcode-block" id="falsy"><a class="viewcode-back" href="../../../api/ballet.util.ci.html#ballet.util.ci.falsy">[docs]</a><span class="k">def</span> <span class="nf">falsy</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
-    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;false&#39;</span> <span class="ow">or</span> <span class="n">o</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">)</span></div>
-
-
-<span class="n">truthy</span> <span class="o">=</span> <span class="n">complement</span><span class="p">(</span><span class="n">falsy</span><span class="p">)</span>
+<div class="viewcode-block" id="in_travis"><a class="viewcode-back" href="../../../api/ballet.util.ci.html#ballet.util.ci.in_travis">[docs]</a><span class="k">def</span> <span class="nf">in_travis</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Check if we are in Travis right now&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_travis_env_vars</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
 
 
 <div class="viewcode-block" id="get_travis_env_or_fail"><a class="viewcode-back" href="../../../api/ballet.util.ci.html#ballet.util.ci.get_travis_env_or_fail">[docs]</a><span class="k">def</span> <span class="nf">get_travis_env_or_fail</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
@@ -284,12 +282,15 @@
         <span class="k">raise</span> <span class="n">UnexpectedTravisEnvironmentError</span></div>
 
 
-<div class="viewcode-block" id="dump_travis_env_vars"><a class="viewcode-back" href="../../../api/ballet.util.ci.html#ballet.util.ci.dump_travis_env_vars">[docs]</a><span class="k">def</span> <span class="nf">dump_travis_env_vars</span><span class="p">():</span>
-    <span class="n">travis_env_vars</span> <span class="o">=</span> <span class="p">{</span>
+<div class="viewcode-block" id="get_travis_env_vars"><a class="viewcode-back" href="../../../api/ballet.util.ci.html#ballet.util.ci.get_travis_env_vars">[docs]</a><span class="k">def</span> <span class="nf">get_travis_env_vars</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">{</span>
         <span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;TRAVIS&#39;</span><span class="p">)</span>
-    <span class="p">}</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">travis_env_vars</span><span class="p">))</span></div>
+    <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="dump_travis_env_vars"><a class="viewcode-back" href="../../../api/ballet.util.ci.html#ballet.util.ci.dump_travis_env_vars">[docs]</a><span class="k">def</span> <span class="nf">dump_travis_env_vars</span><span class="p">():</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">get_travis_env_vars</span><span class="p">()))</span></div>
 
 
 <div class="viewcode-block" id="get_travis_pr_num"><a class="viewcode-back" href="../../../api/ballet.util.ci.html#ballet.util.ci.get_travis_pr_num">[docs]</a><span class="k">def</span> <span class="nf">get_travis_pr_num</span><span class="p">():</span>

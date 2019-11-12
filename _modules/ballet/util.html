@@ -258,7 +258,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">sklearn.datasets</span>
-<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">decorator</span><span class="p">,</span> <span class="n">lfilter</span><span class="p">,</span> <span class="n">wraps</span>
+<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">complement</span><span class="p">,</span> <span class="n">decorator</span><span class="p">,</span> <span class="n">lfilter</span><span class="p">,</span> <span class="n">wraps</span>
 
 <span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="k">import</span> <span class="n">redirect_stderr</span><span class="p">,</span> <span class="n">redirect_stdout</span>
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">BalletWarning</span>
@@ -402,6 +402,13 @@
         <span class="k">raise</span> <span class="ne">ValueError</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="falsy"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.falsy">[docs]</a><span class="k">def</span> <span class="nf">falsy</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;false&#39;</span> <span class="ow">or</span> <span class="n">o</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">)</span></div>
+
+
+<span class="n">truthy</span> <span class="o">=</span> <span class="n">complement</span><span class="p">(</span><span class="n">falsy</span><span class="p">)</span>
 </pre></div>
 
            </div>
