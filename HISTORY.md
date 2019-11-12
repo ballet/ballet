@@ -1,5 +1,13 @@
 # History
 
+## 0.6 (2019-11-12)
+
+* Implement GFSSF validators and random validators
+* Improve validators and allow validators to be configured in ballet.yml
+* Improve project template
+* Create ballet CLI
+* Bug fixes and performance improvements
+
 ## 0.5 (2018-10-14)
 
 * Add project template and ballet-quickstart command
