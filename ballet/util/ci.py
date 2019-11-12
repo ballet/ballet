@@ -9,6 +9,11 @@ from ballet.util.git import (
 from ballet.util.log import logger
 
 
+def in_travis():
+    """Check if we are in Travis right now"""
+    return len(get_travis_env_vars()) > 0
+
+
 def get_travis_env_or_fail(name):
     if name in os.environ:
         return os.environ[name]
@@ -24,12 +29,15 @@ def ensure_expected_travis_env_vars(names):
         raise UnexpectedTravisEnvironmentError
 
 
-def dump_travis_env_vars():
-    travis_env_vars = {
+def get_travis_env_vars():
+    return {
         k: v for k, v in os.environ.items()
         if k.startswith('TRAVIS')
     }
-    logger.info(repr(travis_env_vars))
+
+
+def dump_travis_env_vars():
+    logger.info(repr(get_travis_env_vars()))
 
 
 def get_travis_pr_num():
