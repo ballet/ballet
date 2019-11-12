@@ -47,7 +47,7 @@ def get_travis_pr_num():
         int
 
     See also:
-        - <https://docs.travis-ci.com/user/environment-variables/#Default-Environment-Variables>
+        - <https://docs.travis-ci.com/user/environment-variables/#default-environment-variables>
     """  # noqa E501
     try:
         travis_pull_request = get_travis_env_or_fail('TRAVIS_PULL_REQUEST')
@@ -75,7 +75,8 @@ def get_travis_branch():
     TRAVIS_PULL_REQUEST_BRANCH environment variable. Else, the name of the
     branch is stored in the TRAVIS_BRANCH environment variable.
 
-    See also: <https://docs.travis-ci.com/user/environment-variables/#default-environment-variables>
+    See also:
+        - <https://docs.travis-ci.com/user/environment-variables/#default-environment-variables>
     """  # noqa E501
     try:
         travis_pull_request = get_travis_env_or_fail('TRAVIS_PULL_REQUEST')

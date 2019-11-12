@@ -93,6 +93,7 @@ clean-docs: ## remove previously built docs
 docs: clean-docs ## generate Sphinx HTML documentation, including API docs
 	sphinx-apidoc --module-first --separate -o docs/api/ ballet
 	$(MAKE) -C docs html
+	$(MAKE) -C docs linkcheck
 
 .PHONY: view-docs
 view-docs: docs ## view docs in browser
