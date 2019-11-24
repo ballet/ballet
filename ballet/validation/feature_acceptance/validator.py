@@ -29,6 +29,12 @@ class RandomAccepter(FeatureAcceptanceMixin,
             return random.uniform(0, 1) < self.p
 
 
+class AlwaysAccepter(FeatureAccepter):
+    def judge(self):
+        logger.info('Judging feature using {}'.format(self))
+        return True
+
+
 class GFSSFAccepter(FeatureAccepter):
     """A feature acceptance evaluator that uses a modified version of
     GFSSF[1] - specifically, lines 1 - 8 of agGFSSF where we do not
