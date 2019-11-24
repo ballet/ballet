@@ -27,13 +27,15 @@ def cookiecutter(*args, **kwargs):
     return _cookiecutter(*args, **kwargs)
 
 
-def render_project_template(**cc_kwargs):
+def render_project_template(project_template_path=None, **cc_kwargs):
     """Generate a ballet project according to the project template
 
     Args:
+        project_template_path (str): path to specific project template
         **cc_kwargs: options for the cookiecutter template
     """
-    project_template_path = PROJECT_TEMPLATE_PATH
+    if project_template_path is None:
+        project_template_path = PROJECT_TEMPLATE_PATH
     return cookiecutter(project_template_path, **cc_kwargs)
 
 

@@ -41,11 +41,16 @@ def quickstart():
 @click.option('--push/--no-push', '-p',
               default=False,
               help='Push updates to remote on success')
+@click.option('--path', 'project_template_path',
+              default=None,
+              help='Specify override for project template path '
+                   '(i.e. gh:HDI-Project/ballet)')
 @stacklog(click.echo, 'Updating project template')
-def update_project_template(push):
+def update_project_template(push, project_template_path):
     """Update an existing ballet project from the upstream template"""
     import ballet.update
-    ballet.update.update_project_template(push=push)
+    ballet.update.update_project_template(
+        push=push, project_template_path=project_template_path)
 
 
 @cli.command('start-new-feature')

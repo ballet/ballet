@@ -36,15 +36,17 @@ def _safe_delete_remote(repo, name):
         repo.delete_remote(name)
 
 
-def _render_project_template(cwd, tempdir):
+def _render_project_template(cwd, tempdir, project_template_path=None):
     tempdir = pathlib.Path(tempdir)
     context = _get_full_context(cwd)
 
     # don't dump replay files to home directory.
     with patch('cookiecutter.main.dump'):
-        return render_project_template(no_input=True,
-                                       extra_context=context,
-                                       output_dir=safepath(tempdir))
+        return render_project_template(
+            project_template_path=project_template_path,
+            no_input=True,
+            extra_context=context,
+            output_dir=safepath(tempdir))
 
 
 def _get_full_context(cwd):
@@ -104,7 +106,7 @@ def _push(project):
         raise BalletError('Push failed')
 
 
-def update_project_template(push=False):
+def update_project_template(push=False, project_template_path=None):
     cwd = pathlib.Path.cwd().resolve()
 
     # get ballet project info -- must be at project root directory with a
@@ -133,7 +135,8 @@ def update_project_template(push=False):
 
     with tempfile.TemporaryDirectory() as tempdir:
         tempdir = pathlib.Path(tempdir)
-        updated_template = _render_project_template(cwd, tempdir)
+        updated_template = _render_project_template(
+            cwd, tempdir, project_template_path=project_template_path)
         updated_repo = git.Repo(safepath(updated_template))
 
         # tempdir is a randomly-named dir
