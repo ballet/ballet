@@ -288,15 +288,17 @@
         <span class="n">repo</span><span class="o">.</span><span class="n">delete_remote</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_render_project_template</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="n">tempdir</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_render_project_template</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="n">tempdir</span><span class="p">,</span> <span class="n">project_template_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">tempdir</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">tempdir</span><span class="p">)</span>
     <span class="n">context</span> <span class="o">=</span> <span class="n">_get_full_context</span><span class="p">(</span><span class="n">cwd</span><span class="p">)</span>
 
     <span class="c1"># don&#39;t dump replay files to home directory.</span>
     <span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s1">&#39;cookiecutter.main.dump&#39;</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">render_project_template</span><span class="p">(</span><span class="n">no_input</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                       <span class="n">extra_context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span>
-                                       <span class="n">output_dir</span><span class="o">=</span><span class="n">safepath</span><span class="p">(</span><span class="n">tempdir</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">render_project_template</span><span class="p">(</span>
+            <span class="n">project_template_path</span><span class="o">=</span><span class="n">project_template_path</span><span class="p">,</span>
+            <span class="n">no_input</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">extra_context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span>
+            <span class="n">output_dir</span><span class="o">=</span><span class="n">safepath</span><span class="p">(</span><span class="n">tempdir</span><span class="p">))</span>
 
 
 <span class="k">def</span> <span class="nf">_get_full_context</span><span class="p">(</span><span class="n">cwd</span><span class="p">):</span>
@@ -356,7 +358,7 @@
         <span class="k">raise</span> <span class="n">BalletError</span><span class="p">(</span><span class="s1">&#39;Push failed&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="update_project_template"><a class="viewcode-back" href="../../api/ballet.update.html#ballet.update.update_project_template">[docs]</a><span class="k">def</span> <span class="nf">update_project_template</span><span class="p">(</span><span class="n">push</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="update_project_template"><a class="viewcode-back" href="../../api/ballet.update.html#ballet.update.update_project_template">[docs]</a><span class="k">def</span> <span class="nf">update_project_template</span><span class="p">(</span><span class="n">push</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">project_template_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">cwd</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
 
     <span class="c1"># get ballet project info -- must be at project root directory with a</span>
@@ -385,7 +387,8 @@
 
     <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tempdir</span><span class="p">:</span>
         <span class="n">tempdir</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">tempdir</span><span class="p">)</span>
-        <span class="n">updated_template</span> <span class="o">=</span> <span class="n">_render_project_template</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="n">tempdir</span><span class="p">)</span>
+        <span class="n">updated_template</span> <span class="o">=</span> <span class="n">_render_project_template</span><span class="p">(</span>
+            <span class="n">cwd</span><span class="p">,</span> <span class="n">tempdir</span><span class="p">,</span> <span class="n">project_template_path</span><span class="o">=</span><span class="n">project_template_path</span><span class="p">)</span>
         <span class="n">updated_repo</span> <span class="o">=</span> <span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">(</span><span class="n">safepath</span><span class="p">(</span><span class="n">updated_template</span><span class="p">))</span>
 
         <span class="c1"># tempdir is a randomly-named dir</span>
