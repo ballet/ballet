@@ -12,7 +12,7 @@ from ballet.validation.gfssf import (
     _compute_threshold, _concat_datasets)
 
 
-class NoOpAccepter(FeatureAccepter):
+class NeverAccepter(FeatureAccepter):
 
     def judge(self):
         logger.info('Judging feature using {}'.format(self))

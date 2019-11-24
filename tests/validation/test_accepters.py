@@ -4,7 +4,7 @@ from unittest.mock import patch
 from ballet.eng.misc import IdentityTransformer
 from ballet.feature import Feature
 from ballet.validation.feature_acceptance.validator import (
-    GFSSFAccepter, NoOpAccepter, RandomAccepter)
+    GFSSFAccepter, NeverAccepter, RandomAccepter)
 from tests.util import load_regression_data
 
 
@@ -18,7 +18,7 @@ class NoOpAccepterTest(unittest.TestCase):
 
         expected = False
 
-        accepter = NoOpAccepter(X, y, existing_features, feature)
+        accepter = NeverAccepter(X, y, existing_features, feature)
         actual = accepter.judge()
 
         self.assertEqual(expected, actual)
