@@ -253,12 +253,12 @@
 <span></span><span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">import</span> <span class="nn">tempfile</span>
 
+<span class="kn">import</span> <span class="nn">funcy</span> <span class="k">as</span> <span class="nn">fy</span>
 <span class="kn">from</span> <span class="nn">cookiecutter.main</span> <span class="k">import</span> <span class="n">cookiecutter</span> <span class="k">as</span> <span class="n">_cookiecutter</span>
-<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">re_test</span><span class="p">,</span> <span class="n">walk</span><span class="p">,</span> <span class="n">walk_values</span><span class="p">,</span> <span class="n">wraps</span>
 
 <span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="k">import</span> <span class="n">PathLike</span>
 <span class="kn">from</span> <span class="nn">ballet.project</span> <span class="k">import</span> <span class="n">Project</span><span class="p">,</span> <span class="n">detect_github_username</span>
-<span class="kn">from</span> <span class="nn">ballet.util.fs</span> <span class="k">import</span> <span class="n">synctree</span>
+<span class="kn">from</span> <span class="nn">ballet.util.fs</span> <span class="k">import</span> <span class="n">pwalk</span><span class="p">,</span> <span class="n">synctree</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.project_structure.checks</span> <span class="k">import</span> <span class="p">(</span>
     <span class="n">FEATURE_MODULE_NAME_REGEX</span><span class="p">,</span> <span class="n">SUBPACKAGE_NAME_REGEX</span><span class="p">)</span>
@@ -272,10 +272,10 @@
     <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">)</span> <span class="k">else</span> <span class="n">obj</span>
 
 
-<span class="nd">@wraps</span><span class="p">(</span><span class="n">_cookiecutter</span><span class="p">)</span>
+<span class="nd">@fy</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">_cookiecutter</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">cookiecutter</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="n">args</span> <span class="o">=</span> <span class="n">walk</span><span class="p">(</span><span class="n">_stringify_path</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
-    <span class="n">kwargs</span> <span class="o">=</span> <span class="n">walk_values</span><span class="p">(</span><span class="n">_stringify_path</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">fy</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">_stringify_path</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="n">fy</span><span class="o">.</span><span class="n">walk_values</span><span class="p">(</span><span class="n">_stringify_path</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_cookiecutter</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
@@ -305,8 +305,8 @@
     <span class="n">subpackage_name</span><span class="p">,</span> <span class="n">feature_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">dst</span><span class="o">.</span><span class="n">parent</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">dst</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
     <span class="k">if</span> <span class="p">(</span>
         <span class="n">dst</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span>
-        <span class="ow">and</span> <span class="n">re_test</span><span class="p">(</span><span class="n">SUBPACKAGE_NAME_REGEX</span><span class="p">,</span> <span class="n">subpackage_name</span><span class="p">)</span>
-        <span class="ow">and</span> <span class="n">re_test</span><span class="p">(</span><span class="n">FEATURE_MODULE_NAME_REGEX</span><span class="p">,</span> <span class="n">feature_name</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="n">fy</span><span class="o">.</span><span class="n">re_test</span><span class="p">(</span><span class="n">SUBPACKAGE_NAME_REGEX</span><span class="p">,</span> <span class="n">subpackage_name</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="n">fy</span><span class="o">.</span><span class="n">re_test</span><span class="p">(</span><span class="n">FEATURE_MODULE_NAME_REGEX</span><span class="p">,</span> <span class="n">feature_name</span><span class="p">)</span>
     <span class="p">):</span>
         <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span>
             <span class="s1">&#39;The feature already exists here: </span><span class="si">{dst}</span><span class="s1">&#39;</span>
@@ -344,6 +344,14 @@
         <span class="n">output_dir</span> <span class="o">=</span> <span class="n">tempdir</span>
         <span class="n">cc_kwargs</span><span class="p">[</span><span class="s1">&#39;output_dir&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">output_dir</span>
         <span class="n">rendered_dir</span> <span class="o">=</span> <span class="n">render_feature_template</span><span class="p">(</span><span class="o">**</span><span class="n">cc_kwargs</span><span class="p">)</span>
+
+        <span class="c1"># clean pyc files from rendered dir</span>
+        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">pwalk</span><span class="p">(</span><span class="n">rendered_dir</span><span class="p">,</span> <span class="n">topdown</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s1">&#39;.pyc&#39;</span><span class="p">:</span>
+                <span class="n">path</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;__pycache__&#39;</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">fy</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">OSError</span><span class="p">):</span>
+                    <span class="n">path</span><span class="o">.</span><span class="n">rmdir</span><span class="p">()</span>
 
         <span class="c1"># copy into contrib dir</span>
         <span class="n">src</span> <span class="o">=</span> <span class="n">rendered_dir</span>

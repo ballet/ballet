@@ -268,7 +268,7 @@
     <span class="sd">&quot;&quot;&quot;Add s into filepath before the extension</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        filepath (str, path): file path</span>
+<span class="sd">        filepath (PathLike): file path</span>
 <span class="sd">        s (str): string to splice</span>
 
 <span class="sd">    Returns:</span>
@@ -281,6 +281,9 @@
 <div class="viewcode-block" id="replaceext"><a class="viewcode-back" href="../../../api/ballet.util.fs.html#ballet.util.fs.replaceext">[docs]</a><span class="k">def</span> <span class="nf">replaceext</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">new_ext</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Replace any existing file extension with a new one</span>
 
+<span class="sd">    If the new extension is the empty string, all existing extensions will</span>
+<span class="sd">    be removed.</span>
+
 <span class="sd">    Example::</span>
 
 <span class="sd">        &gt;&gt;&gt; replaceext(&#39;/foo/bar.txt&#39;, &#39;py&#39;)</span>
@@ -289,25 +292,23 @@
 <span class="sd">        &#39;/foo/bar.doc&#39;</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        filepath (str, path): file path</span>
+<span class="sd">        filepath (PathLike): file path</span>
 <span class="sd">        new_ext (str): new file extension; if a leading dot is not included,</span>
 <span class="sd">            it will be added.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Tuple[str]</span>
+<span class="sd">        str</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">new_ext</span> <span class="ow">and</span> <span class="n">new_ext</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;.&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">new_ext</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">new_ext</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
         <span class="n">new_ext</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">new_ext</span>
-
-    <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">safepath</span><span class="p">(</span><span class="n">filepath</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">root</span> <span class="o">+</span> <span class="n">new_ext</span></div>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="n">new_ext</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="splitext2"><a class="viewcode-back" href="../../../api/ballet.util.fs.html#ballet.util.fs.splitext2">[docs]</a><span class="k">def</span> <span class="nf">splitext2</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Split filepath into root, filename, ext</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        filepath (str, path): file path</span>
+<span class="sd">        filepath (PathLike): file path</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        str</span>
@@ -321,7 +322,7 @@
     <span class="sd">&quot;&quot;&quot;Determine if the file both exists and isempty</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        filepath (str, path): file path</span>
+<span class="sd">        filepath (PathLike): file path</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        bool</span>
@@ -411,6 +412,18 @@
         <span class="k">raise</span>
 
     <span class="k">return</span> <span class="n">result</span>
+
+
+<div class="viewcode-block" id="pwalk"><a class="viewcode-back" href="../../../api/ballet.util.fs.html#ballet.util.fs.pwalk">[docs]</a><span class="k">def</span> <span class="nf">pwalk</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Similar to os.walk but with pathlib.Path objects</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Iterable[Path]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">dirpath</span><span class="p">,</span> <span class="n">dirnames</span><span class="p">,</span> <span class="n">filenames</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">safepath</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">dirpath</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">dirpath</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">dirnames</span> <span class="o">+</span> <span class="n">filenames</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">dirpath</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">p</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
