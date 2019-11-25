@@ -25,7 +25,10 @@ def load_class(project, config_key):
     path = project.config.get(config_key)
     modname, clsname = path.rsplit('.', maxsplit=1)
     mod = import_module_from_modname(modname)
-    return getattr(mod, clsname)
+    cls = getattr(mod, clsname)
+    logger.debug('Loaded class {} from {}'
+                 .format(cls.__name__, mod.__path__))
+    return cls
 
 
 @validation_stage('checking project structure')

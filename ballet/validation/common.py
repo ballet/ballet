@@ -203,13 +203,27 @@ class ChangeCollector:
                 comparison ref
 
         Returns:
-            List[Tuple]: list of tuple of importer, module name, and module
-                path. The "importer" is a callable that returns a module
+            List[Tuple[Callable, str, str]]: list of tuple of importer,
+                module name, and module path. The "importer" is a callable that
+                returns a module
         """
+
+        # the directory containing ballet.yml
         project_root = self.project.path
+
+        # the directory containing the package
+        try:
+            package_path = self.project.package.__path__[0]
+            package_root = pathlib.Path(package_path).parent
+        except (AttributeError, IndexError):
+            logger.debug("Couldn't get package root, will try to recover",
+                         exc_info=True)
+            package_root = project_root
+
         for diff in candidate_feature_diffs:
             path = diff.b_path
-            modname = relpath_to_modname(path)
+            relpath = project_root.joinpath(path).relative_to(package_root)
+            modname = relpath_to_modname(relpath)
             modpath = project_root.joinpath(path)
             importer = partial(import_module_at_path, modname, modpath)
             yield importer, modname, modpath
