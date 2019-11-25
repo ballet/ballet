@@ -455,13 +455,27 @@
 <span class="sd">                comparison ref</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            List[Tuple]: list of tuple of importer, module name, and module</span>
-<span class="sd">                path. The &quot;importer&quot; is a callable that returns a module</span>
+<span class="sd">            List[Tuple[Callable, str, str]]: list of tuple of importer,</span>
+<span class="sd">                module name, and module path. The &quot;importer&quot; is a callable that</span>
+<span class="sd">                returns a module</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># the directory containing ballet.yml</span>
         <span class="n">project_root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">path</span>
+
+        <span class="c1"># the directory containing the package</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">package_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">package_root</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">package_path</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Couldn&#39;t get package root, will try to recover&quot;</span><span class="p">,</span>
+                         <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">package_root</span> <span class="o">=</span> <span class="n">project_root</span>
+
         <span class="k">for</span> <span class="n">diff</span> <span class="ow">in</span> <span class="n">candidate_feature_diffs</span><span class="p">:</span>
             <span class="n">path</span> <span class="o">=</span> <span class="n">diff</span><span class="o">.</span><span class="n">b_path</span>
-            <span class="n">modname</span> <span class="o">=</span> <span class="n">relpath_to_modname</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="n">relpath</span> <span class="o">=</span> <span class="n">project_root</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">package_root</span><span class="p">)</span>
+            <span class="n">modname</span> <span class="o">=</span> <span class="n">relpath_to_modname</span><span class="p">(</span><span class="n">relpath</span><span class="p">)</span>
             <span class="n">modpath</span> <span class="o">=</span> <span class="n">project_root</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
             <span class="n">importer</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">import_module_at_path</span><span class="p">,</span> <span class="n">modname</span><span class="p">,</span> <span class="n">modpath</span><span class="p">)</span>
             <span class="k">yield</span> <span class="n">importer</span><span class="p">,</span> <span class="n">modname</span><span class="p">,</span> <span class="n">modpath</span></div>
