@@ -564,9 +564,29 @@ class FsTest(unittest.TestCase):
             actual = ballet.util.fs.splitext2(filepath)
             self.assertEqual(actual, expected)
 
-    @unittest.expectedFailure
-    def test_isemptyfile(self):
-        raise NotImplementedError
+    @patch('os.path.exists')
+    def test_isemptyfile_does_not_exist(self, mock_exists):
+        mock_exists.return_value = False
+        result = ballet.util.fs.isemptyfile(
+            '/path/to/file/that/hopefully/does/not/exist')
+        self.assertFalse(result)
+
+    def test_isemptyfile_is_not_empty(self):
+        # file exists and is not empty - false
+        with tempfile.TemporaryDirectory() as d:
+            filepath = os.path.join(d, 'file')
+            with open(filepath, 'w') as f:
+                f.write('0')
+            result = ballet.util.fs.isemptyfile(filepath)
+            self.assertFalse(result)
+
+    def test_isemptyfile_is_empty(self):
+        # file exists and is empty - true
+        with tempfile.TemporaryDirectory() as d:
+            filepath = pathlib.Path(d).joinpath('file')
+            filepath.touch()
+            result = ballet.util.fs.isemptyfile(filepath)
+            self.assertTrue(result)
 
     def test_synctree(self):
         with tempfile.TemporaryDirectory() as tempdir:
@@ -610,6 +630,10 @@ class FsTest(unittest.TestCase):
         dst = Mock(spec=pathlib.Path)
         dst.exists.return_value = False
         ballet.util.fs._synctree(src, dst, lambda x: None)
+
+    @unittest.expectedFailure
+    def test_pwalk(self):
+        raise NotImplementedError
 
 
 class GitTest(unittest.TestCase):

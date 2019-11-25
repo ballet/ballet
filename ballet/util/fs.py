@@ -14,7 +14,7 @@ def spliceext(filepath, s):
     """Add s into filepath before the extension
 
     Args:
-        filepath (str, path): file path
+        filepath (PathLike): file path
         s (str): string to splice
 
     Returns:
@@ -27,6 +27,9 @@ def spliceext(filepath, s):
 def replaceext(filepath, new_ext):
     """Replace any existing file extension with a new one
 
+    If the new extension is the empty string, all existing extensions will
+    be removed.
+
     Example::
 
         >>> replaceext('/foo/bar.txt', 'py')
@@ -35,25 +38,23 @@ def replaceext(filepath, new_ext):
         '/foo/bar.doc'
 
     Args:
-        filepath (str, path): file path
+        filepath (PathLike): file path
         new_ext (str): new file extension; if a leading dot is not included,
             it will be added.
 
     Returns:
-        Tuple[str]
+        str
     """
-    if new_ext and new_ext[0] != '.':
+    if new_ext and not new_ext.startswith('.'):
         new_ext = '.' + new_ext
-
-    root, ext = os.path.splitext(safepath(filepath))
-    return root + new_ext
+    return str(pathlib.Path(filepath).with_suffix(new_ext))
 
 
 def splitext2(filepath):
     """Split filepath into root, filename, ext
 
     Args:
-        filepath (str, path): file path
+        filepath (PathLike): file path
 
     Returns:
         str
@@ -67,7 +68,7 @@ def isemptyfile(filepath):
     """Determine if the file both exists and isempty
 
     Args:
-        filepath (str, path): file path
+        filepath (PathLike): file path
 
     Returns:
         bool
