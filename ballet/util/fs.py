@@ -157,3 +157,15 @@ def _synctree(src, dst, onexist):
         raise
 
     return result
+
+
+def pwalk(d, **kwargs):
+    """Similar to os.walk but with pathlib.Path objects
+
+    Returns:
+        Iterable[Path]
+    """
+    for dirpath, dirnames, filenames in os.walk(safepath(d), **kwargs):
+        dirpath = pathlib.Path(dirpath)
+        for p in dirnames + filenames:
+            yield dirpath.joinpath(p)

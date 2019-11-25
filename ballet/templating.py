@@ -1,12 +1,12 @@
 import pathlib
 import tempfile
 
+import funcy as fy
 from cookiecutter.main import cookiecutter as _cookiecutter
-from funcy import re_test, walk, walk_values, wraps
 
 from ballet.compat import PathLike
 from ballet.project import Project, detect_github_username
-from ballet.util.fs import synctree
+from ballet.util.fs import pwalk, synctree
 from ballet.util.log import logger
 from ballet.validation.project_structure.checks import (
     FEATURE_MODULE_NAME_REGEX, SUBPACKAGE_NAME_REGEX)
@@ -20,10 +20,10 @@ def _stringify_path(obj):
     return str(obj) if isinstance(obj, PathLike) else obj
 
 
-@wraps(_cookiecutter)
+@fy.wraps(_cookiecutter)
 def cookiecutter(*args, **kwargs):
-    args = walk(_stringify_path, args)
-    kwargs = walk_values(_stringify_path, kwargs)
+    args = fy.walk(_stringify_path, args)
+    kwargs = fy.walk_values(_stringify_path, kwargs)
     return _cookiecutter(*args, **kwargs)
 
 
@@ -53,8 +53,8 @@ def _fail_if_feature_exists(dst):
     subpackage_name, feature_name = str(dst.parent), str(dst.name)
     if (
         dst.is_file()
-        and re_test(SUBPACKAGE_NAME_REGEX, subpackage_name)
-        and re_test(FEATURE_MODULE_NAME_REGEX, feature_name)
+        and fy.re_test(SUBPACKAGE_NAME_REGEX, subpackage_name)
+        and fy.re_test(FEATURE_MODULE_NAME_REGEX, feature_name)
     ):
         raise FileExistsError(
             'The feature already exists here: {dst}'
@@ -92,6 +92,14 @@ def start_new_feature(contrib_dir=None, **cc_kwargs):
         output_dir = tempdir
         cc_kwargs['output_dir'] = output_dir
         rendered_dir = render_feature_template(**cc_kwargs)
+
+        # clean pyc files from rendered dir
+        for path in pwalk(rendered_dir, topdown=False):
+            if path.suffix == '.pyc':
+                path.unlink()
+            if path.name == '__pycache__':
+                with fy.suppress(OSError):
+                    path.rmdir()
 
         # copy into contrib dir
         src = rendered_dir
