@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 requirements = [
-    'ballet>={{ cookiecutter._ballet_version }}',
+    'ballet=={{ cookiecutter._ballet_version }}',
     'Click>=6.0',
 ]
 
