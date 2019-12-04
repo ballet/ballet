@@ -4,8 +4,9 @@ from collections import namedtuple
 from funcy import collecting, complement, lfilter, partial, post_processing
 
 from ballet.contrib import _collect_contrib_feature_from_module
-from ballet.exc import BalletError, NoFeaturesCollectedError, FeatureCollectionError
-from ballet.util import make_plural_suffix, one_or_raise, whether_failures
+from ballet.exc import (
+    BalletError, FeatureCollectionError, NoFeaturesCollectedError)
+from ballet.util import make_plural_suffix, whether_failures
 from ballet.util.ci import TravisPullRequestBuildDiffer, can_use_travis_differ
 from ballet.util.git import LocalMergeBuildDiffer, LocalPullRequestBuildDiffer
 from ballet.util.log import logger, stacklog
