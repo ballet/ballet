@@ -43,6 +43,16 @@ class InvalidFeatureApi(FeatureValidationError):
     pass
 
 
+class FeatureCollectionError(BalletError):
+    """Error in collecting Feature instances from some source"""
+    pass
+
+
+class NoFeaturesCollectedError(FeatureCollectionError):
+    """Expected to collect some features but did not find any"""
+    pass
+
+
 class SkippedValidationTest(BalletError):
     """The validation test was skipped"""
     pass
