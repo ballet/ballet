@@ -107,6 +107,26 @@ def _push(project):
 
 
 def update_project_template(push=False, project_template_path=None):
+    """Update project with updates to upstream project template
+
+    The update is fairly complicated and proceeds as follows:
+    1. Load project: user must run command from master branch and ballet
+       must be able to detect the project-template branch
+    2. Load the saved cookiecutter context from disk
+    3. Render the project template into a temporary directory using the
+       saved context, *prompting the user if new keys are required*. Note
+       that the project template is simply loaded from the data files of the
+       installed version of ballet. Note further that by the project
+       template's post_gen_hook, a new git repo is initialized [in the
+       temporary directory] and files are committed.
+    4. Add the temporary directory as a remote and merge it into the
+       project-template branch, favoring changes made to the upstream template.
+       Any failure to merge results in an unrecoverable error.
+    5. Merge the project-template branch into the master branch. The user is
+       responsible for merging conflicts and they are given instructions to
+       do so and recover.
+    6. If applicable, push to master.
+    """
     cwd = pathlib.Path.cwd().resolve()
 
     # get ballet project info -- must be at project root directory with a
@@ -135,12 +155,15 @@ def update_project_template(push=False, project_template_path=None):
 
     with tempfile.TemporaryDirectory() as tempdir:
         tempdir = pathlib.Path(tempdir)
+
+        # cookiecutter returns path to the resulting project dir
         updated_template = _render_project_template(
             cwd, tempdir, project_template_path=project_template_path)
         updated_repo = git.Repo(safepath(updated_template))
 
-        # tempdir is a randomly-named dir
-        remote_name = tempdir.parts[-1]
+        # tempdir is a randomly-named dir suitable for a random remote name
+        # to avoid conflicts
+        remote_name = tempdir.name
 
         remote = repo.create_remote(
             remote_name, updated_repo.working_tree_dir)

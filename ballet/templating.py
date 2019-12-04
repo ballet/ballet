@@ -22,6 +22,11 @@ def _stringify_path(obj):
 
 @fy.wraps(_cookiecutter)
 def cookiecutter(*args, **kwargs):
+    """Call cookiecutter.main.cookiecutter after stringifying paths
+
+    Return:
+        str: project directory path
+    """
     args = fy.walk(_stringify_path, args)
     kwargs = fy.walk_values(_stringify_path, kwargs)
     return _cookiecutter(*args, **kwargs)
