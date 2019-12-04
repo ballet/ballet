@@ -7,6 +7,7 @@ from ballet.util.log import logger, stacklog
 from ballet.util.mod import import_module_from_modname
 from ballet.validation.common import (
     get_accepted_features, get_proposed_feature)
+from ballet.exc import BalletError, NoFeaturesCollectedError
 
 # helpful for log parsing
 PRUNER_MESSAGE = 'Found Redundant Feature: '
@@ -82,9 +83,14 @@ def _prune_existing_features(project, force=False):
     if not force and not project.on_master_after_merge:
         raise SkippedValidationTest('Not on master')
 
+    try:
+        proposed_feature = get_proposed_feature(project)
+    except NoFeaturesCollectedError:
+        raise SkippedValidationTest('No features collected')
+
+
     out = project.build()
     X_df, y, features = out['X_df'], out['y'], out['features']
-    proposed_feature = get_proposed_feature(project)
     accepted_features = get_accepted_features(features, proposed_feature)
 
     Pruner = load_class(project, 'validation.feature_pruner')
