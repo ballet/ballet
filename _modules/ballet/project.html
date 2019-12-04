@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.project &mdash; ballet 0.6.2 documentation</title>
+  <title>ballet.project &mdash; ballet 0.6.3 documentation</title>
   
 
   
@@ -117,10 +117,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../../api/ballet.eng.html#submodules">Submodules</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.modeling.html">ballet.modeling package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../api/ballet.modeling.html#submodules">Submodules</a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.util.html">ballet.util package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../api/ballet.util.html#submodules">Submodules</a></li>
 </ul>
@@ -138,7 +134,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.contrib.html">ballet.contrib module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.exc.html">ballet.exc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.feature.html">ballet.feature module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.modeler.html">ballet.modeler module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.pipeline.html">ballet.pipeline module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.project.html">ballet.project module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.templating.html">ballet.templating module</a></li>
@@ -252,18 +247,18 @@
   <h1>Source code for ballet.project</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">from</span> <span class="nn">importlib</span> <span class="k">import</span> <span class="n">import_module</span>
+<span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">import_module</span>
 
 <span class="kn">import</span> <span class="nn">git</span>
-<span class="kn">from</span> <span class="nn">dynaconf</span> <span class="k">import</span> <span class="n">LazySettings</span>
-<span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">cached_property</span><span class="p">,</span> <span class="n">fallback</span><span class="p">,</span> <span class="n">re_find</span>
+<span class="kn">from</span> <span class="nn">dynaconf</span> <span class="kn">import</span> <span class="n">LazySettings</span>
+<span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">cached_property</span><span class="p">,</span> <span class="n">fallback</span><span class="p">,</span> <span class="n">re_find</span>
 
-<span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="k">import</span> <span class="n">safepath</span>
-<span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="n">ConfigurationError</span>
-<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">needs_path</span><span class="p">,</span> <span class="n">raiseifnone</span>
-<span class="kn">from</span> <span class="nn">ballet.util.ci</span> <span class="k">import</span> <span class="n">get_travis_branch</span><span class="p">,</span> <span class="n">get_travis_pr_num</span>
-<span class="kn">from</span> <span class="nn">ballet.util.git</span> <span class="k">import</span> <span class="n">get_branch</span><span class="p">,</span> <span class="n">get_pr_num</span><span class="p">,</span> <span class="n">is_merge_commit</span>
-<span class="kn">from</span> <span class="nn">ballet.util.mod</span> <span class="k">import</span> <span class="n">import_module_at_path</span>
+<span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="kn">import</span> <span class="n">safepath</span>
+<span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="kn">import</span> <span class="n">ConfigurationError</span>
+<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">needs_path</span><span class="p">,</span> <span class="n">raiseifnone</span>
+<span class="kn">from</span> <span class="nn">ballet.util.ci</span> <span class="kn">import</span> <span class="n">get_travis_branch</span><span class="p">,</span> <span class="n">get_travis_pr_num</span>
+<span class="kn">from</span> <span class="nn">ballet.util.git</span> <span class="kn">import</span> <span class="n">get_branch</span><span class="p">,</span> <span class="n">get_pr_num</span><span class="p">,</span> <span class="n">is_merge_commit</span>
+<span class="kn">from</span> <span class="nn">ballet.util.mod</span> <span class="kn">import</span> <span class="n">import_module_at_path</span>
 
 <span class="n">DEFAULT_CONFIG_NAME</span> <span class="o">=</span> <span class="s1">&#39;ballet.yml&#39;</span>
 <span class="n">DYNACONF_OPTIONS</span> <span class="o">=</span> <span class="p">{</span>
@@ -387,7 +382,7 @@
         <span class="s1">&#39;collect_contrib_features&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;.features&#39;</span><span class="p">,</span> <span class="s1">&#39;collect_contrib_features&#39;</span><span class="p">)</span>
     <span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">package</span> <span class="o">=</span> <span class="n">package</span>
 
     <span class="nd">@cached_property</span>
@@ -470,7 +465,7 @@
         <span class="sd">&quot;&quot;&quot;Return a git.Repo object corresponding to this project&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">search_parent_directories</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">Project</span><span class="o">.</span><span class="n">attr_map</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve</span><span class="p">(</span><span class="o">*</span><span class="n">Project</span><span class="o">.</span><span class="n">attr_map</span><span class="p">[</span><span class="n">attr</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>

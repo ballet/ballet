@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.validation.feature_api.validator &mdash; ballet 0.6.2 documentation</title>
+  <title>ballet.validation.feature_api.validator &mdash; ballet 0.6.3 documentation</title>
   
 
   
@@ -117,10 +117,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/ballet.eng.html#submodules">Submodules</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.modeling.html">ballet.modeling package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../../api/ballet.modeling.html#submodules">Submodules</a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.util.html">ballet.util package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/ballet.util.html#submodules">Submodules</a></li>
 </ul>
@@ -138,7 +134,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.contrib.html">ballet.contrib module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.exc.html">ballet.exc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.feature.html">ballet.feature module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.modeler.html">ballet.modeler module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.pipeline.html">ballet.pipeline module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.project.html">ballet.project module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.templating.html">ballet.templating module</a></li>
@@ -250,12 +245,12 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ballet.validation.feature_api.validator</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">ballet.contrib</span> <span class="k">import</span> <span class="n">_collect_contrib_features</span>
-<span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">ballet.validation.base</span> <span class="k">import</span> <span class="n">BaseValidator</span>
-<span class="kn">from</span> <span class="nn">ballet.validation.common</span> <span class="k">import</span> <span class="p">(</span>
+<span></span><span class="kn">from</span> <span class="nn">ballet.contrib</span> <span class="kn">import</span> <span class="n">_collect_contrib_features</span>
+<span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">ballet.validation.base</span> <span class="kn">import</span> <span class="n">BaseValidator</span>
+<span class="kn">from</span> <span class="nn">ballet.validation.common</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">ChangeCollector</span><span class="p">,</span> <span class="n">check_from_class</span><span class="p">,</span> <span class="n">subsample_data_for_validation</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">ballet.validation.feature_api.checks</span> <span class="k">import</span> <span class="n">FeatureApiCheck</span>
+<span class="kn">from</span> <span class="nn">ballet.validation.feature_api.checks</span> <span class="kn">import</span> <span class="n">FeatureApiCheck</span>
 
 
 <div class="viewcode-block" id="validate_feature_api"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_api.validator.html#ballet.validation.feature_api.validator.validate_feature_api">[docs]</a><span class="k">def</span> <span class="nf">validate_feature_api</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">subsample</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -274,7 +269,7 @@
 
 <div class="viewcode-block" id="FeatureApiValidator"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_api.validator.html#ballet.validation.feature_api.validator.FeatureApiValidator">[docs]</a><span class="k">class</span> <span class="nc">FeatureApiValidator</span><span class="p">(</span><span class="n">BaseValidator</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">change_collector</span> <span class="o">=</span> <span class="n">ChangeCollector</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
 
         <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">load_data</span><span class="p">()</span>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.validation.feature_acceptance.validator &mdash; ballet 0.6.2 documentation</title>
+  <title>ballet.validation.feature_acceptance.validator &mdash; ballet 0.6.3 documentation</title>
   
 
   
@@ -117,10 +117,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/ballet.eng.html#submodules">Submodules</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.modeling.html">ballet.modeling package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../../api/ballet.modeling.html#submodules">Submodules</a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.util.html">ballet.util package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/ballet.util.html#submodules">Submodules</a></li>
 </ul>
@@ -138,7 +134,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.contrib.html">ballet.contrib module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.exc.html">ballet.exc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.feature.html">ballet.feature module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.modeler.html">ballet.modeler module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.pipeline.html">ballet.pipeline module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.project.html">ballet.project module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/ballet.templating.html">ballet.templating module</a></li>
@@ -252,14 +247,14 @@
   <h1>Source code for ballet.validation.feature_acceptance.validator</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">random</span>
 
-<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="k">import</span> <span class="n">asarray2d</span>
-<span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">ballet.util.testing</span> <span class="k">import</span> <span class="n">seeded</span>
-<span class="kn">from</span> <span class="nn">ballet.validation.base</span> <span class="k">import</span> <span class="n">FeatureAcceptanceMixin</span><span class="p">,</span> <span class="n">FeatureAccepter</span>
-<span class="kn">from</span> <span class="nn">ballet.validation.common</span> <span class="k">import</span> <span class="n">RandomFeaturePerformanceEvaluator</span>
-<span class="kn">from</span> <span class="nn">ballet.validation.entropy</span> <span class="k">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">asarray2d</span>
+<span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">ballet.util.testing</span> <span class="kn">import</span> <span class="n">seeded</span>
+<span class="kn">from</span> <span class="nn">ballet.validation.base</span> <span class="kn">import</span> <span class="n">FeatureAcceptanceMixin</span><span class="p">,</span> <span class="n">FeatureAccepter</span>
+<span class="kn">from</span> <span class="nn">ballet.validation.common</span> <span class="kn">import</span> <span class="n">RandomFeaturePerformanceEvaluator</span>
+<span class="kn">from</span> <span class="nn">ballet.validation.entropy</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">estimate_conditional_information</span><span class="p">,</span> <span class="n">estimate_entropy</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">ballet.validation.gfssf</span> <span class="k">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">ballet.validation.gfssf</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">LAMBDA_1_ADJUSTMENT</span><span class="p">,</span> <span class="n">LAMBDA_2_ADJUSTMENT</span><span class="p">,</span> <span class="n">_compute_lmbdas</span><span class="p">,</span>
     <span class="n">_compute_threshold</span><span class="p">,</span> <span class="n">_concat_datasets</span><span class="p">)</span>
 
@@ -311,7 +306,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">lmbda_1</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">lmbda_2</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">lmbda_1</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">lmbda_2</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">lmbda_1</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
@@ -321,7 +316,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">lmbda_1</span> <span class="o">=</span> <span class="n">lmbda_1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lmbda_2</span> <span class="o">=</span> <span class="n">lmbda_2</span>
 
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{str}</span><span class="s1">: lmbda_1=</span><span class="si">{lmbda_1}</span><span class="s1">, lmbda_2=</span><span class="si">{lmbda_2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="nb">str</span><span class="o">=</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__str__</span><span class="p">(),</span>
             <span class="n">lmbda_1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lmbda_1</span><span class="p">,</span>

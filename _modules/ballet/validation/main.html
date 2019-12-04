@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.validation.main &mdash; ballet 0.6.2 documentation</title>
+  <title>ballet.validation.main &mdash; ballet 0.6.3 documentation</title>
   
 
   
@@ -117,10 +117,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.eng.html#submodules">Submodules</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.modeling.html">ballet.modeling package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.modeling.html#submodules">Submodules</a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.util.html">ballet.util package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.util.html#submodules">Submodules</a></li>
 </ul>
@@ -138,7 +134,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.contrib.html">ballet.contrib module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.exc.html">ballet.exc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.feature.html">ballet.feature module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.modeler.html">ballet.modeler module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.pipeline.html">ballet.pipeline module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.project.html">ballet.project module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.templating.html">ballet.templating module</a></li>
@@ -250,14 +245,14 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ballet.validation.main</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">funcy</span> <span class="k">import</span> <span class="n">decorator</span><span class="p">,</span> <span class="n">ignore</span>
+<span></span><span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">decorator</span><span class="p">,</span> <span class="n">ignore</span>
 
-<span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="k">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">FeatureRejected</span><span class="p">,</span> <span class="n">InvalidFeatureApi</span><span class="p">,</span> <span class="n">InvalidProjectStructure</span><span class="p">,</span>
-    <span class="n">SkippedValidationTest</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="k">import</span> <span class="n">logger</span><span class="p">,</span> <span class="n">stacklog</span>
-<span class="kn">from</span> <span class="nn">ballet.util.mod</span> <span class="k">import</span> <span class="n">import_module_from_modname</span>
-<span class="kn">from</span> <span class="nn">ballet.validation.common</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">NoFeaturesCollectedError</span><span class="p">,</span> <span class="n">SkippedValidationTest</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="kn">import</span> <span class="n">logger</span><span class="p">,</span> <span class="n">stacklog</span>
+<span class="kn">from</span> <span class="nn">ballet.util.mod</span> <span class="kn">import</span> <span class="n">import_module_from_modname</span>
+<span class="kn">from</span> <span class="nn">ballet.validation.common</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">get_accepted_features</span><span class="p">,</span> <span class="n">get_proposed_feature</span><span class="p">)</span>
 
 <span class="c1"># helpful for log parsing</span>
@@ -334,9 +329,13 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_master_after_merge</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on master&#39;</span><span class="p">)</span>
 
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">proposed_feature</span> <span class="o">=</span> <span class="n">get_proposed_feature</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">NoFeaturesCollectedError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;No features collected&#39;</span><span class="p">)</span>
+
     <span class="n">out</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
     <span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">features</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;X_df&#39;</span><span class="p">],</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">],</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span>
-    <span class="n">proposed_feature</span> <span class="o">=</span> <span class="n">get_proposed_feature</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
     <span class="n">accepted_features</span> <span class="o">=</span> <span class="n">get_accepted_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">proposed_feature</span><span class="p">)</span>
 
     <span class="n">Pruner</span> <span class="o">=</span> <span class="n">load_class</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.feature_pruner&#39;</span><span class="p">)</span>
