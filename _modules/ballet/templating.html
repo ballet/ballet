@@ -269,6 +269,11 @@
 
 <span class="nd">@fy</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">_cookiecutter</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">cookiecutter</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Call cookiecutter.main.cookiecutter after stringifying paths</span>
+
+<span class="sd">    Return:</span>
+<span class="sd">        str: project directory path</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">args</span> <span class="o">=</span> <span class="n">fy</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">_stringify_path</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
     <span class="n">kwargs</span> <span class="o">=</span> <span class="n">fy</span><span class="o">.</span><span class="n">walk_values</span><span class="p">(</span><span class="n">_stringify_path</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_cookiecutter</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>

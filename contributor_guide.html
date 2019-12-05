@@ -257,18 +257,29 @@ feature engineering collaboration. Welcome!</p>
 <p>Here are the steps to develop a new feature for inclusion in a Ballet project.</p>
 <ol class="arabic">
 <li><p>Fork the project and clone your fork in your local development environment.</p></li>
-<li><p>Create a new Python module within the project’s “contrib” directory that will hold your feature:</p>
+<li><dl>
+<dt>Install the project in a virtual environment. This will make the feature</dt><dd><p>engineering pipeline accessible in interactive settings (Python interpreter, Jupyter notebook)
+and as a command-line tool.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">cd</span> myproject
+<span class="gp">$</span> conda create -n myproject -y <span class="o">&amp;&amp;</span> conda activate myproject  <span class="c1"># or your preferred environment tool</span>
+<span class="gp gp-VirtualEnv">(myproject)</span> <span class="gp">$</span> make install
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><p>Start working on a new feature.</p>
 <blockquote>
-<div><ul class="simple">
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> ballet start-new-feature
+</pre></div>
+</div>
+<p>This will create a new Python module within the project’s “contrib” directory to hold your
+feature.</p>
+<ul class="simple">
 <li><p>The contrib directory is usually named something like <code class="docutils literal notranslate"><span class="pre">src/ballet_project/features/contrib</span></code>.</p></li>
 <li><p>The new subpackage must be named like <code class="docutils literal notranslate"><span class="pre">user_&lt;github</span> <span class="pre">username&gt;</span></code>.</p></li>
 <li><p>The new submodule that will contain the feature must be named like <code class="docutils literal notranslate"><span class="pre">feature_&lt;feature</span> <span class="pre">name&gt;.py</span></code>.</p></li>
 </ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If you have the <a class="reference external" href="https://hdi-project.github.io/ballet/installation.html">ballet CLI</a> installed, you can run <code class="docutils literal notranslate"><span class="pre">ballet</span> <span class="pre">start-new-feature</span></code> to
-create this file skeleton automatically!</p>
-</div>
 </div></blockquote>
 </li>
 <li><p>Write your feature. We call the code you write to extract one group of related feature values

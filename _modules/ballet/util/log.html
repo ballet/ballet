@@ -325,16 +325,7 @@
 <div class="viewcode-block" id="stacklog"><a class="viewcode-back" href="../../../api/ballet.util.log.html#ballet.util.log.stacklog">[docs]</a><span class="k">class</span> <span class="nc">stacklog</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Stack log messages</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        method: log callable</span>
-<span class="sd">        message: log message</span>
-<span class="sd">        *args: args to log method</span>
-<span class="sd">        conditions (List[Tuple]): list of tuples of exceptions or tuple of</span>
-<span class="sd">            exceptions to catch and log conditions, such as</span>
-<span class="sd">            ``[(&#39;SKIPPED&#39;, NotImplementedError)]``.</span>
-<span class="sd">        **kwargs: kwargs to log method</span>
-
-<span class="sd">    Example usage:</span>
+<span class="sd">    Example usage::</span>
 
 <span class="sd">       with stacklog(logging.info, &#39;Running long function&#39;):</span>
 <span class="sd">           run_long_function()</span>
@@ -346,7 +337,7 @@
 <span class="sd">                     conditions=[(NotImplementedError, &#39;SKIPPED&#39;)]):</span>
 <span class="sd">           raise NotImplementedError</span>
 
-<span class="sd">    This produces logging output:</span>
+<span class="sd">    This produces logging output::</span>
 
 <span class="sd">        INFO:root:Running long function...</span>
 <span class="sd">        INFO:root:Running long function...DONE</span>
@@ -354,6 +345,15 @@
 <span class="sd">        INFO:root:Running error-prone function...FAILURE</span>
 <span class="sd">        INFO:root:Skipping not implemented...</span>
 <span class="sd">        INFO:root:Skipping not implemented...SKIPPED</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        method: log callable</span>
+<span class="sd">        message: log message</span>
+<span class="sd">        *args: args to log method</span>
+<span class="sd">        conditions (List[Tuple]): list of tuples of exceptions or tuple of</span>
+<span class="sd">            exceptions to catch and log conditions, such as</span>
+<span class="sd">            ``[(&#39;SKIPPED&#39;, NotImplementedError)]``.</span>
+<span class="sd">        **kwargs: kwargs to log method</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">conditions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>

@@ -267,19 +267,18 @@ we will call <code class="docutils literal notranslate"><span class="pre">myproj
 <p>Before creating the project, the maintainer must have a training dataset used for developing
 features and details about the prediction problem they are ultimately trying to solve.</p>
 <p>Then, <a class="reference external" href="Installation.html">install Ballet</a> on your development machine.</p>
-<p>For some functionality, you may also want to make a GitHub API token accessible to Ballet. See
-<a class="reference external" href="https://github.com/settings/tokens">Personal access tokens</a>. Paste your token in <code class="docutils literal notranslate"><span class="pre">$HOME/.github/token.txt</span></code>. (Definitely do not
-save it in any git-tracked files in your project.)</p>
 </div>
 <div class="section" id="project-instantiation">
 <h3>Project instantiation<a class="headerlink" href="#project-instantiation" title="Permalink to this headline">¶</a></h3>
 <p>To instantiate a project, use the <code class="docutils literal notranslate"><span class="pre">ballet</span> <span class="pre">quickstart</span></code> command:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> ballet quickstart
+<span class="go">Generating new ballet project...</span>
 <span class="go">full_name [Your Name]: Jane Developer</span>
 <span class="go">email [you@example.com]: jane@developer.org</span>
 <span class="go">github_owner [jane]: jane_developer</span>
-<span class="go">project_name [Predict Foo]: Predict my thing</span>
-<span class="go">project_slug [predict_my_thing]: myproject</span>
+<span class="go">project_name [Predict X]: Predict my thing</span>
+<span class="go">project_slug [ballet-predict-my-thing]: ballet-my-project</span>
+<span class="go">package_slug [ballet_predict_my_thing]: myproject</span>
 <span class="go">Select problem_type:</span>
 <span class="go">1 - classification</span>
 <span class="go">2 - regression</span>
@@ -322,29 +321,47 @@ save it in any git-tracked files in your project.)</p>
 <span class="go">6 - neg_median_absolute_error</span>
 <span class="go">7 - r2</span>
 <span class="go">Choose from 1, 2, 3, 4, 5, 6, 7 (1, 2, 3, 4, 5, 6, 7) [1]: 5</span>
+<span class="go">Select pruning_action:</span>
+<span class="go">1 - no_action</span>
+<span class="go">2 - make_pull_request</span>
+<span class="go">3 - commit_to_master</span>
+<span class="go">Choose from 1, 2, 3 (1, 2, 3) [1]: 3</span>
+<span class="go">Select auto_merge_accepted_features:</span>
+<span class="go">1 - no</span>
+<span class="go">2 - yes</span>
+<span class="go">Choose from 1, 2 (1, 2) [1]: 2</span>
+<span class="go">Select auto_close_rejected_features:</span>
+<span class="go">1 - no</span>
+<span class="go">2 - yes</span>
+<span class="go">Choose from 1, 2 (1, 2) [1]: 2</span>
+<span class="go">Generating new ballet project...DONE</span>
 </pre></div>
 </div>
 <p>This command uses <a class="reference external" href="https://cookiecutter.readthedocs.io/en/latest">cookiecutter</a> to render a project template using information supplied by the
 project maintainer. The resulting files are then committed to a new git repository. Note that the
 specification of a scorer for the not-chosen problem type can be skipped (by selecting <code class="docutils literal notranslate"><span class="pre">n/a</span></code>).</p>
 <p>Let’s see what files have we have created:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> tree -a myproject/ -I .git
-<span class="go">myproject/</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> tree -a ballet-my-project/ -I .git
+<span class="go">ballet-my-project/</span>
 <span class="go">├── .cookiecutter_context.json</span>
+<span class="go">├── .github</span>
+<span class="go">│   └── repolockr.yml</span>
 <span class="go">├── .gitignore</span>
 <span class="go">├── .travis.yml</span>
 <span class="go">├── Makefile</span>
 <span class="go">├── README.md</span>
 <span class="go">├── ballet.yml</span>
-<span class="go">├── myproject</span>
-<span class="go">│   ├── __init__.py</span>
-<span class="go">│   ├── conf.py</span>
-<span class="go">│   ├── features</span>
-<span class="go">│   │   ├── __init__.py</span>
-<span class="go">│   │   └── contrib</span>
-<span class="go">│   │       └── __init__.py</span>
-<span class="go">│   └── load_data.py</span>
-<span class="go">└── setup.py</span>
+<span class="go">├── setup.py</span>
+<span class="go">└── src</span>
+<span class="go">    └── myproject</span>
+<span class="go">        ├── __init__.py</span>
+<span class="go">        ├── features</span>
+<span class="go">        │   ├── __init__.py</span>
+<span class="go">        │   └── contrib</span>
+<span class="go">        │       └── __init__.py</span>
+<span class="go">        └── load_data.py</span>
+
+<span class="go">5 directories, 12 files</span>
 </pre></div>
 </div>
 <p>Importantly, by keeping this project structure intact, Ballet will be able to automatically care
@@ -354,8 +371,8 @@ for your feature engineering pipeline.</p>
 training data, and location of feature engineering source code.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">.travis.yml</span></code>: a <a class="reference external" href="https://travis-ci.org">Travis CI</a> configuration file pre-configured to run a Ballet validation
 suite.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">myproject/load_data.py</span></code>: this is where you will write code to load training data</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">myproject/features/contrib</span></code>: this is where the features created by your project’s
+<li><p><code class="docutils literal notranslate"><span class="pre">src/myproject/load_data.py</span></code>: this is where you will write code to load training data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/myproject/features/contrib</span></code>: this is where the features created by your project’s
 contributors will live.</p></li>
 </ul>
 </div>
@@ -466,12 +483,23 @@ engineer features from new data points or datasets.</p>
 <div class="section" id="updating-the-framework">
 <h2>Updating the framework<a class="headerlink" href="#updating-the-framework" title="Permalink to this headline">¶</a></h2>
 <p>If there are updates to the Ballet framework after you have started working on your project, you
-can access them in two ways.</p>
-<p>First, you can update the <code class="docutils literal notranslate"><span class="pre">ballet</span></code> package using the usual <code class="docutils literal notranslate"><span class="pre">pip</span></code> mechanism, via <code class="docutils literal notranslate"><span class="pre">make</span>
-<span class="pre">install</span></code>.</p>
-<p>Second, if their have been updates to the project template used to create new projects, you can
-incorporate these improvements into your own project with the <code class="docutils literal notranslate"><span class="pre">ballet</span> <span class="pre">update-project-template</span></code>
-command. Its usage is described in more detail <a class="reference external" href="cli_reference.html#ballet-update-project-template">here</a>.</p>
+can access them easily.</p>
+<p>First, update the <code class="docutils literal notranslate"><span class="pre">ballet</span></code> package itself using the usual <code class="docutils literal notranslate"><span class="pre">pip</span></code> mechanism:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> pip install --upgrade ballet
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Next, use the updated version of <code class="docutils literal notranslate"><span class="pre">ballet</span></code> to incorporate any updates to the “upstream” project</dt><dd><p>template used to create new projects.</p>
+</dd>
+</dl>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> ballet update-project-template --push
+</pre></div>
+</div>
+<p>This command will re-render the project template using the saved inputs you have provided in the
+past and then safely merge it first to your <code class="docutils literal notranslate"><span class="pre">project-template</span></code> branch and then to your
+<code class="docutils literal notranslate"><span class="pre">master</span></code> branch. Finally, given the <code class="docutils literal notranslate"><span class="pre">--push</span></code> flag it will push updates to
+<code class="docutils literal notranslate"><span class="pre">origin/master</span></code> and <code class="docutils literal notranslate"><span class="pre">origin/project-template</span></code>. The usage of this command is described in more
+detail <a class="reference external" href="cli_reference.html#ballet-update-project-template">here</a>.</p>
 </div>
 </div>
 
