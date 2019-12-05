@@ -1,15 +1,19 @@
 import json
 import pathlib
+import subprocess
+import sys
 import tempfile
+from textwrap import dedent
 from unittest.mock import patch
 
 import funcy
 import git
+import packaging.version
 from cookiecutter.prompt import prompt_for_config
-from funcy import complement, lfilter
+from funcy import complement, lfilter, re_find, re_test
 from git import GitCommandError
 
-from ballet import __version__ as version
+import ballet
 from ballet.compat import safepath
 from ballet.exc import BalletError, ConfigurationError
 from ballet.project import Project
@@ -27,7 +31,84 @@ DEFAULT_BRANCH = 'master'
 TEMPLATE_BRANCH = 'project-template'
 
 
+def _query_pip_search_ballet():
+    """Call python -m pip search ballet"""
+    # compat: use subprocess.run on py37+
+    popen_args = [sys.executable, '-m', 'pip', 'search', 'ballet']
+    return subprocess.check_output(popen_args, text=True)
+
+
+def _extract_latest_from_search_triple(triple):
+    """Try to extract latest version number from a triple of search results"""
+    description, installed, latest = triple
+    if re_test(r'\s*ballet \(.+\)\s*-\s*\w*', description):
+        if 'INSTALLED' in installed and 'LATEST' in latest:
+            return re_find(r'\s*LATEST:\s*(.+)', latest)
+    return None
+
+
+def _get_latest_ballet_version_string():
+    """Get the latest version of ballet according to pip
+
+    Parses the result of `pip search ballet`. Looks for something named
+    `ballet` to be installed. If something appears to be named `ballet` but
+    is not installed, then obviously it is not correct because otherwise how
+    would this code be running? :)
+
+    Returns:
+        Union[str, None]: latest version of ballet or None if something went
+            wrong
+    """
+
+    # $ pip search ballet
+    # something-else-that-has-ballet-in-the-name (1.1.1)  - some description
+    # ballet (x.y.z)  - some description
+    #   INSTALLED: x.y.z
+    #   LATEST:    u.v.w
+    # something-else-that-has-ballet-in-the-name (1.1.1)  - some description
+
+    output = _query_pip_search_ballet()
+    for triple in funcy.partition(3, 1, output):
+        match = _extract_latest_from_search_triple(triple)
+        if match:
+            return match
+
+    return None
+
+
+def _check_for_updated_ballet():
+    """Return the version of an updated ballet if it is available
+
+    Returns:
+        Union[str, None]: the latest version of ballet available or None if
+            the latest version is the same as the currently-installed version
+    """
+    latest = _get_latest_ballet_version_string()
+    current = ballet.__version__
+    parse = packaging.version.parse
+    if latest and parse(latest) > parse(current):
+        return latest
+    else:
+        return None
+
+
+def _warn_of_updated_ballet(latest):
+    if latest is not None:
+        msg = '''\
+                A new version of ballet is available: {latest}
+                - you currently have ballet v{current}
+                - if you don't update ballet, you won't receive project template updates
+                - update ballet and then try again:
+                
+                    $ pip install --upgrade ballet'
+                '''  # noqa E501
+        msg = msg.format(latest=latest, current=ballet.__version__)
+        msg = dedent(msg)
+        logger.warn(msg)
+
+
 def _make_template_branch_merge_commit_message():
+    version = ballet.__version__
     return 'Merge project template updates from ballet v{}'.format(version)
 
 
@@ -106,6 +187,15 @@ def _push(project):
         raise BalletError('Push failed')
 
 
+def _log_recommended_reinstall():
+    logger.info(
+        'After a successful project template update, try re-installing the\n'
+        'project in case the project template requires any different \n'
+        'dependencies than what you have installed:\n'
+        '\n'
+        '    $ make install')
+
+
 def update_project_template(push=False, project_template_path=None):
     """Update project with updates to upstream project template
 
@@ -152,6 +242,11 @@ def update_project_template(push=False, project_template_path=None):
     if TEMPLATE_BRANCH not in repo.branches:
         raise ConfigurationError(
             'Could not find \'{}\' branch.'.format(TEMPLATE_BRANCH))
+
+    # check for upstream updates to ballet
+    new_version = _check_for_updated_ballet()
+    if new_version:
+        _warn_of_updated_ballet(new_version)
 
     with tempfile.TemporaryDirectory() as tempdir:
         tempdir = pathlib.Path(tempdir)
@@ -208,3 +303,5 @@ def update_project_template(push=False, project_template_path=None):
 
     if push:
         _push(project)
+
+    _log_recommended_reinstall()

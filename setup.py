@@ -21,6 +21,7 @@ requirements = [
     'gitpython',
     'h5py',
     'numpy',
+    'packaging',
     'pandas',
     'pyyaml',
     'requests',
