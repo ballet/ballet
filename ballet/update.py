@@ -200,6 +200,7 @@ def update_project_template(push=False, project_template_path=None):
     """Update project with updates to upstream project template
 
     The update is fairly complicated and proceeds as follows:
+
     1. Load project: user must run command from master branch and ballet
        must be able to detect the project-template branch
     2. Load the saved cookiecutter context from disk
@@ -216,6 +217,11 @@ def update_project_template(push=False, project_template_path=None):
        responsible for merging conflicts and they are given instructions to
        do so and recover.
     6. If applicable, push to master.
+
+    Args:
+        push (bool): whether to push updates to remote, defaults to False
+        project_template_path (PathLike): an override for the path to the
+            project template
     """
     cwd = pathlib.Path.cwd().resolve()
 

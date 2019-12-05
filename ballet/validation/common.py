@@ -124,6 +124,7 @@ class ChangeCollector:
         """Collect file and feature changes
 
         Steps
+
         1. Collects the files that have changed in this pull request as
            compared to a comparison branch.
         2. Categorize these file changes into admissible or inadmissible file

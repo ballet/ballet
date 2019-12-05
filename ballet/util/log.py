@@ -76,16 +76,7 @@ class LoggingContext(object):
 class stacklog:
     """Stack log messages
 
-    Args:
-        method: log callable
-        message: log message
-        *args: args to log method
-        conditions (List[Tuple]): list of tuples of exceptions or tuple of
-            exceptions to catch and log conditions, such as
-            ``[('SKIPPED', NotImplementedError)]``.
-        **kwargs: kwargs to log method
-
-    Example usage:
+    Example usage::
 
        with stacklog(logging.info, 'Running long function'):
            run_long_function()
@@ -97,7 +88,7 @@ class stacklog:
                      conditions=[(NotImplementedError, 'SKIPPED')]):
            raise NotImplementedError
 
-    This produces logging output:
+    This produces logging output::
 
         INFO:root:Running long function...
         INFO:root:Running long function...DONE
@@ -105,6 +96,15 @@ class stacklog:
         INFO:root:Running error-prone function...FAILURE
         INFO:root:Skipping not implemented...
         INFO:root:Skipping not implemented...SKIPPED
+
+    Args:
+        method: log callable
+        message: log message
+        *args: args to log method
+        conditions (List[Tuple]): list of tuples of exceptions or tuple of
+            exceptions to catch and log conditions, such as
+            ``[('SKIPPED', NotImplementedError)]``.
+        **kwargs: kwargs to log method
     """
 
     def __init__(self, method, message, *args, conditions=None, **kwargs):
