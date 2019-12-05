@@ -258,6 +258,7 @@ def update_project_template(push=False, project_template_path=None):
         tempdir = pathlib.Path(tempdir)
 
         # cookiecutter returns path to the resulting project dir
+        logger.debug('Re-rendering project template at {}'.format(tempdir))
         updated_template = _render_project_template(
             cwd, tempdir, project_template_path=project_template_path)
         updated_repo = git.Repo(safepath(updated_template))
@@ -272,6 +273,8 @@ def update_project_template(push=False, project_template_path=None):
 
         repo.heads[TEMPLATE_BRANCH].checkout()
         try:
+            logger.debug('Merging re-rendered template to project-template '
+                         'branch')
             repo.git.merge(
                 remote_name + '/' + DEFAULT_BRANCH,
                 allow_unrelated_histories=True,
@@ -282,6 +285,7 @@ def update_project_template(push=False, project_template_path=None):
                 logger.info('No updates to template -- done.')
                 return
             commit_message = _make_template_branch_merge_commit_message()
+            logger.debug('Committing updates: {}'.format(commit_message))
             repo.git.commit(m=commit_message)
         except GitCommandError:
             logger.critical(
@@ -291,9 +295,11 @@ def update_project_template(push=False, project_template_path=None):
             raise
         finally:
             _safe_delete_remote(repo, remote_name)
+            logger.debug('Checking out master branch')
             repo.heads[DEFAULT_BRANCH].checkout()
 
     try:
+        logger.debug('Merging project-template branch into master')
         repo.git.merge(TEMPLATE_BRANCH, no_ff=True)
     except GitCommandError as e:
         if 'merge conflict' in str(e).lower():
