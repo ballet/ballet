@@ -269,6 +269,10 @@ First, update the ``ballet`` package itself using the usual ``pip`` mechanism:
 
    $ pip install --upgrade ballet
 
+Pip will complain that the upgraded version of ballet is incompatible with the version required
+by the installed project. That is okay, as we will presently update the project itself to work
+with the new version of ballet.
+
 Next, use the updated version of ``ballet`` to incorporate any updates to the "upstream" project
  template used to create new projects.
 
@@ -281,6 +285,7 @@ past and then safely merge it first to your ``project-template`` branch and then
 ``master`` branch. Finally, given the ``--push`` flag it will push updates to
 ``origin/master`` and ``origin/project-template``. The usage of this command is described in more
 detail `here <cli_reference .html#ballet-update-project-template>`_.
+
 
 .. _cookiecutter: https://cookiecutter.readthedocs.io/en/latest
 .. _`Travis CI`: https://travis-ci.org
