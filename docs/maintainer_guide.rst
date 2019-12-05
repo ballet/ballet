@@ -23,10 +23,6 @@ features and details about the prediction problem they are ultimately trying to 
 
 Then, `install Ballet <Installation.html>`__ on your development machine.
 
-For some functionality, you may also want to make a GitHub API token accessible to Ballet. See
-`Personal access tokens`_. Paste your token in ``$HOME/.github/token.txt``. (Definitely do not
-save it in any git-tracked files in your project.)
-
 Project instantiation
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -35,11 +31,13 @@ To instantiate a project, use the ``ballet quickstart`` command:
 .. code-block:: console
 
    $ ballet quickstart
+   Generating new ballet project...
    full_name [Your Name]: Jane Developer
    email [you@example.com]: jane@developer.org
    github_owner [jane]: jane_developer
-   project_name [Predict Foo]: Predict my thing
-   project_slug [predict_my_thing]: myproject
+   project_name [Predict X]: Predict my thing
+   project_slug [ballet-predict-my-thing]: ballet-my-project
+   package_slug [ballet_predict_my_thing]: myproject
    Select problem_type:
    1 - classification
    2 - regression
@@ -82,6 +80,20 @@ To instantiate a project, use the ``ballet quickstart`` command:
    6 - neg_median_absolute_error
    7 - r2
    Choose from 1, 2, 3, 4, 5, 6, 7 (1, 2, 3, 4, 5, 6, 7) [1]: 5
+   Select pruning_action:
+   1 - no_action
+   2 - make_pull_request
+   3 - commit_to_master
+   Choose from 1, 2, 3 (1, 2, 3) [1]: 3
+   Select auto_merge_accepted_features:
+   1 - no
+   2 - yes
+   Choose from 1, 2 (1, 2) [1]: 2
+   Select auto_close_rejected_features:
+   1 - no
+   2 - yes
+   Choose from 1, 2 (1, 2) [1]: 2
+   Generating new ballet project...DONE
 
 This command uses `cookiecutter`_ to render a project template using information supplied by the
 project maintainer. The resulting files are then committed to a new git repository. Note that the
@@ -91,23 +103,27 @@ Let's see what files have we have created:
 
 .. code-block:: console
 
-   $ tree -a myproject/ -I .git
-   myproject/
+   $ tree -a ballet-my-project/ -I .git
+   ballet-my-project/
    ├── .cookiecutter_context.json
+   ├── .github
+   │   └── repolockr.yml
    ├── .gitignore
    ├── .travis.yml
    ├── Makefile
    ├── README.md
    ├── ballet.yml
-   ├── myproject
-   │   ├── __init__.py
-   │   ├── conf.py
-   │   ├── features
-   │   │   ├── __init__.py
-   │   │   └── contrib
-   │   │       └── __init__.py
-   │   └── load_data.py
-   └── setup.py
+   ├── setup.py
+   └── src
+       └── myproject
+           ├── __init__.py
+           ├── features
+           │   ├── __init__.py
+           │   └── contrib
+           │       └── __init__.py
+           └── load_data.py
+
+   5 directories, 12 files
 
 Importantly, by keeping this project structure intact, Ballet will be able to automatically care
 for your feature engineering pipeline.
@@ -116,8 +132,8 @@ for your feature engineering pipeline.
   training data, and location of feature engineering source code.
 * ``.travis.yml``: a `Travis CI`_ configuration file pre-configured to run a Ballet validation
   suite.
-* ``myproject/load_data.py``: this is where you will write code to load training data
-* ``myproject/features/contrib``: this is where the features created by your project's
+* ``src/myproject/load_data.py``: this is where you will write code to load training data
+* ``src/myproject/features/contrib``: this is where the features created by your project's
   contributors will live.
 
 Project installation
@@ -245,18 +261,28 @@ Updating the framework
 ----------------------
 
 If there are updates to the Ballet framework after you have started working on your project, you
-can access them in two ways.
+can access them easily.
 
-First, you can update the ``ballet`` package using the usual ``pip`` mechanism, via ``make
-install``.
+First, update the ``ballet`` package itself using the usual ``pip`` mechanism:
 
-Second, if their have been updates to the project template used to create new projects, you can
-incorporate these improvements into your own project with the ``ballet update-project-template``
-command. Its usage is described in more detail `here <cli_reference
-.html#ballet-update-project-template>`_.
+.. code-block:: console
+
+   $ pip install --upgrade ballet
+
+Next, use the updated version of ``ballet`` to incorporate any updates to the "upstream" project
+ template used to create new projects.
+
+.. code-block:: console
+
+   $ ballet update-project-template --push
+
+This command will re-render the project template using the saved inputs you have provided in the
+past and then safely merge it first to your ``project-template`` branch and then to your
+``master`` branch. Finally, given the ``--push`` flag it will push updates to
+``origin/master`` and ``origin/project-template``. The usage of this command is described in more
+detail `here <cli_reference .html#ballet-update-project-template>`_.
 
 .. _cookiecutter: https://cookiecutter.readthedocs.io/en/latest
 .. _`Travis CI`: https://travis-ci.org
 .. _`pull request`: https://help.github.com/articles/about-pull-requests/
-.. _`Personal access tokens`: https://github.com/settings/tokens
 .. _`Contributor Guide`: contributor_guide.html
