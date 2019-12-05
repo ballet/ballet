@@ -33,9 +33,9 @@ TEMPLATE_BRANCH = 'project-template'
 
 def _query_pip_search_ballet():
     """Call python -m pip search ballet"""
-    # compat: use subprocess.run on py37+
+    # compat: use subprocess.run on py37+ and text=True on py37+
     popen_args = [sys.executable, '-m', 'pip', 'search', 'ballet']
-    return subprocess.check_output(popen_args, text=True)
+    return subprocess.check_output(popen_args, universal_newlines=True)
 
 
 def _extract_latest_from_search_triple(triple):
