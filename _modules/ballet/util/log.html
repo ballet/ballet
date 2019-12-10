@@ -249,8 +249,6 @@
   <h1>Source code for ballet.util.log</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">logging</span>
 
-<span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">wraps</span>
-
 <span class="kn">import</span> <span class="nn">ballet</span>
 
 <span class="n">SIMPLE_LOG_FORMAT</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span>
@@ -320,96 +318,6 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span></div>
-
-
-<div class="viewcode-block" id="stacklog"><a class="viewcode-back" href="../../../api/ballet.util.log.html#ballet.util.log.stacklog">[docs]</a><span class="k">class</span> <span class="nc">stacklog</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Stack log messages</span>
-
-<span class="sd">    Example usage::</span>
-
-<span class="sd">       with stacklog(logging.info, &#39;Running long function&#39;):</span>
-<span class="sd">           run_long_function()</span>
-
-<span class="sd">       with stacklog(logging.info, &#39;Running error-prone function&#39;):</span>
-<span class="sd">           raise Exception</span>
-
-<span class="sd">       with stacklog(logging.info, &#39;Skipping not implemented&#39;,</span>
-<span class="sd">                     conditions=[(NotImplementedError, &#39;SKIPPED&#39;)]):</span>
-<span class="sd">           raise NotImplementedError</span>
-
-<span class="sd">    This produces logging output::</span>
-
-<span class="sd">        INFO:root:Running long function...</span>
-<span class="sd">        INFO:root:Running long function...DONE</span>
-<span class="sd">        INFO:root:Running error-prone function...</span>
-<span class="sd">        INFO:root:Running error-prone function...FAILURE</span>
-<span class="sd">        INFO:root:Skipping not implemented...</span>
-<span class="sd">        INFO:root:Skipping not implemented...SKIPPED</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        method: log callable</span>
-<span class="sd">        message: log message</span>
-<span class="sd">        *args: args to log method</span>
-<span class="sd">        conditions (List[Tuple]): list of tuples of exceptions or tuple of</span>
-<span class="sd">            exceptions to catch and log conditions, such as</span>
-<span class="sd">            ``[(&#39;SKIPPED&#39;, NotImplementedError)]``.</span>
-<span class="sd">        **kwargs: kwargs to log method</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">conditions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">conditions</span> <span class="o">=</span> <span class="n">conditions</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
-
-    <span class="k">def</span> <span class="nf">_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">+</span> <span class="s1">&#39;...&#39;</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="n">_begin</span> <span class="o">=</span> <span class="n">_log</span>
-
-    <span class="k">def</span> <span class="nf">_succeed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;DONE&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_fail</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;FAILURE&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_matches_condition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">conditions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">any</span><span class="p">(</span>
-                <span class="nb">issubclass</span><span class="p">(</span><span class="n">exc_type</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">conditions</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
-
-    <span class="k">def</span> <span class="nf">_log_condition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">conditions</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">exc_type</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="n">suffix</span><span class="p">)</span>
-                <span class="k">return</span>
-
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
-
-        <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
-        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-            <span class="k">with</span> <span class="bp">self</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">wrapper</span>
-
-    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_begin</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">exc_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_succeed</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matches_condition</span><span class="p">(</span><span class="n">exc_type</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log_condition</span><span class="p">(</span><span class="n">exc_type</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_fail</span><span class="p">()</span>
-
-        <span class="k">return</span> <span class="kc">False</span></div>
 </pre></div>
 
            </div>

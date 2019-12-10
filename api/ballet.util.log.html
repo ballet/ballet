@@ -281,47 +281,6 @@
 <dd><p>Enable simple console logging for this module</p>
 </dd></dl>
 
-<dl class="class">
-<dt id="ballet.util.log.stacklog">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.util.log.</code><code class="sig-name descname">stacklog</code><span class="sig-paren">(</span><em class="sig-param">method</em>, <em class="sig-param">message</em>, <em class="sig-param">*args</em>, <em class="sig-param">conditions=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/log.html#stacklog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.log.stacklog" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Stack log messages</p>
-<p>Example usage:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">stacklog</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">,</span> <span class="s1">&#39;Running long function&#39;</span><span class="p">):</span>
-    <span class="n">run_long_function</span><span class="p">()</span>
-
-<span class="k">with</span> <span class="n">stacklog</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">,</span> <span class="s1">&#39;Running error-prone function&#39;</span><span class="p">):</span>
-    <span class="k">raise</span> <span class="ne">Exception</span>
-
-<span class="k">with</span> <span class="n">stacklog</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">,</span> <span class="s1">&#39;Skipping not implemented&#39;</span><span class="p">,</span>
-              <span class="n">conditions</span><span class="o">=</span><span class="p">[(</span><span class="ne">NotImplementedError</span><span class="p">,</span> <span class="s1">&#39;SKIPPED&#39;</span><span class="p">)]):</span>
-    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-</pre></div>
-</div>
-<p>This produces logging output:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">INFO</span><span class="p">:</span><span class="n">root</span><span class="p">:</span><span class="n">Running</span> <span class="n">long</span> <span class="n">function</span><span class="o">...</span>
-<span class="n">INFO</span><span class="p">:</span><span class="n">root</span><span class="p">:</span><span class="n">Running</span> <span class="n">long</span> <span class="n">function</span><span class="o">...</span><span class="n">DONE</span>
-<span class="n">INFO</span><span class="p">:</span><span class="n">root</span><span class="p">:</span><span class="n">Running</span> <span class="n">error</span><span class="o">-</span><span class="n">prone</span> <span class="n">function</span><span class="o">...</span>
-<span class="n">INFO</span><span class="p">:</span><span class="n">root</span><span class="p">:</span><span class="n">Running</span> <span class="n">error</span><span class="o">-</span><span class="n">prone</span> <span class="n">function</span><span class="o">...</span><span class="n">FAILURE</span>
-<span class="n">INFO</span><span class="p">:</span><span class="n">root</span><span class="p">:</span><span class="n">Skipping</span> <span class="ow">not</span> <span class="n">implemented</span><span class="o">...</span>
-<span class="n">INFO</span><span class="p">:</span><span class="n">root</span><span class="p">:</span><span class="n">Skipping</span> <span class="ow">not</span> <span class="n">implemented</span><span class="o">...</span><span class="n">SKIPPED</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>method</strong> – log callable</p></li>
-<li><p><strong>message</strong> – log message</p></li>
-<li><p><strong>*args</strong> – args to log method</p></li>
-<li><p><strong>conditions</strong> (<em>List</em><em>[</em><em>Tuple</em><em>]</em>) – list of tuples of exceptions or tuple of
-exceptions to catch and log conditions, such as
-<code class="docutils literal notranslate"><span class="pre">[('SKIPPED',</span> <span class="pre">NotImplementedError)]</span></code>.</p></li>
-<li><p><strong>**kwargs</strong> – kwargs to log method</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
 </div>
 
 
