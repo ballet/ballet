@@ -4,7 +4,7 @@
 
 __author__ = 'Micah Smith'
 __email__ = 'micahs@mit.edu'
-__version__ = '0.6.5'
+__version__ = '0.6.6'
 
 # filter warnings
 import warnings  # noqa E402
