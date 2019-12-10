@@ -21,13 +21,16 @@ def validation_stage(call, message):
     return call()
 
 
-def load_class(project, config_key):
+def _load_class(project, config_key):
     path = project.config.get(config_key)
     modname, clsname = path.rsplit('.', maxsplit=1)
     mod = import_module_from_modname(modname)
     cls = getattr(mod, clsname)
-    logger.debug('Loaded class {} from {}'
-                 .format(cls.__name__, mod.__path__))
+
+    clsname = getattr(cls, '__name__', '<unknown>')
+    modfile = getattr(mod, '__file__', '<unknown>')
+    logger.debug('Loaded class {} from {}'.format(clsname, modfile))
+
     return cls
 
 
@@ -36,7 +39,7 @@ def _check_project_structure(project, force=False):
     if not force and not project.on_pr:
         raise SkippedValidationTest('Not on PR')
 
-    Validator = load_class(project, 'validation.project_structure_validator')
+    Validator = _load_class(project, 'validation.project_structure_validator')
     validator = Validator(project)
     result = validator.validate()
     if not result:
@@ -49,7 +52,7 @@ def _validate_feature_api(project, force=False):
     if not force and not project.on_pr:
         raise SkippedValidationTest('Not on PR')
 
-    Validator = load_class(project, 'validation.feature_api_validator')
+    Validator = _load_class(project, 'validation.feature_api_validator')
     validator = Validator(project)
     result = validator.validate()
     if not result:
@@ -68,7 +71,7 @@ def _evaluate_feature_performance(project, force=False):
     proposed_feature = get_proposed_feature(project)
     accepted_features = get_accepted_features(features, proposed_feature)
 
-    Accepter = load_class(project, 'validation.feature_accepter')
+    Accepter = _load_class(project, 'validation.feature_accepter')
     accepter = Accepter(X_df, y, accepted_features, proposed_feature)
     accepted = accepter.judge()
 
@@ -91,7 +94,7 @@ def _prune_existing_features(project, force=False):
     X_df, y, features = out['X_df'], out['y'], out['features']
     accepted_features = get_accepted_features(features, proposed_feature)
 
-    Pruner = load_class(project, 'validation.feature_pruner')
+    Pruner = _load_class(project, 'validation.feature_pruner')
     pruner = Pruner(X_df, y, accepted_features, proposed_feature)
     redundant_features = pruner.prune()
 
