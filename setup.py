@@ -28,6 +28,7 @@ requirements = [
     'scikit_learn>=0.20',
     'scipy',
     'sklearn_pandas',
+    'stacklog',
 ]
 
 setup_requirements = [

@@ -1,9 +1,10 @@
 from funcy import decorator, ignore
+from stacklog import stacklog
 
 from ballet.exc import (
     FeatureRejected, InvalidFeatureApi, InvalidProjectStructure,
     NoFeaturesCollectedError, SkippedValidationTest)
-from ballet.util.log import logger, stacklog
+from ballet.util.log import logger
 from ballet.util.mod import import_module_from_modname
 from ballet.validation.common import (
     get_accepted_features, get_proposed_feature)

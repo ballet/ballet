@@ -1,7 +1,7 @@
 import click
+from stacklog import stacklog
 
 from ballet import __version__ as version
-from ballet.util.log import stacklog
 
 
 @click.group()

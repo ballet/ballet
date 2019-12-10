@@ -12,6 +12,7 @@ import packaging.version
 from cookiecutter.prompt import prompt_for_config
 from funcy import complement, lfilter, re_find, re_test
 from git import GitCommandError
+from stacklog import stacklog
 
 import ballet
 from ballet.compat import safepath
@@ -19,7 +20,7 @@ from ballet.exc import BalletError, ConfigurationError
 from ballet.project import Project
 from ballet.templating import render_project_template
 from ballet.util.git import did_git_push_succeed
-from ballet.util.log import logger, stacklog
+from ballet.util.log import logger
 
 PROJECT_CONTEXT_PATH = (
     pathlib.Path(__file__).resolve().parent.joinpath(

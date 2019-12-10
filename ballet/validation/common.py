@@ -2,6 +2,7 @@ import pathlib
 from collections import namedtuple
 
 from funcy import collecting, complement, lfilter, partial, post_processing
+from stacklog import stacklog
 
 from ballet.contrib import _collect_contrib_feature_from_module
 from ballet.exc import (
@@ -9,7 +10,7 @@ from ballet.exc import (
 from ballet.util import make_plural_suffix, whether_failures
 from ballet.util.ci import TravisPullRequestBuildDiffer, can_use_travis_differ
 from ballet.util.git import LocalMergeBuildDiffer, LocalPullRequestBuildDiffer
-from ballet.util.log import logger, stacklog
+from ballet.util.log import logger
 from ballet.util.mod import import_module_at_path, relpath_to_modname
 from ballet.validation.base import FeaturePerformanceEvaluator
 from ballet.validation.project_structure.checks import ProjectStructureCheck
