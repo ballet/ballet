@@ -288,6 +288,6 @@ detail `here <cli_reference .html#ballet-update-project-template>`_.
 
 
 .. _cookiecutter: https://cookiecutter.readthedocs.io/en/latest
-.. _`Travis CI`: https://travis-ci.org
+.. _`Travis CI`: https://travis-ci.com
 .. _`pull request`: https://help.github.com/articles/about-pull-requests/
 .. _`Contributor Guide`: contributor_guide.html
