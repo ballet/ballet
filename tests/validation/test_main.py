@@ -43,8 +43,10 @@ class MainTest(unittest.TestCase):
     def test_load_class(self, mock_import):
 
         import ballet.validation.project_structure.validator
-        from ballet.validation.project_structure.validator import ProjectStructureValidator
-        mock_import.return_value = ballet.validation.project_structure.validator
+        from ballet.validation.project_structure.validator import \
+            ProjectStructureValidator
+        mock_import.return_value = \
+            ballet.validation.project_structure.validator
 
         mock_project = MagicMock()
         modname = 'ballet.validation.project_structure.validator'
