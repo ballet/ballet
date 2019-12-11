@@ -1,4 +1,4 @@
-[![ballet](https://img.shields.io/static/v1?label=built%20with&message=ballet&color=FCDD3)](https://github.com/HDI-Project/ballet)
+[![ballet](https://img.shields.io/static/v1?label=built%20with&message=ballet&color=FCDD35)](https://github.com/HDI-Project/ballet)
 
 # {{ cookiecutter.project_name }}
 
