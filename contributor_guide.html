@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Contributor Guide &mdash; ballet 0.6.5 documentation</title>
+  <title>Contributor Guide &mdash; ballet 0.6.6 documentation</title>
   
 
   
@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="ballet package" href="api/ballet.html" />
+    <link rel="next" title="Feature Engineering Guide" href="feature_engineering_guide.html" />
     <link rel="prev" title="Maintainer Guide" href="maintainer_guide.html" /> 
 </head>
 
@@ -109,9 +109,18 @@
 <li class="toctree-l2"><a class="reference internal" href="maintainer_guide.html#updating-the-framework">Updating the framework</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributor Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributor Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#feature-development-workflow">Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#setup-your-development-environment">Setup your development environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-a-new-feature">Create a new feature</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Advanced Usage</span></p>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="feature_engineering_guide.html">Feature Engineering Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api/ballet.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/ballet.html#subpackages">Subpackages</a><ul>
@@ -252,31 +261,79 @@
             
   <div class="section" id="contributor-guide">
 <h1>Contributor Guide<a class="headerlink" href="#contributor-guide" title="Permalink to this headline">¶</a></h1>
-<p>If you are on this page, you are probably thinking about contributing to a Ballet
-feature engineering collaboration. Welcome!</p>
-<p>Here are the steps to develop a new feature for inclusion in a Ballet project.</p>
+<p>If you are on this page, you are probably thinking about contributing to a Ballet feature
+engineering collaboration. Welcome!</p>
+<p>Here are the steps to develop a new feature for inclusion in a Ballet project. In this guide, we
+will use the real example of <a class="reference external" href="https://github.com/HDI-Project/ballet-predict-house-prices">Predict House Prices</a>, a feature engineering collaboration to be
+used for predicting the sale price of houses in Ames, Iowa, given raw data about each house.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>This guide discusses the use of many concepts commonly used in software development, including
+git, GitHub, make, and virtual environments. We are working on supporting a higher-level
+workflow in which you are able to develop and collaborate entirely from within your Jupyter
+notebook/lab environment. Please feel free to ask for help on our Slack channel!</p>
+<a class="reference external image-reference" href="https://slack.com/share/IRM5N6Q7R/2Xp7tcY1nWL44bq8zJeaTNzH/enQtODcxMTkyMjI4MjYzLTE1YWY3ODEwNTc4YjUwYzYyNjdjMThkZmM1YzA0NWMzZGJmMjI2YTQzMDIzOWIxOWExODlkNTkxMjk2MWVkNWE"><img alt="Chat on Slack" src="https://img.shields.io/static/v1?label=chat&amp;message=on%20slack&amp;color=4A154B&amp;logo=slack" /></a>
+</div>
+<div class="section" id="feature-development-workflow">
+<h2>Feature Development Workflow<a class="headerlink" href="#feature-development-workflow" title="Permalink to this headline">¶</a></h2>
+<p>There are two parts to the workflow. First, you setup your development environment (only do this
+once). Second, you develop a new feature (repeat the steps every time you create a new feature).</p>
+<div class="section" id="setup-your-development-environment">
+<h3>Setup your development environment<a class="headerlink" href="#setup-your-development-environment" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic">
-<li><p>Fork the project and clone your fork in your local development environment.</p></li>
-<li><dl>
-<dt>Install the project in a virtual environment. This will make the feature</dt><dd><p>engineering pipeline accessible in interactive settings (Python interpreter, Jupyter notebook)
-and as a command-line tool.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">cd</span> myproject
-<span class="gp">$</span> conda create -n myproject -y <span class="o">&amp;&amp;</span> conda activate myproject  <span class="c1"># or your preferred environment tool</span>
-<span class="gp gp-VirtualEnv">(myproject)</span> <span class="gp">$</span> make install
+<li><p>Fork the project.</p></li>
+<li><p>Clone your fork in your local development environment.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> git clone https://github.com/your_user_name/ballet-predict-house-prices
+<span class="gp">$</span> <span class="nb">cd</span> ballet-predict-house-prices
+<span class="gp">$</span> git remote add upstream https://github.com/HDI-Project/ballet-predict-house-prices
 </pre></div>
 </div>
-</dd>
-</dl>
+</li>
+<li><p>Create and activate a new virtual environment using your environment manager of choice, such
+as <a class="reference external" href="https://conda.io/en/latest/">conda</a>. <strong>(Strongly recommended.)</strong></p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> conda create -n myenv <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.7 -y <span class="o">&amp;&amp;</span> conda activate myenv
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</div>
+<div class="section" id="create-a-new-feature">
+<h3>Create a new feature<a class="headerlink" href="#create-a-new-feature" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic">
+<li><p>Update and install the project. This will make the feature engineering pipeline accessible in
+interactive settings (Python interpreter, Jupyter notebook) and as a command-line tool.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$</span> git checkout master
+<span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$</span> git pull upstream master
+<span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$</span> git push origin master
+<span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$</span> make install
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You should repeat the entirety of this step every time before you begin working on a new
+feature, in order to synchronize changes made to the upstream project, such as the
+introduction of new features by other collaborators or an update to the ballet framework
+itself.</p>
+</div>
 </li>
 <li><p>Start working on a new feature.</p>
 <blockquote>
-<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> ballet start-new-feature
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$</span> git checkout -b develop-my-feature
+<span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$</span> ballet start-new-feature
+<span class="go">Starting new feature...</span>
+<span class="go">username [your_user_name]:</span>
+<span class="go">featurename [featurename]: impute_lot_frontage</span>
+<span class="go">2019-12-11 10:56:00,517 INFO - Start new feature successful.</span>
+<span class="go">2019-12-11 10:56:00,517 INFO - Created src/ballet_predict_house_prices/features/contrib/user_your_user_name/feature_impute_lot_frontage.py</span>
+<span class="go">Starting new feature...DONE</span>
 </pre></div>
 </div>
 <p>This will create a new Python module within the project’s “contrib” directory to hold your
 feature.</p>
 <ul class="simple">
-<li><p>The contrib directory is usually named something like <code class="docutils literal notranslate"><span class="pre">src/ballet_project/features/contrib</span></code>.</p></li>
+<li><p>The contrib directory is named like <code class="docutils literal notranslate"><span class="pre">src/&lt;ballet_project&gt;/features/contrib</span></code>.</p></li>
 <li><p>The new subpackage must be named like <code class="docutils literal notranslate"><span class="pre">user_&lt;github</span> <span class="pre">username&gt;</span></code>.</p></li>
 <li><p>The new submodule that will contain the feature must be named like <code class="docutils literal notranslate"><span class="pre">feature_&lt;feature</span> <span class="pre">name&gt;.py</span></code>.</p></li>
 </ul>
@@ -286,24 +343,73 @@ feature.</p>
 a <em>logical feature</em>. Within your feature submodule, you can write arbitrary Python code.
 Ultimately, a single object that is an instance of <code class="docutils literal notranslate"><span class="pre">ballet.Feature</span></code> must be defined; it will
 be imported by the feature engineering pipeline.</p>
-<p>In this example, a feature is defined that will receive column <code class="docutils literal notranslate"><span class="pre">'A'</span></code> from the data and passes
-it through unmodified.</p>
+<p>In this example, a feature is defined that receives column <code class="docutils literal notranslate"><span class="pre">'Lot</span> <span class="pre">Frontage'</span></code> from the
+data and imputes missing values with the mean of the training data.</p>
 <blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ballet.eng</span>
-<span class="kn">from</span> <span class="nn">ballet</span> <span class="kn">import</span> <span class="n">Feature</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ballet</span> <span class="kn">import</span> <span class="n">Feature</span>
+<span class="kn">from</span> <span class="nn">sklearn.impute</span> <span class="kn">import</span> <span class="n">SimpleImputer</span>
 
-<span class="nb">input</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span>
-<span class="n">transformer</span> <span class="o">=</span> <span class="n">ballet</span><span class="o">.</span><span class="n">eng</span><span class="o">.</span><span class="n">misc</span><span class="o">.</span><span class="n">IdentityTransformer</span><span class="p">()</span>
-<span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="n">transformer</span><span class="p">)</span>
+<span class="nb">input</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Lot Frontage&quot;</span><span class="p">]</span>
+<span class="n">transformer</span> <span class="o">=</span> <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">)</span>
+<span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Imputed Lot Frontage&quot;</span>
+<span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="n">transformer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>For a full tutorial on feature engineering in Ballet, check out the separate
+<a class="reference internal" href="feature_engineering_guide.html"><span class="doc">Feature Engineering Guide</span></a>.</p>
 </div>
 </div></blockquote>
 </li>
-<li><p>Submit your feature. Commit your changes and create a pull request to the project repository.</p></li>
+<li><p>Test your feature.</p></li>
+<li><p>Submit your feature. Commit your changes and create a pull request to the project repository.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$</span> git add .
+<span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$</span> git commit -m <span class="s2">&quot;Add my new feature&quot;</span>
+<span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$</span> git push origin develop-my-feature
+</pre></div>
+</div>
+<p>The output of the <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">push</span></code> command will include a link to open a new pull request on the
+upstream project. Navigate to the url in your browser and open a new PR. Alternately, you can
+use
+the command-line tool <a class="reference external" href="https://hub.github.com/">hub</a>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$</span> hub pull-request
+</pre></div>
+</div>
+</li>
+<li><p>Observe the validation results. Ballet will now validate your feature in four steps.</p>
+<ol class="arabic simple">
+<li><p>Check feature API: does your feature behave properly on expected and unexpected inputs?
+For example, it should not produce feature values with NaNs or throw errors on well-formed
+data instances.</p></li>
+<li><p>Check project structure: does your PR respect the project structure, that is, you have
+created valid Python modules at the right path, etc.</p></li>
+<li><p>Evaluate feature acceptance: do the feature values that your feature extracts contribute
+to the machine learning goals? Depending on the configuration of the upstream project, the
+project may evaluate your features in a more or less aggressive manner, ranging from
+accepting all features to accepting only those that produce an information gain greater
+than some threshold.</p></li>
+<li><p>Evaluate feature pruning: does the introduction of your feature cause other features to be
+unnecessary? If so they may be pruned.</p></li>
 </ol>
-<div class="figure align-default" id="id1">
+<p>Depending on the configuration of the upstream project, you will see various “bots” act on
+these steps. If your PR passes the first three steps, the <a class="reference external" href="https://github.com/apps/ballet-bot">Ballet Bot</a> may approve and merge
+your PR automatically. If your PR is merged, the Ballet Bot may automatically prune features
+from the master branch. If your feature is rejected, you can inspect the logs produced by the
+Travis CI service to see what went wrong. (We are working on improving the user experience of
+this debugging.)</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>
+<p>In this guide, we walked through all of the steps required to submit your first feature to a
+ballet collaboration.</p>
+<div class="figure align-center" id="id1">
 <a class="reference internal image-reference" href="https://upload.wikimedia.org/wikipedia/en/f/f8/Internet_dog.jpg"><img alt="&quot;On the internet, nobody knows you're a dog&quot; cartoon" src="https://upload.wikimedia.org/wikipedia/en/f/f8/Internet_dog.jpg" style="width: 300px;" /></a>
 <p class="caption"><span class="caption-text">Image from <em>The New Yorker</em> cartoon by Peter Steiner, 1993, via Wikipedia.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
 </div>
 </div>
 
@@ -315,7 +421,7 @@ it through unmodified.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="api/ballet.html" class="btn btn-neutral float-right" title="ballet package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="feature_engineering_guide.html" class="btn btn-neutral float-right" title="Feature Engineering Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="maintainer_guide.html" class="btn btn-neutral float-left" title="Maintainer Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
