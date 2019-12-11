@@ -11,11 +11,12 @@
    :caption: User Guides
    :hidden:
 
-   Maintainer Guide <maintainer_guide>
-   Contributor Guide <contributor_guide>
+   maintainer_guide
+   contributor_guide
+   feature_engineering_guide
 
 .. toctree::
-   :caption: Advanced Usage
+   :caption: Reference
    :hidden:
 
    API Reference <api/ballet>
