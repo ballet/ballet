@@ -112,7 +112,7 @@ Create a new feature
        For a full tutorial on feature engineering in Ballet, check out the separate
        :doc:`Feature Engineering Guide <./feature_engineering_guide>`.
 
-#. Test your feature.
+#. Test your feature. (More details to come on this step.)
 
 #. Submit your feature. Commit your changes and create a pull request to the project repository.
 
@@ -124,8 +124,7 @@ Create a new feature
 
    The output of the ``git push`` command will include a link to open a new pull request on the
    upstream project. Navigate to the url in your browser and open a new PR. Alternately, you can
-   use
-   the command-line tool `hub`_:
+   use the command-line tool `hub`_:
 
    .. code-block:: console
 
