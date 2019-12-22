@@ -136,7 +136,7 @@ Create a new feature
       from ballet.validation.main import _load_class
       from ballet_predict_house_prices.features import build
 
-      out = build()
+      out = build(X_df, y_df)
       X_df, y, features = out['X_df'], out['y'], out['features']
       Accepter = _load_class(project, 'validation.feature_accepter')
       accepter = Accepter(X_df, y, features, feature)
