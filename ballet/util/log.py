@@ -13,7 +13,17 @@ def enable(logger=logger,
            level=logging.INFO,
            format=DETAIL_LOG_FORMAT,
            echo=True):
-    """Enable simple console logging for this module"""
+    """Enable simple console logging for this module
+
+    Args:
+        logger (logging.Logger): logger to enable. Defaults to ballet logger.
+        level (str, int): logging level, either as string (``"INFO"``) or as
+            int (``logging.INFO`` or ``20``). Defaults to 'INFO'.
+        format (str) : logging format. Defaults to
+            ballet.util.log.DETAIL_LOG_FORMAT.
+        echo (bool): Whether to log a message at the configured log level to
+            confirm that logging is enable. Defaults to True.
+    """
     global _handler
     if _handler is None:
         _handler = logging.StreamHandler()
@@ -35,6 +45,17 @@ def enable(logger=logger,
 
 
 class LevelFilter(object):
+    """Logging filter for log records at an exact level
+
+    Args:
+        level (int): numeric logging level to filter
+
+    Example usage:
+
+        >>> debugFilter = LevelFilter(logging.DEBUG)
+        >>> logger.addFilter(debugFilter)
+    """
+
     def __init__(self, level):
         self.__level = level
 
@@ -44,7 +65,25 @@ class LevelFilter(object):
 
 class LoggingContext(object):
     """Logging context manager
-
+    
+    Configure the given logger to emit messages at and above the configured 
+    logging level and using the configured logging handler. Useful to 
+    temporarily set a lower (or higher log level) or to temporarily add a 
+    local handler. After the context exits, the original state of the logger
+    will be restored.
+    
+    Args:
+        logger (logging.Logger): logger
+        level (Union[str,int]): string or numeric logging level
+        handler (logging.Handler): log handler if not is already configured
+        close (bool): whether to close the handler after context exits. 
+            Defaults to True.
+            
+    Example usage:
+    
+        >>> with LoggingContext(logger, level='DEBUG'):
+        ...     logger.debug('some message')
+        
     Source: <https://docs.python.org/3/howto/logging-cookbook.html#using-a-context-manager-for-selective-logging>
     """  # noqa E501
 
