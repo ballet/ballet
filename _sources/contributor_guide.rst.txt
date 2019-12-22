@@ -112,7 +112,50 @@ Create a new feature
        For a full tutorial on feature engineering in Ballet, check out the separate
        :doc:`Feature Engineering Guide <./feature_engineering_guide>`.
 
-#. Test your feature. (More details to come on this step.)
+#. Test your feature. Observe below that when you submit your feature, there will be four
+   separate validation steps. In your local development environment, you can check most easily
+   whether the feature you have written satisfies the "feature API".
+
+   .. code-block:: python
+
+      from ballet.validation.feature_api.validator import validate_feature_api
+      validate_feature_api(feature, X_df, y_df)
+      # True
+
+   The function ``validate_feature_api`` takes as input the feature object and some training
+   data and runs a series of tests to make sure that they feature works correctly.
+
+   We are working on making it easier to check the other validation steps in your local
+   development environment as well, but currently they are customized to run in our validation
+   environment and make certain assumptions as such.
+
+   For now, you can evaluate the ML performance of your feature as follows:
+
+   .. code-block:: python
+
+      from ballet.validation.main import _load_class
+      from ballet_predict_house_prices.features import build
+
+      out = build()
+      X_df, y, features = out['X_df'], out['y'], out['features']
+      Accepter = _load_class(project, 'validation.feature_accepter')
+      accepter = Accepter(X_df, y, features, feature)
+      accepter.judge()
+      # True
+
+   Observe that the ``_load_class`` machinery is needed because different ballet project can
+   configure different feature accepters. The key inputs to the feature accepter are the
+   existing features (``features``), the raw training data (``X_df``), and the transformed
+   target (``y``). Then, of course, the feature you are evaluating is also provided.
+
+   To gain additional insight into any of the validation procedures, consider enabling ballet
+   logging, as follows
+
+   .. code-block:: python
+
+      from ballet.util.log import enable
+      enable(level='INFO')   # or, level='DEBUG'
+      # [2019-12-22 10:51:30,336] {ballet: log.py:34} INFO - Logging enabled at level INFO.
 
 #. Submit your feature. Commit your changes and create a pull request to the project repository.
 

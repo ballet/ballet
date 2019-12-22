@@ -293,7 +293,17 @@
            <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
            <span class="nb">format</span><span class="o">=</span><span class="n">DETAIL_LOG_FORMAT</span><span class="p">,</span>
            <span class="n">echo</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Enable simple console logging for this module&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Enable simple console logging for this module</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        logger (logging.Logger): logger to enable. Defaults to ballet logger.</span>
+<span class="sd">        level (str, int): logging level, either as string (``&quot;INFO&quot;``) or as</span>
+<span class="sd">            int (``logging.INFO`` or ``20``). Defaults to &#39;INFO&#39;.</span>
+<span class="sd">        format (str) : logging format. Defaults to</span>
+<span class="sd">            ballet.util.log.DETAIL_LOG_FORMAT.</span>
+<span class="sd">        echo (bool): Whether to log a message at the configured log level to</span>
+<span class="sd">            confirm that logging is enable. Defaults to True.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">_handler</span>
     <span class="k">if</span> <span class="n">_handler</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
@@ -315,6 +325,17 @@
 
 
 <div class="viewcode-block" id="LevelFilter"><a class="viewcode-back" href="../../../api/ballet.util.log.html#ballet.util.log.LevelFilter">[docs]</a><span class="k">class</span> <span class="nc">LevelFilter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Logging filter for log records at an exact level</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        level (int): numeric logging level to filter</span>
+
+<span class="sd">    Example usage:</span>
+
+<span class="sd">        &gt;&gt;&gt; debugFilter = LevelFilter(logging.DEBUG)</span>
+<span class="sd">        &gt;&gt;&gt; logger.addFilter(debugFilter)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__level</span> <span class="o">=</span> <span class="n">level</span>
 
@@ -324,7 +345,25 @@
 
 <div class="viewcode-block" id="LoggingContext"><a class="viewcode-back" href="../../../api/ballet.util.log.html#ballet.util.log.LoggingContext">[docs]</a><span class="k">class</span> <span class="nc">LoggingContext</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Logging context manager</span>
-
+<span class="sd">    </span>
+<span class="sd">    Configure the given logger to emit messages at and above the configured </span>
+<span class="sd">    logging level and using the configured logging handler. Useful to </span>
+<span class="sd">    temporarily set a lower (or higher log level) or to temporarily add a </span>
+<span class="sd">    local handler. After the context exits, the original state of the logger</span>
+<span class="sd">    will be restored.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        logger (logging.Logger): logger</span>
+<span class="sd">        level (Union[str,int]): string or numeric logging level</span>
+<span class="sd">        handler (logging.Handler): log handler if not is already configured</span>
+<span class="sd">        close (bool): whether to close the handler after context exits. </span>
+<span class="sd">            Defaults to True.</span>
+<span class="sd">            </span>
+<span class="sd">    Example usage:</span>
+<span class="sd">    </span>
+<span class="sd">        &gt;&gt;&gt; with LoggingContext(logger, level=&#39;DEBUG&#39;):</span>
+<span class="sd">        ...     logger.debug(&#39;some message&#39;)</span>
+<span class="sd">        </span>
 <span class="sd">    Source: &lt;https://docs.python.org/3/howto/logging-cookbook.html#using-a-context-manager-for-selective-logging&gt;</span>
 <span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa E501</span>
 
