@@ -9,6 +9,13 @@ from ballet.feature import Feature
 from ballet.validation.base import BaseCheck
 
 
+def _get_one_row(*args):
+    return tuple(
+        obj.iloc[0:1]
+        for obj in args
+    )
+
+
 class FeatureApiCheck(BaseCheck):
     """Base class for implementing new Feature API checks
 
@@ -64,6 +71,15 @@ class CanFitCheck(FeatureApiCheck):
         mapper.fit(self.X, y=self.y)
 
 
+class CanFitOneRowCheck(FeatureApiCheck):
+
+    def check(self, feature):
+        """Check that fit can be called on one row of reference data"""
+        mapper = feature.as_feature_engineering_pipeline()
+        x, y = _get_one_row(self.X, self.y)
+        mapper.fit(x, y=y)
+
+
 class CanTransformCheck(FeatureApiCheck):
 
     def check(self, feature):
@@ -71,6 +87,16 @@ class CanTransformCheck(FeatureApiCheck):
         mapper = feature.as_feature_engineering_pipeline()
         mapper.fit(self.X, y=self.y)
         mapper.transform(self.X)
+
+
+class CanTransformOneRowCheck(FeatureApiCheck):
+
+    def check(self, feature):
+        """Check that transform can be called on one row of reference data"""
+        mapper = feature.as_feature_engineering_pipeline()
+        mapper.fit(self.X, y=self.y)
+        x, = _get_one_row(self.X)
+        mapper.transform(x)
 
 
 class CanFitTransformCheck(FeatureApiCheck):
