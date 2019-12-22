@@ -17,7 +17,7 @@ from .util import SampleDataMixin
 from ..util import FragileTransformer
 
 
-class ProjectStructureTest(SampleDataMixin, unittest.TestCase):
+class FeatureApiCheckTest(SampleDataMixin, unittest.TestCase):
 
     def test_good_feature(self):
         feature = Feature(
