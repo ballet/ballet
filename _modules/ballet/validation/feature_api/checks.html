@@ -287,6 +287,13 @@
 <span class="kn">from</span> <span class="nn">ballet.validation.base</span> <span class="kn">import</span> <span class="n">BaseCheck</span>
 
 
+<span class="k">def</span> <span class="nf">_get_one_row</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">args</span>
+    <span class="p">)</span>
+
+
 <div class="viewcode-block" id="FeatureApiCheck"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_api.checks.html#ballet.validation.feature_api.checks.FeatureApiCheck">[docs]</a><span class="k">class</span> <span class="nc">FeatureApiCheck</span><span class="p">(</span><span class="n">BaseCheck</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for implementing new Feature API checks</span>
 
@@ -342,6 +349,15 @@
         <span class="n">mapper</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div></div>
 
 
+<div class="viewcode-block" id="CanFitOneRowCheck"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_api.checks.html#ballet.validation.feature_api.checks.CanFitOneRowCheck">[docs]</a><span class="k">class</span> <span class="nc">CanFitOneRowCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
+
+<div class="viewcode-block" id="CanFitOneRowCheck.check"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_api.checks.html#ballet.validation.feature_api.checks.CanFitOneRowCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check that fit can be called on one row of reference data&quot;&quot;&quot;</span>
+        <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_feature_engineering_pipeline</span><span class="p">()</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">_get_one_row</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">mapper</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span></div></div>
+
+
 <div class="viewcode-block" id="CanTransformCheck"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_api.checks.html#ballet.validation.feature_api.checks.CanTransformCheck">[docs]</a><span class="k">class</span> <span class="nc">CanTransformCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
 
 <div class="viewcode-block" id="CanTransformCheck.check"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_api.checks.html#ballet.validation.feature_api.checks.CanTransformCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
@@ -349,6 +365,16 @@
         <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_feature_engineering_pipeline</span><span class="p">()</span>
         <span class="n">mapper</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
         <span class="n">mapper</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="CanTransformOneRowCheck"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_api.checks.html#ballet.validation.feature_api.checks.CanTransformOneRowCheck">[docs]</a><span class="k">class</span> <span class="nc">CanTransformOneRowCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
+
+<div class="viewcode-block" id="CanTransformOneRowCheck.check"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_api.checks.html#ballet.validation.feature_api.checks.CanTransformOneRowCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check that transform can be called on one row of reference data&quot;&quot;&quot;</span>
+        <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_feature_engineering_pipeline</span><span class="p">()</span>
+        <span class="n">mapper</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">x</span><span class="p">,</span> <span class="o">=</span> <span class="n">_get_one_row</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">mapper</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="CanFitTransformCheck"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_api.checks.html#ballet.validation.feature_api.checks.CanFitTransformCheck">[docs]</a><span class="k">class</span> <span class="nc">CanFitTransformCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
