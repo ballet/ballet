@@ -105,6 +105,10 @@ class GroupwiseTransformer(BaseTransformer):
             arguments for each group. If it is a callable, then it is called
             with no arguments for each group.
         groupby_kwargs (dict): keyword arguments to pd.DataFrame.groupby
+        column_selection (str, List[str]): column, or list of columns,
+            to select after the groupby. Equivalent to
+            `df.groupby(...)[column_selection]`. Defaults to None, i.e. no
+            column selection is performed.
         handle_unknown (str): 'error' or 'ignore', default=’error’. Whether to
             raise an error or ignore if an unknown group is encountered during
             transform. When this parameter is set to 'ignore' and an unknown
@@ -140,10 +144,12 @@ class GroupwiseTransformer(BaseTransformer):
     def __init__(self,
                  transformer,
                  groupby_kwargs=None,
+                 column_selection=None,
                  handle_unknown='error',
                  handle_error='error'):
         self.transformer = transformer
         self.groupby_kwargs = groupby_kwargs
+        self.column_selection = column_selection
         self.handle_unknown = handle_unknown
         self.handle_error = handle_error
 
@@ -174,6 +180,9 @@ class GroupwiseTransformer(BaseTransformer):
         for group_name, x_group in grouper:
             transformer = self._make_transformer()
 
+            if self.column_selection is not None:
+                x_group = x_group[self.column_selection]
+
             if y is not None:
                 # Extract y by integer indexing
                 inds = grouper.indices[group_name]
@@ -198,8 +207,13 @@ class GroupwiseTransformer(BaseTransformer):
             if not isinstance(x_group, pd.DataFrame):
                 raise NotImplementedError
 
-            if x_group.name in self.transformers_:
-                transformer = self.transformers_[x_group.name]
+            group_name = x_group.name
+
+            if self.column_selection is not None:
+                x_group = x_group[self.column_selection]
+
+            if group_name in self.transformers_:
+                transformer = self.transformers_[group_name]
                 try:
                     data = transformer.transform(x_group, *args, **kwargs)
 
@@ -222,7 +236,7 @@ class GroupwiseTransformer(BaseTransformer):
                 if self.handle_unknown == 'error':
                     raise BalletError(
                         'Unknown group: {group_name}'
-                        .format(group_name=x_group.name))
+                        .format(group_name=group_name))
                 elif self.handle_unknown == 'ignore':
                     return x_group
                 else:

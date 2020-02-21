@@ -81,6 +81,7 @@ class GroupwiseTransformerTest(
                 'name': ['A', 'A', 'A', 'B', 'B', 'C', 'C'],
                 'year': [2001, 2002, 2003, 2001, 2002, 2001, 2003],
                 'value': [1, 2, np.nan, 4, 4, 5, np.nan],
+                'size': [3, 5, 5, 5, 5, np.nan, 4],
             }
         ).set_index(['name', 'year']).sort_index()
 
@@ -89,6 +90,7 @@ class GroupwiseTransformerTest(
                 'name': ['A', 'B', 'C'],
                 'year': [2004, 2004, 2004],
                 'value': [np.nan, np.nan, np.nan],
+                'size': [4, 1, np.nan],
             }
         ).set_index(['name', 'year']).sort_index()
 
@@ -97,7 +99,10 @@ class GroupwiseTransformerTest(
         # mean-impute within groups
         self.individual_transformer = SimpleImputer()
         self.trans = ballet.eng.base.GroupwiseTransformer(
-            self.individual_transformer, groupby_kwargs=self.groupby_kwargs)
+            self.individual_transformer,
+            groupby_kwargs=self.groupby_kwargs,
+            column_selection=['value'],
+        )
 
     def test_can_fit(self):
         self.trans.fit(self.X_tr)
@@ -108,11 +113,13 @@ class GroupwiseTransformerTest(
         result_tr = self.trans.transform(self.X_tr)
         expected_tr = self.X_tr.copy()
         expected_tr['value'] = np.array([1, 2, 1.5, 4, 4, 5, 5])
+        expected_tr = expected_tr.drop('size', axis=1)
         self.assertFrameEqual(result_tr, expected_tr)
 
         result_te = self.trans.transform(self.X_te)
         expected_te = self.X_te.copy()
         expected_te['value'] = np.array([1.5, 4, 5])
+        expected_te = expected_te.drop('size', axis=1)
         self.assertFrameEqual(result_te, expected_te)
 
     def test_raise_on_new_group(self):
@@ -149,7 +156,8 @@ class GroupwiseTransformerTest(
         # the first group, Z, is new, and values are passed through, so such
         # be nan
         expected = X_te.copy()
-        expected['value'] = np.array([np.nan, 4, 5])
+        expected['value'] = np.array([np.nan, 4.0, 5.0])
+        expected['size'] = np.array([4.0, 1.0, 4.0])
 
         self.assertFrameEqual(result, expected)
 
