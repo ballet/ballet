@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from scipy.special import boxcox1p
 from scipy.stats import skew
+from sklearn.utils.validation import check_is_fitted
 
 from ballet.eng.base import (
     BaseTransformer, ConditionalTransformer, SimpleFunctionTransformer)
@@ -111,3 +112,21 @@ class NullTransformer(BaseTransformer):
     def transform(self, X, **transform_kwargs):
         n = np.size(X, 0)
         return np.empty((n, 0))
+
+
+class ComputedValueTransformer(BaseTransformer):
+
+    def __init__(self, func, pass_y=False):
+        self.func = func
+        self.pass_y = pass_y
+
+    def fit(self, X, y=None, **fit_kwargs):
+        if self.pass_y:
+            self.value_ = self.func(X, y=y)
+        else:
+            self.value_ = self.func(X)
+        self.dtype_ = np.dtype(type(self.value_))
+
+    def transform(self, X, **transform_kwargs):
+        check_is_fitted(self, ['value_', 'dtype_'])
+        return np.full_like(X, self.value_, dtype=self.dtype)
