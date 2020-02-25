@@ -31,7 +31,10 @@ def blacken_code(code):
         string_normalization=string_normalization,
     )
 
-    return black.format_file_contents(code, fast=False, mode=mode)
+    try:
+        return black.format_file_contents(code, fast=False, mode=mode)
+    except black.NothingChanged:
+        return code
 
 
 def get_source(f):

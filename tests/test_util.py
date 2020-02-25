@@ -832,6 +832,15 @@ class CodeTest(unittest.TestCase):
 
         self.assertEqual(actual, expected)
 
+    @unittest.skipUnless(sys.version_info >= (3, 6),
+                     "black requires py36 or higher")
+    def test_blacken_code_nothing_changed(self):
+        input = '1\n'
+        expected = '1\n'
+        actual = blacken_code(input)
+
+        self.assertEqual(actual, expected)
+
     @unittest.expectedFailure
     def test_get_source(self):
         raise NotImplementedError
