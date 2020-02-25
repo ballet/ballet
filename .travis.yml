@@ -3,7 +3,11 @@ python:
   - 3.5
   - 3.6
 
-matrix:
+install: pip install -U tox-travis codecov
+script: tox
+after_success: codecov
+
+jobs:
   include:
     - python: 3.7
       dist: xenial
@@ -11,13 +15,6 @@ matrix:
     - python: 3.8
       dist: xenial
       sudo: required
-
-install: pip install -U tox-travis codecov
-script: tox
-after_success: codecov
-
-jobs:
-  include:
     - stage: deploy
       python: 3.6
       script: tox -e docs
