@@ -19,15 +19,17 @@ jobs:
       python: 3.6
       script: tox -e lint
 
-    - python: 3.7
+    - stage: test
+      python: 3.7
       dist: xenial
 
-    - python: 3.8
+    - stage: test
+      python: 3.8
       dist: xenial
 
     - stage: deploy
-      python: 3.6
-      script: tox -e docs
+      install: skip
+      script: skip
       name: "Release to PyPI"
       deploy:
         edge: true
