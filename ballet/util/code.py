@@ -1,9 +1,27 @@
+import ast
 import inspect
 import platform
 
 from funcy import notnone
 
 from ballet.compat import black
+
+
+def is_valid_python(code):
+    """Check if the string is valid python code
+
+    Args:
+        code (str): code as string
+
+    Returns:
+        bool
+    """
+    try:
+        ast.parse(code)
+    except SyntaxError:
+        return False
+    else:
+        return True
 
 
 def blacken_code(code):
