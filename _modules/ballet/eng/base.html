@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.eng.base &mdash; ballet 0.6.6 documentation</title>
+  <title>ballet.eng.base &mdash; ballet 0.6.7 documentation</title>
   
 
   
@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -108,9 +108,10 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributor_guide.html">Contributor Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#feature-development-workflow">Feature Development Workflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#cloud-feature-development-workflow">Cloud Feature Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#setup-your-development-environment">Setup your development environment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#create-a-new-feature">Create a new feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#develop-a-new-feature">Develop a new feature</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#conclusion">Conclusion</a></li>
@@ -383,6 +384,10 @@
 <span class="sd">            arguments for each group. If it is a callable, then it is called</span>
 <span class="sd">            with no arguments for each group.</span>
 <span class="sd">        groupby_kwargs (dict): keyword arguments to pd.DataFrame.groupby</span>
+<span class="sd">        column_selection (str, List[str]): column, or list of columns,</span>
+<span class="sd">            to select after the groupby. Equivalent to</span>
+<span class="sd">            `df.groupby(...)[column_selection]`. Defaults to None, i.e. no</span>
+<span class="sd">            column selection is performed.</span>
 <span class="sd">        handle_unknown (str): &#39;error&#39; or &#39;ignore&#39;, default=’error’. Whether to</span>
 <span class="sd">            raise an error or ignore if an unknown group is encountered during</span>
 <span class="sd">            transform. When this parameter is set to &#39;ignore&#39; and an unknown</span>
@@ -418,10 +423,12 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">transformer</span><span class="p">,</span>
                  <span class="n">groupby_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">column_selection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">handle_unknown</span><span class="o">=</span><span class="s1">&#39;error&#39;</span><span class="p">,</span>
                  <span class="n">handle_error</span><span class="o">=</span><span class="s1">&#39;error&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span> <span class="o">=</span> <span class="n">transformer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs</span> <span class="o">=</span> <span class="n">groupby_kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">column_selection</span> <span class="o">=</span> <span class="n">column_selection</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span> <span class="o">=</span> <span class="n">handle_unknown</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span> <span class="o">=</span> <span class="n">handle_error</span>
 
@@ -452,6 +459,9 @@
         <span class="k">for</span> <span class="n">group_name</span><span class="p">,</span> <span class="n">x_group</span> <span class="ow">in</span> <span class="n">grouper</span><span class="p">:</span>
             <span class="n">transformer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_transformer</span><span class="p">()</span>
 
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_selection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">x_group</span> <span class="o">=</span> <span class="n">x_group</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_selection</span><span class="p">]</span>
+
             <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># Extract y by integer indexing</span>
                 <span class="n">inds</span> <span class="o">=</span> <span class="n">grouper</span><span class="o">.</span><span class="n">indices</span><span class="p">[</span><span class="n">group_name</span><span class="p">]</span>
@@ -476,8 +486,13 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x_group</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
-            <span class="k">if</span> <span class="n">x_group</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformers_</span><span class="p">:</span>
-                <span class="n">transformer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformers_</span><span class="p">[</span><span class="n">x_group</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+            <span class="n">group_name</span> <span class="o">=</span> <span class="n">x_group</span><span class="o">.</span><span class="n">name</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_selection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">x_group</span> <span class="o">=</span> <span class="n">x_group</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_selection</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">group_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformers_</span><span class="p">:</span>
+                <span class="n">transformer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformers_</span><span class="p">[</span><span class="n">group_name</span><span class="p">]</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">x_group</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -500,7 +515,7 @@
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span> <span class="o">==</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">BalletError</span><span class="p">(</span>
                         <span class="s1">&#39;Unknown group: </span><span class="si">{group_name}</span><span class="s1">&#39;</span>
-                        <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group_name</span><span class="o">=</span><span class="n">x_group</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                        <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group_name</span><span class="o">=</span><span class="n">group_name</span><span class="p">))</span>
                 <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span> <span class="o">==</span> <span class="s1">&#39;ignore&#39;</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">x_group</span>
                 <span class="k">else</span><span class="p">:</span>

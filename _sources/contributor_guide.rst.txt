@@ -18,14 +18,51 @@ used for predicting the sale price of houses in Ames, Iowa, given raw data about
 
    .. image:: https://img.shields.io/static/v1?label=chat&message=on%20slack&color=4A154B&logo=slack
       :alt: Chat on Slack
-      :target: https://slack.com/share/IRM5N6Q7R/2Xp7tcY1nWL44bq8zJeaTNzH/enQtODcxMTkyMjI4MjYzLTE1YWY3ODEwNTc4YjUwYzYyNjdjMThkZmM1YzA0NWMzZGJmMjI2YTQzMDIzOWIxOWExODlkNTkxMjk2MWVkNWE
+      :target: https://slack.com/share/IU2BXQ5BL/rs4UKg8Qy0cQKHo279wfE83O/enQtOTU0NDA1ODIxMzk0LTJjNTA0NDNmODIxZDJhYjU1ODFkMTY2Mjc4MTBiYmEwYzRhZjY5YTUwZjhkNjBhOGI2ZGU4YjA2ZjJmZTBmNjc
 
 
-Feature Development Workflow
-============================
+Cloud Feature Development Workflow
+==================================
 
-There are two parts to the workflow. First, you setup your development environment (only do this
-once). Second, you develop a new feature (repeat the steps every time you create a new feature).
+Some Ballet projects may have set up a development workflow using a hosted Jupyter Lab
+environment and an in-lab submission extension. This greatly simplifies the development workflow
+at the cost of some flexibility.
+
+#. Click the |launch-binder| link in the project's README to launch an interactive notebook.
+
+#. Open a demo notebook or create a new notebook.
+
+#. Develop a new feature. See step below, "Write your feature".
+
+#. Test your feature. See step below, "Test your feature".
+
+#. Submit your feature. Find the submission button provided by the Jupyter Lab extension, as
+   shown in the screenshot.
+
+   .. image:: _static/labextension_submit_button_annotated.png
+      :alt: The submission button illustrated in a notebook.
+      :align: center
+      :scale: 75%
+
+   When you have finished developing your feature, select the code cell that contains the feature
+   and press the "Submit" button. You will be asked to confirm that you want to submit the feature.
+
+   .. note::
+
+      The content of the cell must be a standalone Python module, as it will be placed in an
+      empty Python source file. This means that any imports or helper functions must be defined
+      (or re-defined) within this cell, otherwise your submitted feature will fail to validate
+      due to missing imports/helpers.
+
+.. |launch-binder| image:: https://mybinder.org/badge_logo.svg
+
+Local Feature Development Workflow
+==================================
+
+The most flexible and powerful development workflow is based on developing locally making heavy
+use of your command line. There are two parts to the workflow. First, you setup your development
+environment (only do this once). Second, you develop a new feature (repeat the steps every time you
+create a new feature).
 
 
 Setup your development environment
@@ -44,13 +81,13 @@ Setup your development environment
 #. Create and activate a new virtual environment using your environment manager of choice, such
    as `conda`_. **(Strongly recommended.)**
 
-    .. code-block:: console
+   .. code-block:: console
 
-       $ conda create -n myenv python=3.7 -y && conda activate myenv
+      $ conda create -n myenv python=3.7 -y && conda activate myenv
 
 
-Create a new feature
---------------------
+Develop a new feature
+---------------------
 
 #. Update and install the project. This will make the feature engineering pipeline accessible in
    interactive settings (Python interpreter, Jupyter notebook) and as a command-line tool.
@@ -71,23 +108,23 @@ Create a new feature
 
 #. Start working on a new feature.
 
-    .. code-block:: console
+   .. code-block:: console
 
-       (myenv) $ git checkout -b develop-my-feature
-       (myenv) $ ballet start-new-feature
-       Starting new feature...
-       username [your_user_name]:
-       featurename [featurename]: impute_lot_frontage
-       2019-12-11 10:56:00,517 INFO - Start new feature successful.
-       2019-12-11 10:56:00,517 INFO - Created src/ballet_predict_house_prices/features/contrib/user_your_user_name/feature_impute_lot_frontage.py
-       Starting new feature...DONE
+      (myenv) $ git checkout -b develop-my-feature
+      (myenv) $ ballet start-new-feature
+      Starting new feature...
+      username [your_user_name]:
+      featurename [featurename]: impute_lot_frontage
+      2019-12-11 10:56:00,517 INFO - Start new feature successful.
+      2019-12-11 10:56:00,517 INFO - Created src/ballet_predict_house_prices/features/contrib/user_your_user_name/feature_impute_lot_frontage.py
+      Starting new feature...DONE
 
-    This will create a new Python module within the project's "contrib" directory to hold your
-    feature.
+   This will create a new Python module within the project's "contrib" directory to hold your
+   feature.
 
-    * The contrib directory is named like ``src/<ballet_project>/features/contrib``.
-    * The new subpackage must be named like ``user_<github username>``.
-    * The new submodule that will contain the feature must be named like ``feature_<feature name>.py``.
+   * The contrib directory is named like ``src/<ballet_project>/features/contrib``.
+   * The new subpackage must be named like ``user_<github username>``.
+   * The new submodule that will contain the feature must be named like ``feature_<feature name>.py``.
 
 #. Write your feature. We call the code you write to extract one group of related feature values
    a *logical feature*. Within your feature submodule, you can write arbitrary Python code.
@@ -97,20 +134,20 @@ Create a new feature
    In this example, a feature is defined that receives column ``'Lot Frontage'`` from the
    data and imputes missing values with the mean of the training data.
 
-    .. code-block:: python
+   .. code-block:: python
 
-       from ballet import Feature
-       from sklearn.impute import SimpleImputer
+      from ballet import Feature
+      from sklearn.impute import SimpleImputer
 
-       input = ["Lot Frontage"]
-       transformer = SimpleImputer(strategy="mean")
-       name = "Imputed Lot Frontage"
-       feature = Feature(input=input, transformer=transformer, name=name)
+      input = ["Lot Frontage"]
+      transformer = SimpleImputer(strategy="mean")
+      name = "Imputed Lot Frontage"
+      feature = Feature(input=input, transformer=transformer, name=name)
 
-    .. tip::
+   .. tip::
 
-       For a full tutorial on feature engineering in Ballet, check out the separate
-       :doc:`Feature Engineering Guide <./feature_engineering_guide>`.
+      For a full tutorial on feature engineering in Ballet, check out the separate
+      :doc:`Feature Engineering Guide <./feature_engineering_guide>`.
 
 #. Test your feature. Observe below that when you submit your feature, there will be four
    separate validation steps. In your local development environment, you can check most easily

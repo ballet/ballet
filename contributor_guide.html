@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Contributor Guide &mdash; ballet 0.6.6 documentation</title>
+  <title>Contributor Guide &mdash; ballet 0.6.7 documentation</title>
   
 
   
@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -110,9 +110,10 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Contributor Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#feature-development-workflow">Feature Development Workflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#cloud-feature-development-workflow">Cloud Feature Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#setup-your-development-environment">Setup your development environment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#create-a-new-feature">Create a new feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#develop-a-new-feature">Develop a new feature</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#conclusion">Conclusion</a></li>
@@ -294,12 +295,39 @@ used for predicting the sale price of houses in Ames, Iowa, given raw data about
 git, GitHub, make, and virtual environments. We are working on supporting a higher-level
 workflow in which you are able to develop and collaborate entirely from within your Jupyter
 notebook/lab environment. Please feel free to ask for help on our Slack channel!</p>
-<a class="reference external image-reference" href="https://slack.com/share/IRM5N6Q7R/2Xp7tcY1nWL44bq8zJeaTNzH/enQtODcxMTkyMjI4MjYzLTE1YWY3ODEwNTc4YjUwYzYyNjdjMThkZmM1YzA0NWMzZGJmMjI2YTQzMDIzOWIxOWExODlkNTkxMjk2MWVkNWE"><img alt="Chat on Slack" src="https://img.shields.io/static/v1?label=chat&amp;message=on%20slack&amp;color=4A154B&amp;logo=slack" /></a>
+<a class="reference external image-reference" href="https://slack.com/share/IU2BXQ5BL/rs4UKg8Qy0cQKHo279wfE83O/enQtOTU0NDA1ODIxMzk0LTJjNTA0NDNmODIxZDJhYjU1ODFkMTY2Mjc4MTBiYmEwYzRhZjY5YTUwZjhkNjBhOGI2ZGU4YjA2ZjJmZTBmNjc"><img alt="Chat on Slack" src="https://img.shields.io/static/v1?label=chat&amp;message=on%20slack&amp;color=4A154B&amp;logo=slack" /></a>
 </div>
-<div class="section" id="feature-development-workflow">
-<h2>Feature Development Workflow<a class="headerlink" href="#feature-development-workflow" title="Permalink to this headline">¶</a></h2>
-<p>There are two parts to the workflow. First, you setup your development environment (only do this
-once). Second, you develop a new feature (repeat the steps every time you create a new feature).</p>
+<div class="section" id="cloud-feature-development-workflow">
+<h2>Cloud Feature Development Workflow<a class="headerlink" href="#cloud-feature-development-workflow" title="Permalink to this headline">¶</a></h2>
+<p>Some Ballet projects may have set up a development workflow using a hosted Jupyter Lab
+environment and an in-lab submission extension. This greatly simplifies the development workflow
+at the cost of some flexibility.</p>
+<ol class="arabic">
+<li><p>Click the <img alt="launch-binder" src="https://mybinder.org/badge_logo.svg" /> link in the project’s README to launch an interactive notebook.</p></li>
+<li><p>Open a demo notebook or create a new notebook.</p></li>
+<li><p>Develop a new feature. See step below, “Write your feature”.</p></li>
+<li><p>Test your feature. See step below, “Test your feature”.</p></li>
+<li><p>Submit your feature. Find the submission button provided by the Jupyter Lab extension, as
+shown in the screenshot.</p>
+<a class="reference internal image-reference" href="_images/labextension_submit_button_annotated.png"><img alt="The submission button illustrated in a notebook." class="align-center" src="_images/labextension_submit_button_annotated.png" style="width: 512.25px; height: 159.0px;" /></a>
+<p>When you have finished developing your feature, select the code cell that contains the feature
+and press the “Submit” button. You will be asked to confirm that you want to submit the feature.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The content of the cell must be a standalone Python module, as it will be placed in an
+empty Python source file. This means that any imports or helper functions must be defined
+(or re-defined) within this cell, otherwise your submitted feature will fail to validate
+due to missing imports/helpers.</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="local-feature-development-workflow">
+<h2>Local Feature Development Workflow<a class="headerlink" href="#local-feature-development-workflow" title="Permalink to this headline">¶</a></h2>
+<p>The most flexible and powerful development workflow is based on developing locally making heavy
+use of your command line. There are two parts to the workflow. First, you setup your development
+environment (only do this once). Second, you develop a new feature (repeat the steps every time you
+create a new feature).</p>
 <div class="section" id="setup-your-development-environment">
 <h3>Setup your development environment<a class="headerlink" href="#setup-your-development-environment" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic">
@@ -313,16 +341,14 @@ once). Second, you develop a new feature (repeat the steps every time you create
 </li>
 <li><p>Create and activate a new virtual environment using your environment manager of choice, such
 as <a class="reference external" href="https://conda.io/en/latest/">conda</a>. <strong>(Strongly recommended.)</strong></p>
-<blockquote>
-<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> conda create -n myenv <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.7 -y <span class="o">&amp;&amp;</span> conda activate myenv
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> conda create -n myenv <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.7 -y <span class="o">&amp;&amp;</span> conda activate myenv
 </pre></div>
 </div>
-</div></blockquote>
 </li>
 </ol>
 </div>
-<div class="section" id="create-a-new-feature">
-<h3>Create a new feature<a class="headerlink" href="#create-a-new-feature" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="develop-a-new-feature">
+<h3>Develop a new feature<a class="headerlink" href="#develop-a-new-feature" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic">
 <li><p>Update and install the project. This will make the feature engineering pipeline accessible in
 interactive settings (Python interpreter, Jupyter notebook) and as a command-line tool.</p>
@@ -341,8 +367,7 @@ itself.</p>
 </div>
 </li>
 <li><p>Start working on a new feature.</p>
-<blockquote>
-<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$</span> git checkout -b develop-my-feature
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$</span> git checkout -b develop-my-feature
 <span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$</span> ballet start-new-feature
 <span class="go">Starting new feature...</span>
 <span class="go">username [your_user_name]:</span>
@@ -359,7 +384,6 @@ feature.</p>
 <li><p>The new subpackage must be named like <code class="docutils literal notranslate"><span class="pre">user_&lt;github</span> <span class="pre">username&gt;</span></code>.</p></li>
 <li><p>The new submodule that will contain the feature must be named like <code class="docutils literal notranslate"><span class="pre">feature_&lt;feature</span> <span class="pre">name&gt;.py</span></code>.</p></li>
 </ul>
-</div></blockquote>
 </li>
 <li><p>Write your feature. We call the code you write to extract one group of related feature values
 a <em>logical feature</em>. Within your feature submodule, you can write arbitrary Python code.
@@ -367,8 +391,7 @@ Ultimately, a single object that is an instance of <code class="docutils literal
 be imported by the feature engineering pipeline.</p>
 <p>In this example, a feature is defined that receives column <code class="docutils literal notranslate"><span class="pre">'Lot</span> <span class="pre">Frontage'</span></code> from the
 data and imputes missing values with the mean of the training data.</p>
-<blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ballet</span> <span class="kn">import</span> <span class="n">Feature</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ballet</span> <span class="kn">import</span> <span class="n">Feature</span>
 <span class="kn">from</span> <span class="nn">sklearn.impute</span> <span class="kn">import</span> <span class="n">SimpleImputer</span>
 
 <span class="nb">input</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Lot Frontage&quot;</span><span class="p">]</span>
@@ -382,7 +405,6 @@ data and imputes missing values with the mean of the training data.</p>
 <p>For a full tutorial on feature engineering in Ballet, check out the separate
 <a class="reference internal" href="feature_engineering_guide.html"><span class="doc">Feature Engineering Guide</span></a>.</p>
 </div>
-</div></blockquote>
 </li>
 <li><p>Test your feature. Observe below that when you submit your feature, there will be four
 separate validation steps. In your local development environment, you can check most easily

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.eng.base module &mdash; ballet 0.6.6 documentation</title>
+  <title>ballet.eng.base module &mdash; ballet 0.6.7 documentation</title>
   
 
   
@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -110,9 +110,10 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../contributor_guide.html">Contributor Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../contributor_guide.html#feature-development-workflow">Feature Development Workflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../contributor_guide.html#cloud-feature-development-workflow">Cloud Feature Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributor_guide.html#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../contributor_guide.html#setup-your-development-environment">Setup your development environment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../contributor_guide.html#create-a-new-feature">Create a new feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributor_guide.html#develop-a-new-feature">Develop a new feature</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../contributor_guide.html#conclusion">Conclusion</a></li>
@@ -346,7 +347,7 @@ the selected columns, passing through the complement unchanged.</p>
 
 <dl class="class">
 <dt id="ballet.eng.base.GroupwiseTransformer">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.base.</code><code class="sig-name descname">GroupwiseTransformer</code><span class="sig-paren">(</span><em class="sig-param">transformer</em>, <em class="sig-param">groupby_kwargs=None</em>, <em class="sig-param">handle_unknown='error'</em>, <em class="sig-param">handle_error='error'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/base.html#GroupwiseTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.base.GroupwiseTransformer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.base.</code><code class="sig-name descname">GroupwiseTransformer</code><span class="sig-paren">(</span><em class="sig-param">transformer</em>, <em class="sig-param">groupby_kwargs=None</em>, <em class="sig-param">column_selection=None</em>, <em class="sig-param">handle_unknown='error'</em>, <em class="sig-param">handle_error='error'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/base.html#GroupwiseTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.base.GroupwiseTransformer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ballet.eng.base.BaseTransformer" title="ballet.eng.base.BaseTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.base.BaseTransformer</span></code></a></p>
 <p>Transformer that does something different for every group</p>
 <p>For each group identified in the training set by the groupby operation,
@@ -367,6 +368,10 @@ the class are transformer-like), then it is initialized with no
 arguments for each group. If it is a callable, then it is called
 with no arguments for each group.</p></li>
 <li><p><strong>groupby_kwargs</strong> (<em>dict</em>) – keyword arguments to pd.DataFrame.groupby</p></li>
+<li><p><strong>column_selection</strong> (<em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em>) – column, or list of columns,
+to select after the groupby. Equivalent to
+<cite>df.groupby(…)[column_selection]</cite>. Defaults to None, i.e. no
+column selection is performed.</p></li>
 <li><p><strong>handle_unknown</strong> (<em>str</em>) – ‘error’ or ‘ignore’, default=’error’. Whether to
 raise an error or ignore if an unknown group is encountered during
 transform. When this parameter is set to ‘ignore’ and an unknown
