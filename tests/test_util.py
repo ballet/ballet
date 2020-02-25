@@ -21,7 +21,8 @@ import ballet.util.git
 import ballet.util.io
 from ballet.compat import safepath
 from ballet.util.ci import TravisPullRequestBuildDiffer
-from ballet.util.code import blacken_code, get_source, is_valid_python  # noqa F401
+from ballet.util.code import (  # noqa F401
+    blacken_code, get_source, is_valid_python)
 from ballet.util.mod import (  # noqa F401
     import_module_at_path, import_module_from_modname,
     import_module_from_relpath, modname_to_relpath, relpath_to_modname)
@@ -829,7 +830,7 @@ class CodeTest(unittest.TestCase):
         self.assertFalse(result)
 
     @unittest.skipUnless(sys.version_info >= (3, 6),
-                     "black requires py36 or higher")
+                         "black requires py36 or higher")
     def test_blacken_code(self):
         input = '''\
         x = {  'a':37,'b':42,
@@ -843,7 +844,7 @@ class CodeTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     @unittest.skipUnless(sys.version_info >= (3, 6),
-                     "black requires py36 or higher")
+                         "black requires py36 or higher")
     def test_blacken_code_nothing_changed(self):
         input = '1\n'
         expected = '1\n'
