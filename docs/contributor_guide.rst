@@ -18,7 +18,7 @@ used for predicting the sale price of houses in Ames, Iowa, given raw data about
 
    .. image:: https://img.shields.io/static/v1?label=chat&message=on%20slack&color=4A154B&logo=slack
       :alt: Chat on Slack
-      :target: https://slack.com/share/IRM5N6Q7R/2Xp7tcY1nWL44bq8zJeaTNzH/enQtODcxMTkyMjI4MjYzLTE1YWY3ODEwNTc4YjUwYzYyNjdjMThkZmM1YzA0NWMzZGJmMjI2YTQzMDIzOWIxOWExODlkNTkxMjk2MWVkNWE
+      :target: https://slack.com/share/IU2BXQ5BL/rs4UKg8Qy0cQKHo279wfE83O/enQtOTU0NDA1ODIxMzk0LTJjNTA0NDNmODIxZDJhYjU1ODFkMTY2Mjc4MTBiYmEwYzRhZjY5YTUwZjhkNjBhOGI2ZGU4YjA2ZjJmZTBmNjc
 
 
 Feature Development Workflow
