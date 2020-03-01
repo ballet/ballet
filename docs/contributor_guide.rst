@@ -18,7 +18,7 @@ used for predicting the sale price of houses in Ames, Iowa, given raw data about
 
    .. image:: https://img.shields.io/static/v1?label=chat&message=on%20slack&color=4A154B&logo=slack
       :alt: Chat on Slack
-      :target: https://slack.com/share/IU2BXQ5BL/rs4UKg8Qy0cQKHo279wfE83O/enQtOTU0NDA1ODIxMzk0LTJjNTA0NDNmODIxZDJhYjU1ODFkMTY2Mjc4MTBiYmEwYzRhZjY5YTUwZjhkNjBhOGI2ZGU4YjA2ZjJmZTBmNjc
+      :target: https://slack.com/share/IUQBPT316/gXn5PKAJGNnqfX0Mz1oKDRDJ/enQtOTc2Mzk3OTIxMDQwLTUxNDUzNmUxMzY0YTJmNGFiMGFmNGI3YWIyOWY2ZDZjYzRhOGE4MGVjYzA4ZDQ4ZjRkNDE0OTQ2ZTRmMzJmNjA
 
 
 Cloud Feature Development Workflow
@@ -149,47 +149,38 @@ Develop a new feature
       For a full tutorial on feature engineering in Ballet, check out the separate
       :doc:`Feature Engineering Guide <./feature_engineering_guide>`.
 
-#. Test your feature. Observe below that when you submit your feature, there will be four
-   separate validation steps. In your local development environment, you can check most easily
-   whether the feature you have written satisfies the "feature API".
+#. Test your feature. Observe later in this guide that when you submit your feature, there will be
+   four separate validation steps. In your local development environment, you can check two of
+   them: whether the feature you have written satisfies the "feature API", and whether the
+   feature contributes positively to the ML performance of the feature engineering pipeline.
+
+   First, the function ``validate_feature_api`` takes as input the feature object and some training
+   data and runs a series of tests to make sure that the feature works correctly.
 
    .. code-block:: python
 
-      from ballet.validation.feature_api.validator import validate_feature_api
+      from ballet.validation.feature_api import validate_feature_api
       validate_feature_api(feature, X_df, y_df)
       # True
 
-   The function ``validate_feature_api`` takes as input the feature object and some training
-   data and runs a series of tests to make sure that they feature works correctly.
 
-   We are working on making it easier to check the other validation steps in your local
-   development environment as well, but currently they are customized to run in our validation
-   environment and make certain assumptions as such.
-
-   For now, you can evaluate the ML performance of your feature as follows:
+   Second, the function ``validate_feature_acceptance`` takes as input the feature object and
+   some training data, and runs an algorithm to determine whether the existing feature
+   engineering pipeline for the Ballet project that you are working on performs better with or
+   without your feature.
 
    .. code-block:: python
 
-      import ballet_predict_house_prices
-      import ballet_predict_house_prices.features as features
-      from ballet.project import Project
-      from ballet.validation.main import _load_class
-
-      project = Project(ballet_predict_house_prices)
-      out = features.build(X_df, y_df)
-      X_df, y, features = out['X_df'], out['y'], out['features']
-      Accepter = _load_class(project, 'validation.feature_accepter')
-      accepter = Accepter(X_df, y, features, feature)
-      accepter.judge()
+      from ballet.validation.feature_acceptance import validate_feature_acceptance
+      validate_feature_acceptance(feature, X_df, y_df)
       # True
 
-   Observe that the ``_load_class`` machinery is needed because different ballet project can
-   configure different feature accepters. The key inputs to the feature accepter are the
-   existing features (``features``), the raw training data (``X_df``), and the transformed
-   target (``y``). Then, of course, the feature you are evaluating is also provided.
+   Under the hood, it tries to automatically detect the Ballet project that you are working
+   on and builds the existing feature engineering pipeline that is part of the project. It also
+   loads the specific feature accepter that has been configured for your project.
 
-   To gain additional insight into any of the validation procedures, consider enabling ballet
-   logging, as follows
+   To gain additional insight into any of the validation procedures, including details on
+   why your feature may have failed to validate, enable ballet logging.
 
    .. code-block:: python
 

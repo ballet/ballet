@@ -6,6 +6,10 @@ Feature engineering is the process of transforming raw variables into feature va
 input to a learning algorithm. In Ballet, feature engineering is centered around creating logical
 features.
 
+At the end of the day, a feature is a tuple ``(input_columns, transformer_to_apply)``. Your job
+in feature engineering will be to define this tuple of input columns and a transformer to apply
+on them.
+
 .. tip::
 
    By the end of this guide, you will
@@ -124,21 +128,29 @@ hoops to use ``Feature`` objects?
 Input types and conversions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The `input` field accepts either a key or a collection of keys (usually strings) identifying
+The ``input`` field accepts either a key or a collection of keys (usually strings) identifying
 columns from the raw data.
 
-- if `input` is a scalar key, a 1-dimensional pandas Series or numpy array is passed to the
+- if ``input`` is a scalar key, a 1-dimensional pandas Series or numpy array is passed to the
   transformer
-- if `input` is a collection of keys, a 2-dimensional pandas DataFrame or numpy array is passed to
-  the transformer
+- if ``input`` is a collection of keys, a 2-dimensional pandas DataFrame or numpy array is
+  passed to the transformer
 
 With respect to the discussion about robustness above, ballet tries to pass the most obvious
-objects to the transformer. For example, if the raw data is a pandas DataFrame and input is a
-scalar key, ballet tries to pass a Series to the transformer. If that fails in a predictable way
-(i.e. the transformer appears to not be able to handle that data type), then ballet tries again
-with the next most obvious input data type (a 1-d numpy array), continuous on to a pandas DataFrame
-with one column and finally a 2-d numpy array with one column. The same principles apply when
-`input` is a collection of keys, except ballet will not try to pass any 1-d data.
+objects to the transformer. For example, if the raw data is a pandas ``DataFrame`` and ``input``
+is a scalar key, ballet tries to pass a ``Series`` to the transformer. If that fails in a
+predictable way (i.e. the transformer appears to not be able to handle that data type), then ballet
+tries again with the next most obvious input data type (a 1-d numpy array), continuous on to a
+pandas ``DataFrame`` with one column and finally a 2-d numpy array with one column. The same
+principles apply when ``input`` is a collection of keys, except ballet will not try to pass any 1-d
+data.
+
+Transformers
+^^^^^^^^^^^^
+
+The ``transformer`` field accepts either a transformer-like object or a list of transformer-like
+objects. By *transformer-like*, we mean objects that satisfy the scikit-learn Transformer API,
+having ``fit``, ``transform``, and ``fit_transform`` implementations.
 
 Feature engineering pipelines
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -160,6 +172,13 @@ style.
 To ease this process, Ballet provides a library of feature engineering primitives,
 :py:mod:`ballet.eng`, which implements many common learned transformations and utilities.
 
+Many feature engineering primitives are also available in scikit-learn.
+
+Preprocessing
+^^^^^^^^^^^^^
+
+See `sklearn.preprocessing`_ for a collection of useful preprocessing transformers.
+
 Operating on groups
 ^^^^^^^^^^^^^^^^^^^
 
@@ -169,7 +188,7 @@ See :py:class:`ballet.eng.base.GroupedFunctionTransformer` and
 Addressing missing values
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-See :py:mod:`ballet.eng.missing`.
+See `sklearn.impute`_ and :py:mod:`ballet.eng.missing`.
 
 Operating on time series data
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -241,3 +260,6 @@ Further reading
 
 - :py:class:`ballet.feature.Feature`
 - :py:class:`ballet.pipeline.FeatureEngineeringPipeline`
+
+.. _`sklearn.preprocessing`: https://scikit-learn.org/stable/modules/classes.html#module-sklearn.preprocessing
+.. _`sklearn.impute`: https://scikit-learn.org/stable/modules/classes.html#module-sklearn.impute
