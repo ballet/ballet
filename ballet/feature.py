@@ -48,6 +48,19 @@ class Feature:
     def _init_attr_list(self):
         return list(signature(self.__init__).parameters)
 
+    def __str__(self):
+        indent = 4
+        attr_list = self._init_attr_list
+        attrs_str = ',\n'.join(
+            '{indent}{attr_name}={attr_val!s}'.format(
+                indent=' ' * indent,
+                attr_name=attr,
+                attr_val=getattr(self, attr)
+            ) for attr in attr_list
+        )
+        return '{clsname}(\n{attrs_str}\n)'.format(
+            clsname=type(self).__name__, attrs_str=attrs_str)
+
     def __repr__(self):
         attr_list = self._init_attr_list
         attrs_str = ', '.join(
