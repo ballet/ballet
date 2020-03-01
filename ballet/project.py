@@ -42,7 +42,9 @@ def load_config_at_path(path):
         })
         return LazySettings(**options)
     else:
-        raise ConfigurationError("Couldn't find ballet.yml config file.")
+        raise ConfigurationError(
+            'Couldn\'t find ballet.yml config file at {path!s}'
+            .format(path=path))
 
 
 @needs_path
@@ -156,6 +158,27 @@ class Project:
         package = import_module_at_path(package_slug,
                                         path.joinpath('src', package_slug))
         return cls(package)
+
+    @classmethod
+    def from_cwd(cls):
+        """Create a Project instance by searching up from cwd
+
+        Recursively searches for the ballet configuration file at the
+        current working directory and parent directories, stopping when it
+        reaches a file system boundary.
+
+        Raises:
+            ConfigurationError: couldn't find the configuration file
+        """
+        path = pathlib.Path.cwd()
+        while path.exists() and not path.is_mount():
+            try:
+                return Project.from_path(path)
+            except ConfigurationError:
+                path = path.parent
+
+        raise ConfigurationError('Couldn\'t create Project instance')
+
 
     def _resolve(self, modname, attr=None):
         module = import_module(modname, package=self.package.__name__)
