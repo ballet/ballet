@@ -30,6 +30,7 @@ jobs:
     - stage: deploy
       install: skip
       script: skip
+      after_success: skip
       name: "Release to PyPI"
       deploy:
         edge: true
@@ -45,6 +46,7 @@ jobs:
     - stage: deploy
       python: 3.6
       script: tox -e docs
+      after_success: skip
       name: "Build docs"
       deploy:
         edge: true
