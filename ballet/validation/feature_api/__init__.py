@@ -1,6 +1,6 @@
 from ballet import logger
-from ballet.validation.common import subsample_data_for_validation, \
-    check_from_class
+from ballet.validation.common import (
+    check_from_class, subsample_data_for_validation)
 from ballet.validation.feature_api.checks import FeatureApiCheck
 
 

@@ -179,7 +179,6 @@ class Project:
 
         raise ConfigurationError('Couldn\'t create Project instance')
 
-
     def _resolve(self, modname, attr=None):
         module = import_module(modname, package=self.package.__name__)
         if attr is not None:
