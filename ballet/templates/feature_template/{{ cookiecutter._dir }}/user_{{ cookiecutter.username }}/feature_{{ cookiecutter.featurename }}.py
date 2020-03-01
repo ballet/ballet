@@ -1,7 +1,7 @@
 from ballet import Feature
 
 
-input = None
-transformer = None
-name = None
-feature = Feature(input=input, transformer=transformer, name=name)
+input = None  # TODO - str or list of str
+transformer = None  # TODO - function, transformer-like, or list thereof
+name = None  # TODO - str
+feature = Feature(input, transformer, name)
