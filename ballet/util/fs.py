@@ -99,9 +99,9 @@ def synctree(src, dst, onexist=None):
 
     Returns:
         List[Tuple[PathLike,str]]: changes made by synctree, list of tuples of
-            the form ("/absolute/path/to/file", "<kind>") where the change
-            kind is one of "dir" (new directory was created) or "file" (new
-            file was created).
+        the form ("/absolute/path/to/file", "<kind>") where the change kind is
+        one of "dir" (new directory was created) or "file" (new file was
+        created).
     """
     src = pathlib.Path(src).resolve()
     dst = pathlib.Path(dst).resolve()
