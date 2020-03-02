@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from scipy.special import boxcox1p
 from scipy.stats import skew
+from sklearn.preprocessing import FunctionTransformer
 from sklearn.utils.validation import check_is_fitted
 
 from ballet.eng.base import (
@@ -17,11 +18,12 @@ __all__ = [
 ]
 
 
-class IdentityTransformer(SimpleFunctionTransformer):
+class IdentityTransformer(FunctionTransformer):
     """Simple transformer that passes through its input"""
 
     def __init__(self):
-        super().__init__(funcy.identity)
+        super().__init__(func=funcy.identity, inverse_func=funcy.identity,
+                         validate=False, check_inverse=False)
 
 
 class BoxCoxTransformer(ConditionalTransformer):
