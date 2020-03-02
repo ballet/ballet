@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Contributor Guide &mdash; ballet 0.6.8 documentation</title>
+  <title>Contributor Guide &mdash; ballet 0.6.9 documentation</title>
   
 
   
@@ -81,6 +81,7 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="readme.html">Overview</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="readme.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#next-steps">Next steps</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
@@ -125,10 +126,12 @@
 <li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#a-first-example">A first example</a></li>
 <li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#why">Why?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#input-types-and-conversions">Input types and conversions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#transformers">Transformers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#feature-engineering-pipelines">Feature engineering pipelines</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="feature_engineering_guide.html#feature-engineering-primitives">Feature engineering primitives</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#preprocessing">Preprocessing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#operating-on-groups">Operating on groups</a></li>
 <li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#addressing-missing-values">Addressing missing values</a></li>
 <li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#operating-on-time-series-data">Operating on time series data</a></li>
@@ -295,7 +298,7 @@ used for predicting the sale price of houses in Ames, Iowa, given raw data about
 git, GitHub, make, and virtual environments. We are working on supporting a higher-level
 workflow in which you are able to develop and collaborate entirely from within your Jupyter
 notebook/lab environment. Please feel free to ask for help on our Slack channel!</p>
-<a class="reference external image-reference" href="https://slack.com/share/IU2BXQ5BL/rs4UKg8Qy0cQKHo279wfE83O/enQtOTU0NDA1ODIxMzk0LTJjNTA0NDNmODIxZDJhYjU1ODFkMTY2Mjc4MTBiYmEwYzRhZjY5YTUwZjhkNjBhOGI2ZGU4YjA2ZjJmZTBmNjc"><img alt="Chat on Slack" src="https://img.shields.io/static/v1?label=chat&amp;message=on%20slack&amp;color=4A154B&amp;logo=slack" /></a>
+<a class="reference external image-reference" href="https://slack.com/share/IUQBPT316/gXn5PKAJGNnqfX0Mz1oKDRDJ/enQtOTc2Mzk3OTIxMDQwLTUxNDUzNmUxMzY0YTJmNGFiMGFmNGI3YWIyOWY2ZDZjYzRhOGE4MGVjYzA4ZDQ4ZjRkNDE0OTQ2ZTRmMzJmNjA"><img alt="Chat on Slack" src="https://img.shields.io/static/v1?label=chat&amp;message=on%20slack&amp;color=4A154B&amp;logo=slack" /></a>
 </div>
 <div class="section" id="cloud-feature-development-workflow">
 <h2>Cloud Feature Development Workflow<a class="headerlink" href="#cloud-feature-development-workflow" title="Permalink to this headline">¶</a></h2>
@@ -406,40 +409,31 @@ data and imputes missing values with the mean of the training data.</p>
 <a class="reference internal" href="feature_engineering_guide.html"><span class="doc">Feature Engineering Guide</span></a>.</p>
 </div>
 </li>
-<li><p>Test your feature. Observe below that when you submit your feature, there will be four
-separate validation steps. In your local development environment, you can check most easily
-whether the feature you have written satisfies the “feature API”.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ballet.validation.feature_api.validator</span> <span class="kn">import</span> <span class="n">validate_feature_api</span>
+<li><p>Test your feature. Observe later in this guide that when you submit your feature, there will be
+four separate validation steps. In your local development environment, you can check two of
+them: whether the feature you have written satisfies the “feature API”, and whether the
+feature contributes positively to the ML performance of the feature engineering pipeline.</p>
+<p>First, the function <code class="docutils literal notranslate"><span class="pre">validate_feature_api</span></code> takes as input the feature object and some training
+data and runs a series of tests to make sure that the feature works correctly.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ballet.validation.feature_api</span> <span class="kn">import</span> <span class="n">validate_feature_api</span>
 <span class="n">validate_feature_api</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span><span class="p">)</span>
 <span class="c1"># True</span>
 </pre></div>
 </div>
-<p>The function <code class="docutils literal notranslate"><span class="pre">validate_feature_api</span></code> takes as input the feature object and some training
-data and runs a series of tests to make sure that they feature works correctly.</p>
-<p>We are working on making it easier to check the other validation steps in your local
-development environment as well, but currently they are customized to run in our validation
-environment and make certain assumptions as such.</p>
-<p>For now, you can evaluate the ML performance of your feature as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ballet_predict_house_prices</span>
-<span class="kn">import</span> <span class="nn">ballet_predict_house_prices.features</span> <span class="k">as</span> <span class="nn">features</span>
-<span class="kn">from</span> <span class="nn">ballet.project</span> <span class="kn">import</span> <span class="n">Project</span>
-<span class="kn">from</span> <span class="nn">ballet.validation.main</span> <span class="kn">import</span> <span class="n">_load_class</span>
-
-<span class="n">project</span> <span class="o">=</span> <span class="n">Project</span><span class="p">(</span><span class="n">ballet_predict_house_prices</span><span class="p">)</span>
-<span class="n">out</span> <span class="o">=</span> <span class="n">features</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span><span class="p">)</span>
-<span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">features</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;X_df&#39;</span><span class="p">],</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">],</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span>
-<span class="n">Accepter</span> <span class="o">=</span> <span class="n">_load_class</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.feature_accepter&#39;</span><span class="p">)</span>
-<span class="n">accepter</span> <span class="o">=</span> <span class="n">Accepter</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
-<span class="n">accepter</span><span class="o">.</span><span class="n">judge</span><span class="p">()</span>
+<p>Second, the function <code class="docutils literal notranslate"><span class="pre">validate_feature_acceptance</span></code> takes as input the feature object and
+some training data, and runs an algorithm to determine whether the existing feature
+engineering pipeline for the Ballet project that you are working on performs better with or
+without your feature.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ballet.validation.feature_acceptance</span> <span class="kn">import</span> <span class="n">validate_feature_acceptance</span>
+<span class="n">validate_feature_acceptance</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span><span class="p">)</span>
 <span class="c1"># True</span>
 </pre></div>
 </div>
-<p>Observe that the <code class="docutils literal notranslate"><span class="pre">_load_class</span></code> machinery is needed because different ballet project can
-configure different feature accepters. The key inputs to the feature accepter are the
-existing features (<code class="docutils literal notranslate"><span class="pre">features</span></code>), the raw training data (<code class="docutils literal notranslate"><span class="pre">X_df</span></code>), and the transformed
-target (<code class="docutils literal notranslate"><span class="pre">y</span></code>). Then, of course, the feature you are evaluating is also provided.</p>
-<p>To gain additional insight into any of the validation procedures, consider enabling ballet
-logging, as follows</p>
+<p>Under the hood, it tries to automatically detect the Ballet project that you are working
+on and builds the existing feature engineering pipeline that is part of the project. It also
+loads the specific feature accepter that has been configured for your project.</p>
+<p>To gain additional insight into any of the validation procedures, including details on
+why your feature may have failed to validate, enable ballet logging.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="kn">import</span> <span class="n">enable</span>
 <span class="n">enable</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s1">&#39;INFO&#39;</span><span class="p">)</span>   <span class="c1"># or, level=&#39;DEBUG&#39;</span>
 <span class="c1"># [2019-12-22 10:51:30,336] {ballet: log.py:34} INFO - Logging enabled at level INFO.</span>

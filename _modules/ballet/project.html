@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.project &mdash; ballet 0.6.8 documentation</title>
+  <title>ballet.project &mdash; ballet 0.6.9 documentation</title>
   
 
   
@@ -79,6 +79,7 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../readme.html">Overview</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../readme.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../readme.html#next-steps">Next steps</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a><ul>
@@ -123,10 +124,12 @@
 <li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#a-first-example">A first example</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#why">Why?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#input-types-and-conversions">Input types and conversions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#transformers">Transformers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#feature-engineering-pipelines">Feature engineering pipelines</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#feature-engineering-primitives">Feature engineering primitives</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#preprocessing">Preprocessing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#operating-on-groups">Operating on groups</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#addressing-missing-values">Addressing missing values</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#operating-on-time-series-data">Operating on time series data</a></li>
@@ -321,7 +324,9 @@
         <span class="p">})</span>
         <span class="k">return</span> <span class="n">LazySettings</span><span class="p">(</span><span class="o">**</span><span class="n">options</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span><span class="s2">&quot;Couldn&#39;t find ballet.yml config file.&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span>
+            <span class="s1">&#39;Couldn</span><span class="se">\&#39;</span><span class="s1">t find ballet.yml config file at </span><span class="si">{path!s}</span><span class="s1">&#39;</span>
+            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="load_config_in_dir"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.load_config_in_dir">[docs]</a><span class="nd">@needs_path</span>
@@ -435,6 +440,26 @@
         <span class="n">package</span> <span class="o">=</span> <span class="n">import_module_at_path</span><span class="p">(</span><span class="n">package_slug</span><span class="p">,</span>
                                         <span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">,</span> <span class="n">package_slug</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">package</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Project.from_cwd"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.Project.from_cwd">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_cwd</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a Project instance by searching up from cwd</span>
+
+<span class="sd">        Recursively searches for the ballet configuration file at the</span>
+<span class="sd">        current working directory and parent directories, stopping when it</span>
+<span class="sd">        reaches a file system boundary.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ConfigurationError: couldn&#39;t find the configuration file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
+        <span class="k">while</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">is_mount</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">Project</span><span class="o">.</span><span class="n">from_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">ConfigurationError</span><span class="p">:</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">parent</span>
+
+        <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span><span class="s1">&#39;Couldn</span><span class="se">\&#39;</span><span class="s1">t create Project instance&#39;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_resolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">modname</span><span class="p">,</span> <span class="n">attr</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">modname</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>

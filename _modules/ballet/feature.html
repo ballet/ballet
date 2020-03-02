@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.feature &mdash; ballet 0.6.8 documentation</title>
+  <title>ballet.feature &mdash; ballet 0.6.9 documentation</title>
   
 
   
@@ -79,6 +79,7 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../readme.html">Overview</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../readme.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../readme.html#next-steps">Next steps</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a><ul>
@@ -123,10 +124,12 @@
 <li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#a-first-example">A first example</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#why">Why?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#input-types-and-conversions">Input types and conversions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#transformers">Transformers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#feature-engineering-pipelines">Feature engineering pipelines</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#feature-engineering-primitives">Feature engineering primitives</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#preprocessing">Preprocessing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#operating-on-groups">Operating on groups</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#addressing-missing-values">Addressing missing values</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#operating-on-time-series-data">Operating on time series data</a></li>
@@ -328,13 +331,16 @@
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">signature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">indent</span> <span class="o">=</span> <span class="mi">4</span>
         <span class="n">attr_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_attr_list</span>
-        <span class="n">attrs_str</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-            <span class="s1">&#39;</span><span class="si">{attr_name}</span><span class="s1">=</span><span class="si">{attr_val!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">attr_name</span><span class="o">=</span><span class="n">attr</span><span class="p">,</span> <span class="n">attr_val</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+        <span class="n">attrs_str</span> <span class="o">=</span> <span class="s1">&#39;,</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{indent}{attr_name}</span><span class="s1">=</span><span class="si">{attr_val!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">indent</span><span class="o">=</span><span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="n">indent</span><span class="p">,</span>
+                <span class="n">attr_name</span><span class="o">=</span><span class="n">attr</span><span class="p">,</span>
+                <span class="n">attr_val</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
             <span class="p">)</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">attr_list</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{clsname}</span><span class="s1">(</span><span class="si">{attrs_str}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{clsname}</span><span class="s1">(</span><span class="se">\n</span><span class="si">{attrs_str}</span><span class="se">\n</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">clsname</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">attrs_str</span><span class="o">=</span><span class="n">attrs_str</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Feature.as_input_transformer_tuple"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.feature.Feature.as_input_transformer_tuple">[docs]</a>    <span class="k">def</span> <span class="nf">as_input_transformer_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

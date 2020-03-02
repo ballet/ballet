@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.project module &mdash; ballet 0.6.8 documentation</title>
+  <title>ballet.project module &mdash; ballet 0.6.9 documentation</title>
   
 
   
@@ -81,6 +81,7 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../readme.html">Overview</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../readme.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../readme.html#next-steps">Next steps</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
@@ -125,10 +126,12 @@
 <li class="toctree-l3"><a class="reference internal" href="../feature_engineering_guide.html#a-first-example">A first example</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../feature_engineering_guide.html#why">Why?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../feature_engineering_guide.html#input-types-and-conversions">Input types and conversions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../feature_engineering_guide.html#transformers">Transformers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../feature_engineering_guide.html#feature-engineering-pipelines">Feature engineering pipelines</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../feature_engineering_guide.html#feature-engineering-primitives">Feature engineering primitives</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../feature_engineering_guide.html#preprocessing">Preprocessing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../feature_engineering_guide.html#operating-on-groups">Operating on groups</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../feature_engineering_guide.html#addressing-missing-values">Addressing missing values</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../feature_engineering_guide.html#operating-on-time-series-data">Operating on time series data</a></li>
@@ -320,6 +323,20 @@ project</p>
 <dt id="ballet.project.Project.config">
 <code class="sig-name descname">config</code><a class="headerlink" href="#ballet.project.Project.config" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="ballet.project.Project.from_cwd">
+<em class="property">classmethod </em><code class="sig-name descname">from_cwd</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/project.html#Project.from_cwd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.project.Project.from_cwd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a Project instance by searching up from cwd</p>
+<p>Recursively searches for the ballet configuration file at the
+current working directory and parent directories, stopping when it
+reaches a file system boundary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference internal" href="ballet.exc.html#ballet.exc.ConfigurationError" title="ballet.exc.ConfigurationError"><strong>ConfigurationError</strong></a> – couldn’t find the configuration file</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="method">
 <dt id="ballet.project.Project.from_path">

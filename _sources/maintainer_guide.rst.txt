@@ -274,7 +274,7 @@ by the installed project. That is okay, as we will presently update the project 
 with the new version of ballet.
 
 Next, use the updated version of ``ballet`` to incorporate any updates to the "upstream" project
- template used to create new projects.
+template used to create new projects.
 
 .. code-block:: console
 

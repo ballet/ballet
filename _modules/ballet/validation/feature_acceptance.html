@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.util.code &mdash; ballet 0.6.9 documentation</title>
+  <title>ballet.validation.feature_acceptance &mdash; ballet 0.6.9 documentation</title>
   
 
   
@@ -264,9 +264,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-          <li><a href="../util.html">ballet.util</a> &raquo;</li>
-        
-      <li>ballet.util.code</li>
+      <li>ballet.validation.feature_acceptance</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -281,118 +279,31 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for ballet.util.code</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">ast</span>
-<span class="kn">import</span> <span class="nn">inspect</span>
-<span class="kn">import</span> <span class="nn">platform</span>
-
-<span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">notnone</span>
-
-<span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="kn">import</span> <span class="n">black</span>
+  <h1>Source code for ballet.validation.feature_acceptance</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">ballet.project</span> <span class="kn">import</span> <span class="n">Project</span>
+<span class="kn">from</span> <span class="nn">ballet.validation.common</span> <span class="kn">import</span> <span class="n">subsample_data_for_validation</span>
+<span class="kn">from</span> <span class="nn">ballet.validation.main</span> <span class="kn">import</span> <span class="n">_load_class</span>
 
 
-<div class="viewcode-block" id="is_valid_python"><a class="viewcode-back" href="../../../api/ballet.util.code.html#ballet.util.code.is_valid_python">[docs]</a><span class="k">def</span> <span class="nf">is_valid_python</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Check if the string is valid python code</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        code (str): code as string</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        bool</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">SyntaxError</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">False</span>
+<div class="viewcode-block" id="validate_feature_acceptance"><a class="viewcode-back" href="../../../api/ballet.validation.feature_acceptance.html#ballet.validation.feature_acceptance.validate_feature_acceptance">[docs]</a><span class="k">def</span> <span class="nf">validate_feature_acceptance</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">subsample</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                <span class="n">package</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">package</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">project</span> <span class="o">=</span> <span class="n">Project</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">project</span> <span class="o">=</span> <span class="n">Project</span><span class="o">.</span><span class="n">from_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">True</span></div>
+        <span class="n">project</span> <span class="o">=</span> <span class="n">Project</span><span class="o">.</span><span class="n">from_cwd</span><span class="p">()</span>
 
+    <span class="k">if</span> <span class="n">subsample</span><span class="p">:</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">subsample_data_for_validation</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
-<div class="viewcode-block" id="blacken_code"><a class="viewcode-back" href="../../../api/ballet.util.code.html#ballet.util.code.blacken_code">[docs]</a><span class="k">def</span> <span class="nf">blacken_code</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Format code content using Black</span>
+    <span class="c1"># build project</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        code (str): code as string</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        str</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">black</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-
-    <span class="n">major</span><span class="p">,</span> <span class="n">minor</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_version_tuple</span><span class="p">()</span>
-    <span class="n">pyversion</span> <span class="o">=</span> <span class="s1">&#39;py</span><span class="si">{major}{minor}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">major</span><span class="o">=</span><span class="n">major</span><span class="p">,</span> <span class="n">minor</span><span class="o">=</span><span class="n">minor</span><span class="p">)</span>
-    <span class="n">target_versions</span> <span class="o">=</span> <span class="p">[</span><span class="n">black</span><span class="o">.</span><span class="n">TargetVersion</span><span class="p">[</span><span class="n">pyversion</span><span class="o">.</span><span class="n">upper</span><span class="p">()]]</span>
-
-    <span class="n">line_length</span> <span class="o">=</span> <span class="n">black</span><span class="o">.</span><span class="n">DEFAULT_LINE_LENGTH</span>
-    <span class="n">string_normalization</span> <span class="o">=</span> <span class="kc">True</span>
-
-    <span class="n">mode</span> <span class="o">=</span> <span class="n">black</span><span class="o">.</span><span class="n">FileMode</span><span class="p">(</span>
-        <span class="n">target_versions</span><span class="o">=</span><span class="n">target_versions</span><span class="p">,</span>
-        <span class="n">line_length</span><span class="o">=</span><span class="n">line_length</span><span class="p">,</span>
-        <span class="n">string_normalization</span><span class="o">=</span><span class="n">string_normalization</span><span class="p">,</span>
-    <span class="p">)</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">black</span><span class="o">.</span><span class="n">format_file_contents</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">fast</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
-    <span class="k">except</span> <span class="n">black</span><span class="o">.</span><span class="n">NothingChanged</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">code</span></div>
-
-
-<div class="viewcode-block" id="get_source"><a class="viewcode-back" href="../../../api/ballet.util.code.html#ballet.util.code.get_source">[docs]</a><span class="k">def</span> <span class="nf">get_source</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Extract the source code from a given function.</span>
-
-<span class="sd">    Recursively extracts the source code for all local functions called by</span>
-<span class="sd">    given function. The resulting source code is encoded in utf-8.</span>
-
-<span class="sd">    Known limitation: Cannot use on function defined interactively in normal</span>
-<span class="sd">    Python terminal. (Functions defined interactively in IPython are okay.)</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        f: function</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        str: extracted source code</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        NotImplementedError: if the function was defined interactively</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">code</span> <span class="o">=</span> <span class="n">_get_source</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="vm">__code__</span><span class="o">.</span><span class="n">co_filename</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
-    <span class="n">code</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="n">notnone</span><span class="p">,</span> <span class="n">code</span><span class="p">)</span>
-    <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
-
-    <span class="c1"># post-processing</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
-        <span class="n">code</span> <span class="o">=</span> <span class="n">code</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
-    <span class="n">code</span> <span class="o">=</span> <span class="n">blacken_code</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">code</span></div>
-
-
-<span class="k">def</span> <span class="nf">_get_source</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">symbolname</span><span class="p">,</span> <span class="n">seen</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">[]</span>
-
-    <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-
-    <span class="c1"># known limitation: cannot use from stdin</span>
-    <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="vm">__code__</span><span class="o">.</span><span class="n">co_filename</span> <span class="o">==</span> <span class="s1">&#39;&lt;stdin&gt;&#39;</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-            <span class="s1">&#39;Cannot use </span><span class="si">{name!r}</span><span class="s1"> on function defined interactively.&#39;</span>
-            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;get_source&#39;</span><span class="p">))</span>
-
-    <span class="c1"># if f was not defined in the same file, return code to import it</span>
-    <span class="c1"># TODO</span>
-    <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="vm">__code__</span><span class="o">.</span><span class="n">co_filename</span> <span class="o">!=</span> <span class="n">filename</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">[]</span>
-
-    <span class="c1"># get source of referenced symbols</span>
-    <span class="k">for</span> <span class="n">symbolname</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="vm">__code__</span><span class="o">.</span><span class="n">co_names</span><span class="p">:</span>
-        <span class="n">obj</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="vm">__globals__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">symbolname</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">obj</span> <span class="ow">and</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isfunction</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-            <span class="k">yield from</span> <span class="n">_get_source</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">symbolname</span><span class="p">,</span> <span class="n">seen</span><span class="p">)</span>
-
-    <span class="c1"># get source of self</span>
-    <span class="k">yield</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getsource</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="c1"># load accepter for this project</span>
+    <span class="n">Accepter</span> <span class="o">=</span> <span class="n">_load_class</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.feature_accepter&#39;</span><span class="p">)</span>
+    <span class="n">accepter</span> <span class="o">=</span> <span class="n">Accepter</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">features</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">accepter</span><span class="o">.</span><span class="n">judge</span><span class="p">()</span></div>
 </pre></div>
 
            </div>

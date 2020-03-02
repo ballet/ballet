@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet &mdash; ballet 0.6.8 documentation</title>
+  <title>ballet &mdash; ballet 0.6.9 documentation</title>
   
 
   
@@ -80,6 +80,7 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="readme.html">Overview</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="readme.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#next-steps">Next steps</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
@@ -124,10 +125,12 @@
 <li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#a-first-example">A first example</a></li>
 <li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#why">Why?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#input-types-and-conversions">Input types and conversions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#transformers">Transformers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#feature-engineering-pipelines">Feature engineering pipelines</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="feature_engineering_guide.html#feature-engineering-primitives">Feature engineering primitives</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#preprocessing">Preprocessing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#operating-on-groups">Operating on groups</a></li>
 <li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#addressing-missing-values">Addressing missing values</a></li>
 <li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#operating-on-time-series-data">Operating on time series data</a></li>
@@ -286,10 +289,8 @@
 <a class="reference external image-reference" href="https://codecov.io/gh/HDI-Project/ballet"><img alt="codecov Shield" src="https://codecov.io/gh/HDI-Project/ballet/branch/master/graph/badge.svg" /></a>
 <div class="section" id="ballet">
 <h1>ballet<a class="headerlink" href="#ballet" title="Permalink to this headline">¶</a></h1>
-<p>A <strong>light</strong>weight framework for collaborative data science projects through <strong>feat</strong>ure
-engineering.</p>
-<p><em>Ballet</em> is under active development, please <a class="reference external" href="https://hdi-project.github.io/ballet/contributing.html#report-bugs">report all
-bugs</a>.</p>
+<p>A <strong>light</strong>weight framework for collaborative, open-source data science
+projects through <strong>feat</strong>ure engineering.</p>
 <ul class="simple">
 <li><p>Free software: MIT license</p></li>
 <li><p>Documentation: <a class="reference external" href="https://hdi-project.github.io/ballet">https://hdi-project.github.io/ballet</a></p></li>
@@ -297,23 +298,54 @@ bugs</a>.</p>
 </ul>
 <div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<p>Ballet projects maintain a <em>feature engineering pipeline invariant</em>: at any point, the code
-and features within a project repository can be used for end-to-end feature engineering for
-a given dataset. To expand on an existing feature engineering pipeline, well-structured
-feature source code submissions can be proposed by contributors and extensively validated
-for compatibility and performance.</p>
-<p>How do you use the Ballet framework? First, you render a brand new ballet project from a
-provided project template using a quickstart command and push it to GitHub. This project
-contains an “empty” feature engineering pipeline. Next, you and your collaborators write
-feature engineering source code and submit pull requests to include your new features in the
-project and grow the pipeline. Features are instances of <code class="docutils literal notranslate"><span class="pre">ballet.Feature</span></code>, usually
-leveraging <code class="docutils literal notranslate"><span class="pre">ballet.eng</span></code>, a library of versatile transformers and transformer building blocks
-for developing features that learn. Once new pull requests are received by your project, a
-continuous integration service runs a streaming logical feature selection algorithm. This is
-part of an extensive feature validation suite that makes sure both that the proposed
-features are useful and that they can be safely integrated into your project. If the
-proposed feature is accepted, it can be safely merged.</p>
-<p><span class="raw-html-m2r"><img src="./docs/_static/feature_lifecycle.png" alt="Ballet Feature Lifecycle" width="500" /></span></p>
+<p>Do you develop machine learning models? Do you work by yourself or on a team?
+Do you share notebooks or are you committing code to a shared repository? In
+contrast to successful, massively collaborative, open-source projects like
+the Linux kernel, the Rails framework, Firefox, GNU, or Tensorflow, most
+data science projects are developed by just a handful of people. But think if
+the open-source community could leverage its ingenuity and determination to
+collaboratively develop data science projects to predict the incidence of
+disease in a population, to predict whether vulnerable children will be evicted
+from their homes, or to predict whether learners will drop out of online
+courses.</p>
+<p>Our vision is to make collaborative data science possible by making it more
+like open-source software development. Our approach is based on decomposing the
+data science process into modular patches - standalone units of contribution -
+that can then be intelligently combined, representing objects like “feature”,
+“labeling function”, or “prediction task definition”. Collaborators work in
+parallel to write patches and submit them to a repo. Our software framework
+provides the underlying functionality to merge high-quality contributions,
+collect modules from the file system, and compose the accepted contributions
+into a single product. It also provides a familiar notebook-based development
+experience that is friendly to data scientists and other inexperienced
+open-source contributors. We don’t require any computing infrastructure beyond
+that which is commonly used in open-source software development.</p>
+<p>Currently, Ballet focuses on supporting collaboratively developing
+<em>feature engineering pipelines</em>, an important part of many data science
+projects. Individual features are represented as separate Python modules,
+declaring the subset of a dataframe that they operate on and a
+scikit-learn-style learned transformer that extracts feature values from the raw
+data. Ballet collects individual features and composes them into a feature
+engineering pipeline. At any point, a project built on Ballet can be installed
+for end-to-end feature engineering on new data instances for the same problem.
+How do we ensure the feature engineering pipeline is always useful? Ballet
+thoroughly validates proposed features for correctness and machine learning
+performance, using an extensive test suite and a novel streaming logical
+feature selection algorithm. Accepted features can be automatically merged by
+the ballet GitHub app into projects.</p>
+<p><span class="raw-html-m2r"><img src="./docs/_static/feature_lifecycle.png" alt="Ballet Feature Lifecycle" width="400" /></span></p>
+</div>
+<div class="section" id="next-steps">
+<h2>Next steps<a class="headerlink" href="#next-steps" title="Permalink to this headline">¶</a></h2>
+<p><em>Are you a data owner or project maintainer that wants to organize a
+collaboration?</em></p>
+<p>👉 Check out the <a class="reference external" href="https://hdi-project.github.io/ballet/maintainer_guide.html">Ballet Maintainer Guide</a></p>
+<p><em>Are you a data scientist or enthusiast that wants to join a collaboration?</em></p>
+<p>👉 Check out the <a class="reference external" href="https://hdi-project.github.io/ballet/contributor_guide.html">Ballet Contributor Guide</a></p>
+<p><em>Want to learn about how Ballet enables Better Feature Engineering ™️?</em></p>
+<p>👉 Check out the <a class="reference external" href="https://hdi-project.github.io/ballet/feature_engineering_guide.html">Feature Engineering Guide</a></p>
+<p><em>Want to see a demo collaboration in progress and maybe even participant yourself?</em></p>
+<p>👉 Check out the <a class="reference external" href="https://github.com/HDI-Project/ballet-predict-house-prices">ballet-predict-house-prices</a> project</p>
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">
