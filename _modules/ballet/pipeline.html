@@ -280,7 +280,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ballet.pipeline</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">iterable</span>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+
+<span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">iterable</span>
 <span class="kn">from</span> <span class="nn">sklearn_pandas</span> <span class="kn">import</span> <span class="n">DataFrameMapper</span>
 
 <span class="kn">import</span> <span class="nn">ballet.feature</span>
@@ -305,6 +307,11 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">as_input_transformer_tuple</span><span class="p">()</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">features</span><span class="p">],</span>
             <span class="n">input_df</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<span class="n">BuildResult</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+    <span class="s1">&#39;BuildResult&#39;</span><span class="p">,</span>
+    <span class="p">[</span><span class="s1">&#39;X_df&#39;</span><span class="p">,</span> <span class="s1">&#39;features&#39;</span><span class="p">,</span> <span class="s1">&#39;mapper_X&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;y_df&#39;</span><span class="p">,</span> <span class="s1">&#39;encoder_y&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">])</span>
 </pre></div>
 
            </div>

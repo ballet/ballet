@@ -501,13 +501,13 @@ engineer features from new data points or datasets.</p>
 <span class="c1"># load training data and fit pipeline</span>
 <span class="n">X_df_tr</span><span class="p">,</span> <span class="n">y_df_tr</span> <span class="o">=</span> <span class="n">myproject</span><span class="o">.</span><span class="n">load_data</span><span class="o">.</span><span class="n">load_data</span><span class="p">()</span>
 <span class="n">out</span> <span class="o">=</span> <span class="n">myproject</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">X_df_tr</span><span class="p">,</span> <span class="n">y_df_tr</span><span class="p">)</span>
-<span class="n">mapper_X</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;mapper_X&#39;</span><span class="p">]</span>
-<span class="n">mapper_y</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;mapper_y&#39;</span><span class="p">]</span>
+<span class="n">mapper_X</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">mapper_X</span>
+<span class="n">encoder_y</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">encoder_y</span>
 
 <span class="c1"># load new data and apply pipeline</span>
 <span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span> <span class="o">=</span> <span class="n">myproject</span><span class="o">.</span><span class="n">load_data</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">input_dir</span><span class="o">=</span><span class="s1">&#39;/path/to/new/data&#39;</span><span class="p">)</span>
 <span class="n">X</span> <span class="o">=</span> <span class="n">mapper_X</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_df</span><span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">mapper_y</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">y_df</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">encoder_y</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">y_df</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>For command-line usage:</p>

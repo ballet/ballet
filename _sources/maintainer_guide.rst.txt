@@ -243,13 +243,13 @@ For interactive usage:
    # load training data and fit pipeline
    X_df_tr, y_df_tr = myproject.load_data.load_data()
    out = myproject.features.build(X_df_tr, y_df_tr)
-   mapper_X = out['mapper_X']
-   mapper_y = out['mapper_y']
+   mapper_X = out.mapper_X
+   encoder_y = out.encoder_y
 
    # load new data and apply pipeline
    X_df, y_df = myproject.load_data.load_data(input_dir='/path/to/new/data')
    X = mapper_X.transform(X_df)
-   y = mapper_y.transform(y_df)
+   y = encoder_y.transform(y_df)
 
 For command-line usage:
 

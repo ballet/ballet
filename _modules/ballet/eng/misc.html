@@ -285,10 +285,10 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">boxcox1p</span>
 <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">skew</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">FunctionTransformer</span>
 <span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="kn">import</span> <span class="n">check_is_fitted</span>
 
-<span class="kn">from</span> <span class="nn">ballet.eng.base</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">BaseTransformer</span><span class="p">,</span> <span class="n">ConditionalTransformer</span><span class="p">,</span> <span class="n">SimpleFunctionTransformer</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ballet.eng.base</span> <span class="kn">import</span> <span class="n">BaseTransformer</span><span class="p">,</span> <span class="n">ConditionalTransformer</span>
 <span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">get_arr_desc</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
@@ -299,11 +299,12 @@
 <span class="p">]</span>
 
 
-<div class="viewcode-block" id="IdentityTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.misc.html#ballet.eng.misc.IdentityTransformer">[docs]</a><span class="k">class</span> <span class="nc">IdentityTransformer</span><span class="p">(</span><span class="n">SimpleFunctionTransformer</span><span class="p">):</span>
+<div class="viewcode-block" id="IdentityTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.misc.html#ballet.eng.misc.IdentityTransformer">[docs]</a><span class="k">class</span> <span class="nc">IdentityTransformer</span><span class="p">(</span><span class="n">FunctionTransformer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Simple transformer that passes through its input&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">funcy</span><span class="o">.</span><span class="n">identity</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="n">funcy</span><span class="o">.</span><span class="n">identity</span><span class="p">,</span> <span class="n">inverse_func</span><span class="o">=</span><span class="n">funcy</span><span class="o">.</span><span class="n">identity</span><span class="p">,</span>
+                         <span class="n">validate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="BoxCoxTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.misc.html#ballet.eng.misc.BoxCoxTransformer">[docs]</a><span class="k">class</span> <span class="nc">BoxCoxTransformer</span><span class="p">(</span><span class="n">ConditionalTransformer</span><span class="p">):</span>
