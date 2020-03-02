@@ -1,3 +1,5 @@
+import collections
+
 from funcy import iterable
 from sklearn_pandas import DataFrameMapper
 
@@ -23,3 +25,8 @@ class FeatureEngineeringPipeline(DataFrameMapper):
         super().__init__(
             [t.as_input_transformer_tuple() for t in features],
             input_df=True)
+
+
+BuildResult = collections.namedtuple(
+    'BuildResult',
+    ['X_df', 'features', 'mapper_X', 'X', 'y_df', 'encoder_y', 'y'])

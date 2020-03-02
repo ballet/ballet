@@ -79,8 +79,8 @@ def test_validation_end_to_end(quickstart):
         X_df = pd.util.testing.makeCustomDataframe(5, 2)
         X_df.columns = ['A_0', 'A_1']
         out = foo_features.build(X_df=X_df, y_df=[])
-        assert np.shape(out['X']) == (5, 1)
-        assert isinstance(out['mapper_X'], FeatureEngineeringPipeline)
+        assert np.shape(out.X) == (5, 1)
+        assert isinstance(out.mapper_X, FeatureEngineeringPipeline)
 
     # write a new version of foo.load_data.load_data
     new_load_data_str = get_source(load_regression_data)

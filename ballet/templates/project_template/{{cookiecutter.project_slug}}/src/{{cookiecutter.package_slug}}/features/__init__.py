@@ -5,7 +5,7 @@ import ballet.contrib
 import ballet.util.mod
 import click
 from ballet.eng.misc import IdentityTransformer
-from ballet.pipeline import FeatureEngineeringPipeline
+from ballet.pipeline import BuildResult, FeatureEngineeringPipeline
 from ballet.util.io import save_features, save_targets
 from stacklog import stacklog
 
@@ -57,15 +57,8 @@ def build(X_df=None, y_df=None):
     encoder_y = get_target_encoder()
     y = encoder_y.fit_transform(y_df)
 
-    return {
-        'X_df': X_df,
-        'features': features,
-        'mapper_X': mapper_X,
-        'X': X,
-        'y_df': y_df,
-        'encoder_y': encoder_y,
-        'y': y,
-    }
+    return BuildResult(X_df=X_df, features=features, mapper_X=mapper_X,
+                       y_df=y_df, encoder_y=encoder_y, y=y)
 
 
 @click.command()
@@ -83,8 +76,8 @@ def main(input_dir, output_dir):
     X_df, y_df = load_data(input_dir=input_dir)
     out = build()
 
-    mapper_X = out['mapper_X']
-    encoder_y = out['encoder_y']
+    mapper_X = out.mapper_X
+    encoder_y = out.encoder_y
 
     X_ft = mapper_X.transform(X_df)
     y_ft = encoder_y.transform(y_df)
