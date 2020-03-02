@@ -57,7 +57,7 @@ def build(X_df=None, y_df=None):
     encoder_y = get_target_encoder()
     y = encoder_y.fit_transform(y_df)
 
-    return BuildResult(X_df=X_df, features=features, mapper_X=mapper_X,
+    return BuildResult(X_df=X_df, features=features, mapper_X=mapper_X, X=X,
                        y_df=y_df, encoder_y=encoder_y, y=y)
 
 
