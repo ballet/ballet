@@ -6,8 +6,7 @@ from scipy.stats import skew
 from sklearn.preprocessing import FunctionTransformer
 from sklearn.utils.validation import check_is_fitted
 
-from ballet.eng.base import (
-    BaseTransformer, ConditionalTransformer, SimpleFunctionTransformer)
+from ballet.eng.base import BaseTransformer, ConditionalTransformer
 from ballet.util import get_arr_desc
 
 __all__ = [
