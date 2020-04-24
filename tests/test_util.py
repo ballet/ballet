@@ -263,6 +263,8 @@ class UtilTest(
 
     def test_falsy(self):
         matrix = (
+            (False, True),
+            (True, False),
             ('false', True),  # i.e., is falsy
             ('', True),
             ('true', False),  # i.e, is not falsy

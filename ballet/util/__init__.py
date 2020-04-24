@@ -154,6 +154,8 @@ def raiseifnone(call):
 
 
 def falsy(o):
+    if isinstance(o, bool):
+        return not o
     return isinstance(o, str) and (o.lower() == 'false' or o == '')
 
 
