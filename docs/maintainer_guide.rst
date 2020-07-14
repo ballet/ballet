@@ -192,6 +192,20 @@ enable Travis CI for your project on GitHub by `following these simple direction
 to do with customizing the ``.travis.yml`` file, as we have already done that for you in the
 quickstart.
 
+Installing bots
+~~~~~~~~~~~~~~~
+
+Many Ballet project use bots to assist maintainers.
+
+1. Ballet bot. Install it `here <https://github.com/apps/ballet-bot>`_. Ballet bot will
+automatically merge or close PRs based on the CI test result and the project settings configured
+in the ``ballet.yml`` file.
+
+2. Repolockr. Install it `here <https://github.com/apps/repolockr>`_. Repolockr checks every PR
+to ensure that "protected" files have not been changed. These are files listed in the Repolockr
+config file on the master branch. A contributor might accidentally modify a protected file like
+``ballet.yml`` which could break the project or the CI pipeline; Repolockr will detect this and
+fail the PR which might accidentally pass otherwise.
 
 Developing new features
 -----------------------
