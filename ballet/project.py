@@ -1,13 +1,17 @@
 import pathlib
 import sys
 from importlib import import_module
+from typing import List
 
 import git
 from dynaconf import LazySettings
 from funcy import cached_property, fallback, re_find
 
 from ballet.compat import safepath
+from ballet.eng import BaseTransformer
 from ballet.exc import ConfigurationError
+from ballet.feature import Feature
+from ballet.pipeline import BuildResult, FeatureEngineeringPipeline
 from ballet.util import needs_path, raiseifnone
 from ballet.util.ci import get_travis_branch, get_travis_pr_num
 from ballet.util.git import get_branch, get_pr_num, is_merge_commit
@@ -245,3 +249,29 @@ class Project:
             return self._resolve(*Project.attr_map[attr])
         else:
             return object.__getattribute__(self, attr)
+
+
+class FeatureEngineeringProject:
+
+    def __init__(self, project: Project):
+        self.project = project
+
+    def collect(self) -> List[Feature]:
+        """Get contributed features"""
+        return self.project.collect_contrib_features()
+
+    @property
+    def pipeline(self) -> FeatureEngineeringPipeline:
+        """Get feature engineering pipeline containing contributed features
+
+        The feature engineering pipeline is *not* yet fit on training data.
+        """
+        return FeatureEngineeringPipeline(self.collect())
+
+    @property
+    def encoder(self) -> BaseTransformer:
+        """Get target encoder"""
+        pass
+
+    def build(self, X_df, y_df) -> BuildResult:
+        return self.project.build(X_df=X_df, y_df=y_df)

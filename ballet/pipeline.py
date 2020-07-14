@@ -1,10 +1,14 @@
-import collections
+from typing import List, NamedTuple
 
+import numpy as np
+import pandas as pd
 from funcy import iterable
 from sklearn_pandas import DataFrameMapper
 
 import ballet.feature
+from ballet.eng import BaseTransformer
 from ballet.eng.misc import NullTransformer
+from ballet.feature import Feature
 
 
 class FeatureEngineeringPipeline(DataFrameMapper):
@@ -27,6 +31,11 @@ class FeatureEngineeringPipeline(DataFrameMapper):
             input_df=True)
 
 
-BuildResult = collections.namedtuple(
-    'BuildResult',
-    ['X_df', 'features', 'mapper_X', 'X', 'y_df', 'encoder_y', 'y'])
+class BuildResult(NamedTuple):
+    X_df: pd.DataFrame
+    features: List[Feature]
+    mapper_X: FeatureEngineeringPipeline
+    X: np.array
+    y_df: pd.DataFrame
+    encoder_y: BaseTransformer
+    y: np.array
