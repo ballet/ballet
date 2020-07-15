@@ -12,6 +12,15 @@ import {{ cookiecutter.package_slug }} as pkg
 from {{ cookiecutter.package_slug }}.features.encoder import get_target_encoder
 from {{ cookiecutter.package_slug }}.load_data import load_data as _load_data
 
+__all__ = (
+    'build',
+    'encoder',
+    'features',
+    'load_data',
+    'pipeline',
+    'project',
+)
+
 # --- begin public api ---
 
 project = Project(pkg)

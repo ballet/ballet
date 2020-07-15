@@ -6,7 +6,7 @@ from funcy import iterable
 from sklearn_pandas import DataFrameMapper
 from stacklog import stacklog
 
-# n.b. cannot import Feature yet bc of circular import
+# n.b. cannot import Feature here bc of circular import
 import ballet.feature
 from ballet.eng import BaseTransformer
 from ballet.eng.misc import NullTransformer

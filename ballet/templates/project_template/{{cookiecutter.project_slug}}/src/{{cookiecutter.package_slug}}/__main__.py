@@ -7,6 +7,7 @@ from {{ cookiecutter.package_slug }}.api import build, load_data
 
 logger = logging.getLogger(__name__)
 
+
 @click.group()
 def cli():
     import ballet.util.log
