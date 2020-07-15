@@ -12,6 +12,6 @@ def test_quickstart_install(quickstart, virtualenv):
     # TODO: figure out the right way to mange this
     d = quickstart.tempdir.joinpath(quickstart.project_slug).absolute()
     with work_in(safepath(d)):
-        # cmd = 'cd "{d!s}" && make install'.format(d=d)
+        # cmd = 'cd "{d!s}" && invoke install'.format(d=d)
         cmd = 'echo okay'
         virtualenv.run(cmd, capture=True)

@@ -95,14 +95,15 @@ def _check_for_updated_ballet():
 
 def _warn_of_updated_ballet(latest):
     if latest is not None:
-        msg = '''\
-                A new version of ballet is available: {latest}
-                - you currently have ballet v{current}
-                - if you don't update ballet, you won't receive project template updates
-                - update ballet and then try again:
-                
-                    $ pip install --upgrade ballet'
-                '''  # noqa E501
+        msg = \
+            '''\
+            A new version of ballet is available: {latest}
+            - you currently have ballet v{current}
+            - if you don't update ballet, you won't receive project template updates
+            - update ballet and then try again:
+
+                $ pip install --upgrade ballet
+            '''  # noqa E501
         msg = msg.format(latest=latest, current=ballet.__version__)
         msg = dedent(msg)
         logger.warn(msg)
@@ -194,7 +195,7 @@ def _log_recommended_reinstall():
         'project in case the project template requires any different \n'
         'dependencies than what you have installed:\n'
         '\n'
-        '    $ make install')
+        '    $ invoke install')
 
 
 def update_project_template(push=False, project_template_path=None):
