@@ -2,11 +2,11 @@ import pathlib
 import sys
 from importlib import import_module
 from types import ModuleType
-from typing import List
+from typing import Iterable
 
 import git
 from dynaconf import LazySettings
-from funcy import cached_property, fallback, one, notnone, re_find
+from funcy import cached_property, fallback, notnone, one, re_find
 
 from ballet.compat import safepath
 from ballet.eng import BaseTransformer
@@ -263,7 +263,7 @@ class FeatureEngineeringProject:
         else:
             self.project = Project(package)
 
-    def collect(self) -> List[Feature]:
+    def collect(self) -> Iterable[Feature]:
         """Get contributed features"""
         return self.project.collect_contrib_features()
 

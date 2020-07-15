@@ -52,7 +52,9 @@ class BuildResult(NamedTuple):
 def make_build(features, encoder, load_data):
 
     @stacklog(logger.info, 'Building features and target')
-    def build(X_df: pd.DataFrame = None, y_df: pd.DataFrame = None) -> BuildResult:
+    def build(
+        X_df: pd.DataFrame = None, y_df: pd.DataFrame = None
+    ) -> BuildResult:
         """Build features and target
 
         Args:
@@ -73,5 +75,5 @@ def make_build(features, encoder, load_data):
         X = pipeline.fit_transform(X_df)
         y = encoder.fit_transform(y_df)
 
-        return BuildResult(X_df=X_df, features=features, pipeline=pipeline, X=X,
-                           y_df=y_df, encoder=encoder, y=y)
+        return BuildResult(X_df=X_df, features=features, pipeline=pipeline,
+                           X=X, y_df=y_df, encoder=encoder, y=y)
