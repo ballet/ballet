@@ -1,11 +1,12 @@
 import pathlib
 import sys
 from importlib import import_module
+from types import ModuleType
 from typing import List
 
 import git
 from dynaconf import LazySettings
-from funcy import cached_property, fallback, re_find
+from funcy import cached_property, fallback, one, notnone, re_find
 
 from ballet.compat import safepath
 from ballet.eng import BaseTransformer
@@ -253,8 +254,14 @@ class Project:
 
 class FeatureEngineeringProject:
 
-    def __init__(self, project: Project):
-        self.project = project
+    def __init__(self, project: Project = None, package: ModuleType = None):
+        if not one(notnone, (project, package)):
+            raise ValueError
+
+        if project is not None:
+            self.project = project
+        else:
+            self.project = Project(package)
 
     def collect(self) -> List[Feature]:
         """Get contributed features"""
@@ -270,8 +277,11 @@ class FeatureEngineeringProject:
 
     @property
     def encoder(self) -> BaseTransformer:
-        """Get target encoder"""
-        pass
+        """Get target encoder or None if not found in the project"""
+        try:
+            return self.project._resolve('.features', 'get_target_encoder')()
+        except ImportError:
+            return None
 
     def build(self, X_df, y_df) -> BuildResult:
         return self.project.build(X_df=X_df, y_df=y_df)

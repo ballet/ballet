@@ -18,7 +18,7 @@ def create_git_repo():
         writer.set_value('github', 'user', '{{ cookiecutter.github_owner }}')
         writer.release()
     repo.git.add('.')
-    repo.index.commit('Automatically generated files from ballet-quickstart')
+    repo.index.commit('Automatically generated files from ballet quickstart')
     repo.create_remote('origin',
                        'https://github.com/{{ cookiecutter.github_owner }}'
                        '/{{ cookiecutter.project_slug }}')
@@ -38,7 +38,7 @@ def clean_cookiecutter_context():
 
 
 def echo():
-    fn = pathlib.Path.cwd().absolute()
+    fn = pathlib.Path.cwd().resolve()
     logger.info('New project created in {!s}'.format(fn))
 
 
