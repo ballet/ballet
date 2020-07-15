@@ -5,6 +5,7 @@ from pandas import DataFrame
 from ballet.contrib import collect_contrib_features
 from ballet.feature import Feature
 from ballet.pipeline import make_build, FeatureEngineeringPipeline, BuildResult
+from ballet.project import Project
 from ballet.eng import BaseTransformer
 
 import {{ cookiecutter.package_slug }} as pkg
@@ -12,6 +13,8 @@ from {{ cookiecutter.package_slug }}.features.encoder import get_target_encoder
 from {{ cookiecutter.package_slug }}.load_data import load_data as _load_data
 
 # --- begin public api ---
+
+project = Project(pkg)
 
 features: List[Feature] = collect_contrib_features(pkg)
 
