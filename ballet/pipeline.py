@@ -6,10 +6,10 @@ from funcy import iterable
 from sklearn_pandas import DataFrameMapper
 from stacklog import stacklog
 
+# n.b. cannot import Feature yet bc of circular import
 import ballet.feature
 from ballet.eng import BaseTransformer
 from ballet.eng.misc import NullTransformer
-from ballet.feature import Feature
 from ballet.util.log import logger
 
 
@@ -20,7 +20,8 @@ class FeatureEngineeringPipeline(DataFrameMapper):
         features: feature or list of features
     """
 
-    def __init__(self, features: Union[Feature, Iterable[Feature]]):
+    def __init__(self, features: Union['ballet.feature.Feature',
+                                       Iterable['ballet.feature.Feature']]):
         if not features:
             features = ballet.feature.Feature(input=[],
                                               transformer=NullTransformer())
@@ -28,20 +29,20 @@ class FeatureEngineeringPipeline(DataFrameMapper):
         if not iterable(features):
             features = (features, )
 
-        self._features = features
+        self._ballet_features = features
 
         super().__init__(
             [t.as_input_transformer_tuple() for t in features],
             input_df=True)
 
     @property
-    def features(self) -> Iterable[Feature]:
-        return self._features
+    def ballet_features(self) -> Iterable['ballet.feature.Feature']:
+        return self._ballet_features
 
 
 class BuildResult(NamedTuple):
     X_df: pd.DataFrame
-    features: Iterable[Feature]
+    features: Iterable['ballet.feature.Feature']
     pipeline: FeatureEngineeringPipeline
     X: np.array
     y_df: pd.DataFrame
