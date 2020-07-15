@@ -64,23 +64,20 @@ def test_validation_end_to_end(quickstart):
     foo = _import('foo')
     assert isinstance(foo, ModuleType)
 
-    foo_features = _import('foo.features')
-    assert isinstance(foo_features, ModuleType)
+    api = _import('foo.api')
+    assert isinstance(api, ModuleType)
 
-    collect_contrib_features = foo_features.collect_contrib_features
-    features = collect_contrib_features()
+    features = api.features
     assert len(features) == 0
 
     # first providing a mock feature, call build
-    with patch.object(
-        foo_features, 'collect_contrib_features',
-        return_value=[Feature(input='A_1', transformer=IdentityTransformer())]
-    ):
+    mock_features = [Feature(input='A_1', transformer=IdentityTransformer())]
+    with patch.object(api, 'collect', return_value=mock_features):
         X_df = pd.util.testing.makeCustomDataframe(5, 2)
         X_df.columns = ['A_0', 'A_1']
-        out = foo_features.build(X_df=X_df, y_df=[])
-        assert np.shape(out.X) == (5, 1)
-        assert isinstance(out.mapper_X, FeatureEngineeringPipeline)
+        result = api.engineer_features(X_df=X_df, y_df=[])
+        assert np.shape(result.X) == (5, 1)
+        assert isinstance(result.pipeline, FeatureEngineeringPipeline)
 
     # write a new version of foo.load_data.load_data
     new_load_data_str = get_source(load_regression_data)

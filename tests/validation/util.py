@@ -47,9 +47,7 @@ def make_mock_project(repo, pr_num, path, contrib_module_path):
     project.config = config
 
     # in attr map
-    project.load_data = MagicMock()
-    project.build = MagicMock()
-    project.collect_contrib_features = MagicMock()
+    project.api = MagicMock()
 
     return project
 
@@ -134,5 +132,5 @@ def mock_feature_api_validator(
             project_path = repo.working_tree_dir
             project = make_mock_project(repo, pr_num, project_path,
                                         contrib_module_path)
-            project.load_data.return_value = X, y
+            project.api.load_data.return_value = X, y
             yield FeatureApiValidator(project)

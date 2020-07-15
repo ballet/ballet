@@ -28,8 +28,9 @@ def collect_contrib_features(project_root):
         List[ballet.Feature]: list of Feature objects
     """
     # TODO Project should require ModuleType
+    # TODO read config for this module
     project = Project(project_root)
-    contrib = project._resolve('.features.contrib')
+    contrib = project.resolve('.features.contrib')
     return _collect_contrib_features(contrib)
 
 

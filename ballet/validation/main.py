@@ -66,8 +66,8 @@ def _evaluate_feature_performance(project, force=False):
     if not force and not project.on_pr:
         raise SkippedValidationTest('Not on PR')
 
-    out = project.build()
-    X_df, y, features = out.X_df, out.y, out.features
+    result = project.api.engineer_features()
+    X_df, y, features = result.X_df, result.y, result.features
 
     proposed_feature = get_proposed_feature(project)
     accepted_features = get_accepted_features(features, proposed_feature)
@@ -91,8 +91,8 @@ def _prune_existing_features(project, force=False):
     except NoFeaturesCollectedError:
         raise SkippedValidationTest('No features collected')
 
-    out = project.build()
-    X_df, y, features = out.X_df, out.y, out.features
+    result = project.api.engineer_features()
+    X_df, y, features = result.X_df, result.y, result.features
     accepted_features = get_accepted_features(features, proposed_feature)
 
     Pruner = _load_class(project, 'validation.feature_pruner')

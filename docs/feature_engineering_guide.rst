@@ -86,8 +86,7 @@ and transform methods will be called receiving the one column as input.
 .. code-block:: python
 
    import pandas as pd
-   from ballet.pipeline import FeatureEngineeringPipeline
-   pipeline = FeatureEngineeringPipeline([feature])
+   pipeline = feature.as_feature_engineering_pipeline()  # type: ballet.pipeline.FeatureEngineeringPipeline
    pipeline.fit_transform(X_df)
    # array([[31770],
    #        [11622],

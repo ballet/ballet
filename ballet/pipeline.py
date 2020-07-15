@@ -40,7 +40,7 @@ class FeatureEngineeringPipeline(DataFrameMapper):
         return self._ballet_features
 
 
-class BuildResult(NamedTuple):
+class EngineerFeaturesResult(NamedTuple):
     X_df: pd.DataFrame
     features: Iterable['ballet.feature.Feature']
     pipeline: FeatureEngineeringPipeline
@@ -50,12 +50,13 @@ class BuildResult(NamedTuple):
     y: np.array
 
 
-def make_build(features, encoder, load_data):
+def make_engineer_features(pipeline, encoder, load_data):
+    features = pipeline.ballet_features
 
     @stacklog(logger.info, 'Building features and target')
-    def build(
+    def engineer_features(
         X_df: pd.DataFrame = None, y_df: pd.DataFrame = None
-    ) -> BuildResult:
+    ) -> EngineerFeaturesResult:
         """Build features and target
 
         Args:
@@ -76,5 +77,6 @@ def make_build(features, encoder, load_data):
         X = pipeline.fit_transform(X_df)
         y = encoder.fit_transform(y_df)
 
-        return BuildResult(X_df=X_df, features=features, pipeline=pipeline,
-                           X=X, y_df=y_df, encoder=encoder, y=y)
+        return EngineerFeaturesResult(
+            X_df=X_df, features=features, pipeline=pipeline, X=X,
+            y_df=y_df, encoder=encoder, y=y)

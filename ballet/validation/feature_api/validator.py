@@ -11,7 +11,7 @@ class FeatureApiValidator(BaseValidator):
     def __init__(self, project):
         self.change_collector = ChangeCollector(project)
 
-        X, y = project.load_data()
+        X, y = project.api.load_data()
         self.X, self.y = subsample_data_for_validation(X, y)
 
     def validate(self):

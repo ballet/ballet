@@ -103,27 +103,30 @@ Let's see what files have we have created:
 
 .. code-block:: console
 
-   $ tree -a ballet-my-project/ -I .git
-   ballet-my-project/
+   $ tree -a ballet-my-project -I .git
+   ballet-my-project
    ├── .cookiecutter_context.json
    ├── .github
    │   └── repolockr.yml
    ├── .gitignore
    ├── .travis.yml
-   ├── Makefile
    ├── README.md
    ├── ballet.yml
    ├── setup.py
-   └── src
-       └── myproject
-           ├── __init__.py
-           ├── features
-           │   ├── __init__.py
-           │   └── contrib
-           │       └── __init__.py
-           └── load_data.py
+   ├── src
+   │   └── myproject
+   │       ├── __init__.py
+   │       ├── __main__.py
+   │       ├── api.py
+   │       ├── features
+   │       │   ├── __init__.py
+   │       │   ├── contrib
+   │       │   │   └── __init__.py
+   │       │   └── encoder.py
+   │       └── load_data.py
+   └── tasks.py
 
-   5 directories, 12 files
+   5 directories, 15 files
 
 Importantly, by keeping this project structure intact, Ballet will be able to automatically care
 for your feature engineering pipeline.
@@ -132,9 +135,9 @@ for your feature engineering pipeline.
   training data, and location of feature engineering source code.
 * ``.travis.yml``: a `Travis CI`_ configuration file pre-configured to run a Ballet validation
   suite.
-* ``src/myproject/load_data.py``: this is where you will write code to load training data
-* ``src/myproject/features/contrib``: this is where the features created by your project's
-  contributors will live.
+* ``src/myproject/api.py``: this is where Ballet will look for functionality implemented by your
+  project, including a function to load training/test data or collected features. Stubs for this
+  functionality are already provided by the template but you can further adapt them.
 
 Project installation
 ~~~~~~~~~~~~~~~~~~~~
@@ -145,9 +148,9 @@ and as a command-line tool.
 
 .. code-block:: console
 
-   $ cd myproject
+   $ cd ballet-my-project
    $ conda create -n myproject -y && conda activate myproject  # or your preferred environment tool
-   (myproject) $ make install
+   (myproject) $ pip install invoke && invoke install
 
 Collaboration via git and GitHub
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -158,18 +161,16 @@ git remote set up.
 
 .. code-block:: console
 
-   $ cd myproject
-
    $ git log
    commit 5c8ec6773aff4030fc1256a7c9e13675d620bb6e (HEAD -> master, project-template)
    Author: Jane Developer <jane@developer.org>
    Date:   Tue Apr 16 17:27:44 2019 -0400
 
-       Automatically generated files from ballet-quickstart
+       Automatically generated files from ballet quickstart
 
    $ git remote -v
-   origin	git@github.com:jane_developer/myproject (fetch)
-   origin	git@github.com:jane_developer/myproject (push)
+   origin	git@github.com:jane_developer/ballet-my-project (fetch)
+   origin	git@github.com:jane_developer/ballet-my-project (push)
 
 Next, you must create the matching GitHub project, ``myproject``, under the account of the
 ``github_owner`` that you specified earlier (in this case, ``jane_developer``). Do not
@@ -179,7 +180,7 @@ After you having created the project on GitHub, push your local copy.
 
 .. code-block:: console
 
-   $ git push origin master
+   $ git push --all origin
 
 
 Enabling continuous integration
@@ -220,7 +221,7 @@ Guide`_.
 Validating features
 ~~~~~~~~~~~~~~~~~~~
 
-The ``myproject`` repository has received a new pull request which triggers an automatic
+The ``ballet-my-project`` repository has received a new pull request which triggers an automatic
 evaluation.
 
 1. The PR is examined by the CI service.
@@ -252,24 +253,25 @@ For interactive usage:
 
 .. code-block:: python
 
-   import myproject
+   from myproject.api import build, load_data
 
-   # load training data and fit pipeline
-   X_df_tr, y_df_tr = myproject.load_data.load_data()
-   out = myproject.features.build(X_df_tr, y_df_tr)
-   mapper_X = out.mapper_X
-   encoder_y = out.encoder_y
+   # load training data
+   X_df_tr, y_df_tr = load_data()
+
+   # fit pipeline to training data
+   result = build(X_df_tr, y_df_tr)
+   pipeline, encoder = result.pipeline, result.encoder
 
    # load new data and apply pipeline
-   X_df, y_df = myproject.load_data.load_data(input_dir='/path/to/new/data')
-   X = mapper_X.transform(X_df)
-   y = encoder_y.transform(y_df)
+   X_df, y_df = load_data(input_dir='/path/to/new/data')
+   X = pipeline.transform(X_df)
+   y = encoder.transform(y_df)
 
 For command-line usage:
 
 .. code-block:: console
 
-   $ myproject-engineer-features path/to/test/data path/to/features/output
+   $ python -m myproject engineer-features path/to/test/data path/to/features/output
 
 Updating the framework
 ----------------------

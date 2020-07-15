@@ -48,6 +48,7 @@ development_requirements = [
     'bumpversion>=0.5.3',
     'pip>=9.0.1',
     'watchdog>=0.8.3',
+    'invoke>=1.4',
 
     # docs
     'm2r>=0.2.0',

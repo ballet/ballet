@@ -16,7 +16,7 @@ def validate_feature_acceptance(feature, X, y, subsample=False, path=None,
         X, y = subsample_data_for_validation(X, y)
 
     # build project
-    result = project.build(X, y)
+    result = project.api.engineer_features(X, y)
 
     # load accepter for this project
     Accepter = _load_class(project, 'validation.feature_accepter')

@@ -1,18 +1,22 @@
+import dataclasses
 import pathlib
 import sys
 from importlib import import_module
 from types import ModuleType
-from typing import Iterable
+from typing import Callable, Iterable, Tuple
 
 import git
 from dynaconf import LazySettings
-from funcy import cached_property, fallback, notnone, one, re_find
+from funcy import cached_property, fallback, re_find
+from pandas import DataFrame
 
+import ballet.contrib
 from ballet.compat import safepath
 from ballet.eng import BaseTransformer
 from ballet.exc import ConfigurationError
 from ballet.feature import Feature
-from ballet.pipeline import BuildResult, FeatureEngineeringPipeline
+from ballet.pipeline import (
+    EngineerFeaturesResult, FeatureEngineeringPipeline, make_engineer_features)
 from ballet.util import needs_path, raiseifnone
 from ballet.util.ci import get_travis_branch, get_travis_pr_num
 from ballet.util.git import get_branch, get_pr_num, is_merge_commit
@@ -124,23 +128,10 @@ class Project:
     This is a utility class mostly useful for easy access to the project's
     information from within the ballet.validation package.
 
-    In addition to the defined methods and properties, the following functions
-    of the project can be accessed as attributes of a class instance, where
-    ``prj`` refers to the python module of the underlying ballet project:
-    - ``load_data`` (``prj.load_data.load_data``)
-    - ``build`` (``prj.features.build``)
-    - ``collect_contrib_features`` (``prj.features.collect_contrib_features``)
-
     Args:
         package (ModuleType): python package representing imported ballet
             project
     """
-
-    attr_map = {
-        'load_data': ('.load_data', 'load_data'),
-        'build': ('.features', 'build'),
-        'collect_contrib_features': ('.features', 'collect_contrib_features')
-    }
 
     def __init__(self, package):
         self.package = package
@@ -184,7 +175,7 @@ class Project:
 
         raise ConfigurationError('Couldn\'t create Project instance')
 
-    def _resolve(self, modname, attr=None):
+    def resolve(self, modname, attr=None):
         module = import_module(modname, package=self.package.__name__)
         if attr is not None:
             return getattr(module, attr)
@@ -245,43 +236,35 @@ class Project:
         """Return a git.Repo object corresponding to this project"""
         return git.Repo(self.path, search_parent_directories=True)
 
-    def __getattr__(self, attr):
-        if attr in Project.attr_map:
-            return self._resolve(*Project.attr_map[attr])
-        else:
-            return object.__getattribute__(self, attr)
+    @property
+    def api(self):
+        return self.resolve('.api').api
 
 
+@dataclasses.dataclass
 class FeatureEngineeringProject:
 
-    def __init__(self, project: Project = None, package: ModuleType = None):
-        if not one(notnone, (project, package)):
-            raise ValueError
+    package: ModuleType
+    encoder: BaseTransformer
+    load_data: Callable[..., Tuple[DataFrame, DataFrame]]
+    extra_features: Iterable[Feature] = dataclasses.field(default_factory=list)
+    engineer_features: Callable[..., EngineerFeaturesResult] = None
 
-        if project is not None:
-            self.project = project
-        else:
-            self.project = Project(package)
+    def __post_init__(self):
+        self.project = Project(self.package)
+        if self.engineer_features is None:
+            self.engineer_features = make_engineer_features(
+                self.pipeline, self.encoder, self.load_data)
 
-    def collect(self) -> Iterable[Feature]:
-        """Get contributed features"""
-        return self.project.collect_contrib_features()
+        # TODO don't convert back and forth to Project
+        # need to avoid circular import here
+        self.collect = ballet.contrib.collect_contrib_features(
+            self.project.path)
+
+    @property
+    def features(self) -> Iterable[Feature]:
+        return self.collect() + self.extra_features
 
     @property
     def pipeline(self) -> FeatureEngineeringPipeline:
-        """Get feature engineering pipeline containing contributed features
-
-        The feature engineering pipeline is *not* yet fit on training data.
-        """
-        return FeatureEngineeringPipeline(self.collect())
-
-    @property
-    def encoder(self) -> BaseTransformer:
-        """Get target encoder or None if not found in the project"""
-        try:
-            return self.project._resolve('.features', 'get_target_encoder')()
-        except ImportError:
-            return None
-
-    def build(self, X_df, y_df) -> BuildResult:
-        return self.project.build(X_df=X_df, y_df=y_df)
+        return FeatureEngineeringPipeline(self.features)
