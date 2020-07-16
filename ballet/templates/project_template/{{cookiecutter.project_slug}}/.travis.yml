@@ -1,6 +1,6 @@
 language: python
 
-python: 3.6
+python: 3.8
 
 branches:
   only:
@@ -21,9 +21,11 @@ matrix:
       env: BALLET_EVALUATE_FEATURE_PRUNING=true
 
 install:
+  - pip install --upgrade pip
   - pip install invoke
   - invoke install
 
 script:
   - printenv | grep TRAVIS | sort
+  - pip freeze
   - ballet validate
