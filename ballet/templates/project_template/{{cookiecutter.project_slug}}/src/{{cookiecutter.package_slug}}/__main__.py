@@ -3,7 +3,7 @@ import logging
 from ballet.util.io import save_features, save_targets
 import click
 
-from {{ cookiecutter.package_slug }}.api import build, load_data
+from {{ cookiecutter.package_slug }}.api import api
 
 logger = logging.getLogger(__name__)
 
@@ -22,12 +22,9 @@ def cli():
 @click.argument('output_dir', type=click.Path(file_okay=False))
 def engineer_features(input_dir, output_dir):
     """Engineer features"""
-
-    X_df, y_df = load_data(input_dir=input_dir)
-    out = build()
-
-    pipeline = out.pipeline
-    encoder = out.encoder
+    X_df, y_df = api.load_data(input_dir=input_dir)
+    result = api.engineer_features()
+    pipeline, encoder = result.pipeline, result.encoder
 
     X_ft = pipeline.transform(X_df)
     y_ft = encoder.transform(y_df)

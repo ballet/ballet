@@ -80,3 +80,5 @@ def make_engineer_features(pipeline, encoder, load_data):
         return EngineerFeaturesResult(
             X_df=X_df, features=features, pipeline=pipeline, X=X,
             y_df=y_df, encoder=encoder, y=y)
+
+    return engineer_features

@@ -1,6 +1,6 @@
-import dataclasses
 import pathlib
 import sys
+from functools import partial
 from importlib import import_module
 from types import ModuleType
 from typing import Callable, Iterable, Tuple
@@ -197,7 +197,7 @@ class Project:
 
     @property
     def branch(self):
-        """Return whether the project is on master branch"""
+        """Return current git branch according to git tree or CI environment"""
         result = get_branch(repo=self.repo)
         if result is None:
             result = get_travis_branch()
@@ -241,30 +241,43 @@ class Project:
         return self.resolve('.api').api
 
 
-@dataclasses.dataclass
 class FeatureEngineeringProject:
 
-    package: ModuleType
-    encoder: BaseTransformer
-    load_data: Callable[..., Tuple[DataFrame, DataFrame]]
-    extra_features: Iterable[Feature] = dataclasses.field(default_factory=list)
-    engineer_features: Callable[..., EngineerFeaturesResult] = None
+    def __init__(
+        self,
+        *,
+        package: ModuleType,
+        encoder: BaseTransformer,
+        load_data: Callable[..., Tuple[DataFrame, DataFrame]],
+        extra_features: Iterable[Feature] = None,
+        engineer_features: Callable[..., EngineerFeaturesResult] = None,
+    ):
+        self._package = package
+        self.encoder = encoder
+        self.load_data = load_data
+        self._extra_features = extra_features or []
+        self._engineer_features = engineer_features
 
-    def __post_init__(self):
-        self.project = Project(self.package)
-        if self.engineer_features is None:
-            self.engineer_features = make_engineer_features(
-                self.pipeline, self.encoder, self.load_data)
+        # use fqn to avoid circular import
+        self.collect = partial(ballet.contrib.collect_contrib_features,
+                               self.project)
 
-        # TODO don't convert back and forth to Project
-        # need to avoid circular import here
-        self.collect = ballet.contrib.collect_contrib_features(
-            self.project.path)
+    @cached_property
+    def project(self):
+        return Project(self._package)
 
     @property
     def features(self) -> Iterable[Feature]:
-        return self.collect() + self.extra_features
+        return self.collect() + self._extra_features
 
     @property
     def pipeline(self) -> FeatureEngineeringPipeline:
         return FeatureEngineeringPipeline(self.features)
+
+    def engineer_features(self, *args, **kwargs) -> EngineerFeaturesResult:
+        """Engineer features"""
+        if self._engineer_features is None:
+            self._engineer_features = make_engineer_features(
+                self.pipeline, self.encoder, self.load_data)
+
+        return self._engineer_features(*args, **kwargs)

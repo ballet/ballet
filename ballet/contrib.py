@@ -1,5 +1,6 @@
 import pkgutil
 import types
+from typing import Iterable
 
 from funcy import collecting, notnone
 
@@ -13,7 +14,7 @@ __all__ = (
 )
 
 
-def collect_contrib_features(project_root):
+def collect_contrib_features(project: Project) -> Iterable[Feature]:
     """Collect contributed features for a project at project_root
 
     For a project ``foo``, walks modules within the ``foo.features.contrib``
@@ -22,14 +23,11 @@ def collect_contrib_features(project_root):
     collected.
 
     Args:
-        project_root (str, path-like): Path to project root
+        project: project object
 
     Returns:
-        List[ballet.Feature]: list of Feature objects
+        collected features
     """
-    # TODO Project should require ModuleType
-    # TODO read config for this module
-    project = Project(project_root)
     contrib = project.resolve('.features.contrib')
     return _collect_contrib_features(contrib)
 
