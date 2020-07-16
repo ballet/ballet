@@ -4,7 +4,7 @@ from functools import partial
 from importlib import import_module
 from os import PathLike
 from types import ModuleType
-from typing import Callable, Iterable, Tuple
+from typing import Any, Callable, Iterable, Tuple, Union
 
 import git
 from dynaconf import LazySettings
@@ -179,9 +179,35 @@ class Project:
         cwd = pathlib.Path.cwd()
         return cls.from_path(cwd, ascend=True)
 
+    def resolve(
+        self, modname: str, attr: str = None
+    ) -> Union[ModuleType, Any]:
+        """Import module or attribute from project
 
-    def resolve(self, modname, attr=None):
-        module = import_module(modname, package=self.package.__name__)
+        Args:
+            modname: dotted module name relative to top-level with leading
+                dot omited; if trying to import the top-level package,
+                use '' (can also just access self.package)
+            attr: attribute to get from the imported module
+
+        Example:
+
+            >>> project.resolve('', '__version__')
+            # return __version__ attribute from top-level package
+            >>> project.resolve('api')
+            # return myproject.api module
+            >>> project.resolve('api', attr='api')
+            # return api object from myproject.api module
+            >>> project.resolve('foo.bar')
+            # return myproject.foo.bar module
+        """
+
+        if modname:
+            module = import_module('.' + modname,
+                                   package=self.package.__name__)
+        else:
+            module = self.package
+
         if attr is not None:
             return getattr(module, attr)
         else:
@@ -243,7 +269,7 @@ class Project:
 
     @property
     def api(self):
-        return self.resolve('.api').api
+        return self.resolve('api', 'api')
 
 
 class FeatureEngineeringProject:

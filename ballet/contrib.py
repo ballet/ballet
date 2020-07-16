@@ -28,7 +28,7 @@ def collect_contrib_features(project: Project) -> Iterable[Feature]:
     Returns:
         collected features
     """
-    contrib = project.resolve('.features.contrib')
+    contrib = project.resolve('features.contrib')
     return _collect_contrib_features(contrib)
 
 
