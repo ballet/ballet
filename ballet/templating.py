@@ -5,6 +5,7 @@ import funcy as fy
 from cookiecutter.main import cookiecutter as _cookiecutter
 
 from ballet.compat import PathLike
+from ballet.exc import ConfigurationError
 from ballet.project import Project, detect_github_username
 from ballet.util.fs import pwalk, synctree
 from ballet.util.log import logger
@@ -83,12 +84,18 @@ def start_new_feature(contrib_dir=None, **cc_kwargs):
         ballet.exc.BalletError: the new feature has the same name as an
             existing one
     """
-    if contrib_dir is None:
-        project = Project.from_path(pathlib.Path.cwd().resolve())
+    if contrib_dir is not None:
+        try:
+            project = Project.from_path(contrib_dir, ascend=True)
+            default_username = detect_github_username(project)
+        except ConfigurationError:
+            default_username = 'username'
+    else:
+        project = Project.from_cwd()
         contrib_dir = project.config.get('contrib.module_path')
+        default_username = detect_github_username(project)
 
     # inject default username into context
-    default_username = detect_github_username(project)
     cc_kwargs.setdefault('extra_context', {})
     cc_kwargs['extra_context'].update({'_default_username': default_username})
 
