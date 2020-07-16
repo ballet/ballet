@@ -65,25 +65,25 @@ class LevelFilter(object):
 
 class LoggingContext(object):
     """Logging context manager
-    
+
     Configure the given logger to emit messages at and above the configured 
     logging level and using the configured logging handler. Useful to 
     temporarily set a lower (or higher log level) or to temporarily add a 
     local handler. After the context exits, the original state of the logger
     will be restored.
-    
+
     Args:
         logger (logging.Logger): logger
         level (Union[str,int]): string or numeric logging level
         handler (logging.Handler): log handler if not is already configured
         close (bool): whether to close the handler after context exits. 
             Defaults to True.
-            
+
     Example usage:
-    
+
         >>> with LoggingContext(logger, level='DEBUG'):
         ...     logger.debug('some message')
-        
+
     Source: <https://docs.python.org/3/howto/logging-cookbook.html#using-a-context-manager-for-selective-logging>
     """  # noqa E501
 
