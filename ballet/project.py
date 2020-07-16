@@ -2,6 +2,7 @@ import pathlib
 import sys
 from functools import partial
 from importlib import import_module
+from os import PathLike
 from types import ModuleType
 from typing import Callable, Iterable, Tuple
 
@@ -141,19 +142,28 @@ class Project:
         return load_config_in_dir(self.path)
 
     @classmethod
-    def from_path(cls, path):
+    def from_path(cls, path: PathLike, ascend: bool = False):
         """Create a Project instance from an fs path to the containing dir
 
         Args:
-            path (PathLike): path to directory that contains the
-                project
+            path: path to directory that contains the project
+            ascend: if the config file is not found in the given directory,
+                then search in parent directories, stopping at a file system
+                boundary
         """
         path = pathlib.Path(path)
-        config = load_config_in_dir(path)
-        package_slug = config.get('project.package_slug')
-        package = import_module_at_path(package_slug,
-                                        path.joinpath('src', package_slug))
-        return cls(package)
+        try:
+            config = load_config_in_dir(path)
+            package_slug = config.get('project.package_slug')
+            package = import_module_at_path(package_slug,
+                                            path.joinpath('src', package_slug))
+            return cls(package)
+        except ConfigurationError:
+            if ascend:
+                parent = path.parent
+                if parent.exists() and not parent.is_mount():
+                    return cls.from_path(parent, ascend=ascend)
+            raise
 
     @classmethod
     def from_cwd(cls):
@@ -166,14 +176,9 @@ class Project:
         Raises:
             ConfigurationError: couldn't find the configuration file
         """
-        path = pathlib.Path.cwd()
-        while path.exists() and not path.is_mount():
-            try:
-                return Project.from_path(path)
-            except ConfigurationError:
-                path = path.parent
+        cwd = pathlib.Path.cwd()
+        return cls.from_path(cwd, ascend=True)
 
-        raise ConfigurationError('Couldn\'t create Project instance')
 
     def resolve(self, modname, attr=None):
         module = import_module(modname, package=self.package.__name__)
