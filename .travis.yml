@@ -1,8 +1,9 @@
 os: linux
 language: python
 python:
-  - 3.5
-  - 3.6
+    - 3.6
+    - 3.7
+    - 3.8
 
 install: pip install -U tox-travis codecov
 script: tox
@@ -16,19 +17,11 @@ stages:
 jobs:
   include:
     - stage: lint
-      python: 3.6
+      python: 3.8
       script: tox -e lint
 
-    - stage: test
-      python: 3.7
-      dist: xenial
-
-    - stage: test
-      python: 3.8
-      dist: xenial
-
     - stage: deploy
-      python: 3.6
+      python: 3.8
       script: tox --notest
       name: "Release to PyPI"
       deploy:
@@ -44,7 +37,7 @@ jobs:
           repo: HDI-Project/ballet
 
     - stage: deploy
-      python: 3.6
+      python: 3.8
       script: tox -e docs
       name: "Build docs"
       deploy:
