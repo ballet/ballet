@@ -1,6 +1,5 @@
 import os
 import shlex
-from contextlib import nullcontext
 from subprocess import CalledProcessError, check_call
 from textwrap import dedent
 from types import ModuleType
@@ -10,7 +9,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from ballet.compat import safepath
+from ballet.compat import nullcontext, safepath
 from ballet.eng.misc import IdentityTransformer
 from ballet.feature import Feature
 from ballet.pipeline import FeatureEngineeringPipeline

@@ -12,7 +12,7 @@ from funcy import cached_property, fallback, re_find
 from pandas import DataFrame
 
 import ballet.contrib
-from ballet.compat import safepath
+from ballet.compat import is_mount, safepath
 from ballet.eng import BaseTransformer
 from ballet.exc import ConfigurationError
 from ballet.feature import Feature
@@ -161,7 +161,7 @@ class Project:
         except ConfigurationError:
             if ascend:
                 parent = path.parent
-                if parent.exists() and not parent.is_mount():
+                if parent.exists() and not is_mount(parent):
                     return cls.from_path(parent, ascend=ascend)
             raise
 

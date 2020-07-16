@@ -17,7 +17,7 @@ requirements = [
     'Click>=6.0',
     'dill',
     'dynaconf<3',
-    'funcy',
+    'funcy>=1.14',
     'gitpython',
     'h5py',
     'numpy',
