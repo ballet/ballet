@@ -2,9 +2,9 @@ from invoke import task
 
 
 @task
-def install(c):
+def install(c, system=False):
     """install the package to the active Python's site-packages"""
-    c.run('pip install -e .')
+    c.run('pip install -r requirements.txt')
 
 
 def rmdir(c, name):
