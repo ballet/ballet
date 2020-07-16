@@ -252,7 +252,7 @@ class Project:
 
         return self.on_master and is_merge_commit(self.repo.head.commit)
 
-    @property
+    @cached_property
     def path(self):
         """Return the project path (aka project root)
 
@@ -262,7 +262,7 @@ class Project:
         """
         return pathlib.Path(self.package.__file__).resolve().parents[2]
 
-    @property
+    @cached_property
     def repo(self):
         """Return a git.Repo object corresponding to this project"""
         return git.Repo(self.path, search_parent_directories=True)
