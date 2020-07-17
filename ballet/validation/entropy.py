@@ -1,14 +1,13 @@
 import numbers
-from typing import Optional, Tuple
+from typing import Tuple
 
 import numpy as np
 import scipy.stats
-from funcy import Call, decorator, suppress
 from scipy.special import digamma, gamma
 from sklearn.neighbors import NearestNeighbors
 from sklearn.utils import check_consistent_length
 
-from ballet.util import asarray2d
+from ballet.util import asarray2d, nonnegative
 from ballet.util.log import logger
 
 __all__ = (
@@ -21,24 +20,6 @@ N_NEIGHBORS = 3   # hyperparameter k from KSG estimator
 NEIGHBORS_ALGORITHM = 'auto'
 NEIGHBORS_METRIC = 'chebyshev'
 DISC_COL_UNIQUE_VAL_THRESH = 0.05
-
-
-@decorator
-def nonnegative(call: Call, name: Optional[str] = None):
-    """Warn if the function's return value is negative and set it to 0"""
-    result = call()
-    with suppress(TypeError):
-        if result < 0:
-            result = 0.0
-            # Format a nice log message
-            if name is None:
-                try:
-                    pieces = call._func.__name__.split('_')[1:]
-                    name = ''.join(map(str.capitalize, pieces))
-                except RuntimeError:
-                    name = 'Result'
-            logger.warning('%s should be non-negative.', name)
-    return result
 
 
 # Helpers

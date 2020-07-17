@@ -19,8 +19,10 @@ import ballet.util.fs
 import ballet.util.git
 import ballet.util.io
 from ballet.compat import safepath
+from ballet.util import nonnegative
 from ballet.util.ci import TravisPullRequestBuildDiffer
 from ballet.util.code import blacken_code, get_source, is_valid_python
+from ballet.util.log import logger
 from ballet.util.mod import (  # noqa F401
     import_module_at_path, import_module_from_modname,
     import_module_from_relpath, modname_to_relpath, relpath_to_modname)
@@ -240,6 +242,30 @@ class UtilTest(
             # truthy is complement of falsy
             actual = ballet.util.truthy(input)
             self.assertNotEqual(expected, actual)
+
+    def test_nonnegative_positive_output(self):
+        @nonnegative()
+        def func():
+            return 1
+
+        self.assertEqual(1, func())
+
+    def test_nonnegative_negative_output(self):
+        @nonnegative(name="Result")
+        def func():
+            return -1
+
+        self.assertEqual(0, func())
+
+    def test_nonnegative_negative_introspection(self):
+        @nonnegative()
+        def estimate_something():
+            return -1
+
+        with self.assertLogs(logger.name, 'WARNING') as cm:
+            estimate_something()
+        self.assertEqual(1, len(cm.output))
+        self.assertIn("Something", cm.output[0])
 
 
 class ModTest(unittest.TestCase):

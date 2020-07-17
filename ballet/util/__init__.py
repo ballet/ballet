@@ -1,15 +1,18 @@
 import warnings
+from contextlib import suppress
 from copy import deepcopy
 from os import devnull
-from typing import Collection, Sequence, Tuple, TypeVar
+from typing import Collection, Optional, Sequence, Tuple, TypeVar
 
 import numpy as np
 import pandas as pd
 import sklearn.datasets
 from funcy import complement, decorator, lfilter
+from funcy.decorators import Call
 
 from ballet.compat import redirect_stderr, redirect_stdout
 from ballet.exc import BalletWarning
+from ballet.util.log import logger
 
 RANDOM_STATE = 1754
 
@@ -47,7 +50,7 @@ def make_plural_suffix(obj: Collection, suffix='s') -> str:
 
 
 @decorator
-def whether_failures(call):
+def whether_failures(call: Call):
     """Collects failures and return (success, list_of_failures)"""
     failures = list(call())
     return not failures, failures
@@ -66,7 +69,7 @@ def has_nans(obj) -> bool:
 
 
 @decorator
-def dfilter(call, pred):
+def dfilter(call: Call, pred):
     """Decorate a callable with a filter that accepts a predicate
 
     Example::
@@ -89,7 +92,7 @@ def load_sklearn_df(name: str) -> Tuple[pd.DataFrame, pd.DataFrame]:
 
 
 @decorator
-def quiet(call):
+def quiet(call: Call):
     with open(devnull, 'w') as fnull:
         with redirect_stderr(fnull), redirect_stdout(fnull):
             with warnings.catch_warnings():
@@ -126,7 +129,7 @@ def warn(msg: str):
 
 
 @decorator
-def raiseifnone(call):
+def raiseifnone(call: Call):
     """Decorate a function to raise a ValueError if result is None"""
     result = call()
     if result is None:
@@ -142,3 +145,21 @@ def falsy(o) -> bool:
 
 
 truthy = complement(falsy)
+
+
+@decorator
+def nonnegative(call: Call, name: Optional[str] = None):
+    """Warn if the function's return value is negative and set it to 0"""
+    result = call()
+    with suppress(TypeError):
+        if result < 0:
+            result = 0.0
+            # Format a nice log message
+            if name is None:
+                try:
+                    pieces = call._func.__name__.split('_')[1:]
+                    name = ''.join(map(str.capitalize, pieces))
+                except RuntimeError:
+                    name = 'Result'
+            logger.warning('%s should be non-negative.', name)
+    return result
