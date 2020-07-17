@@ -1,22 +1,27 @@
 import pathlib
-from collections import namedtuple
+from types import ModuleType
+from typing import Callable, Collection, List, NamedTuple, Optional, Tuple
 
+import git
 from funcy import collecting, complement, lfilter, partial, post_processing
 from stacklog import stacklog
 
 from ballet.contrib import _collect_contrib_feature_from_module
 from ballet.exc import (
     BalletError, FeatureCollectionError, NoFeaturesCollectedError)
+from ballet.feature import Feature
+from ballet.project import Project
 from ballet.util import make_plural_suffix, whether_failures
 from ballet.util.ci import TravisPullRequestBuildDiffer, can_use_travis_differ
-from ballet.util.git import LocalMergeBuildDiffer, LocalPullRequestBuildDiffer
+from ballet.util.git import (
+    Differ, LocalMergeBuildDiffer, LocalPullRequestBuildDiffer)
 from ballet.util.log import logger
 from ballet.util.mod import import_module_at_path, relpath_to_modname
 from ballet.validation.base import FeaturePerformanceEvaluator
 from ballet.validation.project_structure.checks import ProjectStructureCheck
 
 
-def get_proposed_feature(project):
+def get_proposed_feature(project: Project):
     """Get the proposed feature
 
     The path of the proposed feature is determined by diffing the project
@@ -24,7 +29,7 @@ def get_proposed_feature(project):
     from that path and returned.
 
     Args:
-        project (ballet.project.Project): project info
+        project: project info
 
     Raises:
         ballet.exc.BalletError: more than one feature collected
@@ -46,18 +51,19 @@ def get_proposed_feature(project):
         raise FeatureCollectionError(msg)
 
 
-def get_accepted_features(features, proposed_feature):
+def get_accepted_features(
+    features: List[Feature],
+    proposed_feature: Feature
+) -> List[Feature]:
     """Deselect candidate features from list of all features
 
     Args:
-        features (List[Feature]): collection of all features in the ballet
-            project: both accepted features and candidate ones that have not
-            been accepted
-        proposed_feature (Feature): candidate feature that has not been
-            accepted
+        features: collection of all features in the ballet project: both
+            accepted features and candidate ones that have not been accepted
+        proposed_feature: candidate feature that has not been accepted
 
     Returns:
-        List[Feature]: list of features with the proposed feature not in it.
+        list of features with the proposed feature not in it.
 
     Raises:
         ballet.exc.BalletError: Could not deselect exactly the proposed
@@ -84,30 +90,34 @@ def get_accepted_features(features, proposed_feature):
             .format(len(features), len(result)))
 
 
-def _log_collect_items(name, items):
+def _log_collect_items(name: str, items: Collection):
     n = len(items)
     s = make_plural_suffix(items)
     logger.info('Collected {n} {name}{s}'.format(n=n, name=name, s=s))
     return items
 
 
-CollectedChanges = namedtuple(
-    'CollectedChanges',
-    'file_diffs candidate_feature_diffs valid_init_diffs inadmissible_diffs '
-    'new_feature_info')
+NewFeatureInfo = List[Tuple[Callable[..., ModuleType], str, str]]
+
+
+class CollectedChanges(NamedTuple):
+    file_diffs: git.DiffIndex
+    candidate_feature_diffs: List[git.Diff]
+    valid_init_diffs: List[git.Diff]
+    inadmissible_diffs: List[git.Diff]
+    new_feature_info: NewFeatureInfo
 
 
 class ChangeCollector:
     """Validate the features introduced in a proposed pull request.
 
     Args:
-        project (ballet.project.Project): project info
-        differ (ballet.util.git.Differ, optional): specific differ to use;
-            if not provided, will be determined automatically from the
-            environment
+        project: project info
+        differ: specific differ to use; if not provided, will be determined
+            automatically from the environment
     """
 
-    def __init__(self, project, differ=None):
+    def __init__(self, project: Project, differ: Optional[Differ] = None):
         self.project = project
         self.differ = differ
 
@@ -121,7 +131,7 @@ class ChangeCollector:
             else:
                 self.differ = LocalPullRequestBuildDiffer(pr_num, repo)
 
-    def collect_changes(self):
+    def collect_changes(self) -> CollectedChanges:
         """Collect file and feature changes
 
         Steps
@@ -132,9 +142,6 @@ class ChangeCollector:
            changes. Admissible file changes solely contribute python files to
            the contrib subdirectory.
         3. Collect features from admissible new files.
-
-        Returns:
-            CollectedChanges
         """
 
         file_diffs = self._collect_file_diffs()
@@ -148,7 +155,7 @@ class ChangeCollector:
 
     @post_processing(partial(_log_collect_items, 'file'))
     @stacklog(logger.info, 'Collecting file changes')
-    def _collect_file_diffs(self):
+    def _collect_file_diffs(self) -> git.DiffIndex:
         file_diffs = self.differ.diff()
 
         # log results
@@ -158,7 +165,9 @@ class ChangeCollector:
         return file_diffs
 
     @stacklog(logger.info, 'Categorizing file changes')
-    def _categorize_file_diffs(self, file_diffs):
+    def _categorize_file_diffs(
+        self, file_diffs: git.DiffIndex
+    ) -> Tuple[List[git.Diff], List[git.Diff], List[git.Diff]]:
         """Partition file changes into admissible and inadmissible changes"""
         # TODO move this into a new validator
         candidate_feature_diffs = []
@@ -202,18 +211,18 @@ class ChangeCollector:
     @post_processing(partial(_log_collect_items, 'feature'))
     @collecting
     @stacklog(logger.info, 'Collecting info on newly-proposed features')
-    def _collect_feature_info(self, candidate_feature_diffs):
+    def _collect_feature_info(
+        self, candidate_feature_diffs: List[git.Diff]
+    ) -> NewFeatureInfo:
         """Collect feature info
 
         Args:
-            candidate_feature_diffs (List[git.diff.Diff]): list of Diffs
-                corresponding to admissible file changes compared to
-                comparison ref
+            candidate_feature_diffs: list of Diffs corresponding to admissible
+                file changes compared to comparison ref
 
         Returns:
-            List[Tuple[Callable, str, str]]: list of tuple of importer,
-                module name, and module path. The "importer" is a callable that
-                returns a module
+            list of tuple of importer, module name, and module path. The
+                "importer" is a callable that returns a module
         """
 
         # the directory containing ballet.yml
@@ -242,7 +251,7 @@ def subsample_data_for_validation(X, y):
 
 
 @whether_failures
-def check_from_class(check_class, obj, *checker_args, **checker_kwargs):
+def check_from_class(check_class: type, obj, *checker_args, **checker_kwargs):
     for Checker in check_class.__subclasses__():
         check = Checker(*checker_args, **checker_kwargs).do_check
         success = check(obj)

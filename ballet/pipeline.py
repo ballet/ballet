@@ -1,4 +1,4 @@
-from typing import Iterable, NamedTuple, Union
+from typing import Callable, Iterable, NamedTuple, Tuple
 
 import numpy as np
 import pandas as pd
@@ -11,6 +11,7 @@ import ballet.feature
 from ballet.eng import BaseTransformer
 from ballet.eng.misc import NullTransformer
 from ballet.util.log import logger
+from ballet.util.typing import OneOrMore
 
 
 class FeatureEngineeringPipeline(DataFrameMapper):
@@ -20,8 +21,7 @@ class FeatureEngineeringPipeline(DataFrameMapper):
         features: feature or list of features
     """
 
-    def __init__(self, features: Union['ballet.feature.Feature',
-                                       Iterable['ballet.feature.Feature']]):
+    def __init__(self, features: OneOrMore['ballet.feature.Feature']):
         if not features:
             features = ballet.feature.Feature(input=[],
                                               transformer=NullTransformer())
@@ -50,7 +50,11 @@ class EngineerFeaturesResult(NamedTuple):
     y: np.array
 
 
-def make_engineer_features(pipeline, encoder, load_data):
+def make_engineer_features(
+    pipeline: FeatureEngineeringPipeline,
+    encoder: BaseTransformer,
+    load_data: Callable[..., Tuple[pd.DataFrame, pd.DataFrame]],
+) -> Callable[[pd.DataFrame, pd.DataFrame], EngineerFeaturesResult]:
     features = pipeline.ballet_features
 
     @stacklog(logger.info, 'Building features and target')

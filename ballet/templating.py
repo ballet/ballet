@@ -1,5 +1,6 @@
 import pathlib
 import tempfile
+from typing import List, Optional, Tuple
 
 import funcy as fy
 from cookiecutter.main import cookiecutter as _cookiecutter
@@ -9,6 +10,7 @@ from ballet.exc import ConfigurationError
 from ballet.project import Project, detect_github_username
 from ballet.util.fs import pwalk, synctree
 from ballet.util.log import logger
+from ballet.util.typing import Pathy
 from ballet.validation.project_structure.checks import (
     FEATURE_MODULE_NAME_REGEX, SUBPACKAGE_NAME_REGEX)
 
@@ -17,27 +19,29 @@ FEATURE_TEMPLATE_PATH = TEMPLATES_PATH.joinpath('feature_template')
 PROJECT_TEMPLATE_PATH = TEMPLATES_PATH.joinpath('project_template')
 
 
-def _stringify_path(obj):
+def _stringify_path(obj) -> str:
     return str(obj) if isinstance(obj, PathLike) else obj
 
 
 @fy.wraps(_cookiecutter)
-def cookiecutter(*args, **kwargs):
+def cookiecutter(*args, **kwargs) -> str:
     """Call cookiecutter.main.cookiecutter after stringifying paths
 
     Return:
-        str: project directory path
+        project directory path
     """
     args = fy.walk(_stringify_path, args)
     kwargs = fy.walk_values(_stringify_path, kwargs)
     return _cookiecutter(*args, **kwargs)
 
 
-def render_project_template(project_template_path=None, **cc_kwargs):
+def render_project_template(
+    project_template_path: Optional[Pathy] = None, **cc_kwargs
+) -> str:
     """Generate a ballet project according to the project template
 
     Args:
-        project_template_path (str): path to specific project template
+        project_template_path: path to specific project template
         **cc_kwargs: options for the cookiecutter template
     """
     if project_template_path is None:
@@ -45,7 +49,7 @@ def render_project_template(project_template_path=None, **cc_kwargs):
     return cookiecutter(project_template_path, **cc_kwargs)
 
 
-def render_feature_template(**cc_kwargs):
+def render_feature_template(**cc_kwargs) -> str:
     """Create a stub for a new feature
 
     Args:
@@ -55,7 +59,7 @@ def render_feature_template(**cc_kwargs):
     return cookiecutter(feature_template_path, **cc_kwargs)
 
 
-def _fail_if_feature_exists(dst):
+def _fail_if_feature_exists(dst: pathlib.Path) -> bool:
     subpackage_name, feature_name = str(dst.parent), str(dst.name)
     if (
         dst.is_file()
@@ -67,7 +71,9 @@ def _fail_if_feature_exists(dst):
             .format(dst=dst))
 
 
-def start_new_feature(contrib_dir=None, **cc_kwargs):
+def start_new_feature(
+    contrib_dir: Pathy = None, **cc_kwargs
+) -> List[Tuple[pathlib.Path, str]]:
     """Start a new feature within a ballet project
 
     By default, will prompt the user for input using cookiecutter's input
@@ -123,7 +129,7 @@ def start_new_feature(contrib_dir=None, **cc_kwargs):
     return result
 
 
-def _log_start_new_feature_success(result):
+def _log_start_new_feature_success(result: List[Tuple[pathlib.Path, str]]):
     logger.info('Start new feature successful.')
     for (name, kind) in result:
         if kind == 'file' and '__init__' not in str(name):

@@ -1,6 +1,7 @@
 import pkgutil
 import types
-from typing import Iterable
+from types import ModuleType
+from typing import Iterable, Iterator, Optional
 
 from funcy import collecting, notnone
 
@@ -34,7 +35,7 @@ def collect_contrib_features(project: Project) -> Iterable[Feature]:
 
 @dfilter(notnone)
 @collecting
-def _collect_contrib_features(module):
+def _collect_contrib_features(module: ModuleType) -> Iterator[Feature]:
     """Collect contributed features from within given module
 
     Be very careful with untrusted code. The module/package will be
@@ -43,11 +44,8 @@ def _collect_contrib_features(module):
     anyway?
 
     Args:
-        contrib (module): module (standalone or package) that contains feature
+        module: module (standalone or package) that contains feature
             definitions
-
-    Returns:
-        List[Feature]: list of features
     """
 
     if isinstance(module, types.ModuleType):
@@ -61,7 +59,9 @@ def _collect_contrib_features(module):
 
 
 @collecting
-def _collect_contrib_features_from_package(package):
+def _collect_contrib_features_from_package(
+    package: ModuleType
+) -> Iterator[Optional[Feature]]:
     logger.debug(
         'Walking package path {path} to detect modules...'
         .format(path=package.__path__))
@@ -82,7 +82,7 @@ def _collect_contrib_features_from_package(package):
         yield _collect_contrib_feature_from_module(mod)
 
 
-def _collect_contrib_feature_from_module(mod):
+def _collect_contrib_feature_from_module(mod: ModuleType) -> Optional[Feature]:
     logger.debug(
         'Trying to import contributed feature from module {modname}...'
         .format(modname=mod.__name__))

@@ -1,25 +1,30 @@
 from abc import ABCMeta, abstractmethod
+from typing import Iterable, List
 
+import numpy as np
+import pandas as pd
 from funcy import constantly, ignore, post_processing
+
+from ballet.feature import Feature
 
 
 class BaseValidator(metaclass=ABCMeta):
     """Base class for a generic validator"""
 
     @abstractmethod
-    def validate(self):
-        """Validate something
-
-        Returns:
-            bool: validation succeeded
-        """
+    def validate(self) -> bool:
+        """Validate something and return whether validation succeeded"""
         pass
 
 
 class FeaturePerformanceEvaluator(metaclass=ABCMeta):
     """Evaluate the performance of features from an ML point-of-view"""
 
-    def __init__(self, X_df, y, features, candidate_feature):
+    def __init__(self,
+                 X_df: pd.DataFrame,
+                 y: np.ndarray,
+                 features: Iterable[Feature],
+                 candidate_feature: Feature):
         self.X_df = X_df
         self.y = y
         self.features = features
@@ -32,24 +37,16 @@ class FeaturePerformanceEvaluator(metaclass=ABCMeta):
 class FeatureAcceptanceMixin(metaclass=ABCMeta):
 
     @abstractmethod
-    def judge(self):
-        """Judge whether feature should be accepted
-
-        Returns:
-            bool: feature should be accepted
-        """
+    def judge(self) -> bool:
+        """Judge whether feature should be accepted"""
         pass
 
 
 class FeaturePruningMixin(metaclass=ABCMeta):
 
     @abstractmethod
-    def prune(self):
-        """Prune existing features
-
-        Returns:
-            list: list of features to remove
-        """
+    def prune(self) -> List[Feature]:
+        """Prune existing features, returning list of features to remove"""
         pass
 
 
@@ -67,9 +64,9 @@ class BaseCheck(metaclass=ABCMeta):
 
     @ignore(Exception, default=False)
     @post_processing(constantly(True))
-    def do_check(self, obj):
+    def do_check(self, obj) -> bool:
         return self.check(obj)
 
     @abstractmethod
-    def check(self, obj):
+    def check(self, obj) -> None:
         pass

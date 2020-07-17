@@ -1,9 +1,12 @@
 from inspect import signature
+from typing import Optional, Tuple
 
 from funcy import cached_property
 
 import ballet.pipeline
+from ballet.eng import BaseTransformer
 from ballet.transformer import make_robust_transformer
+from ballet.util.typing import OneOrMore, Pathy, TransformerLike
 
 __all__ = ('Feature', )
 
@@ -18,24 +21,31 @@ class Feature:
     or the one-hot encoding of a categorical variable.
 
     Args:
-        input (str, Collection[str]): required columns from the input
-            dataframe needed for the transformation
-        transformer (transformer-like, List[transformer-like]): transformer, or
-            sequence of transformers. A "transformer" is an instance of a class
-            that provides a fit/transform-style learned transformation.
-            Alternately, a callable can be provided, either by itself or in a
-            list, in which case it will be converted into a
-            ``SimpleFunctionTransformer`` for convenience.
-        name (str, optional): name of the feature
-        description (str, optional): description of the feature
-        output (str, list[str]): ordered sequence of names of features
+        input: required columns from the input dataframe needed for the
+            transformation
+        transformer: transformer, or sequence of transformers. A "transformer"
+            is an instance of a class that provides a fit/transform-style
+            learned transformation. Alternately, a callable can be provided,
+            either by itself or in a list, in which case it will be converted
+            into a ``SimpleFunctionTransformer`` for convenience.
+        name: name of the feature
+        description: description of the feature
+        output: ordered sequence of names of features
             produced by this transformer
-        source (path-like): the source file in which this feature was defined
-        options (dict): options
+        source: the source file in which this feature was defined
+        options: options
     """
 
-    def __init__(self, input, transformer, name=None, description=None,
-                 output=None, source=None, options=None):
+    def __init__(
+        self,
+        input: OneOrMore[str],
+        transformer: OneOrMore[TransformerLike],
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        output: OneOrMore[str] = None,
+        source: Pathy = None,
+        options: dict = None
+    ):
         self.input = input
         self.transformer = make_robust_transformer(transformer)
         self.name = name
@@ -61,10 +71,12 @@ class Feature:
         return '{clsname}(\n{attrs_str}\n)'.format(
             clsname=type(self).__name__, attrs_str=attrs_str)
 
-    def as_input_transformer_tuple(self):
+    def as_input_transformer_tuple(self) -> Tuple[str, BaseTransformer, dict]:
         """Return an tuple for passing to DataFrameMapper constructor"""
         return self.input, self.transformer, {'alias': self.output}
 
-    def as_feature_engineering_pipeline(self):
+    def as_feature_engineering_pipeline(
+        self
+    ) -> ballet.pipeline.FeatureEngineeringPipeline:
         """Return standalone FeatureEngineeringPipeline with this feature"""
         return ballet.pipeline.FeatureEngineeringPipeline(self)

@@ -1,10 +1,23 @@
+from types import ModuleType
+from typing import Optional
+
+import pandas as pd
+
+from ballet.feature import Feature
 from ballet.project import Project
+from ballet.util.typing import Pathy
 from ballet.validation.common import subsample_data_for_validation
 from ballet.validation.main import _load_class
 
 
-def validate_feature_acceptance(feature, X, y, subsample=False, path=None,
-                                package=None):
+def validate_feature_acceptance(
+    feature: Feature,
+    X: pd.DataFrame,
+    y: pd.DataFrame,
+    subsample: bool = False,
+    path: Optional[Pathy] = None,
+    package: Optional[ModuleType] = None
+):
     if package is not None:
         project = Project(package)
     elif path is not None:

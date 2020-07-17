@@ -3,6 +3,7 @@ import warnings
 from copy import deepcopy
 from enum import Enum
 from os import devnull
+from typing import List, Sequence, Tuple
 
 import numpy as np
 import pandas as pd
@@ -15,7 +16,7 @@ from ballet.exc import BalletWarning
 RANDOM_STATE = 1754
 
 
-def asarray2d(a):
+def asarray2d(a: np.ndarray) -> np.ndarray:
     """Cast to 2d array"""
     arr = np.asarray(a)
     if arr.ndim == 1:
@@ -23,7 +24,7 @@ def asarray2d(a):
     return arr
 
 
-def get_arr_desc(arr):
+def get_arr_desc(arr: np.ndarray) -> str:
     """Get array description, in the form '<array type> <array shape>'"""
     type_ = type(arr).__name__  # see also __qualname__
     shape = getattr(arr, 'shape', None)
@@ -34,24 +35,24 @@ def get_arr_desc(arr):
     return desc.format(type_=type_, shape=shape)
 
 
-def get_enum_keys(cls):
+def get_enum_keys(cls: Enum) -> List[str]:
     return [attr for attr in dir(cls) if not attr.startswith('_')]
 
 
-def get_enum_values(cls):
+def get_enum_values(cls: Enum) -> list:
     if issubclass(cls, Enum):
         return [getattr(cls, attr).value for attr in get_enum_keys(cls)]
     else:
         return [getattr(cls, attr) for attr in get_enum_keys(cls)]
 
 
-def indent(text, n=4):
+def indent(text: str, n=4) -> str:
     """Indent each line of text by n spaces"""
     _indent = ' ' * n
     return '\n'.join(_indent + line for line in text.split('\n'))
 
 
-def make_plural_suffix(obj, suffix='s'):
+def make_plural_suffix(obj: str, suffix='s') -> str:
     if len(obj) != 1:
         return suffix
     else:
@@ -65,7 +66,7 @@ def whether_failures(call):
     return not failures, failures
 
 
-def has_nans(obj):
+def has_nans(obj) -> bool:
     """Check if obj has any NaNs
 
     Compatible with different behavior of np.isnan, which sometimes applies
@@ -91,7 +92,7 @@ def dfilter(call, pred):
     return lfilter(pred, call())
 
 
-def load_sklearn_df(name):
+def load_sklearn_df(name: str) -> Tuple[pd.DataFrame, pd.DataFrame]:
     method_name = 'load_{name}'.format(name=name)
     method = getattr(sklearn.datasets, method_name)
     data = method()
@@ -111,7 +112,7 @@ def quiet(call):
 
 class DeepcopyMixin:
 
-    def __deepcopy__(self, memo):
+    def __deepcopy__(self, memo: dict):
         cls = self.__class__
         result = cls.__new__(cls)
         memo[id(self)] = result
@@ -120,7 +121,7 @@ class DeepcopyMixin:
         return result
 
 
-def one_or_raise(seq):
+def one_or_raise(seq: Sequence):
     n = len(seq)
     if n == 1:
         return seq[0]
@@ -138,7 +139,7 @@ def needs_path(f):
     return wrapped
 
 
-def warn(msg):
+def warn(msg: str):
     """Issue a warning message of category BalletWarning"""
     warnings.warn(msg, category=BalletWarning)
 
@@ -153,7 +154,7 @@ def raiseifnone(call):
         return result
 
 
-def falsy(o):
+def falsy(o) -> bool:
     if isinstance(o, bool):
         return not o
     return isinstance(o, str) and (o.lower() == 'false' or o == '')

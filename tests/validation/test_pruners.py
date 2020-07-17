@@ -3,9 +3,9 @@ from unittest.mock import MagicMock, patch
 
 import numpy as np
 
-from ballet import Feature
 from ballet.eng.base import SimpleFunctionTransformer
 from ballet.eng.misc import IdentityTransformer
+from ballet.feature import Feature
 from ballet.util import asarray2d
 from ballet.validation.feature_pruning.validator import (
     GFSSFPruner, NoOpPruner, RandomPruner)

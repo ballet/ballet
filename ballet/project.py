@@ -2,7 +2,6 @@ import pathlib
 import sys
 from functools import partial
 from importlib import import_module
-from os import PathLike
 from types import ModuleType
 from typing import Any, Callable, Iterable, Tuple, Union
 
@@ -22,6 +21,7 @@ from ballet.util import needs_path, raiseifnone
 from ballet.util.ci import get_travis_branch, get_travis_pr_num
 from ballet.util.git import get_branch, get_pr_num, is_merge_commit
 from ballet.util.mod import import_module_at_path
+from ballet.util.typing import Pathy
 
 DEFAULT_CONFIG_NAME = 'ballet.yml'
 DYNACONF_OPTIONS = {
@@ -35,11 +35,11 @@ config = LazySettings(**DYNACONF_OPTIONS)
 
 
 @needs_path
-def load_config_at_path(path):
+def load_config_at_path(path: Pathy) -> LazySettings:
     """Load config at exact path
 
     Args:
-        path (path-like): path to config file
+        path: path to config file
 
     Returns:
         dict: config dict
@@ -58,27 +58,26 @@ def load_config_at_path(path):
 
 
 @needs_path
-def load_config_in_dir(path):
+def load_config_in_dir(path: Pathy) -> LazySettings:
     """Load config in containing directory
 
     Args:
-        path (path-like): path to containing directory of config file
+        path: path to containing directory of config file
 
     Returns:
-        dict: config dict
+        config dict
     """
     return load_config_at_path(path.joinpath(DEFAULT_CONFIG_NAME))
 
 
-def relative_to_contrib(diff, project):
+def relative_to_contrib(
+    diff: git.diff.Diff, project: 'Project'
+) -> pathlib.Path:
     """Compute relative path of changed file to contrib dir
 
     Args:
-        diff (git.diff.Diff): file diff
-        project (Project): project
-
-    Returns:
-        Path
+        diff: file diff
+        project: project
     """
     path = pathlib.Path(diff.b_path)
     contrib_path = project.config.get('contrib.module_path')
@@ -86,12 +85,14 @@ def relative_to_contrib(diff, project):
 
 
 @needs_path
-def make_feature_path(contrib_dir, username, featurename):
+def make_feature_path(
+    contrib_dir: Pathy, username: str, featurename: str
+) -> pathlib.Path:
     return contrib_dir.joinpath(
         'user_{}'.format(username), 'feature_{}.py'.format(featurename))
 
 
-def detect_github_username(project):
+def detect_github_username(project: 'Project') -> str:
     """Detect github username
 
     Looks in the following order:
@@ -134,15 +135,15 @@ class Project:
             project
     """
 
-    def __init__(self, package):
+    def __init__(self, package: ModuleType):
         self.package = package
 
     @cached_property
-    def config(self):
+    def config(self) -> LazySettings:
         return load_config_in_dir(self.path)
 
     @classmethod
-    def from_path(cls, path: PathLike, ascend: bool = False):
+    def from_path(cls, path: Pathy, ascend: bool = False):
         """Create a Project instance from an fs path to the containing dir
 
         Args:
@@ -214,7 +215,7 @@ class Project:
             return module
 
     @property
-    def pr_num(self):
+    def pr_num(self) -> str:
         """Return the PR number or None if not on a PR"""
         result = get_pr_num(repo=self.repo)
         if result is None:
@@ -222,12 +223,12 @@ class Project:
         return result
 
     @property
-    def on_pr(self):
+    def on_pr(self) -> bool:
         """Return whether the project has a source tree on a PR"""
         return self.pr_num is not None
 
     @property
-    def branch(self):
+    def branch(self) -> str:
         """Return current git branch according to git tree or CI environment"""
         result = get_branch(repo=self.repo)
         if result is None:
@@ -235,11 +236,11 @@ class Project:
         return result
 
     @property
-    def on_master(self):
+    def on_master(self) -> bool:
         return self.branch == 'master'
 
     @property
-    def on_master_after_merge(self):
+    def on_master_after_merge(self) -> bool:
         """Check the repo HEAD is on master after a merge commit
 
         Checks for two qualities of the current project:
@@ -253,7 +254,7 @@ class Project:
         return self.on_master and is_merge_commit(self.repo.head.commit)
 
     @cached_property
-    def path(self):
+    def path(self) -> pathlib.Path:
         """Return the project path (aka project root)
 
         If ``package.__file__`` is ``/foo/src/foo/__init__.py``,
@@ -263,12 +264,12 @@ class Project:
         return pathlib.Path(self.package.__file__).resolve().parents[2]
 
     @cached_property
-    def repo(self):
+    def repo(self) -> git.Repo:
         """Return a git.Repo object corresponding to this project"""
         return git.Repo(self.path, search_parent_directories=True)
 
     @property
-    def api(self):
+    def api(self) -> 'FeatureEngineeringProject':
         return self.resolve('api', 'api')
 
 
@@ -294,7 +295,7 @@ class FeatureEngineeringProject:
                                self.project)
 
     @cached_property
-    def project(self):
+    def project(self) -> Project:
         return Project(self._package)
 
     @property

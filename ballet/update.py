@@ -4,6 +4,7 @@ import subprocess
 import sys
 import tempfile
 from textwrap import dedent
+from typing import Optional
 from unittest.mock import patch
 
 import funcy
@@ -21,6 +22,7 @@ from ballet.project import Project
 from ballet.templating import render_project_template
 from ballet.util.git import did_git_push_succeed
 from ballet.util.log import logger
+from ballet.util.typing import Pathy
 
 PROJECT_CONTEXT_PATH = (
     pathlib.Path(__file__).resolve().parent.joinpath(
@@ -32,14 +34,14 @@ DEFAULT_BRANCH = 'master'
 TEMPLATE_BRANCH = 'project-template'
 
 
-def _query_pip_search_ballet():
+def _query_pip_search_ballet() -> str:
     """Call python -m pip search ballet"""
     # compat: use subprocess.run on py37+ and text=True on py37+
     popen_args = [sys.executable, '-m', 'pip', 'search', 'ballet']
     return subprocess.check_output(popen_args, universal_newlines=True)
 
 
-def _extract_latest_from_search_triple(triple):
+def _extract_latest_from_search_triple(triple) -> str:
     """Try to extract latest version number from a triple of search results"""
     description, installed, latest = triple
     if re_test(r'\s*ballet \(.+\)\s*-\s*\w*', description):
@@ -48,7 +50,7 @@ def _extract_latest_from_search_triple(triple):
     return None
 
 
-def _get_latest_ballet_version_string():
+def _get_latest_ballet_version_string() -> Optional[str]:
     """Get the latest version of ballet according to pip
 
     Parses the result of `pip search ballet`. Looks for something named
@@ -57,8 +59,7 @@ def _get_latest_ballet_version_string():
     would this code be running? :)
 
     Returns:
-        Union[str, None]: latest version of ballet or None if something went
-            wrong
+        latest version of ballet or None if something went wrong
     """
 
     # $ pip search ballet
@@ -77,12 +78,12 @@ def _get_latest_ballet_version_string():
     return None
 
 
-def _check_for_updated_ballet():
+def _check_for_updated_ballet() -> Optional[str]:
     """Return the version of an updated ballet if it is available
 
     Returns:
-        Union[str, None]: the latest version of ballet available or None if
-            the latest version is the same as the currently-installed version
+        the latest version of ballet available or None if the latest version
+        is the same as the currently-installed version
     """
     latest = _get_latest_ballet_version_string()
     current = ballet.__version__
@@ -106,20 +107,24 @@ def _warn_of_updated_ballet(latest):
             '''  # noqa E501
         msg = msg.format(latest=latest, current=ballet.__version__)
         msg = dedent(msg)
-        logger.warn(msg)
+        logger.warning(msg)
 
 
-def _make_template_branch_merge_commit_message():
+def _make_template_branch_merge_commit_message() -> str:
     version = ballet.__version__
     return 'Merge project template updates from ballet v{}'.format(version)
 
 
-def _safe_delete_remote(repo, name):
+def _safe_delete_remote(repo: git.Repo, name: str):
     with funcy.suppress(Exception):
         repo.delete_remote(name)
 
 
-def _render_project_template(cwd, tempdir, project_template_path=None):
+def _render_project_template(
+    cwd: pathlib.Path,
+    tempdir: Pathy,
+    project_template_path: Optional[Pathy] = None
+):
     tempdir = pathlib.Path(tempdir)
     context = _get_full_context(cwd)
 
@@ -132,7 +137,7 @@ def _render_project_template(cwd, tempdir, project_template_path=None):
             output_dir=safepath(tempdir))
 
 
-def _get_full_context(cwd):
+def _get_full_context(cwd: pathlib.Path) -> dict:
     # load the context stored within the project repository
     context_path = cwd.joinpath(CONTEXT_FILE_NAME)
     if context_path.exists():
@@ -156,7 +161,7 @@ def _get_full_context(cwd):
     return context['cookiecutter']
 
 
-def _call_remote_push(remote):
+def _call_remote_push(remote: git.Remote):
     return remote.push([
         '{master}:{master}'.format(master=DEFAULT_BRANCH),
         '{project_template}:{project_template}'.format(
@@ -165,7 +170,7 @@ def _call_remote_push(remote):
 
 
 @stacklog(logger.info, 'Pushing updates to remote')
-def _push(project):
+def _push(project: Project):
     """Push default branch and project template branch to remote
 
     With default config (i.e. remote and branch names), equivalent to::
@@ -198,7 +203,8 @@ def _log_recommended_reinstall():
         '    $ invoke install')
 
 
-def update_project_template(push=False, project_template_path=None):
+def update_project_template(push: bool = False,
+                            project_template_path: Optional[Pathy] = None):
     """Update project with updates to upstream project template
 
     The update is fairly complicated and proceeds as follows:
@@ -221,8 +227,8 @@ def update_project_template(push=False, project_template_path=None):
     6. If applicable, push to master.
 
     Args:
-        push (bool): whether to push updates to remote, defaults to False
-        project_template_path (PathLike): an override for the path to the
+        push: whether to push updates to remote, defaults to False
+        project_template_path: an override for the path to the
             project template
     """
     cwd = pathlib.Path.cwd().resolve()

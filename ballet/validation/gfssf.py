@@ -1,4 +1,7 @@
+from typing import Dict, List, Optional
+
 import numpy as np
+import pandas as pd
 
 from ballet.util import asarray2d
 
@@ -6,7 +9,11 @@ LAMBDA_1_ADJUSTMENT = 64
 LAMBDA_2_ADJUSTMENT = 64
 
 
-def _concat_datasets(dfs_by_src, n_samples=0, omit=None):
+def _concat_datasets(
+    dfs_by_src: Dict[str, pd.DataFrame],
+    n_samples: int = 0,
+    omit: Optional[List[str]] = None
+) -> np.ndarray:
     if omit is None:
         omit = []
     filtered_dfs = [np.array(dfs_by_src[x])
@@ -16,7 +23,11 @@ def _concat_datasets(dfs_by_src, n_samples=0, omit=None):
     return asarray2d(np.concatenate(filtered_dfs, axis=1))
 
 
-def _compute_lmbdas(unnorm_lmbda_1, unnorm_lmbda_2, features_by_src):
+def _compute_lmbdas(
+    unnorm_lmbda_1: float,
+    unnorm_lmbda_2: float,
+    features_by_src: Dict[str, np.ndarray],
+) -> float:
     feat_srcs = features_by_src.keys()
     num_features = len(feat_srcs)
     num_feature_cols = 0
@@ -25,5 +36,10 @@ def _compute_lmbdas(unnorm_lmbda_1, unnorm_lmbda_2, features_by_src):
     return (unnorm_lmbda_1 / num_features, unnorm_lmbda_2 / num_feature_cols)
 
 
-def _compute_threshold(lmbda_1, lmbda_2, n_feature_cols, n_omitted_cols=0):
+def _compute_threshold(
+    lmbda_1: float,
+    lmbda_2: float,
+    n_feature_cols: int,
+    n_omitted_cols: int = 0
+) -> float:
     return lmbda_1 + lmbda_2 * (n_feature_cols - n_omitted_cols)
