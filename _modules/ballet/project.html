@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,18 @@
   
 
   
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -30,10 +35,6 @@
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
@@ -49,7 +50,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home"> ballet
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> ballet
           
 
           
@@ -69,6 +70,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -97,6 +99,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#project-installation">Project installation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#collaboration-via-git-and-github">Collaboration via git and GitHub</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#enabling-continuous-integration">Enabling continuous integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#installing-bots">Installing bots</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../maintainer_guide.html#developing-new-features">Developing new features</a><ul>
@@ -222,6 +225,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -260,7 +264,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
@@ -282,14 +286,24 @@
   <h1>Source code for ballet.project</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
 <span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">import_module</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">PathLike</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">ModuleType</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">git</span>
 <span class="kn">from</span> <span class="nn">dynaconf</span> <span class="kn">import</span> <span class="n">LazySettings</span>
 <span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">cached_property</span><span class="p">,</span> <span class="n">fallback</span><span class="p">,</span> <span class="n">re_find</span>
+<span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span>
 
-<span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="kn">import</span> <span class="n">safepath</span>
+<span class="kn">import</span> <span class="nn">ballet.contrib</span>
+<span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="kn">import</span> <span class="n">is_mount</span><span class="p">,</span> <span class="n">safepath</span>
+<span class="kn">from</span> <span class="nn">ballet.eng</span> <span class="kn">import</span> <span class="n">BaseTransformer</span>
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="kn">import</span> <span class="n">ConfigurationError</span>
+<span class="kn">from</span> <span class="nn">ballet.feature</span> <span class="kn">import</span> <span class="n">Feature</span>
+<span class="kn">from</span> <span class="nn">ballet.pipeline</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">EngineerFeaturesResult</span><span class="p">,</span> <span class="n">FeatureEngineeringPipeline</span><span class="p">,</span> <span class="n">make_engineer_features</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">needs_path</span><span class="p">,</span> <span class="n">raiseifnone</span>
 <span class="kn">from</span> <span class="nn">ballet.util.ci</span> <span class="kn">import</span> <span class="n">get_travis_branch</span><span class="p">,</span> <span class="n">get_travis_pr_num</span>
 <span class="kn">from</span> <span class="nn">ballet.util.git</span> <span class="kn">import</span> <span class="n">get_branch</span><span class="p">,</span> <span class="n">get_pr_num</span><span class="p">,</span> <span class="n">is_merge_commit</span>
@@ -401,23 +415,10 @@
 <span class="sd">    This is a utility class mostly useful for easy access to the project&#39;s</span>
 <span class="sd">    information from within the ballet.validation package.</span>
 
-<span class="sd">    In addition to the defined methods and properties, the following functions</span>
-<span class="sd">    of the project can be accessed as attributes of a class instance, where</span>
-<span class="sd">    ``prj`` refers to the python module of the underlying ballet project:</span>
-<span class="sd">    - ``load_data`` (``prj.load_data.load_data``)</span>
-<span class="sd">    - ``build`` (``prj.features.build``)</span>
-<span class="sd">    - ``collect_contrib_features`` (``prj.features.collect_contrib_features``)</span>
-
 <span class="sd">    Args:</span>
 <span class="sd">        package (ModuleType): python package representing imported ballet</span>
 <span class="sd">            project</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">attr_map</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;load_data&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;.load_data&#39;</span><span class="p">,</span> <span class="s1">&#39;load_data&#39;</span><span class="p">),</span>
-        <span class="s1">&#39;build&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;.features&#39;</span><span class="p">,</span> <span class="s1">&#39;build&#39;</span><span class="p">),</span>
-        <span class="s1">&#39;collect_contrib_features&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;.features&#39;</span><span class="p">,</span> <span class="s1">&#39;collect_contrib_features&#39;</span><span class="p">)</span>
-    <span class="p">}</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">package</span> <span class="o">=</span> <span class="n">package</span>
@@ -427,19 +428,28 @@
         <span class="k">return</span> <span class="n">load_config_in_dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Project.from_path"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.Project.from_path">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_path</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">from_path</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">PathLike</span><span class="p">,</span> <span class="n">ascend</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a Project instance from an fs path to the containing dir</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            path (PathLike): path to directory that contains the</span>
-<span class="sd">                project</span>
+<span class="sd">            path: path to directory that contains the project</span>
+<span class="sd">            ascend: if the config file is not found in the given directory,</span>
+<span class="sd">                then search in parent directories, stopping at a file system</span>
+<span class="sd">                boundary</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="n">config</span> <span class="o">=</span> <span class="n">load_config_in_dir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="n">package_slug</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;project.package_slug&#39;</span><span class="p">)</span>
-        <span class="n">package</span> <span class="o">=</span> <span class="n">import_module_at_path</span><span class="p">(</span><span class="n">package_slug</span><span class="p">,</span>
-                                        <span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">,</span> <span class="n">package_slug</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">package</span><span class="p">)</span></div>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">load_config_in_dir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="n">package_slug</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;project.package_slug&#39;</span><span class="p">)</span>
+            <span class="n">package</span> <span class="o">=</span> <span class="n">import_module_at_path</span><span class="p">(</span><span class="n">package_slug</span><span class="p">,</span>
+                                            <span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">,</span> <span class="n">package_slug</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ConfigurationError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ascend</span><span class="p">:</span>
+                <span class="n">parent</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">parent</span>
+                <span class="k">if</span> <span class="n">parent</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_mount</span><span class="p">(</span><span class="n">parent</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_path</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">ascend</span><span class="o">=</span><span class="n">ascend</span><span class="p">)</span>
+            <span class="k">raise</span></div>
 
 <div class="viewcode-block" id="Project.from_cwd"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.Project.from_cwd">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_cwd</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
@@ -452,21 +462,42 @@
 <span class="sd">        Raises:</span>
 <span class="sd">            ConfigurationError: couldn&#39;t find the configuration file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
-        <span class="k">while</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">is_mount</span><span class="p">():</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">Project</span><span class="o">.</span><span class="n">from_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">ConfigurationError</span><span class="p">:</span>
-                <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">parent</span>
+        <span class="n">cwd</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_path</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="n">ascend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
-        <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span><span class="s1">&#39;Couldn</span><span class="se">\&#39;</span><span class="s1">t create Project instance&#39;</span><span class="p">)</span></div>
+<div class="viewcode-block" id="Project.resolve"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.Project.resolve">[docs]</a>    <span class="k">def</span> <span class="nf">resolve</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">modname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ModuleType</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Import module or attribute from project</span>
 
-    <span class="k">def</span> <span class="nf">_resolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">modname</span><span class="p">,</span> <span class="n">attr</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">modname</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="sd">        Args:</span>
+<span class="sd">            modname: dotted module name relative to top-level with leading</span>
+<span class="sd">                dot omited; if trying to import the top-level package,</span>
+<span class="sd">                use &#39;&#39; (can also just access self.package)</span>
+<span class="sd">            attr: attribute to get from the imported module</span>
+
+<span class="sd">        Example:</span>
+
+<span class="sd">            &gt;&gt;&gt; project.resolve(&#39;&#39;, &#39;__version__&#39;)</span>
+<span class="sd">            # return __version__ attribute from top-level package</span>
+<span class="sd">            &gt;&gt;&gt; project.resolve(&#39;api&#39;)</span>
+<span class="sd">            # return myproject.api module</span>
+<span class="sd">            &gt;&gt;&gt; project.resolve(&#39;api&#39;, attr=&#39;api&#39;)</span>
+<span class="sd">            # return api object from myproject.api module</span>
+<span class="sd">            &gt;&gt;&gt; project.resolve(&#39;foo.bar&#39;)</span>
+<span class="sd">            # return myproject.foo.bar module</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">modname</span><span class="p">:</span>
+            <span class="n">module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">modname</span><span class="p">,</span>
+                                   <span class="n">package</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">module</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">package</span>
+
         <span class="k">if</span> <span class="n">attr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">module</span>
+            <span class="k">return</span> <span class="n">module</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">pr_num</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -483,7 +514,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">branch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return whether the project is on master branch&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Return current git branch according to git tree or CI environment&quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">get_branch</span><span class="p">(</span><span class="n">repo</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">get_travis_branch</span><span class="p">()</span>
@@ -507,7 +538,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_master</span> <span class="ow">and</span> <span class="n">is_merge_commit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">commit</span><span class="p">)</span>
 
-    <span class="nd">@property</span>
+    <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the project path (aka project root)</span>
 
@@ -517,16 +548,56 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
 
-    <span class="nd">@property</span>
+    <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">repo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a git.Repo object corresponding to this project&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">search_parent_directories</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">Project</span><span class="o">.</span><span class="n">attr_map</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve</span><span class="p">(</span><span class="o">*</span><span class="n">Project</span><span class="o">.</span><span class="n">attr_map</span><span class="p">[</span><span class="n">attr</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span></div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">api</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="s1">&#39;api&#39;</span><span class="p">,</span> <span class="s1">&#39;api&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FeatureEngineeringProject"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.FeatureEngineeringProject">[docs]</a><span class="k">class</span> <span class="nc">FeatureEngineeringProject</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">package</span><span class="p">:</span> <span class="n">ModuleType</span><span class="p">,</span>
+        <span class="n">encoder</span><span class="p">:</span> <span class="n">BaseTransformer</span><span class="p">,</span>
+        <span class="n">load_data</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">DataFrame</span><span class="p">]],</span>
+        <span class="n">extra_features</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Feature</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">engineer_features</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">EngineerFeaturesResult</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_package</span> <span class="o">=</span> <span class="n">package</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">encoder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_data</span> <span class="o">=</span> <span class="n">load_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_extra_features</span> <span class="o">=</span> <span class="n">extra_features</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_engineer_features</span> <span class="o">=</span> <span class="n">engineer_features</span>
+
+        <span class="c1"># use fqn to avoid circular import</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">collect</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">ballet</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">collect_contrib_features</span><span class="p">,</span>
+                               <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">)</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">project</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Project</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_package</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">features</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Feature</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extra_features</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pipeline</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FeatureEngineeringPipeline</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">FeatureEngineeringPipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FeatureEngineeringProject.engineer_features"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.FeatureEngineeringProject.engineer_features">[docs]</a>    <span class="k">def</span> <span class="nf">engineer_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EngineerFeaturesResult</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Engineer features&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engineer_features</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_engineer_features</span> <span class="o">=</span> <span class="n">make_engineer_features</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_data</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engineer_features</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
@@ -539,11 +610,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2018, Micah Smith
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -554,7 +633,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

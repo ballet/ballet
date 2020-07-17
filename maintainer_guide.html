@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,18 @@
   
 
   
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -30,10 +35,6 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Contributor Guide" href="contributor_guide.html" />
@@ -51,7 +52,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> ballet
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ballet
           
 
           
@@ -71,6 +72,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -99,6 +101,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#project-installation">Project installation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#collaboration-via-git-and-github">Collaboration via git and GitHub</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#enabling-continuous-integration">Enabling continuous integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-bots">Installing bots</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#developing-new-features">Developing new features</a><ul>
@@ -224,6 +227,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -262,7 +266,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Maintainer Guide</li>
     
@@ -376,27 +380,30 @@ features and details about the prediction problem they are ultimately trying to 
 project maintainer. The resulting files are then committed to a new git repository. Note that the
 specification of a scorer for the not-chosen problem type can be skipped (by selecting <code class="docutils literal notranslate"><span class="pre">n/a</span></code>).</p>
 <p>Let’s see what files have we have created:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> tree -a ballet-my-project/ -I .git
-<span class="go">ballet-my-project/</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> tree -a ballet-my-project -I .git
+<span class="go">ballet-my-project</span>
 <span class="go">├── .cookiecutter_context.json</span>
 <span class="go">├── .github</span>
 <span class="go">│   └── repolockr.yml</span>
 <span class="go">├── .gitignore</span>
 <span class="go">├── .travis.yml</span>
-<span class="go">├── Makefile</span>
 <span class="go">├── README.md</span>
 <span class="go">├── ballet.yml</span>
 <span class="go">├── setup.py</span>
-<span class="go">└── src</span>
-<span class="go">    └── myproject</span>
-<span class="go">        ├── __init__.py</span>
-<span class="go">        ├── features</span>
-<span class="go">        │   ├── __init__.py</span>
-<span class="go">        │   └── contrib</span>
-<span class="go">        │       └── __init__.py</span>
-<span class="go">        └── load_data.py</span>
+<span class="go">├── src</span>
+<span class="go">│   └── myproject</span>
+<span class="go">│       ├── __init__.py</span>
+<span class="go">│       ├── __main__.py</span>
+<span class="go">│       ├── api.py</span>
+<span class="go">│       ├── features</span>
+<span class="go">│       │   ├── __init__.py</span>
+<span class="go">│       │   ├── contrib</span>
+<span class="go">│       │   │   └── __init__.py</span>
+<span class="go">│       │   └── encoder.py</span>
+<span class="go">│       └── load_data.py</span>
+<span class="go">└── tasks.py</span>
 
-<span class="go">5 directories, 12 files</span>
+<span class="go">5 directories, 15 files</span>
 </pre></div>
 </div>
 <p>Importantly, by keeping this project structure intact, Ballet will be able to automatically care
@@ -406,9 +413,9 @@ for your feature engineering pipeline.</p>
 training data, and location of feature engineering source code.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">.travis.yml</span></code>: a <a class="reference external" href="https://travis-ci.com">Travis CI</a> configuration file pre-configured to run a Ballet validation
 suite.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">src/myproject/load_data.py</span></code>: this is where you will write code to load training data</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">src/myproject/features/contrib</span></code>: this is where the features created by your project’s
-contributors will live.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/myproject/api.py</span></code>: this is where Ballet will look for functionality implemented by your
+project, including a function to load training/test data or collected features. Stubs for this
+functionality are already provided by the template but you can further adapt them.</p></li>
 </ul>
 </div>
 <div class="section" id="project-installation">
@@ -416,9 +423,9 @@ contributors will live.</p></li>
 <p>For local development, you can then install your project. This will make your feature
 engineering pipeline accessible in interactive settings (Python interpreter, Jupyter notebook)
 and as a command-line tool.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">cd</span> myproject
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">cd</span> ballet-my-project
 <span class="gp">$</span> conda create -n myproject -y <span class="o">&amp;&amp;</span> conda activate myproject  <span class="c1"># or your preferred environment tool</span>
-<span class="gp gp-VirtualEnv">(myproject)</span> <span class="gp">$</span> make install
+<span class="gp gp-VirtualEnv">(myproject)</span> <span class="gp">$</span> pip install invoke <span class="o">&amp;&amp;</span> invoke install
 </pre></div>
 </div>
 </div>
@@ -427,25 +434,23 @@ and as a command-line tool.</p>
 <p>Under the hood, contributors will collaborate using the powerful functionality provided by git
 and GitHub. In fact, after the quickstart step, you already have a git-tracked repository and a
 git remote set up.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">cd</span> myproject
-
-<span class="gp">$</span> git log
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> git log
 <span class="go">commit 5c8ec6773aff4030fc1256a7c9e13675d620bb6e (HEAD -&gt; master, project-template)</span>
 <span class="go">Author: Jane Developer &lt;jane@developer.org&gt;</span>
 <span class="go">Date:   Tue Apr 16 17:27:44 2019 -0400</span>
 
-<span class="go">    Automatically generated files from ballet-quickstart</span>
+<span class="go">    Automatically generated files from ballet quickstart</span>
 
 <span class="gp">$</span> git remote -v
-<span class="go">origin       git@github.com:jane_developer/myproject (fetch)</span>
-<span class="go">origin       git@github.com:jane_developer/myproject (push)</span>
+<span class="go">origin       git@github.com:jane_developer/ballet-my-project (fetch)</span>
+<span class="go">origin       git@github.com:jane_developer/ballet-my-project (push)</span>
 </pre></div>
 </div>
 <p>Next, you must create the matching GitHub project, <code class="docutils literal notranslate"><span class="pre">myproject</span></code>, under the account of the
 <code class="docutils literal notranslate"><span class="pre">github_owner</span></code> that you specified earlier (in this case, <code class="docutils literal notranslate"><span class="pre">jane_developer</span></code>). Do not
 initialize the project with any sample files that GitHub offers.</p>
 <p>After you having created the project on GitHub, push your local copy.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> git push origin master
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> git push --all origin
 </pre></div>
 </div>
 </div>
@@ -453,9 +458,22 @@ initialize the project with any sample files that GitHub offers.</p>
 <h3>Enabling continuous integration<a class="headerlink" href="#enabling-continuous-integration" title="Permalink to this headline">¶</a></h3>
 <p>Ballet makes uses of the continuous integration service <a class="reference external" href="https://travis-ci.com">Travis CI</a> in order to validate code
 that contributors propose as well as perform streaming logical feature selection. You must
-enable Travis CI for your project on GitHub by <a class="reference external" href="https://docs.travis-ci.com/user/tutorial/#to-get-started-with-travis-ci">following these simple directions</a>. You can skip any steps that have
-to do with customizing the <code class="docutils literal notranslate"><span class="pre">.travis.yml</span></code> file, as we have already done that for you in the
-quickstart.</p>
+enable Travis CI for your project on GitHub by`following these simple directions
+&lt;<a class="reference external" href="https://docs.travis-ci.com/user/tutorial/#to-get-started-with-travis-ci-using-github">https://docs.travis-ci.com/user/tutorial/#to-get-started-with-travis-ci-using-github</a>&gt;`_. You can
+skip any steps that have to do with customizing the <code class="docutils literal notranslate"><span class="pre">.travis.yml</span></code> file, as we have already done
+that for you in the quickstart.</p>
+</div>
+<div class="section" id="installing-bots">
+<h3>Installing bots<a class="headerlink" href="#installing-bots" title="Permalink to this headline">¶</a></h3>
+<p>Many Ballet project use bots to assist maintainers.</p>
+<p>1. Ballet bot. Install it <a class="reference external" href="https://github.com/apps/ballet-bot">here</a>. Ballet bot will
+automatically merge or close PRs based on the CI test result and the project settings configured
+in the <code class="docutils literal notranslate"><span class="pre">ballet.yml</span></code> file.</p>
+<p>2. Repolockr. Install it <a class="reference external" href="https://github.com/apps/repolockr">here</a>. Repolockr checks every PR
+to ensure that “protected” files have not been changed. These are files listed in the Repolockr
+config file on the master branch. A contributor might accidentally modify a protected file like
+<code class="docutils literal notranslate"><span class="pre">ballet.yml</span></code> which could break the project or the CI pipeline; Repolockr will detect this and
+fail the PR which might accidentally pass otherwise.</p>
 </div>
 </div>
 <div class="section" id="developing-new-features">
@@ -467,7 +485,7 @@ to your project for validation. For more details on the contributor workflow, se
 Guide</a>.</p>
 <div class="section" id="validating-features">
 <h3>Validating features<a class="headerlink" href="#validating-features" title="Permalink to this headline">¶</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">myproject</span></code> repository has received a new pull request which triggers an automatic
+<p>The <code class="docutils literal notranslate"><span class="pre">ballet-my-project</span></code> repository has received a new pull request which triggers an automatic
 evaluation.</p>
 <ol class="arabic simple">
 <li><p>The PR is examined by the CI service.</p></li>
@@ -496,22 +514,23 @@ merge commit that comes from merging an accepted feature.</p></li>
 <p>As your repository fills with features, your feature engineering pipeline is always available to
 engineer features from new data points or datasets.</p>
 <p>For interactive usage:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">myproject</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">myproject.api</span> <span class="kn">import</span> <span class="n">build</span><span class="p">,</span> <span class="n">load_data</span>
 
-<span class="c1"># load training data and fit pipeline</span>
-<span class="n">X_df_tr</span><span class="p">,</span> <span class="n">y_df_tr</span> <span class="o">=</span> <span class="n">myproject</span><span class="o">.</span><span class="n">load_data</span><span class="o">.</span><span class="n">load_data</span><span class="p">()</span>
-<span class="n">out</span> <span class="o">=</span> <span class="n">myproject</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">X_df_tr</span><span class="p">,</span> <span class="n">y_df_tr</span><span class="p">)</span>
-<span class="n">mapper_X</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">mapper_X</span>
-<span class="n">encoder_y</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">encoder_y</span>
+<span class="c1"># load training data</span>
+<span class="n">X_df_tr</span><span class="p">,</span> <span class="n">y_df_tr</span> <span class="o">=</span> <span class="n">load_data</span><span class="p">()</span>
+
+<span class="c1"># fit pipeline to training data</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">build</span><span class="p">(</span><span class="n">X_df_tr</span><span class="p">,</span> <span class="n">y_df_tr</span><span class="p">)</span>
+<span class="n">pipeline</span><span class="p">,</span> <span class="n">encoder</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">encoder</span>
 
 <span class="c1"># load new data and apply pipeline</span>
-<span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span> <span class="o">=</span> <span class="n">myproject</span><span class="o">.</span><span class="n">load_data</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">input_dir</span><span class="o">=</span><span class="s1">&#39;/path/to/new/data&#39;</span><span class="p">)</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">mapper_X</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_df</span><span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">encoder_y</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">y_df</span><span class="p">)</span>
+<span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span> <span class="o">=</span> <span class="n">load_data</span><span class="p">(</span><span class="n">input_dir</span><span class="o">=</span><span class="s1">&#39;/path/to/new/data&#39;</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_df</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">encoder</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">y_df</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>For command-line usage:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> myproject-engineer-features path/to/test/data path/to/features/output
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> python -m myproject engineer-features path/to/test/data path/to/features/output
 </pre></div>
 </div>
 </div>
@@ -559,11 +578,19 @@ detail <a class="reference external" href="cli_reference.html#ballet-update-proj
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2018, Micah Smith
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -574,7 +601,6 @@ detail <a class="reference external" href="cli_reference.html#ballet-update-proj
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

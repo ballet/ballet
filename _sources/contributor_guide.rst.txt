@@ -97,7 +97,7 @@ Develop a new feature
       (myenv) $ git checkout master
       (myenv) $ git pull upstream master
       (myenv) $ git push origin master
-      (myenv) $ make install
+      (myenv) $ pip install invoke && invoke install
 
    .. note::
 

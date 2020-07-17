@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,18 @@
   
 
   
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -30,10 +35,6 @@
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
@@ -49,7 +50,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home"> ballet
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> ballet
           
 
           
@@ -69,6 +70,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -97,6 +99,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#project-installation">Project installation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#collaboration-via-git-and-github">Collaboration via git and GitHub</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#enabling-continuous-integration">Enabling continuous integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#installing-bots">Installing bots</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../maintainer_guide.html#developing-new-features">Developing new features</a><ul>
@@ -222,6 +225,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -260,7 +264,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
@@ -377,14 +381,15 @@
 
 <span class="k">def</span> <span class="nf">_warn_of_updated_ballet</span><span class="p">(</span><span class="n">latest</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">latest</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
-<span class="s1">                A new version of ballet is available: </span><span class="si">{latest}</span><span class="s1"></span>
-<span class="s1">                - you currently have ballet v</span><span class="si">{current}</span><span class="s1"></span>
-<span class="s1">                - if you don&#39;t update ballet, you won&#39;t receive project template updates</span>
-<span class="s1">                - update ballet and then try again:</span>
-<span class="s1">                </span>
-<span class="s1">                    $ pip install --upgrade ballet&#39;</span>
-<span class="s1">                &#39;&#39;&#39;</span>  <span class="c1"># noqa E501</span>
+        <span class="n">msg</span> <span class="o">=</span> \
+            <span class="sd">&#39;&#39;&#39;\</span>
+<span class="sd">            A new version of ballet is available: {latest}</span>
+<span class="sd">            - you currently have ballet v{current}</span>
+<span class="sd">            - if you don&#39;t update ballet, you won&#39;t receive project template updates</span>
+<span class="sd">            - update ballet and then try again:</span>
+
+<span class="sd">                $ pip install --upgrade ballet</span>
+<span class="sd">            &#39;&#39;&#39;</span>  <span class="c1"># noqa E501</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">latest</span><span class="o">=</span><span class="n">latest</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="n">ballet</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
@@ -476,7 +481,7 @@
         <span class="s1">&#39;project in case the project template requires any different </span><span class="se">\n</span><span class="s1">&#39;</span>
         <span class="s1">&#39;dependencies than what you have installed:</span><span class="se">\n</span><span class="s1">&#39;</span>
         <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
-        <span class="s1">&#39;    $ make install&#39;</span><span class="p">)</span>
+        <span class="s1">&#39;    $ invoke install&#39;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="update_project_template"><a class="viewcode-back" href="../../api/ballet.update.html#ballet.update.update_project_template">[docs]</a><span class="k">def</span> <span class="nf">update_project_template</span><span class="p">(</span><span class="n">push</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">project_template_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -612,11 +617,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2018, Micah Smith
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -627,7 +640,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

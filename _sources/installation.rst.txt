@@ -8,6 +8,8 @@ The Ballet framework is distributed as a Python package available on PyPI. The p
 
 - the ballet CLI
 - the ballet Python SDK
+- the ballet feature engineering "plugin"
+- the ballet project template and feature template
 
 Stable release
 --------------
