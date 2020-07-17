@@ -31,10 +31,6 @@ requirements = [
     'stacklog',
 ]
 
-setup_requirements = [
-    'pytest-runner>=2.11.1',
-]
-
 test_requirements = [
     'coverage>=4.5.1',
     'pytest>=3.4.2',
@@ -45,7 +41,7 @@ test_requirements = [
 
 development_requirements = [
     # general
-    'bumpversion>=0.5.3',
+    'bump2version>=1',
     'pip>=9.0.1',
     'watchdog>=0.8.3',
     'invoke>=1.4',
@@ -102,7 +98,6 @@ setup(
     name='ballet',
     packages=find_packages(include=['ballet', 'ballet.*']),
     python_requires='>=3.6',
-    setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/HDI-Project/ballet',
