@@ -8,7 +8,6 @@ from git import GitCommandError
 import ballet.exc
 import ballet.templating
 import ballet.update
-from ballet.compat import safepath
 from ballet.project import DEFAULT_CONFIG_NAME
 from ballet.update import DEFAULT_BRANCH, TEMPLATE_BRANCH
 
@@ -16,7 +15,7 @@ from ballet.update import DEFAULT_BRANCH, TEMPLATE_BRANCH
 
 
 def _run_ballet_update_template(d, project_slug, **kwargs):
-    with work_in(safepath(d.joinpath(project_slug))):
+    with work_in(d.joinpath(project_slug)):
         ballet.update.update_project_template(**kwargs)
 
 

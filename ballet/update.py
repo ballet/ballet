@@ -16,7 +16,6 @@ from git import GitCommandError
 from stacklog import stacklog
 
 import ballet
-from ballet.compat import safepath
 from ballet.exc import BalletError, ConfigurationError
 from ballet.project import Project
 from ballet.templating import render_project_template
@@ -136,7 +135,7 @@ def _render_project_template(
             project_template_path=project_template_path,
             no_input=True,
             extra_context=context,
-            output_dir=safepath(tempdir))
+            output_dir=tempdir)
 
 
 def _get_full_context(cwd: pathlib.Path) -> dict:
@@ -271,7 +270,7 @@ def update_project_template(push: bool = False,
         logger.debug('Re-rendering project template at {}'.format(tempdir))
         updated_template = _render_project_template(
             cwd, tempdir, project_template_path=project_template_path)
-        updated_repo = git.Repo(safepath(updated_template))
+        updated_repo = git.Repo(updated_template)
 
         # tempdir is a randomly-named dir suitable for a random remote name
         # to avoid conflicts

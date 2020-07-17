@@ -8,7 +8,6 @@ import pytest
 from cookiecutter.utils import work_in
 
 import ballet
-from ballet.compat import safepath
 from ballet.project import Project
 from ballet.templating import render_project_template
 from tests.util import tree
@@ -29,7 +28,7 @@ def quickstart(tempdir):
     $ tree .
     """
     # cd tempdir
-    with work_in(safepath(tempdir)):
+    with work_in(tempdir):
 
         project_slug = 'foo-bar'
         package_slug = 'foo_bar'
@@ -42,7 +41,7 @@ def quickstart(tempdir):
         # ballet quickstart
         render_project_template(no_input=True,
                                 extra_context=extra_context,
-                                output_dir=safepath(tempdir))
+                                output_dir=tempdir)
 
         # tree .
         tree(tempdir)
@@ -61,7 +60,7 @@ def quickstart(tempdir):
 def project_template_copy(tempdir):
     old_path = ballet.templating.PROJECT_TEMPLATE_PATH
     new_path = tempdir.joinpath('templates', 'project_template')
-    shutil.copytree(safepath(old_path), safepath(new_path))
+    shutil.copytree(old_path, new_path)
 
     with patch('ballet.templating.PROJECT_TEMPLATE_PATH', new_path):
         tree(new_path)

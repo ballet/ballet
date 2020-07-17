@@ -8,7 +8,6 @@ import numpy as np
 import pandas as pd
 from stacklog import stacklog
 
-from ballet.compat import safepath
 from ballet.util.fs import splitext2
 from ballet.util.log import logger
 from ballet.util.typing import Pathy
@@ -41,7 +40,7 @@ def _write_tabular_pickle(obj, filepath):
     _, fn, ext = splitext2(filepath)
     _check_ext(ext, '.pkl')
     if isinstance(obj, np.ndarray):
-        with open(safepath(filepath), 'wb') as f:
+        with open(filepath, 'wb') as f:
             pickle.dump(obj, f)
     elif isinstance(obj, pd.core.frame.NDFrame):
         obj.to_pickle(filepath)
@@ -88,7 +87,7 @@ def _read_tabular_h5(filepath):
 def _read_tabular_pickle(filepath):
     _, fn, ext = splitext2(filepath)
     _check_ext(ext, '.pkl')
-    with open(safepath(filepath), 'rb') as f:
+    with open(filepath, 'rb') as f:
         return pickle.load(f)
 
 

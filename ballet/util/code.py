@@ -4,9 +4,8 @@ import platform
 from types import FunctionType
 from typing import Iterator
 
+import black
 from funcy import notnone
-
-from ballet.compat import black
 
 
 def is_valid_python(code: str) -> bool:
@@ -29,9 +28,6 @@ def blacken_code(code: str) -> str:
     Args:
         code: code as string
     """
-    if black is None:
-        raise NotImplementedError
-
     major, minor, _ = platform.python_version_tuple()
     pyversion = 'py{major}{minor}'.format(major=major, minor=minor)
     target_versions = [black.TargetVersion[pyversion.upper()]]

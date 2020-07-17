@@ -6,7 +6,6 @@ import git
 import requests
 from funcy import collecting, re_find, re_test, silent
 
-from ballet.compat import safepath
 from ballet.util import one_or_raise
 
 FILE_CHANGES_COMMIT_RANGE = '{a}...{b}'
@@ -156,7 +155,7 @@ def get_diff_endpoints_from_commit_range(
 
 def get_repo(repo: Optional[git.Repo] = None) -> git.Repo:
     if repo is None:
-        repo = git.Repo(safepath(pathlib.Path.cwd()),
+        repo = git.Repo(pathlib.Path.cwd(),
                         search_parent_directories=True)
     return repo
 

@@ -12,7 +12,7 @@ with open('HISTORY.md') as history_file:
     history = history_file.read()
 
 requirements = [
-    'black; python_version>="3.6"',
+    'black',
     'cookiecutter',
     'Click>=6.0',
     'dill',
@@ -101,7 +101,7 @@ setup(
     keywords='ballet',
     name='ballet',
     packages=find_packages(include=['ballet', 'ballet.*']),
-    python_requires='>=3.5',
+    python_requires='>=3.6',
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,

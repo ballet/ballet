@@ -11,7 +11,7 @@ from funcy import cached_property, fallback, re_find
 from pandas import DataFrame
 
 import ballet.contrib
-from ballet.compat import is_mount, safepath
+from ballet.compat import is_mount
 from ballet.eng import BaseTransformer
 from ballet.exc import ConfigurationError
 from ballet.feature import Feature
@@ -47,8 +47,8 @@ def load_config_at_path(path: Pathy) -> LazySettings:
     if path.exists() and path.is_file():
         options = DYNACONF_OPTIONS.copy()
         options.update({
-            'ROOT_PATH_FOR_DYNACONF': safepath(path.parent),
-            'SETTINGS_FILE_FOR_DYNACONF': safepath(path.name),
+            'ROOT_PATH_FOR_DYNACONF': str(path.parent),
+            'SETTINGS_FILE_FOR_DYNACONF': str(path.name),
         })
         return LazySettings(**options)
     else:

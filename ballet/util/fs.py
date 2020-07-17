@@ -6,7 +6,6 @@ from typing import Callable, Iterator, List, Tuple
 
 from funcy import partial, suppress
 
-from ballet.compat import safepath
 from ballet.exc import BalletError
 from ballet.util.log import logger
 from ballet.util.typing import Pathy
@@ -14,7 +13,7 @@ from ballet.util.typing import Pathy
 
 def spliceext(filepath: Pathy, s: str) -> str:
     """Add s into filepath before the extension"""
-    root, ext = os.path.splitext(safepath(filepath))
+    root, ext = os.path.splitext(filepath)
     return root + s + ext
 
 
@@ -43,16 +42,16 @@ def replaceext(filepath: Pathy, new_ext: str) -> str:
 
 def splitext2(filepath: Pathy) -> Tuple[str, str, str]:
     """Split filepath into root, filename, ext"""
-    root, filename = os.path.split(safepath(filepath))
-    filename, ext = os.path.splitext(safepath(filename))
+    root, filename = os.path.split(filepath)
+    filename, ext = os.path.splitext(filename)
     return root, filename, ext
 
 
 def isemptyfile(filepath: Pathy) -> bool:
     """Determine if the file both exists and isempty"""
-    exists = os.path.exists(safepath(filepath))
+    exists = os.path.exists(filepath)
     if exists:
-        filesize = os.path.getsize(safepath(filepath))
+        filesize = os.path.getsize(filepath)
         return filesize == 0
     else:
         return False
@@ -107,8 +106,8 @@ def _synctree(
     result = []
     cleanup = []
     try:
-        for root, dirnames, filenames in os.walk(safepath(src)):
-            root = pathlib.Path(root)
+        for _root, dirnames, filenames in os.walk(src):
+            root = pathlib.Path(_root)
             relative_dir = root.relative_to(src)
 
             for dirname in dirnames:
@@ -121,7 +120,7 @@ def _synctree(
                         'Making directory: {dstdir!s}'.format(dstdir=dstdir))
                     dstdir.mkdir()
                     result.append((dstdir, 'dir'))
-                    cleanup.append(partial(os.rmdir, safepath(dstdir)))
+                    cleanup.append(partial(os.rmdir, dstdir))
 
             for filename in filenames:
                 srcfile = root.joinpath(filename)
@@ -134,7 +133,7 @@ def _synctree(
                         .format(dstfile=dstfile))
                     copyfile(srcfile, dstfile)
                     result.append((dstfile, 'file'))
-                    cleanup.append(partial(os.unlink, safepath(dstfile)))
+                    cleanup.append(partial(os.unlink, dstfile))
 
     except Exception:
         with suppress(Exception):
@@ -147,7 +146,7 @@ def _synctree(
 
 def pwalk(d: Pathy, **kwargs) -> Iterator[pathlib.Path]:
     """Similar to os.walk but with pathlib.Path objects"""
-    for dirpath, dirnames, filenames in os.walk(safepath(d), **kwargs):
-        dirpath = pathlib.Path(dirpath)
+    for _dirpath, dirnames, filenames in os.walk(d, **kwargs):
+        dirpath = pathlib.Path(_dirpath)
         for p in dirnames + filenames:
             yield dirpath.joinpath(p)

@@ -18,7 +18,6 @@ import ballet.util.ci
 import ballet.util.fs
 import ballet.util.git
 import ballet.util.io
-from ballet.compat import safepath
 from ballet.util import nonnegative
 from ballet.util.ci import TravisPullRequestBuildDiffer
 from ballet.util.code import blacken_code, get_source, is_valid_python
@@ -782,7 +781,7 @@ class IoTest(unittest.TestCase):
             filepath = pathlib.Path(d).joinpath('baz.h5')
             ballet.util.io._write_tabular_h5(obj, filepath)
 
-            file_size = os.path.getsize(safepath(filepath))
+            file_size = os.path.getsize(filepath)
             self.assertGreater(file_size, 0)
 
     def test_write_tabular_h5_ndframe(self):

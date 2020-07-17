@@ -1,5 +1,5 @@
 import warnings
-from contextlib import suppress
+from contextlib import redirect_stderr, redirect_stdout, suppress
 from copy import deepcopy
 from os import devnull
 from typing import Collection, Optional, Sequence, Tuple, TypeVar
@@ -10,7 +10,6 @@ import sklearn.datasets
 from funcy import complement, decorator, lfilter
 from funcy.decorators import Call
 
-from ballet.compat import redirect_stderr, redirect_stdout
 from ballet.exc import BalletWarning
 from ballet.util.log import logger
 

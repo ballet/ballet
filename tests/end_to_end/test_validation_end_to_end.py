@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from ballet.compat import nullcontext, safepath
+from ballet.compat import nullcontext
 from ballet.eng.misc import IdentityTransformer
 from ballet.feature import Feature
 from ballet.pipeline import FeatureEngineeringPipeline
@@ -106,7 +106,7 @@ def test_validation_end_to_end(quickstart):
 
         with patch.dict(os.environ, envvars):
             cmd = shlex.split('ballet validate -A')
-            check_call(cmd, cwd=safepath(base), env=os.environ)
+            check_call(cmd, cwd=base, env=os.environ)
 
     call_validate_all()
 
