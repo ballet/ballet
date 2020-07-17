@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.util.io module &mdash; ballet 0.6.11 documentation</title>
+  <title>ballet.util.io module &mdash; ballet 0.7.0 documentation</title>
   
 
   
@@ -297,28 +297,25 @@
 <span id="ballet-util-io-module"></span><h1>ballet.util.io module<a class="headerlink" href="#module-ballet.util.io" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="ballet.util.io.load_table_from_config">
-<code class="sig-prename descclassname">ballet.util.io.</code><code class="sig-name descname">load_table_from_config</code><span class="sig-paren">(</span><em class="sig-param">input_dir</em>, <em class="sig-param">config</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/io.html#load_table_from_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.io.load_table_from_config" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.util.io.</code><code class="sig-name descname">load_table_from_config</code><span class="sig-paren">(</span><em class="sig-param">input_dir: Union[str, os.PathLike], config: dict</em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="reference internal" href="../_modules/ballet/util/io.html#load_table_from_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.io.load_table_from_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load table from table config dict</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input_dir</strong> (<em>path-like</em>) – directory containing input files</p></li>
-<li><p><strong>config</strong> (<em>dict</em>) – mapping with keys ‘name’, ‘path’, and ‘pd_read_kwargs’.</p></li>
+<li><p><strong>input_dir</strong> – directory containing input files</p></li>
+<li><p><strong>config</strong> – mapping with keys ‘name’, ‘path’, and ‘pd_read_kwargs’.</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>pd.DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="ballet.util.io.read_tabular">
-<code class="sig-prename descclassname">ballet.util.io.</code><code class="sig-name descname">read_tabular</code><span class="sig-paren">(</span><em class="sig-param">filepath</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/io.html#read_tabular"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.io.read_tabular" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.util.io.</code><code class="sig-name descname">read_tabular</code><span class="sig-paren">(</span><em class="sig-param">filepath: Union[str, os.PathLike]</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/io.html#read_tabular"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.io.read_tabular" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read tabular object in HDF5 or pickle format</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>filepath</strong> (<em>path-like</em>) – path to read to; must end in ‘.h5’ or ‘.pkl’</p>
+<dd class="field-odd"><p><strong>filepath</strong> – path to read to; must end in ‘.h5’ or ‘.pkl’</p>
 </dd>
 </dl>
 </dd></dl>
@@ -348,13 +345,13 @@
 
 <dl class="function">
 <dt id="ballet.util.io.write_tabular">
-<code class="sig-prename descclassname">ballet.util.io.</code><code class="sig-name descname">write_tabular</code><span class="sig-paren">(</span><em class="sig-param">obj</em>, <em class="sig-param">filepath</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/io.html#write_tabular"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.io.write_tabular" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.util.io.</code><code class="sig-name descname">write_tabular</code><span class="sig-paren">(</span><em class="sig-param">obj: Union[numpy.ndarray, pandas.core.frame.DataFrame], filepath: Union[str, os.PathLike]</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/io.html#write_tabular"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.io.write_tabular" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write tabular object in HDF5 or pickle format</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>obj</strong> (<em>array</em><em> or </em><em>DataFrame</em>) – tabular object to write</p></li>
-<li><p><strong>filepath</strong> (<em>path-like</em>) – path to write to; must end in ‘.h5’ or ‘.pkl’</p></li>
+<li><p><strong>obj</strong> – tabular object to write</p></li>
+<li><p><strong>filepath</strong> – path to write to; must end in ‘.h5’ or ‘.pkl’</p></li>
 </ul>
 </dd>
 </dl>

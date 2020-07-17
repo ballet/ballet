@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.feature &mdash; ballet 0.6.11 documentation</title>
+  <title>ballet.feature &mdash; ballet 0.7.0 documentation</title>
   
 
   
@@ -285,11 +285,13 @@
             
   <h1>Source code for ballet.feature</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">signature</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">cached_property</span>
 
 <span class="kn">import</span> <span class="nn">ballet.pipeline</span>
-<span class="kn">from</span> <span class="nn">ballet.transformer</span> <span class="kn">import</span> <span class="n">make_robust_transformer</span>
+<span class="kn">from</span> <span class="nn">ballet.transformer</span> <span class="kn">import</span> <span class="n">RobustTransformer</span><span class="p">,</span> <span class="n">make_robust_transformer</span>
+<span class="kn">from</span> <span class="nn">ballet.util.typing</span> <span class="kn">import</span> <span class="n">OneOrMore</span><span class="p">,</span> <span class="n">Pathy</span><span class="p">,</span> <span class="n">TransformerLike</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Feature&#39;</span><span class="p">,</span> <span class="p">)</span>
 
@@ -304,24 +306,31 @@
 <span class="sd">    or the one-hot encoding of a categorical variable.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        input (str, Collection[str]): required columns from the input</span>
-<span class="sd">            dataframe needed for the transformation</span>
-<span class="sd">        transformer (transformer-like, List[transformer-like]): transformer, or</span>
-<span class="sd">            sequence of transformers. A &quot;transformer&quot; is an instance of a class</span>
-<span class="sd">            that provides a fit/transform-style learned transformation.</span>
-<span class="sd">            Alternately, a callable can be provided, either by itself or in a</span>
-<span class="sd">            list, in which case it will be converted into a</span>
-<span class="sd">            ``SimpleFunctionTransformer`` for convenience.</span>
-<span class="sd">        name (str, optional): name of the feature</span>
-<span class="sd">        description (str, optional): description of the feature</span>
-<span class="sd">        output (str, list[str]): ordered sequence of names of features</span>
+<span class="sd">        input: required columns from the input dataframe needed for the</span>
+<span class="sd">            transformation</span>
+<span class="sd">        transformer: transformer, or sequence of transformers. A &quot;transformer&quot;</span>
+<span class="sd">            is an instance of a class that provides a fit/transform-style</span>
+<span class="sd">            learned transformation. Alternately, a callable can be provided,</span>
+<span class="sd">            either by itself or in a list, in which case it will be converted</span>
+<span class="sd">            into a ``SimpleFunctionTransformer`` for convenience.</span>
+<span class="sd">        name: name of the feature</span>
+<span class="sd">        description: description of the feature</span>
+<span class="sd">        output: ordered sequence of names of features</span>
 <span class="sd">            produced by this transformer</span>
-<span class="sd">        source (path-like): the source file in which this feature was defined</span>
-<span class="sd">        options (dict): options</span>
+<span class="sd">        source: the source file in which this feature was defined</span>
+<span class="sd">        options: options</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">input</span><span class="p">:</span> <span class="n">OneOrMore</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">transformer</span><span class="p">:</span> <span class="n">OneOrMore</span><span class="p">[</span><span class="n">TransformerLike</span><span class="p">],</span>
+        <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">output</span><span class="p">:</span> <span class="n">OneOrMore</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">source</span><span class="p">:</span> <span class="n">Pathy</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="nb">input</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span> <span class="o">=</span> <span class="n">make_robust_transformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
@@ -347,11 +356,15 @@
         <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{clsname}</span><span class="s1">(</span><span class="se">\n</span><span class="si">{attrs_str}</span><span class="se">\n</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">clsname</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">attrs_str</span><span class="o">=</span><span class="n">attrs_str</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Feature.as_input_transformer_tuple"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.feature.Feature.as_input_transformer_tuple">[docs]</a>    <span class="k">def</span> <span class="nf">as_input_transformer_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Feature.as_input_transformer_tuple"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.feature.Feature.as_input_transformer_tuple">[docs]</a>    <span class="k">def</span> <span class="nf">as_input_transformer_tuple</span><span class="p">(</span>
+        <span class="bp">self</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">OneOrMore</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">RobustTransformer</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Return an tuple for passing to DataFrameMapper constructor&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;alias&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">}</span></div>
 
-<div class="viewcode-block" id="Feature.as_feature_engineering_pipeline"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.feature.Feature.as_feature_engineering_pipeline">[docs]</a>    <span class="k">def</span> <span class="nf">as_feature_engineering_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Feature.as_feature_engineering_pipeline"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.feature.Feature.as_feature_engineering_pipeline">[docs]</a>    <span class="k">def</span> <span class="nf">as_feature_engineering_pipeline</span><span class="p">(</span>
+        <span class="bp">self</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ballet</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">FeatureEngineeringPipeline</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return standalone FeatureEngineeringPipeline with this feature&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ballet</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">FeatureEngineeringPipeline</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div></div>
 </pre></div>

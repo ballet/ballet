@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.validation.base module &mdash; ballet 0.6.11 documentation</title>
+  <title>ballet.validation.base module &mdash; ballet 0.7.0 documentation</title>
   
 
   
@@ -301,13 +301,15 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="ballet.validation.base.BaseCheck.check">
-<em class="property">abstract </em><code class="sig-name descname">check</code><span class="sig-paren">(</span><em class="sig-param">obj</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/base.html#BaseCheck.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.base.BaseCheck.check" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property">abstract </em><code class="sig-name descname">check</code><span class="sig-paren">(</span><em class="sig-param">obj</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/ballet/validation/base.html#BaseCheck.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.base.BaseCheck.check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check something and throw an exception if the thing is bad</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="ballet.validation.base.BaseCheck.do_check">
-<code class="sig-name descname">do_check</code><span class="sig-paren">(</span><em class="sig-param">obj</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/base.html#BaseCheck.do_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.base.BaseCheck.do_check" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname">do_check</code><span class="sig-paren">(</span><em class="sig-param">obj</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/ballet/validation/base.html#BaseCheck.do_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.base.BaseCheck.do_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Do the check and return whether an exception was <em>not</em> thrown</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -318,16 +320,8 @@
 <p>Base class for a generic validator</p>
 <dl class="method">
 <dt id="ballet.validation.base.BaseValidator.validate">
-<em class="property">abstract </em><code class="sig-name descname">validate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/base.html#BaseValidator.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.base.BaseValidator.validate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate something</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>validation succeeded</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
+<em class="property">abstract </em><code class="sig-name descname">validate</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/ballet/validation/base.html#BaseValidator.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.base.BaseValidator.validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate something and return whether validation succeeded</p>
 </dd></dl>
 
 </dd></dl>
@@ -338,37 +332,29 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="ballet.validation.base.FeatureAcceptanceMixin.judge">
-<em class="property">abstract </em><code class="sig-name descname">judge</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/base.html#FeatureAcceptanceMixin.judge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.base.FeatureAcceptanceMixin.judge" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract </em><code class="sig-name descname">judge</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/ballet/validation/base.html#FeatureAcceptanceMixin.judge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.base.FeatureAcceptanceMixin.judge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Judge whether feature should be accepted</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>feature should be accepted</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="ballet.validation.base.FeatureAccepter">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.validation.base.</code><code class="sig-name descname">FeatureAccepter</code><span class="sig-paren">(</span><em class="sig-param">X_df</em>, <em class="sig-param">y</em>, <em class="sig-param">features</em>, <em class="sig-param">candidate_feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/base.html#FeatureAccepter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.base.FeatureAccepter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.validation.base.</code><code class="sig-name descname">FeatureAccepter</code><span class="sig-paren">(</span><em class="sig-param">X_df: pandas.core.frame.DataFrame, y: numpy.ndarray, features: Iterable[ballet.feature.Feature], candidate_feature: ballet.feature.Feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/base.html#FeatureAccepter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.base.FeatureAccepter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ballet.validation.base.FeatureAcceptanceMixin" title="ballet.validation.base.FeatureAcceptanceMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.FeatureAcceptanceMixin</span></code></a>, <a class="reference internal" href="#ballet.validation.base.FeaturePerformanceEvaluator" title="ballet.validation.base.FeaturePerformanceEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.FeaturePerformanceEvaluator</span></code></a></p>
 <p>Accept/reject a feature to the project based on its performance</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="ballet.validation.base.FeaturePerformanceEvaluator">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.validation.base.</code><code class="sig-name descname">FeaturePerformanceEvaluator</code><span class="sig-paren">(</span><em class="sig-param">X_df</em>, <em class="sig-param">y</em>, <em class="sig-param">features</em>, <em class="sig-param">candidate_feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/base.html#FeaturePerformanceEvaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.base.FeaturePerformanceEvaluator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.validation.base.</code><code class="sig-name descname">FeaturePerformanceEvaluator</code><span class="sig-paren">(</span><em class="sig-param">X_df: pandas.core.frame.DataFrame, y: numpy.ndarray, features: Iterable[ballet.feature.Feature], candidate_feature: ballet.feature.Feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/base.html#FeaturePerformanceEvaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.base.FeaturePerformanceEvaluator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Evaluate the performance of features from an ML point-of-view</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="ballet.validation.base.FeaturePruner">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.validation.base.</code><code class="sig-name descname">FeaturePruner</code><span class="sig-paren">(</span><em class="sig-param">X_df</em>, <em class="sig-param">y</em>, <em class="sig-param">features</em>, <em class="sig-param">candidate_feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/base.html#FeaturePruner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.base.FeaturePruner" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.validation.base.</code><code class="sig-name descname">FeaturePruner</code><span class="sig-paren">(</span><em class="sig-param">X_df: pandas.core.frame.DataFrame, y: numpy.ndarray, features: Iterable[ballet.feature.Feature], candidate_feature: ballet.feature.Feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/base.html#FeaturePruner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.base.FeaturePruner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ballet.validation.base.FeaturePruningMixin" title="ballet.validation.base.FeaturePruningMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.FeaturePruningMixin</span></code></a>, <a class="reference internal" href="#ballet.validation.base.FeaturePerformanceEvaluator" title="ballet.validation.base.FeaturePerformanceEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.FeaturePerformanceEvaluator</span></code></a></p>
 <p>Prune features after acceptance based on their performance</p>
 </dd></dl>
@@ -379,16 +365,8 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="ballet.validation.base.FeaturePruningMixin.prune">
-<em class="property">abstract </em><code class="sig-name descname">prune</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/base.html#FeaturePruningMixin.prune"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.base.FeaturePruningMixin.prune" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prune existing features</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>list of features to remove</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
+<em class="property">abstract </em><code class="sig-name descname">prune</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[ballet.feature.Feature]<a class="reference internal" href="../_modules/ballet/validation/base.html#FeaturePruningMixin.prune"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.base.FeaturePruningMixin.prune" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prune existing features, returning list of features to remove</p>
 </dd></dl>
 
 </dd></dl>

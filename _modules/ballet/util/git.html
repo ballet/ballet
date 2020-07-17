@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.util.git &mdash; ballet 0.6.11 documentation</title>
+  <title>ballet.util.git &mdash; ballet 0.7.0 documentation</title>
   
 
   
@@ -288,12 +288,12 @@
   <h1>Source code for ballet.util.git</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">git</span>
 <span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">collecting</span><span class="p">,</span> <span class="n">re_find</span><span class="p">,</span> <span class="n">re_test</span><span class="p">,</span> <span class="n">silent</span>
 
-<span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="kn">import</span> <span class="n">safepath</span>
 <span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">one_or_raise</span>
 
 <span class="n">FILE_CHANGES_COMMIT_RANGE</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{a}</span><span class="s1">...</span><span class="si">{b}</span><span class="s1">&#39;</span>
@@ -312,20 +312,20 @@
 
 <div class="viewcode-block" id="Differ"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.Differ">[docs]</a><span class="k">class</span> <span class="nc">Differ</span><span class="p">:</span>
 
-<div class="viewcode-block" id="Differ.diff"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.Differ.diff">[docs]</a>    <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Differ.diff"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.Differ.diff">[docs]</a>    <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">git</span><span class="o">.</span><span class="n">DiffIndex</span><span class="p">:</span>
         <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_diff_endpoints</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">a</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">b</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_get_diff_endpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_get_diff_endpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">git</span><span class="o">.</span><span class="n">Diffable</span><span class="p">,</span> <span class="n">git</span><span class="o">.</span><span class="n">Diffable</span><span class="p">]:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
 <div class="viewcode-block" id="CustomDiffer"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.CustomDiffer">[docs]</a><span class="k">class</span> <span class="nc">CustomDiffer</span><span class="p">(</span><span class="n">Differ</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endpoints</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endpoints</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">git</span><span class="o">.</span><span class="n">Diffable</span><span class="p">,</span> <span class="n">git</span><span class="o">.</span><span class="n">Diffable</span><span class="p">]):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">endpoints</span> <span class="o">=</span> <span class="n">endpoints</span>
 
-    <span class="k">def</span> <span class="nf">_get_diff_endpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_get_diff_endpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">git</span><span class="o">.</span><span class="n">Diffable</span><span class="p">,</span> <span class="n">git</span><span class="o">.</span><span class="n">Diffable</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">endpoints</span></div>
 
 
@@ -333,11 +333,11 @@
     <span class="sd">&quot;&quot;&quot;Diff files from this pull request against a comparison ref</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        pr_num (str, int): pull request number</span>
-<span class="sd">        repo (git.Repo): repo</span>
+<span class="sd">        pr_num: pull request number</span>
+<span class="sd">        repo: repo</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pr_num</span><span class="p">,</span> <span class="n">repo</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pr_num</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">repo</span><span class="p">:</span> <span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pr_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pr_num</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">repo</span> <span class="o">=</span> <span class="n">repo</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_environment</span><span class="p">()</span>
@@ -349,54 +349,55 @@
 <div class="viewcode-block" id="LocalPullRequestBuildDiffer"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.LocalPullRequestBuildDiffer">[docs]</a><span class="k">class</span> <span class="nc">LocalPullRequestBuildDiffer</span><span class="p">(</span><span class="n">PullRequestBuildDiffer</span><span class="p">):</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_pr_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_pr_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">ref</span><span class="o">.</span><span class="n">name</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_pr_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_pr_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">ref</span><span class="o">.</span><span class="n">path</span>
 
     <span class="k">def</span> <span class="nf">_check_environment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">assert</span> <span class="n">re_test</span><span class="p">(</span><span class="n">PR_REF_PATH_REGEX</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pr_path</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_diff_endpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_get_diff_endpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">git</span><span class="o">.</span><span class="n">Diffable</span><span class="p">,</span> <span class="n">git</span><span class="o">.</span><span class="n">Diffable</span><span class="p">]:</span>
         <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="o">.</span><span class="n">rev_parse</span><span class="p">(</span><span class="s1">&#39;master&#39;</span><span class="p">)</span>
         <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="o">.</span><span class="n">rev_parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pr_name</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span></div>
 
 
 <div class="viewcode-block" id="LocalMergeBuildDiffer"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.LocalMergeBuildDiffer">[docs]</a><span class="k">class</span> <span class="nc">LocalMergeBuildDiffer</span><span class="p">(</span><span class="n">Differ</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Diff files on a merge commit on the</span>
-<span class="sd">    current active branch. Merge parent order is guaranteed</span>
-<span class="sd">    such that parent 1 is HEAD and parent 2 is topic[1]</span>
+    <span class="sd">&quot;&quot;&quot;Diff files on a merge commit on the current active branch.</span>
+
+<span class="sd">    Merge parent order is guaranteed such that parent 1 is HEAD and parent 2</span>
+<span class="sd">    is topic [1].</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        repo (git.Repo): The repository to check the merge diff on.</span>
-<span class="sd">            Must be currently on a branch where the most recent commit</span>
-<span class="sd">            is a merge.</span>
+<span class="sd">        repo: The repository to check the merge diff on. Must be currently on</span>
+<span class="sd">            a branch where the most recent commit is a merge.</span>
 
 <span class="sd">    References:</span>
 <span class="sd">        [1] https://git-scm.com/book/en/v2/Git-Tools-Advanced-Merging</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repo</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repo</span><span class="p">:</span> <span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">repo</span> <span class="o">=</span> <span class="n">repo</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_environment</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_check_environment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">assert</span> <span class="n">is_merge_commit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">commit</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_diff_endpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">commit</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">commit</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span></div>
+    <span class="k">def</span> <span class="nf">_get_diff_endpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">git</span><span class="o">.</span><span class="n">Diffable</span><span class="p">,</span> <span class="n">git</span><span class="o">.</span><span class="n">Diffable</span><span class="p">]:</span>
+        <span class="n">parents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">commit</span><span class="o">.</span><span class="n">parents</span>
+        <span class="k">return</span> <span class="n">parents</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="make_commit_range"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.make_commit_range">[docs]</a><span class="k">def</span> <span class="nf">make_commit_range</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<div class="viewcode-block" id="make_commit_range"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.make_commit_range">[docs]</a><span class="k">def</span> <span class="nf">make_commit_range</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">FILE_CHANGES_COMMIT_RANGE</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_diff_endpoints_from_commit_range"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.get_diff_endpoints_from_commit_range">[docs]</a><span class="k">def</span> <span class="nf">get_diff_endpoints_from_commit_range</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">commit_range</span><span class="p">):</span>
+<div class="viewcode-block" id="get_diff_endpoints_from_commit_range"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.get_diff_endpoints_from_commit_range">[docs]</a><span class="k">def</span> <span class="nf">get_diff_endpoints_from_commit_range</span><span class="p">(</span>
+    <span class="n">repo</span><span class="p">:</span> <span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">,</span> <span class="n">commit_range</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">git</span><span class="o">.</span><span class="n">Diffable</span><span class="p">,</span> <span class="n">git</span><span class="o">.</span><span class="n">Diffable</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Get endpoints of a diff given a commit range</span>
 
 <span class="sd">    The resulting endpoints can be diffed directly::</span>
@@ -408,16 +409,15 @@
 <span class="sd">    For details on specifying revisions, see ``git help revisions``.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        repo (git.Repo): Repo object initialized with project root</span>
-<span class="sd">        commit_range (str): commit range as would be interpreted by ``git</span>
+<span class="sd">        repo: Repo object initialized with project root</span>
+<span class="sd">        commit_range: commit range as would be interpreted by ``git</span>
 <span class="sd">            diff`` command. Unfortunately only patterns of the form ``a..b``</span>
 <span class="sd">            and ``a...b`` are accepted. Note that the latter pattern finds the</span>
 <span class="sd">            merge-base of a and b and uses it as the starting point for the</span>
 <span class="sd">            diff.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Tuple[git.Commit, git.Commit]: starting commit, ending commit (</span>
-<span class="sd">            inclusive)</span>
+<span class="sd">        starting commit, ending commit (inclusive)</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: commit_range is empty or ill-formed</span>
@@ -441,42 +441,42 @@
     <span class="k">return</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span></div>
 
 
-<div class="viewcode-block" id="get_repo"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.get_repo">[docs]</a><span class="k">def</span> <span class="nf">get_repo</span><span class="p">(</span><span class="n">repo</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_repo"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.get_repo">[docs]</a><span class="k">def</span> <span class="nf">get_repo</span><span class="p">(</span><span class="n">repo</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">repo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">repo</span> <span class="o">=</span> <span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">(</span><span class="n">safepath</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()),</span>
+        <span class="n">repo</span> <span class="o">=</span> <span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">(),</span>
                         <span class="n">search_parent_directories</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">repo</span></div>
 
 
 <div class="viewcode-block" id="get_pr_num"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.get_pr_num">[docs]</a><span class="nd">@silent</span>
-<span class="k">def</span> <span class="nf">get_pr_num</span><span class="p">(</span><span class="n">repo</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_pr_num</span><span class="p">(</span><span class="n">repo</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="n">repo</span> <span class="o">=</span> <span class="n">get_repo</span><span class="p">(</span><span class="n">repo</span><span class="p">)</span>
     <span class="n">pr_num</span> <span class="o">=</span> <span class="n">re_find</span><span class="p">(</span><span class="n">PR_REF_PATH_REGEX</span><span class="p">,</span> <span class="n">repo</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">ref</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">pr_num</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="get_branch"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.get_branch">[docs]</a><span class="nd">@silent</span>
-<span class="k">def</span> <span class="nf">get_branch</span><span class="p">(</span><span class="n">repo</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_branch</span><span class="p">(</span><span class="n">repo</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="n">repo</span> <span class="o">=</span> <span class="n">get_repo</span><span class="p">(</span><span class="n">repo</span><span class="p">)</span>
     <span class="n">branch</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">ref</span><span class="o">.</span><span class="n">name</span>
     <span class="k">return</span> <span class="n">branch</span></div>
 
 
-<div class="viewcode-block" id="switch_to_new_branch"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.switch_to_new_branch">[docs]</a><span class="k">def</span> <span class="nf">switch_to_new_branch</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<div class="viewcode-block" id="switch_to_new_branch"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.switch_to_new_branch">[docs]</a><span class="k">def</span> <span class="nf">switch_to_new_branch</span><span class="p">(</span><span class="n">repo</span><span class="p">:</span> <span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="n">new_branch</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">create_head</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
     <span class="n">repo</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">ref</span> <span class="o">=</span> <span class="n">new_branch</span></div>
 
 
-<div class="viewcode-block" id="is_merge_commit"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.is_merge_commit">[docs]</a><span class="k">def</span> <span class="nf">is_merge_commit</span><span class="p">(</span><span class="n">commit</span><span class="p">):</span>
+<div class="viewcode-block" id="is_merge_commit"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.is_merge_commit">[docs]</a><span class="k">def</span> <span class="nf">is_merge_commit</span><span class="p">(</span><span class="n">commit</span><span class="p">:</span> <span class="n">git</span><span class="o">.</span><span class="n">Commit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">commit</span><span class="o">.</span><span class="n">parents</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span></div>
 
 
-<div class="viewcode-block" id="set_config_variables"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.set_config_variables">[docs]</a><span class="k">def</span> <span class="nf">set_config_variables</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">variables</span><span class="p">):</span>
+<div class="viewcode-block" id="set_config_variables"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.set_config_variables">[docs]</a><span class="k">def</span> <span class="nf">set_config_variables</span><span class="p">(</span><span class="n">repo</span><span class="p">:</span> <span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">,</span> <span class="n">variables</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Set config variables</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        repo (git.Repo): repo</span>
-<span class="sd">        variables (dict): entries of the form &#39;user.email&#39;: &#39;you@example.com&#39;</span>
+<span class="sd">        repo: repo</span>
+<span class="sd">        variables: entries of the form &#39;user.email&#39;: &#39;you@example.com&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="n">repo</span><span class="o">.</span><span class="n">config_writer</span><span class="p">()</span> <span class="k">as</span> <span class="n">writer</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">variables</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -485,7 +485,7 @@
         <span class="n">writer</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="get_pull_requests"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.get_pull_requests">[docs]</a><span class="k">def</span> <span class="nf">get_pull_requests</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="n">repo</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s1">&#39;closed&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="get_pull_requests"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.get_pull_requests">[docs]</a><span class="k">def</span> <span class="nf">get_pull_requests</span><span class="p">(</span><span class="n">owner</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">repo</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;closed&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
     <span class="n">base</span> <span class="o">=</span> <span class="s1">&#39;https://api.github.com&#39;</span>
     <span class="n">q</span> <span class="o">=</span> <span class="s1">&#39;/repos/</span><span class="si">{owner}</span><span class="s1">/</span><span class="si">{repo}</span><span class="s1">/pulls&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span> <span class="n">repo</span><span class="o">=</span><span class="n">repo</span><span class="p">)</span>
     <span class="n">url</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">q</span>
@@ -504,7 +504,7 @@
 
 
 <div class="viewcode-block" id="get_pull_request_outcomes"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.get_pull_request_outcomes">[docs]</a><span class="nd">@collecting</span>
-<span class="k">def</span> <span class="nf">get_pull_request_outcomes</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="n">repo</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_pull_request_outcomes</span><span class="p">(</span><span class="n">owner</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">repo</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
     <span class="n">prs</span> <span class="o">=</span> <span class="n">get_pull_requests</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="n">repo</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s1">&#39;closed&#39;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">pr</span> <span class="ow">in</span> <span class="n">prs</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">pr</span><span class="p">[</span><span class="s1">&#39;merged_at&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -513,14 +513,14 @@
             <span class="k">yield</span> <span class="s1">&#39;rejected&#39;</span></div>
 
 
-<div class="viewcode-block" id="did_git_push_succeed"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.did_git_push_succeed">[docs]</a><span class="k">def</span> <span class="nf">did_git_push_succeed</span><span class="p">(</span><span class="n">push_info</span><span class="p">):</span>
+<div class="viewcode-block" id="did_git_push_succeed"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.did_git_push_succeed">[docs]</a><span class="k">def</span> <span class="nf">did_git_push_succeed</span><span class="p">(</span><span class="n">push_info</span><span class="p">:</span> <span class="n">git</span><span class="o">.</span><span class="n">remote</span><span class="o">.</span><span class="n">PushInfo</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Check whether a git push succeeded</span>
 
 <span class="sd">    A git push succeeded if it was not &quot;rejected&quot; or &quot;remote rejected&quot;,</span>
 <span class="sd">    and if there was not a &quot;remote failure&quot; or an &quot;error&quot;.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        push_info (git.remote.PushInfo): push info</span>
+<span class="sd">        push_info: push info</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">push_info</span><span class="o">.</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">GIT_PUSH_FAILURE</span> <span class="o">==</span> <span class="mi">0</span></div>
 </pre></div>

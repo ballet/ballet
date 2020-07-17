@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.util &mdash; ballet 0.6.11 documentation</title>
+  <title>ballet.util &mdash; ballet 0.7.0 documentation</title>
   
 
   
@@ -284,24 +284,25 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ballet.util</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">pathlib</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">redirect_stderr</span><span class="p">,</span> <span class="n">redirect_stdout</span><span class="p">,</span> <span class="n">suppress</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">devnull</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TypeVar</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">sklearn.datasets</span>
-<span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">complement</span><span class="p">,</span> <span class="n">decorator</span><span class="p">,</span> <span class="n">lfilter</span><span class="p">,</span> <span class="n">wraps</span>
+<span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">complement</span><span class="p">,</span> <span class="n">decorator</span><span class="p">,</span> <span class="n">lfilter</span>
+<span class="kn">from</span> <span class="nn">funcy.decorators</span> <span class="kn">import</span> <span class="n">Call</span>
 
-<span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="kn">import</span> <span class="n">redirect_stderr</span><span class="p">,</span> <span class="n">redirect_stdout</span>
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="kn">import</span> <span class="n">BalletWarning</span>
+<span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="kn">import</span> <span class="n">logger</span>
 
 <span class="n">RANDOM_STATE</span> <span class="o">=</span> <span class="mi">1754</span>
 
 
-<div class="viewcode-block" id="asarray2d"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.asarray2d">[docs]</a><span class="k">def</span> <span class="nf">asarray2d</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+<div class="viewcode-block" id="asarray2d"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.asarray2d">[docs]</a><span class="k">def</span> <span class="nf">asarray2d</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Cast to 2d array&quot;&quot;&quot;</span>
     <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -309,7 +310,7 @@
     <span class="k">return</span> <span class="n">arr</span></div>
 
 
-<div class="viewcode-block" id="get_arr_desc"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.get_arr_desc">[docs]</a><span class="k">def</span> <span class="nf">get_arr_desc</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+<div class="viewcode-block" id="get_arr_desc"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.get_arr_desc">[docs]</a><span class="k">def</span> <span class="nf">get_arr_desc</span><span class="p">(</span><span class="n">arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Get array description, in the form &#39;&lt;array type&gt; &lt;array shape&gt;&#39;&quot;&quot;&quot;</span>
     <span class="n">type_</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>  <span class="c1"># see also __qualname__</span>
     <span class="n">shape</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="s1">&#39;shape&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -320,24 +321,13 @@
     <span class="k">return</span> <span class="n">desc</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">type_</span><span class="o">=</span><span class="n">type_</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_enum_keys"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.get_enum_keys">[docs]</a><span class="k">def</span> <span class="nf">get_enum_keys</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">attr</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)]</span></div>
-
-
-<div class="viewcode-block" id="get_enum_values"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.get_enum_values">[docs]</a><span class="k">def</span> <span class="nf">get_enum_values</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-    <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">get_enum_keys</span><span class="p">(</span><span class="bp">cls</span><span class="p">)]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">get_enum_keys</span><span class="p">(</span><span class="bp">cls</span><span class="p">)]</span></div>
-
-
-<div class="viewcode-block" id="indent"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.indent">[docs]</a><span class="k">def</span> <span class="nf">indent</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+<div class="viewcode-block" id="indent"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.indent">[docs]</a><span class="k">def</span> <span class="nf">indent</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Indent each line of text by n spaces&quot;&quot;&quot;</span>
     <span class="n">_indent</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="n">n</span>
     <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_indent</span> <span class="o">+</span> <span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="make_plural_suffix"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.make_plural_suffix">[docs]</a><span class="k">def</span> <span class="nf">make_plural_suffix</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="make_plural_suffix"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.make_plural_suffix">[docs]</a><span class="k">def</span> <span class="nf">make_plural_suffix</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">suffix</span>
     <span class="k">else</span><span class="p">:</span>
@@ -345,13 +335,13 @@
 
 
 <div class="viewcode-block" id="whether_failures"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.whether_failures">[docs]</a><span class="nd">@decorator</span>
-<span class="k">def</span> <span class="nf">whether_failures</span><span class="p">(</span><span class="n">call</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">whether_failures</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">Call</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Collects failures and return (success, list_of_failures)&quot;&quot;&quot;</span>
     <span class="n">failures</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">call</span><span class="p">())</span>
     <span class="k">return</span> <span class="ow">not</span> <span class="n">failures</span><span class="p">,</span> <span class="n">failures</span></div>
 
 
-<div class="viewcode-block" id="has_nans"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.has_nans">[docs]</a><span class="k">def</span> <span class="nf">has_nans</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<div class="viewcode-block" id="has_nans"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.has_nans">[docs]</a><span class="k">def</span> <span class="nf">has_nans</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Check if obj has any NaNs</span>
 
 <span class="sd">    Compatible with different behavior of np.isnan, which sometimes applies</span>
@@ -364,7 +354,7 @@
 
 
 <div class="viewcode-block" id="dfilter"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.dfilter">[docs]</a><span class="nd">@decorator</span>
-<span class="k">def</span> <span class="nf">dfilter</span><span class="p">(</span><span class="n">call</span><span class="p">,</span> <span class="n">pred</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">dfilter</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">Call</span><span class="p">,</span> <span class="n">pred</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Decorate a callable with a filter that accepts a predicate</span>
 
 <span class="sd">    Example::</span>
@@ -377,7 +367,7 @@
     <span class="k">return</span> <span class="n">lfilter</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">call</span><span class="p">())</span></div>
 
 
-<div class="viewcode-block" id="load_sklearn_df"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.load_sklearn_df">[docs]</a><span class="k">def</span> <span class="nf">load_sklearn_df</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<div class="viewcode-block" id="load_sklearn_df"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.load_sklearn_df">[docs]</a><span class="k">def</span> <span class="nf">load_sklearn_df</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
     <span class="n">method_name</span> <span class="o">=</span> <span class="s1">&#39;load_</span><span class="si">{name}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
     <span class="n">method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sklearn</span><span class="o">.</span><span class="n">datasets</span><span class="p">,</span> <span class="n">method_name</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">method</span><span class="p">()</span>
@@ -387,7 +377,7 @@
 
 
 <div class="viewcode-block" id="quiet"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.quiet">[docs]</a><span class="nd">@decorator</span>
-<span class="k">def</span> <span class="nf">quiet</span><span class="p">(</span><span class="n">call</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">quiet</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">Call</span><span class="p">):</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">devnull</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fnull</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">redirect_stderr</span><span class="p">(</span><span class="n">fnull</span><span class="p">),</span> <span class="n">redirect_stdout</span><span class="p">(</span><span class="n">fnull</span><span class="p">):</span>
             <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
@@ -397,7 +387,7 @@
 
 <div class="viewcode-block" id="DeepcopyMixin"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.DeepcopyMixin">[docs]</a><span class="k">class</span> <span class="nc">DeepcopyMixin</span><span class="p">:</span>
 
-    <span class="k">def</span> <span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memo</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memo</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="bp">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
         <span class="n">memo</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)]</span> <span class="o">=</span> <span class="n">result</span>
@@ -406,7 +396,10 @@
         <span class="k">return</span> <span class="n">result</span></div>
 
 
-<div class="viewcode-block" id="one_or_raise"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.one_or_raise">[docs]</a><span class="k">def</span> <span class="nf">one_or_raise</span><span class="p">(</span><span class="n">seq</span><span class="p">):</span>
+<span class="n">_T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;_T&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="one_or_raise"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.one_or_raise">[docs]</a><span class="k">def</span> <span class="nf">one_or_raise</span><span class="p">(</span><span class="n">seq</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">_T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">_T</span><span class="p">:</span>
     <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">seq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -415,22 +408,13 @@
                          <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="needs_path"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.needs_path">[docs]</a><span class="k">def</span> <span class="nf">needs_path</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Wraps a function that accepts path-like to give it a pathlib.Path&quot;&quot;&quot;</span>
-    <span class="nd">@wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">wrapped</span><span class="p">(</span><span class="n">pathlike</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">pathlike</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">wrapped</span></div>
-
-
-<div class="viewcode-block" id="warn"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.warn">[docs]</a><span class="k">def</span> <span class="nf">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
+<div class="viewcode-block" id="warn"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.warn">[docs]</a><span class="k">def</span> <span class="nf">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Issue a warning message of category BalletWarning&quot;&quot;&quot;</span>
     <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">BalletWarning</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="raiseifnone"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.raiseifnone">[docs]</a><span class="nd">@decorator</span>
-<span class="k">def</span> <span class="nf">raiseifnone</span><span class="p">(</span><span class="n">call</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">raiseifnone</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">Call</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Decorate a function to raise a ValueError if result is None&quot;&quot;&quot;</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">call</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -439,13 +423,31 @@
         <span class="k">return</span> <span class="n">result</span></div>
 
 
-<div class="viewcode-block" id="falsy"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.falsy">[docs]</a><span class="k">def</span> <span class="nf">falsy</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
+<div class="viewcode-block" id="falsy"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.falsy">[docs]</a><span class="k">def</span> <span class="nf">falsy</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="n">o</span>
     <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;false&#39;</span> <span class="ow">or</span> <span class="n">o</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">)</span></div>
 
 
 <span class="n">truthy</span> <span class="o">=</span> <span class="n">complement</span><span class="p">(</span><span class="n">falsy</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="nonnegative"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.nonnegative">[docs]</a><span class="nd">@decorator</span>
+<span class="k">def</span> <span class="nf">nonnegative</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">Call</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Warn if the function&#39;s return value is negative and set it to 0&quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">call</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="c1"># Format a nice log message</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">pieces</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">_func</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">capitalize</span><span class="p">,</span> <span class="n">pieces</span><span class="p">))</span>
+                <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Result&#39;</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> should be non-negative.&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
 </pre></div>
 
            </div>

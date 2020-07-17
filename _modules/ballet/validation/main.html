@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.validation.main &mdash; ballet 0.6.11 documentation</title>
+  <title>ballet.validation.main &mdash; ballet 0.7.0 documentation</title>
   
 
   
@@ -284,12 +284,16 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ballet.validation.main</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">decorator</span><span class="p">,</span> <span class="n">ignore</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">decorator</span><span class="p">,</span> <span class="n">ignore</span>
 <span class="kn">from</span> <span class="nn">stacklog</span> <span class="kn">import</span> <span class="n">stacklog</span>
 
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">FeatureRejected</span><span class="p">,</span> <span class="n">InvalidFeatureApi</span><span class="p">,</span> <span class="n">InvalidProjectStructure</span><span class="p">,</span>
     <span class="n">NoFeaturesCollectedError</span><span class="p">,</span> <span class="n">SkippedValidationTest</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ballet.feature</span> <span class="kn">import</span> <span class="n">Feature</span>
+<span class="kn">from</span> <span class="nn">ballet.project</span> <span class="kn">import</span> <span class="n">Project</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">ballet.util.mod</span> <span class="kn">import</span> <span class="n">import_module_from_modname</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.common</span> <span class="kn">import</span> <span class="p">(</span>
@@ -300,7 +304,7 @@
 
 
 <div class="viewcode-block" id="validation_stage"><a class="viewcode-back" href="../../../api/ballet.validation.main.html#ballet.validation.main.validation_stage">[docs]</a><span class="nd">@decorator</span>
-<span class="k">def</span> <span class="nf">validation_stage</span><span class="p">(</span><span class="n">call</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">validation_stage</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="n">call</span> <span class="o">=</span> <span class="n">stacklog</span><span class="p">(</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">,</span>
                     <span class="s1">&#39;Ballet Validation: </span><span class="si">{message}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">),</span>
                     <span class="n">conditions</span><span class="o">=</span><span class="p">[(</span><span class="n">SkippedValidationTest</span><span class="p">,</span> <span class="s1">&#39;SKIPPED&#39;</span><span class="p">)])(</span><span class="n">call</span><span class="p">)</span>
@@ -308,7 +312,7 @@
     <span class="k">return</span> <span class="n">call</span><span class="p">()</span></div>
 
 
-<span class="k">def</span> <span class="nf">_load_class</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">config_key</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_load_class</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="n">Project</span><span class="p">,</span> <span class="n">config_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">:</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">config_key</span><span class="p">)</span>
     <span class="n">modname</span><span class="p">,</span> <span class="n">clsname</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">mod</span> <span class="o">=</span> <span class="n">import_module_from_modname</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span>
@@ -322,7 +326,7 @@
 
 
 <span class="nd">@validation_stage</span><span class="p">(</span><span class="s1">&#39;checking project structure&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">_check_project_structure</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_check_project_structure</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="n">Project</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_pr</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on PR&#39;</span><span class="p">)</span>
 
@@ -334,7 +338,7 @@
 
 
 <span class="nd">@validation_stage</span><span class="p">(</span><span class="s1">&#39;validating feature API&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">_validate_feature_api</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_validate_feature_api</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="n">Project</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Validate feature API&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_pr</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on PR&#39;</span><span class="p">)</span>
@@ -347,7 +351,7 @@
 
 
 <span class="nd">@validation_stage</span><span class="p">(</span><span class="s1">&#39;evaluating feature performance&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">_evaluate_feature_performance</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_evaluate_feature_performance</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="n">Project</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Evaluate feature performance&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_pr</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on PR&#39;</span><span class="p">)</span>
@@ -367,7 +371,9 @@
 
 
 <span class="nd">@validation_stage</span><span class="p">(</span><span class="s1">&#39;pruning existing features&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">_prune_existing_features</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_prune_existing_features</span><span class="p">(</span>
+    <span class="n">project</span><span class="p">:</span> <span class="n">Project</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Prune existing features&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_master_after_merge</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on master&#39;</span><span class="p">)</span>
@@ -392,11 +398,11 @@
     <span class="k">return</span> <span class="n">redundant_features</span>
 
 
-<div class="viewcode-block" id="validate"><a class="viewcode-back" href="../../../api/ballet.validation.main.html#ballet.validation.main.validate">[docs]</a><span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="n">project</span><span class="p">,</span>
-             <span class="n">check_project_structure</span><span class="p">,</span>
-             <span class="n">check_feature_api</span><span class="p">,</span>
-             <span class="n">evaluate_feature_acceptance</span><span class="p">,</span>
-             <span class="n">evaluate_feature_pruning</span><span class="p">):</span>
+<div class="viewcode-block" id="validate"><a class="viewcode-back" href="../../../api/ballet.validation.main.html#ballet.validation.main.validate">[docs]</a><span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="n">Project</span><span class="p">,</span>
+             <span class="n">check_project_structure</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+             <span class="n">check_feature_api</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+             <span class="n">evaluate_feature_acceptance</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+             <span class="n">evaluate_feature_pruning</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Entrypoint for &#39;ballet validate&#39; command in ballet projects&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">check_project_structure</span><span class="p">:</span>
         <span class="n">_check_project_structure</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>

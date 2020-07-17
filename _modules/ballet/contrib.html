@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.contrib &mdash; ballet 0.6.11 documentation</title>
+  <title>ballet.contrib &mdash; ballet 0.7.0 documentation</title>
   
 
   
@@ -286,7 +286,8 @@
   <h1>Source code for ballet.contrib</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">pkgutil</span>
 <span class="kn">import</span> <span class="nn">types</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">ModuleType</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">collecting</span><span class="p">,</span> <span class="n">notnone</span>
 
@@ -300,7 +301,7 @@
 <span class="p">)</span>
 
 
-<div class="viewcode-block" id="collect_contrib_features"><a class="viewcode-back" href="../../api/ballet.contrib.html#ballet.contrib.collect_contrib_features">[docs]</a><span class="k">def</span> <span class="nf">collect_contrib_features</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="n">Project</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Feature</span><span class="p">]:</span>
+<div class="viewcode-block" id="collect_contrib_features"><a class="viewcode-back" href="../../api/ballet.contrib.html#ballet.contrib.collect_contrib_features">[docs]</a><span class="k">def</span> <span class="nf">collect_contrib_features</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="n">Project</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Collect contributed features for a project at project_root</span>
 
 <span class="sd">    For a project ``foo``, walks modules within the ``foo.features.contrib``</span>
@@ -320,7 +321,9 @@
 
 <span class="nd">@dfilter</span><span class="p">(</span><span class="n">notnone</span><span class="p">)</span>
 <span class="nd">@collecting</span>
-<span class="k">def</span> <span class="nf">_collect_contrib_features</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_collect_contrib_features</span><span class="p">(</span>
+    <span class="n">module</span><span class="p">:</span> <span class="n">ModuleType</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">Feature</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;Collect contributed features from within given module</span>
 
 <span class="sd">    Be very careful with untrusted code. The module/package will be</span>
@@ -329,11 +332,8 @@
 <span class="sd">    anyway?</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        contrib (module): module (standalone or package) that contains feature</span>
+<span class="sd">        module: module (standalone or package) that contains feature</span>
 <span class="sd">            definitions</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        List[Feature]: list of features</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">ModuleType</span><span class="p">):</span>
@@ -347,13 +347,15 @@
 
 
 <span class="nd">@collecting</span>
-<span class="k">def</span> <span class="nf">_collect_contrib_features_from_package</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_collect_contrib_features_from_package</span><span class="p">(</span>
+    <span class="n">package</span><span class="p">:</span> <span class="n">ModuleType</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">Feature</span><span class="p">]]:</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
         <span class="s1">&#39;Walking package path </span><span class="si">{path}</span><span class="s1"> to detect modules...&#39;</span>
-        <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">package</span><span class="o">.</span><span class="n">__path__</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">package</span><span class="o">.</span><span class="n">__path__</span><span class="p">))</span>  <span class="c1"># type: ignore  # mypy issue #1422</span>
 
     <span class="k">for</span> <span class="n">importer</span><span class="p">,</span> <span class="n">modname</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">walk_packages</span><span class="p">(</span>
-            <span class="n">path</span><span class="o">=</span><span class="n">package</span><span class="o">.</span><span class="n">__path__</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">package</span><span class="o">.</span><span class="n">__path__</span><span class="p">,</span>  <span class="c1"># type: ignore  # mypy issue #1422</span>
             <span class="n">prefix</span><span class="o">=</span><span class="n">package</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span>
             <span class="n">onerror</span><span class="o">=</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">):</span>
 
@@ -368,7 +370,7 @@
         <span class="k">yield</span> <span class="n">_collect_contrib_feature_from_module</span><span class="p">(</span><span class="n">mod</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_collect_contrib_feature_from_module</span><span class="p">(</span><span class="n">mod</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_collect_contrib_feature_from_module</span><span class="p">(</span><span class="n">mod</span><span class="p">:</span> <span class="n">ModuleType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Feature</span><span class="p">]:</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
         <span class="s1">&#39;Trying to import contributed feature from module </span><span class="si">{modname}</span><span class="s1">...&#39;</span>
         <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modname</span><span class="o">=</span><span class="n">mod</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>

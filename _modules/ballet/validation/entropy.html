@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.validation.entropy &mdash; ballet 0.6.11 documentation</title>
+  <title>ballet.validation.entropy &mdash; ballet 0.7.0 documentation</title>
   
 
   
@@ -285,15 +285,15 @@
             
   <h1>Source code for ballet.validation.entropy</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numbers</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.stats</span>
-<span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">decorator</span><span class="p">,</span> <span class="n">suppress</span>
 <span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">digamma</span><span class="p">,</span> <span class="n">gamma</span>
 <span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">NearestNeighbors</span>
 <span class="kn">from</span> <span class="nn">sklearn.utils</span> <span class="kn">import</span> <span class="n">check_consistent_length</span>
 
-<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">asarray2d</span>
+<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">asarray2d</span><span class="p">,</span> <span class="n">nonnegative</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="kn">import</span> <span class="n">logger</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
@@ -308,24 +308,6 @@
 <span class="n">DISC_COL_UNIQUE_VAL_THRESH</span> <span class="o">=</span> <span class="mf">0.05</span>
 
 
-<span class="nd">@decorator</span>
-<span class="k">def</span> <span class="nf">nonnegative</span><span class="p">(</span><span class="n">call</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Warn if the function&#39;s return value is negative and set it to 0&quot;&quot;&quot;</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">call</span><span class="p">()</span>
-    <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">result</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="mf">0.0</span>
-            <span class="c1"># Format a nice log message</span>
-            <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">pieces</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">_func</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
-                    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">capitalize</span><span class="p">,</span> <span class="n">pieces</span><span class="p">))</span>
-                <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
-                    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Result&#39;</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> should be non-negative.&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">result</span>
-
-
 <span class="c1"># Helpers</span>
 
 <span class="k">def</span> <span class="nf">_make_neighbors</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -334,7 +316,9 @@
                             <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_compute_empirical_probability</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_compute_empirical_probability</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Compute empirical probability of events in x</span>
 
 <span class="sd">    Args:</span>
@@ -353,10 +337,10 @@
     <span class="k">return</span> <span class="n">pk</span><span class="p">,</span> <span class="n">events</span>
 
 
-<span class="k">def</span> <span class="nf">_compute_volume_unit_ball</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">NEIGHBORS_METRIC</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_compute_volume_unit_ball</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">NEIGHBORS_METRIC</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Compute volume of a d-dimensional unit ball in R^d with given metric&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">metric</span> <span class="o">==</span> <span class="s1">&#39;chebyshev&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="mf">1.0</span>
     <span class="k">elif</span> <span class="n">metric</span> <span class="o">==</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">d</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">gamma</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">d</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="o">**</span><span class="n">d</span>
     <span class="k">else</span><span class="p">:</span>
@@ -364,7 +348,7 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_is_column_disc</span><span class="p">(</span><span class="n">col</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_is_column_disc</span><span class="p">(</span><span class="n">col</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="c1"># Heuristics to decide if column is discrete</span>
 
     <span class="c1"># Integer columns are discrete</span>
@@ -384,26 +368,26 @@
     <span class="k">return</span> <span class="kc">False</span>
 
 
-<span class="k">def</span> <span class="nf">_is_column_cont</span><span class="p">(</span><span class="n">col</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_is_column_cont</span><span class="p">(</span><span class="n">col</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="k">return</span> <span class="ow">not</span> <span class="n">_is_column_disc</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_get_disc_columns</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_get_disc_columns</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">_is_column_disc</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 
 
 <span class="c1"># Computing epsilon</span>
 
-<span class="k">def</span> <span class="nf">_compute_epsilon</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_compute_epsilon</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Calculate epsilon from KSG Estimator</span>
 
 <span class="sd">    Represents twice the distance of each element to its k-th nearest neighbor.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        x (array-like): An array with shape (n_samples, n_features)</span>
+<span class="sd">        x: An array with shape (n_samples, n_features)</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        array-like: An array with shape (n_samples, 1) representing</span>
+<span class="sd">        An array with shape (n_samples, 1) representing</span>
 <span class="sd">            epsilon as described above.</span>
 
 <span class="sd">    References:</span>
@@ -436,7 +420,11 @@
     <span class="k">return</span> <span class="n">asarray2d</span><span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">distances</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_compute_n_points_within_radius_i</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">x_i</span><span class="p">,</span> <span class="n">radius_i</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_compute_n_points_within_radius_i</span><span class="p">(</span>
+    <span class="n">nn</span><span class="p">:</span> <span class="n">NearestNeighbors</span><span class="p">,</span>
+    <span class="n">x_i</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">radius_i</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">x_i</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">radius_i</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span>
 
@@ -447,19 +435,19 @@
     <span class="k">return</span> <span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
 
 
-<span class="k">def</span> <span class="nf">_ithrow</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_ithrow</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="c1"># seem to need to index as x[i:i+1, :] to get a (1,m) row array.</span>
     <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
 
 
-<span class="k">def</span> <span class="nf">_compute_n_points_within_radius</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_compute_n_points_within_radius</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">radius</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Compute the number of points strictly within some radius</span>
 
 <span class="sd">    Note that points lying exactly on the radius are not counted.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        x (array-like): data of shape (n_instances, n_features)</span>
-<span class="sd">        radius (array-like): radius from each point of shape (n_instances, 1)</span>
+<span class="sd">        x: data of shape (n_instances, n_features)</span>
+<span class="sd">        radius: radius from each point of shape (n_instances, 1)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">check_consistent_length</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
     <span class="n">n</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -478,7 +466,7 @@
 
 <span class="c1"># Entropy estimation</span>
 
-<span class="k">def</span> <span class="nf">_estimate_disc_entropy</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_estimate_disc_entropy</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Estimate the Shannon entropy of a discrete dataset.</span>
 
 <span class="sd">    The Shannon entropy of a discrete random variable :math:`Z` with support</span>
@@ -496,18 +484,18 @@
 <span class="sd">    functions.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        x (array-like): Dataset with shape (n_samples, n_features) or</span>
+<span class="sd">        x: Dataset with shape (n_samples, n_features) or</span>
 <span class="sd">            (n_samples, )</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        float: the dataset entropy.</span>
+<span class="sd">        the dataset entropy.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">pk</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_compute_empirical_probability</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">entropy</span><span class="p">(</span><span class="n">pk</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_estimate_cont_entropy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_estimate_cont_entropy</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Estimate the differential entropy of a continuous dataset.</span>
 
 <span class="sd">    Based off the KSG Estimator [1] for a dataset&#39;s differential entropy.</span>
@@ -528,15 +516,15 @@
 <span class="sd">    non-negativity (i.e. values below zero are possible).</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        x (array-like): Dataset with shape (n_samples, n_features) or</span>
+<span class="sd">        x: Dataset with shape (n_samples, n_features) or</span>
 <span class="sd">            (n_samples, )</span>
-<span class="sd">        epsilon (array-like): An array with shape (n_samples, 1) that is</span>
+<span class="sd">        epsilon: An array with shape (n_samples, 1) that is</span>
 <span class="sd">            the epsilon used in KSG Estimator. Represents the Chebyshev</span>
 <span class="sd">            distance from an element to its k-th nearest neighbor in the full</span>
 <span class="sd">            dataset.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        float: differential entropy of the dataset</span>
+<span class="sd">        differential entropy of the dataset</span>
 
 <span class="sd">    References:</span>
 
@@ -552,7 +540,7 @@
         <span class="o">+</span> <span class="n">d</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">epsilon</span><span class="p">))</span>
 
 
-<span class="k">def</span> <span class="nf">_estimate_entropy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_estimate_entropy</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Estimate dataset entropy.&quot;&quot;&quot;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">n</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
@@ -585,7 +573,9 @@
     <span class="k">return</span> <span class="n">H_d</span> <span class="o">+</span> <span class="n">H_c_d</span>
 
 
-<span class="k">def</span> <span class="nf">_estimate_conditional_entropy</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_estimate_conditional_entropy</span><span class="p">(</span>
+    <span class="n">c</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Estimate H(c|d) where c is continuous and d is discrete&quot;&quot;&quot;</span>
     <span class="c1"># H(c|d) = \sum_{i} p(d_i) H(c|d=d_i)</span>
     <span class="c1"># where we i ranges over unique values of d and c_d_i is the</span>
@@ -605,7 +595,7 @@
 <span class="c1"># Public API</span>
 
 <div class="viewcode-block" id="estimate_entropy"><a class="viewcode-back" href="../../../api/ballet.validation.entropy.html#ballet.validation.entropy.estimate_entropy">[docs]</a><span class="nd">@nonnegative</span><span class="p">()</span>
-<span class="k">def</span> <span class="nf">estimate_entropy</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">estimate_entropy</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Estimate dataset entropy.</span>
 
 <span class="sd">    This function can take datasets of mixed discrete and continuous features,</span>
@@ -632,15 +622,11 @@
 <span class="sd">    dataset.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        x (array-like): Dataset with shape (n_samples, n_features) or</span>
+<span class="sd">        x: Dataset with shape (n_samples, n_features) or</span>
 <span class="sd">            (n_samples, )</span>
-<span class="sd">        epsilon (array-like): An array with shape (n_samples, 1) that is</span>
-<span class="sd">            the epsilon used in KSG Estimator. Represents the chebyshev</span>
-<span class="sd">            distance from an element to its k-th nearest neighbor in the full</span>
-<span class="sd">            dataset.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        float: Dataset entropy of X.</span>
+<span class="sd">        Dataset entropy of X.</span>
 
 <span class="sd">    References:</span>
 
@@ -653,7 +639,9 @@
 
 
 <div class="viewcode-block" id="estimate_conditional_information"><a class="viewcode-back" href="../../../api/ballet.validation.entropy.html#ballet.validation.entropy.estimate_conditional_information">[docs]</a><span class="nd">@nonnegative</span><span class="p">()</span>
-<span class="k">def</span> <span class="nf">estimate_conditional_information</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">estimate_conditional_information</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Estimate the conditional mutual information of x and y given z</span>
 
 <span class="sd">    Conditional mutual information is the mutual information of two datasets,</span>
@@ -680,13 +668,13 @@
 <span class="sd">       \end{align}</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        x (array-like): An array with shape (n_samples, n_features_x)</span>
-<span class="sd">        y (array-like): An array with shape (n_samples, n_features_y)</span>
-<span class="sd">        z (array-like): An array with shape (n_samples, n_features_z).</span>
+<span class="sd">        x: An array with shape (n_samples, n_features_x)</span>
+<span class="sd">        y: An array with shape (n_samples, n_features_y)</span>
+<span class="sd">        z: An array with shape (n_samples, n_features_z).</span>
 <span class="sd">            This is the dataset being conditioned on.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        float: conditional mutual information of x and y given z.</span>
+<span class="sd">        conditional mutual information of x and y given z.</span>
 
 <span class="sd">    References:</span>
 
@@ -713,7 +701,7 @@
 
 
 <div class="viewcode-block" id="estimate_mutual_information"><a class="viewcode-back" href="../../../api/ballet.validation.entropy.html#ballet.validation.entropy.estimate_mutual_information">[docs]</a><span class="nd">@nonnegative</span><span class="p">()</span>
-<span class="k">def</span> <span class="nf">estimate_mutual_information</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">estimate_mutual_information</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Estimate the mutual information of two datasets.</span>
 
 <span class="sd">    Mutual information is a measure of dependence between</span>
@@ -726,11 +714,11 @@
 <span class="sd">    adapts the KSG Estimator [1] for mutual information.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        x (array-like): An array with shape (n_samples, n_features_x)</span>
-<span class="sd">        y (array-like): An array with shape (n_samples, n_features_y)</span>
+<span class="sd">        x: An array with shape (n_samples, n_features_x)</span>
+<span class="sd">        y: An array with shape (n_samples, n_features_y)</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        float: mutual information of x and y</span>
+<span class="sd">        mutual information of x and y</span>
 
 <span class="sd">    References:</span>
 

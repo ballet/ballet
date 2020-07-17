@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.util.io &mdash; ballet 0.6.11 documentation</title>
+  <title>ballet.util.io &mdash; ballet 0.7.0 documentation</title>
   
 
   
@@ -289,30 +289,31 @@
 <span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">h5py</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">stacklog</span> <span class="kn">import</span> <span class="n">stacklog</span>
 
-<span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="kn">import</span> <span class="n">safepath</span>
 <span class="kn">from</span> <span class="nn">ballet.util.fs</span> <span class="kn">import</span> <span class="n">splitext2</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">ballet.util.typing</span> <span class="kn">import</span> <span class="n">Pathy</span>
 
 
-<span class="k">def</span> <span class="nf">_check_ext</span><span class="p">(</span><span class="n">ext</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_check_ext</span><span class="p">(</span><span class="n">ext</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">expected</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">ext</span> <span class="o">!=</span> <span class="n">expected</span><span class="p">:</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;File path has wrong extension: </span><span class="si">{}</span><span class="s1"> (expected </span><span class="si">{}</span><span class="s1">)&#39;</span>
                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="p">,</span> <span class="n">expected</span><span class="p">))</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="write_tabular"><a class="viewcode-back" href="../../../api/ballet.util.io.html#ballet.util.io.write_tabular">[docs]</a><span class="k">def</span> <span class="nf">write_tabular</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
+<div class="viewcode-block" id="write_tabular"><a class="viewcode-back" href="../../../api/ballet.util.io.html#ballet.util.io.write_tabular">[docs]</a><span class="k">def</span> <span class="nf">write_tabular</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span> <span class="n">filepath</span><span class="p">:</span> <span class="n">Pathy</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Write tabular object in HDF5 or pickle format</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        obj (array or DataFrame): tabular object to write</span>
-<span class="sd">        filepath (path-like): path to write to; must end in &#39;.h5&#39; or &#39;.pkl&#39;</span>
+<span class="sd">        obj: tabular object to write</span>
+<span class="sd">        filepath: path to write to; must end in &#39;.h5&#39; or &#39;.pkl&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">splitext2</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ext</span> <span class="o">==</span> <span class="s1">&#39;.h5&#39;</span><span class="p">:</span>
@@ -327,7 +328,7 @@
     <span class="n">_</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">splitext2</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
     <span class="n">_check_ext</span><span class="p">(</span><span class="n">ext</span><span class="p">,</span> <span class="s1">&#39;.pkl&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">safepath</span><span class="p">(</span><span class="n">filepath</span><span class="p">),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">NDFrame</span><span class="p">):</span>
         <span class="n">obj</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
@@ -347,11 +348,11 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 
-<div class="viewcode-block" id="read_tabular"><a class="viewcode-back" href="../../../api/ballet.util.io.html#ballet.util.io.read_tabular">[docs]</a><span class="k">def</span> <span class="nf">read_tabular</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+<div class="viewcode-block" id="read_tabular"><a class="viewcode-back" href="../../../api/ballet.util.io.html#ballet.util.io.read_tabular">[docs]</a><span class="k">def</span> <span class="nf">read_tabular</span><span class="p">(</span><span class="n">filepath</span><span class="p">:</span> <span class="n">Pathy</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Read tabular object in HDF5 or pickle format</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        filepath (path-like): path to read to; must end in &#39;.h5&#39; or &#39;.pkl&#39;</span>
+<span class="sd">        filepath: path to read to; must end in &#39;.h5&#39; or &#39;.pkl&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">splitext2</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ext</span> <span class="o">==</span> <span class="s1">&#39;.h5&#39;</span><span class="p">:</span>
@@ -374,7 +375,7 @@
 <span class="k">def</span> <span class="nf">_read_tabular_pickle</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
     <span class="n">_</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">splitext2</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
     <span class="n">_check_ext</span><span class="p">(</span><span class="n">ext</span><span class="p">,</span> <span class="s1">&#39;.pkl&#39;</span><span class="p">)</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">safepath</span><span class="p">(</span><span class="n">filepath</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
 
@@ -405,15 +406,12 @@
         <span class="n">savefn</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="n">fn</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="load_table_from_config"><a class="viewcode-back" href="../../../api/ballet.util.io.html#ballet.util.io.load_table_from_config">[docs]</a><span class="k">def</span> <span class="nf">load_table_from_config</span><span class="p">(</span><span class="n">input_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<div class="viewcode-block" id="load_table_from_config"><a class="viewcode-back" href="../../../api/ballet.util.io.html#ballet.util.io.load_table_from_config">[docs]</a><span class="k">def</span> <span class="nf">load_table_from_config</span><span class="p">(</span><span class="n">input_dir</span><span class="p">:</span> <span class="n">Pathy</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Load table from table config dict</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        input_dir (path-like): directory containing input files</span>
-<span class="sd">        config (dict): mapping with keys &#39;name&#39;, &#39;path&#39;, and &#39;pd_read_kwargs&#39;.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        pd.DataFrame</span>
+<span class="sd">        input_dir: directory containing input files</span>
+<span class="sd">        config: mapping with keys &#39;name&#39;, &#39;path&#39;, and &#39;pd_read_kwargs&#39;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">input_dir</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">])</span>
     <span class="n">kwargs</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;pd_read_kwargs&#39;</span><span class="p">]</span>

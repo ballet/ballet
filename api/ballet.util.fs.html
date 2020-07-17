@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.util.fs module &mdash; ballet 0.6.11 documentation</title>
+  <title>ballet.util.fs module &mdash; ballet 0.7.0 documentation</title>
   
 
   
@@ -297,32 +297,19 @@
 <span id="ballet-util-fs-module"></span><h1>ballet.util.fs module<a class="headerlink" href="#module-ballet.util.fs" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="ballet.util.fs.isemptyfile">
-<code class="sig-prename descclassname">ballet.util.fs.</code><code class="sig-name descname">isemptyfile</code><span class="sig-paren">(</span><em class="sig-param">filepath</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/fs.html#isemptyfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.fs.isemptyfile" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.util.fs.</code><code class="sig-name descname">isemptyfile</code><span class="sig-paren">(</span><em class="sig-param">filepath: Union[str, os.PathLike]</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/ballet/util/fs.html#isemptyfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.fs.isemptyfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine if the file both exists and isempty</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>filepath</strong> (<em>PathLike</em>) – file path</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="ballet.util.fs.pwalk">
-<code class="sig-prename descclassname">ballet.util.fs.</code><code class="sig-name descname">pwalk</code><span class="sig-paren">(</span><em class="sig-param">d</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/fs.html#pwalk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.fs.pwalk" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.util.fs.</code><code class="sig-name descname">pwalk</code><span class="sig-paren">(</span><em class="sig-param">d: Union[str, os.PathLike], **kwargs</em><span class="sig-paren">)</span> &#x2192; Iterator[pathlib.Path]<a class="reference internal" href="../_modules/ballet/util/fs.html#pwalk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.fs.pwalk" title="Permalink to this definition">¶</a></dt>
 <dd><p>Similar to os.walk but with pathlib.Path objects</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Iterable[Path]</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="ballet.util.fs.replaceext">
-<code class="sig-prename descclassname">ballet.util.fs.</code><code class="sig-name descname">replaceext</code><span class="sig-paren">(</span><em class="sig-param">filepath</em>, <em class="sig-param">new_ext</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/fs.html#replaceext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.fs.replaceext" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.util.fs.</code><code class="sig-name descname">replaceext</code><span class="sig-paren">(</span><em class="sig-param">filepath: Union[str, os.PathLike], new_ext: str</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/ballet/util/fs.html#replaceext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.fs.replaceext" title="Permalink to this definition">¶</a></dt>
 <dd><p>Replace any existing file extension with a new one</p>
 <p>If the new extension is the empty string, all existing extensions will
 be removed.</p>
@@ -336,51 +323,29 @@ be removed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filepath</strong> (<em>PathLike</em>) – file path</p></li>
-<li><p><strong>new_ext</strong> (<em>str</em>) – new file extension; if a leading dot is not included,
-it will be added.</p></li>
+<li><p><strong>filepath</strong> – file path</p></li>
+<li><p><strong>new_ext</strong> – new file extension; if a leading dot is not included, it will
+be added.</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="ballet.util.fs.spliceext">
-<code class="sig-prename descclassname">ballet.util.fs.</code><code class="sig-name descname">spliceext</code><span class="sig-paren">(</span><em class="sig-param">filepath</em>, <em class="sig-param">s</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/fs.html#spliceext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.fs.spliceext" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.util.fs.</code><code class="sig-name descname">spliceext</code><span class="sig-paren">(</span><em class="sig-param">filepath: Union[str, os.PathLike], s: str</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/ballet/util/fs.html#spliceext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.fs.spliceext" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add s into filepath before the extension</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>filepath</strong> (<em>PathLike</em>) – file path</p></li>
-<li><p><strong>s</strong> (<em>str</em>) – string to splice</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="ballet.util.fs.splitext2">
-<code class="sig-prename descclassname">ballet.util.fs.</code><code class="sig-name descname">splitext2</code><span class="sig-paren">(</span><em class="sig-param">filepath</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/fs.html#splitext2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.fs.splitext2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.util.fs.</code><code class="sig-name descname">splitext2</code><span class="sig-paren">(</span><em class="sig-param">filepath: Union[str, os.PathLike]</em><span class="sig-paren">)</span> &#x2192; Tuple[str, str, str]<a class="reference internal" href="../_modules/ballet/util/fs.html#splitext2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.fs.splitext2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Split filepath into root, filename, ext</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>filepath</strong> (<em>PathLike</em>) – file path</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="ballet.util.fs.synctree">
-<code class="sig-prename descclassname">ballet.util.fs.</code><code class="sig-name descname">synctree</code><span class="sig-paren">(</span><em class="sig-param">src</em>, <em class="sig-param">dst</em>, <em class="sig-param">onexist=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/fs.html#synctree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.fs.synctree" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.util.fs.</code><code class="sig-name descname">synctree</code><span class="sig-paren">(</span><em class="sig-param">src: Union[str, os.PathLike], dst: Union[str, os.PathLike], onexist: Callable[[pathlib.Path], None] = None</em><span class="sig-paren">)</span> &#x2192; List[Tuple[pathlib.Path, str]]<a class="reference internal" href="../_modules/ballet/util/fs.html#synctree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.fs.synctree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Recursively sync files at directory src to dst</p>
 <p>This is more or less equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cp -n -R ${src}/ ${dst}/
@@ -391,20 +356,16 @@ in dst. Pass <code class="docutils literal notranslate"><span class="pre">onexis
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>src</strong> (<em>path-like</em>) – source directory</p></li>
-<li><p><strong>dst</strong> (<em>path-like</em>) – destination directory, does not need to exist</p></li>
-<li><p><strong>onexist</strong> (<em>callable</em>) – function to call if file exists at destination,
+<li><p><strong>src</strong> – source directory</p></li>
+<li><p><strong>dst</strong> – destination directory, does not need to exist</p></li>
+<li><p><strong>onexist</strong> – function to call if file exists at destination,
 takes the full path to destination file as only argument</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>changes made by synctree, list of tuples of
-the form (“/absolute/path/to/file”, “&lt;kind&gt;”) where the change kind is
-one of “dir” (new directory was created) or “file” (new file was
-created).</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>List[Tuple[PathLike,str]]</p>
+<dd class="field-even"><p>changes made by synctree, list of tuples of the form
+(“/absolute/path/to/file”, “&lt;kind&gt;”) where the change kind is one of
+“dir” (new directory was created) or “file” (new file was created).</p>
 </dd>
 </dl>
 </dd></dl>

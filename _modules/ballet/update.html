@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.update &mdash; ballet 0.6.11 documentation</title>
+  <title>ballet.update &mdash; ballet 0.7.0 documentation</title>
   
 
   
@@ -290,6 +290,7 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">tempfile</span>
 <span class="kn">from</span> <span class="nn">textwrap</span> <span class="kn">import</span> <span class="n">dedent</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 <span class="kn">from</span> <span class="nn">unittest.mock</span> <span class="kn">import</span> <span class="n">patch</span>
 
 <span class="kn">import</span> <span class="nn">funcy</span>
@@ -301,12 +302,12 @@
 <span class="kn">from</span> <span class="nn">stacklog</span> <span class="kn">import</span> <span class="n">stacklog</span>
 
 <span class="kn">import</span> <span class="nn">ballet</span>
-<span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="kn">import</span> <span class="n">safepath</span>
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="kn">import</span> <span class="n">BalletError</span><span class="p">,</span> <span class="n">ConfigurationError</span>
 <span class="kn">from</span> <span class="nn">ballet.project</span> <span class="kn">import</span> <span class="n">Project</span>
 <span class="kn">from</span> <span class="nn">ballet.templating</span> <span class="kn">import</span> <span class="n">render_project_template</span>
 <span class="kn">from</span> <span class="nn">ballet.util.git</span> <span class="kn">import</span> <span class="n">did_git_push_succeed</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">ballet.util.typing</span> <span class="kn">import</span> <span class="n">Pathy</span>
 
 <span class="n">PROJECT_CONTEXT_PATH</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span>
@@ -318,14 +319,16 @@
 <span class="n">TEMPLATE_BRANCH</span> <span class="o">=</span> <span class="s1">&#39;project-template&#39;</span>
 
 
-<span class="k">def</span> <span class="nf">_query_pip_search_ballet</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">_query_pip_search_ballet</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Call python -m pip search ballet&quot;&quot;&quot;</span>
     <span class="c1"># compat: use subprocess.run on py37+ and text=True on py37+</span>
     <span class="n">popen_args</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="s1">&#39;pip&#39;</span><span class="p">,</span> <span class="s1">&#39;search&#39;</span><span class="p">,</span> <span class="s1">&#39;ballet&#39;</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="n">popen_args</span><span class="p">,</span> <span class="n">universal_newlines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_extract_latest_from_search_triple</span><span class="p">(</span><span class="n">triple</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_extract_latest_from_search_triple</span><span class="p">(</span>
+    <span class="n">triple</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Try to extract latest version number from a triple of search results&quot;&quot;&quot;</span>
     <span class="n">description</span><span class="p">,</span> <span class="n">installed</span><span class="p">,</span> <span class="n">latest</span> <span class="o">=</span> <span class="n">triple</span>
     <span class="k">if</span> <span class="n">re_test</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\s*ballet \(.+\)\s*-\s*\w*&#39;</span><span class="p">,</span> <span class="n">description</span><span class="p">):</span>
@@ -334,7 +337,7 @@
     <span class="k">return</span> <span class="kc">None</span>
 
 
-<span class="k">def</span> <span class="nf">_get_latest_ballet_version_string</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">_get_latest_ballet_version_string</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Get the latest version of ballet according to pip</span>
 
 <span class="sd">    Parses the result of `pip search ballet`. Looks for something named</span>
@@ -343,8 +346,7 @@
 <span class="sd">    would this code be running? :)</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Union[str, None]: latest version of ballet or None if something went</span>
-<span class="sd">            wrong</span>
+<span class="sd">        latest version of ballet or None if something went wrong</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># $ pip search ballet</span>
@@ -363,12 +365,12 @@
     <span class="k">return</span> <span class="kc">None</span>
 
 
-<span class="k">def</span> <span class="nf">_check_for_updated_ballet</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">_check_for_updated_ballet</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Return the version of an updated ballet if it is available</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Union[str, None]: the latest version of ballet available or None if</span>
-<span class="sd">            the latest version is the same as the currently-installed version</span>
+<span class="sd">        the latest version of ballet available or None if the latest version</span>
+<span class="sd">        is the same as the currently-installed version</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">latest</span> <span class="o">=</span> <span class="n">_get_latest_ballet_version_string</span><span class="p">()</span>
     <span class="n">current</span> <span class="o">=</span> <span class="n">ballet</span><span class="o">.</span><span class="n">__version__</span>
@@ -379,7 +381,7 @@
         <span class="k">return</span> <span class="kc">None</span>
 
 
-<span class="k">def</span> <span class="nf">_warn_of_updated_ballet</span><span class="p">(</span><span class="n">latest</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_warn_of_updated_ballet</span><span class="p">(</span><span class="n">latest</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">latest</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">msg</span> <span class="o">=</span> \
             <span class="sd">&#39;&#39;&#39;\</span>
@@ -392,20 +394,24 @@
 <span class="sd">            &#39;&#39;&#39;</span>  <span class="c1"># noqa E501</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">latest</span><span class="o">=</span><span class="n">latest</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="n">ballet</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_make_template_branch_merge_commit_message</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">_make_template_branch_merge_commit_message</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="n">version</span> <span class="o">=</span> <span class="n">ballet</span><span class="o">.</span><span class="n">__version__</span>
     <span class="k">return</span> <span class="s1">&#39;Merge project template updates from ballet v</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">version</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_safe_delete_remote</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_safe_delete_remote</span><span class="p">(</span><span class="n">repo</span><span class="p">:</span> <span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="k">with</span> <span class="n">funcy</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
         <span class="n">repo</span><span class="o">.</span><span class="n">delete_remote</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_render_project_template</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="n">tempdir</span><span class="p">,</span> <span class="n">project_template_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_render_project_template</span><span class="p">(</span>
+    <span class="n">cwd</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+    <span class="n">tempdir</span><span class="p">:</span> <span class="n">Pathy</span><span class="p">,</span>
+    <span class="n">project_template_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Pathy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="n">tempdir</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">tempdir</span><span class="p">)</span>
     <span class="n">context</span> <span class="o">=</span> <span class="n">_get_full_context</span><span class="p">(</span><span class="n">cwd</span><span class="p">)</span>
 
@@ -415,10 +421,10 @@
             <span class="n">project_template_path</span><span class="o">=</span><span class="n">project_template_path</span><span class="p">,</span>
             <span class="n">no_input</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">extra_context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span>
-            <span class="n">output_dir</span><span class="o">=</span><span class="n">safepath</span><span class="p">(</span><span class="n">tempdir</span><span class="p">))</span>
+            <span class="n">output_dir</span><span class="o">=</span><span class="n">tempdir</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_get_full_context</span><span class="p">(</span><span class="n">cwd</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_get_full_context</span><span class="p">(</span><span class="n">cwd</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
     <span class="c1"># load the context stored within the project repository</span>
     <span class="n">context_path</span> <span class="o">=</span> <span class="n">cwd</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">CONTEXT_FILE_NAME</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">context_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
@@ -442,7 +448,7 @@
     <span class="k">return</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;cookiecutter&#39;</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">_call_remote_push</span><span class="p">(</span><span class="n">remote</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_call_remote_push</span><span class="p">(</span><span class="n">remote</span><span class="p">:</span> <span class="n">git</span><span class="o">.</span><span class="n">Remote</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">remote</span><span class="o">.</span><span class="n">push</span><span class="p">([</span>
         <span class="s1">&#39;</span><span class="si">{master}</span><span class="s1">:</span><span class="si">{master}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">master</span><span class="o">=</span><span class="n">DEFAULT_BRANCH</span><span class="p">),</span>
         <span class="s1">&#39;</span><span class="si">{project_template}</span><span class="s1">:</span><span class="si">{project_template}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -451,7 +457,7 @@
 
 
 <span class="nd">@stacklog</span><span class="p">(</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">,</span> <span class="s1">&#39;Pushing updates to remote&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">_push</span><span class="p">(</span><span class="n">project</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_push</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="n">Project</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Push default branch and project template branch to remote</span>
 
 <span class="sd">    With default config (i.e. remote and branch names), equivalent to::</span>
@@ -484,7 +490,8 @@
         <span class="s1">&#39;    $ invoke install&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="update_project_template"><a class="viewcode-back" href="../../api/ballet.update.html#ballet.update.update_project_template">[docs]</a><span class="k">def</span> <span class="nf">update_project_template</span><span class="p">(</span><span class="n">push</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">project_template_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="update_project_template"><a class="viewcode-back" href="../../api/ballet.update.html#ballet.update.update_project_template">[docs]</a><span class="k">def</span> <span class="nf">update_project_template</span><span class="p">(</span><span class="n">push</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                            <span class="n">project_template_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Pathy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Update project with updates to upstream project template</span>
 
 <span class="sd">    The update is fairly complicated and proceeds as follows:</span>
@@ -507,8 +514,8 @@
 <span class="sd">    6. If applicable, push to master.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        push (bool): whether to push updates to remote, defaults to False</span>
-<span class="sd">        project_template_path (PathLike): an override for the path to the</span>
+<span class="sd">        push: whether to push updates to remote, defaults to False</span>
+<span class="sd">        project_template_path: an override for the path to the</span>
 <span class="sd">            project template</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">cwd</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
@@ -542,14 +549,14 @@
     <span class="k">if</span> <span class="n">new_version</span><span class="p">:</span>
         <span class="n">_warn_of_updated_ballet</span><span class="p">(</span><span class="n">new_version</span><span class="p">)</span>
 
-    <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tempdir</span><span class="p">:</span>
-        <span class="n">tempdir</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">tempdir</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">_tempdir</span><span class="p">:</span>
+        <span class="n">tempdir</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">_tempdir</span><span class="p">)</span>
 
         <span class="c1"># cookiecutter returns path to the resulting project dir</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Re-rendering project template at </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tempdir</span><span class="p">))</span>
         <span class="n">updated_template</span> <span class="o">=</span> <span class="n">_render_project_template</span><span class="p">(</span>
             <span class="n">cwd</span><span class="p">,</span> <span class="n">tempdir</span><span class="p">,</span> <span class="n">project_template_path</span><span class="o">=</span><span class="n">project_template_path</span><span class="p">)</span>
-        <span class="n">updated_repo</span> <span class="o">=</span> <span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">(</span><span class="n">safepath</span><span class="p">(</span><span class="n">updated_template</span><span class="p">))</span>
+        <span class="n">updated_repo</span> <span class="o">=</span> <span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">(</span><span class="n">updated_template</span><span class="p">)</span>
 
         <span class="c1"># tempdir is a randomly-named dir suitable for a random remote name</span>
         <span class="c1"># to avoid conflicts</span>

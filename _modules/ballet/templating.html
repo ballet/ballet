@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.templating &mdash; ballet 0.6.11 documentation</title>
+  <title>ballet.templating &mdash; ballet 0.7.0 documentation</title>
   
 
   
@@ -286,6 +286,7 @@
   <h1>Source code for ballet.templating</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span> <span class="nn">funcy</span> <span class="k">as</span> <span class="nn">fy</span>
 <span class="kn">from</span> <span class="nn">cookiecutter.main</span> <span class="kn">import</span> <span class="n">cookiecutter</span> <span class="k">as</span> <span class="n">_cookiecutter</span>
@@ -295,6 +296,7 @@
 <span class="kn">from</span> <span class="nn">ballet.project</span> <span class="kn">import</span> <span class="n">Project</span><span class="p">,</span> <span class="n">detect_github_username</span>
 <span class="kn">from</span> <span class="nn">ballet.util.fs</span> <span class="kn">import</span> <span class="n">pwalk</span><span class="p">,</span> <span class="n">synctree</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">ballet.util.typing</span> <span class="kn">import</span> <span class="n">Pathy</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.project_structure.checks</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">FEATURE_MODULE_NAME_REGEX</span><span class="p">,</span> <span class="n">SUBPACKAGE_NAME_REGEX</span><span class="p">)</span>
 
@@ -303,27 +305,29 @@
 <span class="n">PROJECT_TEMPLATE_PATH</span> <span class="o">=</span> <span class="n">TEMPLATES_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">&#39;project_template&#39;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_stringify_path</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_stringify_path</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">)</span> <span class="k">else</span> <span class="n">obj</span>
 
 
 <span class="nd">@fy</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">_cookiecutter</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">cookiecutter</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">cookiecutter</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Call cookiecutter.main.cookiecutter after stringifying paths</span>
 
 <span class="sd">    Return:</span>
-<span class="sd">        str: project directory path</span>
+<span class="sd">        project directory path</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">args</span> <span class="o">=</span> <span class="n">fy</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">_stringify_path</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
     <span class="n">kwargs</span> <span class="o">=</span> <span class="n">fy</span><span class="o">.</span><span class="n">walk_values</span><span class="p">(</span><span class="n">_stringify_path</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_cookiecutter</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="render_project_template"><a class="viewcode-back" href="../../api/ballet.templating.html#ballet.templating.render_project_template">[docs]</a><span class="k">def</span> <span class="nf">render_project_template</span><span class="p">(</span><span class="n">project_template_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">cc_kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="render_project_template"><a class="viewcode-back" href="../../api/ballet.templating.html#ballet.templating.render_project_template">[docs]</a><span class="k">def</span> <span class="nf">render_project_template</span><span class="p">(</span>
+    <span class="n">project_template_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Pathy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">cc_kwargs</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Generate a ballet project according to the project template</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        project_template_path (str): path to specific project template</span>
+<span class="sd">        project_template_path: path to specific project template</span>
 <span class="sd">        **cc_kwargs: options for the cookiecutter template</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">project_template_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -331,7 +335,7 @@
     <span class="k">return</span> <span class="n">cookiecutter</span><span class="p">(</span><span class="n">project_template_path</span><span class="p">,</span> <span class="o">**</span><span class="n">cc_kwargs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="render_feature_template"><a class="viewcode-back" href="../../api/ballet.templating.html#ballet.templating.render_feature_template">[docs]</a><span class="k">def</span> <span class="nf">render_feature_template</span><span class="p">(</span><span class="o">**</span><span class="n">cc_kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="render_feature_template"><a class="viewcode-back" href="../../api/ballet.templating.html#ballet.templating.render_feature_template">[docs]</a><span class="k">def</span> <span class="nf">render_feature_template</span><span class="p">(</span><span class="o">**</span><span class="n">cc_kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Create a stub for a new feature</span>
 
 <span class="sd">    Args:</span>
@@ -341,7 +345,7 @@
     <span class="k">return</span> <span class="n">cookiecutter</span><span class="p">(</span><span class="n">feature_template_path</span><span class="p">,</span> <span class="o">**</span><span class="n">cc_kwargs</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">_fail_if_feature_exists</span><span class="p">(</span><span class="n">dst</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_fail_if_feature_exists</span><span class="p">(</span><span class="n">dst</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">subpackage_name</span><span class="p">,</span> <span class="n">feature_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">dst</span><span class="o">.</span><span class="n">parent</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">dst</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
     <span class="k">if</span> <span class="p">(</span>
         <span class="n">dst</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span>
@@ -353,7 +357,9 @@
             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dst</span><span class="o">=</span><span class="n">dst</span><span class="p">))</span>
 
 
-<div class="viewcode-block" id="start_new_feature"><a class="viewcode-back" href="../../api/ballet.templating.html#ballet.templating.start_new_feature">[docs]</a><span class="k">def</span> <span class="nf">start_new_feature</span><span class="p">(</span><span class="n">contrib_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">cc_kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="start_new_feature"><a class="viewcode-back" href="../../api/ballet.templating.html#ballet.templating.start_new_feature">[docs]</a><span class="k">def</span> <span class="nf">start_new_feature</span><span class="p">(</span>
+    <span class="n">contrib_dir</span><span class="p">:</span> <span class="n">Pathy</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">cc_kwargs</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;Start a new feature within a ballet project</span>
 
 <span class="sd">    By default, will prompt the user for input using cookiecutter&#39;s input</span>
@@ -409,7 +415,7 @@
     <span class="k">return</span> <span class="n">result</span></div>
 
 
-<span class="k">def</span> <span class="nf">_log_start_new_feature_success</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_log_start_new_feature_success</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]):</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Start new feature successful.&#39;</span><span class="p">)</span>
     <span class="k">for</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">kind</span><span class="p">)</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;file&#39;</span> <span class="ow">and</span> <span class="s1">&#39;__init__&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>

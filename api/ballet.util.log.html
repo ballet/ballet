@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.util.log module &mdash; ballet 0.6.11 documentation</title>
+  <title>ballet.util.log module &mdash; ballet 0.7.0 documentation</title>
   
 
   
@@ -297,12 +297,12 @@
 <span id="ballet-util-log-module"></span><h1>ballet.util.log module<a class="headerlink" href="#module-ballet.util.log" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="ballet.util.log.LevelFilter">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.util.log.</code><code class="sig-name descname">LevelFilter</code><span class="sig-paren">(</span><em class="sig-param">level</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/log.html#LevelFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.log.LevelFilter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.util.log.</code><code class="sig-name descname">LevelFilter</code><span class="sig-paren">(</span><em class="sig-param">level: int</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/log.html#LevelFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.log.LevelFilter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Logging filter for log records at an exact level</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>level</strong> (<em>int</em>) – numeric logging level to filter</p>
+<dd class="field-odd"><p><strong>level</strong> – numeric logging level to filter</p>
 </dd>
 </dl>
 <p>Example usage:</p>
@@ -312,14 +312,14 @@
 </div>
 <dl class="method">
 <dt id="ballet.util.log.LevelFilter.filter">
-<code class="sig-name descname">filter</code><span class="sig-paren">(</span><em class="sig-param">logRecord</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/log.html#LevelFilter.filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.log.LevelFilter.filter" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">filter</code><span class="sig-paren">(</span><em class="sig-param">logRecord: logging.LogRecord</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/ballet/util/log.html#LevelFilter.filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.log.LevelFilter.filter" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="ballet.util.log.LoggingContext">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.util.log.</code><code class="sig-name descname">LoggingContext</code><span class="sig-paren">(</span><em class="sig-param">logger</em>, <em class="sig-param">level=None</em>, <em class="sig-param">handler=None</em>, <em class="sig-param">close=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/log.html#LoggingContext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.log.LoggingContext" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.util.log.</code><code class="sig-name descname">LoggingContext</code><span class="sig-paren">(</span><em class="sig-param">logger: logging.Logger</em>, <em class="sig-param">level: Union[str</em>, <em class="sig-param">int] = None</em>, <em class="sig-param">handler: logging.Handler = None</em>, <em class="sig-param">close: bool = True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/log.html#LoggingContext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.log.LoggingContext" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Logging context manager</p>
 <p>Configure the given logger to emit messages at and above the configured
@@ -330,10 +330,10 @@ will be restored.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>logger</strong> (<em>logging.Logger</em>) – logger</p></li>
-<li><p><strong>level</strong> (<em>Union</em><em>[</em><em>str</em><em>,</em><em>int</em><em>]</em>) – string or numeric logging level</p></li>
-<li><p><strong>handler</strong> (<em>logging.Handler</em>) – log handler if not is already configured</p></li>
-<li><p><strong>close</strong> (<em>bool</em>) – whether to close the handler after context exits.
+<li><p><strong>logger</strong> – logger</p></li>
+<li><p><strong>level</strong> – string or numeric logging level</p></li>
+<li><p><strong>handler</strong> – log handler if not is already configured</p></li>
+<li><p><strong>close</strong> – whether to close the handler after context exits.
 Defaults to True.</p></li>
 </ul>
 </dd>
@@ -348,17 +348,16 @@ Defaults to True.</p></li>
 
 <dl class="function">
 <dt id="ballet.util.log.enable">
-<code class="sig-prename descclassname">ballet.util.log.</code><code class="sig-name descname">enable</code><span class="sig-paren">(</span><em class="sig-param">logger=&lt;Logger ballet (WARNING)&gt;</em>, <em class="sig-param">level=20</em>, <em class="sig-param">format='[%(asctime)s] {%(name)s: %(filename)s:%(lineno)d} %(levelname)s - %(message)s'</em>, <em class="sig-param">echo=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/log.html#enable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.log.enable" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.util.log.</code><code class="sig-name descname">enable</code><span class="sig-paren">(</span><em class="sig-param">logger: logging.Logger = &lt;Logger ballet (WARNING)&gt;</em>, <em class="sig-param">level: Union[str</em>, <em class="sig-param">int] = 20</em>, <em class="sig-param">format: str = '[%(asctime)s] {%(name)s: %(filename)s:%(lineno)d} %(levelname)s - %(message)s'</em>, <em class="sig-param">echo: bool = True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/log.html#enable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.log.enable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Enable simple console logging for this module</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>logger</strong> (<em>logging.Logger</em>) – logger to enable. Defaults to ballet logger.</p></li>
-<li><p><strong>level</strong> (<em>str</em><em>, </em><em>int</em>) – logging level, either as string (<code class="docutils literal notranslate"><span class="pre">&quot;INFO&quot;</span></code>) or as
-int (<code class="docutils literal notranslate"><span class="pre">logging.INFO</span></code> or <code class="docutils literal notranslate"><span class="pre">20</span></code>). Defaults to ‘INFO’.</p></li>
-<li><p><strong>format</strong> (<em>str</em>) – logging format. Defaults to
-ballet.util.log.DETAIL_LOG_FORMAT.</p></li>
-<li><p><strong>echo</strong> (<em>bool</em>) – Whether to log a message at the configured log level to
+<li><p><strong>logger</strong> – logger to enable. Defaults to ballet logger.</p></li>
+<li><p><strong>level</strong> – logging level, either as string (<code class="docutils literal notranslate"><span class="pre">&quot;INFO&quot;</span></code>) or as int
+(<code class="docutils literal notranslate"><span class="pre">logging.INFO</span></code> or <code class="docutils literal notranslate"><span class="pre">20</span></code>). Defaults to ‘INFO’.</p></li>
+<li><p><strong>format</strong> – logging format. Defaults to ballet.util.log.DETAIL_LOG_FORMAT.</p></li>
+<li><p><strong>echo</strong> – Whether to log a message at the configured log level to
 confirm that logging is enable. Defaults to True.</p></li>
 </ul>
 </dd>

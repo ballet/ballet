@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.validation.feature_api &mdash; ballet 0.6.11 documentation</title>
+  <title>ballet.validation.feature_api &mdash; ballet 0.7.0 documentation</title>
   
 
   
@@ -284,13 +284,21 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ballet.validation.feature_api</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">ballet</span> <span class="kn">import</span> <span class="n">logger</span>
+<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">ballet</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">ballet.feature</span> <span class="kn">import</span> <span class="n">Feature</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.common</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">check_from_class</span><span class="p">,</span> <span class="n">subsample_data_for_validation</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.feature_api.checks</span> <span class="kn">import</span> <span class="n">FeatureApiCheck</span>
 
 
-<div class="viewcode-block" id="validate_feature_api"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.validate_feature_api">[docs]</a><span class="k">def</span> <span class="nf">validate_feature_api</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">subsample</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="validate_feature_api"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.validate_feature_api">[docs]</a><span class="k">def</span> <span class="nf">validate_feature_api</span><span class="p">(</span>
+    <span class="n">feature</span><span class="p">:</span> <span class="n">Feature</span><span class="p">,</span>
+    <span class="n">X</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">y</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">subsample</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Validating feature </span><span class="si">{feature!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feature</span><span class="o">=</span><span class="n">feature</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">subsample</span><span class="p">:</span>
         <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">subsample_data_for_validation</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>

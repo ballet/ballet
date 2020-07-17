@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.pipeline &mdash; ballet 0.6.11 documentation</title>
+  <title>ballet.pipeline &mdash; ballet 0.7.0 documentation</title>
   
 
   
@@ -284,7 +284,7 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ballet.pipeline</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">cast</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -297,6 +297,7 @@
 <span class="kn">from</span> <span class="nn">ballet.eng</span> <span class="kn">import</span> <span class="n">BaseTransformer</span>
 <span class="kn">from</span> <span class="nn">ballet.eng.misc</span> <span class="kn">import</span> <span class="n">NullTransformer</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">ballet.util.typing</span> <span class="kn">import</span> <span class="n">OneOrMore</span>
 
 
 <div class="viewcode-block" id="FeatureEngineeringPipeline"><a class="viewcode-back" href="../../api/ballet.pipeline.html#ballet.pipeline.FeatureEngineeringPipeline">[docs]</a><span class="k">class</span> <span class="nc">FeatureEngineeringPipeline</span><span class="p">(</span><span class="n">DataFrameMapper</span><span class="p">):</span>
@@ -306,29 +307,33 @@
 <span class="sd">        features: feature or list of features</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;ballet.feature.Feature&#39;</span><span class="p">,</span>
-                                       <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;ballet.feature.Feature&#39;</span><span class="p">]]):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">:</span> <span class="n">OneOrMore</span><span class="p">[</span><span class="s1">&#39;ballet.feature.Feature&#39;</span><span class="p">]):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">features</span><span class="p">:</span>
-            <span class="n">features</span> <span class="o">=</span> <span class="n">ballet</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="p">[],</span>
-                                              <span class="n">transformer</span><span class="o">=</span><span class="n">NullTransformer</span><span class="p">())</span>
+            <span class="n">_features</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">ballet</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="p">[],</span>
+                                       <span class="n">transformer</span><span class="o">=</span><span class="n">NullTransformer</span><span class="p">())</span>
+            <span class="p">]</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">iterable</span><span class="p">(</span><span class="n">features</span><span class="p">):</span>
+            <span class="n">features</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">ballet</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">Feature</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
+            <span class="n">_features</span> <span class="o">=</span> <span class="p">[</span><span class="n">features</span><span class="p">,</span> <span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">features</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Collection</span><span class="p">[</span><span class="n">ballet</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">Feature</span><span class="p">],</span> <span class="n">features</span><span class="p">)</span>
+            <span class="n">_features</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">iterable</span><span class="p">(</span><span class="n">features</span><span class="p">):</span>
-            <span class="n">features</span> <span class="o">=</span> <span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ballet_features</span> <span class="o">=</span> <span class="n">features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ballet_features</span> <span class="o">=</span> <span class="n">_features</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">as_input_transformer_tuple</span><span class="p">()</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">features</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">as_input_transformer_tuple</span><span class="p">()</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">_features</span><span class="p">],</span>
             <span class="n">input_df</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">ballet_features</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;ballet.feature.Feature&#39;</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">ballet_features</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="s1">&#39;ballet.feature.Feature&#39;</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ballet_features</span></div>
 
 
 <div class="viewcode-block" id="EngineerFeaturesResult"><a class="viewcode-back" href="../../api/ballet.pipeline.html#ballet.pipeline.EngineerFeaturesResult">[docs]</a><span class="k">class</span> <span class="nc">EngineerFeaturesResult</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">X_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
-    <span class="n">features</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;ballet.feature.Feature&#39;</span><span class="p">]</span>
+    <span class="n">features</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="s1">&#39;ballet.feature.Feature&#39;</span><span class="p">]</span>
     <span class="n">pipeline</span><span class="p">:</span> <span class="n">FeatureEngineeringPipeline</span>
     <span class="n">X</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span>
     <span class="n">y_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
@@ -336,7 +341,11 @@
     <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span></div>
 
 
-<div class="viewcode-block" id="make_engineer_features"><a class="viewcode-back" href="../../api/ballet.pipeline.html#ballet.pipeline.make_engineer_features">[docs]</a><span class="k">def</span> <span class="nf">make_engineer_features</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">encoder</span><span class="p">,</span> <span class="n">load_data</span><span class="p">):</span>
+<div class="viewcode-block" id="make_engineer_features"><a class="viewcode-back" href="../../api/ballet.pipeline.html#ballet.pipeline.make_engineer_features">[docs]</a><span class="k">def</span> <span class="nf">make_engineer_features</span><span class="p">(</span>
+    <span class="n">pipeline</span><span class="p">:</span> <span class="n">FeatureEngineeringPipeline</span><span class="p">,</span>
+    <span class="n">encoder</span><span class="p">:</span> <span class="n">BaseTransformer</span><span class="p">,</span>
+    <span class="n">load_data</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span> <span class="n">EngineerFeaturesResult</span><span class="p">]:</span>
     <span class="n">features</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">ballet_features</span>
 
     <span class="nd">@stacklog</span><span class="p">(</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">,</span> <span class="s1">&#39;Building features and target&#39;</span><span class="p">)</span>

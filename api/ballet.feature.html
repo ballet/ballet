@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.feature module &mdash; ballet 0.6.11 documentation</title>
+  <title>ballet.feature module &mdash; ballet 0.7.0 documentation</title>
   
 
   
@@ -295,7 +295,7 @@
 <span id="ballet-feature-module"></span><h1>ballet.feature module<a class="headerlink" href="#module-ballet.feature" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="ballet.feature.Feature">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.feature.</code><code class="sig-name descname">Feature</code><span class="sig-paren">(</span><em class="sig-param">input</em>, <em class="sig-param">transformer</em>, <em class="sig-param">name=None</em>, <em class="sig-param">description=None</em>, <em class="sig-param">output=None</em>, <em class="sig-param">source=None</em>, <em class="sig-param">options=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/feature.html#Feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.feature.Feature" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.feature.</code><code class="sig-name descname">Feature</code><span class="sig-paren">(</span><em class="sig-param">input: Union[str, Collection[str]], transformer: Union[Callable, ballet.eng.BaseTransformer, Collection[Union[Callable, ballet.eng.BaseTransformer]]], name: Optional[str] = None, description: Optional[str] = None, output: Union[str, Collection[str]] = None, source: Union[str, os.PathLike] = None, options: dict = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/feature.html#Feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.feature.Feature" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A logical feature</p>
 <p>Conceptually, a logical feature is a learned function that maps raw
@@ -306,32 +306,31 @@ or the one-hot encoding of a categorical variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input</strong> (<em>str</em><em>, </em><em>Collection</em><em>[</em><em>str</em><em>]</em>) – required columns from the input
-dataframe needed for the transformation</p></li>
-<li><p><strong>transformer</strong> (<em>transformer-like</em><em>, </em><em>List</em><em>[</em><em>transformer-like</em><em>]</em>) – transformer, or
-sequence of transformers. A “transformer” is an instance of a class
-that provides a fit/transform-style learned transformation.
-Alternately, a callable can be provided, either by itself or in a
-list, in which case it will be converted into a
-<code class="docutils literal notranslate"><span class="pre">SimpleFunctionTransformer</span></code> for convenience.</p></li>
-<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – name of the feature</p></li>
-<li><p><strong>description</strong> (<em>str</em><em>, </em><em>optional</em>) – description of the feature</p></li>
-<li><p><strong>output</strong> (<em>str</em><em>, </em><em>list</em><em>[</em><em>str</em><em>]</em>) – ordered sequence of names of features
+<li><p><strong>input</strong> – required columns from the input dataframe needed for the
+transformation</p></li>
+<li><p><strong>transformer</strong> – transformer, or sequence of transformers. A “transformer”
+is an instance of a class that provides a fit/transform-style
+learned transformation. Alternately, a callable can be provided,
+either by itself or in a list, in which case it will be converted
+into a <code class="docutils literal notranslate"><span class="pre">SimpleFunctionTransformer</span></code> for convenience.</p></li>
+<li><p><strong>name</strong> – name of the feature</p></li>
+<li><p><strong>description</strong> – description of the feature</p></li>
+<li><p><strong>output</strong> – ordered sequence of names of features
 produced by this transformer</p></li>
-<li><p><strong>source</strong> (<em>path-like</em>) – the source file in which this feature was defined</p></li>
-<li><p><strong>options</strong> (<em>dict</em>) – options</p></li>
+<li><p><strong>source</strong> – the source file in which this feature was defined</p></li>
+<li><p><strong>options</strong> – options</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="method">
 <dt id="ballet.feature.Feature.as_feature_engineering_pipeline">
-<code class="sig-name descname">as_feature_engineering_pipeline</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/feature.html#Feature.as_feature_engineering_pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.feature.Feature.as_feature_engineering_pipeline" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">as_feature_engineering_pipeline</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; ballet.pipeline.FeatureEngineeringPipeline<a class="reference internal" href="../_modules/ballet/feature.html#Feature.as_feature_engineering_pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.feature.Feature.as_feature_engineering_pipeline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return standalone FeatureEngineeringPipeline with this feature</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="ballet.feature.Feature.as_input_transformer_tuple">
-<code class="sig-name descname">as_input_transformer_tuple</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/feature.html#Feature.as_input_transformer_tuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.feature.Feature.as_input_transformer_tuple" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">as_input_transformer_tuple</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Tuple[Union[str, Collection[str]], Union[sklearn_pandas.pipeline.TransformerPipeline, DelegatingRobustTransformer], dict]<a class="reference internal" href="../_modules/ballet/feature.html#Feature.as_input_transformer_tuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.feature.Feature.as_input_transformer_tuple" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an tuple for passing to DataFrameMapper constructor</p>
 </dd></dl>
 

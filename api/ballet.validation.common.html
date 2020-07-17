@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.validation.common module &mdash; ballet 0.6.11 documentation</title>
+  <title>ballet.validation.common module &mdash; ballet 0.7.0 documentation</title>
   
 
   
@@ -297,22 +297,21 @@
 <span id="ballet-validation-common-module"></span><h1>ballet.validation.common module<a class="headerlink" href="#module-ballet.validation.common" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="ballet.validation.common.ChangeCollector">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.validation.common.</code><code class="sig-name descname">ChangeCollector</code><span class="sig-paren">(</span><em class="sig-param">project</em>, <em class="sig-param">differ=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/common.html#ChangeCollector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.common.ChangeCollector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.validation.common.</code><code class="sig-name descname">ChangeCollector</code><span class="sig-paren">(</span><em class="sig-param">project: ballet.project.Project</em>, <em class="sig-param">differ: Optional[ballet.util.git.Differ] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/common.html#ChangeCollector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.common.ChangeCollector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Validate the features introduced in a proposed pull request.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>project</strong> (<a class="reference internal" href="ballet.project.html#ballet.project.Project" title="ballet.project.Project"><em>ballet.project.Project</em></a>) – project info</p></li>
-<li><p><strong>differ</strong> (<a class="reference internal" href="ballet.util.git.html#ballet.util.git.Differ" title="ballet.util.git.Differ"><em>ballet.util.git.Differ</em></a><em>, </em><em>optional</em>) – specific differ to use;
-if not provided, will be determined automatically from the
-environment</p></li>
+<li><p><strong>project</strong> – project info</p></li>
+<li><p><strong>differ</strong> – specific differ to use; if not provided, will be determined
+automatically from the environment</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="method">
 <dt id="ballet.validation.common.ChangeCollector.collect_changes">
-<code class="sig-name descname">collect_changes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/common.html#ChangeCollector.collect_changes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.common.ChangeCollector.collect_changes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">collect_changes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; ballet.validation.common.CollectedChanges<a class="reference internal" href="../_modules/ballet/validation/common.html#ChangeCollector.collect_changes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.common.ChangeCollector.collect_changes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Collect file and feature changes</p>
 <p>Steps</p>
 <ol class="arabic simple">
@@ -323,18 +322,13 @@ changes. Admissible file changes solely contribute python files to
 the contrib subdirectory.</p></li>
 <li><p>Collect features from admissible new files.</p></li>
 </ol>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>CollectedChanges</p>
-</dd>
-</dl>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="ballet.validation.common.CollectedChanges">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.validation.common.</code><code class="sig-name descname">CollectedChanges</code><span class="sig-paren">(</span><em class="sig-param">file_diffs</em>, <em class="sig-param">candidate_feature_diffs</em>, <em class="sig-param">valid_init_diffs</em>, <em class="sig-param">inadmissible_diffs</em>, <em class="sig-param">new_feature_info</em><span class="sig-paren">)</span><a class="headerlink" href="#ballet.validation.common.CollectedChanges" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.validation.common.</code><code class="sig-name descname">CollectedChanges</code><span class="sig-paren">(</span><em class="sig-param">file_diffs</em>, <em class="sig-param">candidate_feature_diffs</em>, <em class="sig-param">valid_init_diffs</em>, <em class="sig-param">inadmissible_diffs</em>, <em class="sig-param">new_feature_info</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/common.html#CollectedChanges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.common.CollectedChanges" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
 <dl class="attribute">
 <dt id="ballet.validation.common.CollectedChanges.candidate_feature_diffs">
@@ -376,31 +370,26 @@ the contrib subdirectory.</p></li>
 
 <dl class="function">
 <dt id="ballet.validation.common.check_from_class">
-<code class="sig-prename descclassname">ballet.validation.common.</code><code class="sig-name descname">check_from_class</code><span class="sig-paren">(</span><em class="sig-param">check_class</em>, <em class="sig-param">obj</em>, <em class="sig-param">*checker_args</em>, <em class="sig-param">**checker_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/common.html#check_from_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.common.check_from_class" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.validation.common.</code><code class="sig-name descname">check_from_class</code><span class="sig-paren">(</span><em class="sig-param">check_class: type</em>, <em class="sig-param">obj</em>, <em class="sig-param">*checker_args</em>, <em class="sig-param">**checker_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/common.html#check_from_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.common.check_from_class" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="ballet.validation.common.get_accepted_features">
-<code class="sig-prename descclassname">ballet.validation.common.</code><code class="sig-name descname">get_accepted_features</code><span class="sig-paren">(</span><em class="sig-param">features</em>, <em class="sig-param">proposed_feature</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/common.html#get_accepted_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.common.get_accepted_features" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.validation.common.</code><code class="sig-name descname">get_accepted_features</code><span class="sig-paren">(</span><em class="sig-param">features: Collection[ballet.feature.Feature], proposed_feature: ballet.feature.Feature</em><span class="sig-paren">)</span> &#x2192; List[ballet.feature.Feature]<a class="reference internal" href="../_modules/ballet/validation/common.html#get_accepted_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.common.get_accepted_features" title="Permalink to this definition">¶</a></dt>
 <dd><p>Deselect candidate features from list of all features</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>features</strong> (<em>List</em><em>[</em><a class="reference internal" href="ballet.feature.html#ballet.feature.Feature" title="ballet.feature.Feature"><em>Feature</em></a><em>]</em>) – collection of all features in the ballet
-project: both accepted features and candidate ones that have not
-been accepted</p></li>
-<li><p><strong>proposed_feature</strong> (<a class="reference internal" href="ballet.feature.html#ballet.feature.Feature" title="ballet.feature.Feature"><em>Feature</em></a>) – candidate feature that has not been
-accepted</p></li>
+<li><p><strong>features</strong> – collection of all features in the ballet project: both
+accepted features and candidate ones that have not been accepted</p></li>
+<li><p><strong>proposed_feature</strong> – candidate feature that has not been accepted</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>list of features with the proposed feature not in it.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>List[<a class="reference internal" href="ballet.feature.html#ballet.feature.Feature" title="ballet.feature.Feature">Feature</a>]</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><a class="reference internal" href="ballet.exc.html#ballet.exc.BalletError" title="ballet.exc.BalletError"><strong>ballet.exc.BalletError</strong></a> – Could not deselect exactly the proposed
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference internal" href="ballet.exc.html#ballet.exc.BalletError" title="ballet.exc.BalletError"><strong>ballet.exc.BalletError</strong></a> – Could not deselect exactly the proposed
     feature.</p>
 </dd>
 </dl>
@@ -408,14 +397,14 @@ accepted</p></li>
 
 <dl class="function">
 <dt id="ballet.validation.common.get_proposed_feature">
-<code class="sig-prename descclassname">ballet.validation.common.</code><code class="sig-name descname">get_proposed_feature</code><span class="sig-paren">(</span><em class="sig-param">project</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/common.html#get_proposed_feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.common.get_proposed_feature" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.validation.common.</code><code class="sig-name descname">get_proposed_feature</code><span class="sig-paren">(</span><em class="sig-param">project: ballet.project.Project</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/common.html#get_proposed_feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.common.get_proposed_feature" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the proposed feature</p>
 <p>The path of the proposed feature is determined by diffing the project
 against a comparison branch, such as master. The feature is then imported
 from that path and returned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>project</strong> (<a class="reference internal" href="ballet.project.html#ballet.project.Project" title="ballet.project.Project"><em>ballet.project.Project</em></a>) – project info</p>
+<dd class="field-odd"><p><strong>project</strong> – project info</p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><a class="reference internal" href="ballet.exc.html#ballet.exc.BalletError" title="ballet.exc.BalletError"><strong>ballet.exc.BalletError</strong></a> – more than one feature collected</p>

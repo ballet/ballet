@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.transformer &mdash; ballet 0.6.11 documentation</title>
+  <title>ballet.transformer &mdash; ballet 0.7.0 documentation</title>
   
 
   
@@ -285,33 +285,46 @@
             
   <h1>Source code for ballet.transformer</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">traceback</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span><span class="p">,</span> <span class="n">namedtuple</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
 <span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">signature</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Callable</span><span class="p">,</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span><span class="p">)</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">identity</span><span class="p">,</span> <span class="n">is_seqcont</span><span class="p">,</span> <span class="n">select_values</span>
-<span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="kn">import</span> <span class="n">TransformerMixin</span>
+<span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="kn">import</span> <span class="n">BaseEstimator</span>
 <span class="kn">from</span> <span class="nn">sklearn_pandas.pipeline</span> <span class="kn">import</span> <span class="n">TransformerPipeline</span>
 
-<span class="kn">from</span> <span class="nn">ballet.eng.base</span> <span class="kn">import</span> <span class="n">SimpleFunctionTransformer</span>
+<span class="kn">from</span> <span class="nn">ballet.eng.base</span> <span class="kn">import</span> <span class="n">BaseTransformer</span><span class="p">,</span> <span class="n">SimpleFunctionTransformer</span>
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="kn">import</span> <span class="n">UnsuccessfulInputConversionError</span>
 <span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">DeepcopyMixin</span><span class="p">,</span> <span class="n">asarray2d</span><span class="p">,</span> <span class="n">indent</span><span class="p">,</span> <span class="n">quiet</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">ballet.util.typing</span> <span class="kn">import</span> <span class="n">OneOrMore</span><span class="p">,</span> <span class="n">TransformerLike</span>
+
+<span class="n">RobustTransformer</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">TransformerPipeline</span><span class="p">,</span> <span class="s1">&#39;DelegatingRobustTransformer&#39;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="make_robust_transformer"><a class="viewcode-back" href="../../api/ballet.transformer.html#ballet.transformer.make_robust_transformer">[docs]</a><span class="k">def</span> <span class="nf">make_robust_transformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">):</span>
+<div class="viewcode-block" id="make_robust_transformer"><a class="viewcode-back" href="../../api/ballet.transformer.html#ballet.transformer.make_robust_transformer">[docs]</a><span class="k">def</span> <span class="nf">make_robust_transformer</span><span class="p">(</span>
+    <span class="n">transformer</span><span class="p">:</span> <span class="n">OneOrMore</span><span class="p">[</span><span class="n">TransformerLike</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RobustTransformer</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">is_seqcont</span><span class="p">(</span><span class="n">transformer</span><span class="p">):</span>
-        <span class="n">transformer</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">_replace_callable_with_transformer</span><span class="p">,</span> <span class="n">transformer</span><span class="p">)</span>
-        <span class="nb">map</span><span class="p">(</span><span class="n">_validate_transformer_api</span><span class="p">,</span> <span class="n">transformer</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">make_robust_transformer_pipeline</span><span class="p">(</span><span class="o">*</span><span class="n">transformer</span><span class="p">)</span>
+        <span class="n">transformer</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Collection</span><span class="p">[</span><span class="n">TransformerLike</span><span class="p">],</span> <span class="n">transformer</span><span class="p">)</span>
+        <span class="n">transformers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="nb">map</span><span class="p">(</span><span class="n">_replace_callable_with_transformer</span><span class="p">,</span> <span class="n">transformer</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">transformers</span><span class="p">:</span>
+            <span class="n">_validate_transformer_api</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">make_robust_transformer_pipeline</span><span class="p">(</span><span class="n">transformers</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
+        <span class="n">transformer</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">TransformerLike</span><span class="p">,</span> <span class="n">transformer</span><span class="p">)</span>
         <span class="n">transformer</span> <span class="o">=</span> <span class="n">_replace_callable_with_transformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
         <span class="n">_validate_transformer_api</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">DelegatingRobustTransformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">_name_estimators</span><span class="p">(</span><span class="n">estimators</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_name_estimators</span><span class="p">(</span>
+    <span class="n">estimators</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">BaseEstimator</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;Generate names for estimators.</span>
 
 <span class="sd">    Adapted from sklearn.pipeline._name_estimators</span>
@@ -336,7 +349,9 @@
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">estimators</span><span class="p">))</span>
 
 
-<div class="viewcode-block" id="make_transformer_pipeline"><a class="viewcode-back" href="../../api/ballet.transformer.html#ballet.transformer.make_transformer_pipeline">[docs]</a><span class="k">def</span> <span class="nf">make_transformer_pipeline</span><span class="p">(</span><span class="o">*</span><span class="n">steps</span><span class="p">):</span>
+<div class="viewcode-block" id="make_transformer_pipeline"><a class="viewcode-back" href="../../api/ballet.transformer.html#ballet.transformer.make_transformer_pipeline">[docs]</a><span class="k">def</span> <span class="nf">make_transformer_pipeline</span><span class="p">(</span>
+    <span class="n">steps</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">BaseTransformer</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TransformerPipeline</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Construct a TransformerPipeline from the given estimators.</span>
 
 <span class="sd">    Source: sklearn_pandas.cont_method</span>
@@ -344,16 +359,22 @@
     <span class="k">return</span> <span class="n">TransformerPipeline</span><span class="p">(</span><span class="n">_name_estimators</span><span class="p">(</span><span class="n">steps</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="make_robust_transformer_pipeline"><a class="viewcode-back" href="../../api/ballet.transformer.html#ballet.transformer.make_robust_transformer_pipeline">[docs]</a><span class="k">def</span> <span class="nf">make_robust_transformer_pipeline</span><span class="p">(</span><span class="o">*</span><span class="n">steps</span><span class="p">):</span>
+<div class="viewcode-block" id="make_robust_transformer_pipeline"><a class="viewcode-back" href="../../api/ballet.transformer.html#ballet.transformer.make_robust_transformer_pipeline">[docs]</a><span class="k">def</span> <span class="nf">make_robust_transformer_pipeline</span><span class="p">(</span>
+    <span class="n">steps</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">BaseTransformer</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TransformerPipeline</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Construct a transformer pipeline of DelegatingRobustTransformers&quot;&quot;&quot;</span>
-    <span class="n">steps</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">DelegatingRobustTransformer</span><span class="p">,</span> <span class="n">steps</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">make_transformer_pipeline</span><span class="p">(</span><span class="o">*</span><span class="n">steps</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">make_transformer_pipeline</span><span class="p">([</span>
+        <span class="n">DelegatingRobustTransformer</span><span class="p">(</span><span class="n">step</span><span class="p">)</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">steps</span>
+    <span class="p">])</span></div>
 
 
-<span class="n">ConversionApproach</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;ConversionApproach&#39;</span><span class="p">,</span> <span class="s1">&#39;name convert caught&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="ConversionApproach"><a class="viewcode-back" href="../../api/ballet.transformer.html#ballet.transformer.ConversionApproach">[docs]</a><span class="k">class</span> <span class="nc">ConversionApproach</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">convert</span><span class="p">:</span> <span class="n">Callable</span>
+    <span class="n">caught</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="DelegatingRobustTransformer"><a class="viewcode-back" href="../../api/ballet.transformer.html#ballet.transformer.DelegatingRobustTransformer">[docs]</a><span class="k">class</span> <span class="nc">DelegatingRobustTransformer</span><span class="p">(</span><span class="n">DeepcopyMixin</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
+<div class="viewcode-block" id="DelegatingRobustTransformer"><a class="viewcode-back" href="../../api/ballet.transformer.html#ballet.transformer.DelegatingRobustTransformer">[docs]</a><span class="k">class</span> <span class="nc">DelegatingRobustTransformer</span><span class="p">(</span><span class="n">DeepcopyMixin</span><span class="p">,</span> <span class="n">BaseTransformer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Robust transformer that delegates to underlying transformer</span>
 
 <span class="sd">    This transformer is robust against different typed and shaped input data.</span>
@@ -379,7 +400,7 @@
         <span class="n">ConversionApproach</span><span class="p">(</span><span class="s1">&#39;asarray2d&#39;</span><span class="p">,</span> <span class="n">asarray2d</span><span class="p">,</span> <span class="p">()),</span>
     <span class="p">]</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformer</span><span class="p">:</span> <span class="n">BaseTransformer</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_transformer</span> <span class="o">=</span> <span class="n">transformer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stored_conversion_approach</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -401,7 +422,7 @@
             <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_transformer</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_tname</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_tname</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_transformer</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
 
 <div class="viewcode-block" id="DelegatingRobustTransformer.fit"><a class="viewcode-back" href="../../api/ballet.transformer.html#ballet.transformer.DelegatingRobustTransformer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -520,7 +541,7 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Conversion failed, and we</span><span class="se">\&#39;</span><span class="s1">re not sure why...&#39;</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">_validate_transformer_api</span><span class="p">(</span><span class="n">transformer</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_validate_transformer_api</span><span class="p">(</span><span class="n">transformer</span><span class="p">:</span> <span class="n">BaseTransformer</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
         <span class="nb">hasattr</span><span class="p">(</span><span class="n">transformer</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="s1">&#39;transform&#39;</span><span class="p">,</span> <span class="s1">&#39;fit_transform&#39;</span><span class="p">]</span>
@@ -540,10 +561,13 @@
             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sig_transform</span><span class="o">=</span><span class="n">sig_transform</span><span class="p">))</span>
 
 
-<span class="k">def</span> <span class="nf">_replace_callable_with_transformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_replace_callable_with_transformer</span><span class="p">(</span>
+    <span class="n">transformer</span><span class="p">:</span> <span class="n">TransformerLike</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseTransformer</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">transformer</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">SimpleFunctionTransformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
+        <span class="n">transformer</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">,</span> <span class="n">transformer</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">transformer</span>
 </pre></div>
 

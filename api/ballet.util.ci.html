@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.util.ci module &mdash; ballet 0.6.11 documentation</title>
+  <title>ballet.util.ci module &mdash; ballet 0.7.0 documentation</title>
   
 
   
@@ -297,7 +297,7 @@
 <span id="ballet-util-ci-module"></span><h1>ballet.util.ci module<a class="headerlink" href="#module-ballet.util.ci" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="ballet.util.ci.TravisPullRequestBuildDiffer">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.util.ci.</code><code class="sig-name descname">TravisPullRequestBuildDiffer</code><span class="sig-paren">(</span><em class="sig-param">pr_num</em>, <em class="sig-param">repo=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/ci.html#TravisPullRequestBuildDiffer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.ci.TravisPullRequestBuildDiffer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.util.ci.</code><code class="sig-name descname">TravisPullRequestBuildDiffer</code><span class="sig-paren">(</span><em class="sig-param">pr_num: Union[int, str], repo: git.repo.base.Repo = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/ci.html#TravisPullRequestBuildDiffer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.ci.TravisPullRequestBuildDiffer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="ballet.util.git.html#ballet.util.git.PullRequestBuildDiffer" title="ballet.util.git.PullRequestBuildDiffer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.util.git.PullRequestBuildDiffer</span></code></a></p>
 <p>Differ from within Travis test environment</p>
 <dl class="simple">
@@ -315,8 +315,8 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pr_num</strong> (<em>int</em><em> or </em><em>str</em>) – pull request number</p></li>
-<li><p><strong>repo</strong> (<em>git.Repo</em>) – repo object for the project</p></li>
+<li><p><strong>pr_num</strong> – pull request number</p></li>
+<li><p><strong>repo</strong> – repo object for the project</p></li>
 </ul>
 </dd>
 </dl>
@@ -329,7 +329,7 @@
 
 <dl class="function">
 <dt id="ballet.util.ci.can_use_travis_differ">
-<code class="sig-prename descclassname">ballet.util.ci.</code><code class="sig-name descname">can_use_travis_differ</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/ci.html#can_use_travis_differ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.ci.can_use_travis_differ" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.util.ci.</code><code class="sig-name descname">can_use_travis_differ</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/ballet/util/ci.html#can_use_travis_differ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.ci.can_use_travis_differ" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the required travis env vars are set for the travis differ</p>
 </dd></dl>
 
@@ -340,12 +340,12 @@
 
 <dl class="function">
 <dt id="ballet.util.ci.ensure_expected_travis_env_vars">
-<code class="sig-prename descclassname">ballet.util.ci.</code><code class="sig-name descname">ensure_expected_travis_env_vars</code><span class="sig-paren">(</span><em class="sig-param">names</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/ci.html#ensure_expected_travis_env_vars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.ci.ensure_expected_travis_env_vars" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.util.ci.</code><code class="sig-name descname">ensure_expected_travis_env_vars</code><span class="sig-paren">(</span><em class="sig-param">names: Iterable[str]</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/ci.html#ensure_expected_travis_env_vars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.ci.ensure_expected_travis_env_vars" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="ballet.util.ci.get_travis_branch">
-<code class="sig-prename descclassname">ballet.util.ci.</code><code class="sig-name descname">get_travis_branch</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/ci.html#get_travis_branch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.ci.get_travis_branch" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.util.ci.</code><code class="sig-name descname">get_travis_branch</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Optional[str]<a class="reference internal" href="../_modules/ballet/util/ci.html#get_travis_branch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.ci.get_travis_branch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get current branch per Travis environment variables</p>
 <p>If travis is building a PR, then TRAVIS_PULL_REQUEST is truthy and the
 name of the branch corresponding to the PR is stored in the
@@ -361,17 +361,17 @@ branch is stored in the TRAVIS_BRANCH environment variable.</p>
 
 <dl class="function">
 <dt id="ballet.util.ci.get_travis_env_or_fail">
-<code class="sig-prename descclassname">ballet.util.ci.</code><code class="sig-name descname">get_travis_env_or_fail</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/ci.html#get_travis_env_or_fail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.ci.get_travis_env_or_fail" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.util.ci.</code><code class="sig-name descname">get_travis_env_or_fail</code><span class="sig-paren">(</span><em class="sig-param">name: str</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/ballet/util/ci.html#get_travis_env_or_fail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.ci.get_travis_env_or_fail" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="ballet.util.ci.get_travis_env_vars">
-<code class="sig-prename descclassname">ballet.util.ci.</code><code class="sig-name descname">get_travis_env_vars</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/ci.html#get_travis_env_vars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.ci.get_travis_env_vars" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.util.ci.</code><code class="sig-name descname">get_travis_env_vars</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict[str, str]<a class="reference internal" href="../_modules/ballet/util/ci.html#get_travis_env_vars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.ci.get_travis_env_vars" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="ballet.util.ci.get_travis_pr_num">
-<code class="sig-prename descclassname">ballet.util.ci.</code><code class="sig-name descname">get_travis_pr_num</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/ci.html#get_travis_pr_num"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.ci.get_travis_pr_num" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.util.ci.</code><code class="sig-name descname">get_travis_pr_num</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Optional[int]<a class="reference internal" href="../_modules/ballet/util/ci.html#get_travis_pr_num"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.ci.get_travis_pr_num" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the PR number if the job is a pull request, None otherwise</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -388,13 +388,13 @@ branch is stored in the TRAVIS_BRANCH environment variable.</p>
 
 <dl class="function">
 <dt id="ballet.util.ci.in_travis">
-<code class="sig-prename descclassname">ballet.util.ci.</code><code class="sig-name descname">in_travis</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/ci.html#in_travis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.ci.in_travis" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.util.ci.</code><code class="sig-name descname">in_travis</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/ballet/util/ci.html#in_travis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.ci.in_travis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if we are in Travis right now</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="ballet.util.ci.is_travis_pr">
-<code class="sig-prename descclassname">ballet.util.ci.</code><code class="sig-name descname">is_travis_pr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/ci.html#is_travis_pr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.ci.is_travis_pr" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.util.ci.</code><code class="sig-name descname">is_travis_pr</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/ballet/util/ci.html#is_travis_pr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.ci.is_travis_pr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the current job is a pull request build</p>
 </dd></dl>
 

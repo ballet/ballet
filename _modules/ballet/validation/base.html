@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.validation.base &mdash; ballet 0.6.11 documentation</title>
+  <title>ballet.validation.base &mdash; ballet 0.7.0 documentation</title>
   
 
   
@@ -285,27 +285,31 @@
             
   <h1>Source code for ballet.validation.base</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span>
 
-<span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">constantly</span><span class="p">,</span> <span class="n">ignore</span><span class="p">,</span> <span class="n">post_processing</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">ballet.feature</span> <span class="kn">import</span> <span class="n">Feature</span>
 
 
 <div class="viewcode-block" id="BaseValidator"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.BaseValidator">[docs]</a><span class="k">class</span> <span class="nc">BaseValidator</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for a generic validator&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="BaseValidator.validate"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.BaseValidator.validate">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Validate something</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bool: validation succeeded</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Validate something and return whether validation succeeded&quot;&quot;&quot;</span>
         <span class="k">pass</span></div></div>
 
 
 <div class="viewcode-block" id="FeaturePerformanceEvaluator"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.FeaturePerformanceEvaluator">[docs]</a><span class="k">class</span> <span class="nc">FeaturePerformanceEvaluator</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Evaluate the performance of features from an ML point-of-view&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">candidate_feature</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">X_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+                 <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                 <span class="n">features</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Feature</span><span class="p">],</span>
+                 <span class="n">candidate_feature</span><span class="p">:</span> <span class="n">Feature</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">X_df</span> <span class="o">=</span> <span class="n">X_df</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">features</span>
@@ -318,24 +322,16 @@
 <div class="viewcode-block" id="FeatureAcceptanceMixin"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.FeatureAcceptanceMixin">[docs]</a><span class="k">class</span> <span class="nc">FeatureAcceptanceMixin</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
 
 <div class="viewcode-block" id="FeatureAcceptanceMixin.judge"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.FeatureAcceptanceMixin.judge">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">judge</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Judge whether feature should be accepted</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bool: feature should be accepted</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">judge</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Judge whether feature should be accepted&quot;&quot;&quot;</span>
         <span class="k">pass</span></div></div>
 
 
 <div class="viewcode-block" id="FeaturePruningMixin"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.FeaturePruningMixin">[docs]</a><span class="k">class</span> <span class="nc">FeaturePruningMixin</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
 
 <div class="viewcode-block" id="FeaturePruningMixin.prune"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.FeaturePruningMixin.prune">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">prune</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Prune existing features</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            list: list of features to remove</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">prune</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Prune existing features, returning list of features to remove&quot;&quot;&quot;</span>
         <span class="k">pass</span></div></div>
 
 
@@ -351,13 +347,18 @@
 
 <div class="viewcode-block" id="BaseCheck"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.BaseCheck">[docs]</a><span class="k">class</span> <span class="nc">BaseCheck</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
 
-<div class="viewcode-block" id="BaseCheck.do_check"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.BaseCheck.do_check">[docs]</a>    <span class="nd">@ignore</span><span class="p">(</span><span class="ne">Exception</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="nd">@post_processing</span><span class="p">(</span><span class="n">constantly</span><span class="p">(</span><span class="kc">True</span><span class="p">))</span>
-    <span class="k">def</span> <span class="nf">do_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span></div>
+<div class="viewcode-block" id="BaseCheck.do_check"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.BaseCheck.do_check">[docs]</a>    <span class="k">def</span> <span class="nf">do_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Do the check and return whether an exception was *not* thrown&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
 
 <div class="viewcode-block" id="BaseCheck.check"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.BaseCheck.check">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Check something and throw an exception if the thing is bad&quot;&quot;&quot;</span>
         <span class="k">pass</span></div></div>
 </pre></div>
 

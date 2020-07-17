@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.util.code &mdash; ballet 0.6.11 documentation</title>
+  <title>ballet.util.code &mdash; ballet 0.7.0 documentation</title>
   
 
   
@@ -289,20 +289,18 @@
 <span></span><span class="kn">import</span> <span class="nn">ast</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">FunctionType</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterator</span>
 
+<span class="kn">import</span> <span class="nn">black</span>
 <span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">notnone</span>
 
-<span class="kn">from</span> <span class="nn">ballet.compat</span> <span class="kn">import</span> <span class="n">black</span>
 
-
-<div class="viewcode-block" id="is_valid_python"><a class="viewcode-back" href="../../../api/ballet.util.code.html#ballet.util.code.is_valid_python">[docs]</a><span class="k">def</span> <span class="nf">is_valid_python</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
+<div class="viewcode-block" id="is_valid_python"><a class="viewcode-back" href="../../../api/ballet.util.code.html#ballet.util.code.is_valid_python">[docs]</a><span class="k">def</span> <span class="nf">is_valid_python</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Check if the string is valid python code</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        code (str): code as string</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        bool</span>
+<span class="sd">        code: code as string</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
@@ -312,18 +310,12 @@
         <span class="k">return</span> <span class="kc">True</span></div>
 
 
-<div class="viewcode-block" id="blacken_code"><a class="viewcode-back" href="../../../api/ballet.util.code.html#ballet.util.code.blacken_code">[docs]</a><span class="k">def</span> <span class="nf">blacken_code</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
+<div class="viewcode-block" id="blacken_code"><a class="viewcode-back" href="../../../api/ballet.util.code.html#ballet.util.code.blacken_code">[docs]</a><span class="k">def</span> <span class="nf">blacken_code</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Format code content using Black</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        code (str): code as string</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        str</span>
+<span class="sd">        code: code as string</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">black</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-
     <span class="n">major</span><span class="p">,</span> <span class="n">minor</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_version_tuple</span><span class="p">()</span>
     <span class="n">pyversion</span> <span class="o">=</span> <span class="s1">&#39;py</span><span class="si">{major}{minor}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">major</span><span class="o">=</span><span class="n">major</span><span class="p">,</span> <span class="n">minor</span><span class="o">=</span><span class="n">minor</span><span class="p">)</span>
     <span class="n">target_versions</span> <span class="o">=</span> <span class="p">[</span><span class="n">black</span><span class="o">.</span><span class="n">TargetVersion</span><span class="p">[</span><span class="n">pyversion</span><span class="o">.</span><span class="n">upper</span><span class="p">()]]</span>
@@ -343,7 +335,7 @@
         <span class="k">return</span> <span class="n">code</span></div>
 
 
-<div class="viewcode-block" id="get_source"><a class="viewcode-back" href="../../../api/ballet.util.code.html#ballet.util.code.get_source">[docs]</a><span class="k">def</span> <span class="nf">get_source</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+<div class="viewcode-block" id="get_source"><a class="viewcode-back" href="../../../api/ballet.util.code.html#ballet.util.code.get_source">[docs]</a><span class="k">def</span> <span class="nf">get_source</span><span class="p">(</span><span class="n">f</span><span class="p">:</span> <span class="n">FunctionType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Extract the source code from a given function.</span>
 
 <span class="sd">    Recursively extracts the source code for all local functions called by</span>
@@ -356,14 +348,13 @@
 <span class="sd">        f: function</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        str: extracted source code</span>
+<span class="sd">        extracted source code</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        NotImplementedError: if the function was defined interactively</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">code</span> <span class="o">=</span> <span class="n">_get_source</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="vm">__code__</span><span class="o">.</span><span class="n">co_filename</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
-    <span class="n">code</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="n">notnone</span><span class="p">,</span> <span class="n">code</span><span class="p">)</span>
-    <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">_get_source</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="vm">__code__</span><span class="o">.</span><span class="n">co_filename</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="n">notnone</span><span class="p">,</span> <span class="n">lines</span><span class="p">))</span>
 
     <span class="c1"># post-processing</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
@@ -372,7 +363,9 @@
     <span class="k">return</span> <span class="n">code</span></div>
 
 
-<span class="k">def</span> <span class="nf">_get_source</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">symbolname</span><span class="p">,</span> <span class="n">seen</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_get_source</span><span class="p">(</span>
+    <span class="n">f</span><span class="p">:</span> <span class="n">FunctionType</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">symbolname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">seen</span><span class="p">:</span> <span class="nb">set</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
     <span class="k">if</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[]</span>
 
