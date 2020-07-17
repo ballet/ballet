@@ -1,9 +1,13 @@
+from typing import Callable, List
+
 from funcy import decorator, ignore
 from stacklog import stacklog
 
 from ballet.exc import (
     FeatureRejected, InvalidFeatureApi, InvalidProjectStructure,
     NoFeaturesCollectedError, SkippedValidationTest)
+from ballet.feature import Feature
+from ballet.project import Project
 from ballet.util.log import logger
 from ballet.util.mod import import_module_from_modname
 from ballet.validation.common import (
@@ -14,7 +18,7 @@ PRUNER_MESSAGE = 'Found Redundant Feature: '
 
 
 @decorator
-def validation_stage(call, message):
+def validation_stage(call: Callable, message: str):
     call = stacklog(logger.info,
                     'Ballet Validation: {message}'.format(message=message),
                     conditions=[(SkippedValidationTest, 'SKIPPED')])(call)
@@ -22,7 +26,7 @@ def validation_stage(call, message):
     return call()
 
 
-def _load_class(project, config_key):
+def _load_class(project: Project, config_key: str) -> type:
     path = project.config.get(config_key)
     modname, clsname = path.rsplit('.', maxsplit=1)
     mod = import_module_from_modname(modname)
@@ -36,7 +40,7 @@ def _load_class(project, config_key):
 
 
 @validation_stage('checking project structure')
-def _check_project_structure(project, force=False):
+def _check_project_structure(project: Project, force: bool = False):
     if not force and not project.on_pr:
         raise SkippedValidationTest('Not on PR')
 
@@ -48,7 +52,7 @@ def _check_project_structure(project, force=False):
 
 
 @validation_stage('validating feature API')
-def _validate_feature_api(project, force=False):
+def _validate_feature_api(project: Project, force: bool = False):
     """Validate feature API"""
     if not force and not project.on_pr:
         raise SkippedValidationTest('Not on PR')
@@ -61,7 +65,7 @@ def _validate_feature_api(project, force=False):
 
 
 @validation_stage('evaluating feature performance')
-def _evaluate_feature_performance(project, force=False):
+def _evaluate_feature_performance(project: Project, force: bool = False):
     """Evaluate feature performance"""
     if not force and not project.on_pr:
         raise SkippedValidationTest('Not on PR')
@@ -81,7 +85,9 @@ def _evaluate_feature_performance(project, force=False):
 
 
 @validation_stage('pruning existing features')
-def _prune_existing_features(project, force=False):
+def _prune_existing_features(
+    project: Project, force: bool = False
+) -> List[Feature]:
     """Prune existing features"""
     if not force and not project.on_master_after_merge:
         raise SkippedValidationTest('Not on master')
@@ -106,11 +112,11 @@ def _prune_existing_features(project, force=False):
     return redundant_features
 
 
-def validate(project,
-             check_project_structure,
-             check_feature_api,
-             evaluate_feature_acceptance,
-             evaluate_feature_pruning):
+def validate(project: Project,
+             check_project_structure: bool,
+             check_feature_api: bool,
+             evaluate_feature_acceptance: bool,
+             evaluate_feature_pruning: bool):
     """Entrypoint for 'ballet validate' command in ballet projects"""
     if check_project_structure:
         _check_project_structure(project)

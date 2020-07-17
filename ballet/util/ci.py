@@ -1,4 +1,5 @@
 import os
+from typing import Dict, Iterable, Optional, Union
 
 import git
 
@@ -9,12 +10,12 @@ from ballet.util.git import (
 from ballet.util.log import logger
 
 
-def in_travis():
+def in_travis() -> bool:
     """Check if we are in Travis right now"""
     return len(get_travis_env_vars()) > 0
 
 
-def get_travis_env_or_fail(name):
+def get_travis_env_or_fail(name: str) -> str:
     if name in os.environ:
         return os.environ[name]
     else:
@@ -24,12 +25,12 @@ def get_travis_env_or_fail(name):
             .format(name=name))
 
 
-def ensure_expected_travis_env_vars(names):
+def ensure_expected_travis_env_vars(names: Iterable[str]):
     if not set(names).issubset(set(os.environ.keys())):
         raise UnexpectedTravisEnvironmentError
 
 
-def get_travis_env_vars():
+def get_travis_env_vars() -> Dict[str, str]:
     return {
         k: v for k, v in os.environ.items()
         if k.startswith('TRAVIS')
@@ -40,7 +41,7 @@ def dump_travis_env_vars():
     logger.info(repr(get_travis_env_vars()))
 
 
-def get_travis_pr_num():
+def get_travis_pr_num() -> Optional[int]:
     """Return the PR number if the job is a pull request, None otherwise
 
     Returns:
@@ -62,12 +63,12 @@ def get_travis_pr_num():
         return None
 
 
-def is_travis_pr():
+def is_travis_pr() -> bool:
     """Check if the current job is a pull request build"""
     return get_travis_pr_num() is not None
 
 
-def get_travis_branch():
+def get_travis_branch() -> Optional[str]:
     """Get current branch per Travis environment variables
 
     If travis is building a PR, then TRAVIS_PULL_REQUEST is truthy and the
@@ -91,7 +92,7 @@ def get_travis_branch():
         return None
 
 
-def can_use_travis_differ():
+def can_use_travis_differ() -> bool:
     """Check if the required travis env vars are set for the travis differ"""
     try:
         ensure_expected_travis_env_vars(
@@ -112,8 +113,8 @@ class TravisPullRequestBuildDiffer(PullRequestBuildDiffer):
         - TRAVIS_COMMIT_RANGE, to determine which commits to diff.
 
     Args:
-        pr_num (int or str): pull request number
-        repo (git.Repo): repo object for the project
+        pr_num: pull request number
+        repo: repo object for the project
     """
 
     EXPECTED_TRAVIS_ENV_VARS = (
@@ -124,7 +125,7 @@ class TravisPullRequestBuildDiffer(PullRequestBuildDiffer):
         'TRAVIS_COMMIT_RANGE',
     )
 
-    def __init__(self, pr_num, repo=None):
+    def __init__(self, pr_num: Union[int, str], repo: git.Repo = None):
         if repo is None:
             repo = self._detect_repo()
         super().__init__(pr_num, repo)
@@ -143,6 +144,6 @@ class TravisPullRequestBuildDiffer(PullRequestBuildDiffer):
         commit_range = get_travis_env_or_fail('TRAVIS_COMMIT_RANGE')
         return get_diff_endpoints_from_commit_range(self.repo, commit_range)
 
-    def _detect_repo(self):
+    def _detect_repo(self) -> git.Repo:
         build_dir = get_travis_env_or_fail('TRAVIS_BUILD_DIR')
         return git.Repo(build_dir)

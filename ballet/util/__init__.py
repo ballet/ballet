@@ -1,21 +1,23 @@
-import pathlib
 import warnings
+from contextlib import suppress
 from copy import deepcopy
-from enum import Enum
 from os import devnull
+from typing import Collection, Optional, Sequence, Tuple, TypeVar
 
 import numpy as np
 import pandas as pd
 import sklearn.datasets
-from funcy import complement, decorator, lfilter, wraps
+from funcy import complement, decorator, lfilter
+from funcy.decorators import Call
 
 from ballet.compat import redirect_stderr, redirect_stdout
 from ballet.exc import BalletWarning
+from ballet.util.log import logger
 
 RANDOM_STATE = 1754
 
 
-def asarray2d(a):
+def asarray2d(a: np.ndarray) -> np.ndarray:
     """Cast to 2d array"""
     arr = np.asarray(a)
     if arr.ndim == 1:
@@ -23,7 +25,7 @@ def asarray2d(a):
     return arr
 
 
-def get_arr_desc(arr):
+def get_arr_desc(arr: np.ndarray) -> str:
     """Get array description, in the form '<array type> <array shape>'"""
     type_ = type(arr).__name__  # see also __qualname__
     shape = getattr(arr, 'shape', None)
@@ -34,24 +36,13 @@ def get_arr_desc(arr):
     return desc.format(type_=type_, shape=shape)
 
 
-def get_enum_keys(cls):
-    return [attr for attr in dir(cls) if not attr.startswith('_')]
-
-
-def get_enum_values(cls):
-    if issubclass(cls, Enum):
-        return [getattr(cls, attr).value for attr in get_enum_keys(cls)]
-    else:
-        return [getattr(cls, attr) for attr in get_enum_keys(cls)]
-
-
-def indent(text, n=4):
+def indent(text: str, n=4) -> str:
     """Indent each line of text by n spaces"""
     _indent = ' ' * n
     return '\n'.join(_indent + line for line in text.split('\n'))
 
 
-def make_plural_suffix(obj, suffix='s'):
+def make_plural_suffix(obj: Collection, suffix='s') -> str:
     if len(obj) != 1:
         return suffix
     else:
@@ -59,13 +50,13 @@ def make_plural_suffix(obj, suffix='s'):
 
 
 @decorator
-def whether_failures(call):
+def whether_failures(call: Call):
     """Collects failures and return (success, list_of_failures)"""
     failures = list(call())
     return not failures, failures
 
 
-def has_nans(obj):
+def has_nans(obj) -> bool:
     """Check if obj has any NaNs
 
     Compatible with different behavior of np.isnan, which sometimes applies
@@ -78,7 +69,7 @@ def has_nans(obj):
 
 
 @decorator
-def dfilter(call, pred):
+def dfilter(call: Call, pred):
     """Decorate a callable with a filter that accepts a predicate
 
     Example::
@@ -91,7 +82,7 @@ def dfilter(call, pred):
     return lfilter(pred, call())
 
 
-def load_sklearn_df(name):
+def load_sklearn_df(name: str) -> Tuple[pd.DataFrame, pd.DataFrame]:
     method_name = 'load_{name}'.format(name=name)
     method = getattr(sklearn.datasets, method_name)
     data = method()
@@ -101,7 +92,7 @@ def load_sklearn_df(name):
 
 
 @decorator
-def quiet(call):
+def quiet(call: Call):
     with open(devnull, 'w') as fnull:
         with redirect_stderr(fnull), redirect_stdout(fnull):
             with warnings.catch_warnings():
@@ -111,7 +102,7 @@ def quiet(call):
 
 class DeepcopyMixin:
 
-    def __deepcopy__(self, memo):
+    def __deepcopy__(self, memo: dict):
         cls = self.__class__
         result = cls.__new__(cls)
         memo[id(self)] = result
@@ -120,7 +111,10 @@ class DeepcopyMixin:
         return result
 
 
-def one_or_raise(seq):
+_T = TypeVar('_T')
+
+
+def one_or_raise(seq: Sequence[_T]) -> _T:
     n = len(seq)
     if n == 1:
         return seq[0]
@@ -129,22 +123,13 @@ def one_or_raise(seq):
                          .format(n=n))
 
 
-def needs_path(f):
-    """Wraps a function that accepts path-like to give it a pathlib.Path"""
-    @wraps(f)
-    def wrapped(pathlike, *args, **kwargs):
-        path = pathlib.Path(pathlike)
-        return f(path, *args, **kwargs)
-    return wrapped
-
-
-def warn(msg):
+def warn(msg: str):
     """Issue a warning message of category BalletWarning"""
     warnings.warn(msg, category=BalletWarning)
 
 
 @decorator
-def raiseifnone(call):
+def raiseifnone(call: Call):
     """Decorate a function to raise a ValueError if result is None"""
     result = call()
     if result is None:
@@ -153,10 +138,28 @@ def raiseifnone(call):
         return result
 
 
-def falsy(o):
+def falsy(o) -> bool:
     if isinstance(o, bool):
         return not o
     return isinstance(o, str) and (o.lower() == 'false' or o == '')
 
 
 truthy = complement(falsy)
+
+
+@decorator
+def nonnegative(call: Call, name: Optional[str] = None):
+    """Warn if the function's return value is negative and set it to 0"""
+    result = call()
+    with suppress(TypeError):
+        if result < 0:
+            result = 0.0
+            # Format a nice log message
+            if name is None:
+                try:
+                    pieces = call._func.__name__.split('_')[1:]
+                    name = ''.join(map(str.capitalize, pieces))
+                except RuntimeError:
+                    name = 'Result'
+            logger.warning('%s should be non-negative.', name)
+    return result

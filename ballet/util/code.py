@@ -1,20 +1,19 @@
 import ast
 import inspect
 import platform
+from types import FunctionType
+from typing import Iterator
 
 from funcy import notnone
 
 from ballet.compat import black
 
 
-def is_valid_python(code):
+def is_valid_python(code: str) -> bool:
     """Check if the string is valid python code
 
     Args:
-        code (str): code as string
-
-    Returns:
-        bool
+        code: code as string
     """
     try:
         ast.parse(code)
@@ -24,14 +23,11 @@ def is_valid_python(code):
         return True
 
 
-def blacken_code(code):
+def blacken_code(code: str) -> str:
     """Format code content using Black
 
     Args:
-        code (str): code as string
-
-    Returns:
-        str
+        code: code as string
     """
     if black is None:
         raise NotImplementedError
@@ -55,7 +51,7 @@ def blacken_code(code):
         return code
 
 
-def get_source(f):
+def get_source(f: FunctionType) -> str:
     """Extract the source code from a given function.
 
     Recursively extracts the source code for all local functions called by
@@ -68,14 +64,13 @@ def get_source(f):
         f: function
 
     Returns:
-        str: extracted source code
+        extracted source code
 
     Raises:
         NotImplementedError: if the function was defined interactively
     """
-    code = _get_source(f, f.__code__.co_filename, f.__name__, set())
-    code = filter(notnone, code)
-    code = '\n'.join(code)
+    lines = _get_source(f, f.__code__.co_filename, f.__name__, set())
+    code = '\n'.join(filter(notnone, lines))
 
     # post-processing
     if isinstance(code, bytes):
@@ -84,7 +79,9 @@ def get_source(f):
     return code
 
 
-def _get_source(f, filename, symbolname, seen):
+def _get_source(
+    f: FunctionType, filename: str, symbolname: str, seen: set
+) -> Iterator[str]:
     if f in seen:
         return []
 

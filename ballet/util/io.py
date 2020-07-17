@@ -1,6 +1,7 @@
 import os
 import pathlib
 import pickle
+from typing import Union
 
 import h5py
 import numpy as np
@@ -10,21 +11,22 @@ from stacklog import stacklog
 from ballet.compat import safepath
 from ballet.util.fs import splitext2
 from ballet.util.log import logger
+from ballet.util.typing import Pathy
 
 
-def _check_ext(ext, expected):
+def _check_ext(ext: str, expected: str):
     if ext != expected:
         msg = ('File path has wrong extension: {} (expected {})'
                .format(ext, expected))
         raise ValueError(msg)
 
 
-def write_tabular(obj, filepath):
+def write_tabular(obj: Union[np.ndarray, pd.DataFrame], filepath: Pathy):
     """Write tabular object in HDF5 or pickle format
 
     Args:
-        obj (array or DataFrame): tabular object to write
-        filepath (path-like): path to write to; must end in '.h5' or '.pkl'
+        obj: tabular object to write
+        filepath: path to write to; must end in '.h5' or '.pkl'
     """
     _, fn, ext = splitext2(filepath)
     if ext == '.h5':
@@ -59,11 +61,11 @@ def _write_tabular_h5(obj, filepath):
         raise NotImplementedError
 
 
-def read_tabular(filepath):
+def read_tabular(filepath: Pathy):
     """Read tabular object in HDF5 or pickle format
 
     Args:
-        filepath (path-like): path to read to; must end in '.h5' or '.pkl'
+        filepath: path to read to; must end in '.h5' or '.pkl'
     """
     _, fn, ext = splitext2(filepath)
     if ext == '.h5':
@@ -117,15 +119,12 @@ def _save_thing(thing, output_dir, name, savefn=write_tabular):
         savefn(thing, fn)
 
 
-def load_table_from_config(input_dir, config):
+def load_table_from_config(input_dir: Pathy, config: dict) -> pd.DataFrame:
     """Load table from table config dict
 
     Args:
-        input_dir (path-like): directory containing input files
-        config (dict): mapping with keys 'name', 'path', and 'pd_read_kwargs'.
-
-    Returns:
-        pd.DataFrame
+        input_dir: directory containing input files
+        config: mapping with keys 'name', 'path', and 'pd_read_kwargs'.
     """
     path = pathlib.Path(input_dir).joinpath(config['path'])
     kwargs = config['pd_read_kwargs']

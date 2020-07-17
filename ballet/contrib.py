@@ -1,6 +1,7 @@
 import pkgutil
 import types
-from typing import Iterable
+from types import ModuleType
+from typing import Iterator, List, Optional
 
 from funcy import collecting, notnone
 
@@ -14,7 +15,7 @@ __all__ = (
 )
 
 
-def collect_contrib_features(project: Project) -> Iterable[Feature]:
+def collect_contrib_features(project: Project) -> List[Feature]:
     """Collect contributed features for a project at project_root
 
     For a project ``foo``, walks modules within the ``foo.features.contrib``
@@ -34,7 +35,9 @@ def collect_contrib_features(project: Project) -> Iterable[Feature]:
 
 @dfilter(notnone)
 @collecting
-def _collect_contrib_features(module):
+def _collect_contrib_features(
+    module: ModuleType
+) -> Iterator[Optional[Feature]]:
     """Collect contributed features from within given module
 
     Be very careful with untrusted code. The module/package will be
@@ -43,11 +46,8 @@ def _collect_contrib_features(module):
     anyway?
 
     Args:
-        contrib (module): module (standalone or package) that contains feature
+        module: module (standalone or package) that contains feature
             definitions
-
-    Returns:
-        List[Feature]: list of features
     """
 
     if isinstance(module, types.ModuleType):
@@ -61,13 +61,15 @@ def _collect_contrib_features(module):
 
 
 @collecting
-def _collect_contrib_features_from_package(package):
+def _collect_contrib_features_from_package(
+    package: ModuleType
+) -> Iterator[Optional[Feature]]:
     logger.debug(
         'Walking package path {path} to detect modules...'
-        .format(path=package.__path__))
+        .format(path=package.__path__))  # type: ignore  # mypy issue #1422
 
     for importer, modname, _ in pkgutil.walk_packages(
-            path=package.__path__,
+            path=package.__path__,  # type: ignore  # mypy issue #1422
             prefix=package.__name__ + '.',
             onerror=logger.error):
 
@@ -82,7 +84,7 @@ def _collect_contrib_features_from_package(package):
         yield _collect_contrib_feature_from_module(mod)
 
 
-def _collect_contrib_feature_from_module(mod):
+def _collect_contrib_feature_from_module(mod: ModuleType) -> Optional[Feature]:
     logger.debug(
         'Trying to import contributed feature from module {modname}...'
         .format(modname=mod.__name__))

@@ -1,27 +1,30 @@
 import importlib
 import pathlib
 import pkgutil
+from types import ModuleType
+from typing import Optional
 
 from ballet.util.log import logger
+from ballet.util.typing import Pathy
 
 
-def import_module_from_modname(modname):
+def import_module_from_modname(modname: str) -> ModuleType:
     """Import module"""
     return importlib.import_module(modname)
 
 
-def import_module_from_relpath(path):
+def import_module_from_relpath(path: Pathy) -> ModuleType:
     """Import module at relative path to project root"""
     modname = relpath_to_modname(path)
     return import_module_from_modname(modname)
 
 
-def import_module_at_path(modname, modpath):
+def import_module_at_path(modname: str, modpath: Pathy) -> ModuleType:
     """Import module from path that may not be on system path
 
     Args:
-        modname (str): module name from package root, e.g. foo.bar
-        modpath (str): absolute path to module itself,
+        modname: module name from package root, e.g. foo.bar
+        modpath: absolute path to module itself,
             e.g. /home/user/foo/bar.py. In the case of a module that is a
             package, then the path should be specified as '/home/user/foo' and
             a file '/home/user/foo/__init__.py' *must be present* or the import
@@ -86,7 +89,7 @@ def import_module_at_path(modname, modpath):
     return mod
 
 
-def relpath_to_modname(relpath):
+def relpath_to_modname(relpath: Pathy) -> str:
     """Convert relative path to module name
 
     Within a project, a path to the source file is uniquely identified with a
@@ -95,7 +98,7 @@ def relpath_to_modname(relpath):
     files, and (2) already 'foo/bar/__init__.py' would claim that conversion.
 
     Args:
-        relpath (str): Relative path from some location on sys.path
+        relpath: Relative path from some location on sys.path
 
     Example:
         >>> relpath_to_modname('ballet/util/_util.py')
@@ -117,7 +120,11 @@ def relpath_to_modname(relpath):
     return '.'.join(p.parts)
 
 
-def modname_to_relpath(modname, project_root=None, add_init=True):
+def modname_to_relpath(
+    modname: str,
+    project_root: Optional[Pathy] = None,
+    add_init: bool = True,
+) -> str:
     """Convert module name to relative path.
 
     The project root is usually needed to detect if the module is a package, in
@@ -131,13 +138,10 @@ def modname_to_relpath(modname, project_root=None, add_init=True):
         'foo/features/__init__.py'
 
     Args:
-        modname (str): Module name, e.g. `os.path`
-        project_root (str): Path to project root
-        add_init (bool): Whether to add `__init__.py` to the path of modules
+        modname: Module name, e.g. `os.path`
+        project_root: Path to project root
+        add_init: Whether to add `__init__.py` to the path of modules
             that are packages. Defaults to True
-
-    Returns:
-        str
     """
     parts = modname.split('.')
     relpath = pathlib.Path(*parts)
@@ -150,10 +154,11 @@ def modname_to_relpath(modname, project_root=None, add_init=True):
     else:
         relpath_resolved = relpath
 
-    if relpath_resolved.is_dir():
-        if add_init:
-            relpath = relpath.joinpath('__init__.py')
+    is_dir = relpath_resolved.is_dir()
+    if is_dir and add_init:
+        result = relpath.joinpath('__init__.py')
+    elif is_dir and not add_init:
+        result = relpath
     else:
-        relpath = str(relpath) + '.py'
-
-    return str(relpath)
+        result = relpath.with_suffix('.py')
+    return str(result)

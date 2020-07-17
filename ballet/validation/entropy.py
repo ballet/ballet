@@ -1,13 +1,13 @@
 import numbers
+from typing import Tuple
 
 import numpy as np
 import scipy.stats
-from funcy import decorator, suppress
 from scipy.special import digamma, gamma
 from sklearn.neighbors import NearestNeighbors
 from sklearn.utils import check_consistent_length
 
-from ballet.util import asarray2d
+from ballet.util import asarray2d, nonnegative
 from ballet.util.log import logger
 
 __all__ = (
@@ -22,24 +22,6 @@ NEIGHBORS_METRIC = 'chebyshev'
 DISC_COL_UNIQUE_VAL_THRESH = 0.05
 
 
-@decorator
-def nonnegative(call, name=None):
-    """Warn if the function's return value is negative and set it to 0"""
-    result = call()
-    with suppress(TypeError):
-        if result < 0:
-            result = 0.0
-            # Format a nice log message
-            if name is None:
-                try:
-                    pieces = call._func.__name__.split('_')[1:]
-                    name = ''.join(map(str.capitalize, pieces))
-                except RuntimeError:
-                    name = 'Result'
-            logger.warning('%s should be non-negative.', name)
-    return result
-
-
 # Helpers
 
 def _make_neighbors(**kwargs):
@@ -48,7 +30,9 @@ def _make_neighbors(**kwargs):
                             **kwargs)
 
 
-def _compute_empirical_probability(x):
+def _compute_empirical_probability(
+    x: np.ndarray
+) -> Tuple[np.ndarray, np.ndarray]:
     """Compute empirical probability of events in x
 
     Args:
@@ -67,10 +51,10 @@ def _compute_empirical_probability(x):
     return pk, events
 
 
-def _compute_volume_unit_ball(d, metric=NEIGHBORS_METRIC):
+def _compute_volume_unit_ball(d: int, metric: str = NEIGHBORS_METRIC) -> float:
     """Compute volume of a d-dimensional unit ball in R^d with given metric"""
     if metric == 'chebyshev':
-        return 1
+        return 1.0
     elif metric == 'euclidean':
         return np.power(np.pi, d / 2) / gamma(1 + d / 2) / 2**d
     else:
@@ -78,7 +62,7 @@ def _compute_volume_unit_ball(d, metric=NEIGHBORS_METRIC):
         raise ValueError(msg)
 
 
-def _is_column_disc(col):
+def _is_column_disc(col: np.ndarray) -> bool:
     # Heuristics to decide if column is discrete
 
     # Integer columns are discrete
@@ -98,26 +82,26 @@ def _is_column_disc(col):
     return False
 
 
-def _is_column_cont(col):
+def _is_column_cont(col: np.ndarray) -> bool:
     return not _is_column_disc(col)
 
 
-def _get_disc_columns(x):
+def _get_disc_columns(x: np.ndarray) -> np.ndarray:
     return np.apply_along_axis(_is_column_disc, 0, x)
 
 
 # Computing epsilon
 
-def _compute_epsilon(x):
+def _compute_epsilon(x: np.ndarray) -> np.ndarray:
     """Calculate epsilon from KSG Estimator
 
     Represents twice the distance of each element to its k-th nearest neighbor.
 
     Args:
-        x (array-like): An array with shape (n_samples, n_features)
+        x: An array with shape (n_samples, n_features)
 
     Returns:
-        array-like: An array with shape (n_samples, 1) representing
+        An array with shape (n_samples, 1) representing
             epsilon as described above.
 
     References:
@@ -150,7 +134,11 @@ def _compute_epsilon(x):
     return asarray2d(2. * distances)
 
 
-def _compute_n_points_within_radius_i(nn, x_i, radius_i):
+def _compute_n_points_within_radius_i(
+    nn: NearestNeighbors,
+    x_i: np.ndarray,
+    radius_i: np.ndarray,
+) -> int:
     if x_i.shape[0] != 1 or radius_i.shape[0] != 1:
         raise ValueError
 
@@ -161,19 +149,19 @@ def _compute_n_points_within_radius_i(nn, x_i, radius_i):
     return ind[0].size
 
 
-def _ithrow(x, i):
+def _ithrow(x: np.ndarray, i: int) -> np.ndarray:
     # seem to need to index as x[i:i+1, :] to get a (1,m) row array.
     return x[i:i + 1, :]
 
 
-def _compute_n_points_within_radius(x, radius):
+def _compute_n_points_within_radius(x: np.ndarray, radius: np.ndarray) -> int:
     """Compute the number of points strictly within some radius
 
     Note that points lying exactly on the radius are not counted.
 
     Args:
-        x (array-like): data of shape (n_instances, n_features)
-        radius (array-like): radius from each point of shape (n_instances, 1)
+        x: data of shape (n_instances, n_features)
+        radius: radius from each point of shape (n_instances, 1)
     """
     check_consistent_length(x, radius)
     n = x.shape[0]
@@ -192,7 +180,7 @@ def _compute_n_points_within_radius(x, radius):
 
 # Entropy estimation
 
-def _estimate_disc_entropy(x):
+def _estimate_disc_entropy(x: np.ndarray) -> float:
     r"""Estimate the Shannon entropy of a discrete dataset.
 
     The Shannon entropy of a discrete random variable :math:`Z` with support
@@ -210,18 +198,18 @@ def _estimate_disc_entropy(x):
     functions.
 
     Args:
-        x (array-like): Dataset with shape (n_samples, n_features) or
+        x: Dataset with shape (n_samples, n_features) or
             (n_samples, )
 
     Returns:
-        float: the dataset entropy.
+        the dataset entropy.
     """
     x = asarray2d(x)
     pk, _ = _compute_empirical_probability(x)
     return scipy.stats.entropy(pk)
 
 
-def _estimate_cont_entropy(x, epsilon):
+def _estimate_cont_entropy(x: np.ndarray, epsilon: np.ndarray) -> float:
     """Estimate the differential entropy of a continuous dataset.
 
     Based off the KSG Estimator [1] for a dataset's differential entropy.
@@ -242,15 +230,15 @@ def _estimate_cont_entropy(x, epsilon):
     non-negativity (i.e. values below zero are possible).
 
     Args:
-        x (array-like): Dataset with shape (n_samples, n_features) or
+        x: Dataset with shape (n_samples, n_features) or
             (n_samples, )
-        epsilon (array-like): An array with shape (n_samples, 1) that is
+        epsilon: An array with shape (n_samples, 1) that is
             the epsilon used in KSG Estimator. Represents the Chebyshev
             distance from an element to its k-th nearest neighbor in the full
             dataset.
 
     Returns:
-        float: differential entropy of the dataset
+        differential entropy of the dataset
 
     References:
 
@@ -266,7 +254,7 @@ def _estimate_cont_entropy(x, epsilon):
         + d * np.mean(np.log(epsilon))
 
 
-def _estimate_entropy(x, epsilon):
+def _estimate_entropy(x: np.ndarray, epsilon: np.ndarray) -> float:
     """Estimate dataset entropy."""
     x = asarray2d(x)
     n, d = x.shape
@@ -299,7 +287,9 @@ def _estimate_entropy(x, epsilon):
     return H_d + H_c_d
 
 
-def _estimate_conditional_entropy(c, d, epsilon):
+def _estimate_conditional_entropy(
+    c: np.ndarray, d: np.ndarray, epsilon: np.ndarray
+) -> float:
     """Estimate H(c|d) where c is continuous and d is discrete"""
     # H(c|d) = \sum_{i} p(d_i) H(c|d=d_i)
     # where we i ranges over unique values of d and c_d_i is the
@@ -319,7 +309,7 @@ def _estimate_conditional_entropy(c, d, epsilon):
 # Public API
 
 @nonnegative()
-def estimate_entropy(x):
+def estimate_entropy(x: np.ndarray) -> float:
     r"""Estimate dataset entropy.
 
     This function can take datasets of mixed discrete and continuous features,
@@ -346,15 +336,11 @@ def estimate_entropy(x):
     dataset.
 
     Args:
-        x (array-like): Dataset with shape (n_samples, n_features) or
+        x: Dataset with shape (n_samples, n_features) or
             (n_samples, )
-        epsilon (array-like): An array with shape (n_samples, 1) that is
-            the epsilon used in KSG Estimator. Represents the chebyshev
-            distance from an element to its k-th nearest neighbor in the full
-            dataset.
 
     Returns:
-        float: Dataset entropy of X.
+        Dataset entropy of X.
 
     References:
 
@@ -367,7 +353,9 @@ def estimate_entropy(x):
 
 
 @nonnegative()
-def estimate_conditional_information(x, y, z):
+def estimate_conditional_information(
+    x: np.ndarray, y: np.ndarray, z: np.ndarray
+) -> float:
     r"""Estimate the conditional mutual information of x and y given z
 
     Conditional mutual information is the mutual information of two datasets,
@@ -394,13 +382,13 @@ def estimate_conditional_information(x, y, z):
        \end{align}
 
     Args:
-        x (array-like): An array with shape (n_samples, n_features_x)
-        y (array-like): An array with shape (n_samples, n_features_y)
-        z (array-like): An array with shape (n_samples, n_features_z).
+        x: An array with shape (n_samples, n_features_x)
+        y: An array with shape (n_samples, n_features_y)
+        z: An array with shape (n_samples, n_features_z).
             This is the dataset being conditioned on.
 
     Returns:
-        float: conditional mutual information of x and y given z.
+        conditional mutual information of x and y given z.
 
     References:
 
@@ -427,7 +415,7 @@ def estimate_conditional_information(x, y, z):
 
 
 @nonnegative()
-def estimate_mutual_information(x, y):
+def estimate_mutual_information(x: np.ndarray, y: np.ndarray) -> float:
     r"""Estimate the mutual information of two datasets.
 
     Mutual information is a measure of dependence between
@@ -440,11 +428,11 @@ def estimate_mutual_information(x, y):
     adapts the KSG Estimator [1] for mutual information.
 
     Args:
-        x (array-like): An array with shape (n_samples, n_features_x)
-        y (array-like): An array with shape (n_samples, n_features_y)
+        x: An array with shape (n_samples, n_features_x)
+        y: An array with shape (n_samples, n_features_y)
 
     Returns:
-        float: mutual information of x and y
+        mutual information of x and y
 
     References:
 

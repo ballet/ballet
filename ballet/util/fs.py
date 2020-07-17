@@ -2,29 +2,23 @@ import os
 import os.path
 import pathlib
 from shutil import copyfile
+from typing import Callable, Iterator, List, Tuple
 
 from funcy import partial, suppress
 
 from ballet.compat import safepath
 from ballet.exc import BalletError
 from ballet.util.log import logger
+from ballet.util.typing import Pathy
 
 
-def spliceext(filepath, s):
-    """Add s into filepath before the extension
-
-    Args:
-        filepath (PathLike): file path
-        s (str): string to splice
-
-    Returns:
-        str
-    """
+def spliceext(filepath: Pathy, s: str) -> str:
+    """Add s into filepath before the extension"""
     root, ext = os.path.splitext(safepath(filepath))
     return root + s + ext
 
 
-def replaceext(filepath, new_ext):
+def replaceext(filepath: Pathy, new_ext: str) -> str:
     """Replace any existing file extension with a new one
 
     If the new extension is the empty string, all existing extensions will
@@ -38,41 +32,24 @@ def replaceext(filepath, new_ext):
         '/foo/bar.doc'
 
     Args:
-        filepath (PathLike): file path
-        new_ext (str): new file extension; if a leading dot is not included,
-            it will be added.
-
-    Returns:
-        str
+        filepath: file path
+        new_ext: new file extension; if a leading dot is not included, it will
+            be added.
     """
     if new_ext and not new_ext.startswith('.'):
         new_ext = '.' + new_ext
     return str(pathlib.Path(filepath).with_suffix(new_ext))
 
 
-def splitext2(filepath):
-    """Split filepath into root, filename, ext
-
-    Args:
-        filepath (PathLike): file path
-
-    Returns:
-        str
-    """
+def splitext2(filepath: Pathy) -> Tuple[str, str, str]:
+    """Split filepath into root, filename, ext"""
     root, filename = os.path.split(safepath(filepath))
     filename, ext = os.path.splitext(safepath(filename))
     return root, filename, ext
 
 
-def isemptyfile(filepath):
-    """Determine if the file both exists and isempty
-
-    Args:
-        filepath (PathLike): file path
-
-    Returns:
-        bool
-    """
+def isemptyfile(filepath: Pathy) -> bool:
+    """Determine if the file both exists and isempty"""
     exists = os.path.exists(safepath(filepath))
     if exists:
         filesize = os.path.getsize(safepath(filepath))
@@ -81,7 +58,11 @@ def isemptyfile(filepath):
         return False
 
 
-def synctree(src, dst, onexist=None):
+def synctree(
+    src: Pathy,
+    dst: Pathy,
+    onexist: Callable[[pathlib.Path], None] = None
+) -> List[Tuple[pathlib.Path, str]]:
     """Recursively sync files at directory src to dst
 
     This is more or less equivalent to::
@@ -92,16 +73,15 @@ def synctree(src, dst, onexist=None):
     in dst. Pass ``onexist`` in order to raise an error on such conditions.
 
     Args:
-        src (path-like): source directory
-        dst (path-like): destination directory, does not need to exist
-        onexist (callable): function to call if file exists at destination,
+        src: source directory
+        dst: destination directory, does not need to exist
+        onexist: function to call if file exists at destination,
             takes the full path to destination file as only argument
 
     Returns:
-        List[Tuple[PathLike,str]]: changes made by synctree, list of tuples of
-        the form ("/absolute/path/to/file", "<kind>") where the change kind is
-        one of "dir" (new directory was created) or "file" (new file was
-        created).
+        changes made by synctree, list of tuples of the form
+        ("/absolute/path/to/file", "<kind>") where the change kind is one of
+        "dir" (new directory was created) or "file" (new file was created).
     """
     src = pathlib.Path(src).resolve()
     dst = pathlib.Path(dst).resolve()
@@ -113,12 +93,17 @@ def synctree(src, dst, onexist=None):
         raise ValueError
 
     if onexist is None:
-        def onexist(): pass
+        def _onexist(path): pass
+        onexist = _onexist
 
     return _synctree(src, dst, onexist)
 
 
-def _synctree(src, dst, onexist):
+def _synctree(
+    src: pathlib.Path,
+    dst: pathlib.Path,
+    onexist: Callable[[pathlib.Path], None]
+) -> List[Tuple[pathlib.Path, str]]:
     result = []
     cleanup = []
     try:
@@ -160,12 +145,8 @@ def _synctree(src, dst, onexist):
     return result
 
 
-def pwalk(d, **kwargs):
-    """Similar to os.walk but with pathlib.Path objects
-
-    Returns:
-        Iterable[Path]
-    """
+def pwalk(d: Pathy, **kwargs) -> Iterator[pathlib.Path]:
+    """Similar to os.walk but with pathlib.Path objects"""
     for dirpath, dirnames, filenames in os.walk(safepath(d), **kwargs):
         dirpath = pathlib.Path(dirpath)
         for p in dirnames + filenames:

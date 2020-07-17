@@ -4,7 +4,6 @@ from unittest.mock import patch
 import numpy as np
 
 from ballet.util import asarray2d
-from ballet.util.log import logger
 from ballet.util.testing import ArrayLikeEqualityTestingMixin
 from ballet.validation.entropy import (
     NEIGHBORS_ALGORITHM, NEIGHBORS_METRIC, _compute_empirical_probability,
@@ -12,34 +11,10 @@ from ballet.validation.entropy import (
     _compute_volume_unit_ball, _estimate_cont_entropy, _estimate_disc_entropy,
     _is_column_cont, _is_column_disc, _make_neighbors,
     estimate_conditional_information, estimate_entropy,
-    estimate_mutual_information, nonnegative)
+    estimate_mutual_information)
 
 
 class EntropyTest(ArrayLikeEqualityTestingMixin, unittest.TestCase):
-
-    def test_nonnegative_positive_output(self):
-        @nonnegative()
-        def func():
-            return 1
-
-        self.assertEqual(1, func())
-
-    def test_nonnegative_negative_output(self):
-        @nonnegative(name="Result")
-        def func():
-            return -1
-
-        self.assertEqual(0, func())
-
-    def test_nonnegative_negative_introspection(self):
-        @nonnegative()
-        def estimate_something():
-            return -1
-
-        with self.assertLogs(logger.name, 'WARNING') as cm:
-            estimate_something()
-        self.assertEqual(1, len(cm.output))
-        self.assertIn("Something", cm.output[0])
 
     def test_make_neighbors(self):
         nn = _make_neighbors()
@@ -169,7 +144,7 @@ class EntropyTest(ArrayLikeEqualityTestingMixin, unittest.TestCase):
         result = _is_column_cont(x)
         self.assertTrue(result)
 
-    @unittest.skip
+    @unittest.skip('skipping')
     @patch('ballet.validation.entropy._get_disc_columns')
     def test_cont_disc_entropy_differs_disc(self, get_disc_columns):
         """Expect cont, disc columns to have different entropy"""
