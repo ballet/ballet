@@ -24,5 +24,6 @@ from ballet.util.log import logger  # noqa E402
 logger.addHandler(logging.NullHandler())
 
 # re-export some names
+from ballet.client import b  # noqa
 from ballet.contrib import *  # noqa
 from ballet.feature import *  # noqa

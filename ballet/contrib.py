@@ -5,8 +5,8 @@ from typing import Iterator, List, Optional
 
 from funcy import collecting, notnone
 
+import ballet
 from ballet.feature import Feature
-from ballet.project import Project
 from ballet.util import dfilter
 from ballet.util.log import logger
 
@@ -15,7 +15,9 @@ __all__ = (
 )
 
 
-def collect_contrib_features(project: Project) -> List[Feature]:
+def collect_contrib_features(
+    project: 'ballet.project.Project'
+) -> List[Feature]:
     """Collect contributed features for a project at project_root
 
     For a project ``foo``, walks modules within the ``foo.features.contrib``
