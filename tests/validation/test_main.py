@@ -32,6 +32,7 @@ class MainTest(unittest.TestCase):
 
     def test_validation_stage_failure(self):
         exc = ValueError
+
         @validation_stage('do something')
         def call():
             raise exc

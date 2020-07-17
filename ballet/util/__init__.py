@@ -120,10 +120,10 @@ class DeepcopyMixin:
         return result
 
 
-def one_or_raise(l):
-    n = len(l)
+def one_or_raise(seq):
+    n = len(seq)
     if n == 1:
-        return l[0]
+        return seq[0]
     else:
         raise ValueError('Expected exactly 1 element, but got {n}'
                          .format(n=n))

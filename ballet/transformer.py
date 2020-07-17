@@ -251,7 +251,7 @@ def _validate_transformer_api(transformer):
     if '(X' not in str(sig_transform):
         raise ValueError(
             'Invalid signature for transformer.transform: {sig_transform}'
-            .format(sig_fit=sig_fit))
+            .format(sig_transform=sig_transform))
 
 
 def _replace_callable_with_transformer(transformer):

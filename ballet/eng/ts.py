@@ -24,7 +24,10 @@ def make_multi_lagger(lags, groupby_kwargs=None):
         lags (Collection[int]): collection of lags to apply
         groupby_kwargs (dict): keyword arguments to pd.DataFrame.groupby
     """
-    laggers = [SingleLagger(l, groupby_kwargs=groupby_kwargs) for l in lags]
+    laggers = [
+        SingleLagger(lag, groupby_kwargs=groupby_kwargs)
+        for lag in lags
+    ]
     feature_union = FeatureUnion([
         (repr(lagger), lagger) for lagger in laggers
     ])
