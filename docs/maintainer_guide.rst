@@ -188,10 +188,10 @@ Enabling continuous integration
 
 Ballet makes uses of the continuous integration service `Travis CI`_ in order to validate code
 that contributors propose as well as perform streaming logical feature selection. You must
-enable Travis CI for your project on GitHub by `following these simple directions <https://docs
-.travis-ci.com/user/tutorial/#to-get-started-with-travis-ci>`_. You can skip any steps that have
-to do with customizing the ``.travis.yml`` file, as we have already done that for you in the
-quickstart.
+enable Travis CI for your project on GitHub by`following these simple directions
+<https://docs.travis-ci.com/user/tutorial/#to-get-started-with-travis-ci-using-github>`_. You can
+skip any steps that have to do with customizing the ``.travis.yml`` file, as we have already done
+that for you in the quickstart.
 
 Installing bots
 ~~~~~~~~~~~~~~~
