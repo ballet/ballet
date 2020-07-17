@@ -4,8 +4,7 @@ from typing import Optional, Tuple
 from funcy import cached_property
 
 import ballet.pipeline
-from ballet.eng import BaseTransformer
-from ballet.transformer import make_robust_transformer
+from ballet.transformer import RobustTransformer, make_robust_transformer
 from ballet.util.typing import OneOrMore, Pathy, TransformerLike
 
 __all__ = ('Feature', )
@@ -71,7 +70,9 @@ class Feature:
         return '{clsname}(\n{attrs_str}\n)'.format(
             clsname=type(self).__name__, attrs_str=attrs_str)
 
-    def as_input_transformer_tuple(self) -> Tuple[str, BaseTransformer, dict]:
+    def as_input_transformer_tuple(
+        self
+    ) -> Tuple[OneOrMore[str], RobustTransformer, dict]:
         """Return an tuple for passing to DataFrameMapper constructor"""
         return self.input, self.transformer, {'alias': self.output}
 

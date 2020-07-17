@@ -1,5 +1,5 @@
 import os
-from typing import Dict, Iterable, Union
+from typing import Dict, Iterable, Optional, Union
 
 import git
 
@@ -41,7 +41,7 @@ def dump_travis_env_vars():
     logger.info(repr(get_travis_env_vars()))
 
 
-def get_travis_pr_num() -> str:
+def get_travis_pr_num() -> Optional[int]:
     """Return the PR number if the job is a pull request, None otherwise
 
     Returns:
@@ -68,7 +68,7 @@ def is_travis_pr() -> bool:
     return get_travis_pr_num() is not None
 
 
-def get_travis_branch() -> str:
+def get_travis_branch() -> Optional[str]:
     """Get current branch per Travis environment variables
 
     If travis is building a PR, then TRAVIS_PULL_REQUEST is truthy and the

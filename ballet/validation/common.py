@@ -1,6 +1,7 @@
 import pathlib
 from types import ModuleType
-from typing import Callable, Collection, List, NamedTuple, Optional, Tuple
+from typing import (
+    Callable, Collection, Iterator, List, NamedTuple, Optional, Tuple)
 
 import git
 from funcy import collecting, complement, lfilter, partial, post_processing
@@ -52,7 +53,7 @@ def get_proposed_feature(project: Project):
 
 
 def get_accepted_features(
-    features: List[Feature],
+    features: Collection[Feature],
     proposed_feature: Feature
 ) -> List[Feature]:
     """Deselect candidate features from list of all features
@@ -97,7 +98,7 @@ def _log_collect_items(name: str, items: Collection):
     return items
 
 
-NewFeatureInfo = List[Tuple[Callable[..., ModuleType], str, str]]
+NewFeatureInfo = Tuple[Callable[..., ModuleType], str, str]
 
 
 class CollectedChanges(NamedTuple):
@@ -105,7 +106,7 @@ class CollectedChanges(NamedTuple):
     candidate_feature_diffs: List[git.Diff]
     valid_init_diffs: List[git.Diff]
     inadmissible_diffs: List[git.Diff]
-    new_feature_info: NewFeatureInfo
+    new_feature_info: List[NewFeatureInfo]
 
 
 class ChangeCollector:
@@ -119,9 +120,11 @@ class ChangeCollector:
 
     def __init__(self, project: Project, differ: Optional[Differ] = None):
         self.project = project
-        self.differ = differ
 
-        if self.differ is None:
+        self.differ: Differ
+        if differ is not None:
+            self.differ = differ
+        else:
             pr_num = self.project.pr_num
             repo = self.project.repo
             if pr_num is None:
@@ -213,7 +216,7 @@ class ChangeCollector:
     @stacklog(logger.info, 'Collecting info on newly-proposed features')
     def _collect_feature_info(
         self, candidate_feature_diffs: List[git.Diff]
-    ) -> NewFeatureInfo:
+    ) -> Iterator[NewFeatureInfo]:
         """Collect feature info
 
         Args:
@@ -230,7 +233,7 @@ class ChangeCollector:
 
         # the directory containing the package
         try:
-            package_path = self.project.package.__path__[0]
+            package_path = self.project.package.__path__[0]  # type: ignore  # mypy issue #1422  # noqa E501
             package_root = pathlib.Path(package_path).parent
         except (AttributeError, IndexError):
             logger.debug("Couldn't get package root, will try to recover",

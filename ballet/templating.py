@@ -59,7 +59,7 @@ def render_feature_template(**cc_kwargs) -> str:
     return cookiecutter(feature_template_path, **cc_kwargs)
 
 
-def _fail_if_feature_exists(dst: pathlib.Path) -> bool:
+def _fail_if_feature_exists(dst: pathlib.Path) -> None:
     subpackage_name, feature_name = str(dst.parent), str(dst.name)
     if (
         dst.is_file()

@@ -2,6 +2,7 @@ import ast
 import inspect
 import platform
 from types import FunctionType
+from typing import Iterator
 
 from funcy import notnone
 
@@ -68,9 +69,8 @@ def get_source(f: FunctionType) -> str:
     Raises:
         NotImplementedError: if the function was defined interactively
     """
-    code = _get_source(f, f.__code__.co_filename, f.__name__, set())
-    code = filter(notnone, code)
-    code = '\n'.join(code)
+    lines = _get_source(f, f.__code__.co_filename, f.__name__, set())
+    code = '\n'.join(filter(notnone, lines))
 
     # post-processing
     if isinstance(code, bytes):
@@ -81,7 +81,7 @@ def get_source(f: FunctionType) -> str:
 
 def _get_source(
     f: FunctionType, filename: str, symbolname: str, seen: set
-) -> str:
+) -> Iterator[str]:
     if f in seen:
         return []
 

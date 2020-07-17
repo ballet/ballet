@@ -1,7 +1,7 @@
 import pkgutil
 import types
 from types import ModuleType
-from typing import Iterable, Iterator, Optional
+from typing import Iterator, List, Optional
 
 from funcy import collecting, notnone
 
@@ -15,7 +15,7 @@ __all__ = (
 )
 
 
-def collect_contrib_features(project: Project) -> Iterable[Feature]:
+def collect_contrib_features(project: Project) -> List[Feature]:
     """Collect contributed features for a project at project_root
 
     For a project ``foo``, walks modules within the ``foo.features.contrib``
@@ -35,7 +35,9 @@ def collect_contrib_features(project: Project) -> Iterable[Feature]:
 
 @dfilter(notnone)
 @collecting
-def _collect_contrib_features(module: ModuleType) -> Iterator[Feature]:
+def _collect_contrib_features(
+    module: ModuleType
+) -> Iterator[Optional[Feature]]:
     """Collect contributed features from within given module
 
     Be very careful with untrusted code. The module/package will be
@@ -64,10 +66,10 @@ def _collect_contrib_features_from_package(
 ) -> Iterator[Optional[Feature]]:
     logger.debug(
         'Walking package path {path} to detect modules...'
-        .format(path=package.__path__))
+        .format(path=package.__path__))  # type: ignore  # mypy issue #1422
 
     for importer, modname, _ in pkgutil.walk_packages(
-            path=package.__path__,
+            path=package.__path__,  # type: ignore  # mypy issue #1422
             prefix=package.__name__ + '.',
             onerror=logger.error):
 

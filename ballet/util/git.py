@@ -162,7 +162,7 @@ def get_repo(repo: Optional[git.Repo] = None) -> git.Repo:
 
 
 @silent
-def get_pr_num(repo: Optional[git.Repo] = None) -> str:
+def get_pr_num(repo: Optional[git.Repo] = None) -> int:
     repo = get_repo(repo)
     pr_num = re_find(PR_REF_PATH_REGEX, repo.head.ref.path)
     return int(pr_num)

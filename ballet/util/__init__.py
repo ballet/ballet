@@ -1,14 +1,12 @@
-import pathlib
 import warnings
 from copy import deepcopy
-from enum import Enum
 from os import devnull
-from typing import List, Sequence, Tuple
+from typing import Collection, Sequence, Tuple, TypeVar
 
 import numpy as np
 import pandas as pd
 import sklearn.datasets
-from funcy import complement, decorator, lfilter, wraps
+from funcy import complement, decorator, lfilter
 
 from ballet.compat import redirect_stderr, redirect_stdout
 from ballet.exc import BalletWarning
@@ -35,24 +33,13 @@ def get_arr_desc(arr: np.ndarray) -> str:
     return desc.format(type_=type_, shape=shape)
 
 
-def get_enum_keys(cls: Enum) -> List[str]:
-    return [attr for attr in dir(cls) if not attr.startswith('_')]
-
-
-def get_enum_values(cls: Enum) -> list:
-    if issubclass(cls, Enum):
-        return [getattr(cls, attr).value for attr in get_enum_keys(cls)]
-    else:
-        return [getattr(cls, attr) for attr in get_enum_keys(cls)]
-
-
 def indent(text: str, n=4) -> str:
     """Indent each line of text by n spaces"""
     _indent = ' ' * n
     return '\n'.join(_indent + line for line in text.split('\n'))
 
 
-def make_plural_suffix(obj: str, suffix='s') -> str:
+def make_plural_suffix(obj: Collection, suffix='s') -> str:
     if len(obj) != 1:
         return suffix
     else:
@@ -121,22 +108,16 @@ class DeepcopyMixin:
         return result
 
 
-def one_or_raise(seq: Sequence):
+_T = TypeVar('_T')
+
+
+def one_or_raise(seq: Sequence[_T]) -> _T:
     n = len(seq)
     if n == 1:
         return seq[0]
     else:
         raise ValueError('Expected exactly 1 element, but got {n}'
                          .format(n=n))
-
-
-def needs_path(f):
-    """Wraps a function that accepts path-like to give it a pathlib.Path"""
-    @wraps(f)
-    def wrapped(pathlike, *args, **kwargs):
-        path = pathlib.Path(pathlike)
-        return f(path, *args, **kwargs)
-    return wrapped
 
 
 def warn(msg: str):

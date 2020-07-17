@@ -3,7 +3,6 @@ from typing import Iterable, List
 
 import numpy as np
 import pandas as pd
-from funcy import constantly, ignore, post_processing
 
 from ballet.feature import Feature
 
@@ -62,11 +61,16 @@ class FeaturePruner(FeaturePruningMixin, FeaturePerformanceEvaluator):
 
 class BaseCheck(metaclass=ABCMeta):
 
-    @ignore(Exception, default=False)
-    @post_processing(constantly(True))
     def do_check(self, obj) -> bool:
-        return self.check(obj)
+        """Do the check and return whether an exception was *not* thrown"""
+        try:
+            self.check(obj)
+        except Exception:
+            return False
+        else:
+            return True
 
     @abstractmethod
     def check(self, obj) -> None:
+        """Check something and throw an exception if the thing is bad"""
         pass

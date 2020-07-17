@@ -1,9 +1,9 @@
 import numbers
-from typing import Callable, Tuple
+from typing import Optional, Tuple
 
 import numpy as np
 import scipy.stats
-from funcy import decorator, suppress
+from funcy import Call, decorator, suppress
 from scipy.special import digamma, gamma
 from sklearn.neighbors import NearestNeighbors
 from sklearn.utils import check_consistent_length
@@ -24,7 +24,7 @@ DISC_COL_UNIQUE_VAL_THRESH = 0.05
 
 
 @decorator
-def nonnegative(call: Callable, name=None):
+def nonnegative(call: Call, name: Optional[str] = None):
     """Warn if the function's return value is negative and set it to 0"""
     result = call()
     with suppress(TypeError):

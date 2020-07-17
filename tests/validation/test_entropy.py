@@ -169,7 +169,7 @@ class EntropyTest(ArrayLikeEqualityTestingMixin, unittest.TestCase):
         result = _is_column_cont(x)
         self.assertTrue(result)
 
-    @unittest.skip
+    @unittest.skip('skipping')
     @patch('ballet.validation.entropy._get_disc_columns')
     def test_cont_disc_entropy_differs_disc(self, get_disc_columns):
         """Expect cont, disc columns to have different entropy"""

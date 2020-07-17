@@ -4,7 +4,7 @@ import subprocess
 import sys
 import tempfile
 from textwrap import dedent
-from typing import Optional
+from typing import Optional, Tuple
 from unittest.mock import patch
 
 import funcy
@@ -41,7 +41,9 @@ def _query_pip_search_ballet() -> str:
     return subprocess.check_output(popen_args, universal_newlines=True)
 
 
-def _extract_latest_from_search_triple(triple) -> str:
+def _extract_latest_from_search_triple(
+    triple: Tuple[str, str, str]
+) -> Optional[str]:
     """Try to extract latest version number from a triple of search results"""
     description, installed, latest = triple
     if re_test(r'\s*ballet \(.+\)\s*-\s*\w*', description):
@@ -94,7 +96,7 @@ def _check_for_updated_ballet() -> Optional[str]:
         return None
 
 
-def _warn_of_updated_ballet(latest):
+def _warn_of_updated_ballet(latest: str):
     if latest is not None:
         msg = \
             '''\
@@ -124,7 +126,7 @@ def _render_project_template(
     cwd: pathlib.Path,
     tempdir: Pathy,
     project_template_path: Optional[Pathy] = None
-):
+) -> str:
     tempdir = pathlib.Path(tempdir)
     context = _get_full_context(cwd)
 
@@ -262,8 +264,8 @@ def update_project_template(push: bool = False,
     if new_version:
         _warn_of_updated_ballet(new_version)
 
-    with tempfile.TemporaryDirectory() as tempdir:
-        tempdir = pathlib.Path(tempdir)
+    with tempfile.TemporaryDirectory() as _tempdir:
+        tempdir = pathlib.Path(_tempdir)
 
         # cookiecutter returns path to the resulting project dir
         logger.debug('Re-rendering project template at {}'.format(tempdir))

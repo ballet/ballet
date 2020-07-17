@@ -1,35 +1,44 @@
 import traceback
-from collections import Counter, namedtuple
+from collections import Counter
 from inspect import signature
-from typing import Iterable, List, Union
+from typing import (
+    Callable, Collection, List, NamedTuple, Sequence, Tuple, Union, cast)
 
 import numpy as np
 import pandas as pd
 from funcy import identity, is_seqcont, select_values
-from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.base import BaseEstimator
 from sklearn_pandas.pipeline import TransformerPipeline
 
 from ballet.eng.base import BaseTransformer, SimpleFunctionTransformer
 from ballet.exc import UnsuccessfulInputConversionError
 from ballet.util import DeepcopyMixin, asarray2d, indent, quiet
 from ballet.util.log import logger
-from ballet.util.typing import TransformerLike
+from ballet.util.typing import OneOrMore, TransformerLike
+
+RobustTransformer = Union[TransformerPipeline, 'DelegatingRobustTransformer']
 
 
 def make_robust_transformer(
-    transformer: BaseTransformer,
-) -> Union[TransformerPipeline, 'DelegatingRobustTransformer']:
+    transformer: OneOrMore[TransformerLike]
+) -> RobustTransformer:
     if is_seqcont(transformer):
-        transformer = map(_replace_callable_with_transformer, transformer)
-        map(_validate_transformer_api, transformer)
-        return make_robust_transformer_pipeline(*transformer)
+        transformer = cast(Collection[TransformerLike], transformer)
+        transformers = list(
+            map(_replace_callable_with_transformer, transformer))
+        for t in transformers:
+            _validate_transformer_api(t)
+        return make_robust_transformer_pipeline(transformers)
     else:
+        transformer = cast(TransformerLike, transformer)
         transformer = _replace_callable_with_transformer(transformer)
         _validate_transformer_api(transformer)
         return DelegatingRobustTransformer(transformer)
 
 
-def _name_estimators(estimators: Iterable[BaseEstimator]) -> List[str]:
+def _name_estimators(
+    estimators: Sequence[BaseEstimator]
+) -> List[Tuple[str, BaseEstimator]]:
     """Generate names for estimators.
 
     Adapted from sklearn.pipeline._name_estimators
@@ -54,7 +63,9 @@ def _name_estimators(estimators: Iterable[BaseEstimator]) -> List[str]:
     return list(zip(names, estimators))
 
 
-def make_transformer_pipeline(*steps) -> TransformerPipeline:
+def make_transformer_pipeline(
+    steps: Sequence[BaseTransformer],
+) -> TransformerPipeline:
     """Construct a TransformerPipeline from the given estimators.
 
     Source: sklearn_pandas.cont_method
@@ -62,16 +73,22 @@ def make_transformer_pipeline(*steps) -> TransformerPipeline:
     return TransformerPipeline(_name_estimators(steps))
 
 
-def make_robust_transformer_pipeline(*steps) -> TransformerPipeline:
+def make_robust_transformer_pipeline(
+    steps: Collection[BaseTransformer]
+) -> TransformerPipeline:
     """Construct a transformer pipeline of DelegatingRobustTransformers"""
-    steps = list(map(DelegatingRobustTransformer, steps))
-    return make_transformer_pipeline(*steps)
+    return make_transformer_pipeline([
+        DelegatingRobustTransformer(step) for step in steps
+    ])
 
 
-ConversionApproach = namedtuple('ConversionApproach', 'name convert caught')
+class ConversionApproach(NamedTuple):
+    name: str
+    convert: Callable
+    caught: Collection[type]
 
 
-class DelegatingRobustTransformer(DeepcopyMixin, TransformerMixin):
+class DelegatingRobustTransformer(DeepcopyMixin, BaseTransformer):
     """Robust transformer that delegates to underlying transformer
 
     This transformer is robust against different typed and shaped input data.
@@ -264,4 +281,5 @@ def _replace_callable_with_transformer(
     if callable(transformer) and not isinstance(transformer, type):
         return SimpleFunctionTransformer(transformer)
     else:
+        transformer = cast(BaseTransformer, transformer)
         return transformer

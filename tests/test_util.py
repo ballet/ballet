@@ -5,7 +5,6 @@ import sys
 import tempfile
 import types
 import unittest
-from enum import Enum
 from unittest.mock import ANY, Mock, mock_open, patch
 
 import git
@@ -21,8 +20,7 @@ import ballet.util.git
 import ballet.util.io
 from ballet.compat import safepath
 from ballet.util.ci import TravisPullRequestBuildDiffer
-from ballet.util.code import (  # noqa F401
-    blacken_code, get_source, is_valid_python)
+from ballet.util.code import blacken_code, get_source, is_valid_python
 from ballet.util.mod import (  # noqa F401
     import_module_at_path, import_module_from_modname,
     import_module_from_relpath, modname_to_relpath, relpath_to_modname)
@@ -91,42 +89,6 @@ class UtilTest(
         obj = object()
         expected = 'object <no shape>'
         actual = ballet.util.get_arr_desc(obj)
-        self.assertEqual(actual, expected)
-
-    def test_get_enum_keys_class(self):
-        class MyEnum:
-            A = 1
-            B = 2
-
-        actual = ballet.util.get_enum_keys(MyEnum)
-        expected = ['A', 'B']
-        self.assertEqual(actual, expected)
-
-    def test_get_enum_keys_enum(self):
-        class MyEnum(Enum):
-            A = 1
-            B = 2
-
-        actual = ballet.util.get_enum_keys(MyEnum)
-        expected = ['A', 'B']
-        self.assertEqual(actual, expected)
-
-    def test_get_enum_values_class(self):
-        class MyEnum:
-            A = 1
-            B = 2
-
-        actual = ballet.util.get_enum_values(MyEnum)
-        expected = [1, 2]
-        self.assertEqual(actual, expected)
-
-    def test_get_enum_values_enum(self):
-        class MyEnum(Enum):
-            A = 1
-            B = 2
-
-        actual = ballet.util.get_enum_values(MyEnum)
-        expected = [1, 2]
         self.assertEqual(actual, expected)
 
     def test_indent(self):
@@ -625,7 +587,7 @@ class FsTest(unittest.TestCase):
         mock_rmdir.assert_not_called()
         mock_unlink.assert_not_called()
 
-    @unittest.skip
+    @unittest.skip('skipping')
     def test__synctree(self):
         # when src is a directory that exists and dst does not exist,
         # then copytree should be called
@@ -856,4 +818,4 @@ class CodeTest(unittest.TestCase):
 
     @unittest.expectedFailure
     def test_get_source(self):
-        raise NotImplementedError
+        get_source(None)

@@ -1,4 +1,4 @@
-from typing import Callable, Iterable, NamedTuple, Tuple
+from typing import Callable, Collection, NamedTuple, Tuple, cast
 
 import numpy as np
 import pandas as pd
@@ -23,26 +23,31 @@ class FeatureEngineeringPipeline(DataFrameMapper):
 
     def __init__(self, features: OneOrMore['ballet.feature.Feature']):
         if not features:
-            features = ballet.feature.Feature(input=[],
-                                              transformer=NullTransformer())
+            _features = [
+                ballet.feature.Feature(input=[],
+                                       transformer=NullTransformer())
+            ]
+        elif not iterable(features):
+            features = cast(ballet.feature.Feature, features)
+            _features = [features, ]
+        else:
+            features = cast(Collection[ballet.feature.Feature], features)
+            _features = list(features)
 
-        if not iterable(features):
-            features = (features, )
-
-        self._ballet_features = features
+        self._ballet_features = _features
 
         super().__init__(
-            [t.as_input_transformer_tuple() for t in features],
+            [t.as_input_transformer_tuple() for t in _features],
             input_df=True)
 
     @property
-    def ballet_features(self) -> Iterable['ballet.feature.Feature']:
+    def ballet_features(self) -> Collection['ballet.feature.Feature']:
         return self._ballet_features
 
 
 class EngineerFeaturesResult(NamedTuple):
     X_df: pd.DataFrame
-    features: Iterable['ballet.feature.Feature']
+    features: Collection['ballet.feature.Feature']
     pipeline: FeatureEngineeringPipeline
     X: np.array
     y_df: pd.DataFrame

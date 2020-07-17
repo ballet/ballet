@@ -93,7 +93,8 @@ def synctree(
         raise ValueError
 
     if onexist is None:
-        def onexist(): pass
+        def _onexist(path): pass
+        onexist = _onexist
 
     return _synctree(src, dst, onexist)
 

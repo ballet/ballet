@@ -154,10 +154,11 @@ def modname_to_relpath(
     else:
         relpath_resolved = relpath
 
-    if relpath_resolved.is_dir():
-        if add_init:
-            relpath = relpath.joinpath('__init__.py')
+    is_dir = relpath_resolved.is_dir()
+    if is_dir and add_init:
+        result = relpath.joinpath('__init__.py')
+    elif is_dir and not add_init:
+        result = relpath
     else:
-        relpath = str(relpath) + '.py'
-
-    return str(relpath)
+        result = relpath.with_suffix('.py')
+    return str(result)
