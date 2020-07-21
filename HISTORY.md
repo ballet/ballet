@@ -1,5 +1,21 @@
 # History
 
+## 0.7 (2020-07-17)
+
+* Revamp project template: update project structure, create single API via FeatureEngineeringProject, use and add support for pyinvoke, revamp build into engineer_features, support repolockr bot
+* Improve ballet.project.Project: can create by ascending from given path, can create from current working directory, can resolve arbitrary project symbol, exposes project's API
+* Check for and notify of new release of ballet during project update (`ballet update-project-template`)
+* Add ComputedValueTransformer to ballet.eng
+* Move stacklog to separate project and install it
+* Add validators that {never,always} accept submissions
+* Add feature API checks to ensure that the feature can fit and transform a single row
+* Add feature engineering guide to documentation and significantly expand contributor guide
+* Add bot installation instructions to maintainer guide
+* Add type annotations throughout
+* Drop support for py35, add support for py38
+* Deprecate modeling code
+* Various bug fixes and improvements
+
 ## 0.6 (2019-11-12)
 
 * Implement GFSSF validators and random validators
