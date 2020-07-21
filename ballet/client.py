@@ -1,6 +1,6 @@
 from os import PathLike
 from types import ModuleType
-from typing import Optional
+from typing import Optional, Union
 
 import pandas as pd
 from funcy import cached_property
@@ -13,9 +13,22 @@ from ballet.validation.main import _load_class
 
 
 class Client:
+    """User client for validating features
 
-    def __init__(self, prj=None):
-        self._prj = prj
+    Provides a simple interface to validating a given feature.
+
+    Args:
+        prj: a way to create a ballet ``Project``, either with an
+            already-created object, the project's top-level module, or a path
+            within the project. If none of these are provided, will attempt to
+            detect the project by ascending from the current working directory.
+    """
+
+    def __init__(
+        self,
+        prj: Union[Project, ModuleType, str, PathLike, None] = None
+    ):
+        self._prj: Project = prj
 
     @cached_property
     def _project(self) -> Project:
@@ -36,10 +49,13 @@ class Client:
         feature: Feature,
         X_df: Optional[pd.DataFrame] = None,
         y_df: Optional[pd.DataFrame] = None,
-        subsample=False,
+        subsample: bool = False,
     ) -> bool:
+        """Check that this feature satisfies the expected feature API"""
+        project = self._project
+
         if X_df is None or y_df is None:
-            _X_df, _y_df = self._project.api.load_data()
+            _X_df, _y_df = project.api.load_data()
         if X_df is None:
             X_df = _X_df
         if y_df is None:
@@ -53,6 +69,7 @@ class Client:
         y_df: Optional[pd.DataFrame] = None,
         subsample: bool = False
     ) -> bool:
+        """Evaluate the performance of this feature"""
         project = self._project
 
         if subsample:
