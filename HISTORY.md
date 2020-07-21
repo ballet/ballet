@@ -1,5 +1,10 @@
 # History
 
+## 0.7.1 (2020-07-20)
+
+* Add client for easy interactive usage (`ballet.b`)
+* Add binder setup to project template
+
 ## 0.7 (2020-07-17)
 
 * Revamp project template: update project structure, create single API via FeatureEngineeringProject, use and add support for pyinvoke, revamp build into engineer_features, support repolockr bot
