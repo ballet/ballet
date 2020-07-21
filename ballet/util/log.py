@@ -30,7 +30,8 @@ def enable(logger: logging.Logger = logger,
         formatter = logging.Formatter(format)
         _handler.setFormatter(formatter)
 
-    levelName = logging.getLevelName(level)
+    levelInt: int = logging._checkLevel(level)  # type: ignore
+    levelName: str = logging.getLevelName(levelInt)
 
     logger.setLevel(levelName)
     _handler.setLevel(levelName)
@@ -40,7 +41,7 @@ def enable(logger: logging.Logger = logger,
 
     if echo:
         logger.log(
-            levelName, 'Logging enabled at level {name}.'.format(
+            levelInt, 'Logging enabled at level {name}.'.format(
                 name=levelName))
 
 
