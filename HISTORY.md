@@ -1,5 +1,11 @@
 # History
 
+## 0.7.2 (2020-07-21)
+
+* Add sample analysis notebook to project template
+* Add binder url/badge to project template
+* Fix bug with enabling logging with multiple loggers
+
 ## 0.7.1 (2020-07-20)
 
 * Add client for easy interactive usage (`ballet.b`)
