@@ -9,14 +9,14 @@ from ballet.validation.feature_api.checks import FeatureApiCheck
 
 def validate_feature_api(
     feature: Feature,
-    X: pd.DataFrame,
+    X_df: pd.DataFrame,
     y: pd.DataFrame,
-    subsample: bool = False
+    subsample: bool,
 ) -> bool:
     logger.debug('Validating feature {feature!r}'.format(feature=feature))
     if subsample:
-        X, y = subsample_data_for_validation(X, y)
-    valid, failures = check_from_class(FeatureApiCheck, feature, X, y)
+        X_df, y = subsample_data_for_validation(X_df, y)
+    valid, failures = check_from_class(FeatureApiCheck, feature, X_df, y)
     if valid:
         logger.info('Feature is valid')
     else:

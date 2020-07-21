@@ -105,8 +105,8 @@ def test_validation_end_to_end(quickstart):
                 repo.commit('pull/{pr}'.format(pr=pr)).hexsha)
 
         with patch.dict(os.environ, envvars):
-            cmd = shlex.split('ballet validate -A')
-            check_call(cmd, cwd=base, env=os.environ)
+            check_call(
+                shlex.split('ballet validate -A'), cwd=base, env=os.environ)
 
     call_validate_all()
 

@@ -1,4 +1,5 @@
 from ballet.contrib import _collect_contrib_features
+from ballet.project import Project
 from ballet.util.log import logger
 from ballet.validation.base import BaseValidator
 from ballet.validation.common import (
@@ -8,11 +9,13 @@ from ballet.validation.feature_api import validate_feature_api
 
 class FeatureApiValidator(BaseValidator):
 
-    def __init__(self, project):
+    def __init__(self, project: Project):
         self.change_collector = ChangeCollector(project)
 
-        X, y = project.api.load_data()
-        self.X, self.y = subsample_data_for_validation(X, y)
+        X_df, y_df = project.api.load_data()
+        encoder = project.api.encoder
+        y = encoder.fit_transform(y_df)
+        self.X_df, self.y = subsample_data_for_validation(X_df, y)
 
     def validate(self):
         """Collect and validate all new features"""
@@ -41,6 +44,6 @@ class FeatureApiValidator(BaseValidator):
             return False
 
         return all(
-            validate_feature_api(feature, self.X, self.y, subsample=False)
+            validate_feature_api(feature, self.X_df, self.y, False)
             for feature in features
         )

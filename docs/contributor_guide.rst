@@ -154,25 +154,24 @@ Develop a new feature
    them: whether the feature you have written satisfies the "feature API", and whether the
    feature contributes positively to the ML performance of the feature engineering pipeline.
 
-   First, the function ``validate_feature_api`` takes as input the feature object and some training
-   data and runs a series of tests to make sure that the feature works correctly.
+   To validate your feature, Ballet provides a client ``b`` for easy access to validation methods. It takes as input the feature and runs a series of tests to make sure that the feature works correctly. You can optionally pass specific entities and labels to use as well.
 
    .. code-block:: python
 
-      from ballet.validation.feature_api import validate_feature_api
-      validate_feature_api(feature, X_df, y_df)
+      from ballet import b
+      b.validate_feature_api(feature)
       # True
 
 
-   Second, the function ``validate_feature_acceptance`` takes as input the feature object and
-   some training data, and runs an algorithm to determine whether the existing feature
-   engineering pipeline for the Ballet project that you are working on performs better with or
-   without your feature.
+   Second, the function ``validate_feature_acceptance`` takes as input the
+   feature object and runs an algorithm to determine whether the existing
+   feature engineering pipeline for the Ballet project that you are working
+   on performs better with or without your feature.
 
    .. code-block:: python
 
-      from ballet.validation.feature_acceptance import validate_feature_acceptance
-      validate_feature_acceptance(feature, X_df, y_df)
+      from ballet import b
+      b.validate_feature_acceptance(feature)
       # True
 
    Under the hood, it tries to automatically detect the Ballet project that you are working

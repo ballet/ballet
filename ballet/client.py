@@ -8,6 +8,7 @@ from funcy import cached_property
 from ballet.feature import Feature
 from ballet.project import FeatureEngineeringProject, Project
 from ballet.validation.common import subsample_data_for_validation
+from ballet.validation.feature_acceptance import validate_feature_acceptance
 from ballet.validation.feature_api import validate_feature_api
 from ballet.validation.main import _load_class
 
@@ -50,6 +51,22 @@ class Client:
         """Access feature engineering API of this project"""
         return self.project.api
 
+    def _load_validation_data(
+        self,
+        X_df: pd.DataFrame,
+        y_df: pd.DataFrame,
+        subsample: bool
+    ):
+        if X_df is None or y_df is None:
+            _X_df, _y_df = self.api.load_data()
+        if X_df is None:
+            X_df = _X_df
+        if y_df is None:
+            y_df = _y_df
+        if subsample:
+            X_df, y_df = subsample_data_for_validation(X_df, y_df)
+        return X_df, y_df
+
     def validate_feature_api(
         self,
         feature: Feature,
@@ -58,13 +75,9 @@ class Client:
         subsample: bool = False,
     ) -> bool:
         """Check that this feature satisfies the expected feature API"""
-        if X_df is None or y_df is None:
-            _X_df, _y_df = self.api.load_data()
-        if X_df is None:
-            X_df = _X_df
-        if y_df is None:
-            y_df = _y_df
-        return validate_feature_api(feature, X_df, y_df, subsample)
+        X_df, y_df = self._load_validation_data(X_df, y_df, subsample)
+        result = self.api.engineer_features(X_df, y_df)
+        return validate_feature_api(feature, result.X_df, result.y, False)
 
     def validate_feature_acceptance(
         self,
@@ -74,15 +87,13 @@ class Client:
         subsample: bool = False
     ) -> bool:
         """Evaluate the performance of this feature"""
-        if subsample:
-            X_df, y_df = subsample_data_for_validation(X_df, y_df)
-
+        X_df, y_df = self._load_validation_data(X_df, y_df, subsample)
         result = self.api.engineer_features(X_df, y_df)
-
-        # load accepter for this project
-        Accepter = _load_class(self.project, 'validation.feature_accepter')
-        accepter = Accepter(result.X_df, result.y, result.features, feature)
-        return accepter.judge()
+        accepter_class = _load_class(
+            self.project, 'validation.feature_accepter')
+        return validate_feature_acceptance(
+            accepter_class, feature, result.features, result.X_df, result.y,
+            False)
 
 
 b = Client()
