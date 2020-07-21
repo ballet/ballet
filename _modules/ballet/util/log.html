@@ -321,7 +321,8 @@
         <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span>
         <span class="n">_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
 
-    <span class="n">levelName</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+    <span class="n">levelInt</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">_checkLevel</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+    <span class="n">levelName</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">levelInt</span><span class="p">)</span>
 
     <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">levelName</span><span class="p">)</span>
     <span class="n">_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">levelName</span><span class="p">)</span>
@@ -331,7 +332,7 @@
 
     <span class="k">if</span> <span class="n">echo</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
-            <span class="n">levelName</span><span class="p">,</span> <span class="s1">&#39;Logging enabled at level </span><span class="si">{name}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">levelInt</span><span class="p">,</span> <span class="s1">&#39;Logging enabled at level </span><span class="si">{name}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">name</span><span class="o">=</span><span class="n">levelName</span><span class="p">))</span></div>
 
 
