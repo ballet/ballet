@@ -59,7 +59,7 @@ def has_nans(obj) -> bool:
     """Check if obj has any NaNs
 
     Compatible with different behavior of np.isnan, which sometimes applies
-    over all axes (py35, py35) and sometimes does not (py34).
+    over all axes (py35+) and sometimes does not (py34).
     """
     nans = np.isnan(obj)
     while np.ndim(nans):
