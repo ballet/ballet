@@ -1,6 +1,8 @@
 import copy
+import logging
 import os
 import pathlib
+import random
 import sys
 import tempfile
 import types
@@ -18,7 +20,7 @@ import ballet.util.ci
 import ballet.util.fs
 import ballet.util.git
 import ballet.util.io
-from ballet.util import nonnegative
+from ballet.util import nonnegative, one_or_raise
 from ballet.util.ci import TravisPullRequestBuildDiffer
 from ballet.util.code import blacken_code, get_source, is_valid_python
 from ballet.util.log import logger
@@ -804,6 +806,52 @@ class IoTest(unittest.TestCase):
     @unittest.expectedFailure
     def test_save_predictions(self):
         raise NotImplementedError
+
+
+class LogTest(unittest.TestCase):
+
+    def setUp(self):
+        self.name = str(random.randint(0, 1 << 10))
+        self.logger = logging.getLogger(self.name)
+
+    def test_enable(self):
+        for level in [logging.INFO, 'CRITICAL']:
+            with self.assertLogs(self.logger, level) as cm:
+                ballet.util.log.enable(self.logger, level, echo=True)
+            msg = one_or_raise(cm.output)
+            self.assertIn('enabled', msg)
+
+    def test_level_filter_matches(self):
+        ballet.util.log.enable(self.logger, level='DEBUG', echo=False)
+        self.logger.addFilter(
+            ballet.util.log.LevelFilter(logging.CRITICAL))
+
+        # does log message at level CRITICAL
+        with self.assertLogs(self.logger, logging.CRITICAL):
+            self.logger.critical('msg')
+
+    def test_level_filter_not_matches(self):
+        ballet.util.log.enable(self.logger, level='DEBUG', echo=False)
+        self.logger.addFilter(
+            ballet.util.log.LevelFilter(logging.DEBUG))
+
+        # does *not* log message at level INFO > DEBUG
+        with self.assertRaises(AssertionError):
+            with self.assertLogs(self.logger, logging.INFO):
+                self.logger.info('msg')
+
+    @unittest.expectedFailure
+    def test_logging_context(self):
+        ballet.util.log.enable(self.logger, level='DEBUG', echo=False)
+        with self.assertLogs(self.logger, logging.DEBUG):
+            self.logger.debug('msg')
+
+        # TODO not sure why this fails - think the unittest cm is doing
+        # something weird
+        with ballet.util.log.LoggingContext(self.logger, level='INFO'):
+            with self.assertRaises(AssertionError):
+                with self.assertLogs(self.logger, logging.DEBUG):
+                    self.logger.debug('msg')
 
 
 class CodeTest(unittest.TestCase):

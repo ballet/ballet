@@ -1,5 +1,5 @@
 import logging
-from typing import Union
+from typing import Optional, Union
 
 import ballet
 
@@ -34,7 +34,7 @@ def enable(logger: logging.Logger = logger,
     levelName: str = logging.getLevelName(levelInt)
 
     logger.setLevel(levelName)
-    _handler.setLevel(levelName)
+    # _handler.setLevel(levelName)  # might defeat the point
 
     if _handler not in logger.handlers:
         logger.addHandler(_handler)
@@ -48,6 +48,9 @@ def enable(logger: logging.Logger = logger,
 class LevelFilter:
     """Logging filter for log records at an exact level
 
+    Emits only log records that have the exact level that is given to the
+    filter.
+
     Args:
         level: numeric logging level to filter
 
@@ -60,8 +63,10 @@ class LevelFilter:
     def __init__(self, level: int):
         self.__level = level
 
-    def filter(self, logRecord: logging.LogRecord) -> bool:
-        return logRecord.levelno == self.__level
+    def filter(self, logRecord: logging.LogRecord) -> int:
+        # Is the specified record to be logged? Returns zero for no, nonzero
+        # for yes.
+        return 1 if logRecord.levelno == self.__level else 0
 
 
 class LoggingContext:
@@ -72,6 +77,10 @@ class LoggingContext:
     temporarily set a lower (or higher log level) or to temporarily add a
     local handler. After the context exits, the original state of the logger
     will be restored.
+
+    If a handler is not provided, messages will continue to be logged to the
+    existing handlers attached to the logger. If the logger's level is
+    lowered, the handlers may
 
     Args:
         logger: logger
@@ -90,8 +99,8 @@ class LoggingContext:
 
     def __init__(self,
                  logger: logging.Logger,
-                 level: Union[str, int] = None,
-                 handler: logging.Handler = None,
+                 level: Union[str, int, None] = None,
+                 handler: Optional[logging.Handler] = None,
                  close: bool = True):
         self.logger = logger
         self.level = level
