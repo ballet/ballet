@@ -198,11 +198,11 @@ Installing bots
 
 Many Ballet project use bots to assist maintainers.
 
-1. Ballet bot. Install it `here <https://github.com/apps/ballet-bot>`_. Ballet bot will
+1. Ballet bot. Install it `here <https://github.com/apps/ballet-bot>`__. Ballet bot will
 automatically merge or close PRs based on the CI test result and the project settings configured
 in the ``ballet.yml`` file.
 
-2. Repolockr. Install it `here <https://github.com/apps/repolockr>`_. Repolockr checks every PR
+2. Repolockr. Install it `here <https://github.com/apps/repolockr>`__. Repolockr checks every PR
 to ensure that "protected" files have not been changed. These are files listed in the Repolockr
 config file on the master branch. A contributor might accidentally modify a protected file like
 ``ballet.yml`` which could break the project or the CI pipeline; Repolockr will detect this and
@@ -300,10 +300,9 @@ This command will re-render the project template using the saved inputs you have
 past and then safely merge it first to your ``project-template`` branch and then to your
 ``master`` branch. Finally, given the ``--push`` flag it will push updates to
 ``origin/master`` and ``origin/project-template``. The usage of this command is described in more
-detail `here <cli_reference .html#ballet-update-project-template>`_.
+detail `here <cli_reference.html#ballet-update-project-template>`__.
 
 
 .. _cookiecutter: https://cookiecutter.readthedocs.io/en/latest
 .. _`Travis CI`: https://travis-ci.com
-.. _`pull request`: https://help.github.com/articles/about-pull-requests/
 .. _`Contributor Guide`: contributor_guide.html

@@ -10,15 +10,21 @@ script: tox
 after_success: codecov
 
 stages:
-  - lint
   - test
   - deploy
 
 jobs:
-  include:
-    - stage: lint
+  allow_failures:
+    - stage: test
       python: 3.8
+      script: tox -e check-docs
+      name: "Check docs"
+
+  include:
+    - stage: test
+      python: 3.6
       script: tox -e lint
+      name: "Lint"
 
     - stage: deploy
       python: 3.8

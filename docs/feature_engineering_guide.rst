@@ -236,8 +236,8 @@ demonstrates the steps required to roll your own transformer.
        def transform(self, X):
            return X.str.len() >= self.longest_string_length_
 
-    transformer = LongestStringValue()
-    feature = Feature(input=input, transformer=transformer)
+   transformer = LongestStringValue()
+   feature = Feature(input=input, transformer=transformer)
 
 Okay, let's unpack what happened here. First, we declared the input to this feature, ``'Exterior
 1st'``, a scalar key, so the feature will receive a pandas ``Series`` as the input ``X``. Next we
