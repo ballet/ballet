@@ -10,7 +10,7 @@ logger = logging.getLogger(ballet.__name__)
 _handler = None
 
 
-def enable(logger: logging.Logger = logger,
+def enable(logger: Union[str, logging.Logger] = logger,
            level: Union[str, int] = logging.INFO,
            format: str = DETAIL_LOG_FORMAT,
            echo: bool = True):
@@ -24,11 +24,13 @@ def enable(logger: logging.Logger = logger,
         echo: Whether to log a message at the configured log level to
             confirm that logging is enable. Defaults to True.
     """
+    if isinstance(logger, str):
+        logger = logging.getLogger(logger)
+
     global _handler
     if _handler is None:
         _handler = logging.StreamHandler()
-        formatter = logging.Formatter(format)
-        _handler.setFormatter(formatter)
+        _handler.setFormatter(logging.Formatter(format))
 
     levelInt: int = logging._checkLevel(level)  # type: ignore
     levelName: str = logging.getLevelName(levelInt)
