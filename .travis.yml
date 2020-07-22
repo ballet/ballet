@@ -7,17 +7,17 @@ stages:
   - deploy
 
 jobs:
-  allow_failures:
-    - stage: test
-      python: 3.8
-      script: tox -e check-docs
-      name: "Check docs"
 
   include:
     - stage: test
       python: 3.6
       script: tox -e lint
       name: "Lint"
+
+    - stage: test
+      python: 3.8
+      script: tox -e check-docs
+      name: "Check docs"
 
     - stage: test
       python: 3.6
@@ -62,6 +62,9 @@ jobs:
         target_branch: gh-pages
         on:
           branch: master
+
+  allow_failures:
+    - name: "Check docs"
 
 notifications:
   email:
