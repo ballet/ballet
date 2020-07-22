@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.util.log module &mdash; ballet 0.7.1 documentation</title>
+  <title>ballet.util.log module &mdash; ballet 0.7.2 documentation</title>
   
 
   
@@ -215,14 +215,15 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../history.html">History</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../history.html#id1">0.7.1 (2020-07-20)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../history.html#id2">0.7 (2020-07-17)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../history.html#id3">0.6 (2019-11-12)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../history.html#id4">0.5 (2018-10-14)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../history.html#id5">0.4 (2018-09-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../history.html#id6">0.3 (2018-04-28)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../history.html#id7">0.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../history.html#id8">0.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id1">0.7.2 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id2">0.7.1 (2020-07-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id3">0.7 (2020-07-17)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id4">0.6 (2019-11-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id5">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id6">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id7">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id8">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id9">0.1</a></li>
 </ul>
 </li>
 </ul>
@@ -303,6 +304,8 @@
 <em class="property">class </em><code class="sig-prename descclassname">ballet.util.log.</code><code class="sig-name descname">LevelFilter</code><span class="sig-paren">(</span><em class="sig-param">level: int</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/log.html#LevelFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.log.LevelFilter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Logging filter for log records at an exact level</p>
+<p>Emits only log records that have the exact level that is given to the
+filter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>level</strong> – numeric logging level to filter</p>
@@ -315,14 +318,14 @@
 </div>
 <dl class="method">
 <dt id="ballet.util.log.LevelFilter.filter">
-<code class="sig-name descname">filter</code><span class="sig-paren">(</span><em class="sig-param">logRecord: logging.LogRecord</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/ballet/util/log.html#LevelFilter.filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.log.LevelFilter.filter" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">filter</code><span class="sig-paren">(</span><em class="sig-param">logRecord: logging.LogRecord</em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../_modules/ballet/util/log.html#LevelFilter.filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.log.LevelFilter.filter" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="ballet.util.log.LoggingContext">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.util.log.</code><code class="sig-name descname">LoggingContext</code><span class="sig-paren">(</span><em class="sig-param">logger: logging.Logger</em>, <em class="sig-param">level: Union[str</em>, <em class="sig-param">int] = None</em>, <em class="sig-param">handler: logging.Handler = None</em>, <em class="sig-param">close: bool = True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/log.html#LoggingContext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.log.LoggingContext" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.util.log.</code><code class="sig-name descname">LoggingContext</code><span class="sig-paren">(</span><em class="sig-param">logger: logging.Logger</em>, <em class="sig-param">level: Union[str</em>, <em class="sig-param">int</em>, <em class="sig-param">None] = None</em>, <em class="sig-param">handler: Optional[logging.Handler] = None</em>, <em class="sig-param">close: bool = True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/log.html#LoggingContext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.util.log.LoggingContext" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Logging context manager</p>
 <p>Configure the given logger to emit messages at and above the configured
@@ -330,6 +333,9 @@ logging level and using the configured logging handler. Useful to
 temporarily set a lower (or higher log level) or to temporarily add a
 local handler. After the context exits, the original state of the logger
 will be restored.</p>
+<p>If a handler is not provided, messages will continue to be logged to the
+existing handlers attached to the logger. If the logger’s level is
+lowered, the handlers may</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">

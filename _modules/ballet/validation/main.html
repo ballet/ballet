@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.validation.main &mdash; ballet 0.7.1 documentation</title>
+  <title>ballet.validation.main &mdash; ballet 0.7.2 documentation</title>
   
 
   
@@ -213,14 +213,15 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id1">0.7.1 (2020-07-20)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id2">0.7 (2020-07-17)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id3">0.6 (2019-11-12)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id4">0.5 (2018-10-14)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id5">0.4 (2018-09-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id6">0.3 (2018-04-28)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id7">0.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id8">0.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id1">0.7.2 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id2">0.7.1 (2020-07-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id3">0.7 (2020-07-17)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id4">0.6 (2019-11-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id5">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id6">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id7">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id8">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id9">0.1</a></li>
 </ul>
 </li>
 </ul>
@@ -287,9 +288,10 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ballet.validation.main</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
 <span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">decorator</span><span class="p">,</span> <span class="n">ignore</span>
+<span class="kn">from</span> <span class="nn">funcy.decorators</span> <span class="kn">import</span> <span class="n">Call</span>
 <span class="kn">from</span> <span class="nn">stacklog</span> <span class="kn">import</span> <span class="n">stacklog</span>
 
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="kn">import</span> <span class="p">(</span>
@@ -297,8 +299,8 @@
     <span class="n">NoFeaturesCollectedError</span><span class="p">,</span> <span class="n">SkippedValidationTest</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ballet.feature</span> <span class="kn">import</span> <span class="n">Feature</span>
 <span class="kn">from</span> <span class="nn">ballet.project</span> <span class="kn">import</span> <span class="n">Project</span>
-<span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">ballet.util.mod</span> <span class="kn">import</span> <span class="n">import_module_from_modname</span>
+<span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.common</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">get_accepted_features</span><span class="p">,</span> <span class="n">get_proposed_feature</span><span class="p">)</span>
 
@@ -307,7 +309,7 @@
 
 
 <div class="viewcode-block" id="validation_stage"><a class="viewcode-back" href="../../../api/ballet.validation.main.html#ballet.validation.main.validation_stage">[docs]</a><span class="nd">@decorator</span>
-<span class="k">def</span> <span class="nf">validation_stage</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">validation_stage</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">Call</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="n">call</span> <span class="o">=</span> <span class="n">stacklog</span><span class="p">(</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">,</span>
                     <span class="s1">&#39;Ballet Validation: </span><span class="si">{message}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">),</span>
                     <span class="n">conditions</span><span class="o">=</span><span class="p">[(</span><span class="n">SkippedValidationTest</span><span class="p">,</span> <span class="s1">&#39;SKIPPED&#39;</span><span class="p">)])(</span><span class="n">call</span><span class="p">)</span>
@@ -320,11 +322,9 @@
     <span class="n">modname</span><span class="p">,</span> <span class="n">clsname</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">mod</span> <span class="o">=</span> <span class="n">import_module_from_modname</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span>
     <span class="bp">cls</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">clsname</span><span class="p">)</span>
-
     <span class="n">clsname</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;unknown&gt;&#39;</span><span class="p">)</span>
     <span class="n">modfile</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="s1">&#39;__file__&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;unknown&gt;&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Loaded class </span><span class="si">{}</span><span class="s1"> from </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">clsname</span><span class="p">,</span> <span class="n">modfile</span><span class="p">))</span>
-
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Loaded class </span><span class="si">{}</span><span class="s1"> from module at </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">clsname</span><span class="p">,</span> <span class="n">modfile</span><span class="p">))</span>
     <span class="k">return</span> <span class="bp">cls</span>
 
 
@@ -333,8 +333,9 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_pr</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on PR&#39;</span><span class="p">)</span>
 
-    <span class="n">Validator</span> <span class="o">=</span> <span class="n">_load_class</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.project_structure_validator&#39;</span><span class="p">)</span>
-    <span class="n">validator</span> <span class="o">=</span> <span class="n">Validator</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
+    <span class="n">validator_class</span> <span class="o">=</span> <span class="n">_load_class</span><span class="p">(</span>
+        <span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.project_structure_validator&#39;</span><span class="p">)</span>
+    <span class="n">validator</span> <span class="o">=</span> <span class="n">validator_class</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">validator</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">InvalidProjectStructure</span>
@@ -346,8 +347,8 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_pr</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on PR&#39;</span><span class="p">)</span>
 
-    <span class="n">Validator</span> <span class="o">=</span> <span class="n">_load_class</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.feature_api_validator&#39;</span><span class="p">)</span>
-    <span class="n">validator</span> <span class="o">=</span> <span class="n">Validator</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
+    <span class="n">validator_class</span> <span class="o">=</span> <span class="n">_load_class</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.feature_api_validator&#39;</span><span class="p">)</span>
+    <span class="n">validator</span> <span class="o">=</span> <span class="n">validator_class</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">validator</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">InvalidFeatureApi</span>
@@ -365,8 +366,8 @@
     <span class="n">proposed_feature</span> <span class="o">=</span> <span class="n">get_proposed_feature</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
     <span class="n">accepted_features</span> <span class="o">=</span> <span class="n">get_accepted_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">proposed_feature</span><span class="p">)</span>
 
-    <span class="n">Accepter</span> <span class="o">=</span> <span class="n">_load_class</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.feature_accepter&#39;</span><span class="p">)</span>
-    <span class="n">accepter</span> <span class="o">=</span> <span class="n">Accepter</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">accepted_features</span><span class="p">,</span> <span class="n">proposed_feature</span><span class="p">)</span>
+    <span class="n">accepter_class</span> <span class="o">=</span> <span class="n">_load_class</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.feature_accepter&#39;</span><span class="p">)</span>
+    <span class="n">accepter</span> <span class="o">=</span> <span class="n">accepter_class</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">accepted_features</span><span class="p">,</span> <span class="n">proposed_feature</span><span class="p">)</span>
     <span class="n">accepted</span> <span class="o">=</span> <span class="n">accepter</span><span class="o">.</span><span class="n">judge</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">accepted</span><span class="p">:</span>
@@ -390,8 +391,8 @@
     <span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">features</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">features</span>
     <span class="n">accepted_features</span> <span class="o">=</span> <span class="n">get_accepted_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">proposed_feature</span><span class="p">)</span>
 
-    <span class="n">Pruner</span> <span class="o">=</span> <span class="n">_load_class</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.feature_pruner&#39;</span><span class="p">)</span>
-    <span class="n">pruner</span> <span class="o">=</span> <span class="n">Pruner</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">accepted_features</span><span class="p">,</span> <span class="n">proposed_feature</span><span class="p">)</span>
+    <span class="n">pruner_class</span> <span class="o">=</span> <span class="n">_load_class</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.feature_pruner&#39;</span><span class="p">)</span>
+    <span class="n">pruner</span> <span class="o">=</span> <span class="n">pruner_class</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">accepted_features</span><span class="p">,</span> <span class="n">proposed_feature</span><span class="p">)</span>
     <span class="n">redundant_features</span> <span class="o">=</span> <span class="n">pruner</span><span class="o">.</span><span class="n">prune</span><span class="p">()</span>
 
     <span class="c1"># &quot;propose removal&quot;</span>

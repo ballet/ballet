@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.project &mdash; ballet 0.7.1 documentation</title>
+  <title>ballet.project &mdash; ballet 0.7.2 documentation</title>
   
 
   
@@ -213,14 +213,15 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../history.html#id1">0.7.1 (2020-07-20)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../history.html#id2">0.7 (2020-07-17)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../history.html#id3">0.6 (2019-11-12)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../history.html#id4">0.5 (2018-10-14)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../history.html#id5">0.4 (2018-09-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../history.html#id6">0.3 (2018-04-28)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../history.html#id7">0.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../history.html#id8">0.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id1">0.7.2 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id2">0.7.1 (2020-07-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id3">0.7 (2020-07-17)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id4">0.6 (2019-11-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id5">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id6">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id7">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id8">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id9">0.1</a></li>
 </ul>
 </li>
 </ul>
@@ -296,7 +297,7 @@
 
 <span class="kn">import</span> <span class="nn">git</span>
 <span class="kn">from</span> <span class="nn">dynaconf</span> <span class="kn">import</span> <span class="n">LazySettings</span>
-<span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">cached_property</span><span class="p">,</span> <span class="n">fallback</span><span class="p">,</span> <span class="n">re_find</span>
+<span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">cache</span><span class="p">,</span> <span class="n">cached_property</span><span class="p">,</span> <span class="n">fallback</span><span class="p">,</span> <span class="n">re_find</span>
 <span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span>
 
 <span class="kn">import</span> <span class="nn">ballet.contrib</span>
@@ -564,6 +565,8 @@
 
 <div class="viewcode-block" id="FeatureEngineeringProject"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.FeatureEngineeringProject">[docs]</a><span class="k">class</span> <span class="nc">FeatureEngineeringProject</span><span class="p">:</span>
 
+    <span class="n">CACHE_TIMEOUT</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="mi">60</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -575,7 +578,7 @@
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_package</span> <span class="o">=</span> <span class="n">package</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">encoder</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">load_data</span> <span class="o">=</span> <span class="n">load_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_data</span> <span class="o">=</span> <span class="n">cache</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CACHE_TIMEOUT</span><span class="p">)(</span><span class="n">load_data</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_extra_features</span> <span class="o">=</span> <span class="n">extra_features</span> <span class="ow">or</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_engineer_features</span> <span class="o">=</span> <span class="n">engineer_features</span>
 
@@ -585,15 +588,33 @@
 
     <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">project</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Project</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the Project object representing this project.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Project</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_package</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">features</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get all features from the project</span>
+
+<span class="sd">        Both collects all contrib features from the project and allows extra</span>
+<span class="sd">        features to be provided by the API author.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extra_features</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">pipeline</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FeatureEngineeringPipeline</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the feature engineering pipeline from the existing features&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">FeatureEngineeringPipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FeatureEngineeringProject.load_data"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.FeatureEngineeringProject.load_data">[docs]</a>    <span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Call the project&#39;s load_data function, caching dataset</span>
+
+<span class="sd">        Dataset is cached for `FeatureEngineeringProject.CACHE_TIMEOUT`</span>
+<span class="sd">        seconds. To invalidate cache and cause data to be re-loaded from</span>
+<span class="sd">        wherever it comes from, pass `cache=False`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cache</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_load_data</span><span class="o">.</span><span class="n">invalidate_all</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_data</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="FeatureEngineeringProject.engineer_features"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.FeatureEngineeringProject.engineer_features">[docs]</a>    <span class="k">def</span> <span class="nf">engineer_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EngineerFeaturesResult</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Engineer features&quot;&quot;&quot;</span>

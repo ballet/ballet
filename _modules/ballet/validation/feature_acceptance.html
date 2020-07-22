@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.validation.feature_acceptance &mdash; ballet 0.7.1 documentation</title>
+  <title>ballet.validation.feature_acceptance &mdash; ballet 0.7.2 documentation</title>
   
 
   
@@ -213,14 +213,15 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id1">0.7.1 (2020-07-20)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id2">0.7 (2020-07-17)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id3">0.6 (2019-11-12)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id4">0.5 (2018-10-14)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id5">0.4 (2018-09-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id6">0.3 (2018-04-28)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id7">0.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id8">0.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id1">0.7.2 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id2">0.7.1 (2020-07-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id3">0.7 (2020-07-17)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id4">0.6 (2019-11-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id5">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id6">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id7">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id8">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id9">0.1</a></li>
 </ul>
 </li>
 </ul>
@@ -287,42 +288,14 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ballet.validation.feature_acceptance</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">ModuleType</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
-
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-
-<span class="kn">from</span> <span class="nn">ballet.feature</span> <span class="kn">import</span> <span class="n">Feature</span>
-<span class="kn">from</span> <span class="nn">ballet.project</span> <span class="kn">import</span> <span class="n">Project</span>
-<span class="kn">from</span> <span class="nn">ballet.util.typing</span> <span class="kn">import</span> <span class="n">Pathy</span>
-<span class="kn">from</span> <span class="nn">ballet.validation.common</span> <span class="kn">import</span> <span class="n">subsample_data_for_validation</span>
-<span class="kn">from</span> <span class="nn">ballet.validation.main</span> <span class="kn">import</span> <span class="n">_load_class</span>
+<span></span><span class="kn">from</span> <span class="nn">ballet.validation.common</span> <span class="kn">import</span> <span class="n">subsample_data_for_validation</span>
 
 
-<div class="viewcode-block" id="validate_feature_acceptance"><a class="viewcode-back" href="../../../api/ballet.validation.feature_acceptance.html#ballet.validation.feature_acceptance.validate_feature_acceptance">[docs]</a><span class="k">def</span> <span class="nf">validate_feature_acceptance</span><span class="p">(</span>
-    <span class="n">feature</span><span class="p">:</span> <span class="n">Feature</span><span class="p">,</span>
-    <span class="n">X</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
-    <span class="n">y</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
-    <span class="n">subsample</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Pathy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">package</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ModuleType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">):</span>
-    <span class="k">if</span> <span class="n">package</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">project</span> <span class="o">=</span> <span class="n">Project</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">project</span> <span class="o">=</span> <span class="n">Project</span><span class="o">.</span><span class="n">from_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">project</span> <span class="o">=</span> <span class="n">Project</span><span class="o">.</span><span class="n">from_cwd</span><span class="p">()</span>
-
+<div class="viewcode-block" id="validate_feature_acceptance"><a class="viewcode-back" href="../../../api/ballet.validation.feature_acceptance.html#ballet.validation.feature_acceptance.validate_feature_acceptance">[docs]</a><span class="k">def</span> <span class="nf">validate_feature_acceptance</span><span class="p">(</span><span class="n">accepter_class</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
+                                <span class="n">subsample</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">subsample</span><span class="p">:</span>
-        <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">subsample_data_for_validation</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-
-    <span class="c1"># build project</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">engineer_features</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-
-    <span class="c1"># load accepter for this project</span>
-    <span class="n">Accepter</span> <span class="o">=</span> <span class="n">_load_class</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.feature_accepter&#39;</span><span class="p">)</span>
-    <span class="n">accepter</span> <span class="o">=</span> <span class="n">Accepter</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">features</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
+        <span class="n">X_df</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">subsample_data_for_validation</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">accepter</span> <span class="o">=</span> <span class="n">accepter_class</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">accepter</span><span class="o">.</span><span class="n">judge</span><span class="p">()</span></div>
 </pre></div>
 

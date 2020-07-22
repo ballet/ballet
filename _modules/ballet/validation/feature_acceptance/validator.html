@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.validation.feature_acceptance.validator &mdash; ballet 0.7.1 documentation</title>
+  <title>ballet.validation.feature_acceptance.validator &mdash; ballet 0.7.2 documentation</title>
   
 
   
@@ -213,14 +213,15 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../history.html">History</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id1">0.7.1 (2020-07-20)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id2">0.7 (2020-07-17)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id3">0.6 (2019-11-12)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id4">0.5 (2018-10-14)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id5">0.4 (2018-09-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id6">0.3 (2018-04-28)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id7">0.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id8">0.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id1">0.7.2 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id2">0.7.1 (2020-07-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id3">0.7 (2020-07-17)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id4">0.6 (2019-11-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id5">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id6">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id7">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id8">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id9">0.1</a></li>
 </ul>
 </li>
 </ul>
@@ -361,23 +362,32 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">lmbda_2</span> <span class="o">=</span> <span class="n">lmbda_2</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{str}</span><span class="s1">: lmbda_1=</span><span class="si">{lmbda_1}</span><span class="s1">, lmbda_2=</span><span class="si">{lmbda_2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{str}</span><span class="s1">: lmbda_1=</span><span class="si">{lmbda_1:0.5f}</span><span class="s1">, lmbda_2=</span><span class="si">{lmbda_2:0.5f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="nb">str</span><span class="o">=</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__str__</span><span class="p">(),</span>
             <span class="n">lmbda_1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lmbda_1</span><span class="p">,</span>
             <span class="n">lmbda_2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lmbda_2</span><span class="p">)</span>
 
 <div class="viewcode-block" id="GFSSFAccepter.judge"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.GFSSFAccepter.judge">[docs]</a>    <span class="k">def</span> <span class="nf">judge</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Judging Feature using </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
-        <span class="n">feature_dfs_by_src</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">candidate_feature</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
-            <span class="n">feature_df</span> <span class="o">=</span> <span class="p">(</span><span class="n">feature</span>
-                          <span class="o">.</span><span class="n">as_feature_engineering_pipeline</span><span class="p">()</span>
-                          <span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
-            <span class="n">feature_dfs_by_src</span><span class="p">[</span><span class="n">feature</span><span class="o">.</span><span class="n">source</span><span class="p">]</span> <span class="o">=</span> <span class="n">feature_df</span>
+
+        <span class="n">all_features</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
+        <span class="n">all_features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">candidate_feature</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">as_features</span><span class="p">(</span><span class="n">feature</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="n">feature</span>
+                <span class="o">.</span><span class="n">as_feature_engineering_pipeline</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
+
+        <span class="c1"># map logical feature -&gt; feature values</span>
+        <span class="n">feature_dfs_by_src</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">feature</span><span class="o">.</span><span class="n">source</span><span class="p">:</span> <span class="n">as_features</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">all_features</span>
+        <span class="p">}</span>
 
         <span class="n">candidate_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">candidate_feature</span><span class="o">.</span><span class="n">source</span>
         <span class="n">candidate_df</span> <span class="o">=</span> <span class="n">feature_dfs_by_src</span><span class="p">[</span><span class="n">candidate_source</span><span class="p">]</span>
-        <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_candidate_cols</span> <span class="o">=</span> <span class="n">feature_df</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_candidate_cols</span> <span class="o">=</span> <span class="n">candidate_df</span><span class="o">.</span><span class="n">shape</span>
 
         <span class="n">lmbda_1</span><span class="p">,</span> <span class="n">lmbda_2</span> <span class="o">=</span> <span class="n">_compute_lmbdas</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">lmbda_1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lmbda_2</span><span class="p">,</span> <span class="n">feature_dfs_by_src</span><span class="p">)</span>
@@ -402,7 +412,7 @@
                 <span class="n">omit_df</span> <span class="o">=</span> <span class="n">feature_dfs_by_src</span><span class="p">[</span><span class="n">omit</span><span class="p">]</span>
                 <span class="n">_</span><span class="p">,</span> <span class="n">n_omit_cols</span> <span class="o">=</span> <span class="n">omit_df</span><span class="o">.</span><span class="n">shape</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                    <span class="s1">&#39;Calculating CMI of ommitted feature:&#39;</span>
+                    <span class="s1">&#39;Calculating CMI of omitted feature:&#39;</span>
                 <span class="p">)</span>
                 <span class="n">cmi_omit</span> <span class="o">=</span> <span class="n">estimate_conditional_information</span><span class="p">(</span>
                     <span class="n">omit_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>

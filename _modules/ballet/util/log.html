@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.util.log &mdash; ballet 0.7.1 documentation</title>
+  <title>ballet.util.log &mdash; ballet 0.7.2 documentation</title>
   
 
   
@@ -213,14 +213,15 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id1">0.7.1 (2020-07-20)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id2">0.7 (2020-07-17)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id3">0.6 (2019-11-12)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id4">0.5 (2018-10-14)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id5">0.4 (2018-09-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id6">0.3 (2018-04-28)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id7">0.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id8">0.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id1">0.7.2 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id2">0.7.1 (2020-07-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id3">0.7 (2020-07-17)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id4">0.6 (2019-11-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id5">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id6">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id7">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id8">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id9">0.1</a></li>
 </ul>
 </li>
 </ul>
@@ -290,7 +291,7 @@
             
   <h1>Source code for ballet.util.log</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">ballet</span>
 
@@ -325,7 +326,7 @@
     <span class="n">levelName</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">levelInt</span><span class="p">)</span>
 
     <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">levelName</span><span class="p">)</span>
-    <span class="n">_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">levelName</span><span class="p">)</span>
+    <span class="c1"># _handler.setLevel(levelName)  # might defeat the point</span>
 
     <span class="k">if</span> <span class="n">_handler</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">_handler</span><span class="p">)</span>
@@ -339,6 +340,9 @@
 <div class="viewcode-block" id="LevelFilter"><a class="viewcode-back" href="../../../api/ballet.util.log.html#ballet.util.log.LevelFilter">[docs]</a><span class="k">class</span> <span class="nc">LevelFilter</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Logging filter for log records at an exact level</span>
 
+<span class="sd">    Emits only log records that have the exact level that is given to the</span>
+<span class="sd">    filter.</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        level: numeric logging level to filter</span>
 
@@ -351,8 +355,10 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__level</span> <span class="o">=</span> <span class="n">level</span>
 
-<div class="viewcode-block" id="LevelFilter.filter"><a class="viewcode-back" href="../../../api/ballet.util.log.html#ballet.util.log.LevelFilter.filter">[docs]</a>    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logRecord</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">LogRecord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">logRecord</span><span class="o">.</span><span class="n">levelno</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">__level</span></div></div>
+<div class="viewcode-block" id="LevelFilter.filter"><a class="viewcode-back" href="../../../api/ballet.util.log.html#ballet.util.log.LevelFilter.filter">[docs]</a>    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logRecord</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">LogRecord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="c1"># Is the specified record to be logged? Returns zero for no, nonzero</span>
+        <span class="c1"># for yes.</span>
+        <span class="k">return</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">logRecord</span><span class="o">.</span><span class="n">levelno</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">__level</span> <span class="k">else</span> <span class="mi">0</span></div></div>
 
 
 <div class="viewcode-block" id="LoggingContext"><a class="viewcode-back" href="../../../api/ballet.util.log.html#ballet.util.log.LoggingContext">[docs]</a><span class="k">class</span> <span class="nc">LoggingContext</span><span class="p">:</span>
@@ -363,6 +369,10 @@
 <span class="sd">    temporarily set a lower (or higher log level) or to temporarily add a</span>
 <span class="sd">    local handler. After the context exits, the original state of the logger</span>
 <span class="sd">    will be restored.</span>
+
+<span class="sd">    If a handler is not provided, messages will continue to be logged to the</span>
+<span class="sd">    existing handlers attached to the logger. If the logger&#39;s level is</span>
+<span class="sd">    lowered, the handlers may</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        logger: logger</span>
@@ -381,8 +391,8 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">,</span>
-                 <span class="n">level</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">handler</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Handler</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">level</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">handler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">logging</span><span class="o">.</span><span class="n">Handler</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">close</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="n">level</span>

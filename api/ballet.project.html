@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.project module &mdash; ballet 0.7.1 documentation</title>
+  <title>ballet.project module &mdash; ballet 0.7.2 documentation</title>
   
 
   
@@ -215,14 +215,15 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../history.html">History</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../history.html#id1">0.7.1 (2020-07-20)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../history.html#id2">0.7 (2020-07-17)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../history.html#id3">0.6 (2019-11-12)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../history.html#id4">0.5 (2018-10-14)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../history.html#id5">0.4 (2018-09-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../history.html#id6">0.3 (2018-04-28)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../history.html#id7">0.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../history.html#id8">0.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id1">0.7.2 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id2">0.7.1 (2020-07-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id3">0.7 (2020-07-17)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id4">0.6 (2019-11-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id5">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id6">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id7">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id8">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id9">0.1</a></li>
 </ul>
 </li>
 </ul>
@@ -300,6 +301,11 @@
 <dt id="ballet.project.FeatureEngineeringProject">
 <em class="property">class </em><code class="sig-prename descclassname">ballet.project.</code><code class="sig-name descname">FeatureEngineeringProject</code><span class="sig-paren">(</span><em class="sig-param">*, package: module, encoder: ballet.eng.base.BaseTransformer, load_data: Callable[[...], Tuple[pandas.core.frame.DataFrame, pandas.core.frame.DataFrame]], extra_features: List[ballet.feature.Feature] = None, engineer_features: Callable[[...], ballet.pipeline.EngineerFeaturesResult] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/project.html#FeatureEngineeringProject"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.project.FeatureEngineeringProject" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="ballet.project.FeatureEngineeringProject.CACHE_TIMEOUT">
+<code class="sig-name descname">CACHE_TIMEOUT</code><em class="property"> = 600</em><a class="headerlink" href="#ballet.project.FeatureEngineeringProject.CACHE_TIMEOUT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="ballet.project.FeatureEngineeringProject.engineer_features">
 <code class="sig-name descname">engineer_features</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span> &#x2192; ballet.pipeline.EngineerFeaturesResult<a class="reference internal" href="../_modules/ballet/project.html#FeatureEngineeringProject.engineer_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.project.FeatureEngineeringProject.engineer_features" title="Permalink to this definition">¶</a></dt>
@@ -309,17 +315,31 @@
 <dl class="method">
 <dt id="ballet.project.FeatureEngineeringProject.features">
 <em class="property">property </em><code class="sig-name descname">features</code><a class="headerlink" href="#ballet.project.FeatureEngineeringProject.features" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get all features from the project</p>
+<p>Both collects all contrib features from the project and allows extra
+features to be provided by the API author.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ballet.project.FeatureEngineeringProject.load_data">
+<code class="sig-name descname">load_data</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">cache=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/project.html#FeatureEngineeringProject.load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.project.FeatureEngineeringProject.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call the project’s load_data function, caching dataset</p>
+<p>Dataset is cached for <cite>FeatureEngineeringProject.CACHE_TIMEOUT</cite>
+seconds. To invalidate cache and cause data to be re-loaded from
+wherever it comes from, pass <cite>cache=False</cite>.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="ballet.project.FeatureEngineeringProject.pipeline">
 <em class="property">property </em><code class="sig-name descname">pipeline</code><a class="headerlink" href="#ballet.project.FeatureEngineeringProject.pipeline" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get the feature engineering pipeline from the existing features</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="ballet.project.FeatureEngineeringProject.project">
 <code class="sig-name descname">project</code><a class="headerlink" href="#ballet.project.FeatureEngineeringProject.project" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get the Project object representing this project.</p>
+</dd></dl>
 
 </dd></dl>
 
