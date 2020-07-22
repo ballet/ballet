@@ -187,7 +187,17 @@ Develop a new feature
       enable(level='INFO')   # or, level='DEBUG'
       # [2019-12-22 10:51:30,336] {ballet: log.py:34} INFO - Logging enabled at level INFO.
 
-#. Submit your feature. Commit your changes and create a pull request to the project repository.
+Submit the feature
+------------------
+
+To submit your feature, you have two options.
+
+Option 1: Git workflow
+^^^^^^^^^^^^^^^^^^^^^^
+
+In this workflow, you work with git directly to commit and push your change and open a pull request with the upstream project repo.
+
+#. Commit your changes and create a pull request to the project repository.
 
    .. code-block:: console
 
@@ -203,30 +213,39 @@ Develop a new feature
 
       (myenv) $ hub pull-request
 
-#. Observe the validation results. Ballet will now validate your feature in four steps.
 
-   1. Check feature API: does your feature behave properly on expected and unexpected inputs?
-      For example, it should not produce feature values with NaNs or throw errors on well-formed
-      data instances.
+Option 2: In-Lab Workflow
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
-   2. Check project structure: does your PR respect the project structure, that is, you have
-      created valid Python modules at the right path, etc.
+In this workflow, you use the Ballet JupyterLab extension in order to submit code directly from within your analysis notebook if you are developing in Jupyter Lab. This has the same user experience as described in the cloud feature development workflow above. Here, you should `install ballet-submit-labextension`_ following the directions in that project. Importantly, you must authorize the extension to interact with GitHub on your behalf in one of three ways: (1) use the built-in GitHub OAuth functionality to obtain a new OAuth token with one click (2) obtain a GitHub OAuth token yourself and populate the variable ``$GITHUB_TOKEN`` (3) optain a GitHub OAuth token and pass it as an option when starting JupyterLab.
 
-   3. Evaluate feature acceptance: do the feature values that your feature extracts contribute
-      to the machine learning goals? Depending on the configuration of the upstream project, the
-      project may evaluate your features in a more or less aggressive manner, ranging from
-      accepting all features to accepting only those that produce an information gain greater
-      than some threshold.
+Understanding Validation Results
+================================
 
-   4. Evaluate feature pruning: does the introduction of your feature cause other features to be
-      unnecessary? If so they may be pruned.
+Once you have developed and submitted a feature, Ballet will validate it in four steps in an isolated continuous integration environment.
 
-   Depending on the configuration of the upstream project, you will see various "bots" act on
-   these steps. If your PR passes the first three steps, the `Ballet Bot`_ may approve and merge
-   your PR automatically. If your PR is merged, the Ballet Bot may automatically prune features
-   from the master branch. If your feature is rejected, you can inspect the logs produced by the
-   Travis CI service to see what went wrong. (We are working on improving the user experience of
-   this debugging.)
+1. Check feature API: does your feature behave properly on expected and unexpected inputs?
+    For example, it should not produce feature values with NaNs or throw errors on well-formed
+    data instances.
+
+2. Check project structure: does your PR respect the project structure, that is, you have
+    created valid Python modules at the right path, etc.
+
+3. Evaluate feature acceptance: do the feature values that your feature extracts contribute
+    to the machine learning goals? Depending on the configuration of the upstream project, the
+    project may evaluate your features in a more or less aggressive manner, ranging from
+    accepting all features to accepting only those that produce an information gain greater
+    than some threshold.
+
+4. Evaluate feature pruning: does the introduction of your feature cause other features to be
+    unnecessary? If so they may be pruned.
+
+Depending on the configuration of the upstream project, you will see various "bots" act on
+these steps. If your PR passes the first three steps, the `Ballet Bot`_ may approve and merge
+your PR automatically. If your PR is merged, the Ballet Bot may automatically prune features
+from the master branch. If your feature is rejected, you can inspect the logs produced by the
+Travis CI service to see what went wrong. (We are working on improving the user experience of
+this debugging.)
 
 Conclusion
 ==========
@@ -245,3 +264,4 @@ ballet collaboration.
 .. _`conda`: https://conda.io/en/latest/
 .. _`hub`: https://hub.github.com/
 .. _`Ballet Bot`: https://github.com/apps/ballet-bot
+.. _`install ballet-submit-labextension`: https://github.com/HDI-Project/ballet-submit-labextension/blob/master/README.md#install

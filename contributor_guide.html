@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Contributor Guide &mdash; ballet 0.7.2 documentation</title>
+  <title>Contributor Guide &mdash; ballet 0.7.3 documentation</title>
   
 
   
@@ -118,8 +118,14 @@
 <li class="toctree-l2"><a class="reference internal" href="#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#setup-your-development-environment">Setup your development environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#develop-a-new-feature">Develop a new feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#submit-the-feature">Submit the feature</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#option-1-git-workflow">Option 1: Git workflow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#option-2-in-lab-workflow">Option 2: In-Lab Workflow</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#understanding-validation-results">Understanding Validation Results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#conclusion">Conclusion</a></li>
 </ul>
 </li>
@@ -215,15 +221,16 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="history.html">History</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="history.html#id1">0.7.2 (2020-07-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="history.html#id2">0.7.1 (2020-07-20)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="history.html#id3">0.7 (2020-07-17)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="history.html#id4">0.6 (2019-11-12)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="history.html#id5">0.5 (2018-10-14)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="history.html#id6">0.4 (2018-09-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="history.html#id7">0.3 (2018-04-28)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="history.html#id8">0.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="history.html#id9">0.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id1">0.7.3 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id2">0.7.2 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id3">0.7.1 (2020-07-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id4">0.7 (2020-07-17)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id5">0.6 (2019-11-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id6">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id7">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id8">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id9">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id10">0.1</a></li>
 </ul>
 </li>
 </ul>
@@ -447,7 +454,16 @@ why your feature may have failed to validate, enable ballet logging.</p>
 </pre></div>
 </div>
 </li>
-<li><p>Submit your feature. Commit your changes and create a pull request to the project repository.</p>
+</ol>
+</div>
+<div class="section" id="submit-the-feature">
+<h3>Submit the feature<a class="headerlink" href="#submit-the-feature" title="Permalink to this headline">¶</a></h3>
+<p>To submit your feature, you have two options.</p>
+<div class="section" id="option-1-git-workflow">
+<h4>Option 1: Git workflow<a class="headerlink" href="#option-1-git-workflow" title="Permalink to this headline">¶</a></h4>
+<p>In this workflow, you work with git directly to commit and push your change and open a pull request with the upstream project repo.</p>
+<ol class="arabic">
+<li><p>Commit your changes and create a pull request to the project repository.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$</span> git add .
 <span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$</span> git commit -m <span class="s2">&quot;Add my new feature&quot;</span>
 <span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$</span> git push origin develop-my-feature
@@ -460,20 +476,42 @@ use the command-line tool <a class="reference external" href="https://hub.github
 </pre></div>
 </div>
 </li>
-<li><p>Observe the validation results. Ballet will now validate your feature in four steps.</p>
+</ol>
+</div>
+<div class="section" id="option-2-in-lab-workflow">
+<h4>Option 2: In-Lab Workflow<a class="headerlink" href="#option-2-in-lab-workflow" title="Permalink to this headline">¶</a></h4>
+<p>In this workflow, you use the Ballet JupyterLab extension in order to submit code directly from within your analysis notebook if you are developing in Jupyter Lab. This has the same user experience as described in the cloud feature development workflow above. Here, you should <a class="reference external" href="https://github.com/HDI-Project/ballet-submit-labextension/blob/master/README.md#install">install ballet-submit-labextension</a> following the directions in that project. Importantly, you must authorize the extension to interact with GitHub on your behalf in one of three ways: (1) use the built-in GitHub OAuth functionality to obtain a new OAuth token with one click (2) obtain a GitHub OAuth token yourself and populate the variable <code class="docutils literal notranslate"><span class="pre">$GITHUB_TOKEN</span></code> (3) optain a GitHub OAuth token and pass it as an option when starting JupyterLab.</p>
+</div>
+</div>
+</div>
+<div class="section" id="understanding-validation-results">
+<h2>Understanding Validation Results<a class="headerlink" href="#understanding-validation-results" title="Permalink to this headline">¶</a></h2>
+<p>Once you have developed and submitted a feature, Ballet will validate it in four steps in an isolated continuous integration environment.</p>
 <ol class="arabic simple">
-<li><p>Check feature API: does your feature behave properly on expected and unexpected inputs?
-For example, it should not produce feature values with NaNs or throw errors on well-formed
-data instances.</p></li>
-<li><p>Check project structure: does your PR respect the project structure, that is, you have
-created valid Python modules at the right path, etc.</p></li>
-<li><p>Evaluate feature acceptance: do the feature values that your feature extracts contribute
-to the machine learning goals? Depending on the configuration of the upstream project, the
+<li><dl class="simple">
+<dt>Check feature API: does your feature behave properly on expected and unexpected inputs?</dt><dd><p>For example, it should not produce feature values with NaNs or throw errors on well-formed
+data instances.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Check project structure: does your PR respect the project structure, that is, you have</dt><dd><p>created valid Python modules at the right path, etc.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Evaluate feature acceptance: do the feature values that your feature extracts contribute</dt><dd><p>to the machine learning goals? Depending on the configuration of the upstream project, the
 project may evaluate your features in a more or less aggressive manner, ranging from
 accepting all features to accepting only those that produce an information gain greater
-than some threshold.</p></li>
-<li><p>Evaluate feature pruning: does the introduction of your feature cause other features to be
-unnecessary? If so they may be pruned.</p></li>
+than some threshold.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Evaluate feature pruning: does the introduction of your feature cause other features to be</dt><dd><p>unnecessary? If so they may be pruned.</p>
+</dd>
+</dl>
+</li>
 </ol>
 <p>Depending on the configuration of the upstream project, you will see various “bots” act on
 these steps. If your PR passes the first three steps, the <a class="reference external" href="https://github.com/apps/ballet-bot">Ballet Bot</a> may approve and merge
@@ -481,9 +519,6 @@ your PR automatically. If your PR is merged, the Ballet Bot may automatically pr
 from the master branch. If your feature is rejected, you can inspect the logs produced by the
 Travis CI service to see what went wrong. (We are working on improving the user experience of
 this debugging.)</p>
-</li>
-</ol>
-</div>
 </div>
 <div class="section" id="conclusion">
 <h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>
