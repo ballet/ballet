@@ -77,6 +77,8 @@ class GFSSFAccepter(FeatureAccepter):
 
     def judge(self):
         logger.info('Judging Feature using {}'.format(self))
+
+        # map logical feature -> feature values
         feature_dfs_by_src = {}
         for feature in [self.candidate_feature] + self.features:
             feature_df = (feature
@@ -86,7 +88,7 @@ class GFSSFAccepter(FeatureAccepter):
 
         candidate_source = self.candidate_feature.source
         candidate_df = feature_dfs_by_src[candidate_source]
-        n_samples, n_candidate_cols = feature_df.shape
+        n_samples, n_candidate_cols = candidate_df.shape
 
         lmbda_1, lmbda_2 = _compute_lmbdas(
             self.lmbda_1, self.lmbda_2, feature_dfs_by_src)
