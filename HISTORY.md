@@ -1,5 +1,12 @@
 # History
 
+## 0.7.3 (2020-07-21)
+
+* Add `load_data` method with built-in caching to project API
+* Fix bug in GFSSF accepter
+* Always use encoded target during validation
+* Bug fixes and performance improvements
+
 ## 0.7.2 (2020-07-21)
 
 * Add sample analysis notebook to project template
