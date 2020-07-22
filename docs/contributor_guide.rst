@@ -270,4 +270,4 @@ ballet collaboration.
 .. _`conda`: https://conda.io/en/latest/
 .. _`hub`: https://hub.github.com/
 .. _`Ballet Bot`: https://github.com/apps/ballet-bot
-.. _`install ballet-submit-labextension`: https://github.com/HDI-Project/ballet-submit-labextension/blob/master/README.md#install
+.. _`install ballet-submit-labextension`: https://github.com/HDI-Project/ballet-submit-labextension/blob/master/README.md
