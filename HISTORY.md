@@ -1,5 +1,10 @@
 # History
 
+## 0.7.4 (2020-07-22)
+
+* Accept logger names, as well as logger instances, in `ballet.util.log.enable`
+* Updated docs
+
 ## 0.7.3 (2020-07-21)
 
 * Add `load_data` method with built-in caching to project API
