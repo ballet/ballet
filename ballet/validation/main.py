@@ -9,8 +9,8 @@ from ballet.exc import (
     NoFeaturesCollectedError, SkippedValidationTest)
 from ballet.feature import Feature
 from ballet.project import Project
-from ballet.util.mod import import_module_from_modname
 from ballet.util.log import logger
+from ballet.util.mod import import_module_from_modname
 from ballet.validation.common import (
     get_accepted_features, get_proposed_feature)
 
