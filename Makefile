@@ -49,10 +49,11 @@ clean-pyc: ## remove Python file artifacts
 
 .PHONY: clean-test
 clean-test: ## remove test and coverage artifacts
-	rm -fr .tox/
+	rm -fr .tox
 	rm -f .coverage
-	rm -fr htmlcov/
+	rm -fr htmlcov
 	rm -fr .pytest_cache
+	rm -fr .mypy_cache
 
 .PHONY: lint
 lint: ## check style with flake8 and isort
