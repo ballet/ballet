@@ -52,6 +52,7 @@ development_requirements = [
     'Sphinx>=1.7.1,<3',  # todo - bug with m2r (can use m2r2); not supported by sphinx-click
     'sphinx_rtd_theme>=0.2.4',
     'sphinx-click>=1.4.1',
+    'rstcheck',
 
     # style check
     'flake8>=3.5.0',
@@ -79,7 +80,7 @@ setup(
         'Programming Language :: Python :: 3.8',
     ],
     description='Core functionality for lightweight, collaborative data science projects',
-    entry_points = {
+    entry_points={
         'console_scripts': [
             'ballet=ballet.cli:cli',
         ],

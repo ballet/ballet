@@ -7,7 +7,7 @@ from typing import Any, Callable, List, Tuple
 
 import git
 from dynaconf import LazySettings
-from funcy import cached_property, fallback, re_find
+from funcy import cache, cached_property, fallback, re_find
 from pandas import DataFrame
 
 import ballet.contrib
@@ -275,6 +275,8 @@ class Project:
 
 class FeatureEngineeringProject:
 
+    CACHE_TIMEOUT = 10 * 60
+
     def __init__(
         self,
         *,
@@ -286,7 +288,7 @@ class FeatureEngineeringProject:
     ):
         self._package = package
         self.encoder = encoder
-        self.load_data = load_data
+        self._load_data = cache(self.CACHE_TIMEOUT)(load_data)
         self._extra_features = extra_features or []
         self._engineer_features = engineer_features
 
@@ -296,15 +298,33 @@ class FeatureEngineeringProject:
 
     @cached_property
     def project(self) -> Project:
+        """Get the Project object representing this project."""
         return Project(self._package)
 
     @property
     def features(self) -> List[Feature]:
+        """Get all features from the project
+
+        Both collects all contrib features from the project and allows extra
+        features to be provided by the API author.
+        """
         return self.collect() + self._extra_features
 
     @property
     def pipeline(self) -> FeatureEngineeringPipeline:
+        """Get the feature engineering pipeline from the existing features"""
         return FeatureEngineeringPipeline(self.features)
+
+    def load_data(self, *args, cache=True, **kwargs):
+        """Call the project's load_data function, caching dataset
+
+        Dataset is cached for `FeatureEngineeringProject.CACHE_TIMEOUT`
+        seconds. To invalidate cache and cause data to be re-loaded from
+        wherever it comes from, pass `cache=False`.
+        """
+        if not cache:
+            self._load_data.invalidate_all()
+        return self._load_data(*args, **kwargs)
 
     def engineer_features(self, *args, **kwargs) -> EngineerFeaturesResult:
         """Engineer features"""
