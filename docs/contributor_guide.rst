@@ -11,10 +11,7 @@ used for predicting the sale price of houses in Ames, Iowa, given raw data about
 
 .. tip::
 
-   This guide discusses the use of many concepts commonly used in software development, including
-   git, GitHub, make, and virtual environments. We are working on supporting a higher-level
-   workflow in which you are able to develop and collaborate entirely from within your Jupyter
-   notebook/lab environment. Please feel free to ask for help on our Slack channel!
+   Please feel free to ask for help on our Slack channel!
 
    .. image:: https://img.shields.io/static/v1?label=chat&message=on%20slack&color=4A154B&logo=slack
       :alt: Chat on Slack
@@ -32,9 +29,9 @@ at the cost of some flexibility.
 
 #. Open a demo notebook or create a new notebook.
 
-#. Develop a new feature. See step below, "Write your feature".
+#. Develop a new feature. See `write your feature`_ below.
 
-#. Test your feature. See step below, "Test your feature".
+#. Test your feature. See `test your feature`_ below.
 
 #. Submit your feature. Find the submission button provided by the Jupyter Lab extension, as
    shown in the screenshot.
@@ -64,6 +61,9 @@ use of your command line. There are two parts to the workflow. First, you setup 
 environment (only do this once). Second, you develop a new feature (repeat the steps every time you
 create a new feature).
 
+This section discusses the use of many concepts commonly used in software development, including
+git, GitHub, make, and virtual environments.
+
 
 Setup your development environment
 -----------------------------------
@@ -89,7 +89,7 @@ Setup your development environment
 Develop a new feature
 ---------------------
 
-#. Update and install the project. This will make the feature engineering pipeline accessible in
+1. Update and install the project. This will make the feature engineering pipeline accessible in
    interactive settings (Python interpreter, Jupyter notebook) and as a command-line tool.
 
    .. code-block:: console
@@ -106,7 +106,7 @@ Develop a new feature
       introduction of new features by other collaborators or an update to the ballet framework
       itself.
 
-#. Start working on a new feature.
+2. Start working on a new feature.
 
    .. code-block:: console
 
@@ -126,7 +126,9 @@ Develop a new feature
    * The new subpackage must be named like ``user_<github username>``.
    * The new submodule that will contain the feature must be named like ``feature_<feature name>.py``.
 
-#. Write your feature. We call the code you write to extract one group of related feature values
+.. _`write your feature`:
+
+3. Write your feature. We call the code you write to extract one group of related feature values
    a *logical feature*. Within your feature submodule, you can write arbitrary Python code.
    Ultimately, a single object that is an instance of ``ballet.Feature`` must be defined; it will
    be imported by the feature engineering pipeline.
@@ -149,7 +151,11 @@ Develop a new feature
       For a full tutorial on feature engineering in Ballet, check out the separate
       :doc:`Feature Engineering Guide <./feature_engineering_guide>`.
 
-#. Test your feature. Observe later in this guide that when you submit your feature, there will be
+   Only the Python packages thare are existing dependencies of the project can be used in feature engineering. Otherwise, if the feature were to be accepted, then the feature engineering pipeline would break due to a missing dependency. Usually, the dependencies of a Ballet project are the core ``ballet`` package and its own dependencies. You can see all installed dependencies by running ``pip freeze`` from within the virtual environment. If you must use a package that is not currently a dependency, first install it locally and ensure that the feature you develop using that dependency is satisfactory. Then before submitting the feature, submit a separate PR that adds the dependency to the ``install_requires`` key of the project's ``setup.py`` file. You can also do this from the GitHub UI by pressing "edit" on the ``setup.py`` file. A maintainer will manually review your PR and must merge it before you submit your feature.
+
+.. _test your feature:
+
+4. Test your feature. Observe later in this guide that when you submit your feature, there will be
    four separate validation steps. In your local development environment, you can check two of
    them: whether the feature you have written satisfies the "feature API", and whether the
    feature contributes positively to the ML performance of the feature engineering pipeline.
