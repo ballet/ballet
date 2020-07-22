@@ -79,7 +79,7 @@ Setup your development environment
       $ git remote add upstream https://github.com/HDI-Project/ballet-predict-house-prices
 
 #. Create and activate a new virtual environment using your environment manager of choice, such
-   as `conda`_. **(Strongly recommended.)**
+   as `conda`_.
 
    .. code-block:: console
 
@@ -89,7 +89,7 @@ Setup your development environment
 Develop a new feature
 ---------------------
 
-1. Update and install the project. This will make the feature engineering pipeline accessible in
+#. Update and install the project. This will make the feature engineering pipeline accessible in
    interactive settings (Python interpreter, Jupyter notebook) and as a command-line tool.
 
    .. code-block:: console
@@ -106,7 +106,7 @@ Develop a new feature
       introduction of new features by other collaborators or an update to the ballet framework
       itself.
 
-2. Start working on a new feature.
+#. Start working on a new feature.
 
    .. code-block:: console
 
@@ -126,9 +126,9 @@ Develop a new feature
    * The new subpackage must be named like ``user_<github username>``.
    * The new submodule that will contain the feature must be named like ``feature_<feature name>.py``.
 
-.. _`write your feature`:
+   .. _`write your feature`:
 
-3. Write your feature. We call the code you write to extract one group of related feature values
+#. Write your feature. We call the code you write to extract one group of related feature values
    a *logical feature*. Within your feature submodule, you can write arbitrary Python code.
    Ultimately, a single object that is an instance of ``ballet.Feature`` must be defined; it will
    be imported by the feature engineering pipeline.
@@ -153,9 +153,9 @@ Develop a new feature
 
    Only the Python packages thare are existing dependencies of the project can be used in feature engineering. Otherwise, if the feature were to be accepted, then the feature engineering pipeline would break due to a missing dependency. Usually, the dependencies of a Ballet project are the core ``ballet`` package and its own dependencies. You can see all installed dependencies by running ``pip freeze`` from within the virtual environment. If you must use a package that is not currently a dependency, first install it locally and ensure that the feature you develop using that dependency is satisfactory. Then before submitting the feature, submit a separate PR that adds the dependency to the ``install_requires`` key of the project's ``setup.py`` file. You can also do this from the GitHub UI by pressing "edit" on the ``setup.py`` file. A maintainer will manually review your PR and must merge it before you submit your feature.
 
-.. _test your feature:
+   .. _test your feature:
 
-4. Test your feature. Observe later in this guide that when you submit your feature, there will be
+#. Test your feature. Observe later in this guide that when you submit your feature, there will be
    four separate validation steps. In your local development environment, you can check two of
    them: whether the feature you have written satisfies the "feature API", and whether the
    feature contributes positively to the ML performance of the feature engineering pipeline.
@@ -230,20 +230,20 @@ Understanding Validation Results
 
 Once you have developed and submitted a feature, Ballet will validate it in four steps in an isolated continuous integration environment.
 
-1. Check feature API: does your feature behave properly on expected and unexpected inputs?
+#. Check feature API: does your feature behave properly on expected and unexpected inputs?
     For example, it should not produce feature values with NaNs or throw errors on well-formed
     data instances.
 
-2. Check project structure: does your PR respect the project structure, that is, you have
+#. Check project structure: does your PR respect the project structure, that is, you have
     created valid Python modules at the right path, etc.
 
-3. Evaluate feature acceptance: do the feature values that your feature extracts contribute
+#. Evaluate feature acceptance: do the feature values that your feature extracts contribute
     to the machine learning goals? Depending on the configuration of the upstream project, the
     project may evaluate your features in a more or less aggressive manner, ranging from
     accepting all features to accepting only those that produce an information gain greater
     than some threshold.
 
-4. Evaluate feature pruning: does the introduction of your feature cause other features to be
+#. Evaluate feature pruning: does the introduction of your feature cause other features to be
     unnecessary? If so they may be pruned.
 
 Depending on the configuration of the upstream project, you will see various "bots" act on
