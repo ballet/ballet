@@ -70,7 +70,7 @@ class GFSSFAccepter(FeatureAccepter):
         self.lmbda_2 = lmbda_2
 
     def __str__(self):
-        return '{str}: lmbda_1={lmbda_1}, lmbda_2={lmbda_2}'.format(
+        return '{str}: lmbda_1={lmbda_1:0.5f}, lmbda_2={lmbda_2:0.5f}'.format(
             str=super().__str__(),
             lmbda_1=self.lmbda_1,
             lmbda_2=self.lmbda_2)
@@ -78,13 +78,20 @@ class GFSSFAccepter(FeatureAccepter):
     def judge(self):
         logger.info('Judging Feature using {}'.format(self))
 
+        all_features = list(self.features)
+        all_features.append(self.candidate_feature)
+
+        def as_features(feature):
+            return (
+                feature
+                .as_feature_engineering_pipeline()
+                .fit_transform(self.X_df, self.y))
+
         # map logical feature -> feature values
-        feature_dfs_by_src = {}
-        for feature in [self.candidate_feature] + self.features:
-            feature_df = (feature
-                          .as_feature_engineering_pipeline()
-                          .fit_transform(self.X_df, self.y))
-            feature_dfs_by_src[feature.source] = feature_df
+        feature_dfs_by_src = {
+            feature.source: as_features(feature)
+            for feature in all_features
+        }
 
         candidate_source = self.candidate_feature.source
         candidate_df = feature_dfs_by_src[candidate_source]
@@ -113,7 +120,7 @@ class GFSSFAccepter(FeatureAccepter):
                 omit_df = feature_dfs_by_src[omit]
                 _, n_omit_cols = omit_df.shape
                 logger.debug(
-                    'Calculating CMI of ommitted feature:'
+                    'Calculating CMI of omitted feature:'
                 )
                 cmi_omit = estimate_conditional_information(
                     omit_df, self.y, z)
