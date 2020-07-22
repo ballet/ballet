@@ -309,10 +309,7 @@ will use the real example of <a class="reference external" href="https://github.
 used for predicting the sale price of houses in Ames, Iowa, given raw data about each house.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>This guide discusses the use of many concepts commonly used in software development, including
-git, GitHub, make, and virtual environments. We are working on supporting a higher-level
-workflow in which you are able to develop and collaborate entirely from within your Jupyter
-notebook/lab environment. Please feel free to ask for help on our Slack channel!</p>
+<p>Please feel free to ask for help on our Slack channel!</p>
 <a class="reference external image-reference" href="https://slack.com/share/IUQBPT316/gXn5PKAJGNnqfX0Mz1oKDRDJ/enQtOTc2Mzk3OTIxMDQwLTUxNDUzNmUxMzY0YTJmNGFiMGFmNGI3YWIyOWY2ZDZjYzRhOGE4MGVjYzA4ZDQ4ZjRkNDE0OTQ2ZTRmMzJmNjA"><img alt="Chat on Slack" src="https://img.shields.io/static/v1?label=chat&amp;message=on%20slack&amp;color=4A154B&amp;logo=slack" /></a>
 </div>
 <div class="section" id="cloud-feature-development-workflow">
@@ -323,8 +320,8 @@ at the cost of some flexibility.</p>
 <ol class="arabic">
 <li><p>Click the <img alt="launch-binder" src="https://mybinder.org/badge_logo.svg" /> link in the project’s README to launch an interactive notebook.</p></li>
 <li><p>Open a demo notebook or create a new notebook.</p></li>
-<li><p>Develop a new feature. See step below, “Write your feature”.</p></li>
-<li><p>Test your feature. See step below, “Test your feature”.</p></li>
+<li><p>Develop a new feature. See <a class="reference internal" href="#write-your-feature">write your feature</a> below.</p></li>
+<li><p>Test your feature. See <a class="reference internal" href="#test-your-feature">test your feature</a> below.</p></li>
 <li><p>Submit your feature. Find the submission button provided by the Jupyter Lab extension, as
 shown in the screenshot.</p>
 <a class="reference internal image-reference" href="_images/labextension_submit_button_annotated.png"><img alt="The submission button illustrated in a notebook." class="align-center" src="_images/labextension_submit_button_annotated.png" style="width: 512.25px; height: 159.0px;" /></a>
@@ -346,6 +343,8 @@ due to missing imports/helpers.</p>
 use of your command line. There are two parts to the workflow. First, you setup your development
 environment (only do this once). Second, you develop a new feature (repeat the steps every time you
 create a new feature).</p>
+<p>This section discusses the use of many concepts commonly used in software development, including
+git, GitHub, make, and virtual environments.</p>
 <div class="section" id="setup-your-development-environment">
 <h3>Setup your development environment<a class="headerlink" href="#setup-your-development-environment" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic">
@@ -403,6 +402,8 @@ feature.</p>
 <li><p>The new submodule that will contain the feature must be named like <code class="docutils literal notranslate"><span class="pre">feature_&lt;feature</span> <span class="pre">name&gt;.py</span></code>.</p></li>
 </ul>
 </li>
+</ol>
+<ol class="arabic" id="write-your-feature" start="3">
 <li><p>Write your feature. We call the code you write to extract one group of related feature values
 a <em>logical feature</em>. Within your feature submodule, you can write arbitrary Python code.
 Ultimately, a single object that is an instance of <code class="docutils literal notranslate"><span class="pre">ballet.Feature</span></code> must be defined; it will
@@ -423,7 +424,10 @@ data and imputes missing values with the mean of the training data.</p>
 <p>For a full tutorial on feature engineering in Ballet, check out the separate
 <a class="reference internal" href="feature_engineering_guide.html"><span class="doc">Feature Engineering Guide</span></a>.</p>
 </div>
+<p>Only the Python packages thare are existing dependencies of the project can be used in feature engineering. Otherwise, if the feature were to be accepted, then the feature engineering pipeline would break due to a missing dependency. Usually, the dependencies of a Ballet project are the core <code class="docutils literal notranslate"><span class="pre">ballet</span></code> package and its own dependencies. You can see all installed dependencies by running <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">freeze</span></code> from within the virtual environment. If you must use a package that is not currently a dependency, first install it locally and ensure that the feature you develop using that dependency is satisfactory. Then before submitting the feature, submit a separate PR that adds the dependency to the <code class="docutils literal notranslate"><span class="pre">install_requires</span></code> key of the project’s <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> file. You can also do this from the GitHub UI by pressing “edit” on the <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> file. A maintainer will manually review your PR and must merge it before you submit your feature.</p>
 </li>
+</ol>
+<ol class="arabic" id="test-your-feature" start="4">
 <li><p>Test your feature. Observe later in this guide that when you submit your feature, there will be
 four separate validation steps. In your local development environment, you can check two of
 them: whether the feature you have written satisfies the “feature API”, and whether the
@@ -480,7 +484,7 @@ use the command-line tool <a class="reference external" href="https://hub.github
 </div>
 <div class="section" id="option-2-in-lab-workflow">
 <h4>Option 2: In-Lab Workflow<a class="headerlink" href="#option-2-in-lab-workflow" title="Permalink to this headline">¶</a></h4>
-<p>In this workflow, you use the Ballet JupyterLab extension in order to submit code directly from within your analysis notebook if you are developing in Jupyter Lab. This has the same user experience as described in the cloud feature development workflow above. Here, you should <a class="reference external" href="https://github.com/HDI-Project/ballet-submit-labextension/blob/master/README.md#install">install ballet-submit-labextension</a> following the directions in that project. Importantly, you must authorize the extension to interact with GitHub on your behalf in one of three ways: (1) use the built-in GitHub OAuth functionality to obtain a new OAuth token with one click (2) obtain a GitHub OAuth token yourself and populate the variable <code class="docutils literal notranslate"><span class="pre">$GITHUB_TOKEN</span></code> (3) optain a GitHub OAuth token and pass it as an option when starting JupyterLab.</p>
+<p>In this workflow, you use the Ballet JupyterLab extension in order to submit code directly from within your analysis notebook if you are developing in Jupyter Lab. This has the same user experience as described in the cloud feature development workflow above. Here, you should <a class="reference external" href="https://github.com/HDI-Project/ballet-submit-labextension/blob/master/README.md">install ballet-submit-labextension</a> following the directions in that project. Importantly, you must authorize the extension to interact with GitHub on your behalf in one of three ways: (1) use the built-in GitHub OAuth functionality to obtain a new OAuth token with one click (2) obtain a GitHub OAuth token yourself and populate the variable <code class="docutils literal notranslate"><span class="pre">$GITHUB_TOKEN</span></code> (3) optain a GitHub OAuth token and pass it as an option when starting JupyterLab.</p>
 </div>
 </div>
 </div>
