@@ -1,13 +1,6 @@
 os: linux
 language: python
-python:
-    - 3.6
-    - 3.7
-    - 3.8
-
-install: pip install -U tox-travis codecov
-script: tox
-after_success: codecov
+install: pip install tox codecov
 
 stages:
   - test
@@ -26,9 +19,22 @@ jobs:
       script: tox -e lint
       name: "Lint"
 
+    - stage: test
+      python: 3.6
+      script: tox -e py36
+
+    - stage: test
+      python: 3.7
+      script: tox -e py37
+
+    - stage: test
+      python: 3.8
+      script: tox -e py38
+      after_success: codecov
+
     - stage: deploy
       python: 3.8
-      script: tox --notest
+      script: tox -e py38 --notest
       name: "Release to PyPI"
       deploy:
         edge: true
