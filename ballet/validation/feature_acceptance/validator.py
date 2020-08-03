@@ -46,26 +46,36 @@ class GFSSFAccepter(FeatureAccepter):
             feature.
         features (array-like): an array of ballet Features that have
             already been accepted.
-        lmbda_1 (float): A float used in GFSSF to calculate the information
+        lmbda_1: GFSSF parameter used to calculate the information
             threshold. Default is a function of the entropy of y.
-        lmbda_2 (float): A float used in GFSSF to calculate the information
+        lmbda_2: GFSSF parameter used to calculate the information
             threshold. Default is a function of the entropy of y.
+        lambda_1_adjustment: Adjustment to estimated entropy used to
+            calculate lmbda_1.
+        lambda_2_adjustment: Adjustment to estimated entropy used to
+            calculate lmbda_2.
 
     References:
         [1] H. Li, X. Wu, Z. Li and W. Ding, "Group Feature Selection
             with Streaming Features," 2013 IEEE 13th International
             Conference on Data Mining, Dallas, TX, 2013, pp. 1109-1114.
             doi: 10.1109/ICDM.2013.137
-
     """
 
-    def __init__(self, *args, lmbda_1=0., lmbda_2=0.):
+    def __init__(
+        self,
+        *args,
+        lmbda_1: float = 0.0,
+        lmbda_2: float = 0.0,
+        lambda_1_adjustment: float = LAMBDA_1_ADJUSTMENT,
+        lambda_2_adjustment: float = LAMBDA_2_ADJUSTMENT
+    ):
         super().__init__(*args)
         self.y = asarray2d(self.y)
         if lmbda_1 <= 0:
-            lmbda_1 = estimate_entropy(self.y) / LAMBDA_1_ADJUSTMENT
+            lmbda_1 = estimate_entropy(self.y) / lambda_1_adjustment
         if lmbda_2 <= 0:
-            lmbda_2 = estimate_entropy(self.y) / LAMBDA_2_ADJUSTMENT
+            lmbda_2 = estimate_entropy(self.y) / lambda_2_adjustment
         self.lmbda_1 = lmbda_1
         self.lmbda_2 = lmbda_2
 
