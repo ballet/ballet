@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Contributor Guide &mdash; ballet 0.7.3 documentation</title>
+  <title>Contributor Guide &mdash; ballet 0.7.4 documentation</title>
   
 
   
@@ -221,16 +221,17 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="history.html">History</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="history.html#id1">0.7.3 (2020-07-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="history.html#id2">0.7.2 (2020-07-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="history.html#id3">0.7.1 (2020-07-20)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="history.html#id4">0.7 (2020-07-17)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="history.html#id5">0.6 (2019-11-12)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="history.html#id6">0.5 (2018-10-14)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="history.html#id7">0.4 (2018-09-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="history.html#id8">0.3 (2018-04-28)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="history.html#id9">0.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="history.html#id10">0.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id1">0.7.4 (2020-07-22)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id2">0.7.3 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id3">0.7.2 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id4">0.7.1 (2020-07-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id5">0.7 (2020-07-17)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id6">0.6 (2019-11-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id7">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id8">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id9">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id10">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id11">0.1</a></li>
 </ul>
 </li>
 </ul>
@@ -357,7 +358,7 @@ git, GitHub, make, and virtual environments.</p>
 </div>
 </li>
 <li><p>Create and activate a new virtual environment using your environment manager of choice, such
-as <a class="reference external" href="https://conda.io/en/latest/">conda</a>. <strong>(Strongly recommended.)</strong></p>
+as <a class="reference external" href="https://conda.io/en/latest/">conda</a>.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> conda create -n myenv <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.7 -y <span class="o">&amp;&amp;</span> conda activate myenv
 </pre></div>
 </div>
@@ -402,9 +403,7 @@ feature.</p>
 <li><p>The new submodule that will contain the feature must be named like <code class="docutils literal notranslate"><span class="pre">feature_&lt;feature</span> <span class="pre">name&gt;.py</span></code>.</p></li>
 </ul>
 </li>
-</ol>
-<ol class="arabic" id="write-your-feature" start="3">
-<li><p>Write your feature. We call the code you write to extract one group of related feature values
+<li id="write-your-feature"><p>Write your feature. We call the code you write to extract one group of related feature values
 a <em>logical feature</em>. Within your feature submodule, you can write arbitrary Python code.
 Ultimately, a single object that is an instance of <code class="docutils literal notranslate"><span class="pre">ballet.Feature</span></code> must be defined; it will
 be imported by the feature engineering pipeline.</p>
@@ -426,9 +425,7 @@ data and imputes missing values with the mean of the training data.</p>
 </div>
 <p>Only the Python packages thare are existing dependencies of the project can be used in feature engineering. Otherwise, if the feature were to be accepted, then the feature engineering pipeline would break due to a missing dependency. Usually, the dependencies of a Ballet project are the core <code class="docutils literal notranslate"><span class="pre">ballet</span></code> package and its own dependencies. You can see all installed dependencies by running <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">freeze</span></code> from within the virtual environment. If you must use a package that is not currently a dependency, first install it locally and ensure that the feature you develop using that dependency is satisfactory. Then before submitting the feature, submit a separate PR that adds the dependency to the <code class="docutils literal notranslate"><span class="pre">install_requires</span></code> key of the project’s <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> file. You can also do this from the GitHub UI by pressing “edit” on the <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> file. A maintainer will manually review your PR and must merge it before you submit your feature.</p>
 </li>
-</ol>
-<ol class="arabic" id="test-your-feature" start="4">
-<li><p>Test your feature. Observe later in this guide that when you submit your feature, there will be
+<li id="test-your-feature"><p>Test your feature. Observe later in this guide that when you submit your feature, there will be
 four separate validation steps. In your local development environment, you can check two of
 them: whether the feature you have written satisfies the “feature API”, and whether the
 feature contributes positively to the ML performance of the feature engineering pipeline.</p>

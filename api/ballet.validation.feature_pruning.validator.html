@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.validation.feature_pruning.validator module &mdash; ballet 0.7.3 documentation</title>
+  <title>ballet.validation.feature_pruning.validator module &mdash; ballet 0.7.4 documentation</title>
   
 
   
@@ -221,16 +221,17 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../history.html">History</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../history.html#id1">0.7.3 (2020-07-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../history.html#id2">0.7.2 (2020-07-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../history.html#id3">0.7.1 (2020-07-20)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../history.html#id4">0.7 (2020-07-17)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../history.html#id5">0.6 (2019-11-12)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../history.html#id6">0.5 (2018-10-14)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../history.html#id7">0.4 (2018-09-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../history.html#id8">0.3 (2018-04-28)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../history.html#id9">0.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../history.html#id10">0.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id1">0.7.4 (2020-07-22)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id2">0.7.3 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id3">0.7.2 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id4">0.7.1 (2020-07-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id5">0.7 (2020-07-17)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id6">0.6 (2019-11-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id7">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id8">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id9">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id10">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id11">0.1</a></li>
 </ul>
 </li>
 </ul>
@@ -310,7 +311,7 @@
 <span id="ballet-validation-feature-pruning-validator-module"></span><h1>ballet.validation.feature_pruning.validator module<a class="headerlink" href="#module-ballet.validation.feature_pruning.validator" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="ballet.validation.feature_pruning.validator.GFSSFPruner">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.validation.feature_pruning.validator.</code><code class="sig-name descname">GFSSFPruner</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">lmbda_1=0.0</em>, <em class="sig-param">lmbda_2=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_pruning/validator.html#GFSSFPruner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_pruning.validator.GFSSFPruner" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.validation.feature_pruning.validator.</code><code class="sig-name descname">GFSSFPruner</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">lmbda_1: float = 0.0</em>, <em class="sig-param">lmbda_2: float = 0.0</em>, <em class="sig-param">lambda_1_adjustment: float = 64</em>, <em class="sig-param">lambda_2_adjustment: float = 64</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_pruning/validator.html#GFSSFPruner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_pruning.validator.GFSSFPruner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="ballet.validation.base.html#ballet.validation.base.FeaturePruner" title="ballet.validation.base.FeaturePruner"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.FeaturePruner</span></code></a></p>
 <p>A feature pruning evaluator that uses a modified version of
 GFSSF[1] - specifically, lines 12-13 of agGFSSF.</p>
@@ -363,25 +364,29 @@ already been accepted, to be pruned.</p>
 <dl class="attribute">
 <dt id="ballet.validation.feature_pruning.validator.GFSSFPruner.lmbda_1">
 <code class="sig-name descname">lmbda_1</code><a class="headerlink" href="#ballet.validation.feature_pruning.validator.GFSSFPruner.lmbda_1" title="Permalink to this definition">¶</a></dt>
-<dd><p>A float used in GFSSF to calculate the information
+<dd><p>GFSSF parameter used to calculate the information
 threshold. Default is a function of the entropy of y.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="ballet.validation.feature_pruning.validator.GFSSFPruner.lmbda_2">
 <code class="sig-name descname">lmbda_2</code><a class="headerlink" href="#ballet.validation.feature_pruning.validator.GFSSFPruner.lmbda_2" title="Permalink to this definition">¶</a></dt>
-<dd><p>A float used in GFSSF to calculate the information
+<dd><p>GFSSF parameter used to calculate the information
 threshold. Default is a function of the entropy of y.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ballet.validation.feature_pruning.validator.GFSSFPruner.lambda_1_adjustment">
+<code class="sig-name descname">lambda_1_adjustment</code><a class="headerlink" href="#ballet.validation.feature_pruning.validator.GFSSFPruner.lambda_1_adjustment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adjustment to estimated entropy used to
+calculate lmbda_1.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ballet.validation.feature_pruning.validator.GFSSFPruner.lambda_2_adjustment">
+<code class="sig-name descname">lambda_2_adjustment</code><a class="headerlink" href="#ballet.validation.feature_pruning.validator.GFSSFPruner.lambda_2_adjustment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adjustment to estimated entropy used to
+calculate lmbda_2.</p>
 </dd></dl>
 
 <p class="rubric">References</p>

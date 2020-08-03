@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.validation.feature_acceptance.validator &mdash; ballet 0.7.3 documentation</title>
+  <title>ballet.validation.feature_acceptance.validator &mdash; ballet 0.7.4 documentation</title>
   
 
   
@@ -219,16 +219,17 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../history.html">History</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id1">0.7.3 (2020-07-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id2">0.7.2 (2020-07-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id3">0.7.1 (2020-07-20)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id4">0.7 (2020-07-17)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id5">0.6 (2019-11-12)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id6">0.5 (2018-10-14)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id7">0.4 (2018-09-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id8">0.3 (2018-04-28)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id9">0.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id10">0.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id1">0.7.4 (2020-07-22)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id2">0.7.3 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id3">0.7.2 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id4">0.7.1 (2020-07-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id5">0.7 (2020-07-17)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id6">0.6 (2019-11-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id7">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id8">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id9">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id10">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../history.html#id11">0.1</a></li>
 </ul>
 </li>
 </ul>
@@ -345,26 +346,36 @@
 <span class="sd">            feature.</span>
 <span class="sd">        features (array-like): an array of ballet Features that have</span>
 <span class="sd">            already been accepted.</span>
-<span class="sd">        lmbda_1 (float): A float used in GFSSF to calculate the information</span>
+<span class="sd">        lmbda_1: GFSSF parameter used to calculate the information</span>
 <span class="sd">            threshold. Default is a function of the entropy of y.</span>
-<span class="sd">        lmbda_2 (float): A float used in GFSSF to calculate the information</span>
+<span class="sd">        lmbda_2: GFSSF parameter used to calculate the information</span>
 <span class="sd">            threshold. Default is a function of the entropy of y.</span>
+<span class="sd">        lambda_1_adjustment: Adjustment to estimated entropy used to</span>
+<span class="sd">            calculate lmbda_1.</span>
+<span class="sd">        lambda_2_adjustment: Adjustment to estimated entropy used to</span>
+<span class="sd">            calculate lmbda_2.</span>
 
 <span class="sd">    References:</span>
 <span class="sd">        [1] H. Li, X. Wu, Z. Li and W. Ding, &quot;Group Feature Selection</span>
 <span class="sd">            with Streaming Features,&quot; 2013 IEEE 13th International</span>
 <span class="sd">            Conference on Data Mining, Dallas, TX, 2013, pp. 1109-1114.</span>
 <span class="sd">            doi: 10.1109/ICDM.2013.137</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">lmbda_1</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">lmbda_2</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="n">lmbda_1</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">lmbda_2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">lambda_1_adjustment</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">LAMBDA_1_ADJUSTMENT</span><span class="p">,</span>
+        <span class="n">lambda_2_adjustment</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">LAMBDA_2_ADJUSTMENT</span>
+    <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">lmbda_1</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">lmbda_1</span> <span class="o">=</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">LAMBDA_1_ADJUSTMENT</span>
+            <span class="n">lmbda_1</span> <span class="o">=</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">lambda_1_adjustment</span>
         <span class="k">if</span> <span class="n">lmbda_2</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">lmbda_2</span> <span class="o">=</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">LAMBDA_2_ADJUSTMENT</span>
+            <span class="n">lmbda_2</span> <span class="o">=</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">lambda_2_adjustment</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lmbda_1</span> <span class="o">=</span> <span class="n">lmbda_1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lmbda_2</span> <span class="o">=</span> <span class="n">lmbda_2</span>
 

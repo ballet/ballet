@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.validation.main &mdash; ballet 0.7.3 documentation</title>
+  <title>ballet.validation.main &mdash; ballet 0.7.4 documentation</title>
   
 
   
@@ -219,16 +219,17 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id1">0.7.3 (2020-07-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id2">0.7.2 (2020-07-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id3">0.7.1 (2020-07-20)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id4">0.7 (2020-07-17)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id5">0.6 (2019-11-12)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id6">0.5 (2018-10-14)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id7">0.4 (2018-09-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id8">0.3 (2018-04-28)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id9">0.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id10">0.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id1">0.7.4 (2020-07-22)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id2">0.7.3 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id3">0.7.2 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id4">0.7.1 (2020-07-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id5">0.7 (2020-07-17)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id6">0.6 (2019-11-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id7">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id8">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id9">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id10">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id11">0.1</a></li>
 </ul>
 </li>
 </ul>
@@ -295,9 +296,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ballet.validation.main</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span>
 
-<span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">decorator</span><span class="p">,</span> <span class="n">ignore</span>
+<span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">decorator</span><span class="p">,</span> <span class="n">func_partial</span><span class="p">,</span> <span class="n">ignore</span>
 <span class="kn">from</span> <span class="nn">funcy.decorators</span> <span class="kn">import</span> <span class="n">Call</span>
 <span class="kn">from</span> <span class="nn">stacklog</span> <span class="kn">import</span> <span class="n">stacklog</span>
 
@@ -324,15 +325,58 @@
     <span class="k">return</span> <span class="n">call</span><span class="p">()</span></div>
 
 
-<span class="k">def</span> <span class="nf">_load_class</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="n">Project</span><span class="p">,</span> <span class="n">config_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">:</span>
-    <span class="n">path</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">config_key</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_load_validator_class_params</span><span class="p">(</span>
+    <span class="n">project</span><span class="p">:</span> <span class="n">Project</span><span class="p">,</span> <span class="n">config_key</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load validator class according to config_key with optional params</span>
+
+<span class="sd">    At the provided key, the config should show an entry in one of two forms:</span>
+<span class="sd">    1. The fully-qualified class name of the validator (str)</span>
+<span class="sd">    2. A yaml hash with the key `name` mapping to the fully-qualified class</span>
+<span class="sd">    name of the validator, and optionally, the key `params` mapping to hash</span>
+<span class="sd">    of keyword arguments to be passed to the validator class.</span>
+
+<span class="sd">    If `params` is provided, then they are partially applied to the</span>
+<span class="sd">    validator class ``__init__`` method such that calls to create an</span>
+<span class="sd">    instance of the validator class have the given params set as keyword</span>
+<span class="sd">    arguments.</span>
+
+<span class="sd">    For example, if the yaml file looks like::</span>
+
+<span class="sd">       foo:</span>
+<span class="sd">         bar:</span>
+<span class="sd">           validation:</span>
+<span class="sd">               feature_accepter:</span>
+<span class="sd">                 name: baz.qux.MyFeatureAccepter</span>
+<span class="sd">                 params:</span>
+<span class="sd">                   key1: value1</span>
+
+<span class="sd">    Then::</span>
+
+<span class="sd">       make_validator = _load_validator_class_params(project, &#39;foo.bar.validation.feature_accepter&#39;)</span>
+
+<span class="sd">    would result in the following equivalence::</span>
+
+<span class="sd">       make_validator(arg)</span>
+<span class="sd">       baz.qux.MyFeatureAccepter(arg, key1=value1)</span>
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa E501</span>
+    <span class="n">entry</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">config_key</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">entry</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">))</span>
+
     <span class="n">modname</span><span class="p">,</span> <span class="n">clsname</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">mod</span> <span class="o">=</span> <span class="n">import_module_from_modname</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span>
     <span class="bp">cls</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">clsname</span><span class="p">)</span>
     <span class="n">clsname</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;unknown&gt;&#39;</span><span class="p">)</span>
     <span class="n">modfile</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="s1">&#39;__file__&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;unknown&gt;&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Loaded class </span><span class="si">{}</span><span class="s1"> from module at </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">clsname</span><span class="p">,</span> <span class="n">modfile</span><span class="p">))</span>
-    <span class="k">return</span> <span class="bp">cls</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="s1">&#39;Loaded class </span><span class="si">%s</span><span class="s1"> from module at </span><span class="si">%s</span><span class="s1"> with params </span><span class="si">%r</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">clsname</span><span class="p">,</span> <span class="n">modfile</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">func_partial</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
 
 
 <span class="nd">@validation_stage</span><span class="p">(</span><span class="s1">&#39;checking project structure&#39;</span><span class="p">)</span>
@@ -340,7 +384,7 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_pr</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on PR&#39;</span><span class="p">)</span>
 
-    <span class="n">validator_class</span> <span class="o">=</span> <span class="n">_load_class</span><span class="p">(</span>
+    <span class="n">validator_class</span> <span class="o">=</span> <span class="n">_load_validator_class_params</span><span class="p">(</span>
         <span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.project_structure_validator&#39;</span><span class="p">)</span>
     <span class="n">validator</span> <span class="o">=</span> <span class="n">validator_class</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">validator</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
@@ -354,7 +398,8 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_pr</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on PR&#39;</span><span class="p">)</span>
 
-    <span class="n">validator_class</span> <span class="o">=</span> <span class="n">_load_class</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.feature_api_validator&#39;</span><span class="p">)</span>
+    <span class="n">validator_class</span> <span class="o">=</span> <span class="n">_load_validator_class_params</span><span class="p">(</span>
+            <span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.feature_api_validator&#39;</span><span class="p">)</span>
     <span class="n">validator</span> <span class="o">=</span> <span class="n">validator_class</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">validator</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
@@ -373,7 +418,8 @@
     <span class="n">proposed_feature</span> <span class="o">=</span> <span class="n">get_proposed_feature</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
     <span class="n">accepted_features</span> <span class="o">=</span> <span class="n">get_accepted_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">proposed_feature</span><span class="p">)</span>
 
-    <span class="n">accepter_class</span> <span class="o">=</span> <span class="n">_load_class</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.feature_accepter&#39;</span><span class="p">)</span>
+    <span class="n">accepter_class</span> <span class="o">=</span> <span class="n">_load_validator_class_params</span><span class="p">(</span>
+            <span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.feature_accepter&#39;</span><span class="p">)</span>
     <span class="n">accepter</span> <span class="o">=</span> <span class="n">accepter_class</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">accepted_features</span><span class="p">,</span> <span class="n">proposed_feature</span><span class="p">)</span>
     <span class="n">accepted</span> <span class="o">=</span> <span class="n">accepter</span><span class="o">.</span><span class="n">judge</span><span class="p">()</span>
 
@@ -398,7 +444,8 @@
     <span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">features</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">features</span>
     <span class="n">accepted_features</span> <span class="o">=</span> <span class="n">get_accepted_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">proposed_feature</span><span class="p">)</span>
 
-    <span class="n">pruner_class</span> <span class="o">=</span> <span class="n">_load_class</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.feature_pruner&#39;</span><span class="p">)</span>
+    <span class="n">pruner_class</span> <span class="o">=</span> <span class="n">_load_validator_class_params</span><span class="p">(</span>
+            <span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.feature_pruner&#39;</span><span class="p">)</span>
     <span class="n">pruner</span> <span class="o">=</span> <span class="n">pruner_class</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">accepted_features</span><span class="p">,</span> <span class="n">proposed_feature</span><span class="p">)</span>
     <span class="n">redundant_features</span> <span class="o">=</span> <span class="n">pruner</span><span class="o">.</span><span class="n">prune</span><span class="p">()</span>
 
