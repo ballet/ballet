@@ -16,7 +16,7 @@ requirements = [
     'cookiecutter',
     'Click>=6.0',
     'dill',
-    'dynaconf<3',
+    'dynaconf>=3.0',
     'funcy>=1.14',
     'gitpython',
     'h5py',

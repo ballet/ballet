@@ -1,46 +1,45 @@
-default:
-  version: 0.7.4
-  project:
-    project_name: {{ cookiecutter.project_name }}
-    project_slug: {{ cookiecutter.project_slug }}
-    package_slug: {{ cookiecutter.package_slug }}
-  problem:
-    problem_type: {{ cookiecutter.problem_type }}
-    problem_type_details:
-      scorer: {% if cookiecutter.problem_type == 'classification' %}{{ cookiecutter.classification_scorer }}{% else %}{{ cookiecutter.regression_scorer }}{% endif %}
-      classification_type: {% if cookiecutter.problem_type == 'classification' %}{{ cookiecutter.classification_type }}{% endif %}
-  contrib:
-    module_name: {{ cookiecutter.package_slug }}.features.contrib
-    module_path: src/{{ cookiecutter.package_slug }}/features/contrib
-  validation:
-    project_structure_validator: ballet.validation.project_structure.validator.ProjectStructureValidator
-    feature_api_validator: ballet.validation.feature_api.validator.FeatureApiValidator
-    feature_accepter: ballet.validation.feature_acceptance.validator.GFSSFAccepter
-    feature_pruner: ballet.validation.feature_pruning.validator.GFSSFPruner
-  github:
-    github_owner: {{ cookiecutter.github_owner }}
-    remote: origin
-    pruning_action: {{ cookiecutter.pruning_action }}
-    auto_merge_accepted_features: {{ cookiecutter.auto_merge_accepted_features }}
-    auto_close_rejected_features: {{ cookiecutter.auto_close_rejected_features }}
-  data:
-    s3_bucket:
-    s3_bucket_region:
-    train: data/train
-    entities_table_name: entities
-    targets_table_name: targets
-    tables:
-      -
-        name: entities
-        path: entities.csv
-        pd_read_kwargs:
-          index_col: 0
-          header: 0
-          sep: ","
-      -
-        name: targets
-        path: targets.csv
-        pd_read_kwargs:
-          index_col: 0
-          header: 0
-          sep: ","
+version: 0.7.4
+project:
+  project_name: {{ cookiecutter.project_name }}
+  project_slug: {{ cookiecutter.project_slug }}
+  package_slug: {{ cookiecutter.package_slug }}
+problem:
+  problem_type: {{ cookiecutter.problem_type }}
+  problem_type_details:
+    scorer: {% if cookiecutter.problem_type == 'classification' %}{{ cookiecutter.classification_scorer }}{% else %}{{ cookiecutter.regression_scorer }}{% endif %}
+    classification_type: {% if cookiecutter.problem_type == 'classification' %}{{ cookiecutter.classification_type }}{% endif %}
+contrib:
+  module_name: {{ cookiecutter.package_slug }}.features.contrib
+  module_path: src/{{ cookiecutter.package_slug }}/features/contrib
+validation:
+  project_structure_validator: ballet.validation.project_structure.validator.ProjectStructureValidator
+  feature_api_validator: ballet.validation.feature_api.validator.FeatureApiValidator
+  feature_accepter: ballet.validation.feature_acceptance.validator.GFSSFAccepter
+  feature_pruner: ballet.validation.feature_pruning.validator.GFSSFPruner
+github:
+  github_owner: {{ cookiecutter.github_owner }}
+  remote: origin
+  pruning_action: {{ cookiecutter.pruning_action }}
+  auto_merge_accepted_features: {{ cookiecutter.auto_merge_accepted_features }}
+  auto_close_rejected_features: {{ cookiecutter.auto_close_rejected_features }}
+data:
+  s3_bucket:
+  s3_bucket_region:
+  train: data/train
+  entities_table_name: entities
+  targets_table_name: targets
+  tables:
+    -
+      name: entities
+      path: entities.csv
+      pd_read_kwargs:
+        index_col: 0
+        header: 0
+        sep: ","
+    -
+      name: targets
+      path: targets.csv
+      pd_read_kwargs:
+        index_col: 0
+        header: 0
+        sep: ","

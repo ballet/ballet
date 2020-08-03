@@ -6,7 +6,7 @@ from types import ModuleType
 from typing import Any, Callable, List, Tuple
 
 import git
-from dynaconf import LazySettings
+from dynaconf import Dynaconf
 from funcy import cache, cached_property, fallback, re_find
 from pandas import DataFrame
 
@@ -25,16 +25,16 @@ from ballet.util.typing import Pathy
 
 DEFAULT_CONFIG_NAME = 'ballet.yml'
 DYNACONF_OPTIONS = {
-    'ENVVAR_PREFIX_FOR_DYNACONF': 'BALLET',
-    'SETTINGS_FILE_FOR_DYNACONF': DEFAULT_CONFIG_NAME,
-    'YAML_LOADER': 'safe_load',
+    'envvar_prefix': 'BALLET',
+    'settings_file': DEFAULT_CONFIG_NAME,
+    'yaml_loader': 'safe_load',
 }
 
 
-config = LazySettings(**DYNACONF_OPTIONS)
+config = Dynaconf(**DYNACONF_OPTIONS)
 
 
-def load_config_at_path(path: Pathy) -> LazySettings:
+def load_config_at_path(path: Pathy) -> Dynaconf:
     """Load config at exact path
 
     Args:
@@ -47,17 +47,17 @@ def load_config_at_path(path: Pathy) -> LazySettings:
     if path.exists() and path.is_file():
         options = DYNACONF_OPTIONS.copy()
         options.update({
-            'ROOT_PATH_FOR_DYNACONF': str(path.parent),
-            'SETTINGS_FILE_FOR_DYNACONF': str(path.name),
+            'root_path': str(path.parent),
+            'settings_file': str(path.name),
         })
-        return LazySettings(**options)
+        return Dynaconf(**options)
     else:
         raise ConfigurationError(
             'Couldn\'t find ballet.yml config file at {path!s}'
             .format(path=path))
 
 
-def load_config_in_dir(path: Pathy) -> LazySettings:
+def load_config_in_dir(path: Pathy) -> Dynaconf:
     """Load config in containing directory
 
     Args:
@@ -139,7 +139,7 @@ class Project:
         self.package = package
 
     @cached_property
-    def config(self) -> LazySettings:
+    def config(self) -> Dynaconf:
         return load_config_in_dir(self.path)
 
     @classmethod
