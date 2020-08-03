@@ -68,7 +68,7 @@ fix-lint: ## fix lint issues using autopep8 and isort
 
 .PHONY: test
 test: ## run tests quickly with the default Python
-	python -m pytest --basetemp=${ENVTMP} --cov=ballet
+	python -m pytest --basetemp=${ENVTMPDIR} --cov=ballet
 
 .PHONY: test-fast
 test-fast:  ## run tests that are not marked as 'slow'
