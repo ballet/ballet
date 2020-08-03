@@ -10,7 +10,7 @@ from ballet.project import FeatureEngineeringProject, Project
 from ballet.validation.common import subsample_data_for_validation
 from ballet.validation.feature_acceptance import validate_feature_acceptance
 from ballet.validation.feature_api import validate_feature_api
-from ballet.validation.main import _load_class
+from ballet.validation.main import _load_validator_class_params
 
 
 class Client:
@@ -89,7 +89,7 @@ class Client:
         """Evaluate the performance of this feature"""
         X_df, y_df = self._load_validation_data(X_df, y_df, subsample)
         result = self.api.engineer_features(X_df, y_df)
-        accepter_class = _load_class(
+        accepter_class = _load_validator_class_params(
             self.project, 'validation.feature_accepter')
         return validate_feature_acceptance(
             accepter_class, feature, result.features, result.X_df, result.y,
