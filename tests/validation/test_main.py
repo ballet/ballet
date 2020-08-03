@@ -5,9 +5,8 @@ import ballet.util.log
 from ballet.exc import SkippedValidationTest
 from ballet.validation.main import (  # noqa F401
     _check_project_structure, _evaluate_feature_performance,
-    _load_validator_class_params,
-    _prune_existing_features, _validate_feature_api, validate,
-    validation_stage)
+    _load_validator_class_params, _prune_existing_features,
+    _validate_feature_api, validate, validation_stage)
 
 
 class MainTest(unittest.TestCase):
@@ -41,8 +40,10 @@ class MainTest(unittest.TestCase):
         with self.assertRaises(exc):
             call()
 
+    @patch('ballet.validation.project_structure.validator.ChangeCollector')
     @patch('ballet.validation.main.import_module_from_modname')
-    def test_load_validator_class_params(self, mock_import):
+    def test_load_validator_class_params_noparams(self, mock_import, _):
+        """Check that _load_validator_class_params works"""
 
         import ballet.validation.project_structure.validator
         from ballet.validation.project_structure.validator import \
@@ -60,11 +61,19 @@ class MainTest(unittest.TestCase):
 
         logger = ballet.util.log.logger
         with self.assertLogs(logger=logger, level='DEBUG') as cm:
-            cls = _load_validator_class_params(mock_project, config_key)
+            make_validator = _load_validator_class_params(
+                mock_project, config_key)
 
         output = '\n'.join(cm.output)
         self.assertIn(clsname, output)
-        self.assertIs(cls, ProjectStructureValidator)
+
+        validator = make_validator(mock_project)
+        self.assertIsInstance(validator, ProjectStructureValidator)
+
+    @unittest.expectedFailure
+    def test_load_validator_class_params_withparams(self):
+        """Check that _load_validator_class_params correctly applies kwargs"""
+        raise NotImplementedError
 
     @unittest.expectedFailure
     def test_check_project_structure(self):

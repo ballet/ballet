@@ -1,6 +1,6 @@
-from typing import List
+from typing import Callable, List
 
-from funcy import decorator, ignore
+from funcy import decorator, func_partial, ignore
 from funcy.decorators import Call
 from stacklog import stacklog
 
@@ -27,15 +27,58 @@ def validation_stage(call: Call, message: str):
     return call()
 
 
-def _load_validator_class_params(project: Project, config_key: str) -> type:
-    path = project.config.get(config_key)
+def _load_validator_class_params(
+    project: Project, config_key: str
+) -> Callable:
+    """Load validator class according to config_key with optional params
+
+    At the provided key, the config should show an entry in one of two forms:
+    1. The fully-qualified class name of the validator (str)
+    2. A yaml hash with the key `name` mapping to the fully-qualified class
+    name of the validator, and optionally, the key `params` mapping to hash
+    of keyword arguments to be passed to the validator class.
+
+    If `params` is provided, then they are partially applied to the
+    validator class ``__init__`` method such that calls to create an
+    instance of the validator class have the given params set as keyword
+    arguments.
+
+    For example, if the yaml file looks like::
+
+       foo:
+         bar:
+           validation:
+               feature_accepter:
+                 name: baz.qux.MyFeatureAccepter
+                 params:
+                   key1: value1
+
+    Then::
+
+       make_validator = _load_validator_class_params(project, 'foo.bar.validation.feature_accepter')
+
+    would result in the following equivalence::
+
+       make_validator(arg)
+       baz.qux.MyFeatureAccepter(arg, key1=value1)
+    """  # noqa E501
+    entry = project.config.get(config_key)
+    if isinstance(entry, str):
+        path = entry
+        params = {}
+    else:
+        path = entry.get('name')
+        params = dict(entry.get('params'))
+
     modname, clsname = path.rsplit('.', maxsplit=1)
     mod = import_module_from_modname(modname)
     cls = getattr(mod, clsname)
     clsname = getattr(cls, '__name__', '<unknown>')
     modfile = getattr(mod, '__file__', '<unknown>')
-    logger.debug('Loaded class {} from module at {}'.format(clsname, modfile))
-    return cls
+    logger.debug(
+        'Loaded class %s from module at %s with params %r',
+        clsname, modfile, params)
+    return func_partial(cls, **params)
 
 
 @validation_stage('checking project structure')
