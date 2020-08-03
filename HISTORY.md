@@ -1,5 +1,11 @@
 # History
 
+## 0.7.5 (2020-08-03)
+
+* Make validator parameters configurable in ballet.yml file (e.g. λ_1 and λ_2 for GFSSF
+    algorithms)
+* Support dynaconf 3.x
+
 ## 0.7.4 (2020-07-22)
 
 * Accept logger names, as well as logger instances, in `ballet.util.log.enable`
