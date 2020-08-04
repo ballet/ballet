@@ -30,7 +30,7 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -306,42 +306,57 @@
             
   <div class="section" id="module-ballet.client">
 <span id="ballet-client-module"></span><h1>ballet.client module<a class="headerlink" href="#module-ballet.client" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="ballet.client.Client">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.client.</code><code class="sig-name descname">Client</code><span class="sig-paren">(</span><em class="sig-param">prj: Union[ballet.project.Project</em>, <em class="sig-param">module</em>, <em class="sig-param">str</em>, <em class="sig-param">os.PathLike</em>, <em class="sig-param">None] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/client.html#Client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.client.Client" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.client.</code><code class="sig-name descname">Client</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prj</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/client.html#Client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.client.Client" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>User client for validating features</p>
 <p>Provides a simple interface to validating a given feature.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>prj</strong> – a way to create a ballet <code class="docutils literal notranslate"><span class="pre">Project</span></code>, either with an
+<dd class="field-odd"><p><strong>prj</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="ballet.project.html#ballet.project.Project" title="ballet.project.Project"><code class="xref py py-class docutils literal notranslate"><span class="pre">Project</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">module</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">PathLike</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]) – a way to create a ballet <code class="docutils literal notranslate"><span class="pre">Project</span></code>, either with an
 already-created object, the project’s top-level module, or a path
 within the project. If none of these are provided, will attempt to
 detect the project by ascending from the current working directory.</p>
 </dd>
 </dl>
-<dl class="method">
+<dl class="py method">
 <dt id="ballet.client.Client.api">
 <em class="property">property </em><code class="sig-name descname">api</code><a class="headerlink" href="#ballet.client.Client.api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Access feature engineering API of this project</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="ballet.project.html#ballet.project.FeatureEngineeringProject" title="ballet.project.FeatureEngineeringProject"><code class="xref py py-class docutils literal notranslate"><span class="pre">FeatureEngineeringProject</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ballet.client.Client.project">
 <code class="sig-name descname">project</code><a class="headerlink" href="#ballet.client.Client.project" title="Permalink to this definition">¶</a></dt>
 <dd><p>Access ballet-specific project info</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="ballet.client.Client.validate_feature_acceptance">
-<code class="sig-name descname">validate_feature_acceptance</code><span class="sig-paren">(</span><em class="sig-param">feature: ballet.feature.Feature</em>, <em class="sig-param">X_df: Optional[pandas.core.frame.DataFrame] = None</em>, <em class="sig-param">y_df: Optional[pandas.core.frame.DataFrame] = None</em>, <em class="sig-param">subsample: bool = False</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/ballet/client.html#Client.validate_feature_acceptance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.client.Client.validate_feature_acceptance" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">validate_feature_acceptance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">feature</span></em>, <em class="sig-param"><span class="n">X_df</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y_df</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">subsample</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/client.html#Client.validate_feature_acceptance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.client.Client.validate_feature_acceptance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate the performance of this feature</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="ballet.client.Client.validate_feature_api">
-<code class="sig-name descname">validate_feature_api</code><span class="sig-paren">(</span><em class="sig-param">feature: ballet.feature.Feature</em>, <em class="sig-param">X_df: Optional[pandas.core.frame.DataFrame] = None</em>, <em class="sig-param">y_df: Optional[pandas.core.frame.DataFrame] = None</em>, <em class="sig-param">subsample: bool = False</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/ballet/client.html#Client.validate_feature_api"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.client.Client.validate_feature_api" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">validate_feature_api</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">feature</span></em>, <em class="sig-param"><span class="n">X_df</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y_df</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">subsample</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/client.html#Client.validate_feature_api"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.client.Client.validate_feature_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that this feature satisfies the expected feature API</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

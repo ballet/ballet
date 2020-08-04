@@ -30,7 +30,7 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -308,16 +308,9 @@
             
   <div class="section" id="module-ballet.eng.misc">
 <span id="ballet-eng-misc-module"></span><h1>ballet.eng.misc module<a class="headerlink" href="#module-ballet.eng.misc" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="ballet.eng.misc.IdentityTransformer">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.misc.</code><code class="sig-name descname">IdentityTransformer</code><a class="reference internal" href="../_modules/ballet/eng/misc.html#IdentityTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.misc.IdentityTransformer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.preprocessing._function_transformer.FunctionTransformer</span></code></p>
-<p>Simple transformer that passes through its input</p>
-</dd></dl>
-
-<dl class="class">
+<dl class="py class">
 <dt id="ballet.eng.misc.BoxCoxTransformer">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.misc.</code><code class="sig-name descname">BoxCoxTransformer</code><span class="sig-paren">(</span><em class="sig-param">threshold</em>, <em class="sig-param">lmbda=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/misc.html#BoxCoxTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.misc.BoxCoxTransformer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.misc.</code><code class="sig-name descname">BoxCoxTransformer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">lmbda</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/misc.html#BoxCoxTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.misc.BoxCoxTransformer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="ballet.eng.base.html#ballet.eng.base.ConditionalTransformer" title="ballet.eng.base.ConditionalTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.base.ConditionalTransformer</span></code></a></p>
 <p>Conditionally apply the Box-Cox transformation</p>
 <p>In the fit stage, determines which variables (columns) have absolute skew
@@ -337,9 +330,35 @@ transformation of 1+x to each variable selected previously.</p>
 </div>
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
+<dt id="ballet.eng.misc.IdentityTransformer">
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.misc.</code><code class="sig-name descname">IdentityTransformer</code><a class="reference internal" href="../_modules/ballet/eng/misc.html#IdentityTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.misc.IdentityTransformer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.preprocessing._function_transformer.FunctionTransformer</span></code></p>
+<p>Simple transformer that passes through its input</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="ballet.eng.misc.NamedFramer">
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.misc.</code><code class="sig-name descname">NamedFramer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/misc.html#NamedFramer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.misc.NamedFramer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ballet.eng.base.html#ballet.eng.base.BaseTransformer" title="ballet.eng.base.BaseTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.base.BaseTransformer</span></code></a></p>
+<p>Convert object to named 1d DataFrame</p>
+<p>If transformation is successful, the resulting object is a DataFrame with a
+<code class="docutils literal notranslate"><span class="pre">name</span></code> attribute as given.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> – name for resulting DataFrame</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="ballet.eng.misc.NamedFramer.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">transform_kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/misc.html#NamedFramer.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.misc.NamedFramer.transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="ballet.eng.misc.ValueReplacer">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.misc.</code><code class="sig-name descname">ValueReplacer</code><span class="sig-paren">(</span><em class="sig-param">value</em>, <em class="sig-param">replacement</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/misc.html#ValueReplacer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.misc.ValueReplacer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.misc.</code><code class="sig-name descname">ValueReplacer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">replacement</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/misc.html#ValueReplacer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.misc.ValueReplacer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="ballet.eng.base.html#ballet.eng.base.BaseTransformer" title="ballet.eng.base.BaseTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.base.BaseTransformer</span></code></a></p>
 <p>Replace instances of some value with some replacement</p>
 <dl class="field-list simple">
@@ -350,28 +369,9 @@ transformation of 1+x to each variable selected previously.</p>
 </ul>
 </dd>
 </dl>
-<dl class="method">
+<dl class="py method">
 <dt id="ballet.eng.misc.ValueReplacer.transform">
-<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">**transform_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/misc.html#ValueReplacer.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.misc.ValueReplacer.transform" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="ballet.eng.misc.NamedFramer">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.misc.</code><code class="sig-name descname">NamedFramer</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/misc.html#NamedFramer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.misc.NamedFramer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="ballet.eng.base.html#ballet.eng.base.BaseTransformer" title="ballet.eng.base.BaseTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.base.BaseTransformer</span></code></a></p>
-<p>Convert object to named 1d DataFrame</p>
-<p>If transformation is successful, the resulting object is a DataFrame with a
-<code class="docutils literal notranslate"><span class="pre">name</span></code> attribute as given.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>name</strong> – name for resulting DataFrame</p>
-</dd>
-</dl>
-<dl class="method">
-<dt id="ballet.eng.misc.NamedFramer.transform">
-<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">**transform_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/misc.html#NamedFramer.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.misc.NamedFramer.transform" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">transform_kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/misc.html#ValueReplacer.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.misc.ValueReplacer.transform" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

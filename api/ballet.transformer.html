@@ -30,7 +30,7 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -306,33 +306,33 @@
             
   <div class="section" id="module-ballet.transformer">
 <span id="ballet-transformer-module"></span><h1>ballet.transformer module<a class="headerlink" href="#module-ballet.transformer" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="ballet.transformer.ConversionApproach">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.transformer.</code><code class="sig-name descname">ConversionApproach</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">convert</em>, <em class="sig-param">caught</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/transformer.html#ConversionApproach"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.transformer.ConversionApproach" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.transformer.</code><code class="sig-name descname">ConversionApproach</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">convert</span></em>, <em class="sig-param"><span class="n">caught</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/transformer.html#ConversionApproach"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.transformer.ConversionApproach" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ballet.transformer.ConversionApproach.caught">
-<code class="sig-name descname">caught</code><a class="headerlink" href="#ballet.transformer.ConversionApproach.caught" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">caught</code><em class="property">: Collection<span class="p">[</span>type<span class="p">]</span></em><a class="headerlink" href="#ballet.transformer.ConversionApproach.caught" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 2</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ballet.transformer.ConversionApproach.convert">
-<code class="sig-name descname">convert</code><a class="headerlink" href="#ballet.transformer.ConversionApproach.convert" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">convert</code><em class="property">: Callable</em><a class="headerlink" href="#ballet.transformer.ConversionApproach.convert" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 1</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ballet.transformer.ConversionApproach.name">
-<code class="sig-name descname">name</code><a class="headerlink" href="#ballet.transformer.ConversionApproach.name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">name</code><em class="property">: str</em><a class="headerlink" href="#ballet.transformer.ConversionApproach.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 0</p>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="ballet.transformer.DelegatingRobustTransformer">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.transformer.</code><code class="sig-name descname">DelegatingRobustTransformer</code><span class="sig-paren">(</span><em class="sig-param">transformer: ballet.eng.base.BaseTransformer</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/transformer.html#DelegatingRobustTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.transformer.DelegatingRobustTransformer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.transformer.</code><code class="sig-name descname">DelegatingRobustTransformer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">transformer</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/transformer.html#DelegatingRobustTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.transformer.DelegatingRobustTransformer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="ballet.util.html#ballet.util.DeepcopyMixin" title="ballet.util.DeepcopyMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.util.DeepcopyMixin</span></code></a>, <a class="reference internal" href="ballet.eng.base.html#ballet.eng.base.BaseTransformer" title="ballet.eng.base.BaseTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.base.BaseTransformer</span></code></a></p>
 <p>Robust transformer that delegates to underlying transformer</p>
 <p>This transformer is robust against different typed and shaped input data.
@@ -340,51 +340,66 @@ It tries a variety of input data conversion approaches and passes the
 result to the underlying transformer, using the first approach that works.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>transformer</strong> – a transformer object with fit and transform methods</p>
+<dd class="field-odd"><p><strong>transformer</strong> (<a class="reference internal" href="ballet.eng.base.html#ballet.eng.base.BaseTransformer" title="ballet.eng.base.BaseTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTransformer</span></code></a>) – a transformer object with fit and transform methods</p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><a class="reference internal" href="ballet.exc.html#ballet.exc.UnsuccessfulInputConversionError" title="ballet.exc.UnsuccessfulInputConversionError"><strong>UnsuccessfulInputConversionError</strong></a> – If none of the conversion approaches
     work.</p>
 </dd>
 </dl>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ballet.transformer.DelegatingRobustTransformer.CONVERSION_APPROACHES">
 <code class="sig-name descname">CONVERSION_APPROACHES</code><em class="property"> = [ConversionApproach(name='identity', convert=&lt;function identity&gt;, caught=(&lt;class 'ValueError'&gt;, &lt;class 'TypeError'&gt;)), ConversionApproach(name='series', convert=&lt;class 'pandas.core.series.Series'&gt;, caught=(&lt;class 'ValueError'&gt;, &lt;class 'TypeError'&gt;)), ConversionApproach(name='dataframe', convert=&lt;class 'pandas.core.frame.DataFrame'&gt;, caught=(&lt;class 'ValueError'&gt;, &lt;class 'TypeError'&gt;)), ConversionApproach(name='array', convert=&lt;function asarray&gt;, caught=(&lt;class 'ValueError'&gt;, &lt;class 'TypeError'&gt;)), ConversionApproach(name='asarray2d', convert=&lt;function asarray2d&gt;, caught=())]</em><a class="headerlink" href="#ballet.transformer.DelegatingRobustTransformer.CONVERSION_APPROACHES" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="ballet.transformer.DelegatingRobustTransformer.DEFAULT_CAUGHT">
 <code class="sig-name descname">DEFAULT_CAUGHT</code><em class="property"> = (&lt;class 'ValueError'&gt;, &lt;class 'TypeError'&gt;)</em><a class="headerlink" href="#ballet.transformer.DelegatingRobustTransformer.DEFAULT_CAUGHT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="ballet.transformer.DelegatingRobustTransformer.fit">
-<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/transformer.html#DelegatingRobustTransformer.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.transformer.DelegatingRobustTransformer.fit" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/transformer.html#DelegatingRobustTransformer.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.transformer.DelegatingRobustTransformer.fit" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="ballet.transformer.DelegatingRobustTransformer.transform">
-<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/transformer.html#DelegatingRobustTransformer.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.transformer.DelegatingRobustTransformer.transform" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/transformer.html#DelegatingRobustTransformer.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.transformer.DelegatingRobustTransformer.transform" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="ballet.transformer.make_robust_transformer">
-<code class="sig-prename descclassname">ballet.transformer.</code><code class="sig-name descname">make_robust_transformer</code><span class="sig-paren">(</span><em class="sig-param">transformer: Union[Callable, ballet.eng.BaseTransformer, Collection[Union[Callable, ballet.eng.BaseTransformer]]]</em><span class="sig-paren">)</span> &#x2192; Union[sklearn_pandas.pipeline.TransformerPipeline, ballet.transformer.DelegatingRobustTransformer]<a class="reference internal" href="../_modules/ballet/transformer.html#make_robust_transformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.transformer.make_robust_transformer" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="ballet.transformer.make_robust_transformer_pipeline">
-<code class="sig-prename descclassname">ballet.transformer.</code><code class="sig-name descname">make_robust_transformer_pipeline</code><span class="sig-paren">(</span><em class="sig-param">steps: Collection[ballet.eng.base.BaseTransformer]</em><span class="sig-paren">)</span> &#x2192; sklearn_pandas.pipeline.TransformerPipeline<a class="reference internal" href="../_modules/ballet/transformer.html#make_robust_transformer_pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.transformer.make_robust_transformer_pipeline" title="Permalink to this definition">¶</a></dt>
-<dd><p>Construct a transformer pipeline of DelegatingRobustTransformers</p>
+<code class="sig-prename descclassname">ballet.transformer.</code><code class="sig-name descname">make_robust_transformer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">transformer</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/transformer.html#make_robust_transformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.transformer.make_robust_transformer" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TransformerPipeline</span></code>, <a class="reference internal" href="#ballet.transformer.DelegatingRobustTransformer" title="ballet.transformer.DelegatingRobustTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">DelegatingRobustTransformer</span></code></a>]</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
+<dt id="ballet.transformer.make_robust_transformer_pipeline">
+<code class="sig-prename descclassname">ballet.transformer.</code><code class="sig-name descname">make_robust_transformer_pipeline</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">steps</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/transformer.html#make_robust_transformer_pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.transformer.make_robust_transformer_pipeline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a transformer pipeline of DelegatingRobustTransformers</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">TransformerPipeline</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ballet.transformer.make_transformer_pipeline">
-<code class="sig-prename descclassname">ballet.transformer.</code><code class="sig-name descname">make_transformer_pipeline</code><span class="sig-paren">(</span><em class="sig-param">steps: Sequence[ballet.eng.base.BaseTransformer]</em><span class="sig-paren">)</span> &#x2192; sklearn_pandas.pipeline.TransformerPipeline<a class="reference internal" href="../_modules/ballet/transformer.html#make_transformer_pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.transformer.make_transformer_pipeline" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.transformer.</code><code class="sig-name descname">make_transformer_pipeline</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">steps</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/transformer.html#make_transformer_pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.transformer.make_transformer_pipeline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct a TransformerPipeline from the given estimators.</p>
 <p>Source: sklearn_pandas.cont_method</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">TransformerPipeline</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>

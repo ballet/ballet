@@ -30,7 +30,7 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -308,9 +308,9 @@
             
   <div class="section" id="module-ballet.validation.entropy">
 <span id="ballet-validation-entropy-module"></span><h1>ballet.validation.entropy module<a class="headerlink" href="#module-ballet.validation.entropy" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="ballet.validation.entropy.estimate_conditional_information">
-<code class="sig-prename descclassname">ballet.validation.entropy.</code><code class="sig-name descname">estimate_conditional_information</code><span class="sig-paren">(</span><em class="sig-param">x: numpy.ndarray</em>, <em class="sig-param">y: numpy.ndarray</em>, <em class="sig-param">z: numpy.ndarray</em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../_modules/ballet/validation/entropy.html#estimate_conditional_information"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.estimate_conditional_information" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.validation.entropy.</code><code class="sig-name descname">estimate_conditional_information</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">z</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#estimate_conditional_information"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.estimate_conditional_information" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimate the conditional mutual information of x and y given z</p>
 <p>Conditional mutual information is the mutual information of two datasets,
 given a third:</p>
@@ -330,14 +330,17 @@ d_{xz} + d_{yz} - d_{xyz} - d_z
 \end{align}</div><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> – An array with shape (n_samples, n_features_x)</p></li>
-<li><p><strong>y</strong> – An array with shape (n_samples, n_features_y)</p></li>
-<li><p><strong>z</strong> – An array with shape (n_samples, n_features_z).
+<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – An array with shape (n_samples, n_features_x)</p></li>
+<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – An array with shape (n_samples, n_features_y)</p></li>
+<li><p><strong>z</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – An array with shape (n_samples, n_features_z).
 This is the dataset being conditioned on.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>conditional mutual information of x and y given z.</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>conditional mutual information of x and y given z.</p>
 </dd>
 </dl>
 <p>References:</p>
@@ -349,9 +352,9 @@ information”. Phys. Rev. E 69, 2004.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="ballet.validation.entropy.estimate_entropy">
-<code class="sig-prename descclassname">ballet.validation.entropy.</code><code class="sig-name descname">estimate_entropy</code><span class="sig-paren">(</span><em class="sig-param">x: numpy.ndarray</em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../_modules/ballet/validation/entropy.html#estimate_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.estimate_entropy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.validation.entropy.</code><code class="sig-name descname">estimate_entropy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#estimate_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.estimate_entropy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimate dataset entropy.</p>
 <p>This function can take datasets of mixed discrete and continuous features,
 and uses a set of heuristics to determine which functions to apply to
@@ -371,11 +374,14 @@ dataset in the same row as a discrete column with value x in the original
 dataset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> – Dataset with shape (n_samples, n_features) or
+<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Dataset with shape (n_samples, n_features) or
 (n_samples, )</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Dataset entropy of X.</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Dataset entropy of X.</p>
 </dd>
 </dl>
 <p>References:</p>
@@ -387,9 +393,9 @@ information”. Phys. Rev. E 69, 2004.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="ballet.validation.entropy.estimate_mutual_information">
-<code class="sig-prename descclassname">ballet.validation.entropy.</code><code class="sig-name descname">estimate_mutual_information</code><span class="sig-paren">(</span><em class="sig-param">x: numpy.ndarray</em>, <em class="sig-param">y: numpy.ndarray</em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../_modules/ballet/validation/entropy.html#estimate_mutual_information"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.estimate_mutual_information" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ballet.validation.entropy.</code><code class="sig-name descname">estimate_mutual_information</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/entropy.html#estimate_mutual_information"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.entropy.estimate_mutual_information" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimate the mutual information of two datasets.</p>
 <p>Mutual information is a measure of dependence between
 two datasets and is calculated as:</p>
@@ -400,12 +406,15 @@ adapts the KSG Estimator [1] for mutual information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> – An array with shape (n_samples, n_features_x)</p></li>
-<li><p><strong>y</strong> – An array with shape (n_samples, n_features_y)</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – An array with shape (n_samples, n_features_x)</p></li>
+<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – An array with shape (n_samples, n_features_y)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>mutual information of x and y</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>mutual information of x and y</p>
 </dd>
 </dl>
 <p>References:</p>
