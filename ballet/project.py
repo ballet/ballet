@@ -3,7 +3,7 @@ import sys
 from functools import partial
 from importlib import import_module
 from types import ModuleType
-from typing import Any, Callable, List, Tuple
+from typing import Any, Callable, List, Optional, Tuple
 
 import git
 from dynaconf import Dynaconf
@@ -215,7 +215,7 @@ class Project:
             return module
 
     @property
-    def pr_num(self) -> str:
+    def pr_num(self) -> Optional[str]:
         """Return the PR number or None if not on a PR"""
         result = get_pr_num(repo=self.repo)
         if result is None:
@@ -228,7 +228,7 @@ class Project:
         return self.pr_num is not None
 
     @property
-    def branch(self) -> str:
+    def branch(self) -> Optional[str]:
         """Return current git branch according to git tree or CI environment"""
         result = get_branch(repo=self.repo)
         if result is None:
