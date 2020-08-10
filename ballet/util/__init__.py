@@ -138,12 +138,23 @@ def raiseifnone(call: Call):
 
 
 def falsy(o) -> bool:
+    """Check whether o is falsy
+
+    In this case, a falsy value is one of the following:
+    1. the singleton value `False`
+    2. the string 'false' (ignoring case)
+    3. the empty string
+    """
     if isinstance(o, bool):
         return not o
     return isinstance(o, str) and (o.lower() == 'false' or o == '')
 
 
 truthy = complement(falsy)
+"""Check whether o is truthy
+
+In this case, a truthy value is any value that is not falsy.
+"""
 
 
 @decorator
