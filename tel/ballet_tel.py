@@ -1,0 +1,2 @@
+def install():
+    print('installed')
