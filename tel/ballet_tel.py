@@ -1,12 +1,14 @@
-import ballet.client
 import requests
-
-from funcy import decorator
+from funcy import decorator, silent
 from notebook.notebookapp import list_running_servers
+
 servers = list(list_running_servers())
 server = servers[0] if len(servers) == 1 else None
 
+import ballet.client  # noqa
 
+
+@silent
 def event(name, details):
     if server is not None:
         requests.post(
