@@ -437,12 +437,23 @@
 
 
 <div class="viewcode-block" id="falsy"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.falsy">[docs]</a><span class="k">def</span> <span class="nf">falsy</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Check whether o is falsy</span>
+
+<span class="sd">    In this case, a falsy value is one of the following:</span>
+<span class="sd">    1. the singleton value `False`</span>
+<span class="sd">    2. the string &#39;false&#39; (ignoring case)</span>
+<span class="sd">    3. the empty string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="n">o</span>
     <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;false&#39;</span> <span class="ow">or</span> <span class="n">o</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">)</span></div>
 
 
 <span class="n">truthy</span> <span class="o">=</span> <span class="n">complement</span><span class="p">(</span><span class="n">falsy</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;Check whether o is truthy</span>
+
+<span class="sd">In this case, a truthy value is any value that is not falsy.</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
 
 <div class="viewcode-block" id="nonnegative"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.nonnegative">[docs]</a><span class="nd">@decorator</span>
