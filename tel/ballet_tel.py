@@ -15,10 +15,18 @@ def event(name, details):
     if call_depth == 0:
         logger.info(f'Got event {name} with details {details}')
         if server is not None:
-            requests.post(
+            response = requests.post(
                 server['url'] + 'ballet/tel',
-                headers={'token': server['token']},
-                json={'name': name, 'details': details})
+                params={'token': server['token']},
+                json={'name': name, 'details': details}
+            )
+            if not response.ok:
+                logger.info(f'Failed to post event {name}')
+                logger.debug(response.status_code)
+                logger.debug(response.reason)
+                logger.debug(response.url)
+                logger.debug(response.headers)
+                logger.debug(response.text)
 
 
 @contextmanager
