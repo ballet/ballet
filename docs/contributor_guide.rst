@@ -11,11 +11,11 @@ used for predicting the sale price of houses in Ames, Iowa, given raw data about
 
 .. tip::
 
-   Please feel free to ask for help on our Slack channel!
+   Please ask for help on our Zulip chat!
 
-   .. image:: https://img.shields.io/static/v1?label=chat&message=on%20slack&color=4A154B&logo=slack
-      :alt: Chat on Slack
-      :target: https://slack.com/share/IUQBPT316/gXn5PKAJGNnqfX0Mz1oKDRDJ/enQtOTc2Mzk3OTIxMDQwLTUxNDUzNmUxMzY0YTJmNGFiMGFmNGI3YWIyOWY2ZDZjYzRhOGE4MGVjYzA4ZDQ4ZjRkNDE0OTQ2ZTRmMzJmNjA
+   .. image:: https://img.shields.io/badge/zulip-join_chat-brightgreen.svg
+      :alt: Chat on Zulip
+      :target: https://ballet.zulipchat.com/join/v5213tzw4dm7b4djxcwzfl1q/
 
 
 Cloud Feature Development Workflow
@@ -25,24 +25,38 @@ Some Ballet projects may have set up a development workflow using a hosted Jupyt
 environment and an in-lab submission extension. This greatly simplifies the development workflow
 at the cost of some flexibility.
 
-#. Click the |launch-binder| link in the project's README to launch an interactive notebook.
+#. **Launch**. Click the |launch-binder| link in the project's README to launch an interactive notebook. This may take a few minutes while Binder builds the repository -- grab a cup of coffee!
 
-#. Open a demo notebook or create a new notebook.
+#. **Notebook**. Begin editing the demo notebook or create a new notebook.
 
-#. Develop a new feature. See `write your feature`_ below.
+#. **GitHub**. Authenticate with GitHub by clicking the GitHub icon on the right side of the Notebook toolbar as shown. This will initiate an authentication process in which you will be able to log into your GitHub account and authorize ``ballet-github-oauth-gateway`` for limited access to your account. As a result of this secure process, the Ballet Lab extension will be able to submit your feature on your behalf to the upstream project.
 
-#. Test your feature. See `test your feature`_ below.
+   .. image:: _static/auth_with_github.gif
+      :alt: An animation of a user proceeding with the GitHub authentication flow in a demo notebook.
+      :align: center
+      :scale: 75%
 
-#. Submit your feature. Find the submission button provided by the Jupyter Lab extension, as
+   When you have successfully authenticated, the GitHub icon will change color to green.
+
+#. **Develop**. Develop a new feature. See `write your feature`_ below, and the project may have prompts in the notebook to guide you. See also the `Feature Engineering Guide`_.
+
+#. **Test**. Test your feature. See `test your feature`_ below, and the project may have prompts in the notebook to guide you.
+
+#. **Submit**. Submit your feature.
+
+   First, *select the code cell* that contains the feature.
+
+   Next, locate the submission button provided by the Jupyter Lab extension, as
    shown in the screenshot.
 
-   .. image:: _static/labextension_submit_button_annotated.png
+   .. image:: _static/labextension_submit_button_annotated_submit.png
       :alt: The submission button illustrated in a notebook.
       :align: center
       :scale: 75%
 
-   When you have finished developing your feature, select the code cell that contains the feature
-   and press the "Submit" button. You will be asked to confirm that you want to submit the feature.
+   When you are ready, press the "Submit" button. You will be asked to confirm that you want to submit the feature.
+
+   If the submission succeeds, you will get a link to the pull request that is associated with your feature. If it fails, you will get an explanation of the failure.
 
    .. note::
 
@@ -230,21 +244,22 @@ Understanding Validation Results
 
 Once you have developed and submitted a feature, Ballet will validate it in four steps in an isolated continuous integration environment.
 
-#. Check feature API: does your feature behave properly on expected and unexpected inputs?
-    For example, it should not produce feature values with NaNs or throw errors on well-formed
-    data instances.
+#. Check feature API: does your feature behave properly on expected and
+unexpected inputs? For example, it should not produce feature values with
+NaNs or throw errors on well-formed data instances.
 
-#. Check project structure: does your PR respect the project structure, that is, you have
-    created valid Python modules at the right path, etc.
+#. Check project structure: does your PR respect the project structure, that
+is, you have created valid Python modules at the right path, etc.
 
-#. Evaluate feature acceptance: do the feature values that your feature extracts contribute
-    to the machine learning goals? Depending on the configuration of the upstream project, the
-    project may evaluate your features in a more or less aggressive manner, ranging from
-    accepting all features to accepting only those that produce an information gain greater
-    than some threshold.
+#. Evaluate feature acceptance: do the feature values that your feature
+extracts contribute to the machine learning goals? Depending on the
+configuration of the upstream project, the project may evaluate your
+features in a more or less aggressive manner, ranging from accepting all
+features to accepting only those that produce an information gain greater
+than some threshold.
 
-#. Evaluate feature pruning: does the introduction of your feature cause other features to be
-    unnecessary? If so they may be pruned.
+#. Evaluate feature pruning: does the introduction of your feature cause
+other features to be unnecessary? If so they may be pruned.
 
 Depending on the configuration of the upstream project, you will see various "bots" act on
 these steps. If your PR passes the first three steps, the `Ballet Bot`_ may approve and merge

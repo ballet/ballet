@@ -12,6 +12,6 @@ Are you interested in joining the collaboration?
 - Read the [Ballet Contributor Guide](https://hdi-project.github.io/ballet/contributor_guide.html)
 - Read the [Ballet Feature Engineering Guide](https://hdi-project.github.io/ballet/feature_engineering_guide.html)
 - Browse the currently accepted features in the contributed features
-    directory ([`src/{{ cookiecutter.package_slug }}/features/contrib`](src/ballet_predict_house_prices/features/contrib))
+    directory ([`src/{{ cookiecutter.package_slug }}/features/contrib`](src/{{ cookiecutter.package_slug }}/features/contrib))
 - Launch an interactive Jupyter Lab session to hack on this repository:
     <a href="https://mybinder.org/v2/gh/{{ cookiecutter.github_owner }}/{{ cookiecutter.project_slug }}/master?urlpath=lab" target="_blank" rel="nofollow" ><img src="https://mybinder.org/badge_logo.svg" style="max-width:100%;"></a>
