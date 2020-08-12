@@ -38,7 +38,7 @@ at the cost of some flexibility.
 
    When you have successfully authenticated, the GitHub icon will change color to green.
 
-#. **Develop**. Develop a new feature. See `write your feature`_ below, and the project may have prompts in the notebook to guide you. See also the `Feature Engineering Guide`_.
+#. **Develop**. Develop a new feature. See `write your feature`_ below, and the project may have prompts in the notebook to guide you. See also the :doc:`feature_engineering_guide`.
 
 #. **Test**. Test your feature. See `test your feature`_ below, and the project may have prompts in the notebook to guide you.
 
@@ -162,8 +162,7 @@ Develop a new feature
 
    .. tip::
 
-      For a full tutorial on feature engineering in Ballet, check out the separate
-      :doc:`Feature Engineering Guide <./feature_engineering_guide>`.
+      For a full tutorial on feature engineering in Ballet, check out the separate :doc:`feature_engineering_guide`.
 
    Only the Python packages thare are existing dependencies of the project can be used in feature engineering. Otherwise, if the feature were to be accepted, then the feature engineering pipeline would break due to a missing dependency. Usually, the dependencies of a Ballet project are the core ``ballet`` package and its own dependencies. You can see all installed dependencies by running ``pip freeze`` from within the virtual environment. If you must use a package that is not currently a dependency, first install it locally and ensure that the feature you develop using that dependency is satisfactory. Then before submitting the feature, submit a separate PR that adds the dependency to the ``install_requires`` key of the project's ``setup.py`` file. You can also do this from the GitHub UI by pressing "edit" on the ``setup.py`` file. A maintainer will manually review your PR and must merge it before you submit your feature.
 
