@@ -103,7 +103,7 @@ check-docs: clean-docs ## check generation of Sphinx HTML documentation
 	$(MAKE) -C docs linkcheck text
 
 .PHONY: view-docs
-view-docs: docs ## view docs in browser
+view-docs: ## view current docs in browser
 	$(BROWSER) docs/_build/html/index.html
 
 .PHONY: serve-docs
