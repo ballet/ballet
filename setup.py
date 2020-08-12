@@ -31,6 +31,15 @@ requirements = [
     'stacklog',
 ]
 
+extras = {
+    'category_encoders': ['category_encoders>=2.2.2'],
+    'feature_engine': ['feature_engine>=0.5'],
+    'featuretools': ['featuretools_sklearn_transformer>=0.1'],
+    'skits': ['skits>=0.1.2'],
+    'tsfresh': ['tsfresh>=0.16'],
+}
+extras['all'] = [dep for deps in extras.values() for dep in deps]
+
 test_requirements = [
     'coverage>=4.5.1',
     'pytest>=3.4.2',
