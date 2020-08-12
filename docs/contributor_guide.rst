@@ -150,15 +150,8 @@ Develop a new feature
    In this example, a feature is defined that receives column ``'Lot Frontage'`` from the
    data and imputes missing values with the mean of the training data.
 
-   .. code-block:: python
-
-      from ballet import Feature
-      from sklearn.impute import SimpleImputer
-
-      input = ["Lot Frontage"]
-      transformer = SimpleImputer(strategy="mean")
-      name = "Imputed Lot Frontage"
-      feature = Feature(input=input, transformer=transformer, name=name)
+   .. include:: fragments/feature-engineering-guide-second-feature.py
+      :code: python
 
    .. tip::
 
