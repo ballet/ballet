@@ -4,9 +4,9 @@ Feature Engineering Guide
 
 Feature engineering is the process of transforming raw variables into feature values that can be
 input to a learning algorithm. In Ballet, feature engineering is centered around creating logical
-features.
+features. These are modular, flexible, and expressive and will allow us to compose an entire feature engineering pipeline out of individual feature objects.
 
-At the end of the day, a feature is a tuple ``(input_columns, transformer_to_apply)``. Your job
+Loosely, a feature is a tuple ``(input_columns, transformer_to_apply)``. Your job
 in feature engineering will be to define this tuple of input columns and a transformer to apply
 on them.
 
@@ -21,29 +21,24 @@ on them.
 Logical Features
 ----------------
 
-A logical feature is the semantics and implementation of code to extract feature values from raw
-data.
+A logical feature (or simply "feature") is the semantics and implementation of code to extract feature values from raw data. It is a learned map from raw variables in one data instance to feature values.
 
-It is a learned map from raw variables in one data instance to feature values,
+Less formally, a feature has
 
-.. math::
+- a meaning, like "column 1 after it has been cleaned using information from column 2"
+- a code representation, like a Python object that takes as input rows of raw data and produces as output rows of feature values. It also has a separate stage to *learn* import parameters from the rows of training data before it can be applied to the training data or to unseen test data.
 
-   f: \mathcal{D} \to \mathcal{X} \to \mathbb{R}^{q_f},
+A feature can produce either
 
-where :math:`q_f` is the dimensionality of the feature values extracted by :math:`f`.
+- a scalar feature value for each instance
+- a vector of feature values, as in the case of the embedding of a categorical variable.
 
-A logical feature can produce either a
-scalar feature value for each instance (q = 1) or a vector of feature values, as in the case of the
-embedding of a categorical variable (q > 1). Each logical feature is parameterized by D indicating
-that it learns any information it uses, such as variable means and variances, from D. This
-formalizes the separation between training and testing data to avoid any "leakage" of information
-during the feature engineering process.
+Each feature is "parameterized" by a dataset, usually the training dataset, indicating that it learns any information it uses, such as variable means and variances. This formalizes the separation between training and testing data to avoid any "leakage" of information during the feature engineering process.
 
-In Ballet, logical features are realized in Python as objects of type ``ballet.feature.Feature``.
-The input to the feature, in terms of columns of the raw dataset, is specified in the ``input``
-field. The transformation applied to the raw data is specified in the ``transformer`` field. The
-transformer is an object (or sequence of objects) that provide (or each provide) a fit/tranform
-interface.
+In Ballet, features are realized in Python as instances of ``ballet.feature.Feature`` with the following attributes:
+
+- ``input``: the input to the feature, in terms of columns of the raw dataset.
+- ``transformer``: the transformation applied to the raw data. The transformer is an object (or sequence of objects) that provide (or each provide) a fit/transform interface.
 
 Writing features
 ----------------
@@ -57,15 +52,8 @@ Here is a simple feature, for the `HDI-Project/ballet-predict-house-prices
 <https://github.com/HDI-Project/ballet-predict-house-prices>`_ problem. Imagine we are working with
 the following simplified dataset:
 
-.. code-block:: python
-
-   import pandas as pd
-   X_df = pd.DataFrame(data={
-      'Lot Frontage': [141, 80, 81, 93, 74],
-      'Lot Area': [31770, 11622, 14267, 11160, 13830],
-      'Exterior 1st': ['BrkFace', 'VinylSd', 'Wd Sdng', 'BrkFace', 'VinylSd'],
-   })
-   y_df = pd.Series(data=[215000, 105000, 172000, 244000, 189900], name='Sale Price')
+.. include:: fragments/simple_table.py
+   :code: python
 
 
 We define our first feature:
@@ -148,8 +136,8 @@ Transformers
 ^^^^^^^^^^^^
 
 The ``transformer`` field accepts either a transformer-like object or a list of transformer-like
-objects. By *transformer-like*, we mean objects that satisfy the scikit-learn Transformer API,
-having ``fit``, ``transform``, and ``fit_transform`` implementations.
+objects. By *transformer-like*, we mean objects that satisfy the scikit-learn `Transformer API`_,
+having ``fit``, ``transform``, and ``fit_transform`` implementations. Alternately, a callable that accepts the X DataFrame as input and produces an array-like as output can be provided. Ballet will take care of converting it into a ``FunctionTransformer`` object.
 
 Feature engineering pipelines
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -171,23 +159,20 @@ style.
 To ease this process, Ballet provides a library of feature engineering primitives,
 :py:mod:`ballet.eng`, which implements many common learned transformations and utilities.
 
-Many feature engineering primitives are also available in scikit-learn.
-
-Preprocessing
-^^^^^^^^^^^^^
-
-See `sklearn.preprocessing`_ for a collection of useful preprocessing transformers.
-
 Operating on groups
 ^^^^^^^^^^^^^^^^^^^
 
-See :py:class:`ballet.eng.base.GroupedFunctionTransformer` and
-:py:class:`ballet.eng.base.GroupwiseTransformer`.
+See:
+
+- :py:class:`ballet.eng.base.GroupedFunctionTransformer` and
+- :py:class:`ballet.eng.base.GroupwiseTransformer`.
 
 Addressing missing values
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-See `sklearn.impute`_ and :py:mod:`ballet.eng.missing`.
+See:
+
+- :py:mod:`ballet.eng.missing`.
 
 Operating on time series data
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -197,8 +182,72 @@ See :py:mod:`ballet.eng.ts`.
 Other primitives
 ^^^^^^^^^^^^^^^^
 
-See :py:class:`ballet.eng.base.SimpleFunctionTransformer` and
-:py:class:`ballet.eng.base.ConditionalTransformer`.
+See:
+
+- :py:class:`ballet.eng.base.SimpleFunctionTransformer`
+- :py:class:`ballet.eng.base.ConditionalTransformer`.
+
+External libraries
+^^^^^^^^^^^^^^^^^^
+
+Many feature engineering primitives are also available in scikit-learn and other libraries. Don't reinvent the wheel!
+
+Ballet re-exports feature engineering primitives from external libraries. Note that not all primitives may be relevant for all projects, for example many feature engineering primitives from ``skits`` and ``tsfresh`` are only appropriate for time-series forecasting problems.
+
+- :py:mod:`ballet.eng.ext.category_encoders` (primitives from `category_encoders`_)
+- :py:mod:`ballet.eng.ext.feature_engine` (primitives from `feature_engine`_)
+- :py:mod:`ballet.eng.ext.featuretools` (primitives from `featuretools`_)
+- :py:mod:`ballet.eng.ext.skits` (primitives from `skits`_)
+- :py:mod:`ballet.eng.ext.sklearn_pandas` (primitives from `sklearn_pandas`_)
+- :py:mod:`ballet.eng.ext.sklearn` (primitives from `sklearn`_)
+- :py:mod:`ballet.eng.ext.tsfresh` (primitives from `tsfresh`_)
+
+Pandas |lrarrow| Ballet Examples
+--------------------------------
+
+It may be helpful to see a lot of examples of pandas-style code with the associated Ballet feature implementations, especially if you are more familiar with writing imperative pandas code.
+
+Recall that we will be working with the simplified table ``X_df`` from above:
+
+.. csv-table::
+   :header-rows: 1
+   :file: fragments/simple_table_data.csv
+   :delim: tab
+
+The first two examples are pretty simple.
+
+In example 3, we can see where Ballet's ``Feature`` can be helpful compared to vanilla pandas for machine learning: we can easily incorporate a transformer from scikit-learn that learns the column mean on the training data and applies it on unseen test data.
+
+In example 4, we see how multiple transformers can be chained together in a list.
+
+
+.. list-table::
+   :width: 100%
+   :header-rows: 1
+
+   * -
+     - Pandas
+     - Ballet
+   * - 1
+     - .. include:: fragments/pandas-ballet-ex1-pandas.py
+          :code: python
+     - .. include:: fragments/pandas-ballet-ex1-ballet.py
+          :code: python
+   * - 2
+     - .. include:: fragments/pandas-ballet-ex2-pandas.py
+          :code: python
+     - .. include:: fragments/pandas-ballet-ex2-ballet.py
+          :code: python
+   * - 3
+     - .. include:: fragments/pandas-ballet-ex3-pandas.py
+          :code: python
+     - .. include:: fragments/pandas-ballet-ex3-ballet.py
+          :code: python
+   * - 4
+     - .. include:: fragments/pandas-ballet-ex4-pandas.py
+          :code: python
+     - .. include:: fragments/pandas-ballet-ex4-ballet.py
+          :code: python
 
 Rolling your own transformers
 -----------------------------
@@ -251,7 +300,7 @@ accessor. (If this were to be a new feature engineering primitive that would be 
 this one situation, we might want to add logic to allow the feature to operate on a DataFrame as
 well.) Next, in the transform stage, we check for each new instance whether the length is greater
 than or equal to the longest string length observed in the training data. The result will be a 1-d
-arrray (series) of bools. Finally, having created the transformer class, we create an instance of
+array (series) of ``bool``\ s. Finally, having created the transformer class, we create an instance of
 it and create our Feature object.
 
 Further reading
@@ -262,3 +311,12 @@ Further reading
 
 .. _`sklearn.preprocessing`: https://scikit-learn.org/stable/modules/classes.html#module-sklearn.preprocessing
 .. _`sklearn.impute`: https://scikit-learn.org/stable/modules/classes.html#module-sklearn.impute
+.. |lrarrow| replace:: ⇔
+.. _`Transformer API`: https://scikit-learn.org/stable/glossary.html#term-transformer
+.. _`category_encoders`: http://contrib.scikit-learn.org/category_encoders/
+.. _`feature_engine`: https://feature-engine.readthedocs.io/en/latest/
+.. _`featuretools`: https://www.featuretools.com/
+.. _`skits`: https://github.com/EthanRosenthal/skits
+.. _`sklearn_pandas`: https://github.com/scikit-learn-contrib/sklearn-pandas
+.. _`sklearn`: https://scikit-learn.org/stable/index.html
+.. _`tsfresh`: https://tsfresh.readthedocs.io/en/latest/index.html
