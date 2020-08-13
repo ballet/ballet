@@ -1,5 +1,12 @@
 # History
 
+## 0.7.6 (2020-08-12)
+
+* Re-export feature engineering primitives from various libraries
+* Show type annotations in docs
+* Update guides
+* Various bug fixes and improvements
+
 ## 0.7.5 (2020-08-03)
 
 * Make validator parameters configurable in ballet.yml file (e.g. λ_1 and λ_2 for GFSSF algorithms)
@@ -15,7 +22,7 @@
 * Add `load_data` method with built-in caching to project API
 * Fix bug in GFSSF accepter
 * Always use encoded target during validation
-* Bug fixes and performance improvements
+* Various bug fixes and improvements
 
 ## 0.7.2 (2020-07-21)
 

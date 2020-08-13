@@ -98,6 +98,7 @@ setup(
     extras_require={
         'test': test_requirements,
         'dev': development_requirements + test_requirements,
+        **extras,
     },
     install_requires=requirements,
     license='MIT license',

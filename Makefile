@@ -135,3 +135,7 @@ install-test: clean-build clean-pyc ## install the package and test dependencies
 .PHONY: install-develop
 install-develop: clean-build clean-pyc ## install the package in editable mode and dependencies for development
 	pip install -e .[dev]
+
+.PHONY: install-develop-all
+install-develop-all: clean-build clean-pyc ## install the package in editable mode and dependencies for development
+	pip install -e .[dev,all]
