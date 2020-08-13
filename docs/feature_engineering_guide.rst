@@ -89,8 +89,7 @@ We define our first feature:
 .. include:: fragments/feature-engineering-guide-first-feature.py
    :code: python
 
-This feature requests one input, the ``Lot Area`` column of the raw dataset. It's transformer is a
-simple identity map. Thus when the feature is executed as part of a pipeline, the transformer's fit
+This feature requests one input, the ``Lot Area`` column of the raw dataset. It's transformer is given as ``None``, a value indicating the identity transformation. (This is equivalent to providing ``lambda df: df`` or :py:class:`ballet.eng.IdentityTransformer`.) Thus when the feature is executed as part of a pipeline, the transformer's fit
 and transform methods will be called receiving the one column as input.
 
 .. code-block:: python
@@ -172,9 +171,13 @@ data.
 Transformers
 ^^^^^^^^^^^^
 
-The ``transformer`` field accepts either a transformer-like object or a list of transformer-like
-objects. By *transformer-like*, we mean objects that satisfy the scikit-learn `Transformer API`_,
-having ``fit``, ``transform``, and ``fit_transform`` implementations. Alternately, a callable that accepts the X DataFrame as input and produces an array-like as output can be provided. Ballet will take care of converting it into a ``FunctionTransformer`` object.
+The ``transformer`` field accepts either one or a list of transformer-like objects.
+
+A *transformer-like* is any of the following:
+
+- an object that satisfies the scikit-learn `Transformer API`_, having ``fit``, ``transform``, and ``fit_transform`` methods.
+- a callable that accepts the ``X`` DataFrame as input and produces an array-like as output. This can be thought of as a transformer that does not have a fit stage. Ballet will take care of converting it into a :py:class:`FunctionTransformer` object.
+- the value ``None``, shorthand to indicate the identity transformer. Ballet will convert it into a :py:class:`IdentityTransformer` object.
 
 Feature engineering pipelines
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -236,7 +239,6 @@ Ballet re-exports feature engineering primitives from external libraries. Note t
 - :py:mod:`ballet.eng.feature_engine` (primitives from `feature_engine`_)
 - :py:mod:`ballet.eng.featuretools` (primitives from `featuretools`_)
 - :py:mod:`ballet.eng.skits` (primitives from `skits`_)
-- :py:mod:`ballet.eng.sklearn_pandas` (primitives from `sklearn_pandas`_)
 - :py:mod:`ballet.eng.sklearn` (primitives from `sklearn`_)
 - :py:mod:`ballet.eng.tsfresh` (primitives from `tsfresh`_)
 
@@ -359,6 +361,5 @@ Further reading
 .. _`feature_engine`: https://feature-engine.readthedocs.io/en/latest/
 .. _`featuretools`: https://www.featuretools.com/
 .. _`skits`: https://github.com/EthanRosenthal/skits
-.. _`sklearn_pandas`: https://github.com/scikit-learn-contrib/sklearn-pandas
 .. _`sklearn`: https://scikit-learn.org/stable/index.html
 .. _`tsfresh`: https://tsfresh.readthedocs.io/en/latest/index.html

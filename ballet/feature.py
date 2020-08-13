@@ -22,11 +22,14 @@ class Feature:
     Args:
         input: required columns from the input dataframe needed for the
             transformation
-        transformer: transformer, or sequence of transformers. A "transformer"
-            is an instance of a class that provides a fit/transform-style
-            learned transformation. Alternately, a callable can be provided,
-            either by itself or in a list, in which case it will be converted
-            into a ``SimpleFunctionTransformer`` for convenience.
+        transformer: transformer, sequence of transformers, or ``None``. A
+            "transformer" is an instance of a class that provides a
+            fit/transform-style learned transformation. Alternately, a
+            callable can be provided, either by itself or in a list, in
+            which case it will be converted into a
+            :py:class:``FunctionTransformer`` for convenience. If ``None``
+            is provided, it will be replaced with the
+            :py:class:``IdentityTransformer``.
         name: name of the feature
         description: description of the feature
         output: ordered sequence of names of features

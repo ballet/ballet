@@ -6,4 +6,4 @@ from ballet.compat import PathLike
 T = TypeVar('T')
 OneOrMore = Union[T, Collection[T]]
 Pathy = Union[str, PathLike]
-TransformerLike = Union[Callable, 'ballet.eng.BaseTransformer']
+TransformerLike = Union[Callable, 'ballet.eng.BaseTransformer', None]

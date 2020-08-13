@@ -158,6 +158,15 @@ class FeatureTest(unittest.TestCase):
     def test_feature_init_with_list_of_transformers_and_callables(self):
         Feature(self.input, [self.transformer, funcy.identity])
 
+    def test_feature_init_with_none(self):
+        Feature(self.input, None)
+
+    def test_feature_init_with_list_of_none(self):
+        Feature(self.input, [None, None])
+
+    def test_feature_init_with_list_of_none_and_notnone(self):
+        Feature(self.input, [None, self.transformer])
+
     def test_feature_init_invalid_transformer_api(self):
         with self.assertRaises(ValueError):
             Feature(self.input, object())
