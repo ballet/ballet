@@ -1,5 +1,9 @@
 # History
 
+## 0.7.8 (2020-08-13)
+
+* Add CanTransformNewRowsCheck to feature API checks
+
 ## 0.7.7 (2020-08-12)
 
 * Support `None` as the transformer in a `Feature`, it will be automatically converted to an `IdentityTransformer`
