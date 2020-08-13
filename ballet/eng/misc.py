@@ -10,6 +10,7 @@ from sklearn.utils.validation import check_is_fitted
 
 from ballet.eng.base import BaseTransformer, ConditionalTransformer
 from ballet.util import get_arr_desc
+from ballet.util.typing import OneOrMore
 
 __all__ = (
     'BoxCoxTransformer',
@@ -149,3 +150,16 @@ class ComputedValueTransformer(BaseTransformer):
     def transform(self, X, **transform_kwargs):
         check_is_fitted(self, ['value_', 'dtype_'])
         return np.full_like(X, self.value_, dtype=self.dtype)
+
+
+class ColumnSelector(BaseTransformer):
+    """Select one or more columns from a DataFrame
+
+    Args:
+        cols: column or columns to select
+    """
+    def __init__(self, cols: OneOrMore[str]):
+        self.cols = cols
+
+    def transform(self, X, **transform_kwargs):
+        return X.loc(axis=1)[self.cols]
