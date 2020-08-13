@@ -18,3 +18,24 @@ try:
     from category_encoders import WOEEncoder
 except ImportError:
     pass
+
+
+__all__ = (
+    'BackwardDifferenceEncoder',
+    'BaseNEncoder',
+    'BinaryEncoder',
+    'CatBoostEncoder',
+    'CountEncoder',
+    'GLMMEncoder',
+    'HashingEncoder',
+    'HelmertEncoder',
+    'JamesSteinEncoder',
+    'LeaveOneOutEncoder',
+    'MEstimateEncoder',
+    'OneHotEncoder',
+    'OrdinalEncoder',
+    'PolynomialEncoder',
+    'SumEncoder',
+    'TargetEncoder',
+    'WOEEncoder',
+)

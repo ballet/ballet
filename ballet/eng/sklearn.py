@@ -21,3 +21,26 @@ try:
     from sklearn.impute import IterativeImputer
 except ImportError:
     pass
+
+
+__all__ = (
+    'Binarizer',
+    'FunctionTransformer',
+    'GaussianRandomProjection',
+    'IterativeImputer',
+    'KBinsDiscretizer',
+    'KNNImputer'
+    'MaxAbsScaler',
+    'MinMaxScaler',
+    'MissingIndicator',
+    'Normalizer',
+    'OneHotEncoder',
+    'OrdinalEncoder',
+    'PolynomialFeatures',
+    'PowerTransformer',
+    'QuantileTransformer',
+    'RobustScaler',
+    'SimpleImputer',
+    'SparseRandomProjection',
+    'StandardScaler',
+)
