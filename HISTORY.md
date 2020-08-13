@@ -1,5 +1,12 @@
 # History
 
+## 0.7.7 (2020-08-12)
+
+* Support `None` as the transformer in a `Feature`, it will be automatically converted to an `IdentityTransformer`
+* Implement `ColumnSelector`
+* Update docs
+* Various bug fixes and improvements
+
 ## 0.7.6 (2020-08-12)
 
 * Re-export feature engineering primitives from various libraries
