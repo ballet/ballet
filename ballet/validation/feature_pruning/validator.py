@@ -1,15 +1,13 @@
 import random
 
-from ballet.util import asarray2d
 from ballet.util.log import logger
 from ballet.util.testing import seeded
 from ballet.validation.base import FeaturePruner, FeaturePruningMixin
 from ballet.validation.common import RandomFeaturePerformanceEvaluator
-from ballet.validation.entropy import (
-    estimate_conditional_information, estimate_entropy)
+from ballet.validation.entropy import estimate_conditional_information
 from ballet.validation.gfssf import (
-    LAMBDA_1_ADJUSTMENT, LAMBDA_2_ADJUSTMENT, _compute_lmbdas,
-    _compute_threshold, _concat_datasets)
+    GFSSFPerformanceEvaluator, _compute_lmbdas, _compute_threshold,
+    _concat_datasets)
 
 
 class NoOpPruner(FeaturePruner):
@@ -31,66 +29,22 @@ class RandomPruner(FeaturePruningMixin, RandomFeaturePerformanceEvaluator):
 CMI_MESSAGE = "Calculating CMI of feature and target cond. on accpt features"
 
 
-class GFSSFPruner(FeaturePruner):
-    """A feature pruning evaluator that uses a modified version of
-    GFSSF[1] - specifically, lines 12-13 of agGFSSF.
-
-    Attributes:
-        X_df (array-like): The dataset to build features off of.
-        y (array-like): A single-column dataset representing the target
-            feature.
-        features (array-like): an array of ballet Features that have
-            already been accepted, to be pruned.
-        new_feature (ballet.Feature): the recently accepted Feature.
-        lmbda_1: GFSSF parameter used to calculate the information
-            threshold. Default is a function of the entropy of y.
-        lmbda_2: GFSSF parameter used to calculate the information
-            threshold. Default is a function of the entropy of y.
-        lambda_1_adjustment: Adjustment to estimated entropy used to
-            calculate lmbda_1.
-        lambda_2_adjustment: Adjustment to estimated entropy used to
-            calculate lmbda_2.
-
-    References:
-        [1] H. Li, X. Wu, Z. Li and W. Ding, "Group Feature Selection
-            with Streaming Features," 2013 IEEE 13th International
-            Conference on Data Mining, Dallas, TX, 2013, pp. 1109-1114.
-            doi: 10.1109/ICDM.2013.137
-
-    """
-
-    def __init__(
-        self,
-        *args,
-        lmbda_1: float = 0.0,
-        lmbda_2: float = 0.0,
-        lambda_1_adjustment: float = LAMBDA_1_ADJUSTMENT,
-        lambda_2_adjustment: float = LAMBDA_2_ADJUSTMENT
-    ):
-        super().__init__(*args)
-        self.y = asarray2d(self.y)
-        if lmbda_1 <= 0:
-            lmbda_1 = estimate_entropy(self.y) / lambda_1_adjustment
-        if lmbda_2 <= 0:
-            lmbda_2 = estimate_entropy(self.y) / lambda_2_adjustment
-        self.lmbda_1 = lmbda_1
-        self.lmbda_2 = lmbda_2
+class GFSSFPruner(FeaturePruningMixin, GFSSFPerformanceEvaluator):
 
     def prune(self):
-        feature_dfs_by_src = {}
-        for accepted_feature in [self.candidate_feature] + self.features:
-            accepted_df = accepted_feature.as_feature_engineering_pipeline(
-            ).fit_transform(self.X_df, self.y)
-            feature_dfs_by_src[accepted_feature.source] = accepted_df
+        """Prune using GFSSF
 
+        Uses lines 12-13 of agGFSSF
+        """
+
+        logger.info(f'Pruning features using {self}')
+
+        feature_dfs_by_src = self._get_feature_dfs_by_src()
         lmbda_1, lmbda_2 = _compute_lmbdas(
             self.lmbda_1, self.lmbda_2, feature_dfs_by_src
         )
 
-        logger.info(
-            "Pruning features using GFSSF: lambda_1={l1}, lambda_2={l2}"
-            .format(l1=lmbda_1, l2=lmbda_2)
-        )
+        logger.info(f'Recomputed lambda_1={lmbda_1}, lambda_2={lmbda_2}')
 
         redundant_features = []
         for candidate_feature in self.features:

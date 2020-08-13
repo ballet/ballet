@@ -81,8 +81,6 @@ def start_new_feature():
 def validate(check_all, check_project_structure, check_feature_api,
              evaluate_feature_acceptance, evaluate_feature_pruning):
     """Validate project changes from a candidate branch"""
-    import pathlib
-
     import ballet.util.log
     import ballet.project
     import ballet.validation.main
@@ -92,8 +90,7 @@ def validate(check_all, check_project_structure, check_feature_api,
                            format=ballet.util.log.SIMPLE_LOG_FORMAT,
                            echo=False)
 
-    cwd = pathlib.Path.cwd()
-    project = ballet.project.Project.from_path(cwd)
+    project = ballet.project.Project.from_cwd()
     ballet.validation.main.validate(
         project,
         check_project_structure or check_all,

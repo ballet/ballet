@@ -101,7 +101,7 @@ def _validate_feature_api(project: Project, force: bool = False):
         raise SkippedValidationTest('Not on PR')
 
     validator_class = _load_validator_class_params(
-            project, 'validation.feature_api_validator')
+        project, 'validation.feature_api_validator')
     validator = validator_class(project)
     result = validator.validate()
     if not result:
@@ -121,7 +121,7 @@ def _evaluate_feature_performance(project: Project, force: bool = False):
     accepted_features = get_accepted_features(features, proposed_feature)
 
     accepter_class = _load_validator_class_params(
-            project, 'validation.feature_accepter')
+        project, 'validation.feature_accepter')
     accepter = accepter_class(X_df, y, accepted_features, proposed_feature)
     accepted = accepter.judge()
 
@@ -147,7 +147,7 @@ def _prune_existing_features(
     accepted_features = get_accepted_features(features, proposed_feature)
 
     pruner_class = _load_validator_class_params(
-            project, 'validation.feature_pruner')
+        project, 'validation.feature_pruner')
     pruner = pruner_class(X_df, y, accepted_features, proposed_feature)
     redundant_features = pruner.prune()
 

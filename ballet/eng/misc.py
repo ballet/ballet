@@ -158,6 +158,7 @@ class ColumnSelector(BaseTransformer):
     Args:
         cols: column or columns to select
     """
+
     def __init__(self, cols: OneOrMore[str]):
         self.cols = cols
 
