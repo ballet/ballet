@@ -312,8 +312,10 @@
 <span class="kn">import</span> <span class="nn">dill</span> <span class="k">as</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="nb">all</span><span class="p">,</span> <span class="n">all_fn</span><span class="p">,</span> <span class="n">isa</span><span class="p">,</span> <span class="n">iterable</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
 
 <span class="kn">from</span> <span class="nn">ballet.feature</span> <span class="kn">import</span> <span class="n">Feature</span>
+<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">RANDOM_STATE</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.base</span> <span class="kn">import</span> <span class="n">BaseCheck</span>
 
 
@@ -395,6 +397,18 @@
         <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_feature_engineering_pipeline</span><span class="p">()</span>
         <span class="n">mapper</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
         <span class="n">mapper</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="CanTransformNewRowsCheck"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_api.checks.html#ballet.validation.feature_api.checks.CanTransformNewRowsCheck">[docs]</a><span class="k">class</span> <span class="nc">CanTransformNewRowsCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
+
+<div class="viewcode-block" id="CanTransformNewRowsCheck.check"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_api.checks.html#ballet.validation.feature_api.checks.CanTransformNewRowsCheck.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check that transform can be called on new, unseen rows&quot;&quot;&quot;</span>
+        <span class="n">mapper</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_feature_engineering_pipeline</span><span class="p">()</span>
+        <span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">RANDOM_STATE</span><span class="p">,</span>
+            <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">mapper</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X1</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y1</span><span class="p">)</span>
+        <span class="n">mapper</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X2</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="CanTransformOneRowCheck"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_api.checks.html#ballet.validation.feature_api.checks.CanTransformOneRowCheck">[docs]</a><span class="k">class</span> <span class="nc">CanTransformOneRowCheck</span><span class="p">(</span><span class="n">FeatureApiCheck</span><span class="p">):</span>
