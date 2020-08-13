@@ -2,7 +2,11 @@ import pandas as pd
 
 from ballet.eng.base import BaseTransformer, GroupedFunctionTransformer
 
-__all__ = ['LagImputer', 'NullFiller', 'NullIndicator']
+__all__ = (
+    'LagImputer',
+    'NullFiller',
+    'NullIndicator'
+)
 
 
 class LagImputer(GroupedFunctionTransformer):

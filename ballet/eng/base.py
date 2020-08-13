@@ -1,21 +1,25 @@
+from typing import Callable, Tuple
+
 import funcy
 import numpy as np
 import pandas as pd
 import sklearn.base
 from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.preprocessing import FunctionTransformer
 from sklearn.utils.validation import check_is_fitted
 
 from ballet.exc import BalletError
 from ballet.util import get_arr_desc
+from ballet.typing import OneOrMore, TransformerLike
 
-__all__ = [
+__all__ = (
     'BaseTransformer',
     'ConditionalTransformer',
     'GroupedFunctionTransformer',
     'GroupwiseTransformer',
     'NoFitMixin',
     'SimpleFunctionTransformer',
-]
+)
 
 
 class NoFitMixin:
@@ -30,49 +34,43 @@ class BaseTransformer(NoFitMixin, TransformerMixin, BaseEstimator):
     pass
 
 
-class SimpleFunctionTransformer(BaseTransformer):
+class SimpleFunctionTransformer(FunctionTransformer):
     """Transformer that applies a callable to its input
 
     The callable will be called on the input X in the transform stage,
     optionally with additional arguments and keyword arguments.
 
-    This will be eventually replaced with
-    ``sklearn.preprocessing.FunctionTransformer``.
+    A simple wrapper around :py:class:``FunctionTransformer``.
 
     Args:
-        func (callable): callable to apply
-        func_args (tuple): additional arguments to pass
-        func_kwargs (dict): keyword arguments to pass
+        func: callable to apply
+        func_args: additional arguments to pass
+        func_kwargs: keyword arguments to pass
     """
 
-    def __init__(self, func, func_args=None, func_kwargs=None):
-        super().__init__()
-        self.func = func
-        self.func_args = func_args
-        self.func_kwargs = func_kwargs
-
-    def _func_call(self, *args):
-        func_args = self.func_args or ()
-        func_kwargs = self.func_kwargs or {}
-        args = funcy.join((args, func_args))  # py34
-        return self.func(*args, **func_kwargs)
-
-    def transform(self, X, **transform_kwargs):
-        return self._func_call(X)
+    def __init__(self,
+                 func: Callable,
+                 func_args: Tuple = None,
+                 func_kwargs: dict = None):
+        super().__init__(
+            func=funcy.rpartial(func, func_args), kw_args=func_kwargs)
 
 
 class GroupedFunctionTransformer(SimpleFunctionTransformer):
     """Transformer that applies a callable to each group of a groupby
 
     Args:
-        func (callable): callable to apply
-        func_args (tuple): additional arguments to pass
-        func_kwargs (dict): keyword arguments to pass
-        groupby_kwargs (dict): keyword arguments to pd.DataFrame.groupby
+        func: callable to apply
+        func_args: additional arguments to pass
+        func_kwargs: keyword arguments to pass
+        groupby_kwargs: keyword arguments to pd.DataFrame.groupby
     """
 
-    def __init__(self, func, func_args=None,
-                 func_kwargs=None, groupby_kwargs=None):
+    def __init__(self,
+                 func: Callable,
+                 func_args: Tuple = None,
+                 func_kwargs: dict = None,
+                 groupby_kwargs: dict = None):
         super().__init__(func, func_args=func_args, func_kwargs=func_kwargs)
         self.groupby_kwargs = groupby_kwargs
 
@@ -97,24 +95,24 @@ class GroupwiseTransformer(BaseTransformer):
     the test set means, which might differ from the training set means.
 
     Args:
-        transformer (transformer-like or callable): the transformer to apply
+        transformer: the transformer to apply
             to each group. If transformer is a transformer-like instance (i.e.
             has fit, transform methods etc.), then it is cloned for each group.
             If transformer is a transformer-like class (i.e. instances of
             the class are transformer-like), then it is initialized with no
             arguments for each group. If it is a callable, then it is called
             with no arguments for each group.
-        groupby_kwargs (dict): keyword arguments to pd.DataFrame.groupby
-        column_selection (str, List[str]): column, or list of columns,
+        groupby_kwargs: keyword arguments to pd.DataFrame.groupby
+        column_selection): column, or list of columns,
             to select after the groupby. Equivalent to
             `df.groupby(...)[column_selection]`. Defaults to None, i.e. no
             column selection is performed.
-        handle_unknown (str): 'error' or 'ignore', default=’error’. Whether to
+        handle_unknown: 'error' or 'ignore', default=’error’. Whether to
             raise an error or ignore if an unknown group is encountered during
             transform. When this parameter is set to 'ignore' and an unknown
             group is encountered during transform, the group's values will be
             passed through unchanged.
-        handle_error (str): 'error' or 'ignore', default='error'. Whether to
+        handle_error: 'error' or 'ignore', default='error'. Whether to
             raise an error or ignore if an error is raised during transforming
             an individual group. When this parameter is set to 'ignore' and
             an error is raised when calling the transformer's transform
@@ -142,11 +140,11 @@ class GroupwiseTransformer(BaseTransformer):
     """
 
     def __init__(self,
-                 transformer,
-                 groupby_kwargs=None,
-                 column_selection=None,
-                 handle_unknown='error',
-                 handle_error='error'):
+                 transformer: TransformerLike,
+                 groupby_kwargs: dict = None,
+                 column_selection: OneOrMore[str] = None,
+                 handle_unknown: str = 'error',
+                 handle_error: str = 'error'):
         self.transformer = transformer
         self.groupby_kwargs = groupby_kwargs
         self.column_selection = column_selection
@@ -258,11 +256,11 @@ class ConditionalTransformer(BaseTransformer):
     the selected columns, passing through the complement unchanged.
 
     Args:
-        condition (callable): condition function
-        trans (callable): transform function
+        condition: condition function
+        trans: transform function
     """
 
-    def __init__(self, condition, trans):
+    def __init__(self, condition: Callable, trans: Callable):
         super().__init__()
         self.condition = condition
         # 1. can't call it transform because conflicts with method name

@@ -1,3 +1,5 @@
+from typing import Callable
+
 import funcy
 import numpy as np
 import pandas as pd
@@ -9,12 +11,13 @@ from sklearn.utils.validation import check_is_fitted
 from ballet.eng.base import BaseTransformer, ConditionalTransformer
 from ballet.util import get_arr_desc
 
-__all__ = [
-    'IdentityTransformer',
+__all__ = (
     'BoxCoxTransformer',
-    'ValueReplacer',
+    'ComputedValueTransformer',
+    'IdentityTransformer',
     'NamedFramer',
-]
+    'ValueReplacer',
+)
 
 
 class IdentityTransformer(FunctionTransformer):
@@ -34,13 +37,13 @@ class BoxCoxTransformer(ConditionalTransformer):
 
     Args:
         threshold: skew threshold.
-        lmbda (float, default=0.0): Power parameter of the Box-Cox transform.
+        lmbda: power parameter of the Box-Cox transform. Defaults to 0.0
 
     See also:
         https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.boxcox1p.html
     """
 
-    def __init__(self, threshold, lmbda=0):
+    def __init__(self, threshold: float, lmbda: float = 0.0):
         def condition(X):
             return abs(skew(X)) > threshold
 
@@ -80,7 +83,7 @@ class NamedFramer(BaseTransformer):
         name: name for resulting DataFrame
     """
 
-    def __init__(self, name):
+    def __init__(self, name: str):
         super().__init__()
         self.name = name
 
@@ -109,6 +112,10 @@ class NamedFramer(BaseTransformer):
 
 
 class NullTransformer(BaseTransformer):
+    """A transformer that does "nothing"
+
+    It returns a 0-d array (``np.empty``) of the same length as its input
+    """
 
     def transform(self, X, **transform_kwargs):
         n = np.size(X, 0)
@@ -116,8 +123,18 @@ class NullTransformer(BaseTransformer):
 
 
 class ComputedValueTransformer(BaseTransformer):
+    """Compute a value on the training data and transform to a constant
 
-    def __init__(self, func, pass_y=False):
+    For example, compute the mean of a column of the training data, then
+    transform any input array by producing an output of the same shape but
+    filled with the computed mean.
+
+    Args:
+        func: function to apply during fit
+        pass_y: whether to pass y to the function during fit
+    """
+
+    def __init__(self, func: Callable, pass_y: bool = False):
         self.func = func
         self.pass_y = pass_y
 
@@ -127,6 +144,7 @@ class ComputedValueTransformer(BaseTransformer):
         else:
             self.value_ = self.func(X)
         self.dtype_ = np.dtype(type(self.value_))
+        return self
 
     def transform(self, X, **transform_kwargs):
         check_is_fitted(self, ['value_', 'dtype_'])
