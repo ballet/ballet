@@ -17,19 +17,13 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.random_projection import GaussianRandomProjection
 from sklearn.random_projection import SparseRandomProjection
 
-try:
-    from sklearn.impute import IterativeImputer
-except ImportError:
-    pass
 
-
-__all__ = (
+__all__ = [
     'Binarizer',
     'FunctionTransformer',
     'GaussianRandomProjection',
-    'IterativeImputer',
     'KBinsDiscretizer',
-    'KNNImputer'
+    'KNNImputer',
     'MaxAbsScaler',
     'MinMaxScaler',
     'MissingIndicator',
@@ -43,4 +37,10 @@ __all__ = (
     'SimpleImputer',
     'SparseRandomProjection',
     'StandardScaler',
-)
+]
+
+try:
+    from sklearn.impute import IterativeImputer
+    __all__.append('IterativeImputer')
+except ImportError:
+    pass

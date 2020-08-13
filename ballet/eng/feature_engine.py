@@ -8,7 +8,7 @@ try:
     from feature_engine.discretisers import DecisionTreeDiscretiser
     from feature_engine.discretisers import EqualFrequencyDiscretiser
     from feature_engine.discretisers import EqualWidthDiscretiser
-    from feature_engine.discretisers import UserInputDIscretiser
+    from feature_engine.discretisers import UserInputDiscretiser
     from feature_engine.missing_data_imputers import AddMissingIndicator
     from feature_engine.missing_data_imputers import ArbitraryNumberImputer
     from feature_engine.missing_data_imputers import CategoricalVariableImputer
@@ -48,7 +48,7 @@ __all__ = (
     'RandomSampleImputer',
     'RareLabelCategoricalEncoder',
     'ReciprocalTransformer',
-    'UserInputDIscretiser',
+    'UserInputDiscretiser',
     'Winsorizer',
     'WoERatioCategoricalEncoder',
     'YeoJohnsonTransformer',
