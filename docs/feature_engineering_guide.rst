@@ -76,6 +76,13 @@ the following simplified dataset:
 .. include:: fragments/simple_table.py
    :code: python
 
+So ``X_df`` looks as follows (the blank cells are ``NaN`` values):
+
+.. csv-table:: ``X_df``
+   :name: writing-features-x-df
+   :header-rows: 1
+   :file: fragments/simple_table_data.csv
+   :delim: tab
 
 We define our first feature:
 
@@ -116,6 +123,8 @@ The feature requests one input, the ``Lot Frontage`` column. It's transformer is
 - during training (fit-stage), the transformer will compute the mean of the ``Lot Frontage`` values that are not missing
 - during training (transform-stage), the transformer will replace missing values with the computed training mean
 - during testing (transform-stage), the transformer will replace missing values with the computed training mean
+
+The ``SimpleImputer`` is re-exported by Ballet from scikit-learn; see the full assortment of transformers that are available in :py:mod:`ballet.eng`.
 
 A third example
 ^^^^^^^^^^^^^^^
@@ -192,28 +201,29 @@ Operating on groups
 
 See:
 
-- :py:class:`ballet.eng.base.GroupedFunctionTransformer` and
-- :py:class:`ballet.eng.base.GroupwiseTransformer`.
+- :py:class:`ballet.eng.GroupedFunctionTransformer`
+- :py:class:`ballet.eng.GroupwiseTransformer`
+- :py:class:`ballet.eng.ConditionalTransformer`
 
 Addressing missing values
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 See:
 
-- :py:mod:`ballet.eng.missing`.
+- :py:mod:`ballet.eng.missing`
 
 Operating on time series data
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-See :py:mod:`ballet.eng.ts`.
+See :py:mod:`ballet.eng.ts`
 
 Other primitives
 ^^^^^^^^^^^^^^^^
 
 See:
 
-- :py:class:`ballet.eng.base.SimpleFunctionTransformer`
-- :py:class:`ballet.eng.base.ConditionalTransformer`.
+- :py:class:`ballet.eng.SimpleFunctionTransformer`
+- :py:class:`ballet.eng.ConditionalTransformer`
 
 External libraries
 ^^^^^^^^^^^^^^^^^^
@@ -222,25 +232,24 @@ Many feature engineering primitives are also available in scikit-learn and other
 
 Ballet re-exports feature engineering primitives from external libraries. Note that not all primitives may be relevant for all projects, for example many feature engineering primitives from ``skits`` and ``tsfresh`` are only appropriate for time-series forecasting problems.
 
-- :py:mod:`ballet.eng.ext.category_encoders` (primitives from `category_encoders`_)
-- :py:mod:`ballet.eng.ext.feature_engine` (primitives from `feature_engine`_)
-- :py:mod:`ballet.eng.ext.featuretools` (primitives from `featuretools`_)
-- :py:mod:`ballet.eng.ext.skits` (primitives from `skits`_)
-- :py:mod:`ballet.eng.ext.sklearn_pandas` (primitives from `sklearn_pandas`_)
-- :py:mod:`ballet.eng.ext.sklearn` (primitives from `sklearn`_)
-- :py:mod:`ballet.eng.ext.tsfresh` (primitives from `tsfresh`_)
+- :py:mod:`ballet.eng.category_encoders` (primitives from `category_encoders`_)
+- :py:mod:`ballet.eng.feature_engine` (primitives from `feature_engine`_)
+- :py:mod:`ballet.eng.featuretools` (primitives from `featuretools`_)
+- :py:mod:`ballet.eng.skits` (primitives from `skits`_)
+- :py:mod:`ballet.eng.sklearn_pandas` (primitives from `sklearn_pandas`_)
+- :py:mod:`ballet.eng.sklearn` (primitives from `sklearn`_)
+- :py:mod:`ballet.eng.tsfresh` (primitives from `tsfresh`_)
+
+All of these are further re-exported in the catch-all ``external`` module:
+
+- :py:mod:`ballet.eng.external` (all external primitives)
 
 Pandas |lrarrow| Ballet Examples
 --------------------------------
 
 It may be helpful to see a lot of examples of pandas-style code with the associated Ballet feature implementations, especially if you are more familiar with writing imperative pandas code.
 
-Recall that we will be working with the simplified table ``X_df`` from above:
-
-.. csv-table::
-   :header-rows: 1
-   :file: fragments/simple_table_data.csv
-   :delim: tab
+Recall that we will be working with the simplified table ``X_df`` `from above <#writing-features-x-df>`__.
 
 The first two examples are pretty simple.
 
@@ -283,12 +292,30 @@ Rolling your own transformers
 As you come up with more creative features, you may find that you need to create your own
 transformer classes. Here are some tips for creating your own transformers.
 
-1. Build off of :py:class:`ballet.eng.base.BaseTransformer` which inherits from
-   :py:class:`sklearn.base.BaseEstimator`, :py:class:`sklearn.base.TransformerMixin`, and
-   :py:class:`ballet.eng.base.NoFitMixin`.
-2. Read the `scikit-learn documentation on a similar topic <https://scikit-learn.org/stable/developers/develop.html#rolling-your-own-estimator>`_.
-   (Note that this documentation page is likely overkill for the types of transformers you may be
-   implemeting.
+#. Build off of :py:class:`ballet.eng.BaseTransformer` which inherits from :py:class:`sklearn.base.BaseEstimator`, :py:class:`sklearn.base.TransformerMixin`, and :py:class:`ballet.eng.NoFitMixin`.
+
+#. (Optional) Implement the ``__init__`` method::
+
+      def __init__(self, **kwargs)
+
+   This method is optional if your transformer does not have any hyperparameters. Following the scikit-learn convention, the init method should take keyword arguments only and do nothing more then set them on ``self``. Each keyword argument is a hyperparameter of the transformer.
+
+#. (Optional) Implement the ``fit`` method::
+
+      def fit(self, X, y=None)
+
+   If you do not require a fit method, you can omit this, as a no-op fit method is already provided by the parent class. Any learned parameters should be set on ``self``. Following the scikit-learn convention, the names of learned parameters should have trailing underscores. Finally, ``fit`` should ``return self`` so that it can be chained with other methods on the class::
+
+       self.theta_ = 5
+       return self
+
+#. Implement the ``transform`` method::
+
+      def transform(self, X)
+
+   Here you can assume the learned parameters, if any, are available.
+
+You can also read the `scikit-learn documentation on a similar topic <https://scikit-learn.org/stable/developers/develop.html#rolling-your-own-estimator>`__. (Note that this documentation page is likely overkill for the types of transformers you may be implementing.
 
 Example
 ^^^^^^^
@@ -300,7 +327,7 @@ demonstrates the steps required to roll your own transformer.
 .. code-block:: python
 
    from ballet import Feature
-   from ballet.eng.base import BaseTransformer
+   from ballet.eng import BaseTransformer
 
    input = 'Exterior 1st'
 
@@ -316,20 +343,7 @@ demonstrates the steps required to roll your own transformer.
    transformer = LongestStringValue()
    feature = Feature(input=input, transformer=transformer)
 
-Okay, let's unpack what happened here. First, we declared the input to this feature, ``'Exterior
-1st'``, a scalar key, so the feature will receive a pandas ``Series`` as the input ``X``. Next we
-created a new class that inherits from ``BaseTransformer``. The transformer does not have any
-"hyperparameters" so we can skip defining an ``__init__`` method. Following the scikit-learn
-conventions, any learning from training data is done in the fit stage, and any learned parameters
-are set on the class instance with names suffixed by a single underscore. The fit method should
-also return ``self`` so that the ``fit_transform`` method defined on ``BaseTransformer`` can work.
-We were able to assume that ``X`` is a series, and thus has the ``.str`` vectorized string
-accessor. (If this were to be a new feature engineering primitive that would be used in more than
-this one situation, we might want to add logic to allow the feature to operate on a DataFrame as
-well.) Next, in the transform stage, we check for each new instance whether the length is greater
-than or equal to the longest string length observed in the training data. The result will be a 1-d
-array (series) of ``bool``\ s. Finally, having created the transformer class, we create an instance of
-it and create our Feature object.
+Okay, let's unpack what happened here. First, we declared the input to this feature, ``'Exterior 1st'``, a scalar key, so the feature will receive a pandas ``Series`` as the input ``X``. Next we created a new class that inherits from ``BaseTransformer``. The transformer does not have any "hyperparameters" so we can skip defining an ``__init__`` method. We learn the ``longest_string_length_`` parameter during the fit stage and set it on ``self``. We were able to assume that ``X`` is a series, and thus has the ``.str`` vectorized string accessor. We can assume this because Ballet will automatically try to pass the input in various formats and will store the format that worked, i.e. "series". (If this were to be a new feature engineering primitive that would be used in more than this one situation, we might want to add logic to allow the feature to operate on a DataFrame as well.) Next, in the transform stage, we check for each new instance whether the length is greater than or equal to the longest string length observed in the training data. The result will be a 1-d array (series) of ``bool``\ s. Finally, having created the transformer class, we create an instance of it and create our ``Feature`` object.
 
 Further reading
 ---------------

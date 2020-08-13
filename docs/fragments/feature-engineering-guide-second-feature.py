@@ -1,5 +1,4 @@
 from ballet import Feature
-
 from ballet.eng.sklearn import SimpleImputer
 
 input = ["Lot Frontage"]

@@ -1,5 +1,4 @@
 from ballet import Feature
-
 import numpy as np
 
 input = 'Lot Frontage'

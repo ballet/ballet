@@ -65,8 +65,6 @@ at the cost of some flexibility.
       (or re-defined) within this cell, otherwise your submitted feature will fail to validate
       due to missing imports/helpers.
 
-.. |launch-binder| image:: https://mybinder.org/badge_logo.svg
-
 Local Feature Development Workflow
 ==================================
 
@@ -229,29 +227,20 @@ In this workflow, you work with git directly to commit and push your change and 
 Option 2: In-Lab Workflow
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In this workflow, you use the Ballet JupyterLab extension in order to submit code directly from within your analysis notebook if you are developing in Jupyter Lab. This has the same user experience as described in the cloud feature development workflow above. Here, you should `install ballet-submit-labextension`_ following the directions in that project. Importantly, you must authorize the extension to interact with GitHub on your behalf in one of three ways: (1) use the built-in GitHub OAuth functionality to obtain a new OAuth token with one click (2) obtain a GitHub OAuth token yourself and populate the variable ``$GITHUB_TOKEN`` (3) optain a GitHub OAuth token and pass it as an option when starting JupyterLab.
+In this workflow, you use the Ballet JupyterLab extension in order to submit code directly from within your analysis notebook if you are developing in Jupyter Lab. This has the same user experience as described in the cloud feature development workflow above. Here, you should `install ballet-submit-labextension`_ following the directions in that project. Importantly, you must authorize the extension to interact with GitHub on your behalf in one of three ways: (1) use the built-in GitHub OAuth functionality to obtain a new OAuth token with one click (2) obtain a GitHub OAuth token yourself and populate the variable ``$GITHUB_TOKEN`` (3) optain a GitHub OAuth token and pass it as an option when starting JupyterLab using ``--BalletApp.github_token=$TOKEN``.
 
 Understanding Validation Results
 ================================
 
 Once you have developed and submitted a feature, Ballet will validate it in four steps in an isolated continuous integration environment.
 
-#. Check feature API: does your feature behave properly on expected and
-unexpected inputs? For example, it should not produce feature values with
-NaNs or throw errors on well-formed data instances.
+#. Check feature API: does your feature behave properly on expected and unexpected inputs? For example, it should not produce feature values with NaNs or throw errors on well-formed data instances.
 
-#. Check project structure: does your PR respect the project structure, that
-is, you have created valid Python modules at the right path, etc.
+#. Check project structure: does your PR respect the project structure, that is, you have created valid Python modules at the right path, etc.
 
-#. Evaluate feature acceptance: do the feature values that your feature
-extracts contribute to the machine learning goals? Depending on the
-configuration of the upstream project, the project may evaluate your
-features in a more or less aggressive manner, ranging from accepting all
-features to accepting only those that produce an information gain greater
-than some threshold.
+#. Evaluate feature acceptance: do the feature values that your feature extracts contribute to the machine learning goals? Depending on the configuration of the upstream project, the project may evaluate your features in a more or less aggressive manner, ranging from accepting all features to accepting only those that produce an information gain greater than some threshold.
 
-#. Evaluate feature pruning: does the introduction of your feature cause
-other features to be unnecessary? If so they may be pruned.
+#. Evaluate feature pruning: does the introduction of your feature cause other features to be unnecessary? If so they may be pruned.
 
 Depending on the configuration of the upstream project, you will see various "bots" act on
 these steps. If your PR passes the first three steps, the `Ballet Bot`_ may approve and merge
@@ -273,6 +262,7 @@ ballet collaboration.
 
    Image from *The New Yorker* cartoon by Peter Steiner, 1993, via Wikipedia.
 
+.. |launch-binder| image:: https://mybinder.org/badge_logo.svg
 .. _`Predict House Prices`: https://github.com/HDI-Project/ballet-predict-house-prices
 .. _`conda`: https://conda.io/en/latest/
 .. _`hub`: https://hub.github.com/

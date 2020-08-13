@@ -1,5 +1,5 @@
 from ballet import Feature
-from ballet.eng.misc import IdentityTransformer
+from ballet.eng import IdentityTransformer
 
 input = 'Lot Area'
 transformer = IdentityTransformer()

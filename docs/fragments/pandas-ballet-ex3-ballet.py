@@ -1,5 +1,5 @@
 from ballet import Feature
-from sklearn.impute import SimpleImputer
+from ballet.eng.sklearn import SimpleImputer
 
 input = 'Lot Frontage'
 transformer = SimpleImputer(strategy='mean')
