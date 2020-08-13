@@ -4,8 +4,10 @@ from copy import deepcopy
 import dill as pickle
 import numpy as np
 from funcy import all, all_fn, isa, iterable
+from sklearn.model_selection import train_test_split
 
 from ballet.feature import Feature
+from ballet.util import RANDOM_STATE
 from ballet.validation.base import BaseCheck
 
 
@@ -87,6 +89,18 @@ class CanTransformCheck(FeatureApiCheck):
         mapper = feature.as_feature_engineering_pipeline()
         mapper.fit(self.X, y=self.y)
         mapper.transform(self.X)
+
+
+class CanTransformNewRowsCheck(FeatureApiCheck):
+
+    def check(self, feature):
+        """Check that transform can be called on new, unseen rows"""
+        mapper = feature.as_feature_engineering_pipeline()
+        X1, X2, y1, _ = train_test_split(
+            self.X, self.y, test_size=0.1, random_state=RANDOM_STATE,
+            shuffle=True)
+        mapper.fit(X1, y=y1)
+        mapper.transform(X2)
 
 
 class CanTransformOneRowCheck(FeatureApiCheck):
