@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.eng.base &mdash; ballet 0.7.6 documentation</title>
+  <title>ballet.eng.base &mdash; ballet 0.7.7 documentation</title>
   
 
   
@@ -128,10 +128,14 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../feature_engineering_guide.html">Feature Engineering Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#logical-features">Logical Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#logical-features">Logical Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#why">Why?</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#writing-features">Writing features</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#a-first-example">A first example</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#why">Why?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#a-second-example">A second example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#a-third-example">A third example</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#input-types-and-conversions">Input types and conversions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#transformers">Transformers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#feature-engineering-pipelines">Feature engineering pipelines</a></li>
@@ -220,18 +224,20 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id1">0.7.5 (2020-08-03)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id2">0.7.4 (2020-07-22)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id3">0.7.3 (2020-07-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id4">0.7.2 (2020-07-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id5">0.7.1 (2020-07-20)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id6">0.7 (2020-07-17)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id7">0.6 (2019-11-12)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id8">0.5 (2018-10-14)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id9">0.4 (2018-09-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id10">0.3 (2018-04-28)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id11">0.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id12">0.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id1">0.7.7 (2020-08-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id2">0.7.6 (2020-08-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id3">0.7.5 (2020-08-03)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id4">0.7.4 (2020-07-22)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id5">0.7.3 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id6">0.7.2 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id7">0.7.1 (2020-07-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id8">0.7 (2020-07-17)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id9">0.6 (2019-11-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id10">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id11">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id12">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id13">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id14">0.1</a></li>
 </ul>
 </li>
 </ul>
@@ -298,24 +304,27 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ballet.eng.base</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">funcy</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">sklearn.base</span>
 <span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="kn">import</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">FunctionTransformer</span>
 <span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="kn">import</span> <span class="n">check_is_fitted</span>
 
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="kn">import</span> <span class="n">BalletError</span>
 <span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">get_arr_desc</span>
+<span class="kn">from</span> <span class="nn">ballet.util.typing</span> <span class="kn">import</span> <span class="n">OneOrMore</span><span class="p">,</span> <span class="n">TransformerLike</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
     <span class="s1">&#39;BaseTransformer&#39;</span><span class="p">,</span>
     <span class="s1">&#39;ConditionalTransformer&#39;</span><span class="p">,</span>
     <span class="s1">&#39;GroupedFunctionTransformer&#39;</span><span class="p">,</span>
     <span class="s1">&#39;GroupwiseTransformer&#39;</span><span class="p">,</span>
     <span class="s1">&#39;NoFitMixin&#39;</span><span class="p">,</span>
     <span class="s1">&#39;SimpleFunctionTransformer&#39;</span><span class="p">,</span>
-<span class="p">]</span>
+<span class="p">)</span>
 
 
 <div class="viewcode-block" id="NoFitMixin"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.NoFitMixin">[docs]</a><span class="k">class</span> <span class="nc">NoFitMixin</span><span class="p">:</span>
@@ -330,50 +339,45 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="SimpleFunctionTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.SimpleFunctionTransformer">[docs]</a><span class="k">class</span> <span class="nc">SimpleFunctionTransformer</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">):</span>
+<div class="viewcode-block" id="SimpleFunctionTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.SimpleFunctionTransformer">[docs]</a><span class="k">class</span> <span class="nc">SimpleFunctionTransformer</span><span class="p">(</span><span class="n">FunctionTransformer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Transformer that applies a callable to its input</span>
 
 <span class="sd">    The callable will be called on the input X in the transform stage,</span>
 <span class="sd">    optionally with additional arguments and keyword arguments.</span>
 
-<span class="sd">    This will be eventually replaced with</span>
-<span class="sd">    ``sklearn.preprocessing.FunctionTransformer``.</span>
+<span class="sd">    A simple wrapper around :py:class:``FunctionTransformer``.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        func (callable): callable to apply</span>
-<span class="sd">        func_args (tuple): additional arguments to pass</span>
-<span class="sd">        func_kwargs (dict): keyword arguments to pass</span>
+<span class="sd">        func: callable to apply</span>
+<span class="sd">        func_kwargs: keyword arguments to pass</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">func_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">func_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">func_args</span> <span class="o">=</span> <span class="n">func_args</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">func_kwargs</span> <span class="o">=</span> <span class="n">func_kwargs</span>
-
-    <span class="k">def</span> <span class="nf">_func_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="n">func_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func_args</span> <span class="ow">or</span> <span class="p">()</span>
-        <span class="n">func_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
-        <span class="n">args</span> <span class="o">=</span> <span class="n">funcy</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">args</span><span class="p">,</span> <span class="n">func_args</span><span class="p">))</span>  <span class="c1"># py34</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">func_kwargs</span><span class="p">)</span>
-
-<div class="viewcode-block" id="SimpleFunctionTransformer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.SimpleFunctionTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_kwargs</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_func_call</span><span class="p">(</span><span class="n">X</span><span class="p">)</span></div></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+                 <span class="n">func_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">func</span><span class="o">=</span><span class="n">func</span><span class="p">,</span>
+            <span class="n">kw_args</span><span class="o">=</span><span class="n">func_kwargs</span> <span class="ow">or</span> <span class="p">{})</span></div>
 
 
-<div class="viewcode-block" id="GroupedFunctionTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.GroupedFunctionTransformer">[docs]</a><span class="k">class</span> <span class="nc">GroupedFunctionTransformer</span><span class="p">(</span><span class="n">SimpleFunctionTransformer</span><span class="p">):</span>
+<div class="viewcode-block" id="GroupedFunctionTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.GroupedFunctionTransformer">[docs]</a><span class="k">class</span> <span class="nc">GroupedFunctionTransformer</span><span class="p">(</span><span class="n">FunctionTransformer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Transformer that applies a callable to each group of a groupby</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        func (callable): callable to apply</span>
-<span class="sd">        func_args (tuple): additional arguments to pass</span>
-<span class="sd">        func_kwargs (dict): keyword arguments to pass</span>
-<span class="sd">        groupby_kwargs (dict): keyword arguments to pd.DataFrame.groupby</span>
+<span class="sd">        func: callable to apply</span>
+<span class="sd">        func_kwargs: keyword arguments to pass</span>
+<span class="sd">        groupby_kwargs: keyword arguments to pd.DataFrame.groupby. If omitted,</span>
+<span class="sd">            no grouping is performed and the function is called on the entire</span>
+<span class="sd">            DataFrame.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">func_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">func_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">groupby_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">func_args</span><span class="o">=</span><span class="n">func_args</span><span class="p">,</span> <span class="n">func_kwargs</span><span class="o">=</span><span class="n">func_kwargs</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+                 <span class="n">func_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">groupby_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">func</span><span class="o">=</span><span class="n">func</span><span class="p">,</span>
+            <span class="n">kw_args</span><span class="o">=</span><span class="n">func_kwargs</span> <span class="ow">or</span> <span class="p">{})</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs</span> <span class="o">=</span> <span class="n">groupby_kwargs</span>
 
 <div class="viewcode-block" id="GroupedFunctionTransformer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.GroupedFunctionTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_kwargs</span><span class="p">):</span>
@@ -382,7 +386,7 @@
             <span class="n">call</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="o">**</span><span class="n">groupby_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">call</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">pipe</span>
-        <span class="k">return</span> <span class="n">call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_func_call</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">call</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="GroupwiseTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.GroupwiseTransformer">[docs]</a><span class="k">class</span> <span class="nc">GroupwiseTransformer</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">):</span>
@@ -397,24 +401,24 @@
 <span class="sd">    the test set means, which might differ from the training set means.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        transformer (transformer-like or callable): the transformer to apply</span>
+<span class="sd">        transformer: the transformer to apply</span>
 <span class="sd">            to each group. If transformer is a transformer-like instance (i.e.</span>
 <span class="sd">            has fit, transform methods etc.), then it is cloned for each group.</span>
 <span class="sd">            If transformer is a transformer-like class (i.e. instances of</span>
 <span class="sd">            the class are transformer-like), then it is initialized with no</span>
 <span class="sd">            arguments for each group. If it is a callable, then it is called</span>
 <span class="sd">            with no arguments for each group.</span>
-<span class="sd">        groupby_kwargs (dict): keyword arguments to pd.DataFrame.groupby</span>
-<span class="sd">        column_selection (str, List[str]): column, or list of columns,</span>
+<span class="sd">        groupby_kwargs: keyword arguments to pd.DataFrame.groupby</span>
+<span class="sd">        column_selection): column, or list of columns,</span>
 <span class="sd">            to select after the groupby. Equivalent to</span>
 <span class="sd">            `df.groupby(...)[column_selection]`. Defaults to None, i.e. no</span>
 <span class="sd">            column selection is performed.</span>
-<span class="sd">        handle_unknown (str): &#39;error&#39; or &#39;ignore&#39;, default=’error’. Whether to</span>
+<span class="sd">        handle_unknown: &#39;error&#39; or &#39;ignore&#39;, default=’error’. Whether to</span>
 <span class="sd">            raise an error or ignore if an unknown group is encountered during</span>
 <span class="sd">            transform. When this parameter is set to &#39;ignore&#39; and an unknown</span>
 <span class="sd">            group is encountered during transform, the group&#39;s values will be</span>
 <span class="sd">            passed through unchanged.</span>
-<span class="sd">        handle_error (str): &#39;error&#39; or &#39;ignore&#39;, default=&#39;error&#39;. Whether to</span>
+<span class="sd">        handle_error: &#39;error&#39; or &#39;ignore&#39;, default=&#39;error&#39;. Whether to</span>
 <span class="sd">            raise an error or ignore if an error is raised during transforming</span>
 <span class="sd">            an individual group. When this parameter is set to &#39;ignore&#39; and</span>
 <span class="sd">            an error is raised when calling the transformer&#39;s transform</span>
@@ -442,11 +446,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">transformer</span><span class="p">,</span>
-                 <span class="n">groupby_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">column_selection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">handle_unknown</span><span class="o">=</span><span class="s1">&#39;error&#39;</span><span class="p">,</span>
-                 <span class="n">handle_error</span><span class="o">=</span><span class="s1">&#39;error&#39;</span><span class="p">):</span>
+                 <span class="n">transformer</span><span class="p">:</span> <span class="n">TransformerLike</span><span class="p">,</span>
+                 <span class="n">groupby_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">column_selection</span><span class="p">:</span> <span class="n">OneOrMore</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">handle_unknown</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span>
+                 <span class="n">handle_error</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;error&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span> <span class="o">=</span> <span class="n">transformer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs</span> <span class="o">=</span> <span class="n">groupby_kwargs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">column_selection</span> <span class="o">=</span> <span class="n">column_selection</span>
@@ -558,11 +562,11 @@
 <span class="sd">    the selected columns, passing through the complement unchanged.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        condition (callable): condition function</span>
-<span class="sd">        trans (callable): transform function</span>
+<span class="sd">        condition: condition function</span>
+<span class="sd">        trans: transform function</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">trans</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">trans</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">condition</span> <span class="o">=</span> <span class="n">condition</span>
         <span class="c1"># 1. can&#39;t call it transform because conflicts with method name</span>

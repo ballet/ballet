@@ -1,0 +1,1184 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>feature_engine.categorical_encoders &mdash; ballet 0.7.7 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> ballet
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../readme.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../readme.html#next-steps">Next steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#stable-release">Stable release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#from-source">From source</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../maintainer_guide.html">Maintainer Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../maintainer_guide.html#creating-a-ballet-project">Creating a Ballet project</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#project-instantiation">Project instantiation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#project-installation">Project installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#collaboration-via-git-and-github">Collaboration via git and GitHub</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#enabling-continuous-integration">Enabling continuous integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#installing-bots">Installing bots</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../maintainer_guide.html#developing-new-features">Developing new features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#validating-features">Validating features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#pruning-features">Pruning features</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../maintainer_guide.html#applying-the-feature-engineering-pipeline">Applying the feature engineering pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../maintainer_guide.html#updating-the-framework">Updating the framework</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributor_guide.html">Contributor Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../contributor_guide.html#cloud-feature-development-workflow">Cloud Feature Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributor_guide.html#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#setup-your-development-environment">Setup your development environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#develop-a-new-feature">Develop a new feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#submit-the-feature">Submit the feature</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../contributor_guide.html#option-1-git-workflow">Option 1: Git workflow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contributor_guide.html#option-2-in-lab-workflow">Option 2: In-Lab Workflow</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributor_guide.html#understanding-validation-results">Understanding Validation Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributor_guide.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../feature_engineering_guide.html">Feature Engineering Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#logical-features">Logical Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#why">Why?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#writing-features">Writing features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#a-first-example">A first example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#a-second-example">A second example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#a-third-example">A third example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#input-types-and-conversions">Input types and conversions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#transformers">Transformers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#feature-engineering-pipelines">Feature engineering pipelines</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#feature-engineering-primitives">Feature engineering primitives</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#operating-on-groups">Operating on groups</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#addressing-missing-values">Addressing missing values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#operating-on-time-series-data">Operating on time series data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#other-primitives">Other primitives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#external-libraries">External libraries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#pandas-lrarrow-ballet-examples">Pandas ⇔ Ballet Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#rolling-your-own-transformers">Rolling your own transformers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#further-reading">Further reading</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ballet.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/ballet.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.eng.html">ballet.eng package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/ballet.eng.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.util.html">ballet.util package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/ballet.util.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.validation.html">ballet.validation package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/ballet.validation.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/ballet.validation.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/ballet.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.cli.html">ballet.cli module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.client.html">ballet.client module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.compat.html">ballet.compat module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.contrib.html">ballet.contrib module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.exc.html">ballet.exc module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.feature.html">ballet.feature module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.pipeline.html">ballet.pipeline module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.project.html">ballet.project module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.templating.html">ballet.templating module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.transformer.html">ballet.transformer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.update.html">ballet.update module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli_reference.html">CLI Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_reference.html#ballet-quickstart">quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_reference.html#ballet-start-new-feature">start-new-feature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_reference.html#ballet-update-project-template">update-project-template</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_reference.html#ballet-validate">validate</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Development Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#types-of-contributions">Types of Contributions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#report-bugs">Report Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#fix-bugs">Fix Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#implement-features">Implement Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#write-documentation">Write Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#submit-feedback">Submit Feedback</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#get-started">Get Started!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#pull-request-guidelines">Pull Request Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#tips">Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#deploying">Deploying</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">Credits</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../authors.html#development-lead">Development Lead</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../authors.html#contributors">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id1">0.7.7 (2020-08-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id2">0.7.6 (2020-08-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id3">0.7.5 (2020-08-03)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id4">0.7.4 (2020-07-22)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id5">0.7.3 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id6">0.7.2 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id7">0.7.1 (2020-07-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id8">0.7 (2020-07-17)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id9">0.6 (2019-11-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id10">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id11">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id12">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id13">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id14">0.1</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ballet</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>feature_engine.categorical_encoders</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for feature_engine.categorical_encoders</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Authors: Soledad Galli &lt;solegalli@protonmail.com&gt;</span>
+<span class="c1"># License: BSD 3 clause</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="kn">import</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="kn">import</span> <span class="n">check_is_fitted</span>
+<span class="kn">from</span> <span class="nn">feature_engine.dataframe_checks</span> <span class="kn">import</span> <span class="n">_is_dataframe</span><span class="p">,</span> <span class="n">_check_input_matches_training_df</span><span class="p">,</span> <span class="n">_check_contains_na</span>
+<span class="kn">from</span> <span class="nn">feature_engine.variable_manipulation</span> <span class="kn">import</span> <span class="n">_find_categorical_variables</span><span class="p">,</span> <span class="n">_define_variables</span>
+<span class="kn">from</span> <span class="nn">feature_engine.base_transformers</span> <span class="kn">import</span> <span class="n">BaseCategoricalTransformer</span>
+
+
+<span class="k">def</span> <span class="nf">_check_encoding_dictionary</span><span class="p">(</span><span class="n">dictionary</span><span class="p">):</span>
+    <span class="c1"># check that there is a dictionary with category to number pairs</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dictionary</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Encoder could not be fitted. Check the parameters and the variables &#39;</span>
+                         <span class="s1">&#39;in your dataframe.&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dictionary</span>
+
+
+<div class="viewcode-block" id="CountFrequencyCategoricalEncoder"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.CountFrequencyCategoricalEncoder">[docs]</a><span class="k">class</span> <span class="nc">CountFrequencyCategoricalEncoder</span><span class="p">(</span><span class="n">BaseCategoricalTransformer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    The CountFrequencyCategoricalEncoder() replaces categories by the count of</span>
+<span class="sd">    observations per category or by the percentage of observations per category.</span>
+<span class="sd">    </span>
+<span class="sd">    For example in the variable colour, if 10 observations are blue, blue will</span>
+<span class="sd">    be replaced by 10. Alternatively, if 10% of the observations are blue, blue</span>
+<span class="sd">    will be replaced by 0.1.</span>
+<span class="sd">    </span>
+<span class="sd">    The CountFrequencyCategoricalEncoder() will encode only categorical variables</span>
+<span class="sd">    (type &#39;object&#39;). A list of variables to be encoded can be passed as argument.</span>
+<span class="sd">    Alternatively, the encoder will find and encode all categorical variables</span>
+<span class="sd">    (object type).</span>
+<span class="sd">    </span>
+<span class="sd">    The encoder first maps the categories to the numbers (counts or frequencies)</span>
+<span class="sd">    for each variable (fit).</span>
+
+<span class="sd">    The encoder then transforms the categories to those mapped numbers (transform).</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    encoding_method : str, default=&#39;count&#39;</span>
+<span class="sd">        Desired method of encoding.</span>
+
+<span class="sd">        &#39;count&#39;: number of observations per category</span>
+
+<span class="sd">        &#39;frequency&#39;: percentage of observations per category</span>
+<span class="sd">    </span>
+<span class="sd">    variables : list</span>
+<span class="sd">        The list of categorical variables that will be encoded. If None, the </span>
+<span class="sd">        encoder will find and transform all object type variables.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">encoding_method</span><span class="o">=</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">encoding_method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;frequency&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;encoding_method takes only values &#39;count&#39; and &#39;frequency&#39;&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoding_method</span> <span class="o">=</span> <span class="n">encoding_method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_define_variables</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CountFrequencyCategoricalEncoder.fit"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.CountFrequencyCategoricalEncoder.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Learns the counts or frequencies which will be used to replace the categories.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        </span>
+<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">            The training input samples.</span>
+<span class="sd">            The user can pass the entire dataframe.</span>
+
+<span class="sd">        y : None</span>
+<span class="sd">            y is not needed in this encoder. You can pass y or None.</span>
+
+<span class="sd">        Attributes</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        encoder_dict_: dictionary</span>
+<span class="sd">            Dictionary containing the {category: count / frequency} pairs for</span>
+<span class="sd">            each variable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># check input dataframe</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">_is_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="c1"># find categorical variables or check that those entered by the user</span>
+        <span class="c1"># are of type object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_find_categorical_variables</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+
+        <span class="c1"># check if dataset contains na</span>
+        <span class="n">_check_contains_na</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># learn encoding maps</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoding_method</span> <span class="o">==</span> <span class="s1">&#39;count&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoding_method</span> <span class="o">==</span> <span class="s1">&#39;frequency&#39;</span><span class="p">:</span>
+                <span class="n">n_obs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span> <span class="o">/</span> <span class="n">n_obs</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span> <span class="o">=</span> <span class="n">_check_encoding_dictionary</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+    <span class="c1"># Ugly work around to import the docstring for Sphinx, otherwise none of this is necessary</span>
+<div class="viewcode-block" id="CountFrequencyCategoricalEncoder.transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.CountFrequencyCategoricalEncoder.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">X</span></div>
+
+    <span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">BaseCategoricalTransformer</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span>
+
+<div class="viewcode-block" id="CountFrequencyCategoricalEncoder.inverse_transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.CountFrequencyCategoricalEncoder.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">X</span></div>
+
+    <span class="n">inverse_transform</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">BaseCategoricalTransformer</span><span class="o">.</span><span class="n">inverse_transform</span><span class="o">.</span><span class="vm">__doc__</span></div>
+
+
+<div class="viewcode-block" id="OrdinalCategoricalEncoder"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.OrdinalCategoricalEncoder">[docs]</a><span class="k">class</span> <span class="nc">OrdinalCategoricalEncoder</span><span class="p">(</span><span class="n">BaseCategoricalTransformer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    The OrdinalCategoricalEncoder() replaces categories by ordinal numbers </span>
+<span class="sd">    (0, 1, 2, 3, etc). The numbers can be ordered based on the mean of the target</span>
+<span class="sd">    per category, or assigned arbitrarily.</span>
+<span class="sd">    </span>
+<span class="sd">    Ordered ordinal encoding:  for the variable colour, if the mean of the target</span>
+<span class="sd">    for blue, red and grey is 0.5, 0.8 and 0.1 respectively, blue is replaced by 1,</span>
+<span class="sd">    red by 2 and grey by 0.</span>
+<span class="sd">    </span>
+<span class="sd">    Arbitrary ordinal encoding: the numbers will be assigned arbitrarily to the</span>
+<span class="sd">    categories, on a first seen first served basis.</span>
+<span class="sd">    </span>
+<span class="sd">    The encoder will encode only categorical variables (type &#39;object&#39;). A list</span>
+<span class="sd">    of variables can be passed as an argument. If no variables are passed, the</span>
+<span class="sd">    encoder will find and encode all categorical variables (type &#39;object&#39;).</span>
+<span class="sd">    </span>
+<span class="sd">    The encoder first maps the categories to the numbers for each variable (fit).</span>
+
+<span class="sd">    The encoder then transforms the categories to the mapped numbers (transform).</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    encoding_method : str, default=&#39;ordered&#39; </span>
+<span class="sd">        Desired method of encoding.</span>
+
+<span class="sd">        &#39;ordered&#39;: the categories are numbered in ascending order according to</span>
+<span class="sd">        the target mean value per category.</span>
+
+<span class="sd">        &#39;arbitrary&#39; : categories are numbered arbitrarily.</span>
+<span class="sd">        </span>
+<span class="sd">    variables : list, default=None</span>
+<span class="sd">        The list of categorical variables that will be encoded. If None, the </span>
+<span class="sd">        encoder will find and select all object type variables.</span>
+<span class="sd">        </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    encoder_dict_: dictionary</span>
+<span class="sd">        The dictionary containing the {category: ordinal number} pairs for</span>
+<span class="sd">        every variable.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">encoding_method</span><span class="o">=</span><span class="s1">&#39;ordered&#39;</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">encoding_method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;ordered&#39;</span><span class="p">,</span> <span class="s1">&#39;arbitrary&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;encoding_method takes only values &#39;ordered&#39; and &#39;arbitrary&#39;&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoding_method</span> <span class="o">=</span> <span class="n">encoding_method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_define_variables</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+
+<div class="viewcode-block" id="OrdinalCategoricalEncoder.fit"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.OrdinalCategoricalEncoder.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Learns the numbers to be used to replace the categories in each</span>
+<span class="sd">        variable.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        </span>
+<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">            The training input samples.</span>
+<span class="sd">            Can be the entire dataframe, not just the variables to be</span>
+<span class="sd">            encoded.</span>
+
+<span class="sd">        y : pandas series, default=None</span>
+<span class="sd">            The Target. Can be None if encoding_method = &#39;arbitrary&#39;.</span>
+<span class="sd">            Otherwise, y needs to be passed when fitting the transformer.</span>
+<span class="sd">       </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check input dataframe</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">_is_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="c1"># find categorical variables or check that those entered by the user</span>
+        <span class="c1"># are of type object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_find_categorical_variables</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+
+        <span class="c1"># check if dataset contains na</span>
+        <span class="n">_check_contains_na</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+
+        <span class="c1"># join target to predictor variables</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoding_method</span> <span class="o">==</span> <span class="s1">&#39;ordered&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Please provide a target y for this encoding method&#39;</span><span class="p">)</span>
+
+            <span class="n">temp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">temp</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span>
+
+        <span class="c1"># find mappings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoding_method</span> <span class="o">==</span> <span class="s1">&#39;ordered&#39;</span><span class="p">:</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">var</span><span class="p">])[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">index</span>
+
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoding_method</span> <span class="o">==</span> <span class="s1">&#39;arbitrary&#39;</span><span class="p">:</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">)}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span> <span class="o">=</span> <span class="n">_check_encoding_dictionary</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+    <span class="c1"># Ugly work around to import the docstring for Sphinx, otherwise none of this is necessary</span>
+<div class="viewcode-block" id="OrdinalCategoricalEncoder.transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.OrdinalCategoricalEncoder.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">X</span></div>
+
+    <span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">BaseCategoricalTransformer</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span>
+
+<div class="viewcode-block" id="OrdinalCategoricalEncoder.inverse_transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.OrdinalCategoricalEncoder.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">X</span></div>
+
+    <span class="n">inverse_transform</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">BaseCategoricalTransformer</span><span class="o">.</span><span class="n">inverse_transform</span><span class="o">.</span><span class="vm">__doc__</span></div>
+
+
+<div class="viewcode-block" id="MeanCategoricalEncoder"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.MeanCategoricalEncoder">[docs]</a><span class="k">class</span> <span class="nc">MeanCategoricalEncoder</span><span class="p">(</span><span class="n">BaseCategoricalTransformer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    The MeanCategoricalEncoder() replaces categories by the mean value of the</span>
+<span class="sd">    target for each category.</span>
+<span class="sd">    </span>
+<span class="sd">    For example in the variable colour, if the mean of the target for blue, red</span>
+<span class="sd">    and grey is 0.5, 0.8 and 0.1 respectively, blue is replaced by 0.5, red by 0.8</span>
+<span class="sd">    and grey by 0.1.</span>
+<span class="sd">    </span>
+<span class="sd">    The encoder will encode only categorical variables (type &#39;object&#39;). A list</span>
+<span class="sd">    of variables can be passed as an argument. If no variables are passed as </span>
+<span class="sd">    argument, the encoder will find and encode all categorical variables</span>
+<span class="sd">    (object type).</span>
+<span class="sd">    </span>
+<span class="sd">    The encoder first maps the categories to the numbers for each variable (fit).</span>
+
+<span class="sd">    The encoder then transforms the categories to the mapped numbers (transform).</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------  </span>
+<span class="sd">    </span>
+<span class="sd">    variables : list, default=None</span>
+<span class="sd">        The list of categorical variables that will be encoded. If None, the </span>
+<span class="sd">        encoder will find and select all object type variables.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_define_variables</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MeanCategoricalEncoder.fit"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.MeanCategoricalEncoder.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Learns the mean value of the target for each category of the variable.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        </span>
+<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">            The training input samples.</span>
+<span class="sd">            Can be the entire dataframe, not just the variables to be encoded.</span>
+
+<span class="sd">        y : pandas series</span>
+<span class="sd">            The target.</span>
+
+<span class="sd">        Attributes</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        encoder_dict_: dictionary</span>
+<span class="sd">            The dictionary containing the {category: target mean} pairs used</span>
+<span class="sd">            to replace categories in every variable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check input dataframe</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">_is_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="c1"># find categorical variables or check that those entered by the user</span>
+        <span class="c1"># are of type object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_find_categorical_variables</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+
+        <span class="c1"># check if dataset contains na</span>
+        <span class="n">_check_contains_na</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Please provide a target y for this encoding method&#39;</span><span class="p">)</span>
+
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">temp</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">var</span><span class="p">)[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span> <span class="o">=</span> <span class="n">_check_encoding_dictionary</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+    <span class="c1"># Ugly work around to import the docstring for Sphinx, otherwise none of this is necessary</span>
+<div class="viewcode-block" id="MeanCategoricalEncoder.transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.MeanCategoricalEncoder.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">X</span></div>
+
+    <span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">BaseCategoricalTransformer</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span>
+
+<div class="viewcode-block" id="MeanCategoricalEncoder.inverse_transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.MeanCategoricalEncoder.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">X</span></div>
+
+    <span class="n">inverse_transform</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">BaseCategoricalTransformer</span><span class="o">.</span><span class="n">inverse_transform</span><span class="o">.</span><span class="vm">__doc__</span></div>
+
+
+<div class="viewcode-block" id="WoERatioCategoricalEncoder"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.WoERatioCategoricalEncoder">[docs]</a><span class="k">class</span> <span class="nc">WoERatioCategoricalEncoder</span><span class="p">(</span><span class="n">BaseCategoricalTransformer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    The WoERatioCategoricalEncoder() replaces categories by the weight of evidence</span>
+<span class="sd">    or by the ratio between the probability of the target = 1 and the probability</span>
+<span class="sd">    of the  target = 0.</span>
+
+<span class="sd">    The weight of evidence is given by: np.log(P(X=xj|Y = 1)/P(X=xj|Y=0))</span>
+<span class="sd">    </span>
+<span class="sd">    The target probability ratio is given by: p(1) / p(0)</span>
+
+<span class="sd">    And the log of the target probability ratio is: np.log( p(1) / p(0) )</span>
+<span class="sd">    </span>
+<span class="sd">    Note: This categorical encoding is exclusive for binary classification.</span>
+<span class="sd">    </span>
+<span class="sd">    For example in the variable colour, if the mean of the target = 1 for blue</span>
+<span class="sd">    is 0.8 and the mean of the target = 0  is 0.2, blue will be replaced by:</span>
+<span class="sd">    np.log(0.8/0.2) = 1.386 if log_ratio is selected. Alternatively, blue will be</span>
+<span class="sd">    replaced by 0.8 / 0.2 = 4 if ratio is selected.</span>
+
+<span class="sd">    For details on the calculation of the weight of evidence visit:</span>
+<span class="sd">    https://www.listendata.com/2015/03/weight-of-evidence-woe-and-information.html</span>
+<span class="sd">    </span>
+<span class="sd">    Note: the division by 0 is not defined and the log(0) is not defined.</span>
+<span class="sd">    Thus, if p(0) = 0 for the ratio encoder, or either p(0) = 0 or p(1) = 0 for</span>
+<span class="sd">    woe or log_ratio, in any of the variables, the encoder will return an error.</span>
+<span class="sd">       </span>
+<span class="sd">    The encoder will encode only categorical variables (type &#39;object&#39;). A list</span>
+<span class="sd">    of variables can be passed as an argument. If no variables are passed as </span>
+<span class="sd">    argument, the encoder will find and encode all categorical variables</span>
+<span class="sd">    (object type).</span>
+<span class="sd">    </span>
+<span class="sd">    The encoder first maps the categories to the numbers for each variable (fit).</span>
+
+<span class="sd">    The encoder then transforms the categories into the mapped numbers (transform).</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    encoding_method : str, default=woe</span>
+<span class="sd">        Desired method of encoding.</span>
+
+<span class="sd">        &#39;woe&#39;: weight of evidence</span>
+
+<span class="sd">        &#39;ratio&#39; : probability ratio</span>
+<span class="sd">        </span>
+<span class="sd">    variables : list, default=None</span>
+<span class="sd">        The list of categorical variables that will be encoded. If None, the </span>
+<span class="sd">        encoder will find and select all object type variables.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">encoding_method</span><span class="o">=</span><span class="s1">&#39;woe&#39;</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">encoding_method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;woe&#39;</span><span class="p">,</span> <span class="s1">&#39;ratio&#39;</span><span class="p">,</span> <span class="s1">&#39;log_ratio&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;encoding_method takes only values &#39;woe&#39;, &#39;ratio&#39; and &#39;log_ratio&#39;&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoding_method</span> <span class="o">=</span> <span class="n">encoding_method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_define_variables</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+
+<div class="viewcode-block" id="WoERatioCategoricalEncoder.fit"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.WoERatioCategoricalEncoder.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Learns the numbers that should be used to replace the categories in each</span>
+<span class="sd">        variable. That is the WoE or ratio of probability.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        </span>
+<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">            The training input samples.</span>
+<span class="sd">            Can be the entire dataframe, not just the categorical variables.</span>
+
+<span class="sd">        y : pandas series.</span>
+<span class="sd">            Target, must be binary [0,1].</span>
+
+<span class="sd">        Attributes</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        encoder_dict_: dictionary</span>
+<span class="sd">            The dictionary containing the {category: WoE / ratio} pairs per variable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check input dataframe</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">_is_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="c1"># find categorical variables or check that those entered by the user</span>
+        <span class="c1"># are of type object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_find_categorical_variables</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+
+        <span class="c1"># check if dataset contains na</span>
+        <span class="n">_check_contains_na</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Please provide a target y for this encoding method&#39;</span><span class="p">)</span>
+
+        <span class="c1"># check that y is binary</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">y</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;This encoder is only designed for binary classification, values of y can be only 0 or 1&quot;</span><span class="p">)</span>
+
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">temp</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoding_method</span> <span class="o">==</span> <span class="s1">&#39;woe&#39;</span><span class="p">:</span>
+            <span class="n">total_pos</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">total_neg</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="o">-</span> <span class="n">total_pos</span>
+            <span class="n">temp</span><span class="p">[</span><span class="s1">&#39;non_target&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">temp</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">var</span><span class="p">])[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">total_pos</span>
+                <span class="n">neg</span> <span class="o">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">var</span><span class="p">])[</span><span class="s1">&#39;non_target&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">total_neg</span>
+
+                <span class="n">t</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">pos</span><span class="p">,</span> <span class="n">neg</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">t</span><span class="p">[</span><span class="s1">&#39;woe&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;non_target&#39;</span><span class="p">])</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">t</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">empty</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">t</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;non_target&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;The proportion of 1 of the classes for a category in variable </span><span class="si">{}</span><span class="s2"> is zero, and log of zero is &quot;</span>
+                        <span class="s2">&quot;not defined&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="p">))</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;woe&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">var</span><span class="p">)[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">t</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">t</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">t</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;p1&#39;</span><span class="p">,</span> <span class="s1">&#39;p0&#39;</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoding_method</span> <span class="o">==</span> <span class="s1">&#39;log_ratio&#39;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">t</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;p0&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">empty</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">t</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;p1&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s2">&quot;p(0) or p(1) for a category in variable </span><span class="si">{}</span><span class="s2"> is zero, log of zero is not defined&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">p1</span> <span class="o">/</span> <span class="n">t</span><span class="o">.</span><span class="n">p0</span><span class="p">))</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoding_method</span> <span class="o">==</span> <span class="s1">&#39;ratio&#39;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">t</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;p0&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s2">&quot;p(0) for a category in variable </span><span class="si">{}</span><span class="s2"> is zero, division by 0 is not defined&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">p1</span> <span class="o">/</span> <span class="n">t</span><span class="o">.</span><span class="n">p0</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span> <span class="o">=</span> <span class="n">_check_encoding_dictionary</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+    <span class="c1"># Ugly work around to import the docstring for Sphinx, otherwise none of this is necessary</span>
+<div class="viewcode-block" id="WoERatioCategoricalEncoder.transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.WoERatioCategoricalEncoder.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">X</span></div>
+
+    <span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">BaseCategoricalTransformer</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span>
+
+<div class="viewcode-block" id="WoERatioCategoricalEncoder.inverse_transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.WoERatioCategoricalEncoder.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">X</span></div>
+
+    <span class="n">inverse_transform</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">BaseCategoricalTransformer</span><span class="o">.</span><span class="n">inverse_transform</span><span class="o">.</span><span class="vm">__doc__</span></div>
+
+
+<div class="viewcode-block" id="OneHotCategoricalEncoder"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.OneHotCategoricalEncoder">[docs]</a><span class="k">class</span> <span class="nc">OneHotCategoricalEncoder</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    One hot encoding consists in replacing the categorical variable by a</span>
+<span class="sd">    combination of binary variables which take value 0 or 1, to indicate if</span>
+<span class="sd">    a certain category is present in an observation.</span>
+<span class="sd">    </span>
+<span class="sd">    Each one of the binary variables are also known as dummy variables. For</span>
+<span class="sd">    example, from the categorical variable &quot;Gender&quot; with categories &#39;female&#39;</span>
+<span class="sd">    and &#39;male&#39;, we can generate the boolean variable &quot;female&quot;, which takes 1</span>
+<span class="sd">    if the person is female or 0 otherwise. We can also generate the variable</span>
+<span class="sd">    male, which takes 1 if the person is &quot;male&quot; and 0 otherwise.</span>
+<span class="sd">    </span>
+<span class="sd">    The encoder has the option to generate one dummy variable per category, or</span>
+<span class="sd">    to create dummy variables only for the top n most popular categories, that is,</span>
+<span class="sd">    the categories that are shown by the majority of the observations.</span>
+<span class="sd">    </span>
+<span class="sd">    If dummy variables are created for all the categories of a variable, you have</span>
+<span class="sd">    the option to drop one category not to create information redundancy. That is,</span>
+<span class="sd">    encoding into k-1 variables, where k is the number if unique categories.</span>
+<span class="sd">    </span>
+<span class="sd">    The encoder will encode only categorical variables (type &#39;object&#39;). A list</span>
+<span class="sd">    of variables can be passed as an argument. If no variables are passed as </span>
+<span class="sd">    argument, the encoder will find and encode categorical variables (object type).</span>
+<span class="sd">    </span>
+<span class="sd">    The encoder first finds the categories to be encoded for each variable (fit).</span>
+
+<span class="sd">    The encoder then creates one dummy variable per category for each variable</span>
+<span class="sd">    (transform).</span>
+
+<span class="sd">    Note: new categories in the data to transform, that is, those that did not appear</span>
+<span class="sd">    in the training set, will be ignored (no binary variable will be created for them).</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    top_categories: int, default=None</span>
+<span class="sd">        If None, a dummy variable will be created for each category of the variable.</span>
+<span class="sd">        Alternatively, top_categories indicates the number of most frequent categories</span>
+<span class="sd">        to encode. Dummy variables will be created only for those popular categories</span>
+<span class="sd">        and the rest will be ignored. Note that this is equivalent to grouping all the</span>
+<span class="sd">        remaining categories in one group.</span>
+<span class="sd">        </span>
+<span class="sd">    variables : list</span>
+<span class="sd">        The list of categorical variables that will be encoded. If None, the  </span>
+<span class="sd">        encoder will find and select all object type variables.</span>
+<span class="sd">        </span>
+<span class="sd">    drop_last: boolean, default=False</span>
+<span class="sd">        Only used if top_categories = None. It indicates whether to create dummy</span>
+<span class="sd">        variables for all the categories (k dummies), or if set to True, it will</span>
+<span class="sd">        ignore the last variable of the list (k-1 dummies).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">top_categories</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">drop_last</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">top_categories</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">top_categories</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;top_categories takes only integer numbers, 1, 2, 3, etc.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">drop_last</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;drop_last takes only True or False&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">top_categories</span> <span class="o">=</span> <span class="n">top_categories</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drop_last</span> <span class="o">=</span> <span class="n">drop_last</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_define_variables</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+
+<div class="viewcode-block" id="OneHotCategoricalEncoder.fit"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.OneHotCategoricalEncoder.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Learns the unique categories per variable. If top_categories is indicated,</span>
+<span class="sd">        it will learn the most popular categories. Alternatively, it learns all</span>
+<span class="sd">        unique categories per variable.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        </span>
+<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">            The training input samples.</span>
+<span class="sd">            Can be the entire dataframe, not just seleted variables.</span>
+
+<span class="sd">        y : pandas series, default=None</span>
+<span class="sd">            Target. It is not needed in this encoded. You can pass y or</span>
+<span class="sd">            None.</span>
+
+<span class="sd">        Attributes</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        encoder_dict_: dictionary</span>
+<span class="sd">            The dictionary containing the categories for which dummy variables</span>
+<span class="sd">            will be created.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check input dataframe</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">_is_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="c1"># find categorical variables or check that those entered by the user</span>
+        <span class="c1"># are of type object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_find_categorical_variables</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+
+        <span class="c1"># check if dataset contains na</span>
+        <span class="n">_check_contains_na</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_categories</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">drop_last</span><span class="p">:</span>
+                    <span class="n">category_ls</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">category_ls</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">top_categories</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span> <span class="o">=</span> <span class="n">_check_encoding_dictionary</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="OneHotCategoricalEncoder.transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.OneHotCategoricalEncoder.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates the dummy / binary variables.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        </span>
+<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">            The data to transform.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        </span>
+<span class="sd">        X_transformed : pandas dataframe.</span>
+<span class="sd">            The shape of the dataframe will be different from the original as it includes the dummy variables.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check method fit has been called</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># check that input is a dataframe</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">_is_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="c1"># check if dataset contains na</span>
+        <span class="n">_check_contains_na</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+
+        <span class="c1"># Check that the dataframe contains the same number of columns than the dataframe</span>
+        <span class="c1"># used to fit the imputer.</span>
+        <span class="n">_check_input_matches_training_df</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">category</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span><span class="p">[</span><span class="n">feature</span><span class="p">]:</span>
+                <span class="n">X</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">category</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">==</span> <span class="n">category</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># drop the original non-encoded variables.</span>
+        <span class="n">X</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">X</span></div></div>
+
+
+<div class="viewcode-block" id="RareLabelCategoricalEncoder"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.RareLabelCategoricalEncoder">[docs]</a><span class="k">class</span> <span class="nc">RareLabelCategoricalEncoder</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The RareLabelCategoricalEncoder() groups rare / infrequent categories in</span>
+<span class="sd">    a new category called &quot;Rare&quot;, or any other name entered by the user.</span>
+<span class="sd">    </span>
+<span class="sd">    For example in the variable colour, if the percentage of observations</span>
+<span class="sd">    for the categories magenta, cyan and burgundy are &lt; 5 %, all those</span>
+<span class="sd">    categories will be replaced by the new label &quot;Rare&quot;.</span>
+
+<span class="sd">    Note, infrequent labels can also be grouped under a user defined name, for</span>
+<span class="sd">    example &#39;Other&#39;. The name to replace infrequent categories is defined</span>
+<span class="sd">    with the parameter replace_with.</span>
+<span class="sd">       </span>
+<span class="sd">    The encoder will encode only categorical variables (type &#39;object&#39;). A list</span>
+<span class="sd">    of variables can be passed as an argument. If no variables are passed as </span>
+<span class="sd">    argument, the encoder will find and encode all categorical variables</span>
+<span class="sd">    (object type).</span>
+<span class="sd">    </span>
+<span class="sd">    The encoder first finds the frequent labels for each variable (fit).</span>
+
+<span class="sd">    The encoder then groups the infrequent labels under the new label &#39;Rare&#39;</span>
+<span class="sd">    or by another user defined string (transform).</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    tol: float, default=0.05</span>
+<span class="sd">        the minimum frequency a label should have to be considered frequent.</span>
+<span class="sd">        Categories with frequencies lower than tol will be grouped.</span>
+
+<span class="sd">    n_categories: int, default=10</span>
+<span class="sd">        the minimum number of categories a variable should have for the encoder</span>
+<span class="sd">        to find frequent labels. If the variable contains less categories, all</span>
+<span class="sd">        of them will be considered frequent.</span>
+
+<span class="sd">    max_n_categories: int, default=None</span>
+<span class="sd">        the maximum number of categories that should be considered frequent.</span>
+<span class="sd">        If None, all categories with frequency above the tolerance (tol) will be</span>
+<span class="sd">        considered.</span>
+
+<span class="sd">    variables : list, default=None</span>
+<span class="sd">        The list of categorical variables that will be encoded. If None, the </span>
+<span class="sd">        encoder will find and select all object type variables.</span>
+
+<span class="sd">    replace_with : string, default=&#39;Rare&#39;</span>
+<span class="sd">        The category name that will be used to replace infrequent categories.</span>
+
+<span class="sd">    return_object: bool, default=False</span>
+<span class="sd">        Whether the variables should be re-cast as object, in case they have numerical values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">n_categories</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">max_n_categories</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">replace_with</span><span class="o">=</span><span class="s1">&#39;Rare&#39;</span><span class="p">,</span> <span class="n">return_object</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">tol</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">tol</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;tol takes values between 0 and 1&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">n_categories</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n_categories</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;n_categories takes only positive integer numbers&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">max_n_categories</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">max_n_categories</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">max_n_categories</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;max_n_categories takes only positive integer numbers&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">replace_with</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;replace_with takes only strings as values.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tol</span> <span class="o">=</span> <span class="n">tol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_categories</span> <span class="o">=</span> <span class="n">n_categories</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_n_categories</span> <span class="o">=</span> <span class="n">max_n_categories</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_define_variables</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">replace_with</span> <span class="o">=</span> <span class="n">replace_with</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">return_object</span> <span class="o">=</span> <span class="n">return_object</span>
+
+<div class="viewcode-block" id="RareLabelCategoricalEncoder.fit"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.RareLabelCategoricalEncoder.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Learns the frequent categories for each variable.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        </span>
+<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">            The training input samples.</span>
+<span class="sd">            Can be the entire dataframe, not just selected variables</span>
+
+<span class="sd">        y : None</span>
+<span class="sd">            y is not required. You can pass y or None.</span>
+
+<span class="sd">        Attributes</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        encoder_dict_: dictionary</span>
+<span class="sd">            The dictionary containing the frequent categories (that will be kept)</span>
+<span class="sd">            for each variable. Categories not present in this list will be replaced</span>
+<span class="sd">            by &#39;Rare&#39; or by the user defined value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check input dataframe</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">_is_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="c1"># find categorical variables or check that those entered by the user</span>
+        <span class="c1"># are of type object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_find_categorical_variables</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+
+        <span class="c1"># check if dataset contains na</span>
+        <span class="n">_check_contains_na</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_categories</span><span class="p">:</span>
+
+                <span class="c1"># if the variable has more than the indicated number of categories</span>
+                <span class="c1"># the encoder will learn the most frequent categories</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)))</span>
+
+                <span class="c1"># non-rare labels:</span>
+                <span class="n">freq_idx</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">t</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_n_categories</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">freq_idx</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">max_n_categories</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">freq_idx</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># if the total number of categories is smaller than the indicated</span>
+                <span class="c1"># the encoder will consider all categories as frequent.</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The number of unique categories for variable </span><span class="si">{}</span><span class="s2"> is less than that indicated in &quot;</span>
+                              <span class="s2">&quot;n_categories. Thus, all categories will be considered frequent&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span> <span class="o">=</span> <span class="n">_check_encoding_dictionary</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="RareLabelCategoricalEncoder.transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.RareLabelCategoricalEncoder.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Groups rare labels under separate group &#39;Rare&#39; or any other name provided</span>
+<span class="sd">        by the user.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        </span>
+<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">            The input samples.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        </span>
+<span class="sd">        X_transformed : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">            The dataframe where rare categories have been grouped.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check method fit has been called</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># check that input is a dataframe</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">_is_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="c1"># check if dataset contains na</span>
+        <span class="n">_check_contains_na</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+
+        <span class="c1"># Check that the dataframe contains the same number of columns than the dataframe</span>
+        <span class="c1"># used to fit the imputer.</span>
+        <span class="n">_check_input_matches_training_df</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+            <span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span><span class="p">[</span><span class="n">feature</span><span class="p">]),</span> <span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">replace_with</span><span class="p">)</span>
+
+        <span class="c1"># add additional step to return variables cast as object</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_object</span><span class="p">:</span>
+            <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;O&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">X</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2018, Micah Smith
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

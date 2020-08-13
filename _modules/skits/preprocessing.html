@@ -1,0 +1,515 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>skits.preprocessing &mdash; ballet 0.7.7 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> ballet
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../readme.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../readme.html#next-steps">Next steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#stable-release">Stable release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#from-source">From source</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../maintainer_guide.html">Maintainer Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../maintainer_guide.html#creating-a-ballet-project">Creating a Ballet project</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#project-instantiation">Project instantiation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#project-installation">Project installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#collaboration-via-git-and-github">Collaboration via git and GitHub</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#enabling-continuous-integration">Enabling continuous integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#installing-bots">Installing bots</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../maintainer_guide.html#developing-new-features">Developing new features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#validating-features">Validating features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#pruning-features">Pruning features</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../maintainer_guide.html#applying-the-feature-engineering-pipeline">Applying the feature engineering pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../maintainer_guide.html#updating-the-framework">Updating the framework</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributor_guide.html">Contributor Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../contributor_guide.html#cloud-feature-development-workflow">Cloud Feature Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributor_guide.html#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#setup-your-development-environment">Setup your development environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#develop-a-new-feature">Develop a new feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#submit-the-feature">Submit the feature</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../contributor_guide.html#option-1-git-workflow">Option 1: Git workflow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contributor_guide.html#option-2-in-lab-workflow">Option 2: In-Lab Workflow</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributor_guide.html#understanding-validation-results">Understanding Validation Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributor_guide.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../feature_engineering_guide.html">Feature Engineering Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#logical-features">Logical Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#why">Why?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#writing-features">Writing features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#a-first-example">A first example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#a-second-example">A second example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#a-third-example">A third example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#input-types-and-conversions">Input types and conversions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#transformers">Transformers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#feature-engineering-pipelines">Feature engineering pipelines</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#feature-engineering-primitives">Feature engineering primitives</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#operating-on-groups">Operating on groups</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#addressing-missing-values">Addressing missing values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#operating-on-time-series-data">Operating on time series data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#other-primitives">Other primitives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#external-libraries">External libraries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#pandas-lrarrow-ballet-examples">Pandas ⇔ Ballet Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#rolling-your-own-transformers">Rolling your own transformers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#further-reading">Further reading</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ballet.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/ballet.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.eng.html">ballet.eng package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/ballet.eng.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.util.html">ballet.util package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/ballet.util.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.validation.html">ballet.validation package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/ballet.validation.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/ballet.validation.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/ballet.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.cli.html">ballet.cli module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.client.html">ballet.client module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.compat.html">ballet.compat module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.contrib.html">ballet.contrib module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.exc.html">ballet.exc module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.feature.html">ballet.feature module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.pipeline.html">ballet.pipeline module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.project.html">ballet.project module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.templating.html">ballet.templating module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.transformer.html">ballet.transformer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.update.html">ballet.update module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli_reference.html">CLI Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_reference.html#ballet-quickstart">quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_reference.html#ballet-start-new-feature">start-new-feature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_reference.html#ballet-update-project-template">update-project-template</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_reference.html#ballet-validate">validate</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Development Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#types-of-contributions">Types of Contributions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#report-bugs">Report Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#fix-bugs">Fix Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#implement-features">Implement Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#write-documentation">Write Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#submit-feedback">Submit Feedback</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#get-started">Get Started!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#pull-request-guidelines">Pull Request Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#tips">Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#deploying">Deploying</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">Credits</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../authors.html#development-lead">Development Lead</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../authors.html#contributors">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id1">0.7.7 (2020-08-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id2">0.7.6 (2020-08-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id3">0.7.5 (2020-08-03)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id4">0.7.4 (2020-07-22)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id5">0.7.3 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id6">0.7.2 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id7">0.7.1 (2020-07-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id8">0.7 (2020-07-17)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id9">0.6 (2019-11-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id10">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id11">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id12">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id13">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id14">0.1</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ballet</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>skits.preprocessing</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for skits.preprocessing</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy.lib.stride_tricks</span> <span class="kn">import</span> <span class="n">as_strided</span>
+<span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="kn">import</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="kn">import</span> <span class="n">check_is_fitted</span>
+
+<span class="kn">from</span> <span class="nn">skits.feature_extraction</span> <span class="kn">import</span> <span class="n">AutoregressiveTransformer</span>
+
+
+<span class="k">def</span> <span class="nf">expand_dim_if_needed</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">arr</span>
+
+
+<div class="viewcode-block" id="ReversibleImputer"><a class="viewcode-back" href="../../api/ballet.eng.skits.html#ballet.eng.skits.ReversibleImputer">[docs]</a><span class="k">class</span> <span class="nc">ReversibleImputer</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
+
+    <span class="n">needs_refit</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_only</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_only</span> <span class="o">=</span> <span class="n">y_only</span>
+
+<div class="viewcode-block" id="ReversibleImputer.fit"><a class="viewcode-back" href="../../api/ballet.eng.skits.html#ballet.eng.skits.ReversibleImputer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_missing_idxs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mean</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="ReversibleImputer.transform"><a class="viewcode-back" href="../../api/ballet.eng.skits.html#ballet.eng.skits.ReversibleImputer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refit</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">refit</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_mean&quot;</span><span class="p">)</span>
+        <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_missing_idxs</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mean</span>
+        <span class="k">return</span> <span class="n">X</span></div>
+
+<div class="viewcode-block" id="ReversibleImputer.inverse_transform"><a class="viewcode-back" href="../../api/ballet.eng.skits.html#ballet.eng.skits.ReversibleImputer.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_missing_idxs</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="k">return</span> <span class="n">X</span></div></div>
+
+
+<div class="viewcode-block" id="DifferenceTransformer"><a class="viewcode-back" href="../../api/ballet.eng.skits.html#ballet.eng.skits.DifferenceTransformer">[docs]</a><span class="k">class</span> <span class="nc">DifferenceTransformer</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
+
+    <span class="n">needs_refit</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">period</span> <span class="o">=</span> <span class="n">period</span>
+
+<div class="viewcode-block" id="DifferenceTransformer.fit"><a class="viewcode-back" href="../../api/ballet.eng.skits.html#ballet.eng.skits.DifferenceTransformer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">missing</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">X</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_missing_idx_start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_missing_idx_start</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_missing_idx_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_missing_idx_start</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">period</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_missing_vals</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_missing_idx_start</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_missing_idx_end</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="DifferenceTransformer.transform"><a class="viewcode-back" href="../../api/ballet.eng.skits.html#ballet.eng.skits.DifferenceTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refit</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">refit</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_missing_idx_start&quot;</span><span class="p">)</span>
+
+        <span class="n">X_shift</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">period</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">X_trans</span> <span class="o">=</span> <span class="n">X</span> <span class="o">-</span> <span class="n">X_shift</span>
+        <span class="n">X_trans</span><span class="p">[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_missing_idx_end</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+        <span class="k">return</span> <span class="n">X_trans</span></div>
+
+<div class="viewcode-block" id="DifferenceTransformer.inverse_transform"><a class="viewcode-back" href="../../api/ballet.eng.skits.html#ballet.eng.skits.DifferenceTransformer.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="c1"># TODO: Figure out why I have to make a copy here</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># Fill in the missing values</span>
+        <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_missing_idx_start</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_missing_idx_end</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_missing_vals</span>
+        <span class="n">X_inv</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_missing_idx_start</span> <span class="p">:,</span> <span class="p">:]</span>
+
+        <span class="c1"># Take stock</span>
+        <span class="n">period_rem</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">remainder</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X_inv</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">period</span><span class="p">)</span>
+        <span class="n">stride_shape</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">period</span><span class="p">,</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X_inv</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">period</span><span class="p">)</span> <span class="o">+</span> <span class="n">period_rem</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="n">stride</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">strides</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Clusterfuck</span>
+        <span class="n">inv</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">as_strided</span><span class="p">(</span>
+                <span class="n">X_inv</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">stride_shape</span><span class="p">,</span> <span class="n">strides</span><span class="o">=</span><span class="p">[</span><span class="n">stride</span><span class="p">,</span> <span class="n">stride</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">period</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">stride_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">stride_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;F&quot;</span><span class="p">)[:</span> <span class="nb">len</span><span class="p">(</span><span class="n">X_inv</span><span class="p">)]</span>
+        <span class="p">)[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">X</span><span class="p">[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_missing_idx_start</span><span class="p">,</span> <span class="p">:],</span> <span class="n">inv</span><span class="p">))</span></div></div>
+
+
+<div class="viewcode-block" id="LogTransformer"><a class="viewcode-back" href="../../api/ballet.eng.skits.html#ballet.eng.skits.LogTransformer">[docs]</a><span class="k">class</span> <span class="nc">LogTransformer</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
+
+    <span class="n">needs_refit</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+<div class="viewcode-block" id="LogTransformer.fit"><a class="viewcode-back" href="../../api/ballet.eng.skits.html#ballet.eng.skits.LogTransformer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="LogTransformer.transform"><a class="viewcode-back" href="../../api/ballet.eng.skits.html#ballet.eng.skits.LogTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refit</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s2">&quot;raise&quot;</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s2">&quot;raise&quot;</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">Xt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">X</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">FloatingPointError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;X cannot have negative values&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Xt</span></div>
+
+<div class="viewcode-block" id="LogTransformer.inverse_transform"><a class="viewcode-back" href="../../api/ballet.eng.skits.html#ballet.eng.skits.LogTransformer.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span></div></div>
+
+
+<div class="viewcode-block" id="HorizonTransformer"><a class="viewcode-back" href="../../api/ballet.eng.skits.html#ballet.eng.skits.HorizonTransformer">[docs]</a><span class="k">class</span> <span class="nc">HorizonTransformer</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
+
+    <span class="n">needs_refit</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">y_only</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">horizon</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">horizon</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;horizon must be greater than 1&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">horizon</span> <span class="o">=</span> <span class="n">horizon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">autoregressive_transformer</span> <span class="o">=</span> <span class="n">AutoregressiveTransformer</span><span class="p">(</span>
+            <span class="n">num_lags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">horizon</span><span class="p">,</span> <span class="n">pred_stride</span><span class="o">=</span><span class="mi">1</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="HorizonTransformer.fit"><a class="viewcode-back" href="../../api/ballet.eng.skits.html#ballet.eng.skits.HorizonTransformer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">autoregressive_transformer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">expand_dim_if_needed</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="HorizonTransformer.transform"><a class="viewcode-back" href="../../api/ballet.eng.skits.html#ballet.eng.skits.HorizonTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refit</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">expand_dim_if_needed</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">refit</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">autoregressive_transformer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">Xt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">autoregressive_transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="c1"># The autoregressive transformer won&#39;t build lags _with_ the last element of X.</span>
+        <span class="c1"># So, we have to manually tack it on here.</span>
+        <span class="n">last_non_nan_piece</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">Xt</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:],</span> <span class="n">X</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">Xt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">Xt</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">horizon</span> <span class="p">:,</span> <span class="p">:],</span> <span class="n">last_non_nan_piece</span><span class="p">,</span> <span class="n">Xt</span><span class="p">[</span><span class="mi">1</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">horizon</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">Xt</span></div>
+
+<div class="viewcode-block" id="HorizonTransformer.inverse_transform"><a class="viewcode-back" href="../../api/ballet.eng.skits.html#ballet.eng.skits.HorizonTransformer.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">Xt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">X</span><span class="p">[</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">horizon</span> <span class="p">:,</span> <span class="p">:],</span> <span class="n">X</span><span class="p">[:</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">horizon</span><span class="p">,</span> <span class="p">:]))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">autoregressive_transformer</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">Xt</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HorizonTransformer.fit_transform"><a class="viewcode-back" href="../../api/ballet.eng.skits.html#ballet.eng.skits.HorizonTransformer.fit_transform">[docs]</a>    <span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2018, Micah Smith
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

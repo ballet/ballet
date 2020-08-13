@@ -1,0 +1,656 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sklearn.impute._knn &mdash; ballet 0.7.7 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> ballet
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../readme.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../readme.html#next-steps">Next steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#stable-release">Stable release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#from-source">From source</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../maintainer_guide.html">Maintainer Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../maintainer_guide.html#creating-a-ballet-project">Creating a Ballet project</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#project-instantiation">Project instantiation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#project-installation">Project installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#collaboration-via-git-and-github">Collaboration via git and GitHub</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#enabling-continuous-integration">Enabling continuous integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#installing-bots">Installing bots</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../maintainer_guide.html#developing-new-features">Developing new features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#validating-features">Validating features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#pruning-features">Pruning features</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../maintainer_guide.html#applying-the-feature-engineering-pipeline">Applying the feature engineering pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../maintainer_guide.html#updating-the-framework">Updating the framework</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributor_guide.html">Contributor Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#cloud-feature-development-workflow">Cloud Feature Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#setup-your-development-environment">Setup your development environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#develop-a-new-feature">Develop a new feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#submit-the-feature">Submit the feature</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#option-1-git-workflow">Option 1: Git workflow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#option-2-in-lab-workflow">Option 2: In-Lab Workflow</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#understanding-validation-results">Understanding Validation Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../feature_engineering_guide.html">Feature Engineering Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#logical-features">Logical Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#why">Why?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#writing-features">Writing features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#a-first-example">A first example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#a-second-example">A second example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#a-third-example">A third example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#input-types-and-conversions">Input types and conversions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#transformers">Transformers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#feature-engineering-pipelines">Feature engineering pipelines</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#feature-engineering-primitives">Feature engineering primitives</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#operating-on-groups">Operating on groups</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#addressing-missing-values">Addressing missing values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#operating-on-time-series-data">Operating on time series data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#other-primitives">Other primitives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#external-libraries">External libraries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#pandas-lrarrow-ballet-examples">Pandas ⇔ Ballet Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#rolling-your-own-transformers">Rolling your own transformers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#further-reading">Further reading</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ballet.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/ballet.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.eng.html">ballet.eng package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.eng.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.util.html">ballet.util package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.util.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.validation.html">ballet.validation package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.validation.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.validation.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/ballet.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.cli.html">ballet.cli module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.client.html">ballet.client module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.compat.html">ballet.compat module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.contrib.html">ballet.contrib module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.exc.html">ballet.exc module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.feature.html">ballet.feature module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.pipeline.html">ballet.pipeline module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.project.html">ballet.project module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.templating.html">ballet.templating module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.transformer.html">ballet.transformer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.update.html">ballet.update module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cli_reference.html">CLI Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../cli_reference.html#ballet-quickstart">quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cli_reference.html#ballet-start-new-feature">start-new-feature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cli_reference.html#ballet-update-project-template">update-project-template</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cli_reference.html#ballet-validate">validate</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Development Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#types-of-contributions">Types of Contributions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributing.html#report-bugs">Report Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributing.html#fix-bugs">Fix Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributing.html#implement-features">Implement Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributing.html#write-documentation">Write Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributing.html#submit-feedback">Submit Feedback</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#get-started">Get Started!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#pull-request-guidelines">Pull Request Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#tips">Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#deploying">Deploying</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Credits</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../authors.html#development-lead">Development Lead</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../authors.html#contributors">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id1">0.7.7 (2020-08-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id2">0.7.6 (2020-08-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id3">0.7.5 (2020-08-03)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id4">0.7.4 (2020-07-22)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id5">0.7.3 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id6">0.7.2 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id7">0.7.1 (2020-07-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id8">0.7 (2020-07-17)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id9">0.6 (2019-11-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id10">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id11">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id12">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id13">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id14">0.1</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ballet</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sklearn.impute._knn</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sklearn.impute._knn</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Authors: Ashim Bhattarai &lt;ashimb9@gmail.com&gt;</span>
+<span class="c1">#          Thomas J Fan &lt;thomasjpfan@gmail.com&gt;</span>
+<span class="c1"># License: BSD 3 clause</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">._base</span> <span class="kn">import</span> <span class="n">_BaseImputer</span>
+<span class="kn">from</span> <span class="nn">..utils.validation</span> <span class="kn">import</span> <span class="n">FLOAT_DTYPES</span>
+<span class="kn">from</span> <span class="nn">..metrics</span> <span class="kn">import</span> <span class="n">pairwise_distances_chunked</span>
+<span class="kn">from</span> <span class="nn">..metrics.pairwise</span> <span class="kn">import</span> <span class="n">_NAN_METRICS</span>
+<span class="kn">from</span> <span class="nn">..neighbors._base</span> <span class="kn">import</span> <span class="n">_get_weights</span>
+<span class="kn">from</span> <span class="nn">..neighbors._base</span> <span class="kn">import</span> <span class="n">_check_weights</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">check_array</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">is_scalar_nan</span>
+<span class="kn">from</span> <span class="nn">..utils._mask</span> <span class="kn">import</span> <span class="n">_get_mask</span>
+<span class="kn">from</span> <span class="nn">..utils.validation</span> <span class="kn">import</span> <span class="n">check_is_fitted</span>
+<span class="kn">from</span> <span class="nn">..utils.validation</span> <span class="kn">import</span> <span class="n">_deprecate_positional_args</span>
+
+
+<div class="viewcode-block" id="KNNImputer"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.KNNImputer">[docs]</a><span class="k">class</span> <span class="nc">KNNImputer</span><span class="p">(</span><span class="n">_BaseImputer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Imputation for completing missing values using k-Nearest Neighbors.</span>
+
+<span class="sd">    Each sample&#39;s missing values are imputed using the mean value from</span>
+<span class="sd">    `n_neighbors` nearest neighbors found in the training set. Two samples are</span>
+<span class="sd">    close if the features that neither is missing are close.</span>
+
+<span class="sd">    Read more in the :ref:`User Guide &lt;knnimpute&gt;`.</span>
+
+<span class="sd">    .. versionadded:: 0.22</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    missing_values : number, string, np.nan or None, default=`np.nan`</span>
+<span class="sd">        The placeholder for the missing values. All occurrences of</span>
+<span class="sd">        `missing_values` will be imputed. For pandas&#39; dataframes with</span>
+<span class="sd">        nullable integer dtypes with missing values, `missing_values`</span>
+<span class="sd">        should be set to `np.nan`, since `pd.NA` will be converted to `np.nan`.</span>
+
+<span class="sd">    n_neighbors : int, default=5</span>
+<span class="sd">        Number of neighboring samples to use for imputation.</span>
+
+<span class="sd">    weights : {&#39;uniform&#39;, &#39;distance&#39;} or callable, default=&#39;uniform&#39;</span>
+<span class="sd">        Weight function used in prediction.  Possible values:</span>
+
+<span class="sd">        - &#39;uniform&#39; : uniform weights. All points in each neighborhood are</span>
+<span class="sd">          weighted equally.</span>
+<span class="sd">        - &#39;distance&#39; : weight points by the inverse of their distance.</span>
+<span class="sd">          in this case, closer neighbors of a query point will have a</span>
+<span class="sd">          greater influence than neighbors which are further away.</span>
+<span class="sd">        - callable : a user-defined function which accepts an</span>
+<span class="sd">          array of distances, and returns an array of the same shape</span>
+<span class="sd">          containing the weights.</span>
+
+<span class="sd">    metric : {&#39;nan_euclidean&#39;} or callable, default=&#39;nan_euclidean&#39;</span>
+<span class="sd">        Distance metric for searching neighbors. Possible values:</span>
+
+<span class="sd">        - &#39;nan_euclidean&#39;</span>
+<span class="sd">        - callable : a user-defined function which conforms to the definition</span>
+<span class="sd">          of ``_pairwise_callable(X, Y, metric, **kwds)``. The function</span>
+<span class="sd">          accepts two arrays, X and Y, and a `missing_values` keyword in</span>
+<span class="sd">          `kwds` and returns a scalar distance value.</span>
+
+<span class="sd">    copy : bool, default=True</span>
+<span class="sd">        If True, a copy of X will be created. If False, imputation will</span>
+<span class="sd">        be done in-place whenever possible.</span>
+
+<span class="sd">    add_indicator : bool, default=False</span>
+<span class="sd">        If True, a :class:`MissingIndicator` transform will stack onto the</span>
+<span class="sd">        output of the imputer&#39;s transform. This allows a predictive estimator</span>
+<span class="sd">        to account for missingness despite imputation. If a feature has no</span>
+<span class="sd">        missing values at fit/train time, the feature won&#39;t appear on the</span>
+<span class="sd">        missing indicator even if there are missing values at transform/test</span>
+<span class="sd">        time.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    indicator_ : :class:`sklearn.impute.MissingIndicator`</span>
+<span class="sd">        Indicator used to add binary indicators for missing values.</span>
+<span class="sd">        ``None`` if add_indicator is False.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    * Olga Troyanskaya, Michael Cantor, Gavin Sherlock, Pat Brown, Trevor</span>
+<span class="sd">      Hastie, Robert Tibshirani, David Botstein and Russ B. Altman, Missing</span>
+<span class="sd">      value estimation methods for DNA microarrays, BIOINFORMATICS Vol. 17</span>
+<span class="sd">      no. 6, 2001 Pages 520-525.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from sklearn.impute import KNNImputer</span>
+<span class="sd">    &gt;&gt;&gt; X = [[1, 2, np.nan], [3, 4, 3], [np.nan, 6, 5], [8, 8, 7]]</span>
+<span class="sd">    &gt;&gt;&gt; imputer = KNNImputer(n_neighbors=2)</span>
+<span class="sd">    &gt;&gt;&gt; imputer.fit_transform(X)</span>
+<span class="sd">    array([[1. , 2. , 4. ],</span>
+<span class="sd">           [3. , 4. , 3. ],</span>
+<span class="sd">           [5.5, 6. , 5. ],</span>
+<span class="sd">           [8. , 8. , 7. ]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@_deprecate_positional_args</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">missing_values</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                 <span class="n">weights</span><span class="o">=</span><span class="s2">&quot;uniform&quot;</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;nan_euclidean&quot;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">add_indicator</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">missing_values</span><span class="o">=</span><span class="n">missing_values</span><span class="p">,</span>
+            <span class="n">add_indicator</span><span class="o">=</span><span class="n">add_indicator</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_neighbors</span> <span class="o">=</span> <span class="n">n_neighbors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="o">=</span> <span class="n">metric</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">copy</span> <span class="o">=</span> <span class="n">copy</span>
+
+    <span class="k">def</span> <span class="nf">_calc_impute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dist_pot_donors</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="p">,</span>
+                     <span class="n">fit_X_col</span><span class="p">,</span> <span class="n">mask_fit_X_col</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Helper function to impute a single column.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dist_pot_donors : ndarray of shape (n_receivers, n_potential_donors)</span>
+<span class="sd">            Distance matrix between the receivers and potential donors from</span>
+<span class="sd">            training set. There must be at least one non-nan distance between</span>
+<span class="sd">            a receiver and a potential donor.</span>
+
+<span class="sd">        n_neighbors : int</span>
+<span class="sd">            Number of neighbors to consider.</span>
+
+<span class="sd">        fit_X_col : ndarray of shape (n_potential_donors,)</span>
+<span class="sd">            Column of potential donors from training set.</span>
+
+<span class="sd">        mask_fit_X_col : ndarray of shape (n_potential_donors,)</span>
+<span class="sd">            Missing mask for fit_X_col.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        imputed_values: ndarray of shape (n_receivers,)</span>
+<span class="sd">            Imputed values for receiver.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get donors</span>
+        <span class="n">donors_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argpartition</span><span class="p">(</span><span class="n">dist_pot_donors</span><span class="p">,</span> <span class="n">n_neighbors</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                                     <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)[:,</span> <span class="p">:</span><span class="n">n_neighbors</span><span class="p">]</span>
+
+        <span class="c1"># Get weight matrix from from distance matrix</span>
+        <span class="n">donors_dist</span> <span class="o">=</span> <span class="n">dist_pot_donors</span><span class="p">[</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">donors_idx</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])[:,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">donors_idx</span><span class="p">]</span>
+
+        <span class="n">weight_matrix</span> <span class="o">=</span> <span class="n">_get_weights</span><span class="p">(</span><span class="n">donors_dist</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
+
+        <span class="c1"># fill nans with zeros</span>
+        <span class="k">if</span> <span class="n">weight_matrix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">weight_matrix</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">weight_matrix</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="c1"># Retrieve donor values and calculate kNN average</span>
+        <span class="n">donors</span> <span class="o">=</span> <span class="n">fit_X_col</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">donors_idx</span><span class="p">)</span>
+        <span class="n">donors_mask</span> <span class="o">=</span> <span class="n">mask_fit_X_col</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">donors_idx</span><span class="p">)</span>
+        <span class="n">donors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">donors</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">donors_mask</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">donors</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weight_matrix</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+
+<div class="viewcode-block" id="KNNImputer.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.KNNImputer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit the imputer on X.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : array-like shape of (n_samples, n_features)</span>
+<span class="sd">            Input data, where `n_samples` is the number of samples and</span>
+<span class="sd">            `n_features` is the number of features.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check data integrity and calling arguments</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_scalar_nan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">missing_values</span><span class="p">):</span>
+            <span class="n">force_all_finite</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">force_all_finite</span> <span class="o">=</span> <span class="s2">&quot;allow-nan&quot;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_NAN_METRICS</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;The selected metric does not support NaN values&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_neighbors</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Expected n_neighbors &gt; 0. Got </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_neighbors</span><span class="p">))</span>
+
+        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_data</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">accept_sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_DTYPES</span><span class="p">,</span>
+                                <span class="n">force_all_finite</span><span class="o">=</span><span class="n">force_all_finite</span><span class="p">,</span>
+                                <span class="n">copy</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_fit_indicator</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="n">_check_weights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fit_X</span> <span class="o">=</span> <span class="n">X</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mask_fit_X</span> <span class="o">=</span> <span class="n">_get_mask</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fit_X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">missing_values</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="KNNImputer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.KNNImputer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Impute all missing values in X.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : array-like of shape (n_samples, n_features)</span>
+<span class="sd">            The input data to complete.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        X : array-like of shape (n_samples, n_output_features)</span>
+<span class="sd">            The imputed dataset. `n_output_features` is the number of features</span>
+<span class="sd">            that is not always missing during `fit`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_scalar_nan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">missing_values</span><span class="p">):</span>
+            <span class="n">force_all_finite</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">force_all_finite</span> <span class="o">=</span> <span class="s2">&quot;allow-nan&quot;</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">accept_sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_DTYPES</span><span class="p">,</span>
+                        <span class="n">force_all_finite</span><span class="o">=</span><span class="n">force_all_finite</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">)</span>
+        <span class="n">X_indicator</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_transform_indicator</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fit_X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Incompatible dimension between the fitted &quot;</span>
+                             <span class="s2">&quot;dataset and the one to be transformed&quot;</span><span class="p">)</span>
+
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">_get_mask</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">missing_values</span><span class="p">)</span>
+        <span class="n">mask_fit_X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mask_fit_X</span>
+        <span class="n">valid_mask</span> <span class="o">=</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">mask_fit_X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask</span><span class="p">):</span>
+            <span class="c1"># No missing values in X</span>
+            <span class="c1"># Remove columns where the training data is all nan</span>
+            <span class="k">return</span> <span class="n">X</span><span class="p">[:,</span> <span class="n">valid_mask</span><span class="p">]</span>
+
+        <span class="n">row_missing_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flatnonzero</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="n">non_missing_fix_X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">mask_fit_X</span><span class="p">)</span>
+
+        <span class="c1"># Maps from indices from X to indices in dist matrix</span>
+        <span class="n">dist_idx_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+        <span class="n">dist_idx_map</span><span class="p">[</span><span class="n">row_missing_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">row_missing_idx</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">def</span> <span class="nf">process_chunk</span><span class="p">(</span><span class="n">dist_chunk</span><span class="p">,</span> <span class="n">start</span><span class="p">):</span>
+            <span class="n">row_missing_chunk</span> <span class="o">=</span> <span class="n">row_missing_idx</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">start</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">dist_chunk</span><span class="p">)]</span>
+
+            <span class="c1"># Find and impute missing by column</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">valid_mask</span><span class="p">[</span><span class="n">col</span><span class="p">]:</span>
+                    <span class="c1"># column was all missing during training</span>
+                    <span class="k">continue</span>
+
+                <span class="n">col_mask</span> <span class="o">=</span> <span class="n">mask</span><span class="p">[</span><span class="n">row_missing_chunk</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">col_mask</span><span class="p">):</span>
+                    <span class="c1"># column has no missing values</span>
+                    <span class="k">continue</span>
+
+                <span class="n">potential_donors_idx</span><span class="p">,</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">non_missing_fix_X</span><span class="p">[:,</span> <span class="n">col</span><span class="p">])</span>
+
+                <span class="c1"># receivers_idx are indices in X</span>
+                <span class="n">receivers_idx</span> <span class="o">=</span> <span class="n">row_missing_chunk</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">flatnonzero</span><span class="p">(</span><span class="n">col_mask</span><span class="p">)]</span>
+
+                <span class="c1"># distances for samples that needed imputation for column</span>
+                <span class="n">dist_subset</span> <span class="o">=</span> <span class="p">(</span><span class="n">dist_chunk</span><span class="p">[</span><span class="n">dist_idx_map</span><span class="p">[</span><span class="n">receivers_idx</span><span class="p">]</span> <span class="o">-</span> <span class="n">start</span><span class="p">]</span>
+                               <span class="p">[:,</span> <span class="n">potential_donors_idx</span><span class="p">])</span>
+
+                <span class="c1"># receivers with all nan distances impute with mean</span>
+                <span class="n">all_nan_dist_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">dist_subset</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">all_nan_receivers_idx</span> <span class="o">=</span> <span class="n">receivers_idx</span><span class="p">[</span><span class="n">all_nan_dist_mask</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">all_nan_receivers_idx</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+                    <span class="n">col_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fit_X</span><span class="p">[:,</span> <span class="n">col</span><span class="p">],</span>
+                                           <span class="n">mask</span><span class="o">=</span><span class="n">mask_fit_X</span><span class="p">[:,</span> <span class="n">col</span><span class="p">])</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+                    <span class="n">X</span><span class="p">[</span><span class="n">all_nan_receivers_idx</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">col_mean</span>
+
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_nan_receivers_idx</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">receivers_idx</span><span class="p">):</span>
+                        <span class="c1"># all receivers imputed with mean</span>
+                        <span class="k">continue</span>
+
+                    <span class="c1"># receivers with at least one defined distance</span>
+                    <span class="n">receivers_idx</span> <span class="o">=</span> <span class="n">receivers_idx</span><span class="p">[</span><span class="o">~</span><span class="n">all_nan_dist_mask</span><span class="p">]</span>
+                    <span class="n">dist_subset</span> <span class="o">=</span> <span class="p">(</span><span class="n">dist_chunk</span><span class="p">[</span><span class="n">dist_idx_map</span><span class="p">[</span><span class="n">receivers_idx</span><span class="p">]</span>
+                                              <span class="o">-</span> <span class="n">start</span><span class="p">]</span>
+                                   <span class="p">[:,</span> <span class="n">potential_donors_idx</span><span class="p">])</span>
+
+                <span class="n">n_neighbors</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_neighbors</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">potential_donors_idx</span><span class="p">))</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_impute</span><span class="p">(</span>
+                    <span class="n">dist_subset</span><span class="p">,</span>
+                    <span class="n">n_neighbors</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_fit_X</span><span class="p">[</span><span class="n">potential_donors_idx</span><span class="p">,</span> <span class="n">col</span><span class="p">],</span>
+                    <span class="n">mask_fit_X</span><span class="p">[</span><span class="n">potential_donors_idx</span><span class="p">,</span> <span class="n">col</span><span class="p">])</span>
+                <span class="n">X</span><span class="p">[</span><span class="n">receivers_idx</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="c1"># process in fixed-memory chunks</span>
+        <span class="n">gen</span> <span class="o">=</span> <span class="n">pairwise_distances_chunked</span><span class="p">(</span>
+            <span class="n">X</span><span class="p">[</span><span class="n">row_missing_idx</span><span class="p">,</span> <span class="p">:],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fit_X</span><span class="p">,</span>
+            <span class="n">metric</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="p">,</span>
+            <span class="n">missing_values</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">missing_values</span><span class="p">,</span>
+            <span class="n">force_all_finite</span><span class="o">=</span><span class="n">force_all_finite</span><span class="p">,</span>
+            <span class="n">reduce_func</span><span class="o">=</span><span class="n">process_chunk</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">gen</span><span class="p">:</span>
+            <span class="c1"># process_chunk modifies X in place. No return value.</span>
+            <span class="k">pass</span>
+
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_concatenate_indicator</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="n">valid_mask</span><span class="p">],</span> <span class="n">X_indicator</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2018, Micah Smith
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,1118 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>feature_engine.missing_data_imputers &mdash; ballet 0.7.7 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> ballet
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../readme.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../readme.html#next-steps">Next steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#stable-release">Stable release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#from-source">From source</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../maintainer_guide.html">Maintainer Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../maintainer_guide.html#creating-a-ballet-project">Creating a Ballet project</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#project-instantiation">Project instantiation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#project-installation">Project installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#collaboration-via-git-and-github">Collaboration via git and GitHub</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#enabling-continuous-integration">Enabling continuous integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#installing-bots">Installing bots</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../maintainer_guide.html#developing-new-features">Developing new features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#validating-features">Validating features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#pruning-features">Pruning features</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../maintainer_guide.html#applying-the-feature-engineering-pipeline">Applying the feature engineering pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../maintainer_guide.html#updating-the-framework">Updating the framework</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributor_guide.html">Contributor Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../contributor_guide.html#cloud-feature-development-workflow">Cloud Feature Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributor_guide.html#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#setup-your-development-environment">Setup your development environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#develop-a-new-feature">Develop a new feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#submit-the-feature">Submit the feature</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../contributor_guide.html#option-1-git-workflow">Option 1: Git workflow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contributor_guide.html#option-2-in-lab-workflow">Option 2: In-Lab Workflow</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributor_guide.html#understanding-validation-results">Understanding Validation Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributor_guide.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../feature_engineering_guide.html">Feature Engineering Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#logical-features">Logical Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#why">Why?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#writing-features">Writing features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#a-first-example">A first example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#a-second-example">A second example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#a-third-example">A third example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#input-types-and-conversions">Input types and conversions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#transformers">Transformers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#feature-engineering-pipelines">Feature engineering pipelines</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#feature-engineering-primitives">Feature engineering primitives</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#operating-on-groups">Operating on groups</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#addressing-missing-values">Addressing missing values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#operating-on-time-series-data">Operating on time series data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#other-primitives">Other primitives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#external-libraries">External libraries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#pandas-lrarrow-ballet-examples">Pandas ⇔ Ballet Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#rolling-your-own-transformers">Rolling your own transformers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#further-reading">Further reading</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ballet.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/ballet.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.eng.html">ballet.eng package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/ballet.eng.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.util.html">ballet.util package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/ballet.util.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.validation.html">ballet.validation package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/ballet.validation.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/ballet.validation.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/ballet.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.cli.html">ballet.cli module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.client.html">ballet.client module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.compat.html">ballet.compat module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.contrib.html">ballet.contrib module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.exc.html">ballet.exc module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.feature.html">ballet.feature module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.pipeline.html">ballet.pipeline module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.project.html">ballet.project module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.templating.html">ballet.templating module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.transformer.html">ballet.transformer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.update.html">ballet.update module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli_reference.html">CLI Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_reference.html#ballet-quickstart">quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_reference.html#ballet-start-new-feature">start-new-feature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_reference.html#ballet-update-project-template">update-project-template</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_reference.html#ballet-validate">validate</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Development Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#types-of-contributions">Types of Contributions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#report-bugs">Report Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#fix-bugs">Fix Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#implement-features">Implement Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#write-documentation">Write Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#submit-feedback">Submit Feedback</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#get-started">Get Started!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#pull-request-guidelines">Pull Request Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#tips">Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#deploying">Deploying</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">Credits</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../authors.html#development-lead">Development Lead</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../authors.html#contributors">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id1">0.7.7 (2020-08-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id2">0.7.6 (2020-08-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id3">0.7.5 (2020-08-03)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id4">0.7.4 (2020-07-22)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id5">0.7.3 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id6">0.7.2 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id7">0.7.1 (2020-07-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id8">0.7 (2020-07-17)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id9">0.6 (2019-11-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id10">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id11">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id12">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id13">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../history.html#id14">0.1</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ballet</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>feature_engine.missing_data_imputers</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for feature_engine.missing_data_imputers</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Authors: Soledad Galli &lt;solegalli@protonmail.com&gt;</span>
+<span class="c1"># License: BSD 3 clause</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="kn">import</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="kn">import</span> <span class="n">check_is_fitted</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils</span> <span class="kn">import</span> <span class="n">deprecated</span>
+
+<span class="kn">from</span> <span class="nn">feature_engine.dataframe_checks</span> <span class="kn">import</span> <span class="n">_is_dataframe</span><span class="p">,</span> <span class="n">_check_input_matches_training_df</span>
+<span class="kn">from</span> <span class="nn">feature_engine.variable_manipulation</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">_find_categorical_variables</span><span class="p">,</span>
+    <span class="n">_define_variables</span><span class="p">,</span>
+    <span class="n">_find_numerical_variables</span><span class="p">,</span>
+    <span class="n">_define_numerical_dict</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">feature_engine.base_transformers</span> <span class="kn">import</span> <span class="n">BaseImputer</span>
+
+
+<span class="c1"># for RandomSampleImputer</span>
+<span class="k">def</span> <span class="nf">_define_seed</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">seed_variables</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;add&#39;</span><span class="p">):</span>
+    <span class="c1"># determine seed by adding or multiplying the value of 1 or</span>
+    <span class="c1"># more variables</span>
+    <span class="k">if</span> <span class="n">how</span> <span class="o">==</span> <span class="s1">&#39;add&#39;</span><span class="p">:</span>
+        <span class="n">internal_seed</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="n">seed_variables</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">how</span> <span class="o">==</span> <span class="s1">&#39;multiply&#39;</span><span class="p">:</span>
+        <span class="n">internal_seed</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="n">seed_variables</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(),</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">internal_seed</span>
+
+
+<div class="viewcode-block" id="MeanMedianImputer"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.MeanMedianImputer">[docs]</a><span class="k">class</span> <span class="nc">MeanMedianImputer</span><span class="p">(</span><span class="n">BaseImputer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The MeanMedianImputer() transforms features by replacing missing data by the mean</span>
+<span class="sd">    or median value of the variable.</span>
+
+<span class="sd">    The MeanMedianImputer() works only with numerical variables.</span>
+
+<span class="sd">    Users can pass a list of variables to be imputed as argument. Alternatively, the</span>
+<span class="sd">    MeanMedianImputer() will automatically find and select all variables of type numeric.</span>
+
+<span class="sd">    The imputer first calculates the mean / median values of the variables (fit).</span>
+
+<span class="sd">    The imputer then replaces the missing data with the estimated mean / median (transform).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    imputation_method : str, default=median</span>
+<span class="sd">        Desired method of imputation. Can take &#39;mean&#39; or &#39;median&#39;.</span>
+
+<span class="sd">    variables : list, default=None</span>
+<span class="sd">        The list of variables to be imputed. If None, the imputer will select</span>
+<span class="sd">        all variables of type numeric.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imputation_method</span><span class="o">=</span><span class="s1">&#39;median&#39;</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">imputation_method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;median&#39;</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;imputation_method takes only values &#39;median&#39; or &#39;mean&#39;&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">imputation_method</span> <span class="o">=</span> <span class="n">imputation_method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_define_variables</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MeanMedianImputer.fit"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.MeanMedianImputer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Learns the mean or median values.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">            The training input samples.</span>
+<span class="sd">            User can pass the entire dataframe, not just the variables that need imputation.</span>
+
+<span class="sd">        y : pandas series or None, default=None</span>
+<span class="sd">            y is not needed in this imputation. You can pass None or y.</span>
+
+<span class="sd">        Attributes</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        imputer_dict_: dictionary</span>
+<span class="sd">            The dictionary containing the mean / median values per variable. These</span>
+<span class="sd">            values will be used by the imputer to replace missing data.</span>
+<span class="sd">            The imputer_dict_ is created when fitting the imputer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check input dataframe</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">_is_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="c1"># find or check for numerical variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_find_numerical_variables</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+
+        <span class="c1"># find imputation parameters: mean or median</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">imputation_method</span> <span class="o">==</span> <span class="s1">&#39;mean&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">imputation_method</span> <span class="o">==</span> <span class="s1">&#39;median&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+    <span class="c1"># Ugly work around to import the docstring for Sphinx, otherwise none of this is necessary</span>
+<div class="viewcode-block" id="MeanMedianImputer.transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.MeanMedianImputer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">X</span></div>
+
+    <span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">BaseImputer</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span></div>
+
+
+<div class="viewcode-block" id="EndTailImputer"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.EndTailImputer">[docs]</a><span class="k">class</span> <span class="nc">EndTailImputer</span><span class="p">(</span><span class="n">BaseImputer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The EndTailImputer() transforms features by replacing missing data by a</span>
+<span class="sd">    value at either tail of the distribution.</span>
+
+<span class="sd">    The EndTailImputer() works only with numerical variables.</span>
+
+<span class="sd">    The user can indicate the variables to be imputed in a list. Alternatively, the</span>
+<span class="sd">    EndTailImputer() will automatically find and select all variables of type numeric.</span>
+
+<span class="sd">    The imputer first calculates the values at the end of the distribution for each variable</span>
+<span class="sd">    (fit). The values at the end of the distribution are determined using the Gaussian limits,</span>
+<span class="sd">    the the IQR proximity rule limits, or a factor of the maximum value:</span>
+
+<span class="sd">    Gaussian limits:</span>
+<span class="sd">        right tail: mean + 3*std</span>
+
+<span class="sd">        left tail: mean - 3*std</span>
+
+<span class="sd">    IQR limits:</span>
+<span class="sd">        right tail: 75th quantile + 3*IQR</span>
+
+<span class="sd">        left tail:  25th quantile - 3*IQR</span>
+
+<span class="sd">    where IQR is the inter-quartile range = 75th quantile - 25th quantile</span>
+
+<span class="sd">    Maximum value:</span>
+<span class="sd">        right tail: max * 3</span>
+
+<span class="sd">        left tail: not applicable</span>
+
+<span class="sd">    You can change the factor that multiplies the std, IQR or the maximum value</span>
+<span class="sd">    using the parameter &#39;fold&#39;.</span>
+
+<span class="sd">    The imputer then replaces the missing data with the estimated values (transform).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    distribution : str, default=gaussian</span>
+<span class="sd">        Method to be used to find the replacement values. Can take &#39;gaussian&#39;,</span>
+<span class="sd">        &#39;skewed&#39; or &#39;max&#39;.</span>
+
+<span class="sd">        gaussian: the imputer will use the Gaussian limits to find the values</span>
+<span class="sd">        to replace missing data.</span>
+
+<span class="sd">        skewed: the imputer will use the IQR limits to find the values to replace</span>
+<span class="sd">        missing data.</span>
+
+<span class="sd">        max: the imputer will use the maximum values to replace missing data. Note</span>
+<span class="sd">        that if &#39;max&#39; is passed, the parameter &#39;tail&#39; is ignored.</span>
+
+<span class="sd">    tail : str, default=right</span>
+<span class="sd">        Indicates if the values to replace missing data should be selected from the right</span>
+<span class="sd">        or left tail of the variable distribution. Can take values &#39;left&#39; or &#39;right&#39;.</span>
+
+<span class="sd">    fold: int, default=3</span>
+<span class="sd">        Factor to multiply the std, the IQR or the Max values. Recommended values</span>
+<span class="sd">        are 2 or 3 for Gaussian, or 1.5 or 3 for skewed.</span>
+
+<span class="sd">    variables : list, default=None</span>
+<span class="sd">        The list of variables to be imputed. If None, the imputer will find and</span>
+<span class="sd">        select all variables of type numeric.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span> <span class="n">tail</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">fold</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">distribution</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span> <span class="s1">&#39;skewed&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;distribution takes only values &#39;gaussian&#39;, &#39;skewed&#39; or &#39;max&#39;&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">tail</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;tail takes only values &#39;right&#39; or &#39;left&#39;&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">fold</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;fold takes only positive numbers&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span> <span class="o">=</span> <span class="n">distribution</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tail</span> <span class="o">=</span> <span class="n">tail</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fold</span> <span class="o">=</span> <span class="n">fold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_define_variables</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+
+<div class="viewcode-block" id="EndTailImputer.fit"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.EndTailImputer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Learns the values at the end of the variable distribution.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">            The training input samples.</span>
+<span class="sd">            The user can pass the entire dataframe, not just the variables that need imputation.</span>
+
+<span class="sd">        y : None</span>
+<span class="sd">            y is not needed in this imputation. You can pass None or y.</span>
+
+<span class="sd">        Attributes</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        imputer_dict_: dictionary</span>
+<span class="sd">            The dictionary containing the values at the end of the distribution</span>
+<span class="sd">            per variable. These values will be used by the imputer to replace missing</span>
+<span class="sd">            data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check input dataframe</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">_is_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="c1"># find or check for numerical variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_find_numerical_variables</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+
+        <span class="c1"># estimate imputation values</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span> <span class="o">==</span> <span class="s1">&#39;max&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span> <span class="o">=</span> <span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">fold</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span> <span class="o">==</span> <span class="s1">&#39;gaussian&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tail</span> <span class="o">==</span> <span class="s1">&#39;right&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span> <span class="o">=</span> <span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">fold</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">())</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">tail</span> <span class="o">==</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span> <span class="o">=</span> <span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">fold</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">())</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span> <span class="o">==</span> <span class="s1">&#39;skewed&#39;</span><span class="p">:</span>
+            <span class="n">IQR</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.75</span><span class="p">)</span> <span class="o">-</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tail</span> <span class="o">==</span> <span class="s1">&#39;right&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span> <span class="o">=</span> <span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.75</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">IQR</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">fold</span><span class="p">))</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">tail</span> <span class="o">==</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span> <span class="o">=</span> <span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">IQR</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">fold</span><span class="p">))</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+    <span class="c1"># Ugly work around to import the docstring for Sphinx, otherwise none of this is necessary</span>
+<div class="viewcode-block" id="EndTailImputer.transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.EndTailImputer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">X</span></div>
+
+    <span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">BaseImputer</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span></div>
+
+
+<div class="viewcode-block" id="ArbitraryNumberImputer"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.ArbitraryNumberImputer">[docs]</a><span class="k">class</span> <span class="nc">ArbitraryNumberImputer</span><span class="p">(</span><span class="n">BaseImputer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The ArbitraryNumberImputer() replaces missing data in each variable</span>
+<span class="sd">    by an arbitrary value determined by the user.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    arbitrary_number : int or float, default=999</span>
+<span class="sd">        the number to be used to replace missing data.</span>
+
+<span class="sd">    variables : list, default=None</span>
+<span class="sd">        The list of variables to be imputed. If None, the imputer will find and</span>
+<span class="sd">        select all numerical type variables. Attribute is used only if `imputer_dict`</span>
+<span class="sd">        attribute is None.</span>
+
+<span class="sd">    imputer_dict: dict, default=None</span>
+<span class="sd">        The dictionary of variables and their arbitrary numbers. If imputer_dict is not None,</span>
+<span class="sd">        it has to be dictionary with all values of integer or float type.</span>
+<span class="sd">        If None, `variables` attribute is used for imputation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arbitrary_number</span><span class="o">=</span><span class="mi">999</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">imputer_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arbitrary_number</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arbitrary_number</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">arbitrary_number</span> <span class="o">=</span> <span class="n">arbitrary_number</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;arbitrary_number must be numeric of type int or float&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_define_variables</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict</span> <span class="o">=</span> <span class="n">_define_numerical_dict</span><span class="p">(</span><span class="n">imputer_dict</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ArbitraryNumberImputer.fit"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.ArbitraryNumberImputer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks that the variables are numerical.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">            The training input samples.</span>
+<span class="sd">            User can pass the entire dataframe, not just the variables to impute.</span>
+
+<span class="sd">        y : None</span>
+<span class="sd">            y is not needed in this imputation. You can pass None or y.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check input dataframe</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">_is_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="c1"># find or check for numerical variables</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_find_numerical_variables</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_find_numerical_variables</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+
+        <span class="c1"># create the imputer dictionary</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span> <span class="o">=</span> <span class="p">{</span><span class="n">var</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">arbitrary_number</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+    <span class="c1"># Ugly work around to import the docstring for Sphinx, otherwise none of this is necessary</span>
+<div class="viewcode-block" id="ArbitraryNumberImputer.transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.ArbitraryNumberImputer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">X</span></div>
+
+    <span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">BaseImputer</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span></div>
+
+
+<div class="viewcode-block" id="CategoricalVariableImputer"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.CategoricalVariableImputer">[docs]</a><span class="k">class</span> <span class="nc">CategoricalVariableImputer</span><span class="p">(</span><span class="n">BaseImputer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The CategoricalVariableImputer() replaces missing data in categorical variables</span>
+<span class="sd">    by the string &#39;Missing&#39; or by the most frequent category.</span>
+
+<span class="sd">    The CategoricalVariableImputer() works only with categorical variables.</span>
+
+<span class="sd">    The user can pass a list with the variables to be imputed. Alternatively,</span>
+<span class="sd">    the CategoricalVariableImputer() will automatically find and select all</span>
+<span class="sd">    variables of type object.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    imputation_method : str, default=missing</span>
+<span class="sd">        Desired method of imputation. Can be &#39;frequent&#39; or &#39;missing&#39;.</span>
+<span class="sd">        </span>
+<span class="sd">    fill_value : str, default=&#39;Missing&#39;</span>
+<span class="sd">        Only used when imputation_method=&#39;missing&#39;. Can be used to set a </span>
+<span class="sd">        user-defined value to replace the missing data.</span>
+
+<span class="sd">    variables : list, default=None</span>
+<span class="sd">        The list of variables to be imputed. If None, the imputer will find and</span>
+<span class="sd">        select all object type variables.</span>
+
+<span class="sd">    return_object: bool, default=False</span>
+<span class="sd">        If working with numerical variables cast as object, decide</span>
+<span class="sd">        whether to return the variables as numeric or re-cast them as object.</span>
+<span class="sd">        Note that pandas will re-cast them automatically as numeric after the</span>
+<span class="sd">        transformation with the mode.</span>
+
+<span class="sd">        Tip: return the variables as object if planning to do categorical encoding</span>
+<span class="sd">        with feature-engine.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imputation_method</span><span class="o">=</span><span class="s1">&#39;missing&#39;</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="s1">&#39;Missing&#39;</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_object</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        
+        <span class="k">if</span> <span class="n">imputation_method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;missing&#39;</span><span class="p">,</span> <span class="s1">&#39;frequent&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;imputation_method takes only values &#39;missing&#39; or &#39;frequent&#39;&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fill_value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;parameter &#39;fill_value&#39; should be string&quot;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">imputation_method</span> <span class="o">=</span> <span class="n">imputation_method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fill_value</span> <span class="o">=</span> <span class="n">fill_value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_define_variables</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">return_object</span> <span class="o">=</span> <span class="n">return_object</span>
+
+<div class="viewcode-block" id="CategoricalVariableImputer.fit"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.CategoricalVariableImputer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Learns the most frequent category if the imputation method is set to frequent.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">            The training input samples.</span>
+<span class="sd">            Can be the entire dataframe, not just the selected variables.</span>
+
+<span class="sd">        y : None</span>
+<span class="sd">            y is not needed in this imputation. You can pass None or y.</span>
+
+<span class="sd">        Attributes</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        imputer_dict_: dictionary</span>
+<span class="sd">            The dictionary mapping each variable to the most frequent category, or to</span>
+<span class="sd">            the value &#39;Missing&#39; depending on the imputation_method. The most frequent</span>
+<span class="sd">            category is calculated when fitting the transformer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check input dataframe</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">_is_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="c1"># find or check for categorical variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_find_categorical_variables</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">imputation_method</span> <span class="o">==</span> <span class="s1">&#39;missing&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span> <span class="o">=</span> <span class="p">{</span><span class="n">var</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fill_value</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">}</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">imputation_method</span> <span class="o">==</span> <span class="s1">&#39;frequent&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+                <span class="n">mode_vals</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">mode</span><span class="p">()</span>
+
+                <span class="c1"># careful: some variables contain multiple modes</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mode_vals</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">mode_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The variable </span><span class="si">{}</span><span class="s1"> contains multiple frequent categories.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="CategoricalVariableImputer.transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.CategoricalVariableImputer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="c1"># bring functionality from the BaseImputer</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="c1"># add additional step to return variables cast as object</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_object</span><span class="p">:</span>
+            <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;O&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">X</span></div>
+
+    <span class="c1"># Ugly work around to import the docstring for Sphinx, otherwise none of this is necessary</span>
+    <span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">BaseImputer</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span></div>
+
+
+<span class="nd">@deprecated</span><span class="p">(</span><span class="s2">&quot;Class &#39;FrequentCategoryImputer&#39; was integrated into the &quot;</span>
+            <span class="s2">&quot;class &#39;CategoricalVariableImputer&#39; in version 0.4 and &quot;</span>
+            <span class="s2">&quot; will be removed in version 0.5. &quot;</span>
+            <span class="s2">&quot;To perform Frequent category imputation please use: &quot;</span>
+            <span class="s2">&quot;CategoricalVariableImputer(imputation_method=&#39;frequent&#39;)&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">FrequentCategoryImputer</span><span class="p">(</span><span class="n">CategoricalVariableImputer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imputation_method</span> <span class="o">=</span> <span class="s1">&#39;frequent&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_define_variables</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="RandomSampleImputer"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.RandomSampleImputer">[docs]</a><span class="k">class</span> <span class="nc">RandomSampleImputer</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The RandomSampleImputer() replaces missing data in each feature with a random</span>
+<span class="sd">    sample extracted from the variables in the training set.</span>
+<span class="sd">    The RandomSampleImputer() works with both numerical and categorical variables.</span>
+<span class="sd">    Note: random samples will vary from execution to execution. This may affect</span>
+<span class="sd">    the results of your work. Remember to set a seed before running the</span>
+<span class="sd">    RandomSampleImputer().</span>
+
+<span class="sd">    There are 2 ways in which the seed can be set with the RandomSampleImputer():</span>
+<span class="sd">    If seed = &#39;general&#39; then the random_state can be either None or an integer.</span>
+<span class="sd">    The seed will be used as the random_state and all observations will be</span>
+<span class="sd">    imputed in one go. This is equivalent to pandas.sample(n, random_state=seed).</span>
+
+<span class="sd">    If seed = &#39;observation&#39;, then the random_state should be a variable name</span>
+<span class="sd">    or a list of variable names. The seed will be calculated, observation per</span>
+<span class="sd">    observation, either by adding or multiplying the seeding variable values for that</span>
+<span class="sd">    observation, and passed to the random_state. Thus, a value will be extracted using</span>
+<span class="sd">    that seed, and used to replace that particular observation. This is the equivalent</span>
+<span class="sd">    of pandas.sample(1, random_state=var1+var2) if the &#39;seeding_method&#39; is set to &#39;add&#39;</span>
+<span class="sd">    or pandas.sample(1, random_state=var1*var2) if the &#39;seeding_method&#39; is set to</span>
+<span class="sd">    &#39;multiply&#39;.</span>
+
+<span class="sd">    For more details on why this functionality is important refer to the course</span>
+<span class="sd">    Feature Engineering for Machine Learning in Udemy:</span>
+<span class="sd">    https://www.udemy.com/feature-engineering-for-machine-learning/</span>
+
+<span class="sd">    Note, if the variables indicated in the random_state list are not numerical</span>
+<span class="sd">    the imputer will return an error. Note also that the variables indicated as seed</span>
+<span class="sd">    should not contain missing values.</span>
+
+<span class="sd">    This estimator stores a copy of the training set when the fit() method is</span>
+<span class="sd">    called. Therefore, the object can become quite heavy. Also, it may not be GDPR</span>
+<span class="sd">    compliant if your training data set contains Personal Information. Please check</span>
+<span class="sd">    if this behaviour is allowed within your organisation.</span>
+<span class="sd">    The imputer replaces missing data with a random sample from the training set.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    random_state : int, str or list, default=None</span>
+<span class="sd">        The random_state can take an integer to set the seed when extracting the</span>
+<span class="sd">        random samples. Alternatively, it can take a variable name or a list of</span>
+<span class="sd">        variables, which values will be used to determine the seed observation per</span>
+<span class="sd">        observation.</span>
+
+<span class="sd">    seed: str, default=&#39;general&#39;</span>
+<span class="sd">        Indicates whether the seed should be set for each observation with missing</span>
+<span class="sd">        values, or if one seed should be used to impute all variables in one go.</span>
+
+<span class="sd">        general: one seed will be used to impute the entire dataframe. This is</span>
+<span class="sd">        equivalent to setting the seed in pandas.sample(random_state).</span>
+
+<span class="sd">        observation: the seed will be set for each observation using the values</span>
+<span class="sd">        of the variables indicated in the random_state for that particular</span>
+<span class="sd">        observation.</span>
+
+<span class="sd">    seeding_method : str, default=&#39;add&#39;</span>
+<span class="sd">        If more than one variable are indicated to seed the random sampling per</span>
+<span class="sd">        observation, you can choose to combine those values as an addition or a</span>
+<span class="sd">        multiplication. Can take the values &#39;add&#39; or &#39;multiply&#39;.</span>
+
+<span class="sd">    variables : list, default=None</span>
+<span class="sd">        The list of variables to be imputed. If None, the imputer will select</span>
+<span class="sd">        all variables in the train set.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="s1">&#39;general&#39;</span><span class="p">,</span> <span class="n">seeding_method</span><span class="o">=</span><span class="s1">&#39;add&#39;</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">seed</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;general&#39;</span><span class="p">,</span> <span class="s1">&#39;observation&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;seed takes only values &#39;general&#39; or &#39;observation&#39;&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">seeding_method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="s1">&#39;multiply&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;seeding_method takes only values &#39;add&#39; or &#39;multiply&#39;&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">seed</span> <span class="o">==</span> <span class="s1">&#39;general&#39;</span> <span class="ow">and</span> <span class="n">random_state</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">random_state</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;if seed == &#39;general&#39; the random state must take an integer&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">seed</span> <span class="o">==</span> <span class="s1">&#39;observation&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">random_state</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;if seed == &#39;observation&#39; the random state must take the name of one or more variables &quot;</span>
+                             <span class="s2">&quot;which will be used to seed the imputer&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_define_variables</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seeding_method</span> <span class="o">=</span> <span class="n">seeding_method</span>
+
+<div class="viewcode-block" id="RandomSampleImputer.fit"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.RandomSampleImputer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Makes a copy of the variables to impute in the training dataframe from</span>
+<span class="sd">        which it will randomly extract the values to fill the missing data</span>
+<span class="sd">        during transform.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">            The training input samples.</span>
+<span class="sd">            Can be the entire dataframe, not just he variables to impute.</span>
+
+<span class="sd">        y : None</span>
+<span class="sd">            y is not needed in this imputation. You can pass None or y.</span>
+
+<span class="sd">        Attributes</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        X_ : dataframe.</span>
+<span class="sd">            Copy of the training dataframe from which to extract the random samples.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># check input dataframe</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">_is_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="c1"># find variables to impute</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">var</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span>
+
+        <span class="c1"># take a copy of the selected variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">X_</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># check the variables assigned to the random state</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">==</span> <span class="s1">&#39;observation&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">_define_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">([</span><span class="n">var</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="k">if</span> <span class="n">var</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;There are variables assigned as random state which are not part of the training &quot;</span>
+                                 <span class="s2">&quot;dataframe.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="RandomSampleImputer.transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.RandomSampleImputer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Replaces missing data with random values taken from the train set.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">            The dataframe to be transformed.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        X_transformed : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">            The dataframe without missing values in the transformed variables.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Check method fit has been called</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># check that input is a dataframe</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">_is_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="c1"># Check that the dataframe contains the same number of columns than the dataframe</span>
+        <span class="c1"># used to fit the imputer.</span>
+        <span class="n">_check_input_matches_training_df</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="c1"># random sampling with a general seed</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">==</span> <span class="s1">&#39;general&#39;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c1"># determine number of data points to extract at random</span>
+                    <span class="n">n_samples</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+                    <span class="c1"># extract values</span>
+                    <span class="n">random_sample</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span>
+                                                                     <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                                     <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span>
+                                                                     <span class="p">)</span>
+                    <span class="c1"># re-index: pandas needs this to add values in the correct observations</span>
+                    <span class="n">random_sample</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()]</span><span class="o">.</span><span class="n">index</span>
+
+                    <span class="c1"># replace na</span>
+                    <span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">(),</span> <span class="n">feature</span><span class="p">]</span> <span class="o">=</span> <span class="n">random_sample</span>
+
+        <span class="c1"># random sampling observation per observation</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">==</span> <span class="s1">&#39;observation&#39;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+                    <span class="c1"># loop over each observation with missing data</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">X</span><span class="p">[</span><span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()]</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+                        <span class="c1"># find the seed using additional variables</span>
+                        <span class="n">internal_seed</span> <span class="o">=</span> <span class="n">_define_seed</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">seeding_method</span><span class="p">)</span>
+
+                        <span class="c1"># extract 1 value at random</span>
+                        <span class="n">random_sample</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span>
+                                                                         <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                                         <span class="n">random_state</span><span class="o">=</span><span class="n">internal_seed</span>
+                                                                         <span class="p">)</span>
+                        <span class="n">random_sample</span> <span class="o">=</span> <span class="n">random_sample</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                        <span class="c1"># replace the missing data point</span>
+                        <span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">feature</span><span class="p">]</span> <span class="o">=</span> <span class="n">random_sample</span>
+        <span class="k">return</span> <span class="n">X</span></div></div>
+
+
+<div class="viewcode-block" id="AddMissingIndicator"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.AddMissingIndicator">[docs]</a><span class="k">class</span> <span class="nc">AddMissingIndicator</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The AddMissingIndicator() adds an additional column or binary variable that</span>
+<span class="sd">    indicates if data is missing.</span>
+
+<span class="sd">    AddMissingIndicator() will add as many missing indicators as variables</span>
+<span class="sd">    indicated by the user, or variables with missing data in the train set.</span>
+
+<span class="sd">    The AddMissingIndicator() works for both numerical and categorical variables.</span>
+<span class="sd">    The user can pass a list with the variables for which the missing indicators</span>
+<span class="sd">    should be added as a list. Alternatively, the imputer will select and add missing</span>
+<span class="sd">    indicators to all variables in the training set that show missing data.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    how : string, defatul=&#39;missing_only&#39;</span>
+<span class="sd">        Indicates if missing indicators should be added to variables with missing</span>
+<span class="sd">        data or to all variables.</span>
+
+<span class="sd">        missing_only: indicators will be created only for those variables that showed</span>
+<span class="sd">        missing data during fit.</span>
+
+<span class="sd">        all: indicators will be created for all variables</span>
+
+<span class="sd">    variables : list, default=None</span>
+<span class="sd">        The list of variables to be imputed. If None, the imputer will find and</span>
+<span class="sd">        select all variables with missing data.</span>
+<span class="sd">        Note: the transformer will first select all variables or all user entered variables</span>
+<span class="sd">        and if how=missing_only, it will re-select from the original group only those</span>
+<span class="sd">        that show missing data in during fit.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;missing_only&#39;</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">how</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;missing_only&#39;</span><span class="p">,</span> <span class="s1">&#39;all&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;how takes only values &#39;missing_only&#39; or &#39;all&#39;&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_define_variables</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">how</span> <span class="o">=</span> <span class="n">how</span>
+
+<div class="viewcode-block" id="AddMissingIndicator.fit"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.AddMissingIndicator.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Learns the variables for which the missing indicators will be created.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">            The training input samples.</span>
+
+<span class="sd">        y : None</span>
+<span class="sd">            y is not needed in this imputation. You can pass None or y.</span>
+
+<span class="sd">        Attributes</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        variables_: list</span>
+<span class="sd">            the lit of variables for which the missing indicator will be created.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># check input dataframe</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">_is_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="c1"># find variables for which indicator should be added</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">how</span> <span class="o">==</span> <span class="s1">&#39;missing_only&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span> <span class="o">=</span> <span class="p">[</span><span class="n">var</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">X</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">X</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span> <span class="o">=</span> <span class="p">[</span><span class="n">var</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="k">if</span> <span class="n">X</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">how</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span> <span class="o">=</span> <span class="p">[</span><span class="n">var</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="AddMissingIndicator.transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.AddMissingIndicator.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds the binary missing indicators.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">            The dataframe to be transformed.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        X_transformed : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">            The dataframe containing the additional binary variables.</span>
+<span class="sd">            Binary variables are named with the original variable name plus</span>
+<span class="sd">            &#39;_na&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Check method fit has been called</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># check that input is a dataframe</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">_is_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="c1"># Check that the dataframe contains the same number of columns than the dataframe</span>
+        <span class="c1"># used to fit the imputer.</span>
+        <span class="n">_check_input_matches_training_df</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">:</span>
+            <span class="n">X</span><span class="p">[</span><span class="n">feature</span> <span class="o">+</span> <span class="s1">&#39;_na&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">(),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">X</span></div></div>
+
+
+<span class="nd">@deprecated</span><span class="p">(</span><span class="s2">&quot;Class &#39;AddNaNBinaryImputer&#39; was renamed to AddMissingIndicator &quot;</span>
+            <span class="s2">&quot;in version 0.4 and will be removed in version 0.5. &quot;</span>
+            <span class="s2">&quot;To add a missing indicator please use: AddMissingIndicator()&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">AddNaNBinaryImputer</span><span class="p">(</span><span class="n">AddMissingIndicator</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2018, Micah Smith
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

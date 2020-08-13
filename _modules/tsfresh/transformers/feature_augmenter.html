@@ -1,0 +1,566 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>tsfresh.transformers.feature_augmenter &mdash; ballet 0.7.7 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> ballet
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../readme.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../readme.html#next-steps">Next steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#stable-release">Stable release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#from-source">From source</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../maintainer_guide.html">Maintainer Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../maintainer_guide.html#creating-a-ballet-project">Creating a Ballet project</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#project-instantiation">Project instantiation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#project-installation">Project installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#collaboration-via-git-and-github">Collaboration via git and GitHub</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#enabling-continuous-integration">Enabling continuous integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#installing-bots">Installing bots</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../maintainer_guide.html#developing-new-features">Developing new features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#validating-features">Validating features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#pruning-features">Pruning features</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../maintainer_guide.html#applying-the-feature-engineering-pipeline">Applying the feature engineering pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../maintainer_guide.html#updating-the-framework">Updating the framework</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributor_guide.html">Contributor Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#cloud-feature-development-workflow">Cloud Feature Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#setup-your-development-environment">Setup your development environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#develop-a-new-feature">Develop a new feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#submit-the-feature">Submit the feature</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#option-1-git-workflow">Option 1: Git workflow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#option-2-in-lab-workflow">Option 2: In-Lab Workflow</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#understanding-validation-results">Understanding Validation Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../feature_engineering_guide.html">Feature Engineering Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#logical-features">Logical Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#why">Why?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#writing-features">Writing features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#a-first-example">A first example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#a-second-example">A second example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#a-third-example">A third example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#input-types-and-conversions">Input types and conversions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#transformers">Transformers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#feature-engineering-pipelines">Feature engineering pipelines</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#feature-engineering-primitives">Feature engineering primitives</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#operating-on-groups">Operating on groups</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#addressing-missing-values">Addressing missing values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#operating-on-time-series-data">Operating on time series data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#other-primitives">Other primitives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#external-libraries">External libraries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#pandas-lrarrow-ballet-examples">Pandas ⇔ Ballet Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#rolling-your-own-transformers">Rolling your own transformers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#further-reading">Further reading</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ballet.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/ballet.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.eng.html">ballet.eng package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.eng.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.util.html">ballet.util package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.util.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.validation.html">ballet.validation package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.validation.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.validation.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/ballet.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.cli.html">ballet.cli module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.client.html">ballet.client module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.compat.html">ballet.compat module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.contrib.html">ballet.contrib module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.exc.html">ballet.exc module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.feature.html">ballet.feature module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.pipeline.html">ballet.pipeline module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.project.html">ballet.project module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.templating.html">ballet.templating module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.transformer.html">ballet.transformer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.update.html">ballet.update module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cli_reference.html">CLI Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../cli_reference.html#ballet-quickstart">quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cli_reference.html#ballet-start-new-feature">start-new-feature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cli_reference.html#ballet-update-project-template">update-project-template</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cli_reference.html#ballet-validate">validate</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Development Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#types-of-contributions">Types of Contributions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributing.html#report-bugs">Report Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributing.html#fix-bugs">Fix Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributing.html#implement-features">Implement Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributing.html#write-documentation">Write Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributing.html#submit-feedback">Submit Feedback</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#get-started">Get Started!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#pull-request-guidelines">Pull Request Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#tips">Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#deploying">Deploying</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Credits</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../authors.html#development-lead">Development Lead</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../authors.html#contributors">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id1">0.7.7 (2020-08-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id2">0.7.6 (2020-08-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id3">0.7.5 (2020-08-03)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id4">0.7.4 (2020-07-22)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id5">0.7.3 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id6">0.7.2 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id7">0.7.1 (2020-07-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id8">0.7 (2020-07-17)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id9">0.6 (2019-11-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id10">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id11">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id12">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id13">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id14">0.1</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ballet</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>tsfresh.transformers.feature_augmenter</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for tsfresh.transformers.feature_augmenter</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># This file as well as the whole tsfresh package are licenced under the MIT licence (see the LICENCE.txt)</span>
+<span class="c1"># Maximilian Christ (maximilianchrist.com), Blue Yonder Gmbh, 2016</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="kn">import</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span>
+<span class="kn">import</span> <span class="nn">tsfresh.defaults</span>
+<span class="kn">from</span> <span class="nn">tsfresh.feature_extraction</span> <span class="kn">import</span> <span class="n">extract_features</span>
+<span class="kn">from</span> <span class="nn">tsfresh.utilities.dataframe_functions</span> <span class="kn">import</span> <span class="n">restrict_input_to_index</span>
+
+
+<div class="viewcode-block" id="FeatureAugmenter"><a class="viewcode-back" href="../../../api/ballet.eng.tsfresh.html#ballet.eng.tsfresh.FeatureAugmenter">[docs]</a><span class="k">class</span> <span class="nc">FeatureAugmenter</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sklearn-compatible estimator, for calculating and adding many features calculated from a given time series</span>
+<span class="sd">    to the data. It is basically a wrapper around :func:`~tsfresh.feature_extraction.extract_features`.</span>
+
+<span class="sd">    The features include basic ones like min, max or median, and advanced features like fourier</span>
+<span class="sd">    transformations or statistical tests. For a list of all possible features, see the module</span>
+<span class="sd">    :mod:`~tsfresh.feature_extraction.feature_calculators`. The column name of each added feature contains the name</span>
+<span class="sd">    of the function of that module, which was used for the calculation.</span>
+
+<span class="sd">    For this estimator, two datasets play a crucial role:</span>
+
+<span class="sd">    1. the time series container with the timeseries data. This container (for the format see :ref:`data-formats-label`)</span>
+<span class="sd">       contains the data which is used for calculating the</span>
+<span class="sd">       features. It must be groupable by ids which are used to identify which feature should be attached to which row</span>
+<span class="sd">       in the second dataframe:</span>
+
+<span class="sd">    2. the input data, where the features will be added to.</span>
+
+<span class="sd">    Imagine the following situation: You want to classify 10 different financial shares and you have their development</span>
+<span class="sd">    in the last year as a time series. You would then start by creating features from the metainformation of the</span>
+<span class="sd">    shares, e.g. how long they were on the market etc. and filling up a table - the features of one stock in one row.</span>
+
+<span class="sd">    &gt;&gt;&gt; df = pandas.DataFrame()</span>
+<span class="sd">    &gt;&gt;&gt; # Fill in the information of the stocks</span>
+<span class="sd">    &gt;&gt;&gt; df[&quot;started_since_days&quot;] = 0 # add a feature</span>
+
+<span class="sd">    You can then extract all the features from the time development of the shares, by using this estimator:</span>
+
+<span class="sd">    &gt;&gt;&gt; time_series = read_in_timeseries() # get the development of the shares</span>
+<span class="sd">    &gt;&gt;&gt; from tsfresh.transformers import FeatureAugmenter</span>
+<span class="sd">    &gt;&gt;&gt; augmenter = FeatureAugmenter()</span>
+<span class="sd">    &gt;&gt;&gt; augmenter.set_timeseries_container(time_series)</span>
+<span class="sd">    &gt;&gt;&gt; df_with_time_series_features = augmenter.transform(df)</span>
+
+<span class="sd">    The settings for the feature calculation can be controlled with the settings object.</span>
+<span class="sd">    If you pass ``None``, the default settings are used.</span>
+<span class="sd">    Please refer to :class:`~tsfresh.feature_extraction.settings.ComprehensiveFCParameters` for</span>
+<span class="sd">    more information.</span>
+
+<span class="sd">    This estimator does not select the relevant features, but calculates and adds all of them to the DataFrame. See the</span>
+<span class="sd">    :class:`~tsfresh.transformers.relevant_feature_augmenter.RelevantFeatureAugmenter` for calculating and selecting</span>
+<span class="sd">    features.</span>
+
+<span class="sd">    For a description what the parameters column_id, column_sort, column_kind and column_value mean, please see</span>
+<span class="sd">    :mod:`~tsfresh.feature_extraction.extraction`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default_fc_parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">kind_to_fc_parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">column_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">column_sort</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">column_kind</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">column_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeseries_container</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">chunksize</span><span class="o">=</span><span class="n">tsfresh</span><span class="o">.</span><span class="n">defaults</span><span class="o">.</span><span class="n">CHUNKSIZE</span><span class="p">,</span>
+                 <span class="n">n_jobs</span><span class="o">=</span><span class="n">tsfresh</span><span class="o">.</span><span class="n">defaults</span><span class="o">.</span><span class="n">N_PROCESSES</span><span class="p">,</span> <span class="n">show_warnings</span><span class="o">=</span><span class="n">tsfresh</span><span class="o">.</span><span class="n">defaults</span><span class="o">.</span><span class="n">SHOW_WARNINGS</span><span class="p">,</span>
+                 <span class="n">disable_progressbar</span><span class="o">=</span><span class="n">tsfresh</span><span class="o">.</span><span class="n">defaults</span><span class="o">.</span><span class="n">DISABLE_PROGRESSBAR</span><span class="p">,</span>
+                 <span class="n">impute_function</span><span class="o">=</span><span class="n">tsfresh</span><span class="o">.</span><span class="n">defaults</span><span class="o">.</span><span class="n">IMPUTE_FUNCTION</span><span class="p">,</span>
+                 <span class="n">profile</span><span class="o">=</span><span class="n">tsfresh</span><span class="o">.</span><span class="n">defaults</span><span class="o">.</span><span class="n">PROFILING</span><span class="p">,</span>
+                 <span class="n">profiling_filename</span><span class="o">=</span><span class="n">tsfresh</span><span class="o">.</span><span class="n">defaults</span><span class="o">.</span><span class="n">PROFILING_FILENAME</span><span class="p">,</span>
+                 <span class="n">profiling_sorting</span><span class="o">=</span><span class="n">tsfresh</span><span class="o">.</span><span class="n">defaults</span><span class="o">.</span><span class="n">PROFILING_SORTING</span>
+                 <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new FeatureAugmenter instance.</span>
+<span class="sd">        :param default_fc_parameters: mapping from feature calculator names to parameters. Only those names</span>
+<span class="sd">               which are keys in this dict will be calculated. See the class:`ComprehensiveFCParameters` for</span>
+<span class="sd">               more information.</span>
+<span class="sd">        :type default_fc_parameters: dict</span>
+
+<span class="sd">        :param kind_to_fc_parameters: mapping from kind names to objects of the same type as the ones for</span>
+<span class="sd">                default_fc_parameters. If you put a kind as a key here, the fc_parameters</span>
+<span class="sd">                object (which is the value), will be used instead of the default_fc_parameters. This means that kinds,</span>
+<span class="sd">                for which kind_of_fc_parameters doe not have any entries, will be ignored by the feature selection.</span>
+<span class="sd">        :type kind_to_fc_parameters: dict</span>
+
+<span class="sd">        :param column_id: The column with the id. See :mod:`~tsfresh.feature_extraction.extraction`.</span>
+<span class="sd">        :type column_id: basestring</span>
+<span class="sd">        :param column_sort: The column with the sort data. See :mod:`~tsfresh.feature_extraction.extraction`.</span>
+<span class="sd">        :type column_sort: basestring</span>
+<span class="sd">        :param column_kind: The column with the kind data. See :mod:`~tsfresh.feature_extraction.extraction`.</span>
+<span class="sd">        :type column_kind: basestring</span>
+<span class="sd">        :param column_value: The column with the values. See :mod:`~tsfresh.feature_extraction.extraction`.</span>
+<span class="sd">        :type column_value: basestring</span>
+
+<span class="sd">        :param n_jobs: The number of processes to use for parallelization. If zero, no parallelization is used.</span>
+<span class="sd">        :type n_jobs: int</span>
+
+<span class="sd">        :param chunksize: The size of one chunk that is submitted to the worker</span>
+<span class="sd">            process for the parallelisation.  Where one chunk is defined as a</span>
+<span class="sd">            singular time series for one id and one kind. If you set the chunksize</span>
+<span class="sd">            to 10, then it means that one task is to calculate all features for 10</span>
+<span class="sd">            time series.  If it is set it to None, depending on distributor,</span>
+<span class="sd">            heuristics are used to find the optimal chunksize. If you get out of</span>
+<span class="sd">            memory exceptions, you can try it with the dask distributor and a</span>
+<span class="sd">            smaller chunksize.</span>
+<span class="sd">        :type chunksize: None or int</span>
+
+<span class="sd">        :param show_warnings: Show warnings during the feature extraction (needed for debugging of calculators).</span>
+<span class="sd">        :type show_warnings: bool</span>
+
+<span class="sd">        :param disable_progressbar: Do not show a progressbar while doing the calculation.</span>
+<span class="sd">        :type disable_progressbar: bool</span>
+
+<span class="sd">        :param impute_function: None, if no imputing should happen or the function to call for imputing.</span>
+<span class="sd">        :type impute_function: None or function</span>
+
+<span class="sd">        :param profile: Turn on profiling during feature extraction</span>
+<span class="sd">        :type profile: bool</span>
+
+<span class="sd">        :param profiling_sorting: How to sort the profiling results (see the documentation of the profiling package for</span>
+<span class="sd">               more information)</span>
+<span class="sd">        :type profiling_sorting: basestring</span>
+
+<span class="sd">        :param profiling_filename: Where to save the profiling results.</span>
+<span class="sd">        :type profiling_filename: basestring</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_fc_parameters</span> <span class="o">=</span> <span class="n">default_fc_parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kind_to_fc_parameters</span> <span class="o">=</span> <span class="n">kind_to_fc_parameters</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">column_id</span> <span class="o">=</span> <span class="n">column_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">column_sort</span> <span class="o">=</span> <span class="n">column_sort</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">column_kind</span> <span class="o">=</span> <span class="n">column_kind</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">column_value</span> <span class="o">=</span> <span class="n">column_value</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span> <span class="o">=</span> <span class="n">n_jobs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chunksize</span> <span class="o">=</span> <span class="n">chunksize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_warnings</span> <span class="o">=</span> <span class="n">show_warnings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">disable_progressbar</span> <span class="o">=</span> <span class="n">disable_progressbar</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">impute_function</span> <span class="o">=</span> <span class="n">impute_function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">profile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profiling_filename</span> <span class="o">=</span> <span class="n">profiling_filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profiling_sorting</span> <span class="o">=</span> <span class="n">profiling_sorting</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries_container</span> <span class="o">=</span> <span class="n">timeseries_container</span>
+
+<div class="viewcode-block" id="FeatureAugmenter.set_timeseries_container"><a class="viewcode-back" href="../../../api/ballet.eng.tsfresh.html#ballet.eng.tsfresh.FeatureAugmenter.set_timeseries_container">[docs]</a>    <span class="k">def</span> <span class="nf">set_timeseries_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeseries_container</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the timeseries, with which the features will be calculated. For a format of the time series container,</span>
+<span class="sd">        please refer to :mod:`~tsfresh.feature_extraction.extraction`. The timeseries must contain the same indices</span>
+<span class="sd">        as the later DataFrame, to which the features will be added (the one you will pass to :func:`~transform`). You</span>
+<span class="sd">        can call this function as often as you like, to change the timeseries later (e.g. if you want to extract for</span>
+<span class="sd">        different ids).</span>
+
+<span class="sd">        :param timeseries_container: The timeseries as a pandas.DataFrame or a dict. See</span>
+<span class="sd">            :mod:`~tsfresh.feature_extraction.extraction` for the format.</span>
+<span class="sd">        :type timeseries_container: pandas.DataFrame or dict</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries_container</span> <span class="o">=</span> <span class="n">timeseries_container</span></div>
+
+<div class="viewcode-block" id="FeatureAugmenter.fit"><a class="viewcode-back" href="../../../api/ballet.eng.tsfresh.html#ballet.eng.tsfresh.FeatureAugmenter.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The fit function is not needed for this estimator. It just does nothing and is here for compatibility reasons.</span>
+
+<span class="sd">        :param X: Unneeded.</span>
+<span class="sd">        :type X: Any</span>
+
+<span class="sd">        :param y: Unneeded.</span>
+<span class="sd">        :type y: Any</span>
+
+<span class="sd">        :return: The estimator instance itself</span>
+<span class="sd">        :rtype: FeatureAugmenter</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="FeatureAugmenter.transform"><a class="viewcode-back" href="../../../api/ballet.eng.tsfresh.html#ballet.eng.tsfresh.FeatureAugmenter.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add the features calculated using the timeseries_container and add them to the corresponding rows in the input</span>
+<span class="sd">        pandas.DataFrame X.</span>
+
+<span class="sd">        To save some computing time, you should only include those time serieses in the container, that you</span>
+<span class="sd">        need. You can set the timeseries container with the method :func:`set_timeseries_container`.</span>
+
+<span class="sd">        :param X: the DataFrame to which the calculated timeseries features will be added. This is *not* the</span>
+<span class="sd">               dataframe with the timeseries itself.</span>
+<span class="sd">        :type X: pandas.DataFrame</span>
+
+<span class="sd">        :return: The input DataFrame, but with added features.</span>
+<span class="sd">        :rtype: pandas.DataFrame</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeseries_container</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;You have to provide a time series using the set_timeseries_container function before.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Extract only features for the IDs in X.index</span>
+        <span class="n">timeseries_container_X</span> <span class="o">=</span> <span class="n">restrict_input_to_index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeseries_container</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_id</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="n">extracted_features</span> <span class="o">=</span> <span class="n">extract_features</span><span class="p">(</span><span class="n">timeseries_container_X</span><span class="p">,</span>
+                                              <span class="n">default_fc_parameters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_fc_parameters</span><span class="p">,</span>
+                                              <span class="n">kind_to_fc_parameters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kind_to_fc_parameters</span><span class="p">,</span>
+                                              <span class="n">column_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">column_id</span><span class="p">,</span> <span class="n">column_sort</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">column_sort</span><span class="p">,</span>
+                                              <span class="n">column_kind</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">column_kind</span><span class="p">,</span> <span class="n">column_value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">column_value</span><span class="p">,</span>
+                                              <span class="n">chunksize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">chunksize</span><span class="p">,</span>
+                                              <span class="n">n_jobs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span><span class="p">,</span> <span class="n">show_warnings</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">show_warnings</span><span class="p">,</span>
+                                              <span class="n">disable_progressbar</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">disable_progressbar</span><span class="p">,</span>
+                                              <span class="n">impute_function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">impute_function</span><span class="p">,</span>
+                                              <span class="n">profile</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span>
+                                              <span class="n">profiling_filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">profiling_filename</span><span class="p">,</span>
+                                              <span class="n">profiling_sorting</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">profiling_sorting</span><span class="p">)</span>
+
+        <span class="n">X</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">extracted_features</span><span class="p">,</span> <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">X</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2018, Micah Smith
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

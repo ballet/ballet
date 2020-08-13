@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.eng.misc &mdash; ballet 0.7.6 documentation</title>
+  <title>ballet.eng.misc &mdash; ballet 0.7.7 documentation</title>
   
 
   
@@ -128,10 +128,14 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../feature_engineering_guide.html">Feature Engineering Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#logical-features">Logical Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#logical-features">Logical Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#why">Why?</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#writing-features">Writing features</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#a-first-example">A first example</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#why">Why?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#a-second-example">A second example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#a-third-example">A third example</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#input-types-and-conversions">Input types and conversions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#transformers">Transformers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#feature-engineering-pipelines">Feature engineering pipelines</a></li>
@@ -220,18 +224,20 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id1">0.7.5 (2020-08-03)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id2">0.7.4 (2020-07-22)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id3">0.7.3 (2020-07-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id4">0.7.2 (2020-07-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id5">0.7.1 (2020-07-20)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id6">0.7 (2020-07-17)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id7">0.6 (2019-11-12)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id8">0.5 (2018-10-14)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id9">0.4 (2018-09-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id10">0.3 (2018-04-28)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id11">0.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id12">0.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id1">0.7.7 (2020-08-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id2">0.7.6 (2020-08-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id3">0.7.5 (2020-08-03)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id4">0.7.4 (2020-07-22)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id5">0.7.3 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id6">0.7.2 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id7">0.7.1 (2020-07-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id8">0.7 (2020-07-17)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id9">0.6 (2019-11-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id10">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id11">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id12">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id13">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id14">0.1</a></li>
 </ul>
 </li>
 </ul>
@@ -298,7 +304,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ballet.eng.misc</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">funcy</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
+
+<span class="kn">import</span> <span class="nn">funcy</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">boxcox1p</span>
@@ -308,13 +316,15 @@
 
 <span class="kn">from</span> <span class="nn">ballet.eng.base</span> <span class="kn">import</span> <span class="n">BaseTransformer</span><span class="p">,</span> <span class="n">ConditionalTransformer</span>
 <span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">get_arr_desc</span>
+<span class="kn">from</span> <span class="nn">ballet.util.typing</span> <span class="kn">import</span> <span class="n">OneOrMore</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">&#39;IdentityTransformer&#39;</span><span class="p">,</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
     <span class="s1">&#39;BoxCoxTransformer&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;ValueReplacer&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ComputedValueTransformer&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;IdentityTransformer&#39;</span><span class="p">,</span>
     <span class="s1">&#39;NamedFramer&#39;</span><span class="p">,</span>
-<span class="p">]</span>
+    <span class="s1">&#39;ValueReplacer&#39;</span><span class="p">,</span>
+<span class="p">)</span>
 
 
 <div class="viewcode-block" id="IdentityTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.misc.html#ballet.eng.misc.IdentityTransformer">[docs]</a><span class="k">class</span> <span class="nc">IdentityTransformer</span><span class="p">(</span><span class="n">FunctionTransformer</span><span class="p">):</span>
@@ -334,13 +344,13 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        threshold: skew threshold.</span>
-<span class="sd">        lmbda (float, default=0.0): Power parameter of the Box-Cox transform.</span>
+<span class="sd">        lmbda: power parameter of the Box-Cox transform. Defaults to 0.0</span>
 
 <span class="sd">    See also:</span>
 <span class="sd">        https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.boxcox1p.html</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">lmbda</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">lmbda</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">):</span>
         <span class="k">def</span> <span class="nf">condition</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">skew</span><span class="p">(</span><span class="n">X</span><span class="p">))</span> <span class="o">&gt;</span> <span class="n">threshold</span>
 
@@ -380,7 +390,7 @@
 <span class="sd">        name: name for resulting DataFrame</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
@@ -409,28 +419,56 @@
 
 
 <span class="k">class</span> <span class="nc">NullTransformer</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A transformer that does &quot;nothing&quot;</span>
+
+<span class="sd">    It returns a 0-d array (``np.empty``) of the same length as its input</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_kwargs</span><span class="p">):</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 
 
-<span class="k">class</span> <span class="nc">ComputedValueTransformer</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">):</span>
+<div class="viewcode-block" id="ComputedValueTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.misc.html#ballet.eng.misc.ComputedValueTransformer">[docs]</a><span class="k">class</span> <span class="nc">ComputedValueTransformer</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute a value on the training data and transform to a constant</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">pass_y</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="sd">    For example, compute the mean of a column of the training data, then</span>
+<span class="sd">    transform any input array by producing an output of the same shape but</span>
+<span class="sd">    filled with the computed mean.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        func: function to apply during fit</span>
+<span class="sd">        pass_y: whether to pass y to the function during fit</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">pass_y</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pass_y</span> <span class="o">=</span> <span class="n">pass_y</span>
 
-    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">fit_kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ComputedValueTransformer.fit"><a class="viewcode-back" href="../../../api/ballet.eng.misc.html#ballet.eng.misc.ComputedValueTransformer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">fit_kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pass_y</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">value_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">value_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dtype_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value_</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="ComputedValueTransformer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.misc.html#ballet.eng.misc.ComputedValueTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_kwargs</span><span class="p">):</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;value_&#39;</span><span class="p">,</span> <span class="s1">&#39;dtype_&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span></div></div>
+
+
+<span class="k">class</span> <span class="nc">ColumnSelector</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select one or more columns from a DataFrame</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cols: column or columns to select</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cols</span><span class="p">:</span> <span class="n">OneOrMore</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cols</span> <span class="o">=</span> <span class="n">cols</span>
 
     <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_kwargs</span><span class="p">):</span>
-        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;value_&#39;</span><span class="p">,</span> <span class="s1">&#39;dtype_&#39;</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">cols</span><span class="p">]</span>
 </pre></div>
 
            </div>

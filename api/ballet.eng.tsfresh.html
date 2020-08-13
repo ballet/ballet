@@ -1,0 +1,484 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ballet.eng.tsfresh module &mdash; ballet 0.7.7 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ballet.util package" href="ballet.util.html" />
+    <link rel="prev" title="ballet.eng.ts module" href="ballet.eng.ts.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> ballet
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../readme.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../readme.html#next-steps">Next steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#stable-release">Stable release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#from-source">From source</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../maintainer_guide.html">Maintainer Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../maintainer_guide.html#creating-a-ballet-project">Creating a Ballet project</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#project-instantiation">Project instantiation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#project-installation">Project installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#collaboration-via-git-and-github">Collaboration via git and GitHub</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#enabling-continuous-integration">Enabling continuous integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#installing-bots">Installing bots</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../maintainer_guide.html#developing-new-features">Developing new features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#validating-features">Validating features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#pruning-features">Pruning features</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../maintainer_guide.html#applying-the-feature-engineering-pipeline">Applying the feature engineering pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../maintainer_guide.html#updating-the-framework">Updating the framework</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributor_guide.html">Contributor Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../contributor_guide.html#cloud-feature-development-workflow">Cloud Feature Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributor_guide.html#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributor_guide.html#setup-your-development-environment">Setup your development environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributor_guide.html#develop-a-new-feature">Develop a new feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributor_guide.html#submit-the-feature">Submit the feature</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../contributor_guide.html#option-1-git-workflow">Option 1: Git workflow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../contributor_guide.html#option-2-in-lab-workflow">Option 2: In-Lab Workflow</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributor_guide.html#understanding-validation-results">Understanding Validation Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributor_guide.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../feature_engineering_guide.html">Feature Engineering Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../feature_engineering_guide.html#logical-features">Logical Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../feature_engineering_guide.html#why">Why?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../feature_engineering_guide.html#writing-features">Writing features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../feature_engineering_guide.html#a-first-example">A first example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../feature_engineering_guide.html#a-second-example">A second example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../feature_engineering_guide.html#a-third-example">A third example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../feature_engineering_guide.html#input-types-and-conversions">Input types and conversions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../feature_engineering_guide.html#transformers">Transformers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../feature_engineering_guide.html#feature-engineering-pipelines">Feature engineering pipelines</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../feature_engineering_guide.html#feature-engineering-primitives">Feature engineering primitives</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../feature_engineering_guide.html#operating-on-groups">Operating on groups</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../feature_engineering_guide.html#addressing-missing-values">Addressing missing values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../feature_engineering_guide.html#operating-on-time-series-data">Operating on time series data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../feature_engineering_guide.html#other-primitives">Other primitives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../feature_engineering_guide.html#external-libraries">External libraries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../feature_engineering_guide.html#pandas-lrarrow-ballet-examples">Pandas ⇔ Ballet Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../feature_engineering_guide.html#rolling-your-own-transformers">Rolling your own transformers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../feature_engineering_guide.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../feature_engineering_guide.html#further-reading">Further reading</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="ballet.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="ballet.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="ballet.eng.html">ballet.eng package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="ballet.eng.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.util.html">ballet.util package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ballet.util.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.validation.html">ballet.validation package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ballet.validation.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ballet.validation.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ballet.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ballet.cli.html">ballet.cli module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.client.html">ballet.client module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.compat.html">ballet.compat module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.contrib.html">ballet.contrib module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.exc.html">ballet.exc module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.feature.html">ballet.feature module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.pipeline.html">ballet.pipeline module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.project.html">ballet.project module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.templating.html">ballet.templating module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.transformer.html">ballet.transformer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.update.html">ballet.update module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli_reference.html">CLI Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cli_reference.html#ballet-quickstart">quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_reference.html#ballet-start-new-feature">start-new-feature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_reference.html#ballet-update-project-template">update-project-template</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_reference.html#ballet-validate">validate</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Development Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#types-of-contributions">Types of Contributions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#report-bugs">Report Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#fix-bugs">Fix Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#implement-features">Implement Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#write-documentation">Write Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#submit-feedback">Submit Feedback</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#get-started">Get Started!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#pull-request-guidelines">Pull Request Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#tips">Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#deploying">Deploying</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../authors.html">Credits</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../authors.html#development-lead">Development Lead</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../authors.html#contributors">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">History</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id1">0.7.7 (2020-08-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id2">0.7.6 (2020-08-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id3">0.7.5 (2020-08-03)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id4">0.7.4 (2020-07-22)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id5">0.7.3 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id6">0.7.2 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id7">0.7.1 (2020-07-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id8">0.7 (2020-07-17)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id9">0.6 (2019-11-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id10">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id11">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id12">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id13">0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../history.html#id14">0.1</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ballet</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="ballet.html">ballet package</a> &raquo;</li>
+        
+          <li><a href="ballet.eng.html">ballet.eng package</a> &raquo;</li>
+        
+      <li>ballet.eng.tsfresh module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/HDI-Project/ballet/blob/master/docs/api/ballet.eng.tsfresh.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-ballet.eng.tsfresh">
+<span id="ballet-eng-tsfresh-module"></span><h1>ballet.eng.tsfresh module<a class="headerlink" href="#module-ballet.eng.tsfresh" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="ballet.eng.tsfresh.FeatureAugmenter">
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.tsfresh.</code><code class="sig-name descname">FeatureAugmenter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">default_fc_parameters</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kind_to_fc_parameters</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">column_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">column_sort</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">column_kind</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">column_value</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">timeseries_container</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">chunksize</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">show_warnings</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">disable_progressbar</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">impute_function</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">profile</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">profiling_filename</span><span class="o">=</span><span class="default_value">'profile.txt'</span></em>, <em class="sig-param"><span class="n">profiling_sorting</span><span class="o">=</span><span class="default_value">'cumulative'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tsfresh/transformers/feature_augmenter.html#FeatureAugmenter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.tsfresh.FeatureAugmenter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.TransformerMixin</span></code></p>
+<p>Sklearn-compatible estimator, for calculating and adding many features calculated from a given time series
+to the data. It is basically a wrapper around <code class="xref py py-func docutils literal notranslate"><span class="pre">extract_features()</span></code>.</p>
+<p>The features include basic ones like min, max or median, and advanced features like fourier
+transformations or statistical tests. For a list of all possible features, see the module
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">feature_calculators</span></code>. The column name of each added feature contains the name
+of the function of that module, which was used for the calculation.</p>
+<p>For this estimator, two datasets play a crucial role:</p>
+<ol class="arabic simple">
+<li><p>the time series container with the timeseries data. This container (for the format see <span class="xref std std-ref">data-formats-label</span>)
+contains the data which is used for calculating the
+features. It must be groupable by ids which are used to identify which feature should be attached to which row
+in the second dataframe:</p></li>
+<li><p>the input data, where the features will be added to.</p></li>
+</ol>
+<p>Imagine the following situation: You want to classify 10 different financial shares and you have their development
+in the last year as a time series. You would then start by creating features from the metainformation of the
+shares, e.g. how long they were on the market etc. and filling up a table - the features of one stock in one row.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Fill in the information of the stocks</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;started_since_days&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># add a feature</span>
+</pre></div>
+</div>
+<p>You can then extract all the features from the time development of the shares, by using this estimator:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">time_series</span> <span class="o">=</span> <span class="n">read_in_timeseries</span><span class="p">()</span> <span class="c1"># get the development of the shares</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tsfresh.transformers</span> <span class="kn">import</span> <span class="n">FeatureAugmenter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">augmenter</span> <span class="o">=</span> <span class="n">FeatureAugmenter</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">augmenter</span><span class="o">.</span><span class="n">set_timeseries_container</span><span class="p">(</span><span class="n">time_series</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df_with_time_series_features</span> <span class="o">=</span> <span class="n">augmenter</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The settings for the feature calculation can be controlled with the settings object.
+If you pass <code class="docutils literal notranslate"><span class="pre">None</span></code>, the default settings are used.
+Please refer to <code class="xref py py-class docutils literal notranslate"><span class="pre">ComprehensiveFCParameters</span></code> for
+more information.</p>
+<p>This estimator does not select the relevant features, but calculates and adds all of them to the DataFrame. See the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">RelevantFeatureAugmenter</span></code> for calculating and selecting
+features.</p>
+<p>For a description what the parameters column_id, column_sort, column_kind and column_value mean, please see
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">extraction</span></code>.</p>
+<dl class="py method">
+<dt id="ballet.eng.tsfresh.FeatureAugmenter.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tsfresh/transformers/feature_augmenter.html#FeatureAugmenter.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.tsfresh.FeatureAugmenter.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>The fit function is not needed for this estimator. It just does nothing and is here for compatibility reasons.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>Any</em>) – Unneeded.</p></li>
+<li><p><strong>y</strong> (<em>Any</em>) – Unneeded.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The estimator instance itself</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#ballet.eng.tsfresh.FeatureAugmenter" title="ballet.eng.tsfresh.FeatureAugmenter">FeatureAugmenter</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ballet.eng.tsfresh.FeatureAugmenter.set_timeseries_container">
+<code class="sig-name descname">set_timeseries_container</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">timeseries_container</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tsfresh/transformers/feature_augmenter.html#FeatureAugmenter.set_timeseries_container"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.tsfresh.FeatureAugmenter.set_timeseries_container" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the timeseries, with which the features will be calculated. For a format of the time series container,
+please refer to <code class="xref py py-mod docutils literal notranslate"><span class="pre">extraction</span></code>. The timeseries must contain the same indices
+as the later DataFrame, to which the features will be added (the one you will pass to <a class="reference internal" href="#ballet.eng.tsfresh.FeatureAugmenter.transform" title="ballet.eng.tsfresh.FeatureAugmenter.transform"><code class="xref py py-func docutils literal notranslate"><span class="pre">transform()</span></code></a>). You
+can call this function as often as you like, to change the timeseries later (e.g. if you want to extract for
+different ids).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>timeseries_container</strong> (<em>pandas.DataFrame</em><em> or </em><em>dict</em>) – The timeseries as a pandas.DataFrame or a dict. See
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">extraction</span></code> for the format.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ballet.eng.tsfresh.FeatureAugmenter.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tsfresh/transformers/feature_augmenter.html#FeatureAugmenter.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.tsfresh.FeatureAugmenter.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the features calculated using the timeseries_container and add them to the corresponding rows in the input
+pandas.DataFrame X.</p>
+<p>To save some computing time, you should only include those time serieses in the container, that you
+need. You can set the timeseries container with the method <a class="reference internal" href="#ballet.eng.tsfresh.FeatureAugmenter.set_timeseries_container" title="ballet.eng.tsfresh.FeatureAugmenter.set_timeseries_container"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_timeseries_container()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas.DataFrame</em>) – the DataFrame to which the calculated timeseries features will be added. This is <em>not</em> the
+dataframe with the timeseries itself.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The input DataFrame, but with added features.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ballet.util.html" class="btn btn-neutral float-right" title="ballet.util package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ballet.eng.ts.html" class="btn btn-neutral float-left" title="ballet.eng.ts module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2018, Micah Smith
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
