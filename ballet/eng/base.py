@@ -1,6 +1,5 @@
-from typing import Callable, Tuple
+from typing import Callable, Optional
 
-import funcy
 import numpy as np
 import pandas as pd
 import sklearn.base
@@ -10,7 +9,7 @@ from sklearn.utils.validation import check_is_fitted
 
 from ballet.exc import BalletError
 from ballet.util import get_arr_desc
-from ballet.typing import OneOrMore, TransformerLike
+from ballet.util.typing import OneOrMore, TransformerLike
 
 __all__ = (
     'BaseTransformer',
@@ -44,34 +43,35 @@ class SimpleFunctionTransformer(FunctionTransformer):
 
     Args:
         func: callable to apply
-        func_args: additional arguments to pass
         func_kwargs: keyword arguments to pass
     """
 
     def __init__(self,
                  func: Callable,
-                 func_args: Tuple = None,
-                 func_kwargs: dict = None):
+                 func_kwargs: Optional[dict] = None):
         super().__init__(
-            func=funcy.rpartial(func, func_args), kw_args=func_kwargs)
+            func=func,
+            kw_args=func_kwargs or {})
 
 
-class GroupedFunctionTransformer(SimpleFunctionTransformer):
+class GroupedFunctionTransformer(FunctionTransformer):
     """Transformer that applies a callable to each group of a groupby
 
     Args:
         func: callable to apply
-        func_args: additional arguments to pass
         func_kwargs: keyword arguments to pass
-        groupby_kwargs: keyword arguments to pd.DataFrame.groupby
+        groupby_kwargs: keyword arguments to pd.DataFrame.groupby. If omitted,
+            no grouping is performed and the function is called on the entire
+            DataFrame.
     """
 
     def __init__(self,
                  func: Callable,
-                 func_args: Tuple = None,
-                 func_kwargs: dict = None,
-                 groupby_kwargs: dict = None):
-        super().__init__(func, func_args=func_args, func_kwargs=func_kwargs)
+                 func_kwargs: Optional[dict] = None,
+                 groupby_kwargs: Optional[dict] = None):
+        super().__init__(
+            func=func,
+            kw_args=func_kwargs or {})
         self.groupby_kwargs = groupby_kwargs
 
     def transform(self, X, **transform_kwargs):
@@ -80,7 +80,7 @@ class GroupedFunctionTransformer(SimpleFunctionTransformer):
             call = X.groupby(**groupby_kwargs).apply
         else:
             call = X.pipe
-        return call(self._func_call)
+        return call(super().transform)
 
 
 class GroupwiseTransformer(BaseTransformer):

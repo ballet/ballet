@@ -5,7 +5,7 @@ import pandas as pd
 import sklearn.base
 from sklearn.impute import SimpleImputer
 
-import ballet.eng.base
+import ballet.eng
 import ballet.exc
 from ballet.util.testing import ArrayLikeEqualityTestingMixin
 
@@ -16,7 +16,7 @@ class TestBase(ArrayLikeEqualityTestingMixin, unittest.TestCase):
         pass
 
     def test_no_fit_mixin(self):
-        class _Foo(ballet.eng.base.NoFitMixin):
+        class _Foo(ballet.eng.NoFitMixin):
             pass
         a = _Foo()
 
@@ -27,7 +27,7 @@ class TestBase(ArrayLikeEqualityTestingMixin, unittest.TestCase):
         a.fit('X', y=None)
 
     def test_base_transformer(self):
-        a = ballet.eng.base.BaseTransformer()
+        a = ballet.eng.BaseTransformer()
 
         self.assertIsInstance(a, sklearn.base.BaseEstimator)
         self.assertTrue(hasattr(a, 'fit'))
@@ -36,7 +36,7 @@ class TestBase(ArrayLikeEqualityTestingMixin, unittest.TestCase):
         def func(x): return x + 5
         data = np.arange(30)
 
-        trans = ballet.eng.base.SimpleFunctionTransformer(func)
+        trans = ballet.eng.SimpleFunctionTransformer(func)
         trans.fit(data)
         data_trans = trans.transform(data)
         data_func = func(data)
@@ -55,7 +55,7 @@ class TestBase(ArrayLikeEqualityTestingMixin, unittest.TestCase):
 
         # with groupby kwargs, produces a df
         func = np.sum
-        trans = ballet.eng.base.GroupedFunctionTransformer(
+        trans = ballet.eng.GroupedFunctionTransformer(
             func, groupby_kwargs={'level': 'country'})
         trans.fit(df)
         result = trans.transform(df)
@@ -64,7 +64,7 @@ class TestBase(ArrayLikeEqualityTestingMixin, unittest.TestCase):
 
         # without groupby kwargs, produces a series
         func = np.min
-        trans = ballet.eng.base.GroupedFunctionTransformer(func)
+        trans = ballet.eng.GroupedFunctionTransformer(func)
         trans.fit(df)
         result = trans.transform(df)
         expected_result = df.pipe(func)
@@ -98,7 +98,7 @@ class GroupwiseTransformerTest(
 
         # mean-impute within groups
         self.individual_transformer = SimpleImputer()
-        self.trans = ballet.eng.base.GroupwiseTransformer(
+        self.trans = ballet.eng.GroupwiseTransformer(
             self.individual_transformer,
             groupby_kwargs=self.groupby_kwargs,
             column_selection=['value'],
@@ -123,7 +123,7 @@ class GroupwiseTransformerTest(
         self.assertFrameEqual(result_te, expected_te)
 
     def test_raise_on_new_group(self):
-        trans = ballet.eng.base.GroupwiseTransformer(
+        trans = ballet.eng.GroupwiseTransformer(
             self.individual_transformer,
             groupby_kwargs=self.groupby_kwargs,
             handle_unknown='error'
@@ -139,7 +139,7 @@ class GroupwiseTransformerTest(
             trans.transform(X_te)
 
     def test_ignore_on_new_group(self):
-        trans = ballet.eng.base.GroupwiseTransformer(
+        trans = ballet.eng.GroupwiseTransformer(
             self.individual_transformer,
             groupby_kwargs=self.groupby_kwargs,
             handle_unknown='ignore'
@@ -164,12 +164,12 @@ class GroupwiseTransformerTest(
     def test_raise_on_transform_error(self):
         exc = Exception
 
-        class TransformErrorTransformer(ballet.eng.base.BaseTransformer):
+        class TransformErrorTransformer(ballet.eng.BaseTransformer):
             def transform(self, X, **transform_kwargs):
                 raise exc
 
         individual_transformer = TransformErrorTransformer()
-        trans = ballet.eng.base.GroupwiseTransformer(
+        trans = ballet.eng.GroupwiseTransformer(
             individual_transformer,
             groupby_kwargs=self.groupby_kwargs,
             handle_error='error',
@@ -183,12 +183,12 @@ class GroupwiseTransformerTest(
     def test_ignore_on_transform_error(self):
         exc = Exception
 
-        class TransformErrorTransformer(ballet.eng.base.BaseTransformer):
+        class TransformErrorTransformer(ballet.eng.BaseTransformer):
             def transform(self, X, **transform_kwargs):
                 raise exc
 
         individual_transformer = TransformErrorTransformer()
-        trans = ballet.eng.base.GroupwiseTransformer(
+        trans = ballet.eng.GroupwiseTransformer(
             individual_transformer,
             groupby_kwargs=self.groupby_kwargs,
             handle_error='ignore',
