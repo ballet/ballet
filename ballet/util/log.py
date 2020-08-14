@@ -3,7 +3,7 @@ from typing import Optional, Union
 
 import ballet
 
-SIMPLE_LOG_FORMAT = r'%(asctime)s %(levelname)s - %(message)s'
+SIMPLE_LOG_FORMAT = r'%(levelname)s - %(message)s'
 DETAIL_LOG_FORMAT = r'[%(asctime)s] {%(name)s: %(filename)s:%(lineno)d} %(levelname)s - %(message)s'  # noqa E501
 
 logger = logging.getLogger(ballet.__name__)
@@ -12,15 +12,15 @@ _handler = None
 
 def enable(logger: Union[str, logging.Logger] = logger,
            level: Union[str, int] = logging.INFO,
-           format: str = DETAIL_LOG_FORMAT,
+           format: str = SIMPLE_LOG_FORMAT,
            echo: bool = True):
     """Enable simple console logging for this module
 
     Args:
         logger: logger to enable. Defaults to ballet logger.
-        level: logging level, either as string (``"INFO"``) or as int
-            (``logging.INFO`` or ``20``). Defaults to 'INFO'.
-        format : logging format. Defaults to ballet.util.log.DETAIL_LOG_FORMAT.
+        level: logging level, either as string (``'INFO'``) or as int
+            (``logging.INFO`` or ``20``). Defaults to ``'INFO'``.
+        format : logging format. Defaults to :py:const:`SIMPLE_LOG_FORMAT`.
         echo: Whether to log a message at the configured log level to
             confirm that logging is enable. Defaults to True.
     """

@@ -25,7 +25,7 @@ def cli(verbose, quiet):
     else:
         level = 'DEBUG'
     ballet.util.log.enable(level=level,
-                           format=ballet.util.log.SIMPLE_LOG_FORMAT,
+                           format=ballet.util.log.DETAIL_LOG_FORMAT,
                            echo=False)
 
 
@@ -87,7 +87,7 @@ def validate(check_all, check_project_structure, check_feature_api,
 
     # over-write logging settings?
     ballet.util.log.enable(level='DEBUG',
-                           format=ballet.util.log.SIMPLE_LOG_FORMAT,
+                           format=ballet.util.log.DETAIL_LOG_FORMAT,
                            echo=False)
 
     project = ballet.project.Project.from_cwd()
