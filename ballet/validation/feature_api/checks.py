@@ -37,6 +37,9 @@ class IsFeatureCheck(FeatureApiCheck):
         """Check that the object is an instance of ballet.Feature"""
         assert isinstance(feature, Feature)
 
+    def give_advice(self, feature):
+        return f'The object needs to be an instance of ballet.Feature, whereas it is actually of type {type(feature).__name__}'  # noqa
+
 
 class HasCorrectInputTypeCheck(FeatureApiCheck):
 
@@ -48,6 +51,9 @@ class HasCorrectInputTypeCheck(FeatureApiCheck):
             iterable, lambda x: all(is_str, x))
         assert is_str(input) or is_nested_str(input)
 
+    def give_advice(self, feature):
+        return f'The feature\'s input needs to be a string or list of strings, whereas it is actually of type {type(feature.input).__name__}'  # noqa
+
 
 class HasTransformerInterfaceCheck(FeatureApiCheck):
 
@@ -57,12 +63,23 @@ class HasTransformerInterfaceCheck(FeatureApiCheck):
         assert hasattr(feature.transformer, 'transform')
         assert hasattr(feature.transformer, 'fit_transform')
 
+    def give_advice(self, feature):
+        missing = ', '.join(
+            attr
+            for attr in ('fit', 'transform', 'fit_transform')
+            if not hasattr(feature.transformer, attr)
+        )
+        return f'The feature\'s transformer must have the transformer interface, but these methods are missing and must be implemented: {missing}'  # noqa
+
 
 class CanMakeMapperCheck(FeatureApiCheck):
 
     def check(self, feature):
         """Check that the feature can be converted to a FEP"""
         feature.as_feature_engineering_pipeline()
+
+    def give_advice(self, feature):
+        return 'The following method call fails and needs to be fixed: feature.as_feature_engineering_pipeline()'  # noqa
 
 
 class CanFitCheck(FeatureApiCheck):
@@ -71,6 +88,9 @@ class CanFitCheck(FeatureApiCheck):
         """Check that fit can be called on reference data"""
         mapper = feature.as_feature_engineering_pipeline()
         mapper.fit(self.X, y=self.y)
+
+    def give_advice(self, feature):
+        return 'The feature fails when calling fit on sample data'
 
 
 class CanFitOneRowCheck(FeatureApiCheck):
@@ -81,6 +101,9 @@ class CanFitOneRowCheck(FeatureApiCheck):
         x, y = _get_one_row(self.X, self.y)
         mapper.fit(x, y=y)
 
+    def give_advice(self, feature):
+        return 'The feature fails when calling fit on a single row of sample data (i.e. 1xn array)'  # noqa
+
 
 class CanTransformCheck(FeatureApiCheck):
 
@@ -89,6 +112,9 @@ class CanTransformCheck(FeatureApiCheck):
         mapper = feature.as_feature_engineering_pipeline()
         mapper.fit(self.X, y=self.y)
         mapper.transform(self.X)
+
+    def give_advice(self, feature):
+        return 'The feature fails when calling transform on sample data'
 
 
 class CanTransformNewRowsCheck(FeatureApiCheck):
@@ -102,6 +128,9 @@ class CanTransformNewRowsCheck(FeatureApiCheck):
         mapper.fit(X1, y=y1)
         mapper.transform(X2)
 
+    def give_advice(self, feature):
+        return 'The feature fails when calling transform on different data than it was trained on; make sure the transform method works on any number of new rows'  # noqa
+
 
 class CanTransformOneRowCheck(FeatureApiCheck):
 
@@ -112,6 +141,9 @@ class CanTransformOneRowCheck(FeatureApiCheck):
         x, = _get_one_row(self.X)
         mapper.transform(x)
 
+    def give_advice(self, feature):
+        return 'The feature fails when calling transform on a single row of sample data (i.e. 1xn array)'  # noqa
+
 
 class CanFitTransformCheck(FeatureApiCheck):
 
@@ -119,6 +151,9 @@ class CanFitTransformCheck(FeatureApiCheck):
         """Check that fit_transform can be called on reference data"""
         mapper = feature.as_feature_engineering_pipeline()
         mapper.fit_transform(self.X, y=self.y)
+
+    def give_advice(self, feature):
+        return 'The feature fails when calling fit_transform on sample data'
 
 
 class HasCorrectOutputDimensionsCheck(FeatureApiCheck):
@@ -133,6 +168,14 @@ class HasCorrectOutputDimensionsCheck(FeatureApiCheck):
         X = mapper.fit_transform(self.X, y=self.y)
         assert self.X.shape[0] == X.shape[0]
 
+    def give_advice(self, feature):
+        mapper = feature.as_feature_engineering_pipeline()
+        X = mapper.fit_transform(self.X, y=self.y)
+        n = self.X.shape[0]
+        m = X.shape[0]
+
+        return f'The feature does not produce the correct output dimensions, for example when it is fit and transformed on {n} rows of data, it produces {m} rows of feature values.'  # noqa
+
 
 class CanDeepcopyCheck(FeatureApiCheck):
 
@@ -142,6 +185,9 @@ class CanDeepcopyCheck(FeatureApiCheck):
         This is needed for execution of the overall transformation pipeline
         """
         deepcopy(feature)
+
+    def give_advice(self, feature):
+        return 'Calling copy.deepcopy(feature) fails, make sure every component of the feature can be deepcopied'  # noqa
 
 
 class CanPickleCheck(FeatureApiCheck):
@@ -161,6 +207,9 @@ class CanPickleCheck(FeatureApiCheck):
         finally:
             buf.close()
 
+    def give_advice(self, feature):
+        return 'Calling pickle.dump(feature, buf) fails, make sure the feature can be pickled'  # noqa
+
 
 class NoMissingValuesCheck(FeatureApiCheck):
 
@@ -170,6 +219,9 @@ class NoMissingValuesCheck(FeatureApiCheck):
         X = mapper.fit_transform(self.X, y=self.y)
         assert not np.any(np.isnan(X))
 
+    def give_advice(self, feature):
+        return 'When transforming sample data, the feature produces NaN values. If you reasonably expect these missing values, make sure you clean missing values as an additional step in your transformer list. For example: NullFiller(replacement=replacement)'  # noqa
+
 
 class NoInfiniteValuesCheck(FeatureApiCheck):
 
@@ -178,3 +230,6 @@ class NoInfiniteValuesCheck(FeatureApiCheck):
         mapper = feature.as_feature_engineering_pipeline()
         X = mapper.fit_transform(self.X, y=self.y)
         assert not np.any(np.isinf(X))
+
+    def give_advice(self, feature):
+        return 'When transforming sample data, the feature produces infinite values. You can detect these with np.isinf. If you reasonably expect these infinite values, make sure you clean infinite values as an additional step in your transformer list. For example: NullFiller(np.isinf, replacement) '  # noqa

@@ -77,7 +77,8 @@ class Client:
         """Check that this feature satisfies the expected feature API"""
         X_df, y_df = self._load_validation_data(X_df, y_df, subsample)
         result = self.api.engineer_features(X_df, y_df)
-        return validate_feature_api(feature, result.X_df, result.y, False)
+        return validate_feature_api(
+            feature, result.X_df, result.y, False, log_advice=True)
 
     def validate_feature_acceptance(
         self,

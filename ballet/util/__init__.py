@@ -48,13 +48,6 @@ def make_plural_suffix(obj: Collection, suffix='s') -> str:
         return ''
 
 
-@decorator
-def whether_failures(call: Call):
-    """Collects failures and return (success, list_of_failures)"""
-    failures = list(call())
-    return not failures, failures
-
-
 def has_nans(obj) -> bool:
     """Check if obj has any NaNs
 

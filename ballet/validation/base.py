@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from typing import Iterable, List
+from typing import Iterable, List, Optional
 
 import numpy as np
 import pandas as pd
@@ -74,3 +74,7 @@ class BaseCheck(metaclass=ABCMeta):
     def check(self, obj) -> None:
         """Check something and throw an exception if the thing is bad"""
         pass
+
+    def give_advice(self, feature) -> Optional[str]:
+        """Description of how to resolve if the check fails"""
+        return None

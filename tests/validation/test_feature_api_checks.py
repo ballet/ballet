@@ -25,7 +25,7 @@ class FeatureApiCheckTest(SampleDataMixin, unittest.TestCase):
             transformer=SimpleImputer(),
         )
 
-        valid, failures = check_from_class(
+        valid, failures, advice = check_from_class(
             FeatureApiCheck, feature, self.X, self.y)
         self.assertTrue(valid)
         self.assertEqual(len(failures), 0)
@@ -36,7 +36,7 @@ class FeatureApiCheckTest(SampleDataMixin, unittest.TestCase):
             input=3,
             transformer=SimpleImputer(),
         )
-        valid, failures = check_from_class(
+        valid, failures, advice = check_from_class(
             FeatureApiCheck, feature, self.X, self.y)
         self.assertFalse(valid)
         self.assertIn(HasCorrectInputTypeCheck.__name__, failures)
@@ -48,7 +48,7 @@ class FeatureApiCheckTest(SampleDataMixin, unittest.TestCase):
             transformer=FragileTransformer(
                 (lambda x: True, ), (RuntimeError, ))
         )
-        valid, failures = check_from_class(
+        valid, failures, advice = check_from_class(
             FeatureApiCheck, feature, self.X, self.y)
         self.assertFalse(valid)
         self.assertIn(CanTransformCheck.__name__, failures)
@@ -66,7 +66,7 @@ class FeatureApiCheckTest(SampleDataMixin, unittest.TestCase):
             input='size',
             transformer=_WrongLengthTransformer(),
         )
-        valid, failures = check_from_class(
+        valid, failures, advice = check_from_class(
             FeatureApiCheck, feature, self.X, self.y)
         self.assertFalse(valid)
         self.assertIn(HasCorrectOutputDimensionsCheck.__name__, failures)
@@ -79,7 +79,7 @@ class FeatureApiCheckTest(SampleDataMixin, unittest.TestCase):
             input='size',
             transformer=_CopyFailsTransformer(),
         )
-        valid, failures = check_from_class(
+        valid, failures, advice = check_from_class(
             FeatureApiCheck, feature, self.X, self.y)
         self.assertFalse(valid)
         self.assertIn(CanDeepcopyCheck.__name__, failures)
@@ -90,7 +90,7 @@ class FeatureApiCheckTest(SampleDataMixin, unittest.TestCase):
             input='size',
             transformer=IdentityTransformer()
         )
-        valid, failures = check_from_class(
+        valid, failures, advice = check_from_class(
             FeatureApiCheck, feature, self.X, self.y)
         self.assertFalse(valid)
         self.assertIn(NoMissingValuesCheck.__name__, failures)

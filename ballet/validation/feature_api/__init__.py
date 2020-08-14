@@ -12,15 +12,23 @@ def validate_feature_api(
     X_df: pd.DataFrame,
     y: pd.DataFrame,
     subsample: bool,
+    log_advice: bool = False,
 ) -> bool:
-    logger.debug('Validating feature {feature!r}'.format(feature=feature))
+    logger.debug(f'Validating feature {feature!r}')
     if subsample:
         X_df, y = subsample_data_for_validation(X_df, y)
-    valid, failures = check_from_class(FeatureApiCheck, feature, X_df, y)
+    valid, failures, advice = check_from_class(
+        FeatureApiCheck, feature, X_df, y)
     if valid:
         logger.info('Feature is valid')
     else:
-        logger.info(
-            'Feature is NOT valid; failures were {failures}'
-            .format(failures=failures))
+        if log_advice:
+            logger.info(
+                'Feature is NOT valid; here is some advice for resolving the '
+                'feature API issues.')
+            for failure, advice_item in zip(failures, advice):
+                logger.info(f'{failure}: {advice_item}')
+        else:
+            logger.info(f'Feature is NOT valid; failures were {failures}')
+
     return valid

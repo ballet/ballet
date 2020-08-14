@@ -1,7 +1,5 @@
 import random
 
-import funcy as fy
-
 from ballet.util.log import logger
 from ballet.util.testing import seeded
 from ballet.validation.base import FeatureAcceptanceMixin, FeatureAccepter

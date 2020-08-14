@@ -4,7 +4,8 @@ from typing import (
     Callable, Collection, Iterator, List, NamedTuple, Optional, Tuple)
 
 import git
-from funcy import collecting, complement, lfilter, partial, post_processing
+from funcy import (
+    collecting, complement, lfilter, partial, post_processing, silent)
 from stacklog import stacklog
 
 from ballet.contrib import _collect_contrib_feature_from_module
@@ -12,7 +13,7 @@ from ballet.exc import (
     BalletError, FeatureCollectionError, NoFeaturesCollectedError)
 from ballet.feature import Feature
 from ballet.project import Project
-from ballet.util import make_plural_suffix, whether_failures
+from ballet.util import make_plural_suffix
 from ballet.util.ci import TravisPullRequestBuildDiffer, can_use_travis_differ
 from ballet.util.git import (
     Differ, LocalMergeBuildDiffer, LocalPullRequestBuildDiffer)
@@ -178,7 +179,7 @@ class ChangeCollector:
         inadmissible_files = []
 
         for diff in file_diffs:
-            valid, failures = check_from_class(
+            valid, failures, _ = check_from_class(
                 ProjectStructureCheck, diff, self.project)
             if valid:
                 if pathlib.Path(diff.b_path).parts[-1] != '__init__.py':
@@ -253,14 +254,24 @@ def subsample_data_for_validation(X, y):
     return X, y
 
 
-@whether_failures
+def get_subclasses(cls):
+    return cls.__subclasses__()
+
+
 def check_from_class(check_class: type, obj, *checker_args, **checker_kwargs):
-    for Checker in check_class.__subclasses__():
-        check = Checker(*checker_args, **checker_kwargs).do_check
+    failures = []
+    advice = []
+    for Checker in get_subclasses(check_class):
+        checker = Checker(*checker_args, **checker_kwargs)
+        check = checker.do_check
         success = check(obj)
         if not success:
-            name = Checker.__name__
-            yield name
+            failures.append(Checker.__name__)
+            advice_item = silent(checker.give_advice)(obj)
+            advice.append(advice_item)
+
+    valid = not failures
+    return valid, failures, advice
 
 
 class RandomFeaturePerformanceEvaluator(FeaturePerformanceEvaluator):
