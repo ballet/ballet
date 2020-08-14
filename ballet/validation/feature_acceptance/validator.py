@@ -1,5 +1,7 @@
 import random
 
+import funcy as fy
+
 from ballet.util.log import logger
 from ballet.util.testing import seeded
 from ballet.validation.base import FeatureAcceptanceMixin, FeatureAccepter
@@ -48,13 +50,13 @@ class GFSSFAccepter(FeatureAcceptanceMixin, GFSSFPerformanceEvaluator):
 
         candidate_source = self.candidate_feature.source
         candidate_df = feature_dfs_by_src[candidate_source]
-        candidate_shape = candidate_df.shape
-        n_samples, n_candidate_cols = candidate_shape
+        n_samples, n_candidate_cols = candidate_df.shape
 
         lmbda_1, lmbda_2 = _compute_lmbdas(
             self.lmbda_1, self.lmbda_2, feature_dfs_by_src)
 
-        logger.info(f'Recomputed lambda_1={lmbda_1}, lambda_2={lmbda_2}')
+        logger.debug(
+            f'Recomputed lambda_1={lmbda_1:0.4f}, lambda_2={lmbda_2:0.4f}')
 
         info = []
 
@@ -71,15 +73,13 @@ class GFSSFAccepter(FeatureAcceptanceMixin, GFSSFPerformanceEvaluator):
 
             if omitted_feature is not None:
                 omit_df = feature_dfs_by_src[omitted_feature]
-                omitted_shape = omit_df.shape
-                _, n_omit_cols = omitted_shape
+                _, n_omit_cols = omit_df.shape
 
                 # Calculate CMI of omitted feature
                 cmi_omit = estimate_conditional_information(
                     omit_df, self.y, z)
             else:
                 cmi_omit = 0
-                omitted_shape = None
                 n_omit_cols = 0
 
             statistic = cmi - cmi_omit
@@ -94,11 +94,12 @@ class GFSSFAccepter(FeatureAcceptanceMixin, GFSSFPerformanceEvaluator):
             else:
                 iteration_info = GFSSFIterationInfo(
                     i=i,
+                    n_samples=n_samples,
                     candidate_name=candidate_source,
-                    candidate_shape=candidate_shape,
+                    candidate_cols=n_candidate_cols,
                     candidate_cmi=cmi,
                     omitted_name=omitted_feature,
-                    omitted_shape=omitted_shape,
+                    omitted_cols=n_omit_cols,
                     omitted_cmi=cmi_omit,
                     statistic=statistic,
                     threshold=threshold,
@@ -108,9 +109,12 @@ class GFSSFAccepter(FeatureAcceptanceMixin, GFSSFPerformanceEvaluator):
                 logger.debug(
                     f'Completed iteration {i}/{n_omit}: {iteration_info}')
 
-        cmi_max = max(info, key=lambda x: x.candidate_cmi)
-        delta_max = max(info, key=lambda x: x.delta)
+        info_closest = max(info, key=lambda x: x.delta)
+        cmi_closest = info_closest.candidate_cmi
+        omitted_cmi_closest = info_closest.omitted_cmi
+        statistic_closest = info_closest.statistic
+        threshold_closest = info_closest.threshold
         logger.info(
-            f'Rejected feature: cmi_max={cmi_max}, delta_max={delta_max}')
+            f'Rejected feature: marginal conditional mutual information was not greater than threshold ({cmi_closest:0.4f}-{omitted_cmi_closest:0.4f}={statistic_closest:0.4f} vs {threshold_closest:0.4f} in best case).')  # noqa
 
         return False

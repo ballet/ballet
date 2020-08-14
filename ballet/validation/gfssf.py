@@ -1,5 +1,7 @@
-from typing import Any, Dict, List, NamedTuple, Optional, Tuple
+from dataclasses import dataclass
+from typing import Any, Dict, List, Optional, Tuple
 
+import funcy as fy
 import numpy as np
 import pandas as pd
 
@@ -51,23 +53,29 @@ def _compute_threshold(
     return lmbda_1 + lmbda_2 * (n_feature_cols - n_omitted_cols)
 
 
-class GFSSFIterationInfo(NamedTuple):
+@dataclass
+class GFSSFIterationInfo:
     i: int
+    n_samples: int
     candidate_name: str
-    candidate_shape: Any
+    candidate_cols: int
     candidate_cmi: float
     omitted_name: str
-    omitted_shape: Any
+    omitted_cols: int
     omitted_cmi: float
     statistic: float
     threshold: float
     delta: float
 
     def __str__(self):
-        # trim class name
-        s = NamedTuple.__str__(self)
-        s = s[len(self.__class__.__name__) + 1:-1]
-        return s
+        def format(v):
+            if isinstance(v, (float, np.float_)):
+                return f'{v:.4f}'
+            return str(v)
+        return ', '.join(
+            f'{k}={format(v)}'
+            for k, v in self.__dict__.items()
+        )
 
 
 class GFSSFPerformanceEvaluator(FeaturePerformanceEvaluator):
@@ -108,8 +116,8 @@ class GFSSFPerformanceEvaluator(FeaturePerformanceEvaluator):
         self.lmbda_2 = lmbda_2
 
     def __str__(self):
-        return '{cls}: lmbda_1={lmbda_1:0.5f}, lmbda_2={lmbda_2:0.5f}'.format(
-            cls=str(super()),
+        return '{cls}: lmbda_1={lmbda_1:0.4f}, lmbda_2={lmbda_2:0.4f}'.format(
+            cls=super().__str__(),
             lmbda_1=self.lmbda_1,
             lmbda_2=self.lmbda_2)
 
