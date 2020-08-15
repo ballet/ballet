@@ -136,6 +136,9 @@ class DelegatingRobustTransformer(DeepcopyMixin, BaseTransformer):
         return '{name}({transformer!r})'.format(
             name=name, transformer=self._transformer)
 
+    def __str__(self):
+        return str(self._transformer)
+
     @property
     def _tname(self) -> str:
         return type(self._transformer).__name__
