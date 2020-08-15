@@ -18,6 +18,8 @@ import sklearn  # noqa
 logging.captureWarnings(False)
 warnings.filterwarnings(
     action='ignore', module='sklearn', category=DeprecationWarning)
+warnings.filterwarnings(
+    action='ignore', module='sklearn', category=FutureWarning)
 
 # configure module-level logging
 from ballet.util.log import logger  # noqa E402

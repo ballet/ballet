@@ -39,20 +39,20 @@ class GFSSFPruner(FeaturePruningMixin, GFSSFPerformanceEvaluator):
 
         logger.info(f'Pruning features using {self}')
 
-        feature_dfs_by_src = self._get_feature_dfs_by_src()
+        feature_df_map = self._get_feature_df_map()
         lmbda_1, lmbda_2 = _compute_lmbdas(
-            self.lmbda_1, self.lmbda_2, feature_dfs_by_src
-        )
+            self.lmbda_1, self.lmbda_2, feature_df_map)
 
         logger.info(f'Recomputed lambda_1={lmbda_1}, lambda_2={lmbda_2}')
 
         redundant_features = []
         for candidate_feature in self.features:
             candidate_src = candidate_feature.source
-            logger.debug("Pruning feature: {}".format(candidate_src))
-            candidate_df = feature_dfs_by_src[candidate_src]
+            logger.debug(
+                f"Trying to prune feature with source {candidate_src}")
+            candidate_df = feature_df_map[candidate_feature]
             _, n_candidate_cols = candidate_df.shape
-            z = _concat_datasets(feature_dfs_by_src, omit=candidate_src)
+            z = _concat_datasets(feature_df_map, omit=[candidate_feature])
             logger.debug(CMI_MESSAGE)
             cmi = estimate_conditional_information(candidate_df, self.y, z)
 
@@ -62,12 +62,10 @@ class GFSSFPruner(FeaturePruningMixin, GFSSFPerformanceEvaluator):
             threshold = _compute_threshold(lmbda_1, lmbda_2, n_candidate_cols)
             logger.debug("Calculated Threshold: {}".format(threshold))
             if statistic >= threshold:
-                logger.debug(
-                    "Passed, keeping feature: {}".format(candidate_src))
+                logger.debug(f"Passed, keeping feature {candidate_src}")
             else:
                 logger.debug(
-                    "Failed, found redundant feature: {}".format(candidate_src)
-                )
-                del feature_dfs_by_src[candidate_src]
+                    f"Failed, found redundant feature: {candidate_src}")
+                del feature_df_map[candidate_feature]
                 redundant_features.append(candidate_feature)
         return redundant_features

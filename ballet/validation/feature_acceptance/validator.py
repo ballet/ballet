@@ -44,33 +44,32 @@ class GFSSFAccepter(FeatureAcceptanceMixin, GFSSFPerformanceEvaluator):
 
         logger.info(f'Judging feature using {self}')
 
-        feature_dfs_by_src = self._get_feature_dfs_by_src()
+        feature_df_map = self._get_feature_df_map()
 
-        candidate_source = self.candidate_feature.source
-        candidate_df = feature_dfs_by_src[candidate_source]
+        candidate_df = feature_df_map[self.candidate_feature]
         n_samples, n_candidate_cols = candidate_df.shape
 
         lmbda_1, lmbda_2 = _compute_lmbdas(
-            self.lmbda_1, self.lmbda_2, feature_dfs_by_src)
+            self.lmbda_1, self.lmbda_2, feature_df_map)
 
         logger.debug(
             f'Recomputed lambda_1={lmbda_1:0.4f}, lambda_2={lmbda_2:0.4f}')
 
         info = []
 
-        omit_in_test = [None] + [f.source for f in self.features]
+        omit_in_test = [None, *self.features]
         n_omit = len(omit_in_test)
         for i, omitted_feature in enumerate(omit_in_test):
 
             z = _concat_datasets(
-                feature_dfs_by_src, n_samples,
-                [candidate_source, omitted_feature])
+                feature_df_map, n_samples,
+                omit=[self.candidate_feature, omitted_feature])
 
             # Calculate CMI of candidate feature
             cmi = estimate_conditional_information(candidate_df, self.y, z)
 
             if omitted_feature is not None:
-                omit_df = feature_dfs_by_src[omitted_feature]
+                omit_df = feature_df_map[omitted_feature]
                 _, n_omit_cols = omit_df.shape
 
                 # Calculate CMI of omitted feature
@@ -86,17 +85,19 @@ class GFSSFAccepter(FeatureAcceptanceMixin, GFSSFPerformanceEvaluator):
             delta = statistic - threshold
 
             if delta >= 0:
+                omitted_source = getattr(omitted_feature, 'source', 'None')
                 logger.debug(
-                    f'Succeeded while omitting feature: {omitted_feature!r}')
+                    f'Succeeded while omitting feature: {omitted_source}')
+
                 return True
             else:
                 iteration_info = GFSSFIterationInfo(
                     i=i,
                     n_samples=n_samples,
-                    candidate_name=candidate_source,
+                    candidate_feature=self.candidate_feature,
                     candidate_cols=n_candidate_cols,
                     candidate_cmi=cmi,
-                    omitted_name=omitted_feature,
+                    omitted_feature=omitted_feature,
                     omitted_cols=n_omit_cols,
                     omitted_cmi=cmi_omit,
                     statistic=statistic,
@@ -113,6 +114,6 @@ class GFSSFAccepter(FeatureAcceptanceMixin, GFSSFPerformanceEvaluator):
         statistic_closest = info_closest.statistic
         threshold_closest = info_closest.threshold
         logger.info(
-            f'Rejected feature: marginal conditional mutual information was not greater than threshold ({cmi_closest:0.4f}-{omitted_cmi_closest:0.4f}={statistic_closest:0.4f} vs {threshold_closest:0.4f} in best case).')  # noqa
+            f'Rejected feature: best conditional mutual information was not greater than threshold ({cmi_closest:0.4f} - {omitted_cmi_closest:0.4f} = {statistic_closest:0.4f} vs {threshold_closest:0.4f}).')  # noqa
 
         return False

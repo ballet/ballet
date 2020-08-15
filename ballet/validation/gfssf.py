@@ -4,6 +4,7 @@ from typing import Dict, List, Optional, Tuple
 import numpy as np
 import pandas as pd
 
+from ballet.feature import Feature
 from ballet.util import asarray2d
 from ballet.validation.base import FeaturePerformanceEvaluator
 from ballet.validation.entropy import estimate_entropy
@@ -13,16 +14,22 @@ LAMBDA_2_ADJUSTMENT = 64
 
 
 def _concat_datasets(
-    dfs_by_src: Dict[str, pd.DataFrame],
+    feature_df_map: Dict[Feature, pd.DataFrame],
     n_samples: int = 0,
-    omit: Optional[List[str]] = None
+    omit: Optional[List[Feature]] = None
 ) -> np.ndarray:
     if omit is None:
         omit = []
-    filtered_dfs = [np.array(dfs_by_src[x])
-                    for x in dfs_by_src if x not in omit]
+
+    filtered_dfs = [
+        np.array(feature_df_map[feature])
+        for feature in feature_df_map
+        if feature not in omit
+    ]
+
     if not filtered_dfs:
         return np.zeros((n_samples, 1))
+
     return asarray2d(np.concatenate(filtered_dfs, axis=1))
 
 
@@ -56,10 +63,10 @@ def _compute_threshold(
 class GFSSFIterationInfo:
     i: int
     n_samples: int
-    candidate_name: str
+    candidate_feature: Feature
     candidate_cols: int
     candidate_cmi: float
-    omitted_name: str
+    omitted_feature: Feature
     omitted_cols: int
     omitted_cmi: float
     statistic: float
@@ -120,7 +127,7 @@ class GFSSFPerformanceEvaluator(FeaturePerformanceEvaluator):
             lmbda_1=self.lmbda_1,
             lmbda_2=self.lmbda_2)
 
-    def _get_feature_dfs_by_src(self):
+    def _get_feature_df_map(self):
         all_features = [*self.features, self.candidate_feature]
 
         def as_features(feature):
@@ -130,9 +137,9 @@ class GFSSFPerformanceEvaluator(FeaturePerformanceEvaluator):
                 .fit_transform(self.X_df, self.y))
 
         # map logical feature "id" -> feature values
-        feature_dfs_by_src = {
-            feature.source: as_features(feature)
+        feature_df_map = {
+            feature: as_features(feature)
             for feature in all_features
         }
 
-        return feature_dfs_by_src
+        return feature_df_map
