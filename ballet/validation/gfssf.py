@@ -77,6 +77,8 @@ class GFSSFIterationInfo:
         def format(v):
             if isinstance(v, (float, np.float_)):
                 return f'{v:.4f}'
+            elif isinstance(v, Feature):
+                return v.source or '<live object>'
             return str(v)
         return ', '.join(
             f'{k}={format(v)}'

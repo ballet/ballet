@@ -64,6 +64,8 @@ class GFSSFPruner(FeaturePruningMixin, GFSSFPerformanceEvaluator):
             if statistic >= threshold:
                 logger.debug(f"Passed, keeping feature {candidate_src}")
             else:
+                # ballet.validation.main._prune_existing_features will log
+                # this at level INFO
                 logger.debug(
                     f"Failed, found redundant feature: {candidate_src}")
                 del feature_df_map[candidate_feature]

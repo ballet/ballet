@@ -79,6 +79,10 @@ class GFSSFAccepter(FeatureAcceptanceMixin, GFSSFPerformanceEvaluator):
                 cmi_omit = 0
                 n_omit_cols = 0
 
+                # want to log to INFO only the case of I(Z|Y;X) where X is the
+                # entire feature matrix, i.e. no omitted features.
+                logger.info(f'I(feature ; target | existing_features) = {cmi}')
+
             statistic = cmi - cmi_omit
             threshold = _compute_threshold(
                 lmbda_1, lmbda_2, n_candidate_cols, n_omit_cols)
@@ -114,6 +118,6 @@ class GFSSFAccepter(FeatureAcceptanceMixin, GFSSFPerformanceEvaluator):
         statistic_closest = info_closest.statistic
         threshold_closest = info_closest.threshold
         logger.info(
-            f'Rejected feature: best conditional mutual information was not greater than threshold ({cmi_closest:0.4f} - {omitted_cmi_closest:0.4f} = {statistic_closest:0.4f} vs {threshold_closest:0.4f}).')  # noqa
+            f'Rejected feature: best marginal conditional mutual information was not greater than threshold ({cmi_closest:0.4f} - {omitted_cmi_closest:0.4f} = {statistic_closest:0.4f}, vs needed {threshold_closest:0.4f}).')  # noqa
 
         return False
