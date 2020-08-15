@@ -2,7 +2,8 @@ import traceback
 from collections import Counter
 from inspect import signature
 from typing import (
-    Callable, Collection, List, NamedTuple, Sequence, Tuple, Union, cast)
+    Callable, Collection, List, NamedTuple, Optional, Sequence, Tuple, Union,
+    cast)
 
 import numpy as np
 import pandas as pd
@@ -88,6 +89,14 @@ class ConversionApproach(NamedTuple):
     convert: Callable
     caught: Collection[type]
 
+    isokay: Optional[Callable[[Exception], bool]] = None
+    """Opportunity to catch other exceptions that match a condition"""
+
+
+def catch_bare_exception_sanitize_array(e):
+    """See pandas-dev/pandas#35744"""
+    return isinstance(e, Exception) and 'Data must be 1-dimensional' in str(e)
+
 
 class DelegatingRobustTransformer(DeepcopyMixin, BaseTransformer):
     """Robust transformer that delegates to underlying transformer
@@ -109,7 +118,9 @@ class DelegatingRobustTransformer(DeepcopyMixin, BaseTransformer):
 
     CONVERSION_APPROACHES = [
         ConversionApproach('identity', identity, DEFAULT_CAUGHT),
-        ConversionApproach('series', pd.Series, DEFAULT_CAUGHT),
+        ConversionApproach(
+            'series', pd.Series, DEFAULT_CAUGHT,
+            isokay=catch_bare_exception_sanitize_array),  # FIXME
         ConversionApproach('dataframe', pd.DataFrame, DEFAULT_CAUGHT),
         ConversionApproach('array', np.asarray, DEFAULT_CAUGHT),
         ConversionApproach('asarray2d', asarray2d, ()),
@@ -187,8 +198,12 @@ class DelegatingRobustTransformer(DeepcopyMixin, BaseTransformer):
                     self._log_catch(approach, e)
                     continue
                 except Exception as e:
-                    self._log_error(approach, e)
-                    raise
+                    if approach.isokay(e):
+                        self._log_catch(approach, e)
+                        continue
+                    else:
+                        self._log_error(approach, e)
+                        raise
 
             self._log_failure_no_more_approaches()
             raise UnsuccessfulInputConversionError
