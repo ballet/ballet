@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.transformer module &mdash; ballet 0.7.8 documentation</title>
+  <title>ballet.transformer module &mdash; ballet 0.7.9 documentation</title>
   
 
   
@@ -316,7 +316,7 @@
 <span id="ballet-transformer-module"></span><h1>ballet.transformer module<a class="headerlink" href="#module-ballet.transformer" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="ballet.transformer.ConversionApproach">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.transformer.</code><code class="sig-name descname">ConversionApproach</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">convert</span></em>, <em class="sig-param"><span class="n">caught</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/transformer.html#ConversionApproach"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.transformer.ConversionApproach" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.transformer.</code><code class="sig-name descname">ConversionApproach</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">convert</span></em>, <em class="sig-param"><span class="n">caught</span></em>, <em class="sig-param"><span class="n">isokay</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/transformer.html#ConversionApproach"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.transformer.ConversionApproach" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
 <dl class="py attribute">
 <dt id="ballet.transformer.ConversionApproach.caught">
@@ -328,6 +328,12 @@
 <dt id="ballet.transformer.ConversionApproach.convert">
 <code class="sig-name descname">convert</code><em class="property">: Callable</em><a class="headerlink" href="#ballet.transformer.ConversionApproach.convert" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.transformer.ConversionApproach.isokay">
+<code class="sig-name descname">isokay</code><em class="property">: Optional<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>Exception<span class="p">]</span><span class="p">, </span>bool<span class="p">]</span><span class="p">]</span></em><a class="headerlink" href="#ballet.transformer.ConversionApproach.isokay" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opportunity to catch other exceptions that match a condition</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -357,7 +363,7 @@ result to the underlying transformer, using the first approach that works.</p>
 </dl>
 <dl class="py attribute">
 <dt id="ballet.transformer.DelegatingRobustTransformer.CONVERSION_APPROACHES">
-<code class="sig-name descname">CONVERSION_APPROACHES</code><em class="property"> = [ConversionApproach(name='identity', convert=&lt;function identity&gt;, caught=(&lt;class 'ValueError'&gt;, &lt;class 'TypeError'&gt;)), ConversionApproach(name='series', convert=&lt;class 'pandas.core.series.Series'&gt;, caught=(&lt;class 'ValueError'&gt;, &lt;class 'TypeError'&gt;)), ConversionApproach(name='dataframe', convert=&lt;class 'pandas.core.frame.DataFrame'&gt;, caught=(&lt;class 'ValueError'&gt;, &lt;class 'TypeError'&gt;)), ConversionApproach(name='array', convert=&lt;function asarray&gt;, caught=(&lt;class 'ValueError'&gt;, &lt;class 'TypeError'&gt;)), ConversionApproach(name='asarray2d', convert=&lt;function asarray2d&gt;, caught=())]</em><a class="headerlink" href="#ballet.transformer.DelegatingRobustTransformer.CONVERSION_APPROACHES" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">CONVERSION_APPROACHES</code><em class="property"> = [ConversionApproach(name='identity', convert=&lt;function identity&gt;, caught=(&lt;class 'ValueError'&gt;, &lt;class 'TypeError'&gt;), isokay=None), ConversionApproach(name='series', convert=&lt;class 'pandas.core.series.Series'&gt;, caught=(&lt;class 'ValueError'&gt;, &lt;class 'TypeError'&gt;), isokay=&lt;function catch_bare_exception_sanitize_array&gt;), ConversionApproach(name='dataframe', convert=&lt;class 'pandas.core.frame.DataFrame'&gt;, caught=(&lt;class 'ValueError'&gt;, &lt;class 'TypeError'&gt;), isokay=None), ConversionApproach(name='array', convert=&lt;function asarray&gt;, caught=(&lt;class 'ValueError'&gt;, &lt;class 'TypeError'&gt;), isokay=None), ConversionApproach(name='asarray2d', convert=&lt;function asarray2d&gt;, caught=(), isokay=None)]</em><a class="headerlink" href="#ballet.transformer.DelegatingRobustTransformer.CONVERSION_APPROACHES" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -375,6 +381,12 @@ result to the underlying transformer, using the first approach that works.</p>
 <code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/transformer.html#DelegatingRobustTransformer.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.transformer.DelegatingRobustTransformer.transform" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt id="ballet.transformer.catch_bare_exception_sanitize_array">
+<code class="sig-prename descclassname">ballet.transformer.</code><code class="sig-name descname">catch_bare_exception_sanitize_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">e</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/transformer.html#catch_bare_exception_sanitize_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.transformer.catch_bare_exception_sanitize_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>See pandas-dev/pandas#35744</p>
 </dd></dl>
 
 <dl class="py function">

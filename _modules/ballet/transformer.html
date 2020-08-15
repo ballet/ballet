@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.transformer &mdash; ballet 0.7.8 documentation</title>
+  <title>ballet.transformer &mdash; ballet 0.7.9 documentation</title>
   
 
   
@@ -309,7 +309,8 @@
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
 <span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">signature</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Callable</span><span class="p">,</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span><span class="p">)</span>
+    <span class="n">Callable</span><span class="p">,</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span>
+    <span class="n">cast</span><span class="p">)</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -393,7 +394,15 @@
 <div class="viewcode-block" id="ConversionApproach"><a class="viewcode-back" href="../../api/ballet.transformer.html#ballet.transformer.ConversionApproach">[docs]</a><span class="k">class</span> <span class="nc">ConversionApproach</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">convert</span><span class="p">:</span> <span class="n">Callable</span>
-    <span class="n">caught</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span></div>
+    <span class="n">caught</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span>
+
+    <span class="n">isokay</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="ne">Exception</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="sd">&quot;&quot;&quot;Opportunity to catch other exceptions that match a condition&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="catch_bare_exception_sanitize_array"><a class="viewcode-back" href="../../api/ballet.transformer.html#ballet.transformer.catch_bare_exception_sanitize_array">[docs]</a><span class="k">def</span> <span class="nf">catch_bare_exception_sanitize_array</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;See pandas-dev/pandas#35744&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)</span> <span class="ow">and</span> <span class="s1">&#39;Data must be 1-dimensional&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="DelegatingRobustTransformer"><a class="viewcode-back" href="../../api/ballet.transformer.html#ballet.transformer.DelegatingRobustTransformer">[docs]</a><span class="k">class</span> <span class="nc">DelegatingRobustTransformer</span><span class="p">(</span><span class="n">DeepcopyMixin</span><span class="p">,</span> <span class="n">BaseTransformer</span><span class="p">):</span>
@@ -416,7 +425,9 @@
 
     <span class="n">CONVERSION_APPROACHES</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">ConversionApproach</span><span class="p">(</span><span class="s1">&#39;identity&#39;</span><span class="p">,</span> <span class="n">identity</span><span class="p">,</span> <span class="n">DEFAULT_CAUGHT</span><span class="p">),</span>
-        <span class="n">ConversionApproach</span><span class="p">(</span><span class="s1">&#39;series&#39;</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">DEFAULT_CAUGHT</span><span class="p">),</span>
+        <span class="n">ConversionApproach</span><span class="p">(</span>
+            <span class="s1">&#39;series&#39;</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">DEFAULT_CAUGHT</span><span class="p">,</span>
+            <span class="n">isokay</span><span class="o">=</span><span class="n">catch_bare_exception_sanitize_array</span><span class="p">),</span>  <span class="c1"># FIXME</span>
         <span class="n">ConversionApproach</span><span class="p">(</span><span class="s1">&#39;dataframe&#39;</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">DEFAULT_CAUGHT</span><span class="p">),</span>
         <span class="n">ConversionApproach</span><span class="p">(</span><span class="s1">&#39;array&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">,</span> <span class="n">DEFAULT_CAUGHT</span><span class="p">),</span>
         <span class="n">ConversionApproach</span><span class="p">(</span><span class="s1">&#39;asarray2d&#39;</span><span class="p">,</span> <span class="n">asarray2d</span><span class="p">,</span> <span class="p">()),</span>
@@ -494,8 +505,12 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_log_catch</span><span class="p">(</span><span class="n">approach</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
                     <span class="k">continue</span>
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_log_error</span><span class="p">(</span><span class="n">approach</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
-                    <span class="k">raise</span>
+                    <span class="k">if</span> <span class="n">approach</span><span class="o">.</span><span class="n">isokay</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_log_catch</span><span class="p">(</span><span class="n">approach</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+                        <span class="k">continue</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_log_error</span><span class="p">(</span><span class="n">approach</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+                        <span class="k">raise</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_log_failure_no_more_approaches</span><span class="p">()</span>
             <span class="k">raise</span> <span class="n">UnsuccessfulInputConversionError</span>
