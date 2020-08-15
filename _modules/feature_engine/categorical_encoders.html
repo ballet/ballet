@@ -313,10 +313,14 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="kn">import</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span>
+<span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="kn">import</span> <span class="n">Pipeline</span>
 <span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="kn">import</span> <span class="n">check_is_fitted</span>
+
 <span class="kn">from</span> <span class="nn">feature_engine.dataframe_checks</span> <span class="kn">import</span> <span class="n">_is_dataframe</span><span class="p">,</span> <span class="n">_check_input_matches_training_df</span><span class="p">,</span> <span class="n">_check_contains_na</span>
 <span class="kn">from</span> <span class="nn">feature_engine.variable_manipulation</span> <span class="kn">import</span> <span class="n">_find_categorical_variables</span><span class="p">,</span> <span class="n">_define_variables</span>
 <span class="kn">from</span> <span class="nn">feature_engine.base_transformers</span> <span class="kn">import</span> <span class="n">BaseCategoricalTransformer</span>
+<span class="kn">from</span> <span class="nn">feature_engine.discretisers</span> <span class="kn">import</span> <span class="n">DecisionTreeDiscretiser</span>
+
 
 
 <span class="k">def</span> <span class="nf">_check_encoding_dictionary</span><span class="p">(</span><span class="n">dictionary</span><span class="p">):</span>
@@ -772,7 +776,8 @@
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoding_method</span> <span class="o">==</span> <span class="s1">&#39;log_ratio&#39;</span><span class="p">:</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">t</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;p0&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">empty</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">t</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;p1&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                            <span class="s2">&quot;p(0) or p(1) for a category in variable </span><span class="si">{}</span><span class="s2"> is zero, log of zero is not defined&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="p">))</span>
+                            <span class="s2">&quot;p(0) or p(1) for a category in variable </span><span class="si">{}</span><span class="s2"> is zero, log of zero is not defined&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="n">var</span><span class="p">))</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">p1</span> <span class="o">/</span> <span class="n">t</span><span class="o">.</span><span class="n">p0</span><span class="p">))</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
 
@@ -1008,11 +1013,10 @@
 <span class="sd">    replace_with : string, default=&#39;Rare&#39;</span>
 <span class="sd">        The category name that will be used to replace infrequent categories.</span>
 
-<span class="sd">    return_object: bool, default=False</span>
-<span class="sd">        Whether the variables should be re-cast as object, in case they have numerical values.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">n_categories</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">max_n_categories</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">replace_with</span><span class="o">=</span><span class="s1">&#39;Rare&#39;</span><span class="p">,</span> <span class="n">return_object</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">n_categories</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">max_n_categories</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">replace_with</span><span class="o">=</span><span class="s1">&#39;Rare&#39;</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="n">tol</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">tol</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;tol takes values between 0 and 1&quot;</span><span class="p">)</span>
@@ -1032,7 +1036,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">max_n_categories</span> <span class="o">=</span> <span class="n">max_n_categories</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_define_variables</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">replace_with</span> <span class="o">=</span> <span class="n">replace_with</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">return_object</span> <span class="o">=</span> <span class="n">return_object</span>
 
 <div class="viewcode-block" id="RareLabelCategoricalEncoder.fit"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.RareLabelCategoricalEncoder.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1129,11 +1132,159 @@
         <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
             <span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span><span class="p">[</span><span class="n">feature</span><span class="p">]),</span> <span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">replace_with</span><span class="p">)</span>
 
-        <span class="c1"># add additional step to return variables cast as object</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_object</span><span class="p">:</span>
-            <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;O&#39;</span><span class="p">)</span>
-
         <span class="k">return</span> <span class="n">X</span></div></div>
+
+
+<span class="k">class</span> <span class="nc">DecisionTreeCategoricalEncoder</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The DecisionTreeCategoricalEncoder() encodes categorical variables with predictions of a decision tree model.</span>
+
+<span class="sd">    The categorical variable will be first encoded into integers with the OrdinalCategoricalEncoder(). The</span>
+<span class="sd">    integers can be assigned arbitrarily to the categories or following the mean value of the target in each category.</span>
+
+<span class="sd">    Then a decision tree will be fit using the resulting numerical variable to predict the target  variable.</span>
+<span class="sd">    Finally, the original categorical variable values will be replaced by the predictions of the decision</span>
+<span class="sd">    tree.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    encoding_method: str, default=&#39;arbitrary&#39;</span>
+<span class="sd">        The categorical encoding method that will be used to encode the original</span>
+<span class="sd">        categories to numerical values.</span>
+
+<span class="sd">        &#39;ordered&#39;: the categories are numbered in ascending order according to</span>
+<span class="sd">        the target mean value per category.</span>
+
+<span class="sd">        &#39;arbitrary&#39; : categories are numbered arbitrarily.</span>
+
+<span class="sd">    cv : int, default=3</span>
+<span class="sd">        Desired number of cross-validation fold to be used to fit the decision</span>
+<span class="sd">        tree.</span>
+<span class="sd">        </span>
+<span class="sd">    scoring: str, default=&#39;neg_mean_squared_error&#39;</span>
+<span class="sd">        Desired metric to optimise the performance for the tree. Comes from</span>
+<span class="sd">        sklearn metrics. See the DecisionTreeRegressor or DecisionTreeClassifier</span>
+<span class="sd">        model evaluation documentation for more options:</span>
+<span class="sd">        https://scikit-learn.org/stable/modules/model_evaluation.html</span>
+<span class="sd">    </span>
+<span class="sd">    regression : boolean, default=True</span>
+<span class="sd">        Indicates whether the encoder should train a regression or a classification</span>
+<span class="sd">        decision tree.</span>
+<span class="sd">        </span>
+<span class="sd">    param_grid : dictionary, default={&#39;max_depth&#39;: [1,2,3,4]}</span>
+<span class="sd">        The list of parameters over which the decision tree should be optimised</span>
+<span class="sd">        during the grid search. The param_grid can contain any of the permitted</span>
+<span class="sd">        parameters for Scikit-learn&#39;s DecisionTreeRegressor() or</span>
+<span class="sd">        DecisionTreeClassifier().</span>
+<span class="sd">        </span>
+<span class="sd">    random_state : int, default=None</span>
+<span class="sd">        The random_state to initialise the training of the decision tree. It is one</span>
+<span class="sd">        of the parameters of the Scikit-learn&#39;s DecisionTreeRegressor() or</span>
+<span class="sd">        DecisionTreeClassifier(). For reproducibility it is recommended to set</span>
+<span class="sd">        the random_state to an integer.</span>
+
+<span class="sd">    variables : list, default=None</span>
+<span class="sd">        The list of categorical variables that will be encoded. If None, the</span>
+<span class="sd">        encoder will find and select all object type variables.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    encoder_ : sklearn Pipeline</span>
+<span class="sd">        Encoder pipeline containing the ordinal encoder and decision</span>
+<span class="sd">        tree discretiser.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">encoding_method</span><span class="o">=</span><span class="s1">&#39;arbitrary&#39;</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s1">&#39;neg_mean_squared_error&#39;</span><span class="p">,</span>
+                 <span class="n">param_grid</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;max_depth&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]},</span> <span class="n">regression</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+      
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoding_method</span> <span class="o">=</span> <span class="n">encoding_method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cv</span> <span class="o">=</span> <span class="n">cv</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scoring</span> <span class="o">=</span> <span class="n">scoring</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">regression</span> <span class="o">=</span> <span class="n">regression</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">param_grid</span> <span class="o">=</span> <span class="n">param_grid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_define_variables</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Learns the numbers that should be used to replace the categories in each</span>
+<span class="sd">        variable.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">            The training input samples.</span>
+<span class="sd">            Can be the entire dataframe, not just the categorical variables.</span>
+
+<span class="sd">        y : pandas series.</span>
+<span class="sd">            The target variable. Required to train the decision tree and for</span>
+<span class="sd">            ordered ordinal encoding.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check input dataframe</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">_is_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="c1"># find categorical variables or check that those entered by the user</span>
+        <span class="c1"># are of type object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_find_categorical_variables</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+
+        <span class="c1"># check if dataset contains na</span>
+        <span class="n">_check_contains_na</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+
+        <span class="c1"># initialize categorical encoder</span>
+        <span class="n">cat_encoder</span> <span class="o">=</span> <span class="n">OrdinalCategoricalEncoder</span><span class="p">(</span><span class="n">encoding_method</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoding_method</span><span class="p">,</span>
+                                                <span class="n">variables</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+
+        <span class="c1"># initialize decision tree discretiser</span>
+        <span class="n">tree_discretiser</span> <span class="o">=</span> <span class="n">DecisionTreeDiscretiser</span><span class="p">(</span><span class="n">cv</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cv</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scoring</span><span class="p">,</span>
+                                                   <span class="n">variables</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="n">param_grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">param_grid</span><span class="p">,</span>
+                                                   <span class="n">regression</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">regression</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
+
+        <span class="c1"># pipeline for the encoder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder_</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([(</span><span class="s1">&#39;categorical_encoder&#39;</span><span class="p">,</span> <span class="n">cat_encoder</span><span class="p">),</span>
+                                  <span class="p">(</span><span class="s1">&#39;tree_discretiser&#39;</span><span class="p">,</span> <span class="n">tree_discretiser</span><span class="p">)])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder_</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the predictions of the decision tree based of the variable&#39;s original value.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        </span>
+<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">            The input samples.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        </span>
+<span class="sd">        X_transformed : pandas dataframe of shape = [n_samples, n_features].</span>
+<span class="sd">                        Dataframe with variables encoded with decision tree predictions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check method fit has been called</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># check that input is a dataframe</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">_is_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="c1"># check if dataset contains na</span>
+        <span class="n">_check_contains_na</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+
+        <span class="c1"># Check that the dataframe contains the same number of columns than the dataframe</span>
+        <span class="c1"># used to fit the imputer.</span>
+        <span class="n">_check_input_matches_training_df</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder_</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">X</span>
 </pre></div>
 
            </div>

@@ -334,9 +334,9 @@ distribution in a Bayesian setting).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>threshold</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">optional</span> <span class="pre">(0.0</span> <span class="pre">by</span> <span class="pre">default)</span></code>) – Feature values below or equal to this are replaced by 0, above it by 1.
+<li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>optional</em><em> (</em><em>0.0 by default</em><em>)</em>) – Feature values below or equal to this are replaced by 0, above it by 1.
 Threshold may not be less than 0 for operations on sparse matrices.</p></li>
-<li><p><strong>copy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">boolean</span></code>, <em>optional</em>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>) – set to False to perform inplace binarization and avoid a copy (if
+<li><p><strong>copy</strong> (<em>boolean</em><em>, </em><em>optional</em><em>, </em><em>default True</em>) – set to False to perform inplace binarization and avoid a copy (if
 the input is already a numpy array or a scipy.sparse CSR matrix).</p></li>
 </ul>
 </dd>
@@ -375,7 +375,7 @@ fit method does nothing but is useful when used in a pipeline.</p>
 work in pipelines.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>) – </p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em>) – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -387,10 +387,10 @@ work in pipelines.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="docutils literal notranslate"><span class="pre">{array-like,</span> <span class="pre">sparse</span> <span class="pre">matrix}</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The data to binarize, element by element.
+<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix}</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to binarize, element by element.
 scipy.sparse matrices should be in CSR format to avoid an
 un-necessary copy.</p></li>
-<li><p><strong>copy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Copy the input X or not.</p></li>
+<li><p><strong>copy</strong> (<em>bool</em>) – Copy the input X or not.</p></li>
 </ul>
 </dd>
 </dl>
@@ -416,14 +416,14 @@ transformer will not be pickleable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>func</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">optional</span> <span class="pre">default=None</span></code>) – The callable to use for the transformation. This will be passed
+<li><p><strong>func</strong> (<em>callable</em><em>, </em><em>optional default=None</em>) – The callable to use for the transformation. This will be passed
 the same arguments as transform, with args and kwargs forwarded.
 If func is None, then func will be the identity function.</p></li>
-<li><p><strong>inverse_func</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">optional</span> <span class="pre">default=None</span></code>) – The callable to use for the inverse transformation. This will be
+<li><p><strong>inverse_func</strong> (<em>callable</em><em>, </em><em>optional default=None</em>) – The callable to use for the inverse transformation. This will be
 passed the same arguments as inverse transform, with args and
 kwargs forwarded. If inverse_func is None, then inverse_func
 will be the identity function.</p></li>
-<li><p><strong>validate</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">optional</span> <span class="pre">default=False</span></code>) – <p>Indicate that the input X array should be checked before calling
+<li><p><strong>validate</strong> (<em>bool</em><em>, </em><em>optional default=False</em>) – <p>Indicate that the input X array should be checked before calling
 <code class="docutils literal notranslate"><span class="pre">func</span></code>. The possibilities are:</p>
 <ul>
 <li><p>If False, there is no input validation.</p></li>
@@ -435,22 +435,22 @@ raised.</p></li>
 <p><span class="versionmodified changed">Changed in version 0.22: </span>The default of <code class="docutils literal notranslate"><span class="pre">validate</span></code> changed from True to False.</p>
 </div>
 </p></li>
-<li><p><strong>accept_sparse</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">boolean</span></code>, <em>optional</em>) – Indicate that func accepts a sparse matrix as input. If validate is
+<li><p><strong>accept_sparse</strong> (<em>boolean</em><em>, </em><em>optional</em>) – Indicate that func accepts a sparse matrix as input. If validate is
 False, this has no effect. Otherwise, if accept_sparse is false,
 sparse matrix inputs will cause an exception to be raised.</p></li>
-<li><p><strong>check_inverse</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>) – <p>Whether to check that or <code class="docutils literal notranslate"><span class="pre">func</span></code> followed by <code class="docutils literal notranslate"><span class="pre">inverse_func</span></code> leads to
+<li><p><strong>check_inverse</strong> (<em>bool</em><em>, </em><em>default=True</em>) – <p>Whether to check that or <code class="docutils literal notranslate"><span class="pre">func</span></code> followed by <code class="docutils literal notranslate"><span class="pre">inverse_func</span></code> leads to
 the original inputs. It can be used for a sanity check, raising a
 warning when the condition is not fulfilled.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.20.</span></p>
 </div>
 </p></li>
-<li><p><strong>kw_args</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, <em>optional</em>) – <p>Dictionary of additional keyword arguments to pass to func.</p>
+<li><p><strong>kw_args</strong> (<em>dict</em><em>, </em><em>optional</em>) – <p>Dictionary of additional keyword arguments to pass to func.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.18.</span></p>
 </div>
 </p></li>
-<li><p><strong>inv_kw_args</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, <em>optional</em>) – <p>Dictionary of additional keyword arguments to pass to inverse_func.</p>
+<li><p><strong>inv_kw_args</strong> (<em>dict</em><em>, </em><em>optional</em>) – <p>Dictionary of additional keyword arguments to pass to inverse_func.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.18.</span></p>
 </div>
@@ -475,7 +475,7 @@ warning when the condition is not fulfilled.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">validate</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, <code class="docutils literal notranslate"><span class="pre">X</span></code> will be checked.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code>) – Input array.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Input array.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p></p>
@@ -492,13 +492,13 @@ warning when the condition is not fulfilled.</p>
 <dd><p>Transform X using the inverse function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code>) – Input array.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Input array.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_out</strong> – Transformed input.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code></p>
+<dd class="field-odd"><p>array-like, shape (n_samples, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -509,13 +509,13 @@ warning when the condition is not fulfilled.</p>
 <dd><p>Transform X using the forward function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code>) – Input array.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Input array.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_out</strong> – Transformed input.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code></p>
+<dd class="field-odd"><p>array-like, shape (n_samples, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -535,7 +535,7 @@ warning when the condition is not fulfilled.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n_components</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> or <code class="docutils literal notranslate"><span class="pre">'auto'</span></code>, optional (default = <code class="docutils literal notranslate"><span class="pre">'auto'</span></code><code class="xref py py-class docutils literal notranslate"><span class="pre">)</span></code>) – <p>Dimensionality of the target projection space.</p>
+<li><p><strong>n_components</strong> (<em>int</em><em> or </em><em>'auto'</em><em>, </em><em>optional</em><em> (</em><em>default = 'auto'</em><em>)</em>) – <p>Dimensionality of the target projection space.</p>
 <p>n_components can be automatically adjusted according to the
 number of samples in the dataset and the bound given by the
 Johnson-Lindenstrauss lemma. In that case the quality of the
@@ -544,13 +544,13 @@ embedding is controlled by the <code class="docutils literal notranslate"><span 
 very conservative estimated of the required number of components
 as it makes no assumption on the structure of the dataset.</p>
 </p></li>
-<li><p><strong>eps</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">strictly</span> <span class="pre">positive</span> <span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">optional</span> <span class="pre">(default=0.1)</span></code>) – <p>Parameter to control the quality of the embedding according to
+<li><p><strong>eps</strong> (<em>strictly positive float</em><em>, </em><em>optional</em><em> (</em><em>default=0.1</em><em>)</em>) – <p>Parameter to control the quality of the embedding according to
 the Johnson-Lindenstrauss lemma when n_components is set to
 ‘auto’.</p>
 <p>Smaller values lead to better embedding and higher number of
 dimensions (n_components) in the target projection space.</p>
 </p></li>
-<li><p><strong>random_state</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">RandomState</span> <span class="pre">instance</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">optional</span> <span class="pre">(default=None)</span></code>) – Controls the pseudo random number generator used to generate the
+<li><p><strong>random_state</strong> (<em>int</em><em>, </em><em>RandomState instance</em><em> or </em><em>None</em><em>, </em><em>optional</em><em> (</em><em>default=None</em><em>)</em>) – Controls the pseudo random number generator used to generate the
 projection matrix at fit time.
 Pass an int for reproducible output across multiple function calls.
 See <span class="xref std std-term">Glossary</span>.</p></li>
@@ -563,7 +563,7 @@ See <span class="xref std std-term">Glossary</span>.</p></li>
 <dd><p>Concrete number of components computed when n_components=”auto”.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
@@ -574,7 +574,7 @@ See <span class="xref std std-term">Glossary</span>.</p></li>
 <dd><p>Random matrix used for the projection.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy</span> <span class="pre">array</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">[n_components</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code></p>
+<dd class="field-odd"><p>numpy array of shape [n_components, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -608,8 +608,8 @@ See <span class="xref std std-term">Glossary</span>.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n_bins</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_features,)</span> <span class="pre">(default=5)</span></code>) – The number of bins to produce. Raises ValueError if <code class="docutils literal notranslate"><span class="pre">n_bins</span> <span class="pre">&lt;</span> <span class="pre">2</span></code>.</p></li>
-<li><p><strong>encode</strong> (<code class="docutils literal notranslate"><span class="pre">{'onehot',</span> <span class="pre">'onehot-dense',</span> <span class="pre">'ordinal'}</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">(default=``</span></code>’onehot’<a href="#id1"><span class="problematic" id="id2">``</span></a><code class="xref py py-class docutils literal notranslate"><span class="pre">)</span></code>) – <p>Method used to encode the transformed result.</p>
+<li><p><strong>n_bins</strong> (<em>int</em><em> or </em><em>array-like</em><em>, </em><em>shape</em><em> (</em><em>n_features</em><em>,</em><em>) </em><em>(</em><em>default=5</em><em>)</em>) – The number of bins to produce. Raises ValueError if <code class="docutils literal notranslate"><span class="pre">n_bins</span> <span class="pre">&lt;</span> <span class="pre">2</span></code>.</p></li>
+<li><p><strong>encode</strong> (<em>{'onehot'</em><em>, </em><em>'onehot-dense'</em><em>, </em><em>'ordinal'}</em><em>, </em><em>(</em><em>default='onehot'</em><em>)</em>) – <p>Method used to encode the transformed result.</p>
 <dl class="simple">
 <dt>onehot</dt><dd><p>Encode the transformed result with one-hot encoding
 and return a sparse matrix. Ignored features are always
@@ -623,7 +623,7 @@ stacked to the right.</p>
 </dd>
 </dl>
 </p></li>
-<li><p><strong>strategy</strong> (<code class="docutils literal notranslate"><span class="pre">{'uniform',</span> <span class="pre">'quantile',</span> <span class="pre">'kmeans'}</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">(default=``</span></code>’quantile’<a href="#id3"><span class="problematic" id="id4">``</span></a><code class="xref py py-class docutils literal notranslate"><span class="pre">)</span></code>) – <p>Strategy used to define the widths of the bins.</p>
+<li><p><strong>strategy</strong> (<em>{'uniform'</em><em>, </em><em>'quantile'</em><em>, </em><em>'kmeans'}</em><em>, </em><em>(</em><em>default='quantile'</em><em>)</em>) – <p>Strategy used to define the widths of the bins.</p>
 <dl class="simple">
 <dt>uniform</dt><dd><p>All bins in each feature have identical widths.</p>
 </dd>
@@ -644,7 +644,7 @@ cluster.</p>
 (i.e., &lt;= 1e-8) are removed with a warning.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span> <span class="pre">array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_features,)</span></code></p>
+<dd class="field-odd"><p>int array, shape (n_features,)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -656,7 +656,7 @@ cluster.</p>
 Ignored features will have empty arrays.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">arrays</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_features</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">)</span></code></p>
+<dd class="field-odd"><p>array of arrays, shape (n_features, )</p>
 </dd>
 </dl>
 </dd></dl>
@@ -717,8 +717,8 @@ of the two bin edges.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">numeric</span> <span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code>) – Data to be discretized.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – Ignored. This parameter exists only for compatibility with
+<li><p><strong>X</strong> (<em>numeric array-like</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Data to be discretized.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – Ignored. This parameter exists only for compatibility with
 <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.pipeline.Pipeline</span></code>.</p></li>
 </ul>
 </dd>
@@ -739,13 +739,13 @@ of the two bin edges.</p>
 due to discretization rounding.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>Xt</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">numeric</span> <span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_sample</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code>) – Transformed data in the binned space.</p>
+<dd class="field-odd"><p><strong>Xt</strong> (<em>numeric array-like</em><em>, </em><em>shape</em><em> (</em><em>n_sample</em><em>, </em><em>n_features</em><em>)</em>) – Transformed data in the binned space.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>Xinv</strong> – Data in the original feature space.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">numeric</span> <span class="pre">array-like</span></code></p>
+<dd class="field-odd"><p>numeric array-like</p>
 </dd>
 </dl>
 </dd></dl>
@@ -756,13 +756,13 @@ due to discretization rounding.</p>
 <dd><p>Discretize the data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">numeric</span> <span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code>) – Data to be discretized.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>numeric array-like</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Data to be discretized.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>Xt</strong> – Data in the binned space.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">numeric</span> <span class="pre">array-like</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">sparse</span> <span class="pre">matrix</span></code></p>
+<dd class="field-odd"><p>numeric array-like or sparse matrix</p>
 </dd>
 </dl>
 </dd></dl>
@@ -784,12 +784,12 @@ close if the features that neither is missing are close.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>missing_values</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">number</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">np.nan</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <em>default</em> <cite>np.nan</cite>) – The placeholder for the missing values. All occurrences of
+<li><p><strong>missing_values</strong> (<em>number</em><em>, </em><em>string</em><em>, </em><em>np.nan</em><em> or </em><em>None</em><em>, </em><em>default=`np.nan`</em>) – The placeholder for the missing values. All occurrences of
 <cite>missing_values</cite> will be imputed. For pandas’ dataframes with
 nullable integer dtypes with missing values, <cite>missing_values</cite>
 should be set to <cite>np.nan</cite>, since <cite>pd.NA</cite> will be converted to <cite>np.nan</cite>.</p></li>
-<li><p><strong>n_neighbors</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">5</span></code>) – Number of neighboring samples to use for imputation.</p></li>
-<li><p><strong>weights</strong> (<code class="docutils literal notranslate"><span class="pre">{'uniform',</span> <span class="pre">'distance'}</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">'uniform'</span></code>) – <p>Weight function used in prediction.  Possible values:</p>
+<li><p><strong>n_neighbors</strong> (<em>int</em><em>, </em><em>default=5</em>) – Number of neighboring samples to use for imputation.</p></li>
+<li><p><strong>weights</strong> (<em>{'uniform'</em><em>, </em><em>'distance'}</em><em> or </em><em>callable</em><em>, </em><em>default='uniform'</em>) – <p>Weight function used in prediction.  Possible values:</p>
 <ul>
 <li><p>’uniform’ : uniform weights. All points in each neighborhood are
 weighted equally.</p></li>
@@ -801,7 +801,7 @@ array of distances, and returns an array of the same shape
 containing the weights.</p></li>
 </ul>
 </p></li>
-<li><p><strong>metric</strong> (<code class="docutils literal notranslate"><span class="pre">{'nan_euclidean'}</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">'nan_euclidean'</span></code>) – <p>Distance metric for searching neighbors. Possible values:</p>
+<li><p><strong>metric</strong> (<em>{'nan_euclidean'}</em><em> or </em><em>callable</em><em>, </em><em>default='nan_euclidean'</em>) – <p>Distance metric for searching neighbors. Possible values:</p>
 <ul>
 <li><p>’nan_euclidean’</p></li>
 <li><p>callable : a user-defined function which conforms to the definition
@@ -810,9 +810,9 @@ accepts two arrays, X and Y, and a <cite>missing_values</cite> keyword in
 <cite>kwds</cite> and returns a scalar distance value.</p></li>
 </ul>
 </p></li>
-<li><p><strong>copy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>) – If True, a copy of X will be created. If False, imputation will
+<li><p><strong>copy</strong> (<em>bool</em><em>, </em><em>default=True</em>) – If True, a copy of X will be created. If False, imputation will
 be done in-place whenever possible.</p></li>
-<li><p><strong>add_indicator</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code>) – If True, a <a class="reference internal" href="#ballet.eng.sklearn.MissingIndicator" title="ballet.eng.sklearn.MissingIndicator"><code class="xref py py-class docutils literal notranslate"><span class="pre">MissingIndicator</span></code></a> transform will stack onto the
+<li><p><strong>add_indicator</strong> (<em>bool</em><em>, </em><em>default=False</em>) – If True, a <a class="reference internal" href="#ballet.eng.sklearn.MissingIndicator" title="ballet.eng.sklearn.MissingIndicator"><code class="xref py py-class docutils literal notranslate"><span class="pre">MissingIndicator</span></code></a> transform will stack onto the
 output of the imputer’s transform. This allows a predictive estimator
 to account for missingness despite imputation. If a feature has no
 missing values at fit/train time, the feature won’t appear on the
@@ -858,14 +858,14 @@ no. 6, 2001 Pages 520-525.</p></li>
 <dd><p>Fit the imputer on X.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span> <span class="pre">shape</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code>) – Input data, where <cite>n_samples</cite> is the number of samples and
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like shape of</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Input data, where <cite>n_samples</cite> is the number of samples and
 <cite>n_features</cite> is the number of features.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>self</strong></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dd class="field-odd"><p>object</p>
 </dd>
 </dl>
 </dd></dl>
@@ -876,14 +876,14 @@ no. 6, 2001 Pages 520-525.</p></li>
 <dd><p>Impute all missing values in X.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code>) – The input data to complete.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The input data to complete.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X</strong> – The imputed dataset. <cite>n_output_features</cite> is the number of features
 that is not always missing during <cite>fit</cite>.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_output_features)</span></code></p>
+<dd class="field-odd"><p>array-like of shape (n_samples, n_output_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -905,7 +905,7 @@ thus does not destroy any sparsity.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>copy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">boolean</span></code>, <em>optional</em>, <em>default</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">is</span> <span class="pre">True</span></code>) – Set to False to perform inplace scaling and avoid a copy (if the input
+<dd class="field-odd"><p><strong>copy</strong> (<em>boolean</em><em>, </em><em>optional</em><em>, </em><em>default is True</em>) – Set to False to perform inplace scaling and avoid a copy (if the input
 is already a numpy array).</p>
 </dd>
 </dl>
@@ -918,7 +918,7 @@ is already a numpy array).</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_features,)</span></code></p>
+<dd class="field-odd"><p>ndarray, shape (n_features,)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -929,7 +929,7 @@ is already a numpy array).</p>
 <dd><p>Per feature maximum absolute value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_features,)</span></code></p>
+<dd class="field-odd"><p>ndarray, shape (n_features,)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -941,7 +941,7 @@ is already a numpy array).</p>
 new calls to fit, but increments across <code class="docutils literal notranslate"><span class="pre">partial_fit</span></code> calls.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
@@ -978,7 +978,7 @@ see <span class="xref std std-ref">examples/preprocessing/plot_all_scaling.py</s
 <dd><p>Compute the maximum absolute value to be used for later scaling.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="docutils literal notranslate"><span class="pre">{array-like,</span> <span class="pre">sparse</span> <span class="pre">matrix}</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The data used to compute the per-feature minimum and maximum
+<dd class="field-odd"><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix}</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data used to compute the per-feature minimum and maximum
 used for later scaling along the features axis.</p>
 </dd>
 </dl>
@@ -990,7 +990,7 @@ used for later scaling along the features axis.</p>
 <dd><p>Scale back the data to the original representation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="docutils literal notranslate"><span class="pre">{array-like,</span> <span class="pre">sparse</span> <span class="pre">matrix}</span></code>) – The data that should be transformed back.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix}</em>) – The data that should be transformed back.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1005,16 +1005,16 @@ when <a class="reference internal" href="#ballet.eng.sklearn.MaxAbsScaler.fit" t
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="docutils literal notranslate"><span class="pre">{array-like,</span> <span class="pre">sparse</span> <span class="pre">matrix}</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The data used to compute the mean and standard deviation
+<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix}</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data used to compute the mean and standard deviation
 used for later scaling along the features axis.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – Ignored.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – Ignored.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>self</strong> – Transformer instance.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dd class="field-odd"><p>object</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1025,7 +1025,7 @@ used for later scaling along the features axis.</p></li>
 <dd><p>Scale the data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="docutils literal notranslate"><span class="pre">{array-like,</span> <span class="pre">sparse</span> <span class="pre">matrix}</span></code>) – The data that should be scaled.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix}</em>) – The data that should be scaled.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1052,8 +1052,8 @@ unit variance scaling.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>feature_range</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span> <span class="pre">(min</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">max)</span></code>, <em>default</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">(0</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">1)</span></code>) – Desired range of transformed data.</p></li>
-<li><p><strong>copy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>) – Set to False to perform inplace row normalization and avoid a
+<li><p><strong>feature_range</strong> (<em>tuple</em><em> (</em><em>min</em><em>, </em><em>max</em><em>)</em><em>, </em><em>default=</em><em>(</em><em>0</em><em>, </em><em>1</em><em>)</em>) – Desired range of transformed data.</p></li>
+<li><p><strong>copy</strong> (<em>bool</em><em>, </em><em>default=True</em>) – Set to False to perform inplace row normalization and avoid a
 copy (if the input is already a numpy array).</p></li>
 </ul>
 </dd>
@@ -1065,7 +1065,7 @@ copy (if the input is already a numpy array).</p></li>
 <code class="docutils literal notranslate"><span class="pre">min</span> <span class="pre">-</span> <span class="pre">X.min(axis=0)</span> <span class="pre">*</span> <span class="pre">self.scale_</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_features,)</span></code></p>
+<dd class="field-odd"><p>ndarray of shape (n_features,)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1080,7 +1080,7 @@ copy (if the input is already a numpy array).</p></li>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_features,)</span></code></p>
+<dd class="field-odd"><p>ndarray of shape (n_features,)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1094,7 +1094,7 @@ copy (if the input is already a numpy array).</p></li>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_features,)</span></code></p>
+<dd class="field-odd"><p>ndarray of shape (n_features,)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1108,7 +1108,7 @@ copy (if the input is already a numpy array).</p></li>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_features,)</span></code></p>
+<dd class="field-odd"><p>ndarray of shape (n_features,)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1122,7 +1122,7 @@ copy (if the input is already a numpy array).</p></li>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_features,)</span></code></p>
+<dd class="field-odd"><p>ndarray of shape (n_features,)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1135,7 +1135,7 @@ It will be reset on new calls to fit, but increments across
 <code class="docutils literal notranslate"><span class="pre">partial_fit</span></code> calls.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1176,16 +1176,16 @@ see <span class="xref std std-ref">examples/preprocessing/plot_all_scaling.py</s
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code>) – The data used to compute the per-feature minimum and maximum
+<li><p><strong>X</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data used to compute the per-feature minimum and maximum
 used for later scaling along the features axis.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – Ignored.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – Ignored.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>self</strong> – Fitted scaler.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dd class="field-odd"><p>object</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1196,13 +1196,13 @@ used for later scaling along the features axis.</p></li>
 <dd><p>Undo the scaling of X according to feature_range.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code>) – Input data that will be transformed. It cannot be sparse.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Input data that will be transformed. It cannot be sparse.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>Xt</strong> – Transformed data.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code></p>
+<dd class="field-odd"><p>array-like of shape (n_samples, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1217,16 +1217,16 @@ when <a class="reference internal" href="#ballet.eng.sklearn.MinMaxScaler.fit" t
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code>) – The data used to compute the mean and standard deviation
+<li><p><strong>X</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data used to compute the mean and standard deviation
 used for later scaling along the features axis.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – Ignored.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – Ignored.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>self</strong> – Transformer instance.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dd class="field-odd"><p>object</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1237,13 +1237,13 @@ used for later scaling along the features axis.</p></li>
 <dd><p>Scale features of X according to feature_range.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code>) – Input data that will be transformed.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Input data that will be transformed.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>Xt</strong> – Transformed data.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code></p>
+<dd class="field-odd"><p>array-like of shape (n_samples, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1265,11 +1265,11 @@ could be added using a <code class="xref py py-class docutils literal notranslat
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>missing_values</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">number</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">np.nan</span> <span class="pre">(default)</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – The placeholder for the missing values. All occurrences of
+<li><p><strong>missing_values</strong> (<em>number</em><em>, </em><em>string</em><em>, </em><em>np.nan</em><em> (</em><em>default</em><em>) or </em><em>None</em>) – The placeholder for the missing values. All occurrences of
 <cite>missing_values</cite> will be imputed. For pandas’ dataframes with
 nullable integer dtypes with missing values, <cite>missing_values</cite>
 should be set to <cite>np.nan</cite>, since <cite>pd.NA</cite> will be converted to <cite>np.nan</cite>.</p></li>
-<li><p><strong>features</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – <p>Whether the imputer mask should represent all or a subset of
+<li><p><strong>features</strong> (<em>str</em><em>, </em><em>default=None</em>) – <p>Whether the imputer mask should represent all or a subset of
 features.</p>
 <ul>
 <li><p>If “missing-only” (default), the imputer mask will only represent
@@ -1277,7 +1277,7 @@ features containing missing values during fit time.</p></li>
 <li><p>If “all”, the imputer mask will represent all features.</p></li>
 </ul>
 </p></li>
-<li><p><strong>sparse</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">boolean</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – <p>Whether the imputer mask format should be sparse or dense.</p>
+<li><p><strong>sparse</strong> (<em>boolean</em><em> or </em><em>&quot;auto&quot;</em><em>, </em><em>default=None</em>) – <p>Whether the imputer mask format should be sparse or dense.</p>
 <ul>
 <li><p>If “auto” (default), the imputer mask will be of same type as
 input.</p></li>
@@ -1285,7 +1285,7 @@ input.</p></li>
 <li><p>If False, the imputer mask will be a numpy array.</p></li>
 </ul>
 </p></li>
-<li><p><strong>error_on_new</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">boolean</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – If True (default), transform will raise an error when there are
+<li><p><strong>error_on_new</strong> (<em>boolean</em><em>, </em><em>default=None</em>) – If True (default), transform will raise an error when there are
 features with missing values in transform that have no missing values
 in fit. This is applicable only when <code class="docutils literal notranslate"><span class="pre">features=&quot;missing-only&quot;</span></code>.</p></li>
 </ul>
@@ -1299,7 +1299,7 @@ They are computed during <code class="docutils literal notranslate"><span class=
 to <code class="docutils literal notranslate"><span class="pre">range(n_features)</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_missing_features,)</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">(n_features,)</span></code></p>
+<dd class="field-odd"><p>ndarray, shape (n_missing_features,) or (n_features,)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1329,14 +1329,14 @@ to <code class="docutils literal notranslate"><span class="pre">range(n_features
 <dd><p>Fit the transformer on X.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="docutils literal notranslate"><span class="pre">{array-like,</span> <span class="pre">sparse</span> <span class="pre">matrix}</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code>) – Input data, where <code class="docutils literal notranslate"><span class="pre">n_samples</span></code> is the number of samples and
+<dd class="field-odd"><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix}</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Input data, where <code class="docutils literal notranslate"><span class="pre">n_samples</span></code> is the number of samples and
 <code class="docutils literal notranslate"><span class="pre">n_features</span></code> is the number of features.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>self</strong> – Returns self.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dd class="field-odd"><p>object</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1347,14 +1347,14 @@ to <code class="docutils literal notranslate"><span class="pre">range(n_features
 <dd><p>Generate missing values indicator for X.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="docutils literal notranslate"><span class="pre">{array-like,</span> <span class="pre">sparse</span> <span class="pre">matrix}</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code>) – The input data to complete.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix}</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The input data to complete.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>Xt</strong> – The missing indicator for input data. The data type of <code class="docutils literal notranslate"><span class="pre">Xt</span></code>
 will be boolean.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">{ndarray</span> <span class="pre">or</span> <span class="pre">sparse</span> <span class="pre">matrix}</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, n_features)         or <code class="xref py py-class docutils literal notranslate"><span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features_with_missing)</span></code></p>
+<dd class="field-odd"><p>{ndarray or sparse matrix}, shape (n_samples, n_features)         or (n_samples, n_features_with_missing)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1365,14 +1365,14 @@ will be boolean.</p>
 <dd><p>Generate missing values indicator for X.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="docutils literal notranslate"><span class="pre">{array-like,</span> <span class="pre">sparse</span> <span class="pre">matrix}</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code>) – The input data to complete.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix}</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The input data to complete.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>Xt</strong> – The missing indicator for input data. The data type of <code class="docutils literal notranslate"><span class="pre">Xt</span></code>
 will be boolean.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">{ndarray</span> <span class="pre">or</span> <span class="pre">sparse</span> <span class="pre">matrix}</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, n_features)         or <code class="xref py py-class docutils literal notranslate"><span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features_with_missing)</span></code></p>
+<dd class="field-odd"><p>{ndarray or sparse matrix}, shape (n_samples, n_features)         or (n_samples, n_features_with_missing)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1399,10 +1399,10 @@ Space Model commonly used by the Information Retrieval community.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>norm</strong> (<code class="docutils literal notranslate"><span class="pre">'l1'</span></code>, <code class="docutils literal notranslate"><span class="pre">'l2'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'max'</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">optional</span> <span class="pre">(``</span></code>’l2’`` by default)) – The norm to use to normalize each non zero sample. If norm=’max’
+<li><p><strong>norm</strong> (<em>'l1'</em><em>, </em><em>'l2'</em><em>, or </em><em>'max'</em><em>, </em><em>optional</em><em> (</em><em>'l2' by default</em><em>)</em>) – The norm to use to normalize each non zero sample. If norm=’max’
 is used, values will be rescaled by the maximum of the absolute
 values.</p></li>
-<li><p><strong>copy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">boolean</span></code>, <em>optional</em>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>) – set to False to perform inplace row normalization and avoid a
+<li><p><strong>copy</strong> (<em>boolean</em><em>, </em><em>optional</em><em>, </em><em>default True</em>) – set to False to perform inplace row normalization and avoid a
 copy (if the input is already a numpy array or a scipy.sparse
 CSR matrix).</p></li>
 </ul>
@@ -1442,7 +1442,7 @@ see <span class="xref std std-ref">examples/preprocessing/plot_all_scaling.py</s
 work in pipelines.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>) – </p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em>) – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -1454,9 +1454,9 @@ work in pipelines.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="docutils literal notranslate"><span class="pre">{array-like,</span> <span class="pre">sparse</span> <span class="pre">matrix}</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The data to normalize, row by row. scipy.sparse matrices should be
+<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix}</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to normalize, row by row. scipy.sparse matrices should be
 in CSR format to avoid an un-necessary copy.</p></li>
-<li><p><strong>copy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">optional</span> <span class="pre">(default</span></code>: <code class="xref py py-class docutils literal notranslate"><span class="pre">None)</span></code>) – Copy the input X or not.</p></li>
+<li><p><strong>copy</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default: None</em><em>)</em>) – Copy the input X or not.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1489,7 +1489,7 @@ instead.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>categories</strong> (<code class="docutils literal notranslate"><span class="pre">'auto'</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">a</span> <span class="pre">list</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">'auto'</span></code>) – <p>Categories (unique values) per feature:</p>
+<li><p><strong>categories</strong> (<em>'auto'</em><em> or </em><em>a list of array-like</em><em>, </em><em>default='auto'</em>) – <p>Categories (unique values) per feature:</p>
 <ul>
 <li><p>’auto’ : Determine categories automatically from the training data.</p></li>
 <li><p>list : <code class="docutils literal notranslate"><span class="pre">categories[i]</span></code> holds the categories expected in the ith
@@ -1502,7 +1502,7 @@ numeric values.</p></li>
 <p><span class="versionmodified added">New in version 0.20.</span></p>
 </div>
 </p></li>
-<li><p><strong>drop</strong> (<code class="docutils literal notranslate"><span class="pre">{'first',</span> <span class="pre">'if_binary'}</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">a</span> <span class="pre">array-like</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_features,)</span></code>,             default=None) – <p>Specifies a methodology to use to drop one of the categories per
+<li><p><strong>drop</strong> (<em>{'first'</em><em>, </em><em>'if_binary'}</em><em> or </em><em>a array-like of shape</em><em> (</em><em>n_features</em><em>,</em><em>)</em><em>,             </em><em>default=None</em>) – <p>Specifies a methodology to use to drop one of the categories per
 feature. This is useful in situations where perfectly collinear
 features cause problems, such as when feeding the resulting data
 into a neural network or an unregularized regression.</p>
@@ -1520,9 +1520,9 @@ left intact.</p></li>
 should be dropped.</p></li>
 </ul>
 </p></li>
-<li><p><strong>sparse</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>) – Will return sparse matrix if set True else will return an array.</p></li>
-<li><p><strong>dtype</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">number</span> <span class="pre">type</span></code>, <em>default</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">np.float</span></code>) – Desired dtype of output.</p></li>
-<li><p><strong>handle_unknown</strong> (<code class="docutils literal notranslate"><span class="pre">{'error',</span> <span class="pre">'ignore'}</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">'error'</span></code>) – Whether to raise an error or ignore if an unknown categorical feature
+<li><p><strong>sparse</strong> (<em>bool</em><em>, </em><em>default=True</em>) – Will return sparse matrix if set True else will return an array.</p></li>
+<li><p><strong>dtype</strong> (<em>number type</em><em>, </em><em>default=np.float</em>) – Desired dtype of output.</p></li>
+<li><p><strong>handle_unknown</strong> (<em>{'error'</em><em>, </em><em>'ignore'}</em><em>, </em><em>default='error'</em>) – Whether to raise an error or ignore if an unknown categorical feature
 is present during transform (default is to raise). When this parameter
 is set to ‘ignore’ and an unknown category is encountered during
 transform, the resulting one-hot encoded columns for this feature
@@ -1540,7 +1540,7 @@ of <code class="docutils literal notranslate"><span class="pre">transform</span>
 (if any).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">arrays</span></code></p>
+<dd class="field-odd"><p>list of arrays</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1559,7 +1559,7 @@ retained.</p></li>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_features,)</span></code></p>
+<dd class="field-odd"><p>array of shape (n_features,)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1626,8 +1626,8 @@ values per feature and transform the data to a binary one-hot encoding.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The data to determine the categories of each feature.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – Ignored. This parameter exists only for compatibility with
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to determine the categories of each feature.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – Ignored. This parameter exists only for compatibility with
 <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.pipeline.Pipeline</span></code>.</p></li>
 </ul>
 </dd>
@@ -1648,8 +1648,8 @@ values per feature and transform the data to a binary one-hot encoding.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The data to encode.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – Ignored. This parameter exists only for compatibility with
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to encode.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – Ignored. This parameter exists only for compatibility with
 <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.pipeline.Pipeline</span></code>.</p></li>
 </ul>
 </dd>
@@ -1657,7 +1657,7 @@ values per feature and transform the data to a binary one-hot encoding.</p>
 <dd class="field-even"><p><strong>X_out</strong> – Transformed input.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">sparse</span> <span class="pre">matrix</span> <span class="pre">if</span> <span class="pre">sparse=True</span> <span class="pre">else</span> <span class="pre">a</span> <span class="pre">2-d</span> <span class="pre">array</span></code></p>
+<dd class="field-odd"><p>sparse matrix if sparse=True else a 2-d array</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1668,14 +1668,14 @@ values per feature and transform the data to a binary one-hot encoding.</p>
 <dd><p>Return feature names for output features.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>input_features</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_features,)</span></code>) – String names for input features if available. By default,
+<dd class="field-odd"><p><strong>input_features</strong> (<em>list of str of shape</em><em> (</em><em>n_features</em><em>,</em><em>)</em>) – String names for input features if available. By default,
 “x0”, “x1”, … “xn_features” is used.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>output_feature_names</strong> – Array of feature names.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_output_features,)</span></code></p>
+<dd class="field-odd"><p>ndarray of shape (n_output_features,)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1688,13 +1688,13 @@ values per feature and transform the data to a binary one-hot encoding.</p>
 one-hot encoding), <code class="docutils literal notranslate"><span class="pre">None</span></code> is used to represent this category.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">sparse</span> <span class="pre">matrix</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_encoded_features]</span></code>) – The transformed data.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em> or </em><em>sparse matrix</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_encoded_features</em><em>]</em>) – The transformed data.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_tr</strong> – Inverse transformed array.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code></p>
+<dd class="field-odd"><p>array-like, shape [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1705,13 +1705,13 @@ one-hot encoding), <code class="docutils literal notranslate"><span class="pre">
 <dd><p>Transform X using one-hot encoding.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The data to encode.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to encode.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_out</strong> – Transformed input.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">sparse</span> <span class="pre">matrix</span> <span class="pre">if</span> <span class="pre">sparse=True</span> <span class="pre">else</span> <span class="pre">a</span> <span class="pre">2-d</span> <span class="pre">array</span></code></p>
+<dd class="field-odd"><p>sparse matrix if sparse=True else a 2-d array</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1734,7 +1734,7 @@ a single column of integers (0 to n_categories - 1) per feature.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>categories</strong> (<code class="docutils literal notranslate"><span class="pre">'auto'</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">a</span> <span class="pre">list</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">'auto'</span></code>) – <p>Categories (unique values) per feature:</p>
+<li><p><strong>categories</strong> (<em>'auto'</em><em> or </em><em>a list of array-like</em><em>, </em><em>default='auto'</em>) – <p>Categories (unique values) per feature:</p>
 <ul>
 <li><p>’auto’ : Determine categories automatically from the training data.</p></li>
 <li><p>list : <code class="docutils literal notranslate"><span class="pre">categories[i]</span></code> holds the categories expected in the ith
@@ -1743,7 +1743,7 @@ values, and should be sorted in case of numeric values.</p></li>
 </ul>
 <p>The used categories can be found in the <code class="docutils literal notranslate"><span class="pre">categories_</span></code> attribute.</p>
 </p></li>
-<li><p><strong>dtype</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">number</span> <span class="pre">type</span></code>, <em>default</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">np.float64</span></code>) – Desired dtype of output.</p></li>
+<li><p><strong>dtype</strong> (<em>number type</em><em>, </em><em>default np.float64</em>) – Desired dtype of output.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1755,7 +1755,7 @@ values, and should be sorted in case of numeric values.</p></li>
 of <code class="docutils literal notranslate"><span class="pre">transform</span></code>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">arrays</span></code></p>
+<dd class="field-odd"><p>list of arrays</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1796,8 +1796,8 @@ values per feature and transform the data to an ordinal encoding.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The data to determine the categories of each feature.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – Ignored. This parameter exists only for compatibility with
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to determine the categories of each feature.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – Ignored. This parameter exists only for compatibility with
 <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.pipeline.Pipeline</span></code>.</p></li>
 </ul>
 </dd>
@@ -1816,13 +1816,13 @@ values per feature and transform the data to an ordinal encoding.</p>
 <dd><p>Convert the data back to the original representation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">sparse</span> <span class="pre">matrix</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_encoded_features]</span></code>) – The transformed data.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em> or </em><em>sparse matrix</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_encoded_features</em><em>]</em>) – The transformed data.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_tr</strong> – Inverse transformed array.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code></p>
+<dd class="field-odd"><p>array-like, shape [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1833,13 +1833,13 @@ values per feature and transform the data to an ordinal encoding.</p>
 <dd><p>Transform X to ordinal codes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The data to encode.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to encode.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_out</strong> – Transformed input.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">sparse</span> <span class="pre">matrix</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">a</span> <span class="pre">2-d</span> <span class="pre">array</span></code></p>
+<dd class="field-odd"><p>sparse matrix or a 2-d array</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1858,14 +1858,14 @@ For example, if an input sample is two dimensional and of the form
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>degree</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">integer</span></code>) – The degree of the polynomial features. Default = 2.</p></li>
-<li><p><strong>interaction_only</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">boolean</span></code>, <em>default</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">=</span> <span class="pre">False</span></code>) – If true, only interaction features are produced: features that are
+<li><p><strong>degree</strong> (<em>integer</em>) – The degree of the polynomial features. Default = 2.</p></li>
+<li><p><strong>interaction_only</strong> (<em>boolean</em><em>, </em><em>default = False</em>) – If true, only interaction features are produced: features that are
 products of at most <code class="docutils literal notranslate"><span class="pre">degree</span></code> <em>distinct</em> input features (so not
 <code class="docutils literal notranslate"><span class="pre">x[1]</span> <span class="pre">**</span> <span class="pre">2</span></code>, <code class="docutils literal notranslate"><span class="pre">x[0]</span> <span class="pre">*</span> <span class="pre">x[2]</span> <span class="pre">**</span> <span class="pre">3</span></code>, etc.).</p></li>
-<li><p><strong>include_bias</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">boolean</span></code>) – If True (default), then include a bias column, the feature in which
+<li><p><strong>include_bias</strong> (<em>boolean</em>) – If True (default), then include a bias column, the feature in which
 all polynomial powers are zero (i.e. a column of ones - acts as an
 intercept term in a linear model).</p></li>
-<li><p><strong>order</strong> (str in <code class="docutils literal notranslate"><span class="pre">{'C',</span> <span class="pre">'F'}</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">'C'</span></code>) – <p>Order of output array in the dense case. ‘F’ order is faster to
+<li><p><strong>order</strong> (<em>str in {'C'</em><em>, </em><em>'F'}</em><em>, </em><em>default 'C'</em>) – <p>Order of output array in the dense case. ‘F’ order is faster to
 compute, but may slow down subsequent estimators.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.21.</span></p>
@@ -1900,7 +1900,7 @@ compute, but may slow down subsequent estimators.</p>
 <dd><p>powers_[i, j] is the exponent of the jth input in the ith output.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_output_features</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_input_features)</span></code></p>
+<dd class="field-odd"><p>array, shape (n_output_features, n_input_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1911,7 +1911,7 @@ compute, but may slow down subsequent estimators.</p>
 <dd><p>The total number of input features.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1924,7 +1924,7 @@ features is computed by iterating over all suitably sized combinations
 of input features.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1940,13 +1940,13 @@ exponentially in the degree. High degrees can cause overfitting.</p>
 <dd><p>Compute number of output features.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code>) – The data.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>self</strong></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dd class="field-odd"><p>instance</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1957,14 +1957,14 @@ exponentially in the degree. High degrees can cause overfitting.</p>
 <dd><p>Return feature names for output features</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>input_features</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">length</span> <span class="pre">n_features</span></code>, <em>optional</em>) – String names for input features if available. By default,
+<dd class="field-odd"><p><strong>input_features</strong> (<em>list of string</em><em>, </em><em>length n_features</em><em>, </em><em>optional</em>) – String names for input features if available. By default,
 “x0”, “x1”, … “xn_features” is used.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>output_feature_names</strong></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">length</span> <span class="pre">n_output_features</span></code></p>
+<dd class="field-odd"><p>list of string, length n_output_features</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1980,7 +1980,7 @@ exponentially in the degree. High degrees can cause overfitting.</p>
 <dd><p>Transform data to polynomial features</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">CSR/CSC</span> <span class="pre">sparse</span> <span class="pre">matrix</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – <p>The data to transform, row by row.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em> or </em><em>CSR/CSC sparse matrix</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – <p>The data to transform, row by row.</p>
 <p>Prefer CSR over CSC for sparse input (for speed), but CSC is
 required if the degree is 4 or higher. If the degree is less than
 4 and the input format is CSC, it will be converted to CSR, have
@@ -1999,7 +1999,7 @@ preference of CSR.</p>
 features generated from the combination of inputs.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">CSR/CSC</span> <span class="pre">sparse</span> <span class="pre">matrix</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NP]</span></code></p>
+<dd class="field-odd"><p>np.ndarray or CSR/CSC sparse matrix, shape [n_samples, NP]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2029,15 +2029,15 @@ transformed data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>method</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">(default=``</span></code>’yeo-johnson’<a href="#id7"><span class="problematic" id="id8">``</span></a><code class="xref py py-class docutils literal notranslate"><span class="pre">)</span></code>) – <p>The power transform method. Available methods are:</p>
+<li><p><strong>method</strong> (<em>str</em><em>, </em><em>(</em><em>default='yeo-johnson'</em><em>)</em>) – <p>The power transform method. Available methods are:</p>
 <ul>
-<li><p>’yeo-johnson’ <a href="#id17"><span class="problematic" id="id5">[1]_</span></a>, works with positive and negative values</p></li>
-<li><p>’box-cox’ <a href="#id18"><span class="problematic" id="id6">[2]_</span></a>, only works with strictly positive values</p></li>
+<li><p>’yeo-johnson’ <a href="#id7"><span class="problematic" id="id1">[1]_</span></a>, works with positive and negative values</p></li>
+<li><p>’box-cox’ <a href="#id8"><span class="problematic" id="id2">[2]_</span></a>, only works with strictly positive values</p></li>
 </ul>
 </p></li>
-<li><p><strong>standardize</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">boolean</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>) – Set to True to apply zero-mean, unit-variance normalization to the
+<li><p><strong>standardize</strong> (<em>boolean</em><em>, </em><em>default=True</em>) – Set to True to apply zero-mean, unit-variance normalization to the
 transformed output.</p></li>
-<li><p><strong>copy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">boolean</span></code>, <em>optional</em>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>) – Set to False to perform inplace computation during transformation.</p></li>
+<li><p><strong>copy</strong> (<em>boolean</em><em>, </em><em>optional</em><em>, </em><em>default=True</em>) – Set to False to perform inplace computation during transformation.</p></li>
 </ul>
 </dd>
 </dl>
@@ -2047,7 +2047,7 @@ transformed output.</p></li>
 <dd><p>The parameters of the power transformation for the selected features.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_features,)</span></code></p>
+<dd class="field-odd"><p>array of float, shape (n_features,)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2083,12 +2083,12 @@ in <code class="docutils literal notranslate"><span class="pre">transform</span>
 see <span class="xref std std-ref">examples/preprocessing/plot_all_scaling.py</span>.</p>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id9"><span class="brackets">1</span></dt>
+<dt class="label" id="id3"><span class="brackets">1</span></dt>
 <dd><p>I.K. Yeo and R.A. Johnson, “A new family of power transformations to
 improve normality or symmetry.” Biometrika, 87(4), pp.954-959,
 (2000).</p>
 </dd>
-<dt class="label" id="id10"><span class="brackets">2</span></dt>
+<dt class="label" id="id4"><span class="brackets">2</span></dt>
 <dd><p>G.E.P. Box and D.R. Cox, “An Analysis of Transformations”, Journal
 of the Royal Statistical Society B, 26, 211-252 (1964).</p>
 </dd>
@@ -2102,15 +2102,15 @@ each feature independently using maximum likelihood.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code>) – The data used to estimate the optimal transformation parameters.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Ignored</span></code>) – </p></li>
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data used to estimate the optimal transformation parameters.</p></li>
+<li><p><strong>y</strong> (<em>Ignored</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>self</strong></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dd class="field-odd"><p>object</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2124,16 +2124,16 @@ and returns a transformed version of X.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="docutils literal notranslate"><span class="pre">{array-like,</span> <span class="pre">sparse</span> <span class="pre">matrix,</span> <span class="pre">dataframe}</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code>) – </p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples,)</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – Target values.</p></li>
-<li><p><strong>**fit_params</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>) – Additional fit parameters.</p></li>
+<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix</em><em>, </em><em>dataframe} of shape</em><em>                 (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – </p></li>
+<li><p><strong>y</strong> (<em>ndarray of shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em><em>, </em><em>default=None</em>) – Target values.</p></li>
+<li><p><strong>**fit_params</strong> (<em>dict</em>) – Additional fit parameters.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_new</strong> – Transformed array.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span> <span class="pre">array</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features_new)</span></code></p>
+<dd class="field-odd"><p>ndarray array of shape (n_samples, n_features_new)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2162,13 +2162,13 @@ and returns a transformed version of X.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code>) – The transformed data.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The transformed data.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X</strong> – The original data</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code></p>
+<dd class="field-odd"><p>array-like, shape (n_samples, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2179,13 +2179,13 @@ and returns a transformed version of X.</p>
 <dd><p>Apply the power transform to each feature using the fitted lambdas.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code>) – The data to be transformed using a power transformation.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data to be transformed using a power transformation.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_trans</strong> – The transformed data.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code></p>
+<dd class="field-odd"><p>array-like, shape (n_samples, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2217,26 +2217,26 @@ variables measured at different scales more directly comparable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n_quantiles</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">optional</span> <span class="pre">(default=1000</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">n_samples)</span></code>) – Number of quantiles to be computed. It corresponds to the number
+<li><p><strong>n_quantiles</strong> (<em>int</em><em>, </em><em>optional</em><em> (</em><em>default=1000</em><em> or </em><em>n_samples</em><em>)</em>) – Number of quantiles to be computed. It corresponds to the number
 of landmarks used to discretize the cumulative distribution function.
 If n_quantiles is larger than the number of samples, n_quantiles is set
 to the number of samples as a larger number of quantiles does not give
 a better approximation of the cumulative distribution function
 estimator.</p></li>
-<li><p><strong>output_distribution</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">optional</span> <span class="pre">(default=``</span></code>’uniform’<a href="#id11"><span class="problematic" id="id12">``</span></a><code class="xref py py-class docutils literal notranslate"><span class="pre">)</span></code>) – Marginal distribution for the transformed data. The choices are
+<li><p><strong>output_distribution</strong> (<em>str</em><em>, </em><em>optional</em><em> (</em><em>default='uniform'</em><em>)</em>) – Marginal distribution for the transformed data. The choices are
 ‘uniform’ (default) or ‘normal’.</p></li>
-<li><p><strong>ignore_implicit_zeros</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">optional</span> <span class="pre">(default=False)</span></code>) – Only applies to sparse matrices. If True, the sparse entries of the
+<li><p><strong>ignore_implicit_zeros</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default=False</em><em>)</em>) – Only applies to sparse matrices. If True, the sparse entries of the
 matrix are discarded to compute the quantile statistics. If False,
 these entries are treated as zeros.</p></li>
-<li><p><strong>subsample</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">optional</span> <span class="pre">(default=1e5)</span></code>) – Maximum number of samples used to estimate the quantiles for
+<li><p><strong>subsample</strong> (<em>int</em><em>, </em><em>optional</em><em> (</em><em>default=1e5</em><em>)</em>) – Maximum number of samples used to estimate the quantiles for
 computational efficiency. Note that the subsampling procedure may
 differ for value-identical sparse and dense matrices.</p></li>
-<li><p><strong>random_state</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">RandomState</span> <span class="pre">instance</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">optional</span> <span class="pre">(default=None)</span></code>) – Determines random number generation for subsampling and smoothing
+<li><p><strong>random_state</strong> (<em>int</em><em>, </em><em>RandomState instance</em><em> or </em><em>None</em><em>, </em><em>optional</em><em> (</em><em>default=None</em><em>)</em>) – Determines random number generation for subsampling and smoothing
 noise.
 Please see <code class="docutils literal notranslate"><span class="pre">subsample</span></code> for more details.
 Pass an int for reproducible results across multiple function calls.
 See <span class="xref std std-term">Glossary</span></p></li>
-<li><p><strong>copy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">boolean</span></code>, <em>optional</em>, <code class="xref py py-class docutils literal notranslate"><span class="pre">(default=True)</span></code>) – Set to False to perform inplace transformation and avoid a copy (if the
+<li><p><strong>copy</strong> (<em>boolean</em><em>, </em><em>optional</em><em>, </em><em>(</em><em>default=True</em><em>)</em>) – Set to False to perform inplace transformation and avoid a copy (if the
 input is already a numpy array).</p></li>
 </ul>
 </dd>
@@ -2248,7 +2248,7 @@ input is already a numpy array).</p></li>
 distribution function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">integer</span></code></p>
+<dd class="field-odd"><p>integer</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2259,7 +2259,7 @@ distribution function.</p>
 <dd><p>The values corresponding the quantiles of reference.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_quantiles</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code></p>
+<dd class="field-odd"><p>ndarray, shape (n_quantiles, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2270,7 +2270,7 @@ distribution function.</p>
 <dd><p>Quantiles of references.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape(n_quantiles</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">)</span></code></p>
+<dd class="field-odd"><p>ndarray, shape(n_quantiles, )</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2309,7 +2309,7 @@ see <span class="xref std std-ref">examples/preprocessing/plot_all_scaling.py</s
 <dd><p>Compute the quantiles used for transforming.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">sparse</span> <span class="pre">matrix</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code>) – The data used to scale along the features axis. If a sparse
+<dd class="field-odd"><p><strong>X</strong> (<em>ndarray</em><em> or </em><em>sparse matrix</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data used to scale along the features axis. If a sparse
 matrix is provided, it will be converted into a sparse
 <code class="docutils literal notranslate"><span class="pre">csc_matrix</span></code>. Additionally, the sparse matrix needs to be
 nonnegative if <cite>ignore_implicit_zeros</cite> is False.</p>
@@ -2318,7 +2318,7 @@ nonnegative if <cite>ignore_implicit_zeros</cite> is False.</p>
 <dd class="field-even"><p><strong>self</strong></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dd class="field-odd"><p>object</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2329,7 +2329,7 @@ nonnegative if <cite>ignore_implicit_zeros</cite> is False.</p>
 <dd><p>Back-projection to the original space.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">sparse</span> <span class="pre">matrix</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code>) – The data used to scale along the features axis. If a sparse
+<dd class="field-odd"><p><strong>X</strong> (<em>ndarray</em><em> or </em><em>sparse matrix</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data used to scale along the features axis. If a sparse
 matrix is provided, it will be converted into a sparse
 <code class="docutils literal notranslate"><span class="pre">csc_matrix</span></code>. Additionally, the sparse matrix needs to be
 nonnegative if <cite>ignore_implicit_zeros</cite> is False.</p>
@@ -2338,7 +2338,7 @@ nonnegative if <cite>ignore_implicit_zeros</cite> is False.</p>
 <dd class="field-even"><p><strong>Xt</strong> – The projected data.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">sparse</span> <span class="pre">matrix</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code></p>
+<dd class="field-odd"><p>ndarray or sparse matrix, shape (n_samples, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2349,7 +2349,7 @@ nonnegative if <cite>ignore_implicit_zeros</cite> is False.</p>
 <dd><p>Feature-wise transformation of the data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">sparse</span> <span class="pre">matrix</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code>) – The data used to scale along the features axis. If a sparse
+<dd class="field-odd"><p><strong>X</strong> (<em>ndarray</em><em> or </em><em>sparse matrix</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data used to scale along the features axis. If a sparse
 matrix is provided, it will be converted into a sparse
 <code class="docutils literal notranslate"><span class="pre">csc_matrix</span></code>. Additionally, the sparse matrix needs to be
 nonnegative if <cite>ignore_implicit_zeros</cite> is False.</p>
@@ -2358,7 +2358,7 @@ nonnegative if <cite>ignore_implicit_zeros</cite> is False.</p>
 <dd class="field-even"><p><strong>Xt</strong> – The projected data.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">sparse</span> <span class="pre">matrix</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code></p>
+<dd class="field-odd"><p>ndarray or sparse matrix, shape (n_samples, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2390,19 +2390,19 @@ the interquartile range often give better results.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>with_centering</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">boolean</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">True</span> <span class="pre">by</span> <span class="pre">default</span></code>) – If True, center the data before scaling.
+<li><p><strong>with_centering</strong> (<em>boolean</em><em>, </em><em>True by default</em>) – If True, center the data before scaling.
 This will cause <code class="docutils literal notranslate"><span class="pre">transform</span></code> to raise an exception when attempted on
 sparse matrices, because centering them entails building a dense
 matrix which in common use cases is likely to be too large to fit in
 memory.</p></li>
-<li><p><strong>with_scaling</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">boolean</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">True</span> <span class="pre">by</span> <span class="pre">default</span></code>) – If True, scale the data to interquartile range.</p></li>
-<li><p><strong>quantile_range</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span> <span class="pre">(q_min</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">q_max)</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">0.0</span> <span class="pre">&lt;</span> <span class="pre">q_min</span> <span class="pre">&lt;</span> <span class="pre">q_max</span> <span class="pre">&lt;</span> <span class="pre">100.0</span></code>) – <p>Default: (25.0, 75.0) = (1st quantile, 3rd quantile) = IQR
+<li><p><strong>with_scaling</strong> (<em>boolean</em><em>, </em><em>True by default</em>) – If True, scale the data to interquartile range.</p></li>
+<li><p><strong>quantile_range</strong> (<em>tuple</em><em> (</em><em>q_min</em><em>, </em><em>q_max</em><em>)</em><em>, </em><em>0.0 &lt; q_min &lt; q_max &lt; 100.0</em>) – <p>Default: (25.0, 75.0) = (1st quantile, 3rd quantile) = IQR
 Quantile range used to calculate <code class="docutils literal notranslate"><span class="pre">scale_</span></code>.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.18.</span></p>
 </div>
 </p></li>
-<li><p><strong>copy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">boolean</span></code>, <em>optional</em>, <em>default</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">is</span> <span class="pre">True</span></code>) – If False, try to avoid a copy and do inplace scaling instead.
+<li><p><strong>copy</strong> (<em>boolean</em><em>, </em><em>optional</em><em>, </em><em>default is True</em>) – If False, try to avoid a copy and do inplace scaling instead.
 This is not guaranteed to always work inplace; e.g. if the data is
 not a NumPy array or scipy.sparse CSR matrix, a copy may still be
 returned.</p></li>
@@ -2415,7 +2415,7 @@ returned.</p></li>
 <dd><p>The median value for each feature in the training set.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">floats</span></code></p>
+<dd class="field-odd"><p>array of floats</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2429,7 +2429,7 @@ returned.</p></li>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">floats</span></code></p>
+<dd class="field-odd"><p>array of floats</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2468,7 +2468,7 @@ see <span class="xref std std-ref">examples/preprocessing/plot_all_scaling.py</s
 <dd><p>Compute the median and quantiles to be used for scaling.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The data used to compute the median and quantiles
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data used to compute the median and quantiles
 used for later scaling along the features axis.</p>
 </dd>
 </dl>
@@ -2480,7 +2480,7 @@ used for later scaling along the features axis.</p>
 <dd><p>Scale back the data to the original representation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>) – The data used to scale along the specified axis.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em>) – The data used to scale along the specified axis.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2491,7 +2491,7 @@ used for later scaling along the features axis.</p>
 <dd><p>Center and scale the data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="docutils literal notranslate"><span class="pre">{array-like,</span> <span class="pre">sparse</span> <span class="pre">matrix}</span></code>) – The data used to scale along the specified axis.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix}</em>) – The data used to scale along the specified axis.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2511,11 +2511,11 @@ estimator which is now removed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>missing_values</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">number</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">np.nan</span> <span class="pre">(default)</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – The placeholder for the missing values. All occurrences of
+<li><p><strong>missing_values</strong> (<em>number</em><em>, </em><em>string</em><em>, </em><em>np.nan</em><em> (</em><em>default</em><em>) or </em><em>None</em>) – The placeholder for the missing values. All occurrences of
 <cite>missing_values</cite> will be imputed. For pandas’ dataframes with
 nullable integer dtypes with missing values, <cite>missing_values</cite>
 should be set to <cite>np.nan</cite>, since <cite>pd.NA</cite> will be converted to <cite>np.nan</cite>.</p></li>
-<li><p><strong>strategy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">'mean'</span></code>) – <p>The imputation strategy.</p>
+<li><p><strong>strategy</strong> (<em>string</em><em>, </em><em>default='mean'</em>) – <p>The imputation strategy.</p>
 <ul>
 <li><p>If “mean”, then replace missing values using the mean along
 each column. Can only be used with numeric data.</p></li>
@@ -2530,12 +2530,12 @@ used with strings or numeric data.</p></li>
 <p><span class="versionmodified added">New in version 0.20: </span>strategy=”constant” for fixed value imputation.</p>
 </div>
 </p></li>
-<li><p><strong>fill_value</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">numerical</span> <span class="pre">value</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – When strategy == “constant”, fill_value is used to replace all
+<li><p><strong>fill_value</strong> (<em>string</em><em> or </em><em>numerical value</em><em>, </em><em>default=None</em>) – When strategy == “constant”, fill_value is used to replace all
 occurrences of missing_values.
 If left to the default, fill_value will be 0 when imputing numerical
 data and “missing_value” for strings or object data types.</p></li>
-<li><p><strong>verbose</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">integer</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">0</span></code>) – Controls the verbosity of the imputer.</p></li>
-<li><p><strong>copy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">boolean</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>) – <p>If True, a copy of X will be created. If False, imputation will
+<li><p><strong>verbose</strong> (<em>integer</em><em>, </em><em>default=0</em>) – Controls the verbosity of the imputer.</p></li>
+<li><p><strong>copy</strong> (<em>boolean</em><em>, </em><em>default=True</em>) – <p>If True, a copy of X will be created. If False, imputation will
 be done in-place whenever possible. Note that, in the following cases,
 a new copy will always be made, even if <cite>copy=False</cite>:</p>
 <ul>
@@ -2544,7 +2544,7 @@ a new copy will always be made, even if <cite>copy=False</cite>:</p>
 <li><p>If add_indicator=True.</p></li>
 </ul>
 </p></li>
-<li><p><strong>add_indicator</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">boolean</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code>) – If True, a <a class="reference internal" href="#ballet.eng.sklearn.MissingIndicator" title="ballet.eng.sklearn.MissingIndicator"><code class="xref py py-class docutils literal notranslate"><span class="pre">MissingIndicator</span></code></a> transform will stack onto output
+<li><p><strong>add_indicator</strong> (<em>boolean</em><em>, </em><em>default=False</em>) – If True, a <a class="reference internal" href="#ballet.eng.sklearn.MissingIndicator" title="ballet.eng.sklearn.MissingIndicator"><code class="xref py py-class docutils literal notranslate"><span class="pre">MissingIndicator</span></code></a> transform will stack onto output
 of the imputer’s transform. This allows a predictive estimator
 to account for missingness despite imputation. If a feature has no
 missing values at fit/train time, the feature won’t appear on
@@ -2562,7 +2562,7 @@ During <a class="reference internal" href="#ballet.eng.sklearn.SimpleImputer.tra
 statistics will be discarded.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_features,)</span></code></p>
+<dd class="field-odd"><p>array of shape (n_features,)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2608,14 +2608,14 @@ upon <a class="reference internal" href="#ballet.eng.sklearn.SimpleImputer.trans
 <dd><p>Fit the imputer on X.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="docutils literal notranslate"><span class="pre">{array-like,</span> <span class="pre">sparse</span> <span class="pre">matrix}</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code>) – Input data, where <code class="docutils literal notranslate"><span class="pre">n_samples</span></code> is the number of samples and
+<dd class="field-odd"><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix}</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Input data, where <code class="docutils literal notranslate"><span class="pre">n_samples</span></code> is the number of samples and
 <code class="docutils literal notranslate"><span class="pre">n_features</span></code> is the number of features.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>self</strong></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#ballet.eng.sklearn.SimpleImputer" title="ballet.eng.sklearn.SimpleImputer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimpleImputer</span></code></a></p>
+<dd class="field-odd"><p><a class="reference internal" href="#ballet.eng.sklearn.SimpleImputer" title="ballet.eng.sklearn.SimpleImputer">SimpleImputer</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2626,7 +2626,7 @@ upon <a class="reference internal" href="#ballet.eng.sklearn.SimpleImputer.trans
 <dd><p>Impute all missing values in X.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="docutils literal notranslate"><span class="pre">{array-like,</span> <span class="pre">sparse</span> <span class="pre">matrix}</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features)</span></code>) – The input data to complete.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix}</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The input data to complete.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2658,7 +2658,7 @@ drawn from:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n_components</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> or <code class="docutils literal notranslate"><span class="pre">'auto'</span></code>, optional (default = <code class="docutils literal notranslate"><span class="pre">'auto'</span></code><code class="xref py py-class docutils literal notranslate"><span class="pre">)</span></code>) – <p>Dimensionality of the target projection space.</p>
+<li><p><strong>n_components</strong> (<em>int</em><em> or </em><em>'auto'</em><em>, </em><em>optional</em><em> (</em><em>default = 'auto'</em><em>)</em>) – <p>Dimensionality of the target projection space.</p>
 <p>n_components can be automatically adjusted according to the
 number of samples in the dataset and the bound given by the
 Johnson-Lindenstrauss lemma. In that case the quality of the
@@ -2667,19 +2667,19 @@ embedding is controlled by the <code class="docutils literal notranslate"><span 
 very conservative estimated of the required number of components
 as it makes no assumption on the structure of the dataset.</p>
 </p></li>
-<li><p><strong>density</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span> <span class="pre">in</span> <span class="pre">range</span> <span class="pre">]0</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">1]</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">optional</span> <span class="pre">(default=``</span></code>’auto’<a href="#id13"><span class="problematic" id="id14">``</span></a><code class="xref py py-class docutils literal notranslate"><span class="pre">)</span></code>) – <p>Ratio of non-zero component in the random projection matrix.</p>
+<li><p><strong>density</strong> (<em>float in range</em><em> ]</em><em>0</em><em>, </em><em>1</em><em>]</em><em>, </em><em>optional</em><em> (</em><em>default='auto'</em><em>)</em>) – <p>Ratio of non-zero component in the random projection matrix.</p>
 <p>If density = ‘auto’, the value is set to the minimum density
 as recommended by Ping Li et al.: 1 / sqrt(n_features).</p>
 <p>Use density = 1 / 3.0 if you want to reproduce the results from
 Achlioptas, 2001.</p>
 </p></li>
-<li><p><strong>eps</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">strictly</span> <span class="pre">positive</span> <span class="pre">float</span></code>, <em>optional</em>, <code class="xref py py-class docutils literal notranslate"><span class="pre">(default=0.1)</span></code>) – <p>Parameter to control the quality of the embedding according to
+<li><p><strong>eps</strong> (<em>strictly positive float</em><em>, </em><em>optional</em><em>, </em><em>(</em><em>default=0.1</em><em>)</em>) – <p>Parameter to control the quality of the embedding according to
 the Johnson-Lindenstrauss lemma when n_components is set to
 ‘auto’.</p>
 <p>Smaller values lead to better embedding and higher number of
 dimensions (n_components) in the target projection space.</p>
 </p></li>
-<li><p><strong>dense_output</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">boolean</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">optional</span> <span class="pre">(default=False)</span></code>) – <p>If True, ensure that the output of the random projection is a
+<li><p><strong>dense_output</strong> (<em>boolean</em><em>, </em><em>optional</em><em> (</em><em>default=False</em><em>)</em>) – <p>If True, ensure that the output of the random projection is a
 dense numpy array even if the input and random projection matrix
 are both sparse. In practice, if the number of components is
 small the number of zero components in the projected data will
@@ -2688,7 +2688,7 @@ use a dense representation.</p>
 <p>If False, the projected data uses a sparse representation if
 the input is sparse.</p>
 </p></li>
-<li><p><strong>random_state</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">RandomState</span> <span class="pre">instance</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">optional</span> <span class="pre">(default=None)</span></code>) – Controls the pseudo random number generator used to generate the
+<li><p><strong>random_state</strong> (<em>int</em><em>, </em><em>RandomState instance</em><em> or </em><em>None</em><em>, </em><em>optional</em><em> (</em><em>default=None</em><em>)</em>) – Controls the pseudo random number generator used to generate the
 projection matrix at fit time.
 Pass an int for reproducible output across multiple function calls.
 See <span class="xref std std-term">Glossary</span>.</p></li>
@@ -2701,7 +2701,7 @@ See <span class="xref std std-term">Glossary</span>.</p></li>
 <dd><p>Concrete number of components computed when n_components=”auto”.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2712,7 +2712,7 @@ See <span class="xref std std-term">Glossary</span>.</p></li>
 <dd><p>Random matrix used for the projection.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">CSR</span> <span class="pre">matrix</span> <span class="pre">with</span> <span class="pre">shape</span> <span class="pre">[n_components</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code></p>
+<dd class="field-odd"><p>CSR matrix with shape [n_components, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2723,7 +2723,7 @@ See <span class="xref std std-term">Glossary</span>.</p></li>
 <dd><p>Concrete density computed from when density = “auto”.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span> <span class="pre">in</span> <span class="pre">range</span> <span class="pre">0.0</span> <span class="pre">-</span> <span class="pre">1.0</span></code></p>
+<dd class="field-odd"><p>float in range 0.0 - 1.0</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2748,12 +2748,12 @@ See <span class="xref std std-term">Glossary</span>.</p></li>
 </div>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id15"><span class="brackets">1</span></dt>
+<dt class="label" id="id5"><span class="brackets">1</span></dt>
 <dd><p>Ping Li, T. Hastie and K. W. Church, 2006,
 “Very Sparse Random Projections”.
 <a class="reference external" href="https://web.stanford.edu/~hastie/Papers/Ping/KDD06_rp.pdf">https://web.stanford.edu/~hastie/Papers/Ping/KDD06_rp.pdf</a></p>
 </dd>
-<dt class="label" id="id16"><span class="brackets">2</span></dt>
+<dt class="label" id="id6"><span class="brackets">2</span></dt>
 <dd><p>D. Achlioptas, 2001, “Database-friendly random projections”,
 <a class="reference external" href="https://users.soe.ucsc.edu/~optas/papers/jl.pdf">https://users.soe.ucsc.edu/~optas/papers/jl.pdf</a></p>
 </dd>
@@ -2793,16 +2793,16 @@ estimator unable to learn from other features correctly as expected.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>copy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">boolean</span></code>, <em>optional</em>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>) – If False, try to avoid a copy and do inplace scaling instead.
+<li><p><strong>copy</strong> (<em>boolean</em><em>, </em><em>optional</em><em>, </em><em>default True</em>) – If False, try to avoid a copy and do inplace scaling instead.
 This is not guaranteed to always work inplace; e.g. if the data is
 not a NumPy array or scipy.sparse CSR matrix, a copy may still be
 returned.</p></li>
-<li><p><strong>with_mean</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">boolean</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">True</span> <span class="pre">by</span> <span class="pre">default</span></code>) – If True, center the data before scaling.
+<li><p><strong>with_mean</strong> (<em>boolean</em><em>, </em><em>True by default</em>) – If True, center the data before scaling.
 This does not work (and will raise an exception) when attempted on
 sparse matrices, because centering them entails building a dense
 matrix which in common use cases is likely to be too large to fit in
 memory.</p></li>
-<li><p><strong>with_std</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">boolean</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">True</span> <span class="pre">by</span> <span class="pre">default</span></code>) – If True, scale the data to unit variance (or equivalently,
+<li><p><strong>with_std</strong> (<em>boolean</em><em>, </em><em>True by default</em>) – If True, scale the data to unit variance (or equivalently,
 unit standard deviation).</p></li>
 </ul>
 </dd>
@@ -2817,7 +2817,7 @@ unit standard deviation).</p></li>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_features,)</span></code></p>
+<dd class="field-odd"><p>ndarray or None, shape (n_features,)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2829,7 +2829,7 @@ unit standard deviation).</p></li>
 Equal to <code class="docutils literal notranslate"><span class="pre">None</span></code> when <code class="docutils literal notranslate"><span class="pre">with_mean=False</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_features,)</span></code></p>
+<dd class="field-odd"><p>ndarray or None, shape (n_features,)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2841,7 +2841,7 @@ Equal to <code class="docutils literal notranslate"><span class="pre">None</span
 <cite>scale_</cite>. Equal to <code class="docutils literal notranslate"><span class="pre">None</span></code> when <code class="docutils literal notranslate"><span class="pre">with_std=False</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_features,)</span></code></p>
+<dd class="field-odd"><p>ndarray or None, shape (n_features,)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2856,7 +2856,7 @@ Will be reset on new calls to fit, but increments across
 <code class="docutils literal notranslate"><span class="pre">partial_fit</span></code> calls.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_features,)</span></code></p>
+<dd class="field-odd"><p>int or array, shape (n_features,)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2902,7 +2902,7 @@ see <span class="xref std std-ref">examples/preprocessing/plot_all_scaling.py</s
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="docutils literal notranslate"><span class="pre">{array-like,</span> <span class="pre">sparse</span> <span class="pre">matrix}</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The data used to compute the mean and standard deviation
+<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix}</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data used to compute the mean and standard deviation
 used for later scaling along the features axis.</p></li>
 <li><p><strong>y</strong> – Ignored</p></li>
 </ul>
@@ -2917,15 +2917,15 @@ used for later scaling along the features axis.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The data used to scale along the features axis.</p></li>
-<li><p><strong>copy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">optional</span> <span class="pre">(default</span></code>: <code class="xref py py-class docutils literal notranslate"><span class="pre">None)</span></code>) – Copy the input X or not.</p></li>
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data used to scale along the features axis.</p></li>
+<li><p><strong>copy</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default: None</em><em>)</em>) – Copy the input X or not.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_tr</strong> – Transformed array.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code></p>
+<dd class="field-odd"><p>array-like, shape [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2944,16 +2944,16 @@ The American Statistician 37.3 (1983): 242-247:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="docutils literal notranslate"><span class="pre">{array-like,</span> <span class="pre">sparse</span> <span class="pre">matrix}</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The data used to compute the mean and standard deviation
+<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix}</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data used to compute the mean and standard deviation
 used for later scaling along the features axis.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – Ignored.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – Ignored.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>self</strong> – Transformer instance.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dd class="field-odd"><p>object</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2965,8 +2965,8 @@ used for later scaling along the features axis.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The data used to scale along the features axis.</p></li>
-<li><p><strong>copy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">optional</span> <span class="pre">(default</span></code>: <code class="xref py py-class docutils literal notranslate"><span class="pre">None)</span></code>) – Copy the input X or not.</p></li>
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data used to scale along the features axis.</p></li>
+<li><p><strong>copy</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default: None</em><em>)</em>) – Copy the input X or not.</p></li>
 </ul>
 </dd>
 </dl>

@@ -307,16 +307,14 @@
   <h1>Source code for ballet.validation.feature_pruning.validator</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">random</span>
 
-<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">asarray2d</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">ballet.util.testing</span> <span class="kn">import</span> <span class="n">seeded</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.base</span> <span class="kn">import</span> <span class="n">FeaturePruner</span><span class="p">,</span> <span class="n">FeaturePruningMixin</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.common</span> <span class="kn">import</span> <span class="n">RandomFeaturePerformanceEvaluator</span>
-<span class="kn">from</span> <span class="nn">ballet.validation.entropy</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">estimate_conditional_information</span><span class="p">,</span> <span class="n">estimate_entropy</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ballet.validation.entropy</span> <span class="kn">import</span> <span class="n">estimate_conditional_information</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.gfssf</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">LAMBDA_1_ADJUSTMENT</span><span class="p">,</span> <span class="n">LAMBDA_2_ADJUSTMENT</span><span class="p">,</span> <span class="n">_compute_lmbdas</span><span class="p">,</span>
-    <span class="n">_compute_threshold</span><span class="p">,</span> <span class="n">_concat_datasets</span><span class="p">)</span>
+    <span class="n">GFSSFPerformanceEvaluator</span><span class="p">,</span> <span class="n">_compute_lmbdas</span><span class="p">,</span> <span class="n">_compute_threshold</span><span class="p">,</span>
+    <span class="n">_concat_datasets</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="NoOpPruner"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.NoOpPruner">[docs]</a><span class="k">class</span> <span class="nc">NoOpPruner</span><span class="p">(</span><span class="n">FeaturePruner</span><span class="p">):</span>
@@ -338,74 +336,30 @@
 <span class="n">CMI_MESSAGE</span> <span class="o">=</span> <span class="s2">&quot;Calculating CMI of feature and target cond. on accpt features&quot;</span>
 
 
-<div class="viewcode-block" id="GFSSFPruner"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.GFSSFPruner">[docs]</a><span class="k">class</span> <span class="nc">GFSSFPruner</span><span class="p">(</span><span class="n">FeaturePruner</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A feature pruning evaluator that uses a modified version of</span>
-<span class="sd">    GFSSF[1] - specifically, lines 12-13 of agGFSSF.</span>
-
-<span class="sd">    Attributes:</span>
-<span class="sd">        X_df (array-like): The dataset to build features off of.</span>
-<span class="sd">        y (array-like): A single-column dataset representing the target</span>
-<span class="sd">            feature.</span>
-<span class="sd">        features (array-like): an array of ballet Features that have</span>
-<span class="sd">            already been accepted, to be pruned.</span>
-<span class="sd">        new_feature (ballet.Feature): the recently accepted Feature.</span>
-<span class="sd">        lmbda_1: GFSSF parameter used to calculate the information</span>
-<span class="sd">            threshold. Default is a function of the entropy of y.</span>
-<span class="sd">        lmbda_2: GFSSF parameter used to calculate the information</span>
-<span class="sd">            threshold. Default is a function of the entropy of y.</span>
-<span class="sd">        lambda_1_adjustment: Adjustment to estimated entropy used to</span>
-<span class="sd">            calculate lmbda_1.</span>
-<span class="sd">        lambda_2_adjustment: Adjustment to estimated entropy used to</span>
-<span class="sd">            calculate lmbda_2.</span>
-
-<span class="sd">    References:</span>
-<span class="sd">        [1] H. Li, X. Wu, Z. Li and W. Ding, &quot;Group Feature Selection</span>
-<span class="sd">            with Streaming Features,&quot; 2013 IEEE 13th International</span>
-<span class="sd">            Conference on Data Mining, Dallas, TX, 2013, pp. 1109-1114.</span>
-<span class="sd">            doi: 10.1109/ICDM.2013.137</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-        <span class="n">lmbda_1</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
-        <span class="n">lmbda_2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
-        <span class="n">lambda_1_adjustment</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">LAMBDA_1_ADJUSTMENT</span><span class="p">,</span>
-        <span class="n">lambda_2_adjustment</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">LAMBDA_2_ADJUSTMENT</span>
-    <span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">lmbda_1</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">lmbda_1</span> <span class="o">=</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">lambda_1_adjustment</span>
-        <span class="k">if</span> <span class="n">lmbda_2</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">lmbda_2</span> <span class="o">=</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">lambda_2_adjustment</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lmbda_1</span> <span class="o">=</span> <span class="n">lmbda_1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lmbda_2</span> <span class="o">=</span> <span class="n">lmbda_2</span>
+<div class="viewcode-block" id="GFSSFPruner"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.GFSSFPruner">[docs]</a><span class="k">class</span> <span class="nc">GFSSFPruner</span><span class="p">(</span><span class="n">FeaturePruningMixin</span><span class="p">,</span> <span class="n">GFSSFPerformanceEvaluator</span><span class="p">):</span>
 
 <div class="viewcode-block" id="GFSSFPruner.prune"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.GFSSFPruner.prune">[docs]</a>    <span class="k">def</span> <span class="nf">prune</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">feature_dfs_by_src</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">accepted_feature</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">candidate_feature</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
-            <span class="n">accepted_df</span> <span class="o">=</span> <span class="n">accepted_feature</span><span class="o">.</span><span class="n">as_feature_engineering_pipeline</span><span class="p">(</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
-            <span class="n">feature_dfs_by_src</span><span class="p">[</span><span class="n">accepted_feature</span><span class="o">.</span><span class="n">source</span><span class="p">]</span> <span class="o">=</span> <span class="n">accepted_df</span>
+        <span class="sd">&quot;&quot;&quot;Prune using GFSSF</span>
 
+<span class="sd">        Uses lines 12-13 of agGFSSF</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Pruning features using </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">feature_df_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_feature_df_map</span><span class="p">()</span>
         <span class="n">lmbda_1</span><span class="p">,</span> <span class="n">lmbda_2</span> <span class="o">=</span> <span class="n">_compute_lmbdas</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">lmbda_1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lmbda_2</span><span class="p">,</span> <span class="n">feature_dfs_by_src</span>
-        <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lmbda_1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lmbda_2</span><span class="p">,</span> <span class="n">feature_df_map</span><span class="p">)</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot;Pruning features using GFSSF: lambda_1=</span><span class="si">{l1}</span><span class="s2">, lambda_2=</span><span class="si">{l2}</span><span class="s2">&quot;</span>
-            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">l1</span><span class="o">=</span><span class="n">lmbda_1</span><span class="p">,</span> <span class="n">l2</span><span class="o">=</span><span class="n">lmbda_2</span><span class="p">)</span>
-        <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Recomputed lambda_1=</span><span class="si">{</span><span class="n">lmbda_1</span><span class="si">}</span><span class="s1">, lambda_2=</span><span class="si">{</span><span class="n">lmbda_2</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="n">redundant_features</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">candidate_feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
             <span class="n">candidate_src</span> <span class="o">=</span> <span class="n">candidate_feature</span><span class="o">.</span><span class="n">source</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Pruning feature: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">candidate_src</span><span class="p">))</span>
-            <span class="n">candidate_df</span> <span class="o">=</span> <span class="n">feature_dfs_by_src</span><span class="p">[</span><span class="n">candidate_src</span><span class="p">]</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Trying to prune feature with source </span><span class="si">{</span><span class="n">candidate_src</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">candidate_df</span> <span class="o">=</span> <span class="n">feature_df_map</span><span class="p">[</span><span class="n">candidate_feature</span><span class="p">]</span>
             <span class="n">_</span><span class="p">,</span> <span class="n">n_candidate_cols</span> <span class="o">=</span> <span class="n">candidate_df</span><span class="o">.</span><span class="n">shape</span>
-            <span class="n">z</span> <span class="o">=</span> <span class="n">_concat_datasets</span><span class="p">(</span><span class="n">feature_dfs_by_src</span><span class="p">,</span> <span class="n">omit</span><span class="o">=</span><span class="n">candidate_src</span><span class="p">)</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="n">_concat_datasets</span><span class="p">(</span><span class="n">feature_df_map</span><span class="p">,</span> <span class="n">omit</span><span class="o">=</span><span class="p">[</span><span class="n">candidate_feature</span><span class="p">])</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">CMI_MESSAGE</span><span class="p">)</span>
             <span class="n">cmi</span> <span class="o">=</span> <span class="n">estimate_conditional_information</span><span class="p">(</span><span class="n">candidate_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
 
@@ -415,13 +369,13 @@
             <span class="n">threshold</span> <span class="o">=</span> <span class="n">_compute_threshold</span><span class="p">(</span><span class="n">lmbda_1</span><span class="p">,</span> <span class="n">lmbda_2</span><span class="p">,</span> <span class="n">n_candidate_cols</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Calculated Threshold: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">threshold</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">statistic</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                    <span class="s2">&quot;Passed, keeping feature: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">candidate_src</span><span class="p">))</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Passed, keeping feature </span><span class="si">{</span><span class="n">candidate_src</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># ballet.validation.main._prune_existing_features will log</span>
+                <span class="c1"># this at level INFO</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                    <span class="s2">&quot;Failed, found redundant feature: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">candidate_src</span><span class="p">)</span>
-                <span class="p">)</span>
-                <span class="k">del</span> <span class="n">feature_dfs_by_src</span><span class="p">[</span><span class="n">candidate_src</span><span class="p">]</span>
+                    <span class="sa">f</span><span class="s2">&quot;Failed, found redundant feature: </span><span class="si">{</span><span class="n">candidate_src</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">del</span> <span class="n">feature_df_map</span><span class="p">[</span><span class="n">candidate_feature</span><span class="p">]</span>
                 <span class="n">redundant_features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">candidate_feature</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">redundant_features</span></div></div>
 </pre></div>

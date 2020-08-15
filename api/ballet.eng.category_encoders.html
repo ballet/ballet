@@ -324,14 +324,14 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>verbose</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – integer indicating verbosity of the output. 0 for none.</p></li>
-<li><p><strong>cols</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
-<li><p><strong>drop_invariant</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether or not to drop columns with 0 variance.</p></li>
-<li><p><strong>return_df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
-<li><p><strong>handle_unknown</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
+<li><p><strong>verbose</strong> (<em>int</em>) – integer indicating verbosity of the output. 0 for none.</p></li>
+<li><p><strong>cols</strong> (<em>list</em>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
+<li><p><strong>drop_invariant</strong> (<em>bool</em>) – boolean for whether or not to drop columns with 0 variance.</p></li>
+<li><p><strong>return_df</strong> (<em>bool</em>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
+<li><p><strong>handle_unknown</strong> (<em>str</em>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
 an extra column will be added in if the transform matrix has unknown categories.  This can cause
 unexpected changes in dimension in some cases.</p></li>
-<li><p><strong>handle_missing</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
+<li><p><strong>handle_missing</strong> (<em>str</em>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
 an extra column will be added in if the transform matrix has nan values.  This can cause
 unexpected changes in dimension in some cases.</p></li>
 </ul>
@@ -402,16 +402,16 @@ generally invariant columns to drop consistently.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – Training vectors, where n_samples is the number of samples
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – Training vectors, where n_samples is the number of samples
 and n_features is the number of features.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples]</span></code>) – Target values.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>]</em>) – Target values.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>self</strong> – Returns self.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">encoder</span></code></p>
+<dd class="field-odd"><p>encoder</p>
 </dd>
 </dl>
 </dd></dl>
@@ -431,7 +431,7 @@ and n_features is the number of features.</p></li>
 Note: potentially dropped features are not included!</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<dd class="field-even"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -442,13 +442,13 @@ Note: potentially dropped features are not included!</p>
 <dd><p>Perform the transformation to new categorical data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – </p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – </p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>p</strong> – Transformed values with encoding applied.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_numeric</span> <span class="pre">+</span> <span class="pre">N]</span></code></p>
+<dd class="field-odd"><p>array, shape = [n_samples, n_numeric + N]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -465,15 +465,15 @@ categories is equivalent to vanilla ordinal encoding.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>verbose</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – integer indicating verbosity of the output. 0 for none.</p></li>
-<li><p><strong>cols</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
-<li><p><strong>drop_invariant</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether or not to drop columns with 0 variance.</p></li>
-<li><p><strong>return_df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
-<li><p><strong>base</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – when the downstream model copes well with nonlinearities (like decision tree), use higher base.</p></li>
-<li><p><strong>handle_unknown</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
+<li><p><strong>verbose</strong> (<em>int</em>) – integer indicating verbosity of the output. 0 for none.</p></li>
+<li><p><strong>cols</strong> (<em>list</em>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
+<li><p><strong>drop_invariant</strong> (<em>bool</em>) – boolean for whether or not to drop columns with 0 variance.</p></li>
+<li><p><strong>return_df</strong> (<em>bool</em>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
+<li><p><strong>base</strong> (<em>int</em>) – when the downstream model copes well with nonlinearities (like decision tree), use higher base.</p></li>
+<li><p><strong>handle_unknown</strong> (<em>str</em>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
 an extra column will be added in if the transform matrix has unknown categories.  This can cause
 unexpected changes in dimension in some cases.</p></li>
-<li><p><strong>handle_missing</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
+<li><p><strong>handle_missing</strong> (<em>str</em>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
 an extra column will be added in if the transform matrix has nan values.  This can cause
 unexpected changes in dimension in some cases.</p></li>
 </ul>
@@ -522,15 +522,15 @@ unexpected changes in dimension in some cases.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X_in</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – </p></li>
-<li><p><strong>cols</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list-like</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – Column names in the DataFrame to be encoded</p></li>
+<li><p><strong>X_in</strong> (<em>DataFrame</em>) – </p></li>
+<li><p><strong>cols</strong> (<em>list-like</em><em>, </em><em>default None</em>) – Column names in the DataFrame to be encoded</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>dummies</strong></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+<dd class="field-odd"><p>DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
@@ -542,16 +542,16 @@ unexpected changes in dimension in some cases.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – encoded data</p></li>
-<li><p><strong>cols</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list-like</span></code>) – Column names in the DataFrame that be encoded</p></li>
-<li><p><strong>base</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The base of transform</p></li>
+<li><p><strong>X</strong> (<em>DataFrame</em>) – encoded data</p></li>
+<li><p><strong>cols</strong> (<em>list-like</em>) – Column names in the DataFrame that be encoded</p></li>
+<li><p><strong>base</strong> (<em>int</em>) – The base of transform</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>numerical</strong></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+<dd class="field-odd"><p>DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
@@ -574,16 +574,16 @@ unexpected changes in dimension in some cases.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – Training vectors, where n_samples is the number of samples
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – Training vectors, where n_samples is the number of samples
 and n_features is the number of features.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples]</span></code>) – Target values.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>]</em>) – Target values.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>self</strong> – Returns self.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">encoder</span></code></p>
+<dd class="field-odd"><p>encoder</p>
 </dd>
 </dl>
 </dd></dl>
@@ -603,7 +603,7 @@ and n_features is the number of features.</p></li>
 Note: potentially dropped features are not included!</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<dd class="field-even"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -614,13 +614,13 @@ Note: potentially dropped features are not included!</p>
 <dd><p>Perform the inverse transformation to encoded data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X_in</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – </p>
+<dd class="field-odd"><p><strong>X_in</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – </p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>p</strong></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">the</span> <span class="pre">same</span> <span class="pre">size</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">X_in</span></code></p>
+<dd class="field-odd"><p>array, the same size of X_in</p>
 </dd>
 </dl>
 </dd></dl>
@@ -636,13 +636,13 @@ Note: potentially dropped features are not included!</p>
 <dd><p>Perform the transformation to new categorical data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – </p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – </p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>p</strong> – Transformed values with encoding applied.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_numeric</span> <span class="pre">+</span> <span class="pre">N]</span></code></p>
+<dd class="field-odd"><p>array, shape = [n_samples, n_numeric + N]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -657,14 +657,14 @@ Note: potentially dropped features are not included!</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>verbose</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – integer indicating verbosity of the output. 0 for none.</p></li>
-<li><p><strong>cols</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
-<li><p><strong>drop_invariant</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether or not to drop columns with 0 variance.</p></li>
-<li><p><strong>return_df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
-<li><p><strong>handle_unknown</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
+<li><p><strong>verbose</strong> (<em>int</em>) – integer indicating verbosity of the output. 0 for none.</p></li>
+<li><p><strong>cols</strong> (<em>list</em>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
+<li><p><strong>drop_invariant</strong> (<em>bool</em>) – boolean for whether or not to drop columns with 0 variance.</p></li>
+<li><p><strong>return_df</strong> (<em>bool</em>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
+<li><p><strong>handle_unknown</strong> (<em>str</em>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
 an extra column will be added in if the transform matrix has unknown categories.  This can cause
 unexpected changes in dimension in some cases.</p></li>
-<li><p><strong>handle_missing</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
+<li><p><strong>handle_missing</strong> (<em>str</em>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
 an extra column will be added in if the transform matrix has nan values.  This can cause
 unexpected changes in dimension in some cases.</p></li>
 </ul>
@@ -713,16 +713,16 @@ unexpected changes in dimension in some cases.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – Training vectors, where n_samples is the number of samples
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – Training vectors, where n_samples is the number of samples
 and n_features is the number of features.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples]</span></code>) – Target values.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>]</em>) – Target values.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>self</strong> – Returns self.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">encoder</span></code></p>
+<dd class="field-odd"><p>encoder</p>
 </dd>
 </dl>
 </dd></dl>
@@ -737,7 +737,7 @@ and n_features is the number of features.</p></li>
 Note: potentially dropped features are not included!</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<dd class="field-even"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -748,13 +748,13 @@ Note: potentially dropped features are not included!</p>
 <dd><p>Perform the inverse transformation to encoded data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X_in</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – </p>
+<dd class="field-odd"><p><strong>X_in</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – </p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>p</strong></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">the</span> <span class="pre">same</span> <span class="pre">size</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">X_in</span></code></p>
+<dd class="field-odd"><p>array, the same size of X_in</p>
 </dd>
 </dl>
 </dd></dl>
@@ -765,13 +765,13 @@ Note: potentially dropped features are not included!</p>
 <dd><p>Perform the transformation to new categorical data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – </p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – </p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>p</strong> – Transformed values with encoding applied.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_numeric</span> <span class="pre">+</span> <span class="pre">N]</span></code></p>
+<dd class="field-odd"><p>array, shape = [n_samples, n_numeric + N]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -798,15 +798,15 @@ value and this coder encodes the features on-the-fly in a single pass.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>verbose</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – integer indicating verbosity of the output. 0 for none.</p></li>
-<li><p><strong>cols</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
-<li><p><strong>drop_invariant</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether or not to drop columns with 0 variance.</p></li>
-<li><p><strong>return_df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
-<li><p><strong>handle_missing</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘error’, ‘return_nan’  and ‘value’, defaults to ‘value’, which returns the target mean.</p></li>
-<li><p><strong>handle_unknown</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘error’, ‘return_nan’ and ‘value’, defaults to ‘value’, which returns the target mean.</p></li>
-<li><p><strong>sigma</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – adds normal (Gaussian) distribution noise into training data in order to decrease overfitting (testing data are untouched).
+<li><p><strong>verbose</strong> (<em>int</em>) – integer indicating verbosity of the output. 0 for none.</p></li>
+<li><p><strong>cols</strong> (<em>list</em>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
+<li><p><strong>drop_invariant</strong> (<em>bool</em>) – boolean for whether or not to drop columns with 0 variance.</p></li>
+<li><p><strong>return_df</strong> (<em>bool</em>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
+<li><p><strong>handle_missing</strong> (<em>str</em>) – options are ‘error’, ‘return_nan’  and ‘value’, defaults to ‘value’, which returns the target mean.</p></li>
+<li><p><strong>handle_unknown</strong> (<em>str</em>) – options are ‘error’, ‘return_nan’ and ‘value’, defaults to ‘value’, which returns the target mean.</p></li>
+<li><p><strong>sigma</strong> (<em>float</em>) – adds normal (Gaussian) distribution noise into training data in order to decrease overfitting (testing data are untouched).
 sigma gives the standard deviation (spread or “width”) of the normal distribution.</p></li>
-<li><p><strong>a</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – additive smoothing (it is the same variable as “m” in m-probability estimate). By default set to 1.</p></li>
+<li><p><strong>a</strong> (<em>float</em>) – additive smoothing (it is the same variable as “m” in m-probability estimate). By default set to 1.</p></li>
 </ul>
 </dd>
 </dl>
@@ -861,16 +861,16 @@ sigma gives the standard deviation (spread or “width”) of the normal distrib
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – Training vectors, where n_samples is the number of samples
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – Training vectors, where n_samples is the number of samples
 and n_features is the number of features.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples]</span></code>) – Target values.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>]</em>) – Target values.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>self</strong> – Returns self.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">encoder</span></code></p>
+<dd class="field-odd"><p>encoder</p>
 </dd>
 </dl>
 </dd></dl>
@@ -885,7 +885,7 @@ and n_features is the number of features.</p></li>
 Note: potentially dropped features are not included!</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<dd class="field-even"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -897,15 +897,15 @@ Note: potentially dropped features are not included!</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – </p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples]</span> <span class="pre">when</span> <span class="pre">transform</span> <span class="pre">by</span> <span class="pre">leave</span> <span class="pre">one</span> <span class="pre">out</span></code>) – None, when transform without target information (such as transform test set)</p></li>
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – </p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>] </em><em>when transform by leave one out</em>) – None, when transform without target information (such as transform test set)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>p</strong> – Transformed values with encoding applied.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_numeric</span> <span class="pre">+</span> <span class="pre">N]</span></code></p>
+<dd class="field-odd"><p>array, shape = [n_samples, n_numeric + N]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -929,16 +929,16 @@ Note: potentially dropped features are not included!</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – Training vectors, where n_samples is the number of samples
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – Training vectors, where n_samples is the number of samples
 and n_features is the number of features.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples]</span></code>) – Target values.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>]</em>) – Target values.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>self</strong> – Returns self.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">encoder</span></code></p>
+<dd class="field-odd"><p>encoder</p>
 </dd>
 </dl>
 </dd></dl>
@@ -950,15 +950,15 @@ and n_features is the number of features.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – </p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples]</span></code>) – </p></li>
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – </p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>]</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>p</strong> – Transformed values with encoding applied.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_numeric</span> <span class="pre">+</span> <span class="pre">N]</span></code></p>
+<dd class="field-odd"><p>array, shape = [n_samples, n_numeric + N]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -983,15 +983,15 @@ If the target is binomial, the encoder returns regularized log odds per category
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>verbose</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – integer indicating verbosity of the output. 0 for none.</p></li>
-<li><p><strong>cols</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
-<li><p><strong>drop_invariant</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether or not to drop encoded columns with 0 variance.</p></li>
-<li><p><strong>return_df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
-<li><p><strong>handle_missing</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘return_nan’, ‘error’ and ‘value’, defaults to ‘value’, which returns 0.</p></li>
-<li><p><strong>handle_unknown</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘return_nan’, ‘error’ and ‘value’, defaults to ‘value’, which returns 0.</p></li>
-<li><p><strong>randomized</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool,</span></code>) – adds normal (Gaussian) distribution noise into training data in order to decrease overfitting (testing data are untouched).</p></li>
-<li><p><strong>sigma</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – standard deviation (spread or “width”) of the normal distribution.</p></li>
-<li><p><strong>binomial_target</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if True, the target must be binomial with values {0, 1} and Binomial mixed model is used.
+<li><p><strong>verbose</strong> (<em>int</em>) – integer indicating verbosity of the output. 0 for none.</p></li>
+<li><p><strong>cols</strong> (<em>list</em>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
+<li><p><strong>drop_invariant</strong> (<em>bool</em>) – boolean for whether or not to drop encoded columns with 0 variance.</p></li>
+<li><p><strong>return_df</strong> (<em>bool</em>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
+<li><p><strong>handle_missing</strong> (<em>str</em>) – options are ‘return_nan’, ‘error’ and ‘value’, defaults to ‘value’, which returns 0.</p></li>
+<li><p><strong>handle_unknown</strong> (<em>str</em>) – options are ‘return_nan’, ‘error’ and ‘value’, defaults to ‘value’, which returns 0.</p></li>
+<li><p><strong>randomized</strong> (<em>bool</em><em>,</em>) – adds normal (Gaussian) distribution noise into training data in order to decrease overfitting (testing data are untouched).</p></li>
+<li><p><strong>sigma</strong> (<em>float</em>) – standard deviation (spread or “width”) of the normal distribution.</p></li>
+<li><p><strong>binomial_target</strong> (<em>bool</em>) – if True, the target must be binomial with values {0, 1} and Binomial mixed model is used.
 If False, the target must be continuous and Linear mixed model is used.
 If None (the default), a heuristic is applied to estimate the target type.</p></li>
 </ul>
@@ -1042,16 +1042,16 @@ If None (the default), a heuristic is applied to estimate the target type.</p></
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – Training vectors, where n_samples is the number of samples
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – Training vectors, where n_samples is the number of samples
 and n_features is the number of features.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples]</span></code>) – Binary target values.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>]</em>) – Binary target values.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>self</strong> – Returns self.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">encoder</span></code></p>
+<dd class="field-odd"><p>encoder</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1066,7 +1066,7 @@ and n_features is the number of features.</p></li>
 Note: potentially dropped features are not included!</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<dd class="field-even"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1079,15 +1079,15 @@ Note: potentially dropped features are not included!</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – </p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples]</span> <span class="pre">when</span> <span class="pre">transform</span> <span class="pre">by</span> <span class="pre">leave</span> <span class="pre">one</span> <span class="pre">out</span></code>) – None, when transform without target information (such as transform test set)</p></li>
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – </p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>] </em><em>when transform by leave one out</em>) – None, when transform without target information (such as transform test set)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>p</strong> – Transformed values with encoding applied.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_numeric</span> <span class="pre">+</span> <span class="pre">N]</span></code></p>
+<dd class="field-odd"><p>array, shape = [n_samples, n_numeric + N]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1110,24 +1110,24 @@ before setting them manually, inappropriate setting slows down encoding.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>verbose</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – integer indicating verbosity of the output. 0 for none.</p></li>
-<li><p><strong>cols</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
-<li><p><strong>drop_invariant</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether or not to drop columns with 0 variance.</p></li>
-<li><p><strong>return_df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
-<li><p><strong>hash_method</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – which hashing method to use. Any method from hashlib works.</p></li>
-<li><p><strong>max_process</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – how many processes to use in transform(). Limited in range(1, 64).
+<li><p><strong>verbose</strong> (<em>int</em>) – integer indicating verbosity of the output. 0 for none.</p></li>
+<li><p><strong>cols</strong> (<em>list</em>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
+<li><p><strong>drop_invariant</strong> (<em>bool</em>) – boolean for whether or not to drop columns with 0 variance.</p></li>
+<li><p><strong>return_df</strong> (<em>bool</em>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
+<li><p><strong>hash_method</strong> (<em>str</em>) – which hashing method to use. Any method from hashlib works.</p></li>
+<li><p><strong>max_process</strong> (<em>int</em>) – how many processes to use in transform(). Limited in range(1, 64).
 By default, it uses half of the logical CPUs.
 For example, 4C4T makes max_process=2, 4C8T makes max_process=4.
 Set it larger if you have a strong CPU.
 It is not recommended to set it larger than is the count of the
 logical CPUs as it will actually slow down the encoding.</p></li>
-<li><p><strong>max_sample</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – how many samples to encode by each process at a time.
+<li><p><strong>max_sample</strong> (<em>int</em>) – how many samples to encode by each process at a time.
 This setting is useful on low memory machines.
 By default, max_sample=(all samples num)/(max_process).
 For example, 4C8T CPU with 100,000 samples makes max_sample=25,000,
 6C12T CPU with 100,000 samples makes max_sample=16,666.
 It is not recommended to set it larger than the default value.</p></li>
-<li><p><strong>n_components</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – how many bits to use to represent the feature. By default we use 8 bits.
+<li><p><strong>n_components</strong> (<em>int</em>) – how many bits to use to represent the feature. By default we use 8 bits.
 For high-cardinality features, consider using up-to 32 bits.</p></li>
 </ul>
 </dd>
@@ -1185,16 +1185,16 @@ For high-cardinality features, consider using up-to 32 bits.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – Training vectors, where n_samples is the number of samples
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – Training vectors, where n_samples is the number of samples
 and n_features is the number of features.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples]</span></code>) – Target values.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>]</em>) – Target values.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>self</strong> – Returns self.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">encoder</span></code></p>
+<dd class="field-odd"><p>encoder</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1209,7 +1209,7 @@ and n_features is the number of features.</p></li>
 Note: potentially dropped features are not included!</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<dd class="field-even"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1224,18 +1224,18 @@ also configurable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X_in</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code>) – description text</p></li>
-<li><p><strong>hashing_method</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code>, <em>optional</em>) – description text</p></li>
-<li><p><strong>N</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <em>optional</em>) – description text</p></li>
-<li><p><strong>cols</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <em>optional</em>) – description text</p></li>
-<li><p><strong>make_copy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <em>optional</em>) – description text</p></li>
+<li><p><strong>X_in</strong> (<em>pandas dataframe</em>) – description text</p></li>
+<li><p><strong>hashing_method</strong> (<em>string</em><em>, </em><em>optional</em>) – description text</p></li>
+<li><p><strong>N</strong> (<em>int</em><em>, </em><em>optional</em>) – description text</p></li>
+<li><p><strong>cols</strong> (<em>list</em><em>, </em><em>optional</em>) – description text</p></li>
+<li><p><strong>make_copy</strong> (<em>bool</em><em>, </em><em>optional</em>) – description text</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>out</strong> – A hashing encoded dataframe.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dataframe</span></code></p>
+<dd class="field-odd"><p>dataframe</p>
 </dd>
 </dl>
 <p class="rubric">References</p>
@@ -1266,14 +1266,14 @@ for Large Scale Multitask Learning. Proc. ICML.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>verbose</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – integer indicating verbosity of the output. 0 for none.</p></li>
-<li><p><strong>cols</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
-<li><p><strong>drop_invariant</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether or not to drop columns with 0 variance.</p></li>
-<li><p><strong>return_df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
-<li><p><strong>handle_unknown</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
+<li><p><strong>verbose</strong> (<em>int</em>) – integer indicating verbosity of the output. 0 for none.</p></li>
+<li><p><strong>cols</strong> (<em>list</em>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
+<li><p><strong>drop_invariant</strong> (<em>bool</em>) – boolean for whether or not to drop columns with 0 variance.</p></li>
+<li><p><strong>return_df</strong> (<em>bool</em>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
+<li><p><strong>handle_unknown</strong> (<em>str</em>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
 an extra column will be added in if the transform matrix has unknown categories.  This can cause
 unexpected changes in dimension in some cases.</p></li>
-<li><p><strong>handle_missing</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
+<li><p><strong>handle_missing</strong> (<em>str</em>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
 an extra column will be added in if the transform matrix has nan values.  This can cause
 unexpected changes in dimension in some cases.</p></li>
 </ul>
@@ -1338,16 +1338,16 @@ unexpected changes in dimension in some cases.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – Training vectors, where n_samples is the number of samples
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – Training vectors, where n_samples is the number of samples
 and n_features is the number of features.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples]</span></code>) – Target values.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>]</em>) – Target values.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>self</strong> – Returns self.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">encoder</span></code></p>
+<dd class="field-odd"><p>encoder</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1367,7 +1367,7 @@ and n_features is the number of features.</p></li>
 Note: potentially dropped features are not included!</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<dd class="field-even"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1383,13 +1383,13 @@ Note: potentially dropped features are not included!</p>
 <dd><p>Perform the transformation to new categorical data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – </p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – </p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>p</strong> – Transformed values with encoding applied.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_numeric</span> <span class="pre">+</span> <span class="pre">N]</span></code></p>
+<dd class="field-odd"><p>array, shape = [n_samples, n_numeric + N]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1452,15 +1452,15 @@ not suffer from fatal failures.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>verbose</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – integer indicating verbosity of the output. 0 for none.</p></li>
-<li><p><strong>cols</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
-<li><p><strong>drop_invariant</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether or not to drop encoded columns with 0 variance.</p></li>
-<li><p><strong>return_df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
-<li><p><strong>handle_missing</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘return_nan’, ‘error’ and ‘value’, defaults to ‘value’, which returns the prior probability.</p></li>
-<li><p><strong>handle_unknown</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘return_nan’, ‘error’ and ‘value’, defaults to ‘value’, which returns the prior probability.</p></li>
-<li><p><strong>model</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘pooled’, ‘beta’, ‘binary’ and ‘independent’, defaults to ‘independent’.</p></li>
-<li><p><strong>randomized</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool,</span></code>) – adds normal (Gaussian) distribution noise into training data in order to decrease overfitting (testing data are untouched).</p></li>
-<li><p><strong>sigma</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – standard deviation (spread or “width”) of the normal distribution.</p></li>
+<li><p><strong>verbose</strong> (<em>int</em>) – integer indicating verbosity of the output. 0 for none.</p></li>
+<li><p><strong>cols</strong> (<em>list</em>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
+<li><p><strong>drop_invariant</strong> (<em>bool</em>) – boolean for whether or not to drop encoded columns with 0 variance.</p></li>
+<li><p><strong>return_df</strong> (<em>bool</em>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
+<li><p><strong>handle_missing</strong> (<em>str</em>) – options are ‘return_nan’, ‘error’ and ‘value’, defaults to ‘value’, which returns the prior probability.</p></li>
+<li><p><strong>handle_unknown</strong> (<em>str</em>) – options are ‘return_nan’, ‘error’ and ‘value’, defaults to ‘value’, which returns the prior probability.</p></li>
+<li><p><strong>model</strong> (<em>str</em>) – options are ‘pooled’, ‘beta’, ‘binary’ and ‘independent’, defaults to ‘independent’.</p></li>
+<li><p><strong>randomized</strong> (<em>bool</em><em>,</em>) – adds normal (Gaussian) distribution noise into training data in order to decrease overfitting (testing data are untouched).</p></li>
+<li><p><strong>sigma</strong> (<em>float</em>) – standard deviation (spread or “width”) of the normal distribution.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1533,16 +1533,16 @@ not suffer from fatal failures.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – Training vectors, where n_samples is the number of samples
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – Training vectors, where n_samples is the number of samples
 and n_features is the number of features.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples]</span></code>) – Binary target values.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>]</em>) – Binary target values.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>self</strong> – Returns self.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">encoder</span></code></p>
+<dd class="field-odd"><p>encoder</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1557,7 +1557,7 @@ and n_features is the number of features.</p></li>
 Note: potentially dropped features are not included!</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<dd class="field-even"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1570,15 +1570,15 @@ it is important to also pass the target in order to apply leave one out.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – </p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples]</span> <span class="pre">when</span> <span class="pre">transform</span> <span class="pre">by</span> <span class="pre">leave</span> <span class="pre">one</span> <span class="pre">out</span></code>) – None, when transform without target information (such as transform test set)</p></li>
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – </p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>] </em><em>when transform by leave one out</em>) – None, when transform without target information (such as transform test set)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>p</strong> – Transformed values with encoding applied.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_numeric</span> <span class="pre">+</span> <span class="pre">N]</span></code></p>
+<dd class="field-odd"><p>array, shape = [n_samples, n_numeric + N]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1596,13 +1596,13 @@ of outliers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>verbose</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – integer indicating verbosity of the output. 0 for none.</p></li>
-<li><p><strong>cols</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
-<li><p><strong>drop_invariant</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether or not to drop columns with 0 variance.</p></li>
-<li><p><strong>return_df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
-<li><p><strong>handle_missing</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘error’, ‘return_nan’  and ‘value’, defaults to ‘value’, which returns the target mean.</p></li>
-<li><p><strong>handle_unknown</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘error’, ‘return_nan’ and ‘value’, defaults to ‘value’, which returns the target mean.</p></li>
-<li><p><strong>sigma</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – adds normal (Gaussian) distribution noise into training data in order to decrease overfitting (testing
+<li><p><strong>verbose</strong> (<em>int</em>) – integer indicating verbosity of the output. 0 for none.</p></li>
+<li><p><strong>cols</strong> (<em>list</em>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
+<li><p><strong>drop_invariant</strong> (<em>bool</em>) – boolean for whether or not to drop columns with 0 variance.</p></li>
+<li><p><strong>return_df</strong> (<em>bool</em>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
+<li><p><strong>handle_missing</strong> (<em>str</em>) – options are ‘error’, ‘return_nan’  and ‘value’, defaults to ‘value’, which returns the target mean.</p></li>
+<li><p><strong>handle_unknown</strong> (<em>str</em>) – options are ‘error’, ‘return_nan’ and ‘value’, defaults to ‘value’, which returns the target mean.</p></li>
+<li><p><strong>sigma</strong> (<em>float</em>) – adds normal (Gaussian) distribution noise into training data in order to decrease overfitting (testing
 data are untouched). Sigma gives the standard deviation (spread or “width”) of the normal distribution.
 The optimal value is commonly between 0.05 and 0.6. The default is to not add noise, but that leads
 to significantly suboptimal results.</p></li>
@@ -1654,16 +1654,16 @@ to significantly suboptimal results.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – Training vectors, where n_samples is the number of samples
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – Training vectors, where n_samples is the number of samples
 and n_features is the number of features.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples]</span></code>) – Target values.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>]</em>) – Target values.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>self</strong> – Returns self.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">encoder</span></code></p>
+<dd class="field-odd"><p>encoder</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1688,7 +1688,7 @@ and n_features is the number of features.</p></li>
 Note: potentially dropped features are not included!</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<dd class="field-even"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1700,15 +1700,15 @@ Note: potentially dropped features are not included!</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – </p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples]</span> <span class="pre">when</span> <span class="pre">transform</span> <span class="pre">by</span> <span class="pre">leave</span> <span class="pre">one</span> <span class="pre">out</span></code>) – None, when transform without target information (such as transform test set)</p></li>
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – </p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>] </em><em>when transform by leave one out</em>) – None, when transform without target information (such as transform test set)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>p</strong> – Transformed values with encoding applied.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_numeric</span> <span class="pre">+</span> <span class="pre">N]</span></code></p>
+<dd class="field-odd"><p>array, shape = [n_samples, n_numeric + N]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1733,15 +1733,15 @@ and <cite>smoothing</cite>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>verbose</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – integer indicating verbosity of the output. 0 for none.</p></li>
-<li><p><strong>cols</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
-<li><p><strong>drop_invariant</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether or not to drop encoded columns with 0 variance.</p></li>
-<li><p><strong>return_df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
-<li><p><strong>handle_missing</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘return_nan’, ‘error’ and ‘value’, defaults to ‘value’, which returns the prior probability.</p></li>
-<li><p><strong>handle_unknown</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘return_nan’, ‘error’ and ‘value’, defaults to ‘value’, which returns the prior probability.</p></li>
-<li><p><strong>randomized</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool,</span></code>) – adds normal (Gaussian) distribution noise into training data in order to decrease overfitting (testing data are untouched).</p></li>
-<li><p><strong>sigma</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – standard deviation (spread or “width”) of the normal distribution.</p></li>
-<li><p><strong>m</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – this is the “m” in the m-probability estimate. Higher value of m results into stronger shrinking.
+<li><p><strong>verbose</strong> (<em>int</em>) – integer indicating verbosity of the output. 0 for none.</p></li>
+<li><p><strong>cols</strong> (<em>list</em>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
+<li><p><strong>drop_invariant</strong> (<em>bool</em>) – boolean for whether or not to drop encoded columns with 0 variance.</p></li>
+<li><p><strong>return_df</strong> (<em>bool</em>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
+<li><p><strong>handle_missing</strong> (<em>str</em>) – options are ‘return_nan’, ‘error’ and ‘value’, defaults to ‘value’, which returns the prior probability.</p></li>
+<li><p><strong>handle_unknown</strong> (<em>str</em>) – options are ‘return_nan’, ‘error’ and ‘value’, defaults to ‘value’, which returns the prior probability.</p></li>
+<li><p><strong>randomized</strong> (<em>bool</em><em>,</em>) – adds normal (Gaussian) distribution noise into training data in order to decrease overfitting (testing data are untouched).</p></li>
+<li><p><strong>sigma</strong> (<em>float</em>) – standard deviation (spread or “width”) of the normal distribution.</p></li>
+<li><p><strong>m</strong> (<em>float</em>) – this is the “m” in the m-probability estimate. Higher value of m results into stronger shrinking.
 M is non-negative.</p></li>
 </ul>
 </dd>
@@ -1803,16 +1803,16 @@ M is non-negative.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – Training vectors, where n_samples is the number of samples
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – Training vectors, where n_samples is the number of samples
 and n_features is the number of features.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples]</span></code>) – Binary target values.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>]</em>) – Binary target values.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>self</strong> – Returns self.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">encoder</span></code></p>
+<dd class="field-odd"><p>encoder</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1827,7 +1827,7 @@ and n_features is the number of features.</p></li>
 Note: potentially dropped features are not included!</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<dd class="field-even"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1840,15 +1840,15 @@ Note: potentially dropped features are not included!</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – </p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples]</span> <span class="pre">when</span> <span class="pre">transform</span> <span class="pre">by</span> <span class="pre">leave</span> <span class="pre">one</span> <span class="pre">out</span></code>) – None, when transform without target information (such as transform test set)</p></li>
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – </p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>] </em><em>when transform by leave one out</em>) – None, when transform without target information (such as transform test set)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>p</strong> – Transformed values with encoding applied.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_numeric</span> <span class="pre">+</span> <span class="pre">N]</span></code></p>
+<dd class="field-odd"><p>array, shape = [n_samples, n_numeric + N]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1863,16 +1863,16 @@ Note: potentially dropped features are not included!</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>verbose</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – integer indicating verbosity of the output. 0 for none.</p></li>
-<li><p><strong>cols</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
-<li><p><strong>drop_invariant</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether or not to drop columns with 0 variance.</p></li>
-<li><p><strong>return_df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
-<li><p><strong>use_cat_names</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if True, category values will be included in the encoded column names. Since this can result in duplicate column names, duplicates are suffixed with ‘#’ symbol until a unique name is generated.
+<li><p><strong>verbose</strong> (<em>int</em>) – integer indicating verbosity of the output. 0 for none.</p></li>
+<li><p><strong>cols</strong> (<em>list</em>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
+<li><p><strong>drop_invariant</strong> (<em>bool</em>) – boolean for whether or not to drop columns with 0 variance.</p></li>
+<li><p><strong>return_df</strong> (<em>bool</em>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
+<li><p><strong>use_cat_names</strong> (<em>bool</em>) – if True, category values will be included in the encoded column names. Since this can result in duplicate column names, duplicates are suffixed with ‘#’ symbol until a unique name is generated.
 If False, category indices will be used instead of the category values.</p></li>
-<li><p><strong>handle_unknown</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
+<li><p><strong>handle_unknown</strong> (<em>str</em>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
 an extra column will be added in if the transform matrix has unknown categories.  This can cause
 unexpected changes in dimension in some cases.</p></li>
-<li><p><strong>handle_missing</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
+<li><p><strong>handle_missing</strong> (<em>str</em>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
 an extra column will be added in if the transform matrix has nan values.  This can cause
 unexpected changes in dimension in some cases.</p></li>
 </ul>
@@ -1945,16 +1945,16 @@ unexpected changes in dimension in some cases.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – Training vectors, where n_samples is the number of samples
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – Training vectors, where n_samples is the number of samples
 and n_features is the number of features.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples]</span></code>) – Target values.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>]</em>) – Target values.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>self</strong> – Returns self.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">encoder</span></code></p>
+<dd class="field-odd"><p>encoder</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1970,13 +1970,13 @@ and n_features is the number of features.</p></li>
 <dd><p>Convert numerical variable into dummy variables</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X_in</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – </p>
+<dd class="field-odd"><p><strong>X_in</strong> (<em>DataFrame</em>) – </p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>dummies</strong></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+<dd class="field-odd"><p>DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1991,7 +1991,7 @@ and n_features is the number of features.</p></li>
 Note: potentially dropped features are not included!</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<dd class="field-even"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2002,13 +2002,13 @@ Note: potentially dropped features are not included!</p>
 <dd><p>Perform the inverse transformation to encoded data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X_in</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – </p>
+<dd class="field-odd"><p><strong>X_in</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – </p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>p</strong></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">the</span> <span class="pre">same</span> <span class="pre">size</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">X_in</span></code></p>
+<dd class="field-odd"><p>array, the same size of X_in</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2020,15 +2020,15 @@ Note: potentially dropped features are not included!</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – </p></li>
-<li><p><strong>mapping</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list-like</span></code>) – Contains mappings of column to be transformed to it’s new columns and value represented</p></li>
+<li><p><strong>X</strong> (<em>DataFrame</em>) – </p></li>
+<li><p><strong>mapping</strong> (<em>list-like</em>) – Contains mappings of column to be transformed to it’s new columns and value represented</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>numerical</strong></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+<dd class="field-odd"><p>DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2039,13 +2039,13 @@ Note: potentially dropped features are not included!</p>
 <dd><p>Perform the transformation to new categorical data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – </p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – </p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>p</strong> – Transformed values with encoding applied.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_numeric</span> <span class="pre">+</span> <span class="pre">N]</span></code></p>
+<dd class="field-odd"><p>array, shape = [n_samples, n_numeric + N]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2063,11 +2063,11 @@ are assumed to have no true order and integers are selected at random.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>verbose</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – integer indicating verbosity of the output. 0 for none.</p></li>
-<li><p><strong>cols</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
-<li><p><strong>drop_invariant</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether or not to drop columns with 0 variance.</p></li>
-<li><p><strong>return_df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
-<li><p><strong>mapping</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">dicts</span></code>) – <p>a mapping of class to label to use for the encoding, optional.
+<li><p><strong>verbose</strong> (<em>int</em>) – integer indicating verbosity of the output. 0 for none.</p></li>
+<li><p><strong>cols</strong> (<em>list</em>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
+<li><p><strong>drop_invariant</strong> (<em>bool</em>) – boolean for whether or not to drop columns with 0 variance.</p></li>
+<li><p><strong>return_df</strong> (<em>bool</em>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
+<li><p><strong>mapping</strong> (<em>list of dicts</em>) – <p>a mapping of class to label to use for the encoding, optional.
 the dict contains the keys ‘col’ and ‘mapping’.
 the value of ‘col’ should be the feature name.
 the value of ‘mapping’ should be a dictionary of ‘original_label’ to ‘encoded_label’.
@@ -2078,8 +2078,8 @@ example mapping: [</p>
 </div></blockquote>
 <p>]</p>
 </p></li>
-<li><p><strong>handle_unknown</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘error’, ‘return_nan’ and ‘value’, defaults to ‘value’, which will impute the category -1.</p></li>
-<li><p><strong>handle_missing</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘error’, ‘return_nan’, and ‘value, default to ‘value’, which treat nan as a category at fit time,
+<li><p><strong>handle_unknown</strong> (<em>str</em>) – options are ‘error’, ‘return_nan’ and ‘value’, defaults to ‘value’, which will impute the category -1.</p></li>
+<li><p><strong>handle_missing</strong> (<em>str</em>) – options are ‘error’, ‘return_nan’, and ‘value, default to ‘value’, which treat nan as a category at fit time,
 or -2 at transform time if nan is not a category during fit.</p></li>
 </ul>
 </dd>
@@ -2140,16 +2140,16 @@ or -2 at transform time if nan is not a category during fit.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – Training vectors, where n_samples is the number of samples
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – Training vectors, where n_samples is the number of samples
 and n_features is the number of features.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples]</span></code>) – Target values.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>]</em>) – Target values.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>self</strong> – Returns self.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">encoder</span></code></p>
+<dd class="field-odd"><p>encoder</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2164,7 +2164,7 @@ and n_features is the number of features.</p></li>
 Note: potentially dropped features are not included!</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<dd class="field-even"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2177,13 +2177,13 @@ it will return nan for handle_missing and handle_unknown settings that break the
 warnings when some of those cases occur.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X_in</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – </p>
+<dd class="field-odd"><p><strong>X_in</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – </p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>p</strong></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">the</span> <span class="pre">same</span> <span class="pre">size</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">X_in</span></code></p>
+<dd class="field-odd"><p>array, the same size of X_in</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2204,13 +2204,13 @@ are assumed to have no true order and integers are selected at random.</p>
 data ordinarily.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – </p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – </p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>p</strong> – Transformed values with encoding applied.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_numeric</span> <span class="pre">+</span> <span class="pre">N]</span></code></p>
+<dd class="field-odd"><p>array, shape = [n_samples, n_numeric + N]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2225,14 +2225,14 @@ data ordinarily.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>verbose</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – integer indicating verbosity of the output. 0 for none.</p></li>
-<li><p><strong>cols</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
-<li><p><strong>drop_invariant</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether or not to drop columns with 0 variance.</p></li>
-<li><p><strong>return_df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
-<li><p><strong>handle_unknown</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
+<li><p><strong>verbose</strong> (<em>int</em>) – integer indicating verbosity of the output. 0 for none.</p></li>
+<li><p><strong>cols</strong> (<em>list</em>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
+<li><p><strong>drop_invariant</strong> (<em>bool</em>) – boolean for whether or not to drop columns with 0 variance.</p></li>
+<li><p><strong>return_df</strong> (<em>bool</em>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
+<li><p><strong>handle_unknown</strong> (<em>str</em>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
 an extra column will be added in if the transform matrix has unknown categories.  This can cause
 unexpected changes in dimension in some cases.</p></li>
-<li><p><strong>handle_missing</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
+<li><p><strong>handle_missing</strong> (<em>str</em>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
 an extra column will be added in if the transform matrix has nan values.  This can cause
 unexpected changes in dimension in some cases.</p></li>
 </ul>
@@ -2297,16 +2297,16 @@ unexpected changes in dimension in some cases.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – Training vectors, where n_samples is the number of samples
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – Training vectors, where n_samples is the number of samples
 and n_features is the number of features.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples]</span></code>) – Target values.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>]</em>) – Target values.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>self</strong> – Returns self.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">encoder</span></code></p>
+<dd class="field-odd"><p>encoder</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2326,7 +2326,7 @@ and n_features is the number of features.</p></li>
 Note: potentially dropped features are not included!</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<dd class="field-even"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2342,13 +2342,13 @@ Note: potentially dropped features are not included!</p>
 <dd><p>Perform the transformation to new categorical data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – </p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – </p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>p</strong> – Transformed values with encoding applied.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_numeric</span> <span class="pre">+</span> <span class="pre">N]</span></code></p>
+<dd class="field-odd"><p>array, shape = [n_samples, n_numeric + N]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2363,14 +2363,14 @@ Note: potentially dropped features are not included!</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>verbose</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – integer indicating verbosity of the output. 0 for none.</p></li>
-<li><p><strong>cols</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
-<li><p><strong>drop_invariant</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether or not to drop columns with 0 variance.</p></li>
-<li><p><strong>return_df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
-<li><p><strong>handle_unknown</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
+<li><p><strong>verbose</strong> (<em>int</em>) – integer indicating verbosity of the output. 0 for none.</p></li>
+<li><p><strong>cols</strong> (<em>list</em>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
+<li><p><strong>drop_invariant</strong> (<em>bool</em>) – boolean for whether or not to drop columns with 0 variance.</p></li>
+<li><p><strong>return_df</strong> (<em>bool</em>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
+<li><p><strong>handle_unknown</strong> (<em>str</em>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
 an extra column will be added in if the transform matrix has unknown categories.  This can cause
 unexpected changes in dimension in some cases.</p></li>
-<li><p><strong>handle_missing</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
+<li><p><strong>handle_missing</strong> (<em>str</em>) – options are ‘error’, ‘return_nan’, ‘value’, and ‘indicator’. The default is ‘value’. Warning: if indicator is used,
 an extra column will be added in if the transform matrix has nan values.  This can cause
 unexpected changes in dimension in some cases.</p></li>
 </ul>
@@ -2435,16 +2435,16 @@ unexpected changes in dimension in some cases.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – Training vectors, where n_samples is the number of samples
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – Training vectors, where n_samples is the number of samples
 and n_features is the number of features.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples]</span></code>) – Target values.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>]</em>) – Target values.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>self</strong> – Returns self.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">encoder</span></code></p>
+<dd class="field-odd"><p>encoder</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2464,7 +2464,7 @@ and n_features is the number of features.</p></li>
 Note: potentially dropped features are not included!</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<dd class="field-even"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2480,13 +2480,13 @@ Note: potentially dropped features are not included!</p>
 <dd><p>Perform the transformation to new categorical data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – </p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – </p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>p</strong> – Transformed values with encoding applied.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_numeric</span> <span class="pre">+</span> <span class="pre">N]</span></code></p>
+<dd class="field-odd"><p>array, shape = [n_samples, n_numeric + N]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2505,14 +2505,14 @@ given particular categorical value and the expected value of the target over all
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>verbose</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – integer indicating verbosity of the output. 0 for none.</p></li>
-<li><p><strong>cols</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
-<li><p><strong>drop_invariant</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether or not to drop columns with 0 variance.</p></li>
-<li><p><strong>return_df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
-<li><p><strong>handle_missing</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘error’, ‘return_nan’  and ‘value’, defaults to ‘value’, which returns the target mean.</p></li>
-<li><p><strong>handle_unknown</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘error’, ‘return_nan’ and ‘value’, defaults to ‘value’, which returns the target mean.</p></li>
-<li><p><strong>min_samples_leaf</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – minimum samples to take category average into account.</p></li>
-<li><p><strong>smoothing</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – smoothing effect to balance categorical average vs prior. Higher value means stronger regularization.
+<li><p><strong>verbose</strong> (<em>int</em>) – integer indicating verbosity of the output. 0 for none.</p></li>
+<li><p><strong>cols</strong> (<em>list</em>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
+<li><p><strong>drop_invariant</strong> (<em>bool</em>) – boolean for whether or not to drop columns with 0 variance.</p></li>
+<li><p><strong>return_df</strong> (<em>bool</em>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
+<li><p><strong>handle_missing</strong> (<em>str</em>) – options are ‘error’, ‘return_nan’  and ‘value’, defaults to ‘value’, which returns the target mean.</p></li>
+<li><p><strong>handle_unknown</strong> (<em>str</em>) – options are ‘error’, ‘return_nan’ and ‘value’, defaults to ‘value’, which returns the target mean.</p></li>
+<li><p><strong>min_samples_leaf</strong> (<em>int</em>) – minimum samples to take category average into account.</p></li>
+<li><p><strong>smoothing</strong> (<em>float</em>) – smoothing effect to balance categorical average vs prior. Higher value means stronger regularization.
 The value must be strictly bigger than 0.</p></li>
 </ul>
 </dd>
@@ -2562,16 +2562,16 @@ The value must be strictly bigger than 0.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – Training vectors, where n_samples is the number of samples
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – Training vectors, where n_samples is the number of samples
 and n_features is the number of features.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples]</span></code>) – Target values.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>]</em>) – Target values.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>self</strong> – Returns self.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">encoder</span></code></p>
+<dd class="field-odd"><p>encoder</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2591,7 +2591,7 @@ and n_features is the number of features.</p></li>
 Note: potentially dropped features are not included!</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<dd class="field-even"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2608,15 +2608,15 @@ Note: potentially dropped features are not included!</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – </p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples]</span> <span class="pre">when</span> <span class="pre">transform</span> <span class="pre">by</span> <span class="pre">leave</span> <span class="pre">one</span> <span class="pre">out</span></code>) – None, when transform without target info (such as transform test set)</p></li>
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – </p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>] </em><em>when transform by leave one out</em>) – None, when transform without target info (such as transform test set)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>p</strong> – Transformed values with encoding applied.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_numeric</span> <span class="pre">+</span> <span class="pre">N]</span></code></p>
+<dd class="field-odd"><p>array, shape = [n_samples, n_numeric + N]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2631,15 +2631,15 @@ Note: potentially dropped features are not included!</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>verbose</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – integer indicating verbosity of the output. 0 for none.</p></li>
-<li><p><strong>cols</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
-<li><p><strong>drop_invariant</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether or not to drop columns with 0 variance.</p></li>
-<li><p><strong>return_df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
-<li><p><strong>handle_missing</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘return_nan’, ‘error’ and ‘value’, defaults to ‘value’, which will assume WOE=0.</p></li>
-<li><p><strong>handle_unknown</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – options are ‘return_nan’, ‘error’ and ‘value’, defaults to ‘value’, which will assume WOE=0.</p></li>
-<li><p><strong>randomized</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool,</span></code>) – adds normal (Gaussian) distribution noise into training data in order to decrease overfitting (testing data are untouched).</p></li>
-<li><p><strong>sigma</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – standard deviation (spread or “width”) of the normal distribution.</p></li>
-<li><p><strong>regularization</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – the purpose of regularization is mostly to prevent division by zero.
+<li><p><strong>verbose</strong> (<em>int</em>) – integer indicating verbosity of the output. 0 for none.</p></li>
+<li><p><strong>cols</strong> (<em>list</em>) – a list of columns to encode, if None, all string columns will be encoded.</p></li>
+<li><p><strong>drop_invariant</strong> (<em>bool</em>) – boolean for whether or not to drop columns with 0 variance.</p></li>
+<li><p><strong>return_df</strong> (<em>bool</em>) – boolean for whether to return a pandas DataFrame from transform (otherwise it will be a numpy array).</p></li>
+<li><p><strong>handle_missing</strong> (<em>str</em>) – options are ‘return_nan’, ‘error’ and ‘value’, defaults to ‘value’, which will assume WOE=0.</p></li>
+<li><p><strong>handle_unknown</strong> (<em>str</em>) – options are ‘return_nan’, ‘error’ and ‘value’, defaults to ‘value’, which will assume WOE=0.</p></li>
+<li><p><strong>randomized</strong> (<em>bool</em><em>,</em>) – adds normal (Gaussian) distribution noise into training data in order to decrease overfitting (testing data are untouched).</p></li>
+<li><p><strong>sigma</strong> (<em>float</em>) – standard deviation (spread or “width”) of the normal distribution.</p></li>
+<li><p><strong>regularization</strong> (<em>float</em>) – the purpose of regularization is mostly to prevent division by zero.
 When regularization is 0, you may encounter division by zero.</p></li>
 </ul>
 </dd>
@@ -2689,16 +2689,16 @@ When regularization is 0, you may encounter division by zero.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – Training vectors, where n_samples is the number of samples
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – Training vectors, where n_samples is the number of samples
 and n_features is the number of features.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples]</span></code>) – Binary target values.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>]</em>) – Binary target values.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>self</strong> – Returns self.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">encoder</span></code></p>
+<dd class="field-odd"><p>encoder</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2713,7 +2713,7 @@ and n_features is the number of features.</p></li>
 Note: potentially dropped features are not included!</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<dd class="field-even"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2726,15 +2726,15 @@ it is important to also pass the target in order to apply leave one out.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – </p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples]</span> <span class="pre">when</span> <span class="pre">transform</span> <span class="pre">by</span> <span class="pre">leave</span> <span class="pre">one</span> <span class="pre">out</span></code>) – None, when transform without target information (such as transform test set)</p></li>
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – </p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape =</em><em> [</em><em>n_samples</em><em>] </em><em>when transform by leave one out</em>) – None, when transform without target information (such as transform test set)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>p</strong> – Transformed values with encoding applied.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_numeric</span> <span class="pre">+</span> <span class="pre">N]</span></code></p>
+<dd class="field-odd"><p>array, shape = [n_samples, n_numeric + N]</p>
 </dd>
 </dl>
 </dd></dl>

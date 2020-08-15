@@ -333,84 +333,13 @@
 <dl class="py class">
 <dt id="ballet.validation.feature_acceptance.validator.GFSSFAccepter">
 <em class="property">class </em><code class="sig-prename descclassname">ballet.validation.feature_acceptance.validator.</code><code class="sig-name descname">GFSSFAccepter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">lmbda_1</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">lmbda_2</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">lambda_1_adjustment</span><span class="o">=</span><span class="default_value">64</span></em>, <em class="sig-param"><span class="n">lambda_2_adjustment</span><span class="o">=</span><span class="default_value">64</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_acceptance/validator.html#GFSSFAccepter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.GFSSFAccepter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="ballet.validation.base.html#ballet.validation.base.FeatureAccepter" title="ballet.validation.base.FeatureAccepter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.FeatureAccepter</span></code></a></p>
-<p>A feature acceptance evaluator that uses a modified version of
-GFSSF[1] - specifically, lines 1 - 8 of agGFSSF where we do not
-remove accepted but redundant features on line 8.</p>
-<dl class="py attribute">
-<dt id="ballet.validation.feature_acceptance.validator.GFSSFAccepter.X_df">
-<code class="sig-name descname">X_df</code><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.GFSSFAccepter.X_df" title="Permalink to this definition">¶</a></dt>
-<dd><p>The dataset to build features off of.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>array-like</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="ballet.validation.feature_acceptance.validator.GFSSFAccepter.y">
-<code class="sig-name descname">y</code><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.GFSSFAccepter.y" title="Permalink to this definition">¶</a></dt>
-<dd><p>A single-column dataset representing the target
-feature.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>array-like</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="ballet.validation.feature_acceptance.validator.GFSSFAccepter.features">
-<code class="sig-name descname">features</code><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.GFSSFAccepter.features" title="Permalink to this definition">¶</a></dt>
-<dd><p>an array of ballet Features that have
-already been accepted.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>array-like</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="ballet.validation.feature_acceptance.validator.GFSSFAccepter.lmbda_1">
-<code class="sig-name descname">lmbda_1</code><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.GFSSFAccepter.lmbda_1" title="Permalink to this definition">¶</a></dt>
-<dd><p>GFSSF parameter used to calculate the information
-threshold. Default is a function of the entropy of y.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="ballet.validation.feature_acceptance.validator.GFSSFAccepter.lmbda_2">
-<code class="sig-name descname">lmbda_2</code><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.GFSSFAccepter.lmbda_2" title="Permalink to this definition">¶</a></dt>
-<dd><p>GFSSF parameter used to calculate the information
-threshold. Default is a function of the entropy of y.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="ballet.validation.feature_acceptance.validator.GFSSFAccepter.lambda_1_adjustment">
-<code class="sig-name descname">lambda_1_adjustment</code><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.GFSSFAccepter.lambda_1_adjustment" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adjustment to estimated entropy used to
-calculate lmbda_1.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="ballet.validation.feature_acceptance.validator.GFSSFAccepter.lambda_2_adjustment">
-<code class="sig-name descname">lambda_2_adjustment</code><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.GFSSFAccepter.lambda_2_adjustment" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adjustment to estimated entropy used to
-calculate lmbda_2.</p>
-</dd></dl>
-
-<p class="rubric">References</p>
-<dl class="simple">
-<dt>[1] H. Li, X. Wu, Z. Li and W. Ding, “Group Feature Selection</dt><dd><p>with Streaming Features,” 2013 IEEE 13th International
-Conference on Data Mining, Dallas, TX, 2013, pp. 1109-1114.
-doi: 10.1109/ICDM.2013.137</p>
-</dd>
-</dl>
+<dd><p>Bases: <a class="reference internal" href="ballet.validation.base.html#ballet.validation.base.FeatureAcceptanceMixin" title="ballet.validation.base.FeatureAcceptanceMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.FeatureAcceptanceMixin</span></code></a>, <a class="reference internal" href="ballet.validation.gfssf.html#ballet.validation.gfssf.GFSSFPerformanceEvaluator" title="ballet.validation.gfssf.GFSSFPerformanceEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.gfssf.GFSSFPerformanceEvaluator</span></code></a></p>
 <dl class="py method">
 <dt id="ballet.validation.feature_acceptance.validator.GFSSFAccepter.judge">
 <code class="sig-name descname">judge</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_acceptance/validator.html#GFSSFAccepter.judge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.GFSSFAccepter.judge" title="Permalink to this definition">¶</a></dt>
-<dd><p>Judge whether feature should be accepted</p>
+<dd><p>Judge feature acceptance using GFSSF</p>
+<p>Uses lines 1-8 of agGFSSF where we do not remove accepted but
+redundant features on line 8.</p>
 </dd></dl>
 
 </dd></dl>

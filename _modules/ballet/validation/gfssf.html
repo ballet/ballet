@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ballet.validation.feature_api &mdash; ballet 0.7.8 documentation</title>
+  <title>ballet.validation.gfssf &mdash; ballet 0.7.8 documentation</title>
   
 
   
@@ -289,7 +289,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>ballet.validation.feature_api</li>
+      <li>ballet.validation.gfssf</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -304,41 +304,154 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for ballet.validation.feature_api</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+  <h1>Source code for ballet.validation.gfssf</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
-<span class="kn">from</span> <span class="nn">ballet</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
 <span class="kn">from</span> <span class="nn">ballet.feature</span> <span class="kn">import</span> <span class="n">Feature</span>
-<span class="kn">from</span> <span class="nn">ballet.validation.common</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">check_from_class</span><span class="p">,</span> <span class="n">subsample_data_for_validation</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">ballet.validation.feature_api.checks</span> <span class="kn">import</span> <span class="n">FeatureApiCheck</span>
+<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">asarray2d</span>
+<span class="kn">from</span> <span class="nn">ballet.validation.base</span> <span class="kn">import</span> <span class="n">FeaturePerformanceEvaluator</span>
+<span class="kn">from</span> <span class="nn">ballet.validation.entropy</span> <span class="kn">import</span> <span class="n">estimate_entropy</span>
+
+<span class="n">LAMBDA_1_ADJUSTMENT</span> <span class="o">=</span> <span class="mi">64</span>
+<span class="n">LAMBDA_2_ADJUSTMENT</span> <span class="o">=</span> <span class="mi">64</span>
 
 
-<div class="viewcode-block" id="validate_feature_api"><a class="viewcode-back" href="../../../api/ballet.validation.feature_api.html#ballet.validation.feature_api.validate_feature_api">[docs]</a><span class="k">def</span> <span class="nf">validate_feature_api</span><span class="p">(</span>
-    <span class="n">feature</span><span class="p">:</span> <span class="n">Feature</span><span class="p">,</span>
-    <span class="n">X_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
-    <span class="n">y</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
-    <span class="n">subsample</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-    <span class="n">log_advice</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Validating feature </span><span class="si">{</span><span class="n">feature</span><span class="si">!r}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">subsample</span><span class="p">:</span>
-        <span class="n">X_df</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">subsample_data_for_validation</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-    <span class="n">valid</span><span class="p">,</span> <span class="n">failures</span><span class="p">,</span> <span class="n">advice</span> <span class="o">=</span> <span class="n">check_from_class</span><span class="p">(</span>
-        <span class="n">FeatureApiCheck</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">valid</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Feature is valid&#39;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">log_advice</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s1">&#39;Feature is NOT valid; here is some advice for resolving the &#39;</span>
-                <span class="s1">&#39;feature API issues.&#39;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">failure</span><span class="p">,</span> <span class="n">advice_item</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">failures</span><span class="p">,</span> <span class="n">advice</span><span class="p">):</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">failure</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">advice_item</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Feature is NOT valid; failures were </span><span class="si">{</span><span class="n">failures</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_concat_datasets</span><span class="p">(</span>
+    <span class="n">feature_df_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Feature</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+    <span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">omit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Feature</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">omit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">omit</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">return</span> <span class="n">valid</span></div>
+    <span class="n">filtered_dfs</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">feature_df_map</span><span class="p">[</span><span class="n">feature</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">feature_df_map</span>
+        <span class="k">if</span> <span class="n">feature</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">omit</span>
+    <span class="p">]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">filtered_dfs</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_samples</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">asarray2d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">filtered_dfs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">_compute_lmbdas</span><span class="p">(</span>
+    <span class="n">unnorm_lmbda_1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">unnorm_lmbda_2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">features_by_src</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+    <span class="n">num_features</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">features_by_src</span><span class="p">)</span>
+    <span class="n">num_feature_cols</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+        <span class="n">features_by_src</span><span class="p">[</span><span class="n">feat_src</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">feat_src</span> <span class="ow">in</span> <span class="n">features_by_src</span>
+    <span class="p">)</span>
+    <span class="c1"># if there are no features, then don&#39;t adjust the lambdas</span>
+    <span class="c1"># num_feature_cols = max(1, num_feature_cols)</span>
+    <span class="n">lmbda_1</span> <span class="o">=</span> <span class="n">unnorm_lmbda_1</span> <span class="o">/</span> <span class="n">num_features</span>
+    <span class="n">lmbda_2</span> <span class="o">=</span> <span class="n">unnorm_lmbda_2</span> <span class="o">/</span> <span class="n">num_feature_cols</span>
+    <span class="k">return</span> <span class="n">lmbda_1</span><span class="p">,</span> <span class="n">lmbda_2</span>
+
+
+<span class="k">def</span> <span class="nf">_compute_threshold</span><span class="p">(</span>
+    <span class="n">lmbda_1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">lmbda_2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">n_feature_cols</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">n_omitted_cols</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">lmbda_1</span> <span class="o">+</span> <span class="n">lmbda_2</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_feature_cols</span> <span class="o">-</span> <span class="n">n_omitted_cols</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="GFSSFIterationInfo"><a class="viewcode-back" href="../../../api/ballet.validation.gfssf.html#ballet.validation.gfssf.GFSSFIterationInfo">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">GFSSFIterationInfo</span><span class="p">:</span>
+    <span class="n">i</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">candidate_feature</span><span class="p">:</span> <span class="n">Feature</span>
+    <span class="n">candidate_cols</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">candidate_cmi</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">omitted_feature</span><span class="p">:</span> <span class="n">Feature</span>
+    <span class="n">omitted_cols</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">omitted_cmi</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">statistic</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">delta</span><span class="p">:</span> <span class="nb">float</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">)):</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">Feature</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">source</span> <span class="ow">or</span> <span class="s1">&#39;&lt;live object&gt;&#39;</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="nb">format</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GFSSFPerformanceEvaluator"><a class="viewcode-back" href="../../../api/ballet.validation.gfssf.html#ballet.validation.gfssf.GFSSFPerformanceEvaluator">[docs]</a><span class="k">class</span> <span class="nc">GFSSFPerformanceEvaluator</span><span class="p">(</span><span class="n">FeaturePerformanceEvaluator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A feature performance evaluator that uses a modified version of GFSSF[1]</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        lmbda_1: GFSSF parameter used to calculate the information</span>
+<span class="sd">            threshold. Default is a function of the entropy of y.</span>
+<span class="sd">        lmbda_2: GFSSF parameter used to calculate the information</span>
+<span class="sd">            threshold. Default is a function of the entropy of y.</span>
+<span class="sd">        lambda_1_adjustment: Adjustment to estimated entropy used to</span>
+<span class="sd">            calculate lmbda_1.</span>
+<span class="sd">        lambda_2_adjustment: Adjustment to estimated entropy used to</span>
+<span class="sd">            calculate lmbda_2.</span>
+
+<span class="sd">    References:</span>
+<span class="sd">        [1] H. Li, X. Wu, Z. Li and W. Ding, &quot;Group Feature Selection</span>
+<span class="sd">            with Streaming Features,&quot; 2013 IEEE 13th International</span>
+<span class="sd">            Conference on Data Mining, Dallas, TX, 2013, pp. 1109-1114.</span>
+<span class="sd">            doi: 10.1109/ICDM.2013.137</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="n">lmbda_1</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">lmbda_2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">lambda_1_adjustment</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">LAMBDA_1_ADJUSTMENT</span><span class="p">,</span>
+        <span class="n">lambda_2_adjustment</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">LAMBDA_2_ADJUSTMENT</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">lmbda_1</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">lmbda_1</span> <span class="o">=</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">lambda_1_adjustment</span>
+        <span class="k">if</span> <span class="n">lmbda_2</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">lmbda_2</span> <span class="o">=</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">lambda_2_adjustment</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lmbda_1</span> <span class="o">=</span> <span class="n">lmbda_1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lmbda_2</span> <span class="o">=</span> <span class="n">lmbda_2</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{cls}</span><span class="s1">: lmbda_1=</span><span class="si">{lmbda_1:0.4f}</span><span class="s1">, lmbda_2=</span><span class="si">{lmbda_2:0.4f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">cls</span><span class="o">=</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__str__</span><span class="p">(),</span>
+            <span class="n">lmbda_1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lmbda_1</span><span class="p">,</span>
+            <span class="n">lmbda_2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lmbda_2</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_feature_df_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">all_features</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">candidate_feature</span><span class="p">]</span>
+
+        <span class="k">def</span> <span class="nf">as_features</span><span class="p">(</span><span class="n">feature</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="n">feature</span>
+                <span class="o">.</span><span class="n">as_feature_engineering_pipeline</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
+
+        <span class="c1"># map logical feature &quot;id&quot; -&gt; feature values</span>
+        <span class="n">feature_df_map</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">feature</span><span class="p">:</span> <span class="n">as_features</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">all_features</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">feature_df_map</span></div>
 </pre></div>
 
            </div>

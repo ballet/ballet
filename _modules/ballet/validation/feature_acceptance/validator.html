@@ -309,15 +309,13 @@
   <h1>Source code for ballet.validation.feature_acceptance.validator</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">random</span>
 
-<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">asarray2d</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">ballet.util.testing</span> <span class="kn">import</span> <span class="n">seeded</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.base</span> <span class="kn">import</span> <span class="n">FeatureAcceptanceMixin</span><span class="p">,</span> <span class="n">FeatureAccepter</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.common</span> <span class="kn">import</span> <span class="n">RandomFeaturePerformanceEvaluator</span>
-<span class="kn">from</span> <span class="nn">ballet.validation.entropy</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">estimate_conditional_information</span><span class="p">,</span> <span class="n">estimate_entropy</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ballet.validation.entropy</span> <span class="kn">import</span> <span class="n">estimate_conditional_information</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.gfssf</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">LAMBDA_1_ADJUSTMENT</span><span class="p">,</span> <span class="n">LAMBDA_2_ADJUSTMENT</span><span class="p">,</span> <span class="n">_compute_lmbdas</span><span class="p">,</span>
+    <span class="n">GFSSFIterationInfo</span><span class="p">,</span> <span class="n">GFSSFPerformanceEvaluator</span><span class="p">,</span> <span class="n">_compute_lmbdas</span><span class="p">,</span>
     <span class="n">_compute_threshold</span><span class="p">,</span> <span class="n">_concat_datasets</span><span class="p">)</span>
 
 
@@ -344,116 +342,93 @@
         <span class="k">return</span> <span class="kc">True</span></div></div>
 
 
-<div class="viewcode-block" id="GFSSFAccepter"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.GFSSFAccepter">[docs]</a><span class="k">class</span> <span class="nc">GFSSFAccepter</span><span class="p">(</span><span class="n">FeatureAccepter</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A feature acceptance evaluator that uses a modified version of</span>
-<span class="sd">    GFSSF[1] - specifically, lines 1 - 8 of agGFSSF where we do not</span>
-<span class="sd">    remove accepted but redundant features on line 8.</span>
-
-<span class="sd">    Attributes:</span>
-<span class="sd">        X_df (array-like): The dataset to build features off of.</span>
-<span class="sd">        y (array-like): A single-column dataset representing the target</span>
-<span class="sd">            feature.</span>
-<span class="sd">        features (array-like): an array of ballet Features that have</span>
-<span class="sd">            already been accepted.</span>
-<span class="sd">        lmbda_1: GFSSF parameter used to calculate the information</span>
-<span class="sd">            threshold. Default is a function of the entropy of y.</span>
-<span class="sd">        lmbda_2: GFSSF parameter used to calculate the information</span>
-<span class="sd">            threshold. Default is a function of the entropy of y.</span>
-<span class="sd">        lambda_1_adjustment: Adjustment to estimated entropy used to</span>
-<span class="sd">            calculate lmbda_1.</span>
-<span class="sd">        lambda_2_adjustment: Adjustment to estimated entropy used to</span>
-<span class="sd">            calculate lmbda_2.</span>
-
-<span class="sd">    References:</span>
-<span class="sd">        [1] H. Li, X. Wu, Z. Li and W. Ding, &quot;Group Feature Selection</span>
-<span class="sd">            with Streaming Features,&quot; 2013 IEEE 13th International</span>
-<span class="sd">            Conference on Data Mining, Dallas, TX, 2013, pp. 1109-1114.</span>
-<span class="sd">            doi: 10.1109/ICDM.2013.137</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-        <span class="n">lmbda_1</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
-        <span class="n">lmbda_2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
-        <span class="n">lambda_1_adjustment</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">LAMBDA_1_ADJUSTMENT</span><span class="p">,</span>
-        <span class="n">lambda_2_adjustment</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">LAMBDA_2_ADJUSTMENT</span>
-    <span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">lmbda_1</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">lmbda_1</span> <span class="o">=</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">lambda_1_adjustment</span>
-        <span class="k">if</span> <span class="n">lmbda_2</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">lmbda_2</span> <span class="o">=</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">lambda_2_adjustment</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lmbda_1</span> <span class="o">=</span> <span class="n">lmbda_1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lmbda_2</span> <span class="o">=</span> <span class="n">lmbda_2</span>
-
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{str}</span><span class="s1">: lmbda_1=</span><span class="si">{lmbda_1:0.5f}</span><span class="s1">, lmbda_2=</span><span class="si">{lmbda_2:0.5f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="nb">str</span><span class="o">=</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__str__</span><span class="p">(),</span>
-            <span class="n">lmbda_1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lmbda_1</span><span class="p">,</span>
-            <span class="n">lmbda_2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lmbda_2</span><span class="p">)</span>
+<div class="viewcode-block" id="GFSSFAccepter"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.GFSSFAccepter">[docs]</a><span class="k">class</span> <span class="nc">GFSSFAccepter</span><span class="p">(</span><span class="n">FeatureAcceptanceMixin</span><span class="p">,</span> <span class="n">GFSSFPerformanceEvaluator</span><span class="p">):</span>
 
 <div class="viewcode-block" id="GFSSFAccepter.judge"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.GFSSFAccepter.judge">[docs]</a>    <span class="k">def</span> <span class="nf">judge</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Judging Feature using </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="sd">&quot;&quot;&quot;Judge feature acceptance using GFSSF</span>
 
-        <span class="n">all_features</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
-        <span class="n">all_features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">candidate_feature</span><span class="p">)</span>
+<span class="sd">        Uses lines 1-8 of agGFSSF where we do not remove accepted but</span>
+<span class="sd">        redundant features on line 8.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">def</span> <span class="nf">as_features</span><span class="p">(</span><span class="n">feature</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">(</span>
-                <span class="n">feature</span>
-                <span class="o">.</span><span class="n">as_feature_engineering_pipeline</span><span class="p">()</span>
-                <span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Judging feature using </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-        <span class="c1"># map logical feature -&gt; feature values</span>
-        <span class="n">feature_dfs_by_src</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">feature</span><span class="o">.</span><span class="n">source</span><span class="p">:</span> <span class="n">as_features</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">all_features</span>
-        <span class="p">}</span>
+        <span class="n">feature_df_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_feature_df_map</span><span class="p">()</span>
 
-        <span class="n">candidate_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">candidate_feature</span><span class="o">.</span><span class="n">source</span>
-        <span class="n">candidate_df</span> <span class="o">=</span> <span class="n">feature_dfs_by_src</span><span class="p">[</span><span class="n">candidate_source</span><span class="p">]</span>
+        <span class="n">candidate_df</span> <span class="o">=</span> <span class="n">feature_df_map</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">candidate_feature</span><span class="p">]</span>
         <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_candidate_cols</span> <span class="o">=</span> <span class="n">candidate_df</span><span class="o">.</span><span class="n">shape</span>
 
         <span class="n">lmbda_1</span><span class="p">,</span> <span class="n">lmbda_2</span> <span class="o">=</span> <span class="n">_compute_lmbdas</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">lmbda_1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lmbda_2</span><span class="p">,</span> <span class="n">feature_dfs_by_src</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lmbda_1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lmbda_2</span><span class="p">,</span> <span class="n">feature_df_map</span><span class="p">)</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s1">&#39;Candidate Feature Shape: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">candidate_df</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
-        <span class="n">omit_in_test</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">source</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">omit</span> <span class="ow">in</span> <span class="n">omit_in_test</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="s1">&#39;Testing with omitted feature: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">omit</span> <span class="ow">or</span> <span class="s1">&#39;None&#39;</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;Recomputed lambda_1=</span><span class="si">{</span><span class="n">lmbda_1</span><span class="si">:</span><span class="s1">0.4f</span><span class="si">}</span><span class="s1">, lambda_2=</span><span class="si">{</span><span class="n">lmbda_2</span><span class="si">:</span><span class="s1">0.4f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">info</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">omit_in_test</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">]</span>
+        <span class="n">n_omit</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">omit_in_test</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">omitted_feature</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">omit_in_test</span><span class="p">):</span>
+
             <span class="n">z</span> <span class="o">=</span> <span class="n">_concat_datasets</span><span class="p">(</span>
-                <span class="n">feature_dfs_by_src</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="p">[</span>
-                    <span class="n">candidate_source</span><span class="p">,</span> <span class="n">omit</span><span class="p">])</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Calculating CMI of candidate feature:&#39;</span><span class="p">)</span>
+                <span class="n">feature_df_map</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span>
+                <span class="n">omit</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">candidate_feature</span><span class="p">,</span> <span class="n">omitted_feature</span><span class="p">])</span>
+
+            <span class="c1"># Calculate CMI of candidate feature</span>
             <span class="n">cmi</span> <span class="o">=</span> <span class="n">estimate_conditional_information</span><span class="p">(</span><span class="n">candidate_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="s1">&#39;Conditional Mutual Information Score: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cmi</span><span class="p">))</span>
-            <span class="n">cmi_omit</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="n">n_omit_cols</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">if</span> <span class="n">omit</span><span class="p">:</span>
-                <span class="n">omit_df</span> <span class="o">=</span> <span class="n">feature_dfs_by_src</span><span class="p">[</span><span class="n">omit</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">omitted_feature</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">omit_df</span> <span class="o">=</span> <span class="n">feature_df_map</span><span class="p">[</span><span class="n">omitted_feature</span><span class="p">]</span>
                 <span class="n">_</span><span class="p">,</span> <span class="n">n_omit_cols</span> <span class="o">=</span> <span class="n">omit_df</span><span class="o">.</span><span class="n">shape</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                    <span class="s1">&#39;Calculating CMI of omitted feature:&#39;</span>
-                <span class="p">)</span>
+
+                <span class="c1"># Calculate CMI of omitted feature</span>
                 <span class="n">cmi_omit</span> <span class="o">=</span> <span class="n">estimate_conditional_information</span><span class="p">(</span>
                     <span class="n">omit_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Omitted CMI Score: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cmi_omit</span><span class="p">))</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Omitted Feature Shape: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">omit_df</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cmi_omit</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">n_omit_cols</span> <span class="o">=</span> <span class="mi">0</span>
+
+                <span class="c1"># want to log to INFO only the case of I(Z|Y;X) where X is the</span>
+                <span class="c1"># entire feature matrix, i.e. no omitted features.</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;I(feature ; target | existing_features) = </span><span class="si">{</span><span class="n">cmi</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
             <span class="n">statistic</span> <span class="o">=</span> <span class="n">cmi</span> <span class="o">-</span> <span class="n">cmi_omit</span>
             <span class="n">threshold</span> <span class="o">=</span> <span class="n">_compute_threshold</span><span class="p">(</span>
                 <span class="n">lmbda_1</span><span class="p">,</span> <span class="n">lmbda_2</span><span class="p">,</span> <span class="n">n_candidate_cols</span><span class="p">,</span> <span class="n">n_omit_cols</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Calculated Threshold: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">threshold</span><span class="p">))</span>
-            <span class="k">if</span> <span class="n">statistic</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">:</span>
+            <span class="n">delta</span> <span class="o">=</span> <span class="n">statistic</span> <span class="o">-</span> <span class="n">threshold</span>
+
+            <span class="k">if</span> <span class="n">delta</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">omitted_source</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">omitted_feature</span><span class="p">,</span> <span class="s1">&#39;source&#39;</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                    <span class="s1">&#39;Succeeded while omitting feature: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">omit</span> <span class="ow">or</span> <span class="s1">&#39;None&#39;</span><span class="p">))</span>
+                    <span class="sa">f</span><span class="s1">&#39;Succeeded while omitting feature: </span><span class="si">{</span><span class="n">omitted_source</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
                 <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">iteration_info</span> <span class="o">=</span> <span class="n">GFSSFIterationInfo</span><span class="p">(</span>
+                    <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="p">,</span>
+                    <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
+                    <span class="n">candidate_feature</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">candidate_feature</span><span class="p">,</span>
+                    <span class="n">candidate_cols</span><span class="o">=</span><span class="n">n_candidate_cols</span><span class="p">,</span>
+                    <span class="n">candidate_cmi</span><span class="o">=</span><span class="n">cmi</span><span class="p">,</span>
+                    <span class="n">omitted_feature</span><span class="o">=</span><span class="n">omitted_feature</span><span class="p">,</span>
+                    <span class="n">omitted_cols</span><span class="o">=</span><span class="n">n_omit_cols</span><span class="p">,</span>
+                    <span class="n">omitted_cmi</span><span class="o">=</span><span class="n">cmi_omit</span><span class="p">,</span>
+                    <span class="n">statistic</span><span class="o">=</span><span class="n">statistic</span><span class="p">,</span>
+                    <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span>
+                    <span class="n">delta</span><span class="o">=</span><span class="n">delta</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">iteration_info</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Completed iteration </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">n_omit</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">iteration_info</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">info_closest</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">delta</span><span class="p">)</span>
+        <span class="n">cmi_closest</span> <span class="o">=</span> <span class="n">info_closest</span><span class="o">.</span><span class="n">candidate_cmi</span>
+        <span class="n">omitted_cmi_closest</span> <span class="o">=</span> <span class="n">info_closest</span><span class="o">.</span><span class="n">omitted_cmi</span>
+        <span class="n">statistic_closest</span> <span class="o">=</span> <span class="n">info_closest</span><span class="o">.</span><span class="n">statistic</span>
+        <span class="n">threshold_closest</span> <span class="o">=</span> <span class="n">info_closest</span><span class="o">.</span><span class="n">threshold</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;Rejected feature: best marginal conditional mutual information was not greater than threshold (</span><span class="si">{</span><span class="n">cmi_closest</span><span class="si">:</span><span class="s1">0.4f</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="n">omitted_cmi_closest</span><span class="si">:</span><span class="s1">0.4f</span><span class="si">}</span><span class="s1"> = </span><span class="si">{</span><span class="n">statistic_closest</span><span class="si">:</span><span class="s1">0.4f</span><span class="si">}</span><span class="s1">, vs needed </span><span class="si">{</span><span class="n">threshold_closest</span><span class="si">:</span><span class="s1">0.4f</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>  <span class="c1"># noqa</span>
+
         <span class="k">return</span> <span class="kc">False</span></div></div>
 </pre></div>
 

@@ -312,7 +312,6 @@
 
 <span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="kn">import</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span>
 <span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="kn">import</span> <span class="n">check_is_fitted</span>
-<span class="kn">from</span> <span class="nn">sklearn.utils</span> <span class="kn">import</span> <span class="n">deprecated</span>
 
 <span class="kn">from</span> <span class="nn">feature_engine.dataframe_checks</span> <span class="kn">import</span> <span class="n">_is_dataframe</span><span class="p">,</span> <span class="n">_check_input_matches_training_df</span>
 <span class="kn">from</span> <span class="nn">feature_engine.variable_manipulation</span> <span class="kn">import</span> <span class="p">(</span>
@@ -385,10 +384,9 @@
 <span class="sd">        Attributes</span>
 <span class="sd">        ----------</span>
 
-<span class="sd">        imputer_dict_: dictionary</span>
+<span class="sd">        imputer_dict_ : dictionary</span>
 <span class="sd">            The dictionary containing the mean / median values per variable. These</span>
 <span class="sd">            values will be used by the imputer to replace missing data.</span>
-<span class="sd">            The imputer_dict_ is created when fitting the imputer.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># check input dataframe</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">_is_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
@@ -599,6 +597,13 @@
 
 <span class="sd">        y : None</span>
 <span class="sd">            y is not needed in this imputation. You can pass None or y.</span>
+
+
+<span class="sd">        Attributes</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        imputer_dict_: dictionary</span>
+<span class="sd">            The dictionary containing the values that will be used to replace each variable.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># check input dataframe</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">_is_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
@@ -733,17 +738,6 @@
 
     <span class="c1"># Ugly work around to import the docstring for Sphinx, otherwise none of this is necessary</span>
     <span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">BaseImputer</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span></div>
-
-
-<span class="nd">@deprecated</span><span class="p">(</span><span class="s2">&quot;Class &#39;FrequentCategoryImputer&#39; was integrated into the &quot;</span>
-            <span class="s2">&quot;class &#39;CategoricalVariableImputer&#39; in version 0.4 and &quot;</span>
-            <span class="s2">&quot; will be removed in version 0.5. &quot;</span>
-            <span class="s2">&quot;To perform Frequent category imputation please use: &quot;</span>
-            <span class="s2">&quot;CategoricalVariableImputer(imputation_method=&#39;frequent&#39;)&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">FrequentCategoryImputer</span><span class="p">(</span><span class="n">CategoricalVariableImputer</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">imputation_method</span> <span class="o">=</span> <span class="s1">&#39;frequent&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_define_variables</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="RandomSampleImputer"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.RandomSampleImputer">[docs]</a><span class="k">class</span> <span class="nc">RandomSampleImputer</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
@@ -1062,12 +1056,6 @@
 
         <span class="k">return</span> <span class="n">X</span></div></div>
 
-
-<span class="nd">@deprecated</span><span class="p">(</span><span class="s2">&quot;Class &#39;AddNaNBinaryImputer&#39; was renamed to AddMissingIndicator &quot;</span>
-            <span class="s2">&quot;in version 0.4 and will be removed in version 0.5. &quot;</span>
-            <span class="s2">&quot;To add a missing indicator please use: AddMissingIndicator()&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">AddNaNBinaryImputer</span><span class="p">(</span><span class="n">AddMissingIndicator</span><span class="p">):</span>
-    <span class="k">pass</span>
 </pre></div>
 
            </div>

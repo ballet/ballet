@@ -312,7 +312,7 @@
 
 <span class="kn">import</span> <span class="nn">ballet</span>
 
-<span class="n">SIMPLE_LOG_FORMAT</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span>
+<span class="n">SIMPLE_LOG_FORMAT</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;</span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span>
 <span class="n">DETAIL_LOG_FORMAT</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;[</span><span class="si">%(asctime)s</span><span class="s1">] {</span><span class="si">%(name)s</span><span class="s1">: </span><span class="si">%(filename)s</span><span class="s1">:</span><span class="si">%(lineno)d</span><span class="s1">} </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span>  <span class="c1"># noqa E501</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">ballet</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
@@ -321,15 +321,15 @@
 
 <div class="viewcode-block" id="enable"><a class="viewcode-back" href="../../../api/ballet.util.log.html#ballet.util.log.enable">[docs]</a><span class="k">def</span> <span class="nf">enable</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">]</span> <span class="o">=</span> <span class="n">logger</span><span class="p">,</span>
            <span class="n">level</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
-           <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DETAIL_LOG_FORMAT</span><span class="p">,</span>
+           <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">SIMPLE_LOG_FORMAT</span><span class="p">,</span>
            <span class="n">echo</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Enable simple console logging for this module</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        logger: logger to enable. Defaults to ballet logger.</span>
-<span class="sd">        level: logging level, either as string (``&quot;INFO&quot;``) or as int</span>
-<span class="sd">            (``logging.INFO`` or ``20``). Defaults to &#39;INFO&#39;.</span>
-<span class="sd">        format : logging format. Defaults to ballet.util.log.DETAIL_LOG_FORMAT.</span>
+<span class="sd">        level: logging level, either as string (``&#39;INFO&#39;``) or as int</span>
+<span class="sd">            (``logging.INFO`` or ``20``). Defaults to ``&#39;INFO&#39;``.</span>
+<span class="sd">        format : logging format. Defaults to :py:const:`SIMPLE_LOG_FORMAT`.</span>
 <span class="sd">        echo: Whether to log a message at the configured log level to</span>
 <span class="sd">            confirm that logging is enable. Defaults to True.</span>
 <span class="sd">    &quot;&quot;&quot;</span>

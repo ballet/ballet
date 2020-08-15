@@ -331,13 +331,13 @@ indicators to all variables in the training set that show missing data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>how</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">defatul=``</span></code>’missing_only’``) – <p>Indicates if missing indicators should be added to variables with missing
+<li><p><strong>how</strong> (<em>string</em><em>, </em><em>defatul='missing_only'</em>) – <p>Indicates if missing indicators should be added to variables with missing
 data or to all variables.</p>
 <p>missing_only: indicators will be created only for those variables that showed
 missing data during fit.</p>
 <p>all: indicators will be created for all variables</p>
 </p></li>
-<li><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – The list of variables to be imputed. If None, the imputer will find and
+<li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of variables to be imputed. If None, the imputer will find and
 select all variables with missing data.
 Note: the transformer will first select all variables or all user entered variables
 and if how=missing_only, it will re-select from the original group only those
@@ -352,8 +352,8 @@ that show missing data in during fit.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The training input samples.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – y is not needed in this imputation. You can pass None or y.</p></li>
+<li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – y is not needed in this imputation. You can pass None or y.</p></li>
 </ul>
 </dd>
 </dl>
@@ -363,7 +363,7 @@ that show missing data in during fit.</p></li>
 <dd><p>the lit of variables for which the missing indicator will be created.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<dd class="field-odd"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -376,7 +376,7 @@ that show missing data in during fit.</p></li>
 <dd><p>Adds the binary missing indicators.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The dataframe to be transformed.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The dataframe to be transformed.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_transformed</strong> – The dataframe containing the additional binary variables.
@@ -384,7 +384,7 @@ Binary variables are named with the original variable name plus
 ‘_na’.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -400,11 +400,11 @@ by an arbitrary value determined by the user.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>arbitrary_number</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">999</span></code>) – the number to be used to replace missing data.</p></li>
-<li><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – The list of variables to be imputed. If None, the imputer will find and
+<li><p><strong>arbitrary_number</strong> (<em>int</em><em> or </em><em>float</em><em>, </em><em>default=999</em>) – the number to be used to replace missing data.</p></li>
+<li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of variables to be imputed. If None, the imputer will find and
 select all numerical type variables. Attribute is used only if <cite>imputer_dict</cite>
 attribute is None.</p></li>
-<li><p><strong>imputer_dict</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – The dictionary of variables and their arbitrary numbers. If imputer_dict is not None,
+<li><p><strong>imputer_dict</strong> (<em>dict</em><em>, </em><em>default=None</em>) – The dictionary of variables and their arbitrary numbers. If imputer_dict is not None,
 it has to be dictionary with all values of integer or float type.
 If None, <cite>variables</cite> attribute is used for imputation.</p></li>
 </ul>
@@ -417,12 +417,23 @@ If None, <cite>variables</cite> attribute is used for imputation.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The training input samples.
+<li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.
 User can pass the entire dataframe, not just the variables to impute.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – y is not needed in this imputation. You can pass None or y.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – y is not needed in this imputation. You can pass None or y.</p></li>
 </ul>
 </dd>
 </dl>
+<dl class="py attribute">
+<dt id="ballet.eng.feature_engine.ArbitraryNumberImputer.imputer_dict_">
+<code class="sig-name descname">imputer_dict_</code><a class="headerlink" href="#ballet.eng.feature_engine.ArbitraryNumberImputer.imputer_dict_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The dictionary containing the values that will be used to replace each variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py method">
@@ -431,13 +442,13 @@ User can pass the entire dataframe, not just the variables to impute.</p></li>
 <dd><p>Replaces missing data with the learned parameters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The input samples.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The input samples.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_transformed</strong> – The dataframe without missing values in the selected variables.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -455,11 +466,11 @@ to cap each variable in a dictionary {feature:capping value}</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>capping_max</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dictionary</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – user specified capping values on right tail of the distribution (maximum
+<li><p><strong>capping_max</strong> (<em>dictionary</em><em>, </em><em>default=None</em>) – user specified capping values on right tail of the distribution (maximum
 values).</p></li>
-<li><p><strong>capping_min</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dictionary</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – user specified capping values on left tail of the distribution (minimum
+<li><p><strong>capping_min</strong> (<em>dictionary</em><em>, </em><em>default=None</em>) – user specified capping values on left tail of the distribution (minimum
 values).</p></li>
-<li><p><strong>missing_values</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">'raise'</span></code>) – Indicates if missing values should be ignored or raised. If
+<li><p><strong>missing_values</strong> (<em>string</em><em>, </em><em>default='raise'</em>) – Indicates if missing values should be ignored or raised. If
 missing_values=’raise’ the transformer will return an error if the
 training or other datasets contain missing values.</p></li>
 </ul>
@@ -471,8 +482,8 @@ training or other datasets contain missing values.</p></li>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The training input samples.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – y is not needed in this transformer. You can pass y or None.</p></li>
+<li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – y is not needed in this transformer. You can pass y or None.</p></li>
 </ul>
 </dd>
 </dl>
@@ -483,7 +494,7 @@ training or other datasets contain missing values.</p></li>
 will be capped.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dictionary</span></code></p>
+<dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
 </dd></dl>
@@ -495,7 +506,7 @@ will be capped.</p>
 will be capped.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dictionary</span></code></p>
+<dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
 </dd></dl>
@@ -508,13 +519,13 @@ will be capped.</p>
 <dd><p>Caps the variable values, that is, censors outliers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The data to be transformed.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to be transformed.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_transformed</strong> – The dataframe with the capped variables.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -537,7 +548,7 @@ transformer will automatically select and transform all numerical
 variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – The list of numerical variables that will be transformed. If None, the
+<dd class="field-odd"><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of numerical variables that will be transformed. If None, the
 transformer will automatically find and select all numerical variables.</p>
 </dd>
 </dl>
@@ -548,7 +559,7 @@ transformer will automatically find and select all numerical variables.</p>
 transfomration} pairs. These are determined automatically.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dictionary</span></code></p>
+<dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
 </dd></dl>
@@ -560,9 +571,9 @@ transfomration} pairs. These are determined automatically.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The training input samples.
+<li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.
 Can be the entire dataframe, not just the variables to transform.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – y is not needed in this transformer. You can pass y or None.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – y is not needed in this transformer. You can pass y or None.</p></li>
 </ul>
 </dd>
 </dl>
@@ -574,13 +585,13 @@ Can be the entire dataframe, not just the variables to transform.</p></li>
 <dd><p>Applies the BoxCox transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The data to be transformed.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to be transformed.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_transformed</strong> – The dataframe with the transformed variables.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -600,12 +611,12 @@ variables of type object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>imputation_method</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <em>default</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">missing</span></code>) – Desired method of imputation. Can be ‘frequent’ or ‘missing’.</p></li>
-<li><p><strong>fill_value</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">'Missing'</span></code>) – Only used when imputation_method=’missing’. Can be used to set a
+<li><p><strong>imputation_method</strong> (<em>str</em><em>, </em><em>default=missing</em>) – Desired method of imputation. Can be ‘frequent’ or ‘missing’.</p></li>
+<li><p><strong>fill_value</strong> (<em>str</em><em>, </em><em>default='Missing'</em>) – Only used when imputation_method=’missing’. Can be used to set a
 user-defined value to replace the missing data.</p></li>
-<li><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – The list of variables to be imputed. If None, the imputer will find and
+<li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of variables to be imputed. If None, the imputer will find and
 select all object type variables.</p></li>
-<li><p><strong>return_object</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code>) – <p>If working with numerical variables cast as object, decide
+<li><p><strong>return_object</strong> (<em>bool</em><em>, </em><em>default=False</em>) – <p>If working with numerical variables cast as object, decide
 whether to return the variables as numeric or re-cast them as object.
 Note that pandas will re-cast them automatically as numeric after the
 transformation with the mode.</p>
@@ -622,9 +633,9 @@ with feature-engine.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The training input samples.
+<li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.
 Can be the entire dataframe, not just the selected variables.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – y is not needed in this imputation. You can pass None or y.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – y is not needed in this imputation. You can pass None or y.</p></li>
 </ul>
 </dd>
 </dl>
@@ -636,7 +647,7 @@ the value ‘Missing’ depending on the imputation_method. The most frequent
 category is calculated when fitting the transformer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dictionary</span></code></p>
+<dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
 </dd></dl>
@@ -649,13 +660,13 @@ category is calculated when fitting the transformer.</p>
 <dd><p>Replaces missing data with the learned parameters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The input samples.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The input samples.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_transformed</strong> – The dataframe without missing values in the selected variables.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -681,11 +692,11 @@ for each variable (fit).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>encoding_method</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">'count'</span></code>) – <p>Desired method of encoding.</p>
+<li><p><strong>encoding_method</strong> (<em>str</em><em>, </em><em>default='count'</em>) – <p>Desired method of encoding.</p>
 <p>’count’: number of observations per category</p>
 <p>’frequency’: percentage of observations per category</p>
 </p></li>
-<li><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>) – The list of categorical variables that will be encoded. If None, the
+<li><p><strong>variables</strong> (<em>list</em>) – The list of categorical variables that will be encoded. If None, the
 encoder will find and transform all object type variables.</p></li>
 </ul>
 </dd>
@@ -697,9 +708,9 @@ encoder will find and transform all object type variables.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The training input samples.
+<li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.
 The user can pass the entire dataframe.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – y is not needed in this encoder. You can pass y or None.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – y is not needed in this encoder. You can pass y or None.</p></li>
 </ul>
 </dd>
 </dl>
@@ -710,7 +721,7 @@ The user can pass the entire dataframe.</p></li>
 each variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dictionary</span></code></p>
+<dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
 </dd></dl>
@@ -723,14 +734,14 @@ each variable.</p>
 <dd><p>Convert the data back to the original representation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X_transformed</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features].</span></code>) – The transformed dataframe.</p>
+<dd class="field-odd"><p><strong>X_transformed</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em><em></em>) – The transformed dataframe.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X</strong> – The un-transformed dataframe, that is, containing the original values
 of the categorical variables.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features].</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -741,13 +752,13 @@ of the categorical variables.</p>
 <dd><p>Replaces categories with the learned parameters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features].</span></code>) – The input samples.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em><em></em>) – The input samples.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_transformed</strong> – The dataframe containing categories replaced by numbers.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features].</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -776,21 +787,21 @@ tree, transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>cv</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">3</span></code>) – Desired number of cross-validation fold to be used to fit the decision
+<li><p><strong>cv</strong> (<em>int</em><em>, </em><em>default=3</em>) – Desired number of cross-validation fold to be used to fit the decision
 tree.</p></li>
-<li><p><strong>scoring</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">'neg_mean_squared_error'</span></code>) – Desired metric to optimise the performance for the tree. Comes from
+<li><p><strong>scoring</strong> (<em>str</em><em>, </em><em>default='neg_mean_squared_error'</em>) – Desired metric to optimise the performance for the tree. Comes from
 sklearn metrics. See DecisionTreeRegressor or DecisionTreeClassifier
 model evaluation documentation for more options:
 <a class="reference external" href="https://scikit-learn.org/stable/modules/model_evaluation.html">https://scikit-learn.org/stable/modules/model_evaluation.html</a></p></li>
-<li><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>) – The list of numerical variables that will be transformed. If None, the
+<li><p><strong>variables</strong> (<em>list</em>) – The list of numerical variables that will be transformed. If None, the
 discretiser will automatically select all numerical type variables.</p></li>
-<li><p><strong>regression</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">boolean</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>) – Indicates whether the discretiser should train a regression or a classification
+<li><p><strong>regression</strong> (<em>boolean</em><em>, </em><em>default=True</em>) – Indicates whether the discretiser should train a regression or a classification
 decision tree.</p></li>
-<li><p><strong>param_grid</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dictionary</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">{'max_depth':</span> <span class="pre">[1,2,3,4]}</span></code>) – The list of parameters over which the decision tree should be optimised
+<li><p><strong>param_grid</strong> (<em>dictionary</em><em>, </em><em>default={'max_depth':</em><em> [</em><em>1</em><em>,</em><em>2</em><em>,</em><em>3</em><em>,</em><em>4</em><em>]</em><em>}</em>) – The list of parameters over which the decision tree should be optimised
 during the grid search. The param_grid can contain any of the permitted
 parameters for Scikit-learn’s DecisionTreeRegressor() or
 DecisionTreeClassifier().</p></li>
-<li><p><strong>random_state</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – The random_state to initialise the training of the decision tree. It is one
+<li><p><strong>random_state</strong> (<em>int</em><em>, </em><em>default=None</em>) – The random_state to initialise the training of the decision tree. It is one
 of the parameters of the Scikit-learn’s DecisionTreeRegressor() or
 DecisionTreeClassifier(). For reproducibility it is recommended to set
 the random_state to an integer.</p></li>
@@ -804,9 +815,9 @@ the random_state to an integer.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The training input samples.
+<li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.
 Can be the entire dataframe, not just the variables to transform.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">series.</span></code>) – Target variable. Required to train the decision tree.</p></li>
+<li><p><strong>y</strong> (<em>pandas series.</em>) – Target variable. Required to train the decision tree.</p></li>
 </ul>
 </dd>
 </dl>
@@ -816,7 +827,7 @@ Can be the entire dataframe, not just the variables to transform.</p></li>
 <dd><p>The dictionary containing the {variable: fitted tree} pairs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dictionary</span></code></p>
+<dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
 </dd></dl>
@@ -829,7 +840,7 @@ Provided in case the user wishes to understand the performance of the
 decision tree.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dictionary</span></code></p>
+<dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
 </dd></dl>
@@ -843,13 +854,13 @@ decision tree.</p>
 values. The tree outcome is finite, aka, discrete.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The input samples.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The input samples.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_transformed</strong> – The dataframe with transformed variables.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -888,7 +899,7 @@ using the parameter ‘fold’.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>distribution</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <em>default</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">gaussian</span></code>) – <p>Method to be used to find the replacement values. Can take ‘gaussian’,
+<li><p><strong>distribution</strong> (<em>str</em><em>, </em><em>default=gaussian</em>) – <p>Method to be used to find the replacement values. Can take ‘gaussian’,
 ‘skewed’ or ‘max’.</p>
 <p>gaussian: the imputer will use the Gaussian limits to find the values
 to replace missing data.</p>
@@ -897,11 +908,11 @@ missing data.</p>
 <p>max: the imputer will use the maximum values to replace missing data. Note
 that if ‘max’ is passed, the parameter ‘tail’ is ignored.</p>
 </p></li>
-<li><p><strong>tail</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <em>default</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">right</span></code>) – Indicates if the values to replace missing data should be selected from the right
+<li><p><strong>tail</strong> (<em>str</em><em>, </em><em>default=right</em>) – Indicates if the values to replace missing data should be selected from the right
 or left tail of the variable distribution. Can take values ‘left’ or ‘right’.</p></li>
-<li><p><strong>fold</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">3</span></code>) – Factor to multiply the std, the IQR or the Max values. Recommended values
+<li><p><strong>fold</strong> (<em>int</em><em>, </em><em>default=3</em>) – Factor to multiply the std, the IQR or the Max values. Recommended values
 are 2 or 3 for Gaussian, or 1.5 or 3 for skewed.</p></li>
-<li><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – The list of variables to be imputed. If None, the imputer will find and
+<li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of variables to be imputed. If None, the imputer will find and
 select all variables of type numeric.</p></li>
 </ul>
 </dd>
@@ -913,9 +924,9 @@ select all variables of type numeric.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The training input samples.
+<li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.
 The user can pass the entire dataframe, not just the variables that need imputation.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – y is not needed in this imputation. You can pass None or y.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – y is not needed in this imputation. You can pass None or y.</p></li>
 </ul>
 </dd>
 </dl>
@@ -927,7 +938,7 @@ per variable. These values will be used by the imputer to replace missing
 data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dictionary</span></code></p>
+<dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
 </dd></dl>
@@ -940,13 +951,13 @@ data.</p>
 <dd><p>Replaces missing data with the learned parameters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The input samples.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The input samples.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_transformed</strong> – The dataframe without missing values in the selected variables.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -974,15 +985,15 @@ transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>q</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">10</span></code>) – Desired number of equal frequency intervals / bins. In other words the
+<li><p><strong>q</strong> (<em>int</em><em>, </em><em>default=10</em>) – Desired number of equal frequency intervals / bins. In other words the
 number of quantiles in which the variables should be divided.</p></li>
-<li><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>) – The list of numerical variables that will be discretised. If None, the
+<li><p><strong>variables</strong> (<em>list</em>) – The list of numerical variables that will be discretised. If None, the
 EqualFrequencyDiscretiser() will select all numerical variables.</p></li>
-<li><p><strong>return_object</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code>) – Whether the numbers in the discrete variable should be returned as
+<li><p><strong>return_object</strong> (<em>bool</em><em>, </em><em>default=False</em>) – Whether the numbers in the discrete variable should be returned as
 numeric or as object. The decision is made by the user based on
 whether they would like to proceed the engineering of the variable as
 if it was numerical or categorical.</p></li>
-<li><p><strong>return_boundaries</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code>) – whether the output should be the interval boundaries. If True, it returns
+<li><p><strong>return_boundaries</strong> (<em>bool</em><em>, </em><em>default=False</em>) – whether the output should be the interval boundaries. If True, it returns
 the interval boundaries. If False, it returns integers.</p></li>
 </ul>
 </dd>
@@ -995,9 +1006,9 @@ quantiles for each variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The training input samples.
+<li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.
 Can be the entire dataframe, not just the variables to be transformed.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – y is not needed in this encoder. You can pass y or None.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – y is not needed in this encoder. You can pass y or None.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1008,7 +1019,7 @@ Can be the entire dataframe, not just the variables to be transformed.</p></li>
 to sort the values into discrete intervals.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dictionary</span></code></p>
+<dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1021,13 +1032,13 @@ to sort the values into discrete intervals.</p>
 <dd><p>Sorts the variable values into the intervals.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The input samples.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The input samples.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_transformed</strong> – The transformed data with the discrete variables.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1053,14 +1064,14 @@ transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>bins</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">10</span></code>) – Desired number of equal width intervals / bins.</p></li>
-<li><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>) – The list of numerical variables to transform. If None, the
+<li><p><strong>bins</strong> (<em>int</em><em>, </em><em>default=10</em>) – Desired number of equal width intervals / bins.</p></li>
+<li><p><strong>variables</strong> (<em>list</em>) – The list of numerical variables to transform. If None, the
 discretiser will automatically select all numerical type variables.</p></li>
-<li><p><strong>return_object</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code>) – Whether the numbers in the discrete variable should be returned as
+<li><p><strong>return_object</strong> (<em>bool</em><em>, </em><em>default=False</em>) – Whether the numbers in the discrete variable should be returned as
 numeric or as object. The decision should be made by the user based on
 whether they would like to proceed the engineering of the variable as
 if it was numerical or categorical.</p></li>
-<li><p><strong>return_boundaries</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code>) – whether the output should be the interval boundaries. If True, it returns
+<li><p><strong>return_boundaries</strong> (<em>bool</em><em>, </em><em>default=False</em>) – whether the output should be the interval boundaries. If True, it returns
 the interval boundaries. If False, it returns integers.</p></li>
 </ul>
 </dd>
@@ -1073,9 +1084,9 @@ variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The training input samples.
+<li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.
 Can be the entire dataframe, not just the variables to transform.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – y is not needed in this encoder. You can pass y or None.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – y is not needed in this encoder. You can pass y or None.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1086,7 +1097,7 @@ Can be the entire dataframe, not just the variables to transform.</p></li>
 to transform each variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dictionary</span></code></p>
+<dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1099,13 +1110,13 @@ to transform each variable.</p>
 <dd><p>Sorts the variable values into the intervals.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The input samples.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The input samples.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_transformed</strong> – The transformed data with the discrete variables.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1125,9 +1136,9 @@ will automatically select and transform all variables of type numeric.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>base</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">'e'</span></code>) – Indicates if the natural or base 10 logarithm should be applied. Can take values
+<li><p><strong>base</strong> (<em>string</em><em>, </em><em>default='e'</em>) – Indicates if the natural or base 10 logarithm should be applied. Can take values
 ‘e’ or ‘10’.</p></li>
-<li><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – The list of numerical variables to be transformed. If None, the transformer
+<li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of numerical variables to be transformed. If None, the transformer
 will find and select all numerical variables.</p></li>
 </ul>
 </dd>
@@ -1141,9 +1152,9 @@ are all positive).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The training input samples.
+<li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.
 Can be the entire dataframe, not just the variables to transform.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – y is not needed in this transformer. You can pass y or None.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – y is not needed in this transformer. You can pass y or None.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1155,13 +1166,13 @@ Can be the entire dataframe, not just the variables to transform.</p></li>
 <dd><p>Transforms the variables using logarithm.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The data to transform.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to transform.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_transformed</strong> – The log transformed dataframe.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1185,7 +1196,7 @@ argument, the encoder will find and encode all categorical variables
 <p>The encoder then transforms the categories to the mapped numbers (transform).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – The list of categorical variables that will be encoded. If None, the
+<dd class="field-odd"><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of categorical variables that will be encoded. If None, the
 encoder will find and select all object type variables.</p>
 </dd>
 </dl>
@@ -1196,9 +1207,9 @@ encoder will find and select all object type variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The training input samples.
+<li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.
 Can be the entire dataframe, not just the variables to be encoded.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">series</span></code>) – The target.</p></li>
+<li><p><strong>y</strong> (<em>pandas series</em>) – The target.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1209,7 +1220,7 @@ Can be the entire dataframe, not just the variables to be encoded.</p></li>
 to replace categories in every variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dictionary</span></code></p>
+<dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1222,14 +1233,14 @@ to replace categories in every variable.</p>
 <dd><p>Convert the data back to the original representation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X_transformed</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features].</span></code>) – The transformed dataframe.</p>
+<dd class="field-odd"><p><strong>X_transformed</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em><em></em>) – The transformed dataframe.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X</strong> – The un-transformed dataframe, that is, containing the original values
 of the categorical variables.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features].</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1240,13 +1251,13 @@ of the categorical variables.</p>
 <dd><p>Replaces categories with the learned parameters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features].</span></code>) – The input samples.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em><em></em>) – The input samples.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_transformed</strong> – The dataframe containing categories replaced by numbers.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features].</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1267,8 +1278,8 @@ MeanMedianImputer() will automatically find and select all variables of type num
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>imputation_method</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <em>default</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">median</span></code>) – Desired method of imputation. Can take ‘mean’ or ‘median’.</p></li>
-<li><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – The list of variables to be imputed. If None, the imputer will select
+<li><p><strong>imputation_method</strong> (<em>str</em><em>, </em><em>default=median</em>) – Desired method of imputation. Can take ‘mean’ or ‘median’.</p></li>
+<li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of variables to be imputed. If None, the imputer will select
 all variables of type numeric.</p></li>
 </ul>
 </dd>
@@ -1280,9 +1291,9 @@ all variables of type numeric.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The training input samples.
+<li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.
 User can pass the entire dataframe, not just the variables that need imputation.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">series</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – y is not needed in this imputation. You can pass None or y.</p></li>
+<li><p><strong>y</strong> (<em>pandas series</em><em> or </em><em>None</em><em>, </em><em>default=None</em>) – y is not needed in this imputation. You can pass None or y.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1290,11 +1301,10 @@ User can pass the entire dataframe, not just the variables that need imputation.
 <dt id="ballet.eng.feature_engine.MeanMedianImputer.imputer_dict_">
 <code class="sig-name descname">imputer_dict_</code><a class="headerlink" href="#ballet.eng.feature_engine.MeanMedianImputer.imputer_dict_" title="Permalink to this definition">¶</a></dt>
 <dd><p>The dictionary containing the mean / median values per variable. These
-values will be used by the imputer to replace missing data.
-The <a href="#id1"><span class="problematic" id="id2">imputer_dict_</span></a> is created when fitting the imputer.</p>
+values will be used by the imputer to replace missing data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dictionary</span></code></p>
+<dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1307,13 +1317,13 @@ The <a href="#id1"><span class="problematic" id="id2">imputer_dict_</span></a> i
 <dd><p>Replaces missing data with the learned parameters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The input samples.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The input samples.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_transformed</strong> – The dataframe without missing values in the selected variables.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1349,14 +1359,14 @@ in the training set, will be ignored (no binary variable will be created for the
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>top_categories</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – If None, a dummy variable will be created for each category of the variable.
+<li><p><strong>top_categories</strong> (<em>int</em><em>, </em><em>default=None</em>) – If None, a dummy variable will be created for each category of the variable.
 Alternatively, top_categories indicates the number of most frequent categories
 to encode. Dummy variables will be created only for those popular categories
 and the rest will be ignored. Note that this is equivalent to grouping all the
 remaining categories in one group.</p></li>
-<li><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>) – The list of categorical variables that will be encoded. If None, the
+<li><p><strong>variables</strong> (<em>list</em>) – The list of categorical variables that will be encoded. If None, the
 encoder will find and select all object type variables.</p></li>
-<li><p><strong>drop_last</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">boolean</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code>) – Only used if top_categories = None. It indicates whether to create dummy
+<li><p><strong>drop_last</strong> (<em>boolean</em><em>, </em><em>default=False</em>) – Only used if top_categories = None. It indicates whether to create dummy
 variables for all the categories (k dummies), or if set to True, it will
 ignore the last variable of the list (k-1 dummies).</p></li>
 </ul>
@@ -1371,9 +1381,9 @@ unique categories per variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The training input samples.
+<li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.
 Can be the entire dataframe, not just seleted variables.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">series</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – Target. It is not needed in this encoded. You can pass y or
+<li><p><strong>y</strong> (<em>pandas series</em><em>, </em><em>default=None</em>) – Target. It is not needed in this encoded. You can pass y or
 None.</p></li>
 </ul>
 </dd>
@@ -1385,7 +1395,7 @@ None.</p></li>
 will be created.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dictionary</span></code></p>
+<dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1398,13 +1408,13 @@ will be created.</p>
 <dd><p>Creates the dummy / binary variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The data to transform.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to transform.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_transformed</strong> – The shape of the dataframe will be different from the original as it includes the dummy variables.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe.</span></code></p>
+<dd class="field-odd"><p>pandas dataframe.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1431,12 +1441,12 @@ encoder will find and encode all categorical variables (type ‘object’).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>encoding_method</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">'ordered'</span></code>) – <p>Desired method of encoding.</p>
+<li><p><strong>encoding_method</strong> (<em>str</em><em>, </em><em>default='ordered'</em>) – <p>Desired method of encoding.</p>
 <p>’ordered’: the categories are numbered in ascending order according to
 the target mean value per category.</p>
 <p>’arbitrary’ : categories are numbered arbitrarily.</p>
 </p></li>
-<li><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – The list of categorical variables that will be encoded. If None, the
+<li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of categorical variables that will be encoded. If None, the
 encoder will find and select all object type variables.</p></li>
 </ul>
 </dd>
@@ -1448,7 +1458,7 @@ encoder will find and select all object type variables.</p></li>
 every variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dictionary</span></code></p>
+<dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1461,10 +1471,10 @@ variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The training input samples.
+<li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.
 Can be the entire dataframe, not just the variables to be
 encoded.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">series</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – The Target. Can be None if encoding_method = ‘arbitrary’.
+<li><p><strong>y</strong> (<em>pandas series</em><em>, </em><em>default=None</em>) – The Target. Can be None if encoding_method = ‘arbitrary’.
 Otherwise, y needs to be passed when fitting the transformer.</p></li>
 </ul>
 </dd>
@@ -1477,14 +1487,14 @@ Otherwise, y needs to be passed when fitting the transformer.</p></li>
 <dd><p>Convert the data back to the original representation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X_transformed</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features].</span></code>) – The transformed dataframe.</p>
+<dd class="field-odd"><p><strong>X_transformed</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em><em></em>) – The transformed dataframe.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X</strong> – The un-transformed dataframe, that is, containing the original values
 of the categorical variables.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features].</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1495,13 +1505,13 @@ of the categorical variables.</p>
 <dd><p>Replaces categories with the learned parameters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features].</span></code>) – The input samples.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em><em></em>) – The input samples.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_transformed</strong> – The dataframe containing categories replaced by numbers.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features].</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1549,15 +1559,15 @@ percentiles. If fold=0.1, the limits will be the 10th and 90th percentiles.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>distribution</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <em>default</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">gaussian</span></code>) – <p>Desired distribution. Can take ‘gaussian’, ‘skewed’ or ‘quantiles’.</p>
+<li><p><strong>distribution</strong> (<em>str</em><em>, </em><em>default=gaussian</em>) – <p>Desired distribution. Can take ‘gaussian’, ‘skewed’ or ‘quantiles’.</p>
 <p>gaussian: the transformer will find the maximum and / or minimum values to
 cap the variables using the Gaussian approximation.</p>
 <p>skewed: the transformer will find the boundaries using the IQR proximity rule.</p>
 <p>quantiles: the limits are given by the percentiles.</p>
 </p></li>
-<li><p><strong>tail</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <em>default</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">right</span></code>) – Whether to cap outliers on the right, left or both tails of the distribution.
+<li><p><strong>tail</strong> (<em>str</em><em>, </em><em>default=right</em>) – Whether to cap outliers on the right, left or both tails of the distribution.
 Can take ‘left’, ‘right’ or ‘both’.</p></li>
-<li><p><strong>fold</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">3</span></code>) – <p>How far out to to place the capping values. The number that will multiply
+<li><p><strong>fold</strong> (<em>int</em><em> or </em><em>float</em><em>, </em><em>default=3</em>) – <p>How far out to to place the capping values. The number that will multiply
 the std or IQR to calculate the capping values. Recommended values, 2
 or 3 for the gaussian approximation, or 1.5 or 3 for the IQR proximity
 rule.</p>
@@ -1567,12 +1577,12 @@ Note: Outliers will be removed up to a maximum of the 20th percentiles on both
 sides. Thus, when distribution=’quantile’, then ‘fold’ takes values between 0
 and 0.20.</p>
 </p></li>
-<li><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – The list of variables for which the outliers will be capped. If None,
+<li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of variables for which the outliers will be capped. If None,
 the transformer will find and select all numerical variables.</p></li>
-<li><p><strong>missing_values</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">'raise'</span></code>) – Indicates if missing values should be ignored or raised. Sometimes we want to remove
+<li><p><strong>missing_values</strong> (<em>string</em><em>, </em><em>default='raise'</em>) – Indicates if missing values should be ignored or raised. Sometimes we want to remove
 outliers in the raw, original data, sometimes, we may want to remove outliers in the
 already pre-transformed data. If missing_values=’ignore’, the transformer will ignore
-outliers when learning the capping parameters or transforming the data. If
+missing data when learning the capping parameters or transforming the data. If
 missing_values=’raise’ the transformer will return an error if the training or other
 datasets contain missing values.</p></li>
 </ul>
@@ -1584,13 +1594,13 @@ datasets contain missing values.</p></li>
 <dd><p>Removes observations with outliers from the dataframe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The data to be transformed.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to be transformed.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_transformed</strong> – The dataframe without outlier observations.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1610,9 +1620,9 @@ variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – The list of numerical variables that will be transformed. If None, the
+<li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of numerical variables that will be transformed. If None, the
 transformer will automatically find and select all numerical variables.</p></li>
-<li><p><strong>exp</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">0.5</span></code>) – The power (or exponent).</p></li>
+<li><p><strong>exp</strong> (<em>float</em><em> or </em><em>int</em><em>, </em><em>default=0.5</em>) – The power (or exponent).</p></li>
 </ul>
 </dd>
 </dl>
@@ -1622,9 +1632,9 @@ transformer will automatically find and select all numerical variables.</p></li>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The training input samples.
+<li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.
 Can be the entire dataframe, not just the variables to transform.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – y is not needed in this transformer. You can pass y or None.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – y is not needed in this transformer. You can pass y or None.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1636,13 +1646,13 @@ Can be the entire dataframe, not just the variables to transform.</p></li>
 <dd><p>Applies the power transformation to the variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The data to be transformed.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to be transformed.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_transformed</strong> – The dataframe with the power transformed variables.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1685,11 +1695,11 @@ The imputer replaces missing data with a random sample from the training set.</p
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>random_state</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – The random_state can take an integer to set the seed when extracting the
+<li><p><strong>random_state</strong> (<em>int</em><em>, </em><em>str</em><em> or </em><em>list</em><em>, </em><em>default=None</em>) – The random_state can take an integer to set the seed when extracting the
 random samples. Alternatively, it can take a variable name or a list of
 variables, which values will be used to determine the seed observation per
 observation.</p></li>
-<li><p><strong>seed</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">'general'</span></code>) – <p>Indicates whether the seed should be set for each observation with missing
+<li><p><strong>seed</strong> (<em>str</em><em>, </em><em>default='general'</em>) – <p>Indicates whether the seed should be set for each observation with missing
 values, or if one seed should be used to impute all variables in one go.</p>
 <p>general: one seed will be used to impute the entire dataframe. This is
 equivalent to setting the seed in pandas.sample(random_state).</p>
@@ -1697,10 +1707,10 @@ equivalent to setting the seed in pandas.sample(random_state).</p>
 of the variables indicated in the random_state for that particular
 observation.</p>
 </p></li>
-<li><p><strong>seeding_method</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">'add'</span></code>) – If more than one variable are indicated to seed the random sampling per
+<li><p><strong>seeding_method</strong> (<em>str</em><em>, </em><em>default='add'</em>) – If more than one variable are indicated to seed the random sampling per
 observation, you can choose to combine those values as an addition or a
 multiplication. Can take the values ‘add’ or ‘multiply’.</p></li>
-<li><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – The list of variables to be imputed. If None, the imputer will select
+<li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of variables to be imputed. If None, the imputer will select
 all variables in the train set.</p></li>
 </ul>
 </dd>
@@ -1714,9 +1724,9 @@ during transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The training input samples.
+<li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.
 Can be the entire dataframe, not just he variables to impute.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – y is not needed in this imputation. You can pass None or y.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – y is not needed in this imputation. You can pass None or y.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1726,7 +1736,7 @@ Can be the entire dataframe, not just he variables to impute.</p></li>
 <dd><p>Copy of the training dataframe from which to extract the random samples.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dataframe.</span></code></p>
+<dd class="field-odd"><p>dataframe.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1739,13 +1749,13 @@ Can be the entire dataframe, not just he variables to impute.</p></li>
 <dd><p>Replaces missing data with random values taken from the train set.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The dataframe to be transformed.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The dataframe to be transformed.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_transformed</strong> – The dataframe without missing values in the transformed variables.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1754,7 +1764,7 @@ Can be the entire dataframe, not just he variables to impute.</p></li>
 
 <dl class="py class">
 <dt id="ballet.eng.feature_engine.RareLabelCategoricalEncoder">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.feature_engine.</code><code class="sig-name descname">RareLabelCategoricalEncoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tol</span><span class="o">=</span><span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">n_categories</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">max_n_categories</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">variables</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">replace_with</span><span class="o">=</span><span class="default_value">'Rare'</span></em>, <em class="sig-param"><span class="n">return_object</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/categorical_encoders.html#RareLabelCategoricalEncoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.feature_engine.RareLabelCategoricalEncoder" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.feature_engine.</code><code class="sig-name descname">RareLabelCategoricalEncoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tol</span><span class="o">=</span><span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">n_categories</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">max_n_categories</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">variables</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">replace_with</span><span class="o">=</span><span class="default_value">'Rare'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/categorical_encoders.html#RareLabelCategoricalEncoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.feature_engine.RareLabelCategoricalEncoder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.TransformerMixin</span></code></p>
 <p>The RareLabelCategoricalEncoder() groups rare / infrequent categories in
 a new category called “Rare”, or any other name entered by the user.</p>
@@ -1774,18 +1784,17 @@ or by another user defined string (transform).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tol</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">0.05</span></code>) – the minimum frequency a label should have to be considered frequent.
+<li><p><strong>tol</strong> (<em>float</em><em>, </em><em>default=0.05</em>) – the minimum frequency a label should have to be considered frequent.
 Categories with frequencies lower than tol will be grouped.</p></li>
-<li><p><strong>n_categories</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">10</span></code>) – the minimum number of categories a variable should have for the encoder
+<li><p><strong>n_categories</strong> (<em>int</em><em>, </em><em>default=10</em>) – the minimum number of categories a variable should have for the encoder
 to find frequent labels. If the variable contains less categories, all
 of them will be considered frequent.</p></li>
-<li><p><strong>max_n_categories</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – the maximum number of categories that should be considered frequent.
+<li><p><strong>max_n_categories</strong> (<em>int</em><em>, </em><em>default=None</em>) – the maximum number of categories that should be considered frequent.
 If None, all categories with frequency above the tolerance (tol) will be
 considered.</p></li>
-<li><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – The list of categorical variables that will be encoded. If None, the
+<li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of categorical variables that will be encoded. If None, the
 encoder will find and select all object type variables.</p></li>
-<li><p><strong>replace_with</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">'Rare'</span></code>) – The category name that will be used to replace infrequent categories.</p></li>
-<li><p><strong>return_object</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code>) – Whether the variables should be re-cast as object, in case they have numerical values.</p></li>
+<li><p><strong>replace_with</strong> (<em>string</em><em>, </em><em>default='Rare'</em>) – The category name that will be used to replace infrequent categories.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1796,9 +1805,9 @@ encoder will find and select all object type variables.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The training input samples.
+<li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.
 Can be the entire dataframe, not just selected variables</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – y is not required. You can pass y or None.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – y is not required. You can pass y or None.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1810,7 +1819,7 @@ for each variable. Categories not present in this list will be replaced
 by ‘Rare’ or by the user defined value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dictionary</span></code></p>
+<dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1824,13 +1833,13 @@ by ‘Rare’ or by the user defined value.</p>
 by the user.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The input samples.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The input samples.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_transformed</strong> – The dataframe where rare categories have been grouped.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1850,7 +1859,7 @@ transformer will automatically select and transform all numerical
 variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – The list of numerical variables that will be transformed. If None, the
+<dd class="field-odd"><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of numerical variables that will be transformed. If None, the
 transformer will automatically find and select all numerical variables.</p>
 </dd>
 </dl>
@@ -1860,9 +1869,9 @@ transformer will automatically find and select all numerical variables.</p>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The training input samples.
+<li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.
 Can be the entire dataframe, not just the variables to transform.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – y is not needed in this encoder. You can pass y or None.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – y is not needed in this encoder. You can pass y or None.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1874,13 +1883,13 @@ Can be the entire dataframe, not just the variables to transform.</p></li>
 <dd><p>Applies the reciprocal 1 / x transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The data to transform.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to transform.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_transformed</strong> – The dataframe with reciprocally transformed variables.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1904,13 +1913,13 @@ transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>binning_dict</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>) – The dictionary with the variable : interval limits pairs, provided by the user. A
+<li><p><strong>binning_dict</strong> (<em>dict</em>) – The dictionary with the variable : interval limits pairs, provided by the user. A
 valid dictionary looks like this: {‘var1’:[0, 10, 100, 1000], ‘var2’:[5, 10, 15, 20]}.</p></li>
-<li><p><strong>return_object</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code>) – Whether the numbers in the discrete variable should be returned as
+<li><p><strong>return_object</strong> (<em>bool</em><em>, </em><em>default=False</em>) – Whether the numbers in the discrete variable should be returned as
 numeric or as object. The decision is made by the user based on
 whether they would like to proceed the engineering of the variable as
 if it was numerical or categorical.</p></li>
-<li><p><strong>return_boundaries</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code>) – whether the output should be the interval boundaries. If True, it returns
+<li><p><strong>return_boundaries</strong> (<em>bool</em><em>, </em><em>default=False</em>) – whether the output should be the interval boundaries. If True, it returns
 the interval boundaries. If False, it returns integers.</p></li>
 </ul>
 </dd>
@@ -1922,9 +1931,9 @@ the interval boundaries. If False, it returns integers.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The training input samples.
+<li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.
 Can be the entire dataframe, not just the variables to be transformed.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – y is not needed in this encoder. You can pass y or None.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – y is not needed in this encoder. You can pass y or None.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1935,7 +1944,7 @@ Can be the entire dataframe, not just the variables to be transformed.</p></li>
 to sort the values into discrete intervals.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dictionary</span></code></p>
+<dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1948,13 +1957,13 @@ to sort the values into discrete intervals.</p>
 <dd><p>Sorts the variable values into the intervals.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The input samples.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The input samples.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_transformed</strong> – The transformed data with the discrete variables.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2001,15 +2010,15 @@ percentiles. If fold=0.1, the limits will be the 10th and 90th percentiles.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>distribution</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <em>default</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">gaussian</span></code>) – <p>Desired distribution. Can take ‘gaussian’, ‘skewed’ or ‘quantiles’.</p>
+<li><p><strong>distribution</strong> (<em>str</em><em>, </em><em>default=gaussian</em>) – <p>Desired distribution. Can take ‘gaussian’, ‘skewed’ or ‘quantiles’.</p>
 <p>gaussian: the transformer will find the maximum and / or minimum values to
 cap the variables using the Gaussian approximation.</p>
 <p>skewed: the transformer will find the boundaries using the IQR proximity rule.</p>
 <p>quantiles: the limits are given by the percentiles.</p>
 </p></li>
-<li><p><strong>tail</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <em>default</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">right</span></code>) – Whether to cap outliers on the right, left or both tails of the distribution.
+<li><p><strong>tail</strong> (<em>str</em><em>, </em><em>default=right</em>) – Whether to cap outliers on the right, left or both tails of the distribution.
 Can take ‘left’, ‘right’ or ‘both’.</p></li>
-<li><p><strong>fold</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">3</span></code>) – <p>How far out to to place the capping values. The number that will multiply
+<li><p><strong>fold</strong> (<em>int</em><em> or </em><em>float</em><em>, </em><em>default=3</em>) – <p>How far out to to place the capping values. The number that will multiply
 the std or IQR to calculate the capping values. Recommended values, 2
 or 3 for the gaussian approximation, or 1.5 or 3 for the IQR proximity
 rule.</p>
@@ -2019,12 +2028,12 @@ Note: Outliers will be removed up to a maximum of the 20th percentiles on both
 sides. Thus, when distribution=’quantile’, then ‘fold’ takes values between 0
 and 0.20.</p>
 </p></li>
-<li><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – The list of variables for which the outliers will be capped. If None,
+<li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of variables for which the outliers will be capped. If None,
 the transformer will find and select all numerical variables.</p></li>
-<li><p><strong>missing_values</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code>, <em>default</em> <code class="docutils literal notranslate"><span class="pre">'raise'</span></code>) – Indicates if missing values should be ignored or raised. Sometimes we want to remove
+<li><p><strong>missing_values</strong> (<em>string</em><em>, </em><em>default='raise'</em>) – Indicates if missing values should be ignored or raised. Sometimes we want to remove
 outliers in the raw, original data, sometimes, we may want to remove outliers in the
 already pre-transformed data. If missing_values=’ignore’, the transformer will ignore
-outliers when learning the capping parameters or transforming the data. If
+missing data when learning the capping parameters or transforming the data. If
 missing_values=’raise’ the transformer will return an error if the training or other
 datasets contain missing values.</p></li>
 </ul>
@@ -2037,8 +2046,8 @@ datasets contain missing values.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The training input samples.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – y is not needed in this transformer. You can pass y or None.</p></li>
+<li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – y is not needed in this transformer. You can pass y or None.</p></li>
 </ul>
 </dd>
 </dl>
@@ -2049,7 +2058,7 @@ datasets contain missing values.</p></li>
 will be capped.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dictionary</span></code></p>
+<dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2061,7 +2070,7 @@ will be capped.</p>
 will be capped.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dictionary</span></code></p>
+<dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2074,13 +2083,13 @@ will be capped.</p>
 <dd><p>Caps the variable values, that is, censors outliers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The data to be transformed.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to be transformed.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_transformed</strong> – The dataframe with the capped variables.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2116,11 +2125,11 @@ argument, the encoder will find and encode all categorical variables
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>encoding_method</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <em>default</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">woe</span></code>) – <p>Desired method of encoding.</p>
+<li><p><strong>encoding_method</strong> (<em>str</em><em>, </em><em>default=woe</em>) – <p>Desired method of encoding.</p>
 <p>’woe’: weight of evidence</p>
 <p>’ratio’ : probability ratio</p>
 </p></li>
-<li><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – The list of categorical variables that will be encoded. If None, the
+<li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of categorical variables that will be encoded. If None, the
 encoder will find and select all object type variables.</p></li>
 </ul>
 </dd>
@@ -2133,9 +2142,9 @@ variable. That is the WoE or ratio of probability.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The training input samples.
+<li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.
 Can be the entire dataframe, not just the categorical variables.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">series.</span></code>) – Target, must be binary [0,1].</p></li>
+<li><p><strong>y</strong> (<em>pandas series.</em>) – Target, must be binary [0,1].</p></li>
 </ul>
 </dd>
 </dl>
@@ -2145,7 +2154,7 @@ Can be the entire dataframe, not just the categorical variables.</p></li>
 <dd><p>The dictionary containing the {category: WoE / ratio} pairs per variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dictionary</span></code></p>
+<dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2158,14 +2167,14 @@ Can be the entire dataframe, not just the categorical variables.</p></li>
 <dd><p>Convert the data back to the original representation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X_transformed</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features].</span></code>) – The transformed dataframe.</p>
+<dd class="field-odd"><p><strong>X_transformed</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em><em></em>) – The transformed dataframe.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X</strong> – The un-transformed dataframe, that is, containing the original values
 of the categorical variables.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features].</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2176,13 +2185,13 @@ of the categorical variables.</p>
 <dd><p>Replaces categories with the learned parameters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features].</span></code>) – The input samples.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em><em></em>) – The input samples.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_transformed</strong> – The dataframe containing categories replaced by numbers.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features].</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2204,7 +2213,7 @@ transformer will automatically select and transform all numerical
 variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <em>default</em> <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – The list of numerical variables that will be transformed. If None, the
+<dd class="field-odd"><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of numerical variables that will be transformed. If None, the
 transformer will automatically find and select all numerical variables.</p>
 </dd>
 </dl>
@@ -2215,7 +2224,7 @@ transformer will automatically find and select all numerical variables.</p>
 transformation} pairs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dictionary</span></code></p>
+<dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2227,9 +2236,9 @@ transformation} pairs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The training input samples.
+<li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.
 Can be the entire dataframe, not just the variables to transform.</p></li>
-<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>) – y is not needed in this transformer. You can pass y or None.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – y is not needed in this transformer. You can pass y or None.</p></li>
 </ul>
 </dd>
 </dl>
@@ -2241,13 +2250,13 @@ Can be the entire dataframe, not just the variables to transform.</p></li>
 <dd><p>Applies the Yeo-Johnson transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code>) – The data to be transformed.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to be transformed.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_transformed</strong> – The dataframe with the transformed variables.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">dataframe</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">[n_samples</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">n_features]</span></code></p>
+<dd class="field-odd"><p>pandas dataframe of shape = [n_samples, n_features]</p>
 </dd>
 </dl>
 </dd></dl>

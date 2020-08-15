@@ -311,7 +311,8 @@
     <span class="n">Callable</span><span class="p">,</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">)</span>
 
 <span class="kn">import</span> <span class="nn">git</span>
-<span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">collecting</span><span class="p">,</span> <span class="n">complement</span><span class="p">,</span> <span class="n">lfilter</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> <span class="n">post_processing</span>
+<span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">collecting</span><span class="p">,</span> <span class="n">complement</span><span class="p">,</span> <span class="n">lfilter</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> <span class="n">post_processing</span><span class="p">,</span> <span class="n">silent</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">stacklog</span> <span class="kn">import</span> <span class="n">stacklog</span>
 
 <span class="kn">from</span> <span class="nn">ballet.contrib</span> <span class="kn">import</span> <span class="n">_collect_contrib_feature_from_module</span>
@@ -319,7 +320,7 @@
     <span class="n">BalletError</span><span class="p">,</span> <span class="n">FeatureCollectionError</span><span class="p">,</span> <span class="n">NoFeaturesCollectedError</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ballet.feature</span> <span class="kn">import</span> <span class="n">Feature</span>
 <span class="kn">from</span> <span class="nn">ballet.project</span> <span class="kn">import</span> <span class="n">Project</span>
-<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">make_plural_suffix</span><span class="p">,</span> <span class="n">whether_failures</span>
+<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">make_plural_suffix</span>
 <span class="kn">from</span> <span class="nn">ballet.util.ci</span> <span class="kn">import</span> <span class="n">TravisPullRequestBuildDiffer</span><span class="p">,</span> <span class="n">can_use_travis_differ</span>
 <span class="kn">from</span> <span class="nn">ballet.util.git</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Differ</span><span class="p">,</span> <span class="n">LocalMergeBuildDiffer</span><span class="p">,</span> <span class="n">LocalPullRequestBuildDiffer</span><span class="p">)</span>
@@ -485,7 +486,7 @@
         <span class="n">inadmissible_files</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">for</span> <span class="n">diff</span> <span class="ow">in</span> <span class="n">file_diffs</span><span class="p">:</span>
-            <span class="n">valid</span><span class="p">,</span> <span class="n">failures</span> <span class="o">=</span> <span class="n">check_from_class</span><span class="p">(</span>
+            <span class="n">valid</span><span class="p">,</span> <span class="n">failures</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">check_from_class</span><span class="p">(</span>
                 <span class="n">ProjectStructureCheck</span><span class="p">,</span> <span class="n">diff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">valid</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">b_path</span><span class="p">)</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;__init__.py&#39;</span><span class="p">:</span>
@@ -560,14 +561,24 @@
     <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span></div>
 
 
-<div class="viewcode-block" id="check_from_class"><a class="viewcode-back" href="../../../api/ballet.validation.common.html#ballet.validation.common.check_from_class">[docs]</a><span class="nd">@whether_failures</span>
-<span class="k">def</span> <span class="nf">check_from_class</span><span class="p">(</span><span class="n">check_class</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="o">*</span><span class="n">checker_args</span><span class="p">,</span> <span class="o">**</span><span class="n">checker_kwargs</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">Checker</span> <span class="ow">in</span> <span class="n">check_class</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">():</span>
-        <span class="n">check</span> <span class="o">=</span> <span class="n">Checker</span><span class="p">(</span><span class="o">*</span><span class="n">checker_args</span><span class="p">,</span> <span class="o">**</span><span class="n">checker_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">do_check</span>
+<div class="viewcode-block" id="get_subclasses"><a class="viewcode-back" href="../../../api/ballet.validation.common.html#ballet.validation.common.get_subclasses">[docs]</a><span class="k">def</span> <span class="nf">get_subclasses</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="check_from_class"><a class="viewcode-back" href="../../../api/ballet.validation.common.html#ballet.validation.common.check_from_class">[docs]</a><span class="k">def</span> <span class="nf">check_from_class</span><span class="p">(</span><span class="n">check_class</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="o">*</span><span class="n">checker_args</span><span class="p">,</span> <span class="o">**</span><span class="n">checker_kwargs</span><span class="p">):</span>
+    <span class="n">failures</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">advice</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">Checker</span> <span class="ow">in</span> <span class="n">get_subclasses</span><span class="p">(</span><span class="n">check_class</span><span class="p">):</span>
+        <span class="n">checker</span> <span class="o">=</span> <span class="n">Checker</span><span class="p">(</span><span class="o">*</span><span class="n">checker_args</span><span class="p">,</span> <span class="o">**</span><span class="n">checker_kwargs</span><span class="p">)</span>
+        <span class="n">check</span> <span class="o">=</span> <span class="n">checker</span><span class="o">.</span><span class="n">do_check</span>
         <span class="n">success</span> <span class="o">=</span> <span class="n">check</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="n">Checker</span><span class="o">.</span><span class="vm">__name__</span>
-            <span class="k">yield</span> <span class="n">name</span></div>
+            <span class="n">failures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Checker</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+            <span class="n">advice_item</span> <span class="o">=</span> <span class="n">silent</span><span class="p">(</span><span class="n">checker</span><span class="o">.</span><span class="n">give_advice</span><span class="p">)(</span><span class="n">obj</span><span class="p">)</span>
+            <span class="n">advice</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">advice_item</span><span class="p">)</span>
+
+    <span class="n">valid</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">failures</span>
+    <span class="k">return</span> <span class="n">valid</span><span class="p">,</span> <span class="n">failures</span><span class="p">,</span> <span class="n">advice</span></div>
 
 
 <div class="viewcode-block" id="RandomFeaturePerformanceEvaluator"><a class="viewcode-back" href="../../../api/ballet.validation.common.html#ballet.validation.common.RandomFeaturePerformanceEvaluator">[docs]</a><span class="k">class</span> <span class="nc">RandomFeaturePerformanceEvaluator</span><span class="p">(</span><span class="n">FeaturePerformanceEvaluator</span><span class="p">):</span>
