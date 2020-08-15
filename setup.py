@@ -15,6 +15,7 @@ requirements = [
     'black',
     'cookiecutter',
     'Click>=6.0',
+    'dataclasses; python_version=="3.6"',
     'dill',
     'dynaconf>=3.0',
     'funcy>=1.14',
