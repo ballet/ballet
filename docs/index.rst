@@ -14,6 +14,7 @@
    maintainer_guide
    contributor_guide
    feature_engineering_guide
+   faq
 
 .. toctree::
    :caption: Reference

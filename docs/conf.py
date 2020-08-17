@@ -38,6 +38,7 @@ import ballet
 extensions = [
     'm2r2',
     'sphinx.ext.autodoc',
+    'sphinx.ext.autosectionlabel',
     'sphinx.ext.githubpages',
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
@@ -179,3 +180,7 @@ texinfo_documents = [
      'One line description of project.',
      'Miscellaneous'),
 ]
+
+# -- Options for autosectionlabel ---------------------------------------
+
+autosectionlabel_prefix_document = True

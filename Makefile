@@ -91,15 +91,17 @@ clean-docs: ## remove previously built docs
 	rm -f docs/api/*.rst
 	-$(MAKE) -C docs clean 2>/dev/null  # this fails if sphinx is not yet installed
 
-.PHONY: docs
-docs: clean-docs ## generate Sphinx HTML documentation, including API docs
+.PHONY: _apidoc
+_apidoc:
 	sphinx-apidoc --module-first --separate -o docs/api/ ballet
+
+.PHONY: docs
+docs: clean-docs _apidoc ## generate Sphinx HTML documentation, including API docs
 	$(MAKE) -C docs html
 
 .PHONY: docs
-check-docs: clean-docs ## check generation of Sphinx HTML documentation
-	find . -name '*.rst' -exec rstcheck {} +
-	sphinx-apidoc --module-first --separate -o docs/api/ ballet
+check-docs: clean-docs _apidoc ## check generation of Sphinx HTML documentation
+	find -E ./docs -name '*.rst' -and -not -regex '.*(external|category_encoders|feature_engine|featuretools|skits|sklearn|tsfresh).rst' -exec rstcheck {} +
 	$(MAKE) -C docs linkcheck text
 
 .PHONY: view-docs
