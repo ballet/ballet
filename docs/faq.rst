@@ -16,6 +16,29 @@ You can use these methods in your development environment. You can also use any 
 
 See also: :ref:`contributor_guide:Test your feature (local)`.
 
+There was an error submitting my feature using the Ballet Submit button in Jupyter Lab.
+---------------------------------------------------------------------------------------
+
+Here are common situations:
+
+1. Problem: You selected a cell in your notebook that did not contain the feature. It may have contained descriptive text or other Python code.
+
+   .. image:: _static/labextension_error_not_valid_python_code.png
+
+   Solution: Select the code cell that contains the feature and try again. Make sure the feature you want to previewed in the "Submit Feature?" dialog.
+
+2. Problem: The submission fails with some other cryptic message that appears to be a Python exception.
+
+   Solution: Please report this error -- thanks for your help!
+
+   1. `Open a new issue on the ballet-submit-labextension project <https://github.com/HDI-Project/ballet-submit-labextension/issues/new>`__
+
+   2. Open the web console. (See `Open the web console on Firefox <https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Opening_the_Web_Console>`__ or `Open the web console on Chrome <https://developers.google.com/web/tools/chrome-devtools/open#console>`__.)
+
+   3. Scroll to the bottom of the console log. Copy the detailed error information. It should be an object that has as its ``message`` field the same message you just saw in the popup.
+
+   4. Paste the detailed error message in the indicated location in the new issue. Then link to the Ballet project on GitHub you are working on, and provide any more description that could be helpful.
+
 My feature has a valid API locally, why was it rejected?
 --------------------------------------------------------
 
