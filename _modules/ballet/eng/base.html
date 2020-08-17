@@ -112,10 +112,29 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributor_guide.html">Contributor Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#cloud-feature-development-workflow">Cloud Feature Development Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#setup-your-development-environment">Setup your development environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#cloud-feature-development-workflow">Cloud Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#launch-binder">Launch binder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#work-in-a-notebook">Work in a notebook</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#authenticate-with-github">Authenticate with GitHub</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#develop-a-new-feature">Develop a new feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#test-your-feature">Test your feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#submit-your-feature">Submit your feature</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#setup-your-development-environment">Setup your development environment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#fork-the-project">Fork the project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#clone-your-fork">Clone your fork</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#create-a-virtualenv">Create a virtualenv</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#contributor-guide-develop-a-new-feature-local">Develop a new feature</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#update-and-install-the-project">Update and install the project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#start-working-on-a-new-feature">Start working on a new feature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#write-your-feature">Write your feature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#contributor-guide-test-your-feature-local">Test your feature</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#submit-the-feature">Submit the feature</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#option-1-git-workflow">Option 1: Git workflow</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#option-2-in-lab-workflow">Option 2: In-Lab Workflow</a></li>
@@ -149,12 +168,20 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#external-libraries">External libraries</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#pandas-lrarrow-ballet-examples">Pandas ⇔ Ballet Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#pandas-ballet-examples">Pandas ⇔ Ballet Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#rolling-your-own-transformers">Rolling your own transformers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#example">Example</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#further-reading">Further reading</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">FAQ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#how-can-i-check-the-performance-of-a-feature">How can I check the performance of a feature?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#my-feature-has-a-valid-api-locally-why-was-it-rejected">My feature has a valid API locally, why was it rejected?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#why-did-my-feature-fail-the-feature-acceptance-validation">Why did my feature fail the feature acceptance validation?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#my-feature-relies-on-a-new-library-how-can-i-add-it-to-the-project">My feature relies on a new library, how can I add it to the project?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#how-can-i-learn-to-write-better-features">How can I learn to write better features?</a></li>
 </ul>
 </li>
 </ul>
@@ -328,19 +355,19 @@
 <span class="p">)</span>
 
 
-<div class="viewcode-block" id="NoFitMixin"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.NoFitMixin">[docs]</a><span class="k">class</span> <span class="nc">NoFitMixin</span><span class="p">:</span>
+<div class="viewcode-block" id="NoFitMixin"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.NoFitMixin">[docs]</a><span class="k">class</span> <span class="nc">NoFitMixin</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Mix-in class for transformations that do not require a fit stage&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="NoFitMixin.fit"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.NoFitMixin.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">fit_kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="NoFitMixin.fit"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.NoFitMixin.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">fit_kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span></div></div>
 
 
-<div class="viewcode-block" id="BaseTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.BaseTransformer">[docs]</a><span class="k">class</span> <span class="nc">BaseTransformer</span><span class="p">(</span><span class="n">NoFitMixin</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.BaseTransformer">[docs]</a><span class="k">class</span> <span class="nc">BaseTransformer</span><span class="p">(</span><span class="n">NoFitMixin</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base transformer class for developing new transformers&quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="SimpleFunctionTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.SimpleFunctionTransformer">[docs]</a><span class="k">class</span> <span class="nc">SimpleFunctionTransformer</span><span class="p">(</span><span class="n">FunctionTransformer</span><span class="p">):</span>
+<div class="viewcode-block" id="SimpleFunctionTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.SimpleFunctionTransformer">[docs]</a><span class="k">class</span> <span class="nc">SimpleFunctionTransformer</span><span class="p">(</span><span class="n">FunctionTransformer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Transformer that applies a callable to its input</span>
 
 <span class="sd">    The callable will be called on the input X in the transform stage,</span>
@@ -361,7 +388,7 @@
             <span class="n">kw_args</span><span class="o">=</span><span class="n">func_kwargs</span> <span class="ow">or</span> <span class="p">{})</span></div>
 
 
-<div class="viewcode-block" id="GroupedFunctionTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.GroupedFunctionTransformer">[docs]</a><span class="k">class</span> <span class="nc">GroupedFunctionTransformer</span><span class="p">(</span><span class="n">FunctionTransformer</span><span class="p">):</span>
+<div class="viewcode-block" id="GroupedFunctionTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.GroupedFunctionTransformer">[docs]</a><span class="k">class</span> <span class="nc">GroupedFunctionTransformer</span><span class="p">(</span><span class="n">FunctionTransformer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Transformer that applies a callable to each group of a groupby</span>
 
 <span class="sd">    Args:</span>
@@ -381,7 +408,7 @@
             <span class="n">kw_args</span><span class="o">=</span><span class="n">func_kwargs</span> <span class="ow">or</span> <span class="p">{})</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs</span> <span class="o">=</span> <span class="n">groupby_kwargs</span>
 
-<div class="viewcode-block" id="GroupedFunctionTransformer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.GroupedFunctionTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="GroupedFunctionTransformer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.GroupedFunctionTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_kwargs</span><span class="p">):</span>
         <span class="n">groupby_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">groupby_kwargs</span><span class="p">:</span>
             <span class="n">call</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="o">**</span><span class="n">groupby_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span>
@@ -390,7 +417,7 @@
         <span class="k">return</span> <span class="n">call</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="GroupwiseTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.GroupwiseTransformer">[docs]</a><span class="k">class</span> <span class="nc">GroupwiseTransformer</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">):</span>
+<div class="viewcode-block" id="GroupwiseTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.GroupwiseTransformer">[docs]</a><span class="k">class</span> <span class="nc">GroupwiseTransformer</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Transformer that does something different for every group</span>
 
 <span class="sd">    For each group identified in the training set by the groupby operation,</span>
@@ -464,7 +491,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">)</span>
 
-<div class="viewcode-block" id="GroupwiseTransformer.fit"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.GroupwiseTransformer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">fit_kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="GroupwiseTransformer.fit"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.GroupwiseTransformer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">fit_kwargs</span><span class="p">):</span>
         <span class="c1"># validation on inputs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="s1">&#39;ignore&#39;</span><span class="p">]:</span>
@@ -500,7 +527,7 @@
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="GroupwiseTransformer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.GroupwiseTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="GroupwiseTransformer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.GroupwiseTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_kwargs</span><span class="p">):</span>
         <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;groups_&#39;</span><span class="p">,</span> <span class="s1">&#39;transformers_&#39;</span><span class="p">])</span>
 
         <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="n">x_group</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -555,7 +582,7 @@
         <span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="ConditionalTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.ConditionalTransformer">[docs]</a><span class="k">class</span> <span class="nc">ConditionalTransformer</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">):</span>
+<div class="viewcode-block" id="ConditionalTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.ConditionalTransformer">[docs]</a><span class="k">class</span> <span class="nc">ConditionalTransformer</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Transform columns that satisfy a condition during training</span>
 
 <span class="sd">    In the fit stage, determines which variables (columns) satisfy the</span>
@@ -575,12 +602,12 @@
         <span class="c1"># because sklearn.clone would complain</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="n">trans</span>
 
-<div class="viewcode-block" id="ConditionalTransformer.fit"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.ConditionalTransformer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">fit_args</span><span class="p">):</span>
+<div class="viewcode-block" id="ConditionalTransformer.fit"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.ConditionalTransformer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">fit_args</span><span class="p">):</span>
         <span class="c1"># features_to_transform_ is a bool or array[bool]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">features_to_transform_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">condition</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="ConditionalTransformer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.base.ConditionalTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_args</span><span class="p">):</span>
+<div class="viewcode-block" id="ConditionalTransformer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.ConditionalTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_args</span><span class="p">):</span>
         <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;features_to_transform_&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>

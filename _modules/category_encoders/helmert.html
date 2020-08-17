@@ -112,10 +112,29 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributor_guide.html">Contributor Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../contributor_guide.html#cloud-feature-development-workflow">Cloud Feature Development Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../contributor_guide.html#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#setup-your-development-environment">Setup your development environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributor_guide.html#cloud-feature-development-workflow">Cloud Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#launch-binder">Launch binder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#work-in-a-notebook">Work in a notebook</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#authenticate-with-github">Authenticate with GitHub</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#develop-a-new-feature">Develop a new feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#test-your-feature">Test your feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#submit-your-feature">Submit your feature</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributor_guide.html#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#setup-your-development-environment">Setup your development environment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../contributor_guide.html#fork-the-project">Fork the project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contributor_guide.html#clone-your-fork">Clone your fork</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contributor_guide.html#create-a-virtualenv">Create a virtualenv</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#contributor-guide-develop-a-new-feature-local">Develop a new feature</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../contributor_guide.html#update-and-install-the-project">Update and install the project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contributor_guide.html#start-working-on-a-new-feature">Start working on a new feature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contributor_guide.html#write-your-feature">Write your feature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contributor_guide.html#contributor-guide-test-your-feature-local">Test your feature</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#submit-the-feature">Submit the feature</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../contributor_guide.html#option-1-git-workflow">Option 1: Git workflow</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../contributor_guide.html#option-2-in-lab-workflow">Option 2: In-Lab Workflow</a></li>
@@ -149,12 +168,20 @@
 <li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#external-libraries">External libraries</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#pandas-lrarrow-ballet-examples">Pandas ⇔ Ballet Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#pandas-ballet-examples">Pandas ⇔ Ballet Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#rolling-your-own-transformers">Rolling your own transformers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#example">Example</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#further-reading">Further reading</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">FAQ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html#how-can-i-check-the-performance-of-a-feature">How can I check the performance of a feature?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html#my-feature-has-a-valid-api-locally-why-was-it-rejected">My feature has a valid API locally, why was it rejected?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html#why-did-my-feature-fail-the-feature-acceptance-validation">Why did my feature fail the feature acceptance validation?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html#my-feature-relies-on-a-new-library-how-can-i-add-it-to-the-project">My feature relies on a new library, how can I add it to the project?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html#how-can-i-learn-to-write-better-features">How can I learn to write better features?</a></li>
 </ul>
 </li>
 </ul>
@@ -318,7 +345,7 @@
 <span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;willmcginnis&#39;</span>
 
 
-<div class="viewcode-block" id="HelmertEncoder"><a class="viewcode-back" href="../../api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.HelmertEncoder">[docs]</a><span class="k">class</span> <span class="nc">HelmertEncoder</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
+<div class="viewcode-block" id="HelmertEncoder"><a class="viewcode-back" href="../../api/ballet.eng.external.html#ballet.eng.category_encoders.HelmertEncoder">[docs]</a><span class="k">class</span> <span class="nc">HelmertEncoder</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Helmert contrast coding for encoding categorical features.</span>
 
 <span class="sd">    Parameters</span>
@@ -405,7 +432,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_dim</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">feature_names</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="HelmertEncoder.fit"><a class="viewcode-back" href="../../api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.HelmertEncoder.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="HelmertEncoder.fit"><a class="viewcode-back" href="../../api/ballet.eng.external.html#ballet.eng.category_encoders.HelmertEncoder.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Fit encoder according to X and y.</span>
 
 <span class="sd">        Parameters</span>
@@ -476,7 +503,7 @@
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="HelmertEncoder.transform"><a class="viewcode-back" href="../../api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.HelmertEncoder.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">override_return_df</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="HelmertEncoder.transform"><a class="viewcode-back" href="../../api/ballet.eng.external.html#ballet.eng.category_encoders.HelmertEncoder.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">override_return_df</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Perform the transformation to new categorical data.</span>
 
 <span class="sd">        Parameters</span>
@@ -526,7 +553,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">X</span><span class="o">.</span><span class="n">values</span></div>
 
-<div class="viewcode-block" id="HelmertEncoder.fit_helmert_coding"><a class="viewcode-back" href="../../api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.HelmertEncoder.fit_helmert_coding">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="HelmertEncoder.fit_helmert_coding"><a class="viewcode-back" href="../../api/ballet.eng.external.html#ballet.eng.category_encoders.HelmertEncoder.fit_helmert_coding">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">fit_helmert_coding</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">handle_missing</span><span class="p">,</span> <span class="n">handle_unknown</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">handle_missing</span> <span class="o">==</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span>
             <span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">values</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
@@ -556,7 +583,7 @@
 
         <span class="k">return</span> <span class="n">df</span></div>
 
-<div class="viewcode-block" id="HelmertEncoder.helmert_coding"><a class="viewcode-back" href="../../api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.HelmertEncoder.helmert_coding">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="HelmertEncoder.helmert_coding"><a class="viewcode-back" href="../../api/ballet.eng.external.html#ballet.eng.category_encoders.HelmertEncoder.helmert_coding">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">helmert_coding</span><span class="p">(</span><span class="n">X_in</span><span class="p">,</span> <span class="n">mapping</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -582,7 +609,7 @@
 
         <span class="k">return</span> <span class="n">X</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">cols</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="HelmertEncoder.get_feature_names"><a class="viewcode-back" href="../../api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.HelmertEncoder.get_feature_names">[docs]</a>    <span class="k">def</span> <span class="nf">get_feature_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="HelmertEncoder.get_feature_names"><a class="viewcode-back" href="../../api/ballet.eng.external.html#ballet.eng.category_encoders.HelmertEncoder.get_feature_names">[docs]</a>    <span class="k">def</span> <span class="nf">get_feature_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the names of all transformed / added columns.</span>
 

@@ -112,10 +112,29 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributor_guide.html">Contributor Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../contributor_guide.html#cloud-feature-development-workflow">Cloud Feature Development Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../contributor_guide.html#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#setup-your-development-environment">Setup your development environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributor_guide.html#cloud-feature-development-workflow">Cloud Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#launch-binder">Launch binder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#work-in-a-notebook">Work in a notebook</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#authenticate-with-github">Authenticate with GitHub</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#develop-a-new-feature">Develop a new feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#test-your-feature">Test your feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#submit-your-feature">Submit your feature</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributor_guide.html#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#setup-your-development-environment">Setup your development environment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../contributor_guide.html#fork-the-project">Fork the project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contributor_guide.html#clone-your-fork">Clone your fork</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contributor_guide.html#create-a-virtualenv">Create a virtualenv</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#contributor-guide-develop-a-new-feature-local">Develop a new feature</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../contributor_guide.html#update-and-install-the-project">Update and install the project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contributor_guide.html#start-working-on-a-new-feature">Start working on a new feature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contributor_guide.html#write-your-feature">Write your feature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contributor_guide.html#contributor-guide-test-your-feature-local">Test your feature</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../contributor_guide.html#submit-the-feature">Submit the feature</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../contributor_guide.html#option-1-git-workflow">Option 1: Git workflow</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../contributor_guide.html#option-2-in-lab-workflow">Option 2: In-Lab Workflow</a></li>
@@ -149,12 +168,20 @@
 <li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#external-libraries">External libraries</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#pandas-lrarrow-ballet-examples">Pandas ⇔ Ballet Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#pandas-ballet-examples">Pandas ⇔ Ballet Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#rolling-your-own-transformers">Rolling your own transformers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#example">Example</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#further-reading">Further reading</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">FAQ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html#how-can-i-check-the-performance-of-a-feature">How can I check the performance of a feature?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html#my-feature-has-a-valid-api-locally-why-was-it-rejected">My feature has a valid API locally, why was it rejected?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html#why-did-my-feature-fail-the-feature-acceptance-validation">Why did my feature fail the feature acceptance validation?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html#my-feature-relies-on-a-new-library-how-can-i-add-it-to-the-project">My feature relies on a new library, how can I add it to the project?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html#how-can-i-learn-to-write-better-features">How can I learn to write better features?</a></li>
 </ul>
 </li>
 </ul>
@@ -334,7 +361,7 @@
     <span class="k">return</span> <span class="n">internal_seed</span>
 
 
-<div class="viewcode-block" id="MeanMedianImputer"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.MeanMedianImputer">[docs]</a><span class="k">class</span> <span class="nc">MeanMedianImputer</span><span class="p">(</span><span class="n">BaseImputer</span><span class="p">):</span>
+<div class="viewcode-block" id="MeanMedianImputer"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.external.MeanMedianImputer">[docs]</a><span class="k">class</span> <span class="nc">MeanMedianImputer</span><span class="p">(</span><span class="n">BaseImputer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The MeanMedianImputer() transforms features by replacing missing data by the mean</span>
 <span class="sd">    or median value of the variable.</span>
@@ -367,7 +394,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">imputation_method</span> <span class="o">=</span> <span class="n">imputation_method</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_define_variables</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
 
-<div class="viewcode-block" id="MeanMedianImputer.fit"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.MeanMedianImputer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="MeanMedianImputer.fit"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.external.MeanMedianImputer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Learns the mean or median values.</span>
 
@@ -406,14 +433,14 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
     <span class="c1"># Ugly work around to import the docstring for Sphinx, otherwise none of this is necessary</span>
-<div class="viewcode-block" id="MeanMedianImputer.transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.MeanMedianImputer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="MeanMedianImputer.transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.external.MeanMedianImputer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="n">X</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">X</span></div>
 
     <span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">BaseImputer</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span></div>
 
 
-<div class="viewcode-block" id="EndTailImputer"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.EndTailImputer">[docs]</a><span class="k">class</span> <span class="nc">EndTailImputer</span><span class="p">(</span><span class="n">BaseImputer</span><span class="p">):</span>
+<div class="viewcode-block" id="EndTailImputer"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.external.EndTailImputer">[docs]</a><span class="k">class</span> <span class="nc">EndTailImputer</span><span class="p">(</span><span class="n">BaseImputer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The EndTailImputer() transforms features by replacing missing data by a</span>
 <span class="sd">    value at either tail of the distribution.</span>
@@ -494,7 +521,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">fold</span> <span class="o">=</span> <span class="n">fold</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_define_variables</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
 
-<div class="viewcode-block" id="EndTailImputer.fit"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.EndTailImputer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="EndTailImputer.fit"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.external.EndTailImputer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Learns the values at the end of the variable distribution.</span>
 
@@ -544,14 +571,14 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
     <span class="c1"># Ugly work around to import the docstring for Sphinx, otherwise none of this is necessary</span>
-<div class="viewcode-block" id="EndTailImputer.transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.EndTailImputer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="EndTailImputer.transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.external.EndTailImputer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="n">X</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">X</span></div>
 
     <span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">BaseImputer</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span></div>
 
 
-<div class="viewcode-block" id="ArbitraryNumberImputer"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.ArbitraryNumberImputer">[docs]</a><span class="k">class</span> <span class="nc">ArbitraryNumberImputer</span><span class="p">(</span><span class="n">BaseImputer</span><span class="p">):</span>
+<div class="viewcode-block" id="ArbitraryNumberImputer"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.external.ArbitraryNumberImputer">[docs]</a><span class="k">class</span> <span class="nc">ArbitraryNumberImputer</span><span class="p">(</span><span class="n">BaseImputer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The ArbitraryNumberImputer() replaces missing data in each variable</span>
 <span class="sd">    by an arbitrary value determined by the user.</span>
@@ -584,7 +611,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict</span> <span class="o">=</span> <span class="n">_define_numerical_dict</span><span class="p">(</span><span class="n">imputer_dict</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ArbitraryNumberImputer.fit"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.ArbitraryNumberImputer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ArbitraryNumberImputer.fit"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.external.ArbitraryNumberImputer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Checks that the variables are numerical.</span>
 
@@ -625,14 +652,14 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
     <span class="c1"># Ugly work around to import the docstring for Sphinx, otherwise none of this is necessary</span>
-<div class="viewcode-block" id="ArbitraryNumberImputer.transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.ArbitraryNumberImputer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="ArbitraryNumberImputer.transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.external.ArbitraryNumberImputer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="n">X</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">X</span></div>
 
     <span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">BaseImputer</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span></div>
 
 
-<div class="viewcode-block" id="CategoricalVariableImputer"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.CategoricalVariableImputer">[docs]</a><span class="k">class</span> <span class="nc">CategoricalVariableImputer</span><span class="p">(</span><span class="n">BaseImputer</span><span class="p">):</span>
+<div class="viewcode-block" id="CategoricalVariableImputer"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.external.CategoricalVariableImputer">[docs]</a><span class="k">class</span> <span class="nc">CategoricalVariableImputer</span><span class="p">(</span><span class="n">BaseImputer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The CategoricalVariableImputer() replaces missing data in categorical variables</span>
 <span class="sd">    by the string &#39;Missing&#39; or by the most frequent category.</span>
@@ -680,7 +707,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_define_variables</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">return_object</span> <span class="o">=</span> <span class="n">return_object</span>
 
-<div class="viewcode-block" id="CategoricalVariableImputer.fit"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.CategoricalVariableImputer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="CategoricalVariableImputer.fit"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.external.CategoricalVariableImputer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Learns the most frequent category if the imputation method is set to frequent.</span>
 
@@ -727,7 +754,7 @@
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="CategoricalVariableImputer.transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.CategoricalVariableImputer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="CategoricalVariableImputer.transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.external.CategoricalVariableImputer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="c1"># bring functionality from the BaseImputer</span>
         <span class="n">X</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 
@@ -740,7 +767,7 @@
     <span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">BaseImputer</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span></div>
 
 
-<div class="viewcode-block" id="RandomSampleImputer"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.RandomSampleImputer">[docs]</a><span class="k">class</span> <span class="nc">RandomSampleImputer</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
+<div class="viewcode-block" id="RandomSampleImputer"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.external.RandomSampleImputer">[docs]</a><span class="k">class</span> <span class="nc">RandomSampleImputer</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The RandomSampleImputer() replaces missing data in each feature with a random</span>
 <span class="sd">    sample extracted from the variables in the training set.</span>
@@ -828,7 +855,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">seeding_method</span> <span class="o">=</span> <span class="n">seeding_method</span>
 
-<div class="viewcode-block" id="RandomSampleImputer.fit"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.RandomSampleImputer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="RandomSampleImputer.fit"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.external.RandomSampleImputer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Makes a copy of the variables to impute in the training dataframe from</span>
 <span class="sd">        which it will randomly extract the values to fill the missing data</span>
@@ -873,7 +900,7 @@
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="RandomSampleImputer.transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.RandomSampleImputer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="RandomSampleImputer.transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.external.RandomSampleImputer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Replaces missing data with random values taken from the train set.</span>
 
@@ -940,7 +967,7 @@
         <span class="k">return</span> <span class="n">X</span></div></div>
 
 
-<div class="viewcode-block" id="AddMissingIndicator"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.AddMissingIndicator">[docs]</a><span class="k">class</span> <span class="nc">AddMissingIndicator</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
+<div class="viewcode-block" id="AddMissingIndicator"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.external.AddMissingIndicator">[docs]</a><span class="k">class</span> <span class="nc">AddMissingIndicator</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The AddMissingIndicator() adds an additional column or binary variable that</span>
 <span class="sd">    indicates if data is missing.</span>
@@ -981,7 +1008,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_define_variables</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">how</span> <span class="o">=</span> <span class="n">how</span>
 
-<div class="viewcode-block" id="AddMissingIndicator.fit"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.AddMissingIndicator.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="AddMissingIndicator.fit"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.external.AddMissingIndicator.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Learns the variables for which the missing indicators will be created.</span>
 
@@ -1021,7 +1048,7 @@
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="AddMissingIndicator.transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.AddMissingIndicator.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="AddMissingIndicator.transform"><a class="viewcode-back" href="../../api/ballet.eng.feature_engine.html#ballet.eng.external.AddMissingIndicator.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds the binary missing indicators.</span>
 

@@ -25,177 +25,237 @@ Some Ballet projects may have set up a development workflow using a hosted Jupyt
 environment and an in-lab submission extension. This greatly simplifies the development workflow
 at the cost of some flexibility.
 
-#. **Launch**. Click the |launch-binder| link in the project's README to launch an interactive notebook. This may take a few minutes while Binder builds the repository -- grab a cup of coffee!
+Launch binder
+-------------
 
-#. **Notebook**. Begin editing the demo notebook or create a new notebook.
+Click the |launch-binder| link in the project's README to launch an interactive notebook. This may take a few minutes while Binder builds the repository -- grab a cup of coffee!
 
-#. **GitHub**. Authenticate with GitHub by clicking the GitHub icon on the right side of the Notebook toolbar as shown. This will initiate an authentication process in which you will be able to log into your GitHub account and authorize ``ballet-github-oauth-gateway`` for limited access to your account. As a result of this secure process, the Ballet Lab extension will be able to submit your feature on your behalf to the upstream project.
+Work in a notebook
+------------------
 
-   .. image:: _static/auth_with_github.gif
-      :alt: An animation of a user proceeding with the GitHub authentication flow in a demo notebook.
-      :align: center
-      :scale: 75%
+Begin editing the demo notebook or create a new notebook.
 
-   When you have successfully authenticated, the GitHub icon will change color to green.
+Authenticate with GitHub
+------------------------
 
-#. **Develop**. Develop a new feature. See `write your feature`_ below, and the project may have prompts in the notebook to guide you. See also the :doc:`feature_engineering_guide`.
+Authenticate with GitHub by clicking the GitHub icon on the right side of
+the Notebook toolbar as shown. This will initiate an authentication process
+in which you will be able to log into your GitHub account and authorize
+``ballet-github-oauth-gateway`` for limited access to your account. As a
+result of this secure process, the Ballet Lab extension will be able to
+submit your feature on your behalf to the upstream project.
 
-#. **Test**. Test your feature. See `test your feature`_ below, and the project may have prompts in the notebook to guide you.
+.. image:: _static/auth_with_github.gif
+   :alt: An animation of a user proceeding with the GitHub authentication flow in a demo notebook.
+   :align: center
+   :scale: 75%
 
-#. **Submit**. Submit your feature.
+When you have successfully authenticated, the GitHub icon will change color
+to green.
 
-   First, *select the code cell* that contains the feature.
-
-   Next, locate the submission button provided by the Jupyter Lab extension, as
-   shown in the screenshot.
-
-   .. image:: _static/labextension_submit_button_annotated_submit.png
-      :alt: The submission button illustrated in a notebook.
-      :align: center
-      :scale: 75%
-
-   When you are ready, press the "Submit" button. You will be asked to confirm that you want to submit the feature.
-
-   If the submission succeeds, you will get a link to the pull request that is associated with your feature. If it fails, you will get an explanation of the failure.
-
-   .. note::
-
-      The content of the cell must be a standalone Python module, as it will be placed in an
-      empty Python source file. This means that any imports or helper functions must be defined
-      (or re-defined) within this cell, otherwise your submitted feature will fail to validate
-      due to missing imports/helpers.
-
-Local Feature Development Workflow
-==================================
-
-The most flexible and powerful development workflow is based on developing locally making heavy
-use of your command line. There are two parts to the workflow. First, you setup your development
-environment (only do this once). Second, you develop a new feature (repeat the steps every time you
-create a new feature).
-
-This section discusses the use of many concepts commonly used in software development, including
-git, GitHub, make, and virtual environments.
-
-
-Setup your development environment
------------------------------------
-
-#. Fork the project.
-
-#. Clone your fork in your local development environment.
-
-   .. code-block:: console
-
-      $ git clone https://github.com/your_user_name/ballet-predict-house-prices
-      $ cd ballet-predict-house-prices
-      $ git remote add upstream https://github.com/HDI-Project/ballet-predict-house-prices
-
-#. Create and activate a new virtual environment using your environment manager of choice, such
-   as `conda`_.
-
-   .. code-block:: console
-
-      $ conda create -n myenv python=3.7 -y && conda activate myenv
-
+.. _`contributor_guide:Develop a new feature (cloud)`:
 
 Develop a new feature
 ---------------------
 
-#. Update and install the project. This will make the feature engineering pipeline accessible in
-   interactive settings (Python interpreter, Jupyter notebook) and as a command-line tool.
+Develop a new feature in the notebook. See :ref:`contributor_guide:Write your feature` below, and the project may have prompts in the notebook to guide you. See also the :doc:`feature_engineering_guide`.
 
-   .. code-block:: console
+.. _`contributor_guide:Test your feature (cloud)`:
 
-      (myenv) $ git checkout master
-      (myenv) $ git pull upstream master
-      (myenv) $ git push origin master
-      (myenv) $ pip install invoke && invoke install
+Test your feature
+-----------------
 
-   .. note::
+Test your feature. See :ref:`contributor_guide:Test your feature (local)`
+below, and the project may have prompts in the notebook to guide you.
 
-      You should repeat the entirety of this step every time before you begin working on a new
-      feature, in order to synchronize changes made to the upstream project, such as the
-      introduction of new features by other collaborators or an update to the ballet framework
-      itself.
+Submit your feature
+-------------------
 
-#. Start working on a new feature.
+Submit your feature.
 
-   .. code-block:: console
+First, *select the code cell* that contains the feature.
 
-      (myenv) $ git checkout -b develop-my-feature
-      (myenv) $ ballet start-new-feature
-      Starting new feature...
-      username [your_user_name]:
-      featurename [featurename]: impute_lot_frontage
-      2019-12-11 10:56:00,517 INFO - Start new feature successful.
-      2019-12-11 10:56:00,517 INFO - Created src/ballet_predict_house_prices/features/contrib/user_your_user_name/feature_impute_lot_frontage.py
-      Starting new feature...DONE
+Next, locate the submission button provided by the Jupyter Lab extension, as
+shown in the screenshot.
 
-   This will create a new Python module within the project's "contrib" directory to hold your
-   feature.
+.. image:: _static/labextension_submit_button_annotated_submit.png
+   :alt: The submission button illustrated in a notebook.
+   :align: center
+   :scale: 75%
 
-   * The contrib directory is named like ``src/<ballet_project>/features/contrib``.
-   * The new subpackage must be named like ``user_<github username>``.
-   * The new submodule that will contain the feature must be named like ``feature_<feature name>.py``.
+When you are ready, press the "Submit" button. You will be asked to confirm
+that you want to submit the feature.
 
-   .. _`write your feature`:
+If the submission succeeds, you will get a link to the pull request that is
+associated with your feature. If it fails, you will get an explanation of
+the failure.
 
-#. Write your feature. We call the code you write to extract one group of related feature values
-   a *logical feature*. Within your feature submodule, you can write arbitrary Python code.
-   Ultimately, a single object that is an instance of ``ballet.Feature`` must be defined; it will
-   be imported by the feature engineering pipeline.
+.. note::
 
-   In this example, a feature is defined that receives column ``'Lot Frontage'`` from the
-   data and imputes missing values with the mean of the training data.
+   The content of the cell must be a standalone Python module, as it will be placed in an
+   empty Python source file. This means that any imports or helper functions must be defined
+   (or re-defined) within this cell, otherwise your submitted feature will fail to validate
+   due to missing imports/helpers.
 
-   .. include:: fragments/feature-engineering-guide-second-feature.py
-      :code: python
+Local Feature Development Workflow
+==================================
 
-   .. tip::
+The most flexible and powerful development workflow is based on developing
+locally making heavy use of your command line. There are two parts to the
+workflow. First, you setup your development environment (only do this once).
+Second, you develop a new feature (repeat the steps every time you create a
+new feature).
 
-      For a full tutorial on feature engineering in Ballet, check out the separate :doc:`feature_engineering_guide`.
+This section discusses the use of many concepts commonly used in software
+development, including git, GitHub, make, and virtual environments.
 
-   Only the Python packages thare are existing dependencies of the project can be used in feature engineering. Otherwise, if the feature were to be accepted, then the feature engineering pipeline would break due to a missing dependency. Usually, the dependencies of a Ballet project are the core ``ballet`` package and its own dependencies. You can see all installed dependencies by running ``pip freeze`` from within the virtual environment. If you must use a package that is not currently a dependency, first install it locally and ensure that the feature you develop using that dependency is satisfactory. Then before submitting the feature, submit a separate PR that adds the dependency to the ``install_requires`` key of the project's ``setup.py`` file. You can also do this from the GitHub UI by pressing "edit" on the ``setup.py`` file. A maintainer will manually review your PR and must merge it before you submit your feature.
+Setup your development environment
+----------------------------------
 
-   .. _test your feature:
+Fork the project
+^^^^^^^^^^^^^^^^
 
-#. Test your feature. Observe later in this guide that when you submit your feature, there will be
-   four separate validation steps. In your local development environment, you can check two of
-   them: whether the feature you have written satisfies the "feature API", and whether the
-   feature contributes positively to the ML performance of the feature engineering pipeline.
+For example, use the GitHub UI, or the ``hub`` cli.
 
-   To validate your feature, Ballet provides a client ``b`` for easy access to validation methods. It takes as input the feature and runs a series of tests to make sure that the feature works correctly. You can optionally pass specific entities and labels to use as well.
+Clone your fork
+^^^^^^^^^^^^^^^
 
-   .. code-block:: python
+Clone your fork in your local development environment:
 
-      from ballet import b
-      b.validate_feature_api(feature)
-      # True
+.. code-block:: console
+
+   $ git clone https://github.com/your_user_name/ballet-predict-house-prices
+   $ cd ballet-predict-house-prices
+   $ git remote add upstream https://github.com/HDI-Project/ballet-predict-house-prices
+
+Create a virtualenv
+^^^^^^^^^^^^^^^^^^^
+
+Create and activate a new virtual environment using your environment manager of choice, such as `conda`_.
+
+.. code-block:: console
+
+   $ conda create -y -n myenv python=3.7
+   $ conda activate myenv
+
+.. _`contributor_guide:Develop a new feature (local)`:
+
+Develop a new feature
+---------------------
+
+Update and install the project
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This will make the feature engineering pipeline accessible in interactive
+settings (Python interpreter, Jupyter notebook) and as a command-line tool.
+
+.. code-block:: console
+
+   (myenv) $ git checkout master
+   (myenv) $ git pull upstream master
+   (myenv) $ git push origin master
+   (myenv) $ pip install invoke && invoke install
+
+.. note::
+
+   You should repeat the entirety of this step every time before you begin
+   working on a new feature, in order to synchronize changes made to the
+   upstream project, such as the introduction of new features by other
+   collaborators or an update to the ballet framework itself.
+
+Start working on a new feature
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: console
+
+   (myenv) $ git checkout -b develop-my-feature
+   (myenv) $ ballet start-new-feature
+   Starting new feature...
+   username [your_user_name]:
+   featurename [featurename]: impute_lot_frontage
+   2019-12-11 10:56:00,517 INFO - Start new feature successful.
+   2019-12-11 10:56:00,517 INFO - Created src/ballet_predict_house_prices/features/contrib/user_your_user_name/feature_impute_lot_frontage.py
+   Starting new feature...DONE
+
+This will create a new Python module within the project's "contrib"
+directory to hold your feature.
+
+* The contrib directory is named like ``src/<ballet_project>/features/contrib``.
+* The new subpackage must be named like ``user_<github username>``.
+* The new submodule that will contain the feature must be named like ``feature_<feature name>.py``.
+
+Write your feature
+^^^^^^^^^^^^^^^^^^
+
+We call the code you write to extract one group of related feature values a
+*logical feature*. Within your feature submodule, you can write arbitrary
+Python code. Ultimately, a single object that is an instance of
+``ballet.Feature`` must be defined; it will be imported by the feature
+engineering pipeline.
+
+In this example, a feature is defined that receives column ``'Lot
+Frontage'`` from the data and imputes missing values with the mean of the
+training data.
+
+.. include:: fragments/feature-engineering-guide-second-feature.py
+   :code: python
+
+.. tip::
+
+   For a full tutorial on feature engineering in Ballet, check out the separate :doc:`feature_engineering_guide`.
+
+   Only the Python packages that are existing dependencies of the project can be used in feature engineering. Otherwise, if the feature were to be accepted, then the feature engineering pipeline would break due to a missing dependency. Usually, the dependencies of a Ballet project are the core ``ballet`` package and its own dependencies. If Ballet is installed with the ``[all]`` extra, then it additional re-exports feature engineering primitives from many common libraries. See :py:mod:`ballet.eng.external` for a summary.
+
+   If you must add a new dependency, see :ref:`faq:My feature relies on a new library, how can I add it to the project?`.
+
+.. _`contributor_guide:Test your feature (local)`:
+
+Test your feature
+^^^^^^^^^^^^^^^^^
+
+Observe later in this guide that when you submit your feature, there will be
+four separate validation steps. In your local development environment, you
+can check two of them: whether the feature you have written satisfies the
+"feature API", and whether the feature contributes positively to the ML
+performance of the feature engineering pipeline.
+
+To validate your feature, Ballet provides a client ``b`` for easy access to
+validation methods. It takes as input the feature and runs a series of tests
+to make sure that the feature works correctly. You can optionally pass
+specific entities and labels to use as well.
+
+.. code-block:: python
+
+   from ballet import b
+   b.validate_feature_api(feature)
+   # True
 
 
-   Second, the function ``validate_feature_acceptance`` takes as input the
-   feature object and runs an algorithm to determine whether the existing
-   feature engineering pipeline for the Ballet project that you are working
-   on performs better with or without your feature.
+Second, the function ``validate_feature_acceptance`` takes as input the
+feature object and runs an algorithm to determine whether the existing
+feature engineering pipeline for the Ballet project that you are working
+on performs better with or without your feature.
 
-   .. code-block:: python
+.. code-block:: python
 
-      from ballet import b
-      b.validate_feature_acceptance(feature)
-      # True
+   from ballet import b
+   b.validate_feature_acceptance(feature)
+   # True
 
-   Under the hood, it tries to automatically detect the Ballet project that you are working
-   on and builds the existing feature engineering pipeline that is part of the project. It also
-   loads the specific feature accepter that has been configured for your project.
+Under the hood, it tries to automatically detect the Ballet project that you
+are working on and builds the existing feature engineering pipeline that is
+part of the project. It also loads the specific feature accepter that has
+been configured for your project.
 
-   To gain additional insight into any of the validation procedures, including details on
-   why your feature may have failed to validate, enable ballet logging.
+To gain additional insight into any of the validation procedures, including
+details on why your feature may have failed to validate, enable ballet
+logging.
 
-   .. code-block:: python
+.. code-block:: python
 
-      from ballet.util.log import enable
-      enable(level='INFO')   # or, level='DEBUG'
-      # [2019-12-22 10:51:30,336] {ballet: log.py:34} INFO - Logging enabled at level INFO.
+   from ballet.util.log import enable
+   enable(level='INFO')   # or, level='DEBUG'
+   # [2019-12-22 10:51:30,336] {ballet: log.py:34} INFO - Logging enabled at level INFO.
 
 Submit the feature
 ------------------
@@ -207,27 +267,47 @@ Option 1: Git workflow
 
 In this workflow, you work with git directly to commit and push your change and open a pull request with the upstream project repo.
 
-#. Commit your changes and create a pull request to the project repository.
+Commit your changes
+"""""""""""""""""""
 
-   .. code-block:: console
+.. code-block:: console
 
-      (myenv) $ git add .
-      (myenv) $ git commit -m "Add my new feature"
-      (myenv) $ git push origin develop-my-feature
+   (myenv) $ git add .
+   (myenv) $ git commit -m "Add my new feature"
+   (myenv) $ git push origin develop-my-feature
 
-   The output of the ``git push`` command will include a link to open a new pull request on the
-   upstream project. Navigate to the url in your browser and open a new PR. Alternately, you can
-   use the command-line tool `hub`_:
+Create a pull request
+"""""""""""""""""""""
 
-   .. code-block:: console
+Create a pull request to the project repository.
 
-      (myenv) $ hub pull-request
+The output of the ``git push`` command will include a link to open a new
+pull request on the upstream project. Navigate to the url in your browser
+and open a new PR. Alternately, you can use the command-line tool `hub`_:
 
+.. code-block:: console
+
+   (myenv) $ hub pull-request
 
 Option 2: In-Lab Workflow
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In this workflow, you use the Ballet JupyterLab extension in order to submit code directly from within your analysis notebook if you are developing in Jupyter Lab. This has the same user experience as described in the cloud feature development workflow above. Here, you should `install ballet-submit-labextension`_ following the directions in that project. Importantly, you must authorize the extension to interact with GitHub on your behalf in one of three ways: (1) use the built-in GitHub OAuth functionality to obtain a new OAuth token with one click (2) obtain a GitHub OAuth token yourself and populate the variable ``$GITHUB_TOKEN`` (3) optain a GitHub OAuth token and pass it as an option when starting JupyterLab using ``--BalletApp.github_token=$TOKEN``.
+In this workflow, you use the Ballet JupyterLab extension in order to submit
+code directly from within your analysis notebook if you are developing in
+Jupyter Lab. This has the same user experience as described in the cloud
+feature development workflow above. Here, you should `install
+ballet-submit-labextension`_ following the directions in that project.
+Importantly, you must authorize the extension to interact with GitHub on
+your behalf in one of three ways:
+
+#. use the built-in GitHub OAuth functionality to obtain a new OAuth token
+   with one click
+
+#. obtain a GitHub OAuth token yourself and populate the variable
+   ``$GITHUB_TOKEN``
+
+#. obtain a GitHub OAuth token and pass it as an option when starting
+   JupyterLab using ``--BalletApp.github_token=$TOKEN``.
 
 Understanding Validation Results
 ================================

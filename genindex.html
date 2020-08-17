@@ -112,10 +112,29 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributor_guide.html">Contributor Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="contributor_guide.html#cloud-feature-development-workflow">Cloud Feature Development Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contributor_guide.html#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="contributor_guide.html#setup-your-development-environment">Setup your development environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributor_guide.html#cloud-feature-development-workflow">Cloud Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="contributor_guide.html#launch-binder">Launch binder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contributor_guide.html#work-in-a-notebook">Work in a notebook</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contributor_guide.html#authenticate-with-github">Authenticate with GitHub</a></li>
 <li class="toctree-l3"><a class="reference internal" href="contributor_guide.html#develop-a-new-feature">Develop a new feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contributor_guide.html#test-your-feature">Test your feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contributor_guide.html#submit-your-feature">Submit your feature</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="contributor_guide.html#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="contributor_guide.html#setup-your-development-environment">Setup your development environment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="contributor_guide.html#fork-the-project">Fork the project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="contributor_guide.html#clone-your-fork">Clone your fork</a></li>
+<li class="toctree-l4"><a class="reference internal" href="contributor_guide.html#create-a-virtualenv">Create a virtualenv</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="contributor_guide.html#contributor-guide-develop-a-new-feature-local">Develop a new feature</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="contributor_guide.html#update-and-install-the-project">Update and install the project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="contributor_guide.html#start-working-on-a-new-feature">Start working on a new feature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="contributor_guide.html#write-your-feature">Write your feature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="contributor_guide.html#contributor-guide-test-your-feature-local">Test your feature</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="contributor_guide.html#submit-the-feature">Submit the feature</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="contributor_guide.html#option-1-git-workflow">Option 1: Git workflow</a></li>
 <li class="toctree-l4"><a class="reference internal" href="contributor_guide.html#option-2-in-lab-workflow">Option 2: In-Lab Workflow</a></li>
@@ -149,12 +168,20 @@
 <li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#external-libraries">External libraries</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="feature_engineering_guide.html#pandas-lrarrow-ballet-examples">Pandas ⇔ Ballet Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feature_engineering_guide.html#pandas-ballet-examples">Pandas ⇔ Ballet Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="feature_engineering_guide.html#rolling-your-own-transformers">Rolling your own transformers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#example">Example</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="feature_engineering_guide.html#further-reading">Further reading</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#how-can-i-check-the-performance-of-a-feature">How can I check the performance of a feature?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#my-feature-has-a-valid-api-locally-why-was-it-rejected">My feature has a valid API locally, why was it rejected?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-did-my-feature-fail-the-feature-acceptance-validation">Why did my feature fail the feature acceptance validation?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#my-feature-relies-on-a-new-library-how-can-i-add-it-to-the-project">My feature relies on a new library, how can I add it to the project?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#how-can-i-learn-to-write-better-features">How can I learn to write better features?</a></li>
 </ul>
 </li>
 </ul>
@@ -484,8 +511,12 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.AddMissingIndicator">AddMissingIndicator (class in ballet.eng.feature_engine)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.AddMissingIndicator">AddMissingIndicator (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.AddMissingIndicator">(class in ballet.eng.feature_engine)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.AlwaysAccepter">AlwaysAccepter (class in ballet.validation.feature_acceptance.validator)</a>
 </li>
       <li><a href="api/ballet.client.html#ballet.client.Client.api">api() (ballet.client.Client property)</a>
@@ -494,10 +525,18 @@
         <li><a href="api/ballet.project.html#ballet.project.Project.api">(ballet.project.Project property)</a>
 </li>
       </ul></li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.ArbitraryNumberImputer">ArbitraryNumberImputer (class in ballet.eng.feature_engine)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.ArbitraryNumberImputer">ArbitraryNumberImputer (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.ArbitraryNumberImputer">(class in ballet.eng.feature_engine)</a>
 </li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.ArbitraryOutlierCapper">ArbitraryOutlierCapper (class in ballet.eng.feature_engine)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.ArbitraryOutlierCapper">ArbitraryOutlierCapper (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.ArbitraryOutlierCapper">(class in ballet.eng.feature_engine)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin">ArrayLikeEqualityTestingMixin (class in ballet.util.testing)</a>
 </li>
       <li><a href="api/ballet.feature.html#ballet.feature.Feature.as_feature_engineering_pipeline">as_feature_engineering_pipeline() (ballet.feature.Feature method)</a>
@@ -506,10 +545,10 @@
 </li>
       <li><a href="api/ballet.util.html#ballet.util.asarray2d">asarray2d() (in module ballet.util)</a>
 </li>
-      <li><a href="api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin.assertArrayAlmostEqual">assertArrayAlmostEqual() (ballet.util.testing.ArrayLikeEqualityTestingMixin method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin.assertArrayAlmostEqual">assertArrayAlmostEqual() (ballet.util.testing.ArrayLikeEqualityTestingMixin method)</a>
+</li>
       <li><a href="api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin.assertArrayEqual">assertArrayEqual() (ballet.util.testing.ArrayLikeEqualityTestingMixin method)</a>
 </li>
       <li><a href="api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin.assertArrayNotAlmostEqual">assertArrayNotAlmostEqual() (ballet.util.testing.ArrayLikeEqualityTestingMixin method)</a>
@@ -532,8 +571,12 @@
 </li>
       <li><a href="api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin.assertSeriesNotEqual">assertSeriesNotEqual() (ballet.util.testing.ArrayLikeEqualityTestingMixin method)</a>
 </li>
-      <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.AutoregressiveTransformer">AutoregressiveTransformer (class in ballet.eng.skits)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.AutoregressiveTransformer">AutoregressiveTransformer (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.AutoregressiveTransformer">(class in ballet.eng.skits)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -541,9 +584,17 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.BackwardDifferenceEncoder.backward_difference_coding">backward_difference_coding() (ballet.eng.category_encoders.BackwardDifferenceEncoder static method)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.BackwardDifferenceEncoder.backward_difference_coding">(ballet.eng.external.BackwardDifferenceEncoder static method)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.BackwardDifferenceEncoder">BackwardDifferenceEncoder (class in ballet.eng.category_encoders)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.BackwardDifferenceEncoder">(class in ballet.eng.external)</a>
 </li>
+      </ul></li>
       <li>
     ballet
 
@@ -765,8 +816,6 @@
         <li><a href="api/ballet.update.html#module-ballet.update">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     ballet.util
 
@@ -788,6 +837,8 @@
         <li><a href="api/ballet.util.code.html#module-ballet.util.code">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     ballet.util.fs
 
@@ -958,24 +1009,60 @@
       <li><a href="api/ballet.validation.base.html#ballet.validation.base.BaseCheck">BaseCheck (class in ballet.validation.base)</a>
 </li>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.BaseNEncoder.basen_encode">basen_encode() (ballet.eng.category_encoders.BaseNEncoder method)</a>
-</li>
-      <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.BaseNEncoder.basen_to_integer">basen_to_integer() (ballet.eng.category_encoders.BaseNEncoder method)</a>
-</li>
-      <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.BaseNEncoder">BaseNEncoder (class in ballet.eng.category_encoders)</a>
-</li>
-      <li><a href="api/ballet.eng.base.html#ballet.eng.base.BaseTransformer">BaseTransformer (class in ballet.eng.base)</a>
-</li>
-      <li><a href="api/ballet.validation.base.html#ballet.validation.base.BaseValidator">BaseValidator (class in ballet.validation.base)</a>
-</li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.KBinsDiscretizer.bin_edges_">bin_edges_ (ballet.eng.sklearn.KBinsDiscretizer attribute)</a>
-</li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.Binarizer">Binarizer (class in ballet.eng.sklearn)</a>
-</li>
-      <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.BinaryEncoder">BinaryEncoder (class in ballet.eng.category_encoders)</a>
-</li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.DecisionTreeDiscretiser.binner_dict_">binner_dict_ (ballet.eng.feature_engine.DecisionTreeDiscretiser attribute)</a>
 
       <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.BaseNEncoder.basen_encode">(ballet.eng.external.BaseNEncoder method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.BaseNEncoder.basen_to_integer">basen_to_integer() (ballet.eng.category_encoders.BaseNEncoder method)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.BaseNEncoder.basen_to_integer">(ballet.eng.external.BaseNEncoder method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.BaseNEncoder">BaseNEncoder (class in ballet.eng.category_encoders)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.BaseNEncoder">(class in ballet.eng.external)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.html#ballet.eng.BaseTransformer">BaseTransformer (class in ballet.eng)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.base.html#ballet.eng.base.BaseTransformer">(class in ballet.eng.base)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.validation.base.html#ballet.validation.base.BaseValidator">BaseValidator (class in ballet.validation.base)</a>
+</li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.KBinsDiscretizer.bin_edges_">bin_edges_ (ballet.eng.external.KBinsDiscretizer attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.KBinsDiscretizer.bin_edges_">(ballet.eng.sklearn.KBinsDiscretizer attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.Binarizer">Binarizer (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.Binarizer">(class in ballet.eng.sklearn)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.BinaryEncoder">BinaryEncoder (class in ballet.eng.category_encoders)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.BinaryEncoder">(class in ballet.eng.external)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.DecisionTreeDiscretiser.binner_dict_">binner_dict_ (ballet.eng.external.DecisionTreeDiscretiser attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.EqualFrequencyDiscretiser.binner_dict_">(ballet.eng.external.EqualFrequencyDiscretiser attribute)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.EqualWidthDiscretiser.binner_dict_">(ballet.eng.external.EqualWidthDiscretiser attribute)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.UserInputDiscretiser.binner_dict_">(ballet.eng.external.UserInputDiscretiser attribute)</a>
+</li>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.DecisionTreeDiscretiser.binner_dict_">(ballet.eng.feature_engine.DecisionTreeDiscretiser attribute)</a>
+</li>
         <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.EqualFrequencyDiscretiser.binner_dict_">(ballet.eng.feature_engine.EqualFrequencyDiscretiser attribute)</a>
 </li>
         <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.EqualWidthDiscretiser.binner_dict_">(ballet.eng.feature_engine.EqualWidthDiscretiser attribute)</a>
@@ -985,9 +1072,13 @@
       </ul></li>
       <li><a href="api/ballet.util.code.html#ballet.util.code.blacken_code">blacken_code() (in module ballet.util.code)</a>
 </li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.BoxCoxTransformer">BoxCoxTransformer (class in ballet.eng.feature_engine)</a>
+      <li><a href="api/ballet.eng.html#ballet.eng.BoxCoxTransformer">BoxCoxTransformer (class in ballet.eng)</a>
 
       <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.BoxCoxTransformer">(class in ballet.eng.external)</a>
+</li>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.BoxCoxTransformer">(class in ballet.eng.feature_engine)</a>
+</li>
         <li><a href="api/ballet.eng.misc.html#ballet.eng.misc.BoxCoxTransformer">(class in ballet.eng.misc)</a>
 </li>
       </ul></li>
@@ -1002,7 +1093,11 @@
       <li><a href="api/ballet.project.html#ballet.project.FeatureEngineeringProject.CACHE_TIMEOUT">CACHE_TIMEOUT (ballet.project.FeatureEngineeringProject attribute)</a>
 </li>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.BaseNEncoder.calc_required_digits">calc_required_digits() (ballet.eng.category_encoders.BaseNEncoder method)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.BaseNEncoder.calc_required_digits">(ballet.eng.external.BaseNEncoder method)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.util.ci.html#ballet.util.ci.can_use_travis_differ">can_use_travis_differ() (in module ballet.util.ci)</a>
 </li>
       <li><a href="api/ballet.validation.feature_api.checks.html#ballet.validation.feature_api.checks.CanDeepcopyCheck">CanDeepcopyCheck (class in ballet.validation.feature_api.checks)</a>
@@ -1032,14 +1127,26 @@
       <li><a href="api/ballet.validation.feature_api.checks.html#ballet.validation.feature_api.checks.CanTransformOneRowCheck">CanTransformOneRowCheck (class in ballet.validation.feature_api.checks)</a>
 </li>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.CatBoostEncoder">CatBoostEncoder (class in ballet.eng.category_encoders)</a>
-</li>
-      <li><a href="api/ballet.transformer.html#ballet.transformer.catch_bare_exception_sanitize_array">catch_bare_exception_sanitize_array() (in module ballet.transformer)</a>
-</li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.CategoricalVariableImputer">CategoricalVariableImputer (class in ballet.eng.feature_engine)</a>
-</li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.OneHotEncoder.categories_">categories_ (ballet.eng.sklearn.OneHotEncoder attribute)</a>
 
       <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.CatBoostEncoder">(class in ballet.eng.external)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.transformer.html#ballet.transformer.catch_bare_exception_sanitize_array">catch_bare_exception_sanitize_array() (in module ballet.transformer)</a>
+</li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.CategoricalVariableImputer">CategoricalVariableImputer (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.CategoricalVariableImputer">(class in ballet.eng.feature_engine)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.OneHotEncoder.categories_">categories_ (ballet.eng.external.OneHotEncoder attribute)</a>, <a href="api/ballet.eng.external.html#id24">[1]</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.OrdinalEncoder.categories_">(ballet.eng.external.OrdinalEncoder attribute)</a>, <a href="api/ballet.eng.external.html#id32">[1]</a>
+</li>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.OneHotEncoder.categories_">(ballet.eng.sklearn.OneHotEncoder attribute)</a>
+</li>
         <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.OrdinalEncoder.categories_">(ballet.eng.sklearn.OrdinalEncoder attribute)</a>
 </li>
       </ul></li>
@@ -1051,8 +1158,12 @@
       </ul></li>
       <li><a href="api/ballet.transformer.html#ballet.transformer.ConversionApproach.caught">caught (ballet.transformer.ConversionApproach attribute)</a>
 </li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.RobustScaler.center_">center_ (ballet.eng.sklearn.RobustScaler attribute)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.RobustScaler.center_">center_ (ballet.eng.external.RobustScaler attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.RobustScaler.center_">(ballet.eng.sklearn.RobustScaler attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.validation.common.html#ballet.validation.common.ChangeCollector">ChangeCollector (class in ballet.validation.common)</a>
 </li>
       <li><a href="api/ballet.validation.base.html#ballet.validation.base.BaseCheck.check">check() (ballet.validation.base.BaseCheck method)</a>
@@ -1110,7 +1221,11 @@
       <li><a href="api/ballet.client.html#ballet.client.Client">Client (class in ballet.client)</a>
 </li>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.BaseNEncoder.col_transform">col_transform() (ballet.eng.category_encoders.BaseNEncoder method)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.BaseNEncoder.col_transform">(ballet.eng.external.BaseNEncoder method)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.validation.common.html#ballet.validation.common.ChangeCollector.collect_changes">collect_changes() (ballet.validation.common.ChangeCollector method)</a>
 </li>
       <li><a href="api/ballet.contrib.html#ballet.contrib.collect_contrib_features">collect_contrib_features() (in module ballet.contrib)</a>
@@ -1118,17 +1233,33 @@
       <li><a href="api/ballet.validation.common.html#ballet.validation.common.CollectedChanges">CollectedChanges (class in ballet.validation.common)</a>
 </li>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.CountEncoder.combine_min_categories">combine_min_categories() (ballet.eng.category_encoders.CountEncoder method)</a>
-</li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.GaussianRandomProjection.components_">components_ (ballet.eng.sklearn.GaussianRandomProjection attribute)</a>
 
       <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.CountEncoder.combine_min_categories">(ballet.eng.external.CountEncoder method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.GaussianRandomProjection.components_">components_ (ballet.eng.external.GaussianRandomProjection attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.SparseRandomProjection.components_">(ballet.eng.external.SparseRandomProjection attribute)</a>
+</li>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.GaussianRandomProjection.components_">(ballet.eng.sklearn.GaussianRandomProjection attribute)</a>
+</li>
         <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.SparseRandomProjection.components_">(ballet.eng.sklearn.SparseRandomProjection attribute)</a>
 </li>
       </ul></li>
-      <li><a href="api/ballet.eng.misc.html#ballet.eng.misc.ComputedValueTransformer">ComputedValueTransformer (class in ballet.eng.misc)</a>
+      <li><a href="api/ballet.eng.html#ballet.eng.ComputedValueTransformer">ComputedValueTransformer (class in ballet.eng)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.misc.html#ballet.eng.misc.ComputedValueTransformer">(class in ballet.eng.misc)</a>
 </li>
-      <li><a href="api/ballet.eng.base.html#ballet.eng.base.ConditionalTransformer">ConditionalTransformer (class in ballet.eng.base)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.html#ballet.eng.ConditionalTransformer">ConditionalTransformer (class in ballet.eng)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.base.html#ballet.eng.base.ConditionalTransformer">(class in ballet.eng.base)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.project.html#ballet.project.Project.config">config (ballet.project.Project attribute)</a>
 </li>
       <li><a href="api/ballet.exc.html#ballet.exc.ConfigurationError">ConfigurationError</a>
@@ -1140,9 +1271,17 @@
       <li><a href="api/ballet.transformer.html#ballet.transformer.ConversionApproach.convert">convert (ballet.transformer.ConversionApproach attribute)</a>
 </li>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.CountEncoder">CountEncoder (class in ballet.eng.category_encoders)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.CountEncoder">(class in ballet.eng.external)</a>
 </li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.CountFrequencyCategoricalEncoder">CountFrequencyCategoricalEncoder (class in ballet.eng.feature_engine)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.CountFrequencyCategoricalEncoder">CountFrequencyCategoricalEncoder (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.CountFrequencyCategoricalEncoder">(class in ballet.eng.feature_engine)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.util.git.html#ballet.util.git.CustomDiffer">CustomDiffer (class in ballet.util.git)</a>
 </li>
   </ul></td>
@@ -1151,14 +1290,30 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MinMaxScaler.data_max_">data_max_ (ballet.eng.sklearn.MinMaxScaler attribute)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.MinMaxScaler.data_max_">data_max_ (ballet.eng.external.MinMaxScaler attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MinMaxScaler.data_max_">(ballet.eng.sklearn.MinMaxScaler attribute)</a>
 </li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MinMaxScaler.data_min_">data_min_ (ballet.eng.sklearn.MinMaxScaler attribute)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.MinMaxScaler.data_min_">data_min_ (ballet.eng.external.MinMaxScaler attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MinMaxScaler.data_min_">(ballet.eng.sklearn.MinMaxScaler attribute)</a>
 </li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MinMaxScaler.data_range_">data_range_ (ballet.eng.sklearn.MinMaxScaler attribute)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.MinMaxScaler.data_range_">data_range_ (ballet.eng.external.MinMaxScaler attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MinMaxScaler.data_range_">(ballet.eng.sklearn.MinMaxScaler attribute)</a>
 </li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.DecisionTreeDiscretiser">DecisionTreeDiscretiser (class in ballet.eng.feature_engine)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.DecisionTreeDiscretiser">DecisionTreeDiscretiser (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.DecisionTreeDiscretiser">(class in ballet.eng.feature_engine)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.util.html#ballet.util.DeepcopyMixin">DeepcopyMixin (class in ballet.util)</a>
 </li>
       <li><a href="api/ballet.transformer.html#ballet.transformer.DelegatingRobustTransformer.DEFAULT_CAUGHT">DEFAULT_CAUGHT (ballet.transformer.DelegatingRobustTransformer attribute)</a>
@@ -1167,28 +1322,44 @@
 </li>
       <li><a href="api/ballet.validation.gfssf.html#ballet.validation.gfssf.GFSSFIterationInfo.delta">delta (ballet.validation.gfssf.GFSSFIterationInfo attribute)</a>
 </li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.SparseRandomProjection.density_">density_ (ballet.eng.sklearn.SparseRandomProjection attribute)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.SparseRandomProjection.density_">density_ (ballet.eng.external.SparseRandomProjection attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.SparseRandomProjection.density_">(ballet.eng.sklearn.SparseRandomProjection attribute)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/ballet.project.html#ballet.project.detect_github_username">detect_github_username() (in module ballet.project)</a>
 </li>
       <li><a href="api/ballet.util.html#ballet.util.dfilter">dfilter() (in module ballet.util)</a>
 </li>
-      <li><a href="api/ballet.eng.featuretools.html#ballet.eng.featuretools.DFSTransformer">DFSTransformer (class in ballet.eng.featuretools)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.DFSTransformer">DFSTransformer (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.featuretools.html#ballet.eng.featuretools.DFSTransformer">(class in ballet.eng.featuretools)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.util.git.html#ballet.util.git.did_git_push_succeed">did_git_push_succeed() (in module ballet.util.git)</a>
 </li>
       <li><a href="api/ballet.util.git.html#ballet.util.git.Differ.diff">diff() (ballet.util.git.Differ method)</a>
 </li>
       <li><a href="api/ballet.util.git.html#ballet.util.git.Differ">Differ (class in ballet.util.git)</a>
 </li>
-      <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.DifferenceTransformer">DifferenceTransformer (class in ballet.eng.skits)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.DifferenceTransformer">DifferenceTransformer (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.DifferenceTransformer">(class in ballet.eng.skits)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.validation.base.html#ballet.validation.base.BaseCheck.do_check">do_check() (ballet.validation.base.BaseCheck method)</a>
 </li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.OneHotEncoder.drop_idx_">drop_idx_ (ballet.eng.sklearn.OneHotEncoder attribute)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.OneHotEncoder.drop_idx_">drop_idx_ (ballet.eng.external.OneHotEncoder attribute)</a>, <a href="api/ballet.eng.external.html#id25">[1]</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.OneHotEncoder.drop_idx_">(ballet.eng.sklearn.OneHotEncoder attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.util.ci.html#ballet.util.ci.dump_travis_env_vars">dump_travis_env_vars() (in module ballet.util.ci)</a>
 </li>
   </ul></td>
@@ -1201,9 +1372,21 @@
 </li>
       <li><a href="api/ballet.pipeline.html#ballet.pipeline.EngineerFeaturesResult.encoder">encoder (ballet.pipeline.EngineerFeaturesResult attribute)</a>
 </li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.CountFrequencyCategoricalEncoder.encoder_dict_">encoder_dict_ (ballet.eng.feature_engine.CountFrequencyCategoricalEncoder attribute)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.CountFrequencyCategoricalEncoder.encoder_dict_">encoder_dict_ (ballet.eng.external.CountFrequencyCategoricalEncoder attribute)</a>
 
       <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.MeanCategoricalEncoder.encoder_dict_">(ballet.eng.external.MeanCategoricalEncoder attribute)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.OneHotCategoricalEncoder.encoder_dict_">(ballet.eng.external.OneHotCategoricalEncoder attribute)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.OrdinalCategoricalEncoder.encoder_dict_">(ballet.eng.external.OrdinalCategoricalEncoder attribute)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.RareLabelCategoricalEncoder.encoder_dict_">(ballet.eng.external.RareLabelCategoricalEncoder attribute)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.WoERatioCategoricalEncoder.encoder_dict_">(ballet.eng.external.WoERatioCategoricalEncoder attribute)</a>
+</li>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.CountFrequencyCategoricalEncoder.encoder_dict_">(ballet.eng.feature_engine.CountFrequencyCategoricalEncoder attribute)</a>
+</li>
         <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.MeanCategoricalEncoder.encoder_dict_">(ballet.eng.feature_engine.MeanCategoricalEncoder attribute)</a>
 </li>
         <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.OneHotCategoricalEncoder.encoder_dict_">(ballet.eng.feature_engine.OneHotCategoricalEncoder attribute)</a>
@@ -1215,20 +1398,32 @@
         <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.WoERatioCategoricalEncoder.encoder_dict_">(ballet.eng.feature_engine.WoERatioCategoricalEncoder attribute)</a>
 </li>
       </ul></li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.EndTailImputer">EndTailImputer (class in ballet.eng.feature_engine)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.EndTailImputer">EndTailImputer (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.EndTailImputer">(class in ballet.eng.feature_engine)</a>
+</li>
+      </ul></li>
       <li><a href="api/ballet.project.html#ballet.project.FeatureEngineeringProject.engineer_features">engineer_features() (ballet.project.FeatureEngineeringProject method)</a>
 </li>
       <li><a href="api/ballet.pipeline.html#ballet.pipeline.EngineerFeaturesResult">EngineerFeaturesResult (class in ballet.pipeline)</a>
 </li>
       <li><a href="api/ballet.util.ci.html#ballet.util.ci.ensure_expected_travis_env_vars">ensure_expected_travis_env_vars() (in module ballet.util.ci)</a>
 </li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.EqualFrequencyDiscretiser">EqualFrequencyDiscretiser (class in ballet.eng.feature_engine)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.EqualFrequencyDiscretiser">EqualFrequencyDiscretiser (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.EqualFrequencyDiscretiser">(class in ballet.eng.feature_engine)</a>
 </li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.EqualWidthDiscretiser">EqualWidthDiscretiser (class in ballet.eng.feature_engine)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.EqualWidthDiscretiser">EqualWidthDiscretiser (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.EqualWidthDiscretiser">(class in ballet.eng.feature_engine)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.validation.entropy.html#ballet.validation.entropy.estimate_conditional_information">estimate_conditional_information() (in module ballet.validation.entropy)</a>
 </li>
       <li><a href="api/ballet.validation.entropy.html#ballet.validation.entropy.estimate_entropy">estimate_entropy() (in module ballet.validation.entropy)</a>
@@ -1255,8 +1450,12 @@
 </li>
       <li><a href="api/ballet.validation.feature_api.validator.html#ballet.validation.feature_api.validator.FeatureApiValidator">FeatureApiValidator (class in ballet.validation.feature_api.validator)</a>
 </li>
-      <li><a href="api/ballet.eng.tsfresh.html#ballet.eng.tsfresh.FeatureAugmenter">FeatureAugmenter (class in ballet.eng.tsfresh)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.FeatureAugmenter">FeatureAugmenter (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.tsfresh.html#ballet.eng.tsfresh.FeatureAugmenter">(class in ballet.eng.tsfresh)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.exc.html#ballet.exc.FeatureCollectionError">FeatureCollectionError</a>
 </li>
       <li><a href="api/ballet.pipeline.html#ballet.pipeline.FeatureEngineeringPipeline">FeatureEngineeringPipeline (class in ballet.pipeline)</a>
@@ -1275,8 +1474,12 @@
 </li>
       <li><a href="api/ballet.project.html#ballet.project.FeatureEngineeringProject.features">features() (ballet.project.FeatureEngineeringProject property)</a>
 </li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MissingIndicator.features_">features_ (ballet.eng.sklearn.MissingIndicator attribute)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.MissingIndicator.features_">features_ (ballet.eng.external.MissingIndicator attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MissingIndicator.features_">(ballet.eng.sklearn.MissingIndicator attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.exc.html#ballet.exc.FeatureValidationError">FeatureValidationError</a>
 </li>
       <li><a href="api/ballet.validation.common.html#ballet.validation.common.CollectedChanges.file_diffs">file_diffs (ballet.validation.common.CollectedChanges attribute)</a>
@@ -1323,6 +1526,136 @@
         <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.TargetEncoder.fit">(ballet.eng.category_encoders.TargetEncoder method)</a>
 </li>
         <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.WOEEncoder.fit">(ballet.eng.category_encoders.WOEEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.html#ballet.eng.ComputedValueTransformer.fit">(ballet.eng.ComputedValueTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.html#ballet.eng.ConditionalTransformer.fit">(ballet.eng.ConditionalTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.AddMissingIndicator.fit">(ballet.eng.external.AddMissingIndicator method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.ArbitraryNumberImputer.fit">(ballet.eng.external.ArbitraryNumberImputer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.ArbitraryOutlierCapper.fit">(ballet.eng.external.ArbitraryOutlierCapper method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.AutoregressiveTransformer.fit">(ballet.eng.external.AutoregressiveTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.BackwardDifferenceEncoder.fit">(ballet.eng.external.BackwardDifferenceEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.BaseNEncoder.fit">(ballet.eng.external.BaseNEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.Binarizer.fit">(ballet.eng.external.Binarizer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.BinaryEncoder.fit">(ballet.eng.external.BinaryEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.BoxCoxTransformer.fit">(ballet.eng.external.BoxCoxTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.CatBoostEncoder.fit">(ballet.eng.external.CatBoostEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.CategoricalVariableImputer.fit">(ballet.eng.external.CategoricalVariableImputer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.CountEncoder.fit">(ballet.eng.external.CountEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.CountFrequencyCategoricalEncoder.fit">(ballet.eng.external.CountFrequencyCategoricalEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.DecisionTreeDiscretiser.fit">(ballet.eng.external.DecisionTreeDiscretiser method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.DFSTransformer.fit">(ballet.eng.external.DFSTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.DifferenceTransformer.fit">(ballet.eng.external.DifferenceTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.EndTailImputer.fit">(ballet.eng.external.EndTailImputer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.EqualFrequencyDiscretiser.fit">(ballet.eng.external.EqualFrequencyDiscretiser method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.EqualWidthDiscretiser.fit">(ballet.eng.external.EqualWidthDiscretiser method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.FeatureAugmenter.fit">(ballet.eng.external.FeatureAugmenter method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.FourierTransformer.fit">(ballet.eng.external.FourierTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.FunctionTransformer.fit">(ballet.eng.external.FunctionTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.GLMMEncoder.fit">(ballet.eng.external.GLMMEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.HashingEncoder.fit">(ballet.eng.external.HashingEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.HelmertEncoder.fit">(ballet.eng.external.HelmertEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.HorizonTransformer.fit">(ballet.eng.external.HorizonTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.IntegratedTransformer.fit">(ballet.eng.external.IntegratedTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.JamesSteinEncoder.fit">(ballet.eng.external.JamesSteinEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.KBinsDiscretizer.fit">(ballet.eng.external.KBinsDiscretizer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.KNNImputer.fit">(ballet.eng.external.KNNImputer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.LeaveOneOutEncoder.fit">(ballet.eng.external.LeaveOneOutEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.LogTransformer.fit">(ballet.eng.external.LogTransformer method)</a>, <a href="api/ballet.eng.external.html#id16">[1]</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.MaxAbsScaler.fit">(ballet.eng.external.MaxAbsScaler method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.MeanCategoricalEncoder.fit">(ballet.eng.external.MeanCategoricalEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.MeanMedianImputer.fit">(ballet.eng.external.MeanMedianImputer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.MEstimateEncoder.fit">(ballet.eng.external.MEstimateEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.MinMaxScaler.fit">(ballet.eng.external.MinMaxScaler method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.MissingIndicator.fit">(ballet.eng.external.MissingIndicator method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.Normalizer.fit">(ballet.eng.external.Normalizer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.OneHotCategoricalEncoder.fit">(ballet.eng.external.OneHotCategoricalEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.OneHotEncoder.fit">(ballet.eng.external.OneHotEncoder method)</a>, <a href="api/ballet.eng.external.html#id26">[1]</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.OrdinalCategoricalEncoder.fit">(ballet.eng.external.OrdinalCategoricalEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.OrdinalEncoder.fit">(ballet.eng.external.OrdinalEncoder method)</a>, <a href="api/ballet.eng.external.html#id33">[1]</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.PolynomialEncoder.fit">(ballet.eng.external.PolynomialEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.PolynomialFeatures.fit">(ballet.eng.external.PolynomialFeatures method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.PowerTransformer.fit">(ballet.eng.external.PowerTransformer method)</a>, <a href="api/ballet.eng.external.html#id49">[1]</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.QuantileTransformer.fit">(ballet.eng.external.QuantileTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.RandomSampleImputer.fit">(ballet.eng.external.RandomSampleImputer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.RareLabelCategoricalEncoder.fit">(ballet.eng.external.RareLabelCategoricalEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.ReciprocalTransformer.fit">(ballet.eng.external.ReciprocalTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.ReversibleImputer.fit">(ballet.eng.external.ReversibleImputer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.RobustScaler.fit">(ballet.eng.external.RobustScaler method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.RollingMeanTransformer.fit">(ballet.eng.external.RollingMeanTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.SimpleImputer.fit">(ballet.eng.external.SimpleImputer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.StandardScaler.fit">(ballet.eng.external.StandardScaler method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.SumEncoder.fit">(ballet.eng.external.SumEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.TargetEncoder.fit">(ballet.eng.external.TargetEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.TrendTransformer.fit">(ballet.eng.external.TrendTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.UserInputDiscretiser.fit">(ballet.eng.external.UserInputDiscretiser method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.Winsorizer.fit">(ballet.eng.external.Winsorizer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.WOEEncoder.fit">(ballet.eng.external.WOEEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.WoERatioCategoricalEncoder.fit">(ballet.eng.external.WoERatioCategoricalEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.YeoJohnsonTransformer.fit">(ballet.eng.external.YeoJohnsonTransformer method)</a>
 </li>
         <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.AddMissingIndicator.fit">(ballet.eng.feature_engine.AddMissingIndicator method)</a>
 </li>
@@ -1372,7 +1705,11 @@
 </li>
         <li><a href="api/ballet.eng.featuretools.html#ballet.eng.featuretools.DFSTransformer.fit">(ballet.eng.featuretools.DFSTransformer method)</a>
 </li>
+        <li><a href="api/ballet.eng.html#ballet.eng.GroupwiseTransformer.fit">(ballet.eng.GroupwiseTransformer method)</a>
+</li>
         <li><a href="api/ballet.eng.misc.html#ballet.eng.misc.ComputedValueTransformer.fit">(ballet.eng.misc.ComputedValueTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.html#ballet.eng.NoFitMixin.fit">(ballet.eng.NoFitMixin method)</a>
 </li>
         <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.AutoregressiveTransformer.fit">(ballet.eng.skits.AutoregressiveTransformer method)</a>
 </li>
@@ -1432,24 +1769,64 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.BackwardDifferenceEncoder.fit_backward_difference_coding">fit_backward_difference_coding() (ballet.eng.category_encoders.BackwardDifferenceEncoder static method)</a>
-</li>
-      <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.BaseNEncoder.fit_base_n_encoding">fit_base_n_encoding() (ballet.eng.category_encoders.BaseNEncoder method)</a>
-</li>
-      <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.LeaveOneOutEncoder.fit_column_map">fit_column_map() (ballet.eng.category_encoders.LeaveOneOutEncoder method)</a>
-</li>
-      <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.HelmertEncoder.fit_helmert_coding">fit_helmert_coding() (ballet.eng.category_encoders.HelmertEncoder static method)</a>
-</li>
-      <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.LeaveOneOutEncoder.fit_leave_one_out">fit_leave_one_out() (ballet.eng.category_encoders.LeaveOneOutEncoder method)</a>
-</li>
-      <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.PolynomialEncoder.fit_polynomial_coding">fit_polynomial_coding() (ballet.eng.category_encoders.PolynomialEncoder static method)</a>
-</li>
-      <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.SumEncoder.fit_sum_coding">fit_sum_coding() (ballet.eng.category_encoders.SumEncoder static method)</a>
-</li>
-      <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.TargetEncoder.fit_target_encoding">fit_target_encoding() (ballet.eng.category_encoders.TargetEncoder method)</a>
-</li>
-      <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.HorizonTransformer.fit_transform">fit_transform() (ballet.eng.skits.HorizonTransformer method)</a>
 
       <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.BackwardDifferenceEncoder.fit_backward_difference_coding">(ballet.eng.external.BackwardDifferenceEncoder static method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.BaseNEncoder.fit_base_n_encoding">fit_base_n_encoding() (ballet.eng.category_encoders.BaseNEncoder method)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.BaseNEncoder.fit_base_n_encoding">(ballet.eng.external.BaseNEncoder method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.LeaveOneOutEncoder.fit_column_map">fit_column_map() (ballet.eng.category_encoders.LeaveOneOutEncoder method)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.LeaveOneOutEncoder.fit_column_map">(ballet.eng.external.LeaveOneOutEncoder method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.HelmertEncoder.fit_helmert_coding">fit_helmert_coding() (ballet.eng.category_encoders.HelmertEncoder static method)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.HelmertEncoder.fit_helmert_coding">(ballet.eng.external.HelmertEncoder static method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.LeaveOneOutEncoder.fit_leave_one_out">fit_leave_one_out() (ballet.eng.category_encoders.LeaveOneOutEncoder method)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.LeaveOneOutEncoder.fit_leave_one_out">(ballet.eng.external.LeaveOneOutEncoder method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.PolynomialEncoder.fit_polynomial_coding">fit_polynomial_coding() (ballet.eng.category_encoders.PolynomialEncoder static method)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.PolynomialEncoder.fit_polynomial_coding">(ballet.eng.external.PolynomialEncoder static method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.SumEncoder.fit_sum_coding">fit_sum_coding() (ballet.eng.category_encoders.SumEncoder static method)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.SumEncoder.fit_sum_coding">(ballet.eng.external.SumEncoder static method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.TargetEncoder.fit_target_encoding">fit_target_encoding() (ballet.eng.category_encoders.TargetEncoder method)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.TargetEncoder.fit_target_encoding">(ballet.eng.external.TargetEncoder method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.HorizonTransformer.fit_transform">fit_transform() (ballet.eng.external.HorizonTransformer method)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.MissingIndicator.fit_transform">(ballet.eng.external.MissingIndicator method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.OneHotEncoder.fit_transform">(ballet.eng.external.OneHotEncoder method)</a>, <a href="api/ballet.eng.external.html#id27">[1]</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.PowerTransformer.fit_transform">(ballet.eng.external.PowerTransformer method)</a>, <a href="api/ballet.eng.external.html#id50">[1]</a>
+</li>
+        <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.HorizonTransformer.fit_transform">(ballet.eng.skits.HorizonTransformer method)</a>
+</li>
         <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MissingIndicator.fit_transform">(ballet.eng.sklearn.MissingIndicator method)</a>
 </li>
         <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.OneHotEncoder.fit_transform">(ballet.eng.sklearn.OneHotEncoder method)</a>
@@ -1457,22 +1834,34 @@
         <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.PowerTransformer.fit_transform">(ballet.eng.sklearn.PowerTransformer method)</a>
 </li>
       </ul></li>
-      <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.FourierTransformer">FourierTransformer (class in ballet.eng.skits)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.FourierTransformer">FourierTransformer (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.FourierTransformer">(class in ballet.eng.skits)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.project.html#ballet.project.Project.from_cwd">from_cwd() (ballet.project.Project class method)</a>
 </li>
       <li><a href="api/ballet.project.html#ballet.project.Project.from_path">from_path() (ballet.project.Project class method)</a>
 </li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.FunctionTransformer">FunctionTransformer (class in ballet.eng.sklearn)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.FunctionTransformer">FunctionTransformer (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.FunctionTransformer">(class in ballet.eng.sklearn)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.GaussianRandomProjection">GaussianRandomProjection (class in ballet.eng.sklearn)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.GaussianRandomProjection">GaussianRandomProjection (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.GaussianRandomProjection">(class in ballet.eng.sklearn)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.OneHotEncoder.generate_mapping">generate_mapping() (ballet.eng.category_encoders.OneHotEncoder method)</a>
 </li>
       <li><a href="api/ballet.validation.common.html#ballet.validation.common.get_accepted_features">get_accepted_features() (in module ballet.validation.common)</a>
@@ -1518,13 +1907,51 @@
 </li>
         <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.WOEEncoder.get_feature_names">(ballet.eng.category_encoders.WOEEncoder method)</a>
 </li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.BackwardDifferenceEncoder.get_feature_names">(ballet.eng.external.BackwardDifferenceEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.BaseNEncoder.get_feature_names">(ballet.eng.external.BaseNEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.BinaryEncoder.get_feature_names">(ballet.eng.external.BinaryEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.CatBoostEncoder.get_feature_names">(ballet.eng.external.CatBoostEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.GLMMEncoder.get_feature_names">(ballet.eng.external.GLMMEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.HashingEncoder.get_feature_names">(ballet.eng.external.HashingEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.HelmertEncoder.get_feature_names">(ballet.eng.external.HelmertEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.JamesSteinEncoder.get_feature_names">(ballet.eng.external.JamesSteinEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.LeaveOneOutEncoder.get_feature_names">(ballet.eng.external.LeaveOneOutEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.MEstimateEncoder.get_feature_names">(ballet.eng.external.MEstimateEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.OneHotEncoder.get_feature_names">(ballet.eng.external.OneHotEncoder method)</a>, <a href="api/ballet.eng.external.html#id28">[1]</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.PolynomialEncoder.get_feature_names">(ballet.eng.external.PolynomialEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.PolynomialFeatures.get_feature_names">(ballet.eng.external.PolynomialFeatures method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.SumEncoder.get_feature_names">(ballet.eng.external.SumEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.TargetEncoder.get_feature_names">(ballet.eng.external.TargetEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.WOEEncoder.get_feature_names">(ballet.eng.external.WOEEncoder method)</a>
+</li>
         <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.OneHotEncoder.get_feature_names">(ballet.eng.sklearn.OneHotEncoder method)</a>
 </li>
         <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.PolynomialFeatures.get_feature_names">(ballet.eng.sklearn.PolynomialFeatures method)</a>
 </li>
       </ul></li>
-      <li><a href="api/ballet.eng.featuretools.html#ballet.eng.featuretools.DFSTransformer.get_params">get_params() (ballet.eng.featuretools.DFSTransformer method)</a>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.DFSTransformer.get_params">get_params() (ballet.eng.external.DFSTransformer method)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.featuretools.html#ballet.eng.featuretools.DFSTransformer.get_params">(ballet.eng.featuretools.DFSTransformer method)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.util.git.html#ballet.util.git.get_pr_num">get_pr_num() (in module ballet.util.git)</a>
 </li>
       <li><a href="api/ballet.validation.common.html#ballet.validation.common.get_proposed_feature">get_proposed_feature() (in module ballet.validation.common)</a>
@@ -1533,8 +1960,6 @@
 </li>
       <li><a href="api/ballet.util.git.html#ballet.util.git.get_pull_requests">get_pull_requests() (in module ballet.util.git)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/ballet.util.git.html#ballet.util.git.get_repo">get_repo() (in module ballet.util.git)</a>
 </li>
       <li><a href="api/ballet.util.code.html#ballet.util.code.get_source">get_source() (in module ballet.util.code)</a>
@@ -1592,11 +2017,23 @@
 </li>
       </ul></li>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.GLMMEncoder">GLMMEncoder (class in ballet.eng.category_encoders)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.GLMMEncoder">(class in ballet.eng.external)</a>
 </li>
-      <li><a href="api/ballet.eng.base.html#ballet.eng.base.GroupedFunctionTransformer">GroupedFunctionTransformer (class in ballet.eng.base)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.html#ballet.eng.GroupedFunctionTransformer">GroupedFunctionTransformer (class in ballet.eng)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.base.html#ballet.eng.base.GroupedFunctionTransformer">(class in ballet.eng.base)</a>
 </li>
-      <li><a href="api/ballet.eng.base.html#ballet.eng.base.GroupwiseTransformer">GroupwiseTransformer (class in ballet.eng.base)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.html#ballet.eng.GroupwiseTransformer">GroupwiseTransformer (class in ballet.eng)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.base.html#ballet.eng.base.GroupwiseTransformer">(class in ballet.eng.base)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -1610,19 +2047,39 @@
       <li><a href="api/ballet.validation.feature_api.checks.html#ballet.validation.feature_api.checks.HasCorrectOutputDimensionsCheck">HasCorrectOutputDimensionsCheck (class in ballet.validation.feature_api.checks)</a>
 </li>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.HashingEncoder.hashing_trick">hashing_trick() (ballet.eng.category_encoders.HashingEncoder static method)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.HashingEncoder.hashing_trick">(ballet.eng.external.HashingEncoder static method)</a>
 </li>
+      </ul></li>
+      <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.HashingEncoder">HashingEncoder (class in ballet.eng.category_encoders)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.HashingEncoder">(class in ballet.eng.external)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.HashingEncoder">HashingEncoder (class in ballet.eng.category_encoders)</a>
-</li>
       <li><a href="api/ballet.validation.feature_api.checks.html#ballet.validation.feature_api.checks.HasTransformerInterfaceCheck">HasTransformerInterfaceCheck (class in ballet.validation.feature_api.checks)</a>
 </li>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.HelmertEncoder.helmert_coding">helmert_coding() (ballet.eng.category_encoders.HelmertEncoder static method)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.HelmertEncoder.helmert_coding">(ballet.eng.external.HelmertEncoder static method)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.HelmertEncoder">HelmertEncoder (class in ballet.eng.category_encoders)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.HelmertEncoder">(class in ballet.eng.external)</a>
 </li>
-      <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.HorizonTransformer">HorizonTransformer (class in ballet.eng.skits)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.HorizonTransformer">HorizonTransformer (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.HorizonTransformer">(class in ballet.eng.skits)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -1631,8 +2088,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/ballet.validation.gfssf.html#ballet.validation.gfssf.GFSSFIterationInfo.i">i (ballet.validation.gfssf.GFSSFIterationInfo attribute)</a>
 </li>
-      <li><a href="api/ballet.eng.misc.html#ballet.eng.misc.IdentityTransformer">IdentityTransformer (class in ballet.eng.misc)</a>
+      <li><a href="api/ballet.eng.html#ballet.eng.IdentityTransformer">IdentityTransformer (class in ballet.eng)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.misc.html#ballet.eng.misc.IdentityTransformer">(class in ballet.eng.misc)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.validation.project_structure.checks.html#ballet.validation.project_structure.checks.IfInitModuleThenIsEmptyCheck">IfInitModuleThenIsEmptyCheck (class in ballet.validation.project_structure.checks)</a>
 </li>
       <li><a href="api/ballet.util.mod.html#ballet.util.mod.import_module_at_path">import_module_at_path() (in module ballet.util.mod)</a>
@@ -1641,9 +2102,17 @@
 </li>
       <li><a href="api/ballet.util.mod.html#ballet.util.mod.import_module_from_relpath">import_module_from_relpath() (in module ballet.util.mod)</a>
 </li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.ArbitraryNumberImputer.imputer_dict_">imputer_dict_ (ballet.eng.feature_engine.ArbitraryNumberImputer attribute)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.ArbitraryNumberImputer.imputer_dict_">imputer_dict_ (ballet.eng.external.ArbitraryNumberImputer attribute)</a>
 
       <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.CategoricalVariableImputer.imputer_dict_">(ballet.eng.external.CategoricalVariableImputer attribute)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.EndTailImputer.imputer_dict_">(ballet.eng.external.EndTailImputer attribute)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.MeanMedianImputer.imputer_dict_">(ballet.eng.external.MeanMedianImputer attribute)</a>
+</li>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.ArbitraryNumberImputer.imputer_dict_">(ballet.eng.feature_engine.ArbitraryNumberImputer attribute)</a>
+</li>
         <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.CategoricalVariableImputer.imputer_dict_">(ballet.eng.feature_engine.CategoricalVariableImputer attribute)</a>
 </li>
         <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.EndTailImputer.imputer_dict_">(ballet.eng.feature_engine.EndTailImputer attribute)</a>
@@ -1657,14 +2126,22 @@
 </li>
       <li><a href="api/ballet.util.html#ballet.util.indent">indent() (in module ballet.util)</a>
 </li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.KNNImputer.indicator_">indicator_ (ballet.eng.sklearn.KNNImputer attribute)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.KNNImputer.indicator_">indicator_ (ballet.eng.external.KNNImputer attribute)</a>
 
       <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.SimpleImputer.indicator_">(ballet.eng.external.SimpleImputer attribute)</a>
+</li>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.KNNImputer.indicator_">(ballet.eng.sklearn.KNNImputer attribute)</a>
+</li>
         <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.SimpleImputer.indicator_">(ballet.eng.sklearn.SimpleImputer attribute)</a>
 </li>
       </ul></li>
-      <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.IntegratedTransformer">IntegratedTransformer (class in ballet.eng.skits)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.IntegratedTransformer">IntegratedTransformer (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.IntegratedTransformer">(class in ballet.eng.skits)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.exc.html#ballet.exc.InvalidFeatureApi">InvalidFeatureApi</a>
 </li>
       <li><a href="api/ballet.exc.html#ballet.exc.InvalidProjectStructure">InvalidProjectStructure</a>
@@ -1677,6 +2154,48 @@
         <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.OneHotEncoder.inverse_transform">(ballet.eng.category_encoders.OneHotEncoder method)</a>
 </li>
         <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.OrdinalEncoder.inverse_transform">(ballet.eng.category_encoders.OrdinalEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.AutoregressiveTransformer.inverse_transform">(ballet.eng.external.AutoregressiveTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.BaseNEncoder.inverse_transform">(ballet.eng.external.BaseNEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.BinaryEncoder.inverse_transform">(ballet.eng.external.BinaryEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.CountFrequencyCategoricalEncoder.inverse_transform">(ballet.eng.external.CountFrequencyCategoricalEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.DifferenceTransformer.inverse_transform">(ballet.eng.external.DifferenceTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.FunctionTransformer.inverse_transform">(ballet.eng.external.FunctionTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.HorizonTransformer.inverse_transform">(ballet.eng.external.HorizonTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.KBinsDiscretizer.inverse_transform">(ballet.eng.external.KBinsDiscretizer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.LogTransformer.inverse_transform">(ballet.eng.external.LogTransformer method)</a>, <a href="api/ballet.eng.external.html#id17">[1]</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.MaxAbsScaler.inverse_transform">(ballet.eng.external.MaxAbsScaler method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.MeanCategoricalEncoder.inverse_transform">(ballet.eng.external.MeanCategoricalEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.MinMaxScaler.inverse_transform">(ballet.eng.external.MinMaxScaler method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.OneHotEncoder.inverse_transform">(ballet.eng.external.OneHotEncoder method)</a>, <a href="api/ballet.eng.external.html#id29">[1]</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.OrdinalCategoricalEncoder.inverse_transform">(ballet.eng.external.OrdinalCategoricalEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.OrdinalEncoder.inverse_transform">(ballet.eng.external.OrdinalEncoder method)</a>, <a href="api/ballet.eng.external.html#id34">[1]</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.PowerTransformer.inverse_transform">(ballet.eng.external.PowerTransformer method)</a>, <a href="api/ballet.eng.external.html#id51">[1]</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.QuantileTransformer.inverse_transform">(ballet.eng.external.QuantileTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.ReversibleImputer.inverse_transform">(ballet.eng.external.ReversibleImputer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.RobustScaler.inverse_transform">(ballet.eng.external.RobustScaler method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.StandardScaler.inverse_transform">(ballet.eng.external.StandardScaler method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.WoERatioCategoricalEncoder.inverse_transform">(ballet.eng.external.WoERatioCategoricalEncoder method)</a>
 </li>
         <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.CountFrequencyCategoricalEncoder.inverse_transform">(ballet.eng.feature_engine.CountFrequencyCategoricalEncoder method)</a>
 </li>
@@ -1742,7 +2261,11 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.JamesSteinEncoder">JamesSteinEncoder (class in ballet.eng.category_encoders)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.JamesSteinEncoder">(class in ballet.eng.external)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.validation.base.html#ballet.validation.base.FeatureAcceptanceMixin.judge">judge() (ballet.validation.base.FeatureAcceptanceMixin method)</a>
 
       <ul>
@@ -1761,46 +2284,74 @@
 <h2 id="K">K</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.KBinsDiscretizer">KBinsDiscretizer (class in ballet.eng.sklearn)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.KBinsDiscretizer">KBinsDiscretizer (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.KBinsDiscretizer">(class in ballet.eng.sklearn)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.KNNImputer">KNNImputer (class in ballet.eng.sklearn)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.KNNImputer">KNNImputer (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.KNNImputer">(class in ballet.eng.sklearn)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/ballet.eng.missing.html#ballet.eng.missing.LagImputer">LagImputer (class in ballet.eng.missing)</a>
+      <li><a href="api/ballet.eng.html#ballet.eng.LagImputer">LagImputer (class in ballet.eng)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.missing.html#ballet.eng.missing.LagImputer">(class in ballet.eng.missing)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.validation.gfssf.html#ballet.validation.gfssf.GFSSFPerformanceEvaluator.lambda_1_adjustment">lambda_1_adjustment (ballet.validation.gfssf.GFSSFPerformanceEvaluator attribute)</a>
 </li>
       <li><a href="api/ballet.validation.gfssf.html#ballet.validation.gfssf.GFSSFPerformanceEvaluator.lambda_2_adjustment">lambda_2_adjustment (ballet.validation.gfssf.GFSSFPerformanceEvaluator attribute)</a>
 </li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.PowerTransformer.lambdas_">lambdas_ (ballet.eng.sklearn.PowerTransformer attribute)</a>
-</li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.BoxCoxTransformer.lamda_dict_">lamda_dict_ (ballet.eng.feature_engine.BoxCoxTransformer attribute)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.PowerTransformer.lambdas_">lambdas_ (ballet.eng.external.PowerTransformer attribute)</a>, <a href="api/ballet.eng.external.html#id46">[1]</a>
 
       <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.PowerTransformer.lambdas_">(ballet.eng.sklearn.PowerTransformer attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.BoxCoxTransformer.lamda_dict_">lamda_dict_ (ballet.eng.external.BoxCoxTransformer attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.YeoJohnsonTransformer.lamda_dict_">(ballet.eng.external.YeoJohnsonTransformer attribute)</a>
+</li>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.BoxCoxTransformer.lamda_dict_">(ballet.eng.feature_engine.BoxCoxTransformer attribute)</a>
+</li>
         <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.YeoJohnsonTransformer.lamda_dict_">(ballet.eng.feature_engine.YeoJohnsonTransformer attribute)</a>
 </li>
       </ul></li>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.LeaveOneOutEncoder">LeaveOneOutEncoder (class in ballet.eng.category_encoders)</a>
-</li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.ArbitraryOutlierCapper.left_tail_caps_">left_tail_caps_ (ballet.eng.feature_engine.ArbitraryOutlierCapper attribute)</a>
 
       <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.LeaveOneOutEncoder">(class in ballet.eng.external)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.ArbitraryOutlierCapper.left_tail_caps_">left_tail_caps_ (ballet.eng.external.ArbitraryOutlierCapper attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.Winsorizer.left_tail_caps_">(ballet.eng.external.Winsorizer attribute)</a>
+</li>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.ArbitraryOutlierCapper.left_tail_caps_">(ballet.eng.feature_engine.ArbitraryOutlierCapper attribute)</a>
+</li>
         <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.Winsorizer.left_tail_caps_">(ballet.eng.feature_engine.Winsorizer attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/ballet.util.log.html#ballet.util.log.LevelFilter">LevelFilter (class in ballet.util.log)</a>
 </li>
       <li><a href="api/ballet.validation.gfssf.html#ballet.validation.gfssf.GFSSFPerformanceEvaluator.lmbda_1">lmbda_1 (ballet.validation.gfssf.GFSSFPerformanceEvaluator attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/ballet.validation.gfssf.html#ballet.validation.gfssf.GFSSFPerformanceEvaluator.lmbda_2">lmbda_2 (ballet.validation.gfssf.GFSSFPerformanceEvaluator attribute)</a>
 </li>
       <li><a href="api/ballet.project.html#ballet.project.load_config_at_path">load_config_at_path() (in module ballet.project)</a>
@@ -1821,9 +2372,11 @@
 </li>
       <li><a href="api/ballet.util.log.html#ballet.util.log.LoggingContext">LoggingContext (class in ballet.util.log)</a>
 </li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.LogTransformer">LogTransformer (class in ballet.eng.feature_engine)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.LogTransformer">LogTransformer (class in ballet.eng.external)</a>, <a href="api/ballet.eng.external.html#id0">[1]</a>
 
       <ul>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.LogTransformer">(class in ballet.eng.feature_engine)</a>
+</li>
         <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.LogTransformer">(class in ballet.eng.skits)</a>
 </li>
       </ul></li>
@@ -1839,8 +2392,12 @@
 </li>
       <li><a href="api/ballet.project.html#ballet.project.make_feature_path">make_feature_path() (in module ballet.project)</a>
 </li>
-      <li><a href="api/ballet.eng.ts.html#ballet.eng.ts.make_multi_lagger">make_multi_lagger() (in module ballet.eng.ts)</a>
+      <li><a href="api/ballet.eng.html#ballet.eng.make_multi_lagger">make_multi_lagger() (in module ballet.eng)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.ts.html#ballet.eng.ts.make_multi_lagger">(in module ballet.eng.ts)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.util.html#ballet.util.make_plural_suffix">make_plural_suffix() (in module ballet.util)</a>
 </li>
       <li><a href="api/ballet.transformer.html#ballet.transformer.make_robust_transformer">make_robust_transformer() (in module ballet.transformer)</a>
@@ -1849,24 +2406,60 @@
 </li>
       <li><a href="api/ballet.transformer.html#ballet.transformer.make_transformer_pipeline">make_transformer_pipeline() (in module ballet.transformer)</a>
 </li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MaxAbsScaler.max_abs_">max_abs_ (ballet.eng.sklearn.MaxAbsScaler attribute)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.MaxAbsScaler.max_abs_">max_abs_ (ballet.eng.external.MaxAbsScaler attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MaxAbsScaler.max_abs_">(ballet.eng.sklearn.MaxAbsScaler attribute)</a>
 </li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MaxAbsScaler">MaxAbsScaler (class in ballet.eng.sklearn)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.MaxAbsScaler">MaxAbsScaler (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MaxAbsScaler">(class in ballet.eng.sklearn)</a>
 </li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.StandardScaler.mean_">mean_ (ballet.eng.sklearn.StandardScaler attribute)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.StandardScaler.mean_">mean_ (ballet.eng.external.StandardScaler attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.StandardScaler.mean_">(ballet.eng.sklearn.StandardScaler attribute)</a>
 </li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.MeanCategoricalEncoder">MeanCategoricalEncoder (class in ballet.eng.feature_engine)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.MeanCategoricalEncoder">MeanCategoricalEncoder (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.MeanCategoricalEncoder">(class in ballet.eng.feature_engine)</a>
 </li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.MeanMedianImputer">MeanMedianImputer (class in ballet.eng.feature_engine)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.MeanMedianImputer">MeanMedianImputer (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.MeanMedianImputer">(class in ballet.eng.feature_engine)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.MEstimateEncoder">MEstimateEncoder (class in ballet.eng.category_encoders)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.MEstimateEncoder">(class in ballet.eng.external)</a>
 </li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MinMaxScaler.min_">min_ (ballet.eng.sklearn.MinMaxScaler attribute)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.MinMaxScaler.min_">min_ (ballet.eng.external.MinMaxScaler attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MinMaxScaler.min_">(ballet.eng.sklearn.MinMaxScaler attribute)</a>
 </li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MinMaxScaler">MinMaxScaler (class in ballet.eng.sklearn)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.MinMaxScaler">MinMaxScaler (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MinMaxScaler">(class in ballet.eng.sklearn)</a>
 </li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MissingIndicator">MissingIndicator (class in ballet.eng.sklearn)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.MissingIndicator">MissingIndicator (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MissingIndicator">(class in ballet.eng.sklearn)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.util.mod.html#ballet.util.mod.modname_to_relpath">modname_to_relpath() (in module ballet.util.mod)</a>
 </li>
       <li>
@@ -1984,25 +2577,51 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.KBinsDiscretizer.n_bins_">n_bins_ (ballet.eng.sklearn.KBinsDiscretizer attribute)</a>
-</li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.GaussianRandomProjection.n_components_">n_components_ (ballet.eng.sklearn.GaussianRandomProjection attribute)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.KBinsDiscretizer.n_bins_">n_bins_ (ballet.eng.external.KBinsDiscretizer attribute)</a>
 
       <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.KBinsDiscretizer.n_bins_">(ballet.eng.sklearn.KBinsDiscretizer attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.GaussianRandomProjection.n_components_">n_components_ (ballet.eng.external.GaussianRandomProjection attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.SparseRandomProjection.n_components_">(ballet.eng.external.SparseRandomProjection attribute)</a>
+</li>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.GaussianRandomProjection.n_components_">(ballet.eng.sklearn.GaussianRandomProjection attribute)</a>
+</li>
         <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.SparseRandomProjection.n_components_">(ballet.eng.sklearn.SparseRandomProjection attribute)</a>
 </li>
       </ul></li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.PolynomialFeatures.n_input_features_">n_input_features_ (ballet.eng.sklearn.PolynomialFeatures attribute)</a>
-</li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.PolynomialFeatures.n_output_features_">n_output_features_ (ballet.eng.sklearn.PolynomialFeatures attribute)</a>
-</li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.QuantileTransformer.n_quantiles_">n_quantiles_ (ballet.eng.sklearn.QuantileTransformer attribute)</a>
-</li>
-      <li><a href="api/ballet.validation.gfssf.html#ballet.validation.gfssf.GFSSFIterationInfo.n_samples">n_samples (ballet.validation.gfssf.GFSSFIterationInfo attribute)</a>
-</li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MaxAbsScaler.n_samples_seen_">n_samples_seen_ (ballet.eng.sklearn.MaxAbsScaler attribute)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.PolynomialFeatures.n_input_features_">n_input_features_ (ballet.eng.external.PolynomialFeatures attribute)</a>
 
       <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.PolynomialFeatures.n_input_features_">(ballet.eng.sklearn.PolynomialFeatures attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.PolynomialFeatures.n_output_features_">n_output_features_ (ballet.eng.external.PolynomialFeatures attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.PolynomialFeatures.n_output_features_">(ballet.eng.sklearn.PolynomialFeatures attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.QuantileTransformer.n_quantiles_">n_quantiles_ (ballet.eng.external.QuantileTransformer attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.QuantileTransformer.n_quantiles_">(ballet.eng.sklearn.QuantileTransformer attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.validation.gfssf.html#ballet.validation.gfssf.GFSSFIterationInfo.n_samples">n_samples (ballet.validation.gfssf.GFSSFIterationInfo attribute)</a>
+</li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.MaxAbsScaler.n_samples_seen_">n_samples_seen_ (ballet.eng.external.MaxAbsScaler attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.MinMaxScaler.n_samples_seen_">(ballet.eng.external.MinMaxScaler attribute)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.StandardScaler.n_samples_seen_">(ballet.eng.external.StandardScaler attribute)</a>
+</li>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MaxAbsScaler.n_samples_seen_">(ballet.eng.sklearn.MaxAbsScaler attribute)</a>
+</li>
         <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MinMaxScaler.n_samples_seen_">(ballet.eng.sklearn.MinMaxScaler attribute)</a>
 </li>
         <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.StandardScaler.n_samples_seen_">(ballet.eng.sklearn.StandardScaler attribute)</a>
@@ -2010,11 +2629,23 @@
       </ul></li>
       <li><a href="api/ballet.transformer.html#ballet.transformer.ConversionApproach.name">name (ballet.transformer.ConversionApproach attribute)</a>
 </li>
-      <li><a href="api/ballet.eng.misc.html#ballet.eng.misc.NamedFramer">NamedFramer (class in ballet.eng.misc)</a>
-</li>
-      <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.DifferenceTransformer.needs_refit">needs_refit (ballet.eng.skits.DifferenceTransformer attribute)</a>
+      <li><a href="api/ballet.eng.html#ballet.eng.NamedFramer">NamedFramer (class in ballet.eng)</a>
 
       <ul>
+        <li><a href="api/ballet.eng.misc.html#ballet.eng.misc.NamedFramer">(class in ballet.eng.misc)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.DifferenceTransformer.needs_refit">needs_refit (ballet.eng.external.DifferenceTransformer attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.HorizonTransformer.needs_refit">(ballet.eng.external.HorizonTransformer attribute)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.LogTransformer.needs_refit">(ballet.eng.external.LogTransformer attribute)</a>, <a href="api/ballet.eng.external.html#id18">[1]</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.ReversibleImputer.needs_refit">(ballet.eng.external.ReversibleImputer attribute)</a>
+</li>
+        <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.DifferenceTransformer.needs_refit">(ballet.eng.skits.DifferenceTransformer attribute)</a>
+</li>
         <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.HorizonTransformer.needs_refit">(ballet.eng.skits.HorizonTransformer attribute)</a>
 </li>
         <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.LogTransformer.needs_refit">(ballet.eng.skits.LogTransformer attribute)</a>
@@ -2030,8 +2661,12 @@
 </li>
       <li><a href="api/ballet.exc.html#ballet.exc.NoFeaturesCollectedError">NoFeaturesCollectedError</a>
 </li>
-      <li><a href="api/ballet.eng.base.html#ballet.eng.base.NoFitMixin">NoFitMixin (class in ballet.eng.base)</a>
+      <li><a href="api/ballet.eng.html#ballet.eng.NoFitMixin">NoFitMixin (class in ballet.eng)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.base.html#ballet.eng.base.NoFitMixin">(class in ballet.eng.base)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.validation.feature_api.checks.html#ballet.validation.feature_api.checks.NoInfiniteValuesCheck">NoInfiniteValuesCheck (class in ballet.validation.feature_api.checks)</a>
 </li>
       <li><a href="api/ballet.validation.feature_api.checks.html#ballet.validation.feature_api.checks.NoMissingValuesCheck">NoMissingValuesCheck (class in ballet.validation.feature_api.checks)</a>
@@ -2040,14 +2675,30 @@
 </li>
       <li><a href="api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.NoOpPruner">NoOpPruner (class in ballet.validation.feature_pruning.validator)</a>
 </li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.Normalizer">Normalizer (class in ballet.eng.sklearn)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.Normalizer">Normalizer (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.Normalizer">(class in ballet.eng.sklearn)</a>
 </li>
-      <li><a href="api/ballet.eng.missing.html#ballet.eng.missing.NullFiller">NullFiller (class in ballet.eng.missing)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.html#ballet.eng.NullFiller">NullFiller (class in ballet.eng)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.missing.html#ballet.eng.missing.NullFiller">(class in ballet.eng.missing)</a>
 </li>
-      <li><a href="api/ballet.eng.missing.html#ballet.eng.missing.NullIndicator">NullIndicator (class in ballet.eng.missing)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.html#ballet.eng.NullIndicator">NullIndicator (class in ballet.eng)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.missing.html#ballet.eng.missing.NullIndicator">(class in ballet.eng.missing)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.BaseNEncoder.number_to_base">number_to_base() (ballet.eng.category_encoders.BaseNEncoder static method)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.BaseNEncoder.number_to_base">(ballet.eng.external.BaseNEncoder static method)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -2068,37 +2719,59 @@
 </li>
       <li><a href="api/ballet.util.html#ballet.util.one_or_raise">one_or_raise() (in module ballet.util)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.OneHotCategoricalEncoder">OneHotCategoricalEncoder (class in ballet.eng.feature_engine)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.OneHotCategoricalEncoder">OneHotCategoricalEncoder (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.OneHotCategoricalEncoder">(class in ballet.eng.feature_engine)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.OneHotEncoder">OneHotEncoder (class in ballet.eng.category_encoders)</a>
 
       <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.OneHotEncoder">(class in ballet.eng.external)</a>, <a href="api/ballet.eng.external.html#id23">[1]</a>
+</li>
         <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.OneHotEncoder">(class in ballet.eng.sklearn)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.OrdinalEncoder.ordinal_encoding">ordinal_encoding() (ballet.eng.category_encoders.OrdinalEncoder static method)</a>
 </li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.OrdinalCategoricalEncoder">OrdinalCategoricalEncoder (class in ballet.eng.feature_engine)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.OrdinalCategoricalEncoder">OrdinalCategoricalEncoder (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.OrdinalCategoricalEncoder">(class in ballet.eng.feature_engine)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.OrdinalEncoder">OrdinalEncoder (class in ballet.eng.category_encoders)</a>
 
       <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.OrdinalEncoder">(class in ballet.eng.external)</a>, <a href="api/ballet.eng.external.html#id31">[1]</a>
+</li>
         <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.OrdinalEncoder">(class in ballet.eng.sklearn)</a>
 </li>
       </ul></li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.OutlierTrimmer">OutlierTrimmer (class in ballet.eng.feature_engine)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.OutlierTrimmer">OutlierTrimmer (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.OutlierTrimmer">(class in ballet.eng.feature_engine)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MaxAbsScaler.partial_fit">partial_fit() (ballet.eng.sklearn.MaxAbsScaler method)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.MaxAbsScaler.partial_fit">partial_fit() (ballet.eng.external.MaxAbsScaler method)</a>
 
       <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.MinMaxScaler.partial_fit">(ballet.eng.external.MinMaxScaler method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.StandardScaler.partial_fit">(ballet.eng.external.StandardScaler method)</a>
+</li>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MaxAbsScaler.partial_fit">(ballet.eng.sklearn.MaxAbsScaler method)</a>
+</li>
         <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MinMaxScaler.partial_fit">(ballet.eng.sklearn.MinMaxScaler method)</a>
 </li>
         <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.StandardScaler.partial_fit">(ballet.eng.sklearn.StandardScaler method)</a>
@@ -2111,23 +2784,45 @@
       <li><a href="api/ballet.project.html#ballet.project.FeatureEngineeringProject.pipeline">pipeline() (ballet.project.FeatureEngineeringProject property)</a>
 </li>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.PolynomialEncoder.polynomial_coding">polynomial_coding() (ballet.eng.category_encoders.PolynomialEncoder static method)</a>
-</li>
-      <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.PolynomialEncoder">PolynomialEncoder (class in ballet.eng.category_encoders)</a>
-</li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.PolynomialFeatures">PolynomialFeatures (class in ballet.eng.sklearn)</a>
-</li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.PolynomialFeatures.powers_">powers_ (ballet.eng.sklearn.PolynomialFeatures attribute)</a>
-</li>
-      <li><a href="api/ballet.eng.sklearn.html#id0">powers_() (ballet.eng.sklearn.PolynomialFeatures property)</a>
-</li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.PowerTransformer">PowerTransformer (class in ballet.eng.feature_engine)</a>
 
       <ul>
-        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.PowerTransformer">(class in ballet.eng.sklearn)</a>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.PolynomialEncoder.polynomial_coding">(ballet.eng.external.PolynomialEncoder static method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.PolynomialEncoder">PolynomialEncoder (class in ballet.eng.category_encoders)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.PolynomialEncoder">(class in ballet.eng.external)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.PolynomialFeatures">PolynomialFeatures (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.PolynomialFeatures">(class in ballet.eng.sklearn)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.PolynomialFeatures.powers_">powers_ (ballet.eng.external.PolynomialFeatures attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.PolynomialFeatures.powers_">(ballet.eng.sklearn.PolynomialFeatures attribute)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/ballet.eng.external.html#id38">powers_() (ballet.eng.external.PolynomialFeatures property)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#id0">(ballet.eng.sklearn.PolynomialFeatures property)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.PowerTransformer">PowerTransformer (class in ballet.eng.external)</a>, <a href="api/ballet.eng.external.html#id43">[1]</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.PowerTransformer">(class in ballet.eng.feature_engine)</a>
+</li>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.PowerTransformer">(class in ballet.eng.sklearn)</a>
+</li>
+      </ul></li>
       <li><a href="api/ballet.project.html#ballet.project.Project.pr_num">pr_num() (ballet.project.Project property)</a>
 </li>
       <li><a href="api/ballet.client.html#ballet.client.Client.project">project (ballet.client.Client attribute)</a>
@@ -2162,12 +2857,20 @@
 <h2 id="Q">Q</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.QuantileTransformer.quantiles_">quantiles_ (ballet.eng.sklearn.QuantileTransformer attribute)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.QuantileTransformer.quantiles_">quantiles_ (ballet.eng.external.QuantileTransformer attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.QuantileTransformer.quantiles_">(ballet.eng.sklearn.QuantileTransformer attribute)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.QuantileTransformer">QuantileTransformer (class in ballet.eng.sklearn)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.QuantileTransformer">QuantileTransformer (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.QuantileTransformer">(class in ballet.eng.sklearn)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.util.html#ballet.util.quiet">quiet() (in module ballet.util)</a>
 </li>
   </ul></td>
@@ -2184,26 +2887,42 @@
 </li>
       <li><a href="api/ballet.validation.feature_pruning.validator.html#ballet.validation.feature_pruning.validator.RandomPruner">RandomPruner (class in ballet.validation.feature_pruning.validator)</a>
 </li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.RandomSampleImputer">RandomSampleImputer (class in ballet.eng.feature_engine)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.RandomSampleImputer">RandomSampleImputer (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.RandomSampleImputer">(class in ballet.eng.feature_engine)</a>
 </li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.RareLabelCategoricalEncoder">RareLabelCategoricalEncoder (class in ballet.eng.feature_engine)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.RareLabelCategoricalEncoder">RareLabelCategoricalEncoder (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.RareLabelCategoricalEncoder">(class in ballet.eng.feature_engine)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.util.io.html#ballet.util.io.read_tabular">read_tabular() (in module ballet.util.io)</a>
 </li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.ReciprocalTransformer">ReciprocalTransformer (class in ballet.eng.feature_engine)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.ReciprocalTransformer">ReciprocalTransformer (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.ReciprocalTransformer">(class in ballet.eng.feature_engine)</a>
 </li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.QuantileTransformer.references_">references_ (ballet.eng.sklearn.QuantileTransformer attribute)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.QuantileTransformer.references_">references_ (ballet.eng.external.QuantileTransformer attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.QuantileTransformer.references_">(ballet.eng.sklearn.QuantileTransformer attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.project.html#ballet.project.relative_to_contrib">relative_to_contrib() (in module ballet.project)</a>
 </li>
       <li><a href="api/ballet.validation.project_structure.checks.html#ballet.validation.project_structure.checks.RelativeNameDepthCheck">RelativeNameDepthCheck (class in ballet.validation.project_structure.checks)</a>
 </li>
       <li><a href="api/ballet.util.mod.html#ballet.util.mod.relpath_to_modname">relpath_to_modname() (in module ballet.util.mod)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/ballet.templating.html#ballet.templating.render_feature_template">render_feature_template() (in module ballet.templating)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/ballet.templating.html#ballet.templating.render_project_template">render_project_template() (in module ballet.templating)</a>
 </li>
       <li><a href="api/ballet.util.fs.html#ballet.util.fs.replaceext">replaceext() (in module ballet.util.fs)</a>
@@ -2215,23 +2934,43 @@
 </li>
       </ul></li>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.HashingEncoder.require_data">require_data() (ballet.eng.category_encoders.HashingEncoder static method)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.HashingEncoder.require_data">(ballet.eng.external.HashingEncoder static method)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.project.html#ballet.project.Project.resolve">resolve() (ballet.project.Project method)</a>
 </li>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.OneHotEncoder.reverse_dummies">reverse_dummies() (ballet.eng.category_encoders.OneHotEncoder method)</a>
 </li>
-      <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.ReversibleImputer">ReversibleImputer (class in ballet.eng.skits)</a>
-</li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.ArbitraryOutlierCapper.right_tail_caps_">right_tail_caps_ (ballet.eng.feature_engine.ArbitraryOutlierCapper attribute)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.ReversibleImputer">ReversibleImputer (class in ballet.eng.external)</a>
 
       <ul>
+        <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.ReversibleImputer">(class in ballet.eng.skits)</a>
+</li>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.ArbitraryOutlierCapper.right_tail_caps_">right_tail_caps_ (ballet.eng.external.ArbitraryOutlierCapper attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.Winsorizer.right_tail_caps_">(ballet.eng.external.Winsorizer attribute)</a>
+</li>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.ArbitraryOutlierCapper.right_tail_caps_">(ballet.eng.feature_engine.ArbitraryOutlierCapper attribute)</a>
+</li>
         <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.Winsorizer.right_tail_caps_">(ballet.eng.feature_engine.Winsorizer attribute)</a>
 </li>
       </ul></li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.RobustScaler">RobustScaler (class in ballet.eng.sklearn)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.RobustScaler">RobustScaler (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.RobustScaler">(class in ballet.eng.sklearn)</a>
 </li>
-      <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.RollingMeanTransformer">RollingMeanTransformer (class in ballet.eng.skits)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.RollingMeanTransformer">RollingMeanTransformer (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.RollingMeanTransformer">(class in ballet.eng.skits)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -2246,9 +2985,17 @@
 </li>
       <li><a href="api/ballet.util.io.html#ballet.util.io.save_targets">save_targets() (in module ballet.util.io)</a>
 </li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MaxAbsScaler.scale_">scale_ (ballet.eng.sklearn.MaxAbsScaler attribute)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.MaxAbsScaler.scale_">scale_ (ballet.eng.external.MaxAbsScaler attribute)</a>
 
       <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.MinMaxScaler.scale_">(ballet.eng.external.MinMaxScaler attribute)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.RobustScaler.scale_">(ballet.eng.external.RobustScaler attribute)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.StandardScaler.scale_">(ballet.eng.external.StandardScaler attribute)</a>
+</li>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MaxAbsScaler.scale_">(ballet.eng.sklearn.MaxAbsScaler attribute)</a>
+</li>
         <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.MinMaxScaler.scale_">(ballet.eng.sklearn.MinMaxScaler attribute)</a>
 </li>
         <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.RobustScaler.scale_">(ballet.eng.sklearn.RobustScaler attribute)</a>
@@ -2256,48 +3003,92 @@
         <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.StandardScaler.scale_">(ballet.eng.sklearn.StandardScaler attribute)</a>
 </li>
       </ul></li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.DecisionTreeDiscretiser.scores_dict_">scores_dict_ (ballet.eng.feature_engine.DecisionTreeDiscretiser attribute)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.DecisionTreeDiscretiser.scores_dict_">scores_dict_ (ballet.eng.external.DecisionTreeDiscretiser attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.DecisionTreeDiscretiser.scores_dict_">(ballet.eng.feature_engine.DecisionTreeDiscretiser attribute)</a>
 </li>
-      <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.SeasonalTransformer">SeasonalTransformer (class in ballet.eng.skits)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.SeasonalTransformer">SeasonalTransformer (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.SeasonalTransformer">(class in ballet.eng.skits)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.util.testing.html#ballet.util.testing.seeded">seeded() (in module ballet.util.testing)</a>
 </li>
       <li><a href="api/ballet.util.git.html#ballet.util.git.set_config_variables">set_config_variables() (in module ballet.util.git)</a>
 </li>
-      <li><a href="api/ballet.eng.tsfresh.html#ballet.eng.tsfresh.FeatureAugmenter.set_timeseries_container">set_timeseries_container() (ballet.eng.tsfresh.FeatureAugmenter method)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.FeatureAugmenter.set_timeseries_container">set_timeseries_container() (ballet.eng.external.FeatureAugmenter method)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.tsfresh.html#ballet.eng.tsfresh.FeatureAugmenter.set_timeseries_container">(ballet.eng.tsfresh.FeatureAugmenter method)</a>
 </li>
-      <li><a href="api/ballet.eng.base.html#ballet.eng.base.SimpleFunctionTransformer">SimpleFunctionTransformer (class in ballet.eng.base)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.html#ballet.eng.SimpleFunctionTransformer">SimpleFunctionTransformer (class in ballet.eng)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.base.html#ballet.eng.base.SimpleFunctionTransformer">(class in ballet.eng.base)</a>
 </li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.SimpleImputer">SimpleImputer (class in ballet.eng.sklearn)</a>
-</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/ballet.eng.ts.html#ballet.eng.ts.SingleLagger">SingleLagger (class in ballet.eng.ts)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.SimpleImputer">SimpleImputer (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.SimpleImputer">(class in ballet.eng.sklearn)</a>
 </li>
+      </ul></li>
+      <li><a href="api/ballet.eng.html#ballet.eng.SingleLagger">SingleLagger (class in ballet.eng)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.ts.html#ballet.eng.ts.SingleLagger">(class in ballet.eng.ts)</a>
+</li>
+      </ul></li>
       <li><a href="api/ballet.exc.html#ballet.exc.SkippedValidationTest">SkippedValidationTest</a>
 </li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.SparseRandomProjection">SparseRandomProjection (class in ballet.eng.sklearn)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.SparseRandomProjection">SparseRandomProjection (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.SparseRandomProjection">(class in ballet.eng.sklearn)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.util.fs.html#ballet.util.fs.spliceext">spliceext() (in module ballet.util.fs)</a>
 </li>
       <li><a href="api/ballet.util.fs.html#ballet.util.fs.splitext2">splitext2() (in module ballet.util.fs)</a>
 </li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.StandardScaler">StandardScaler (class in ballet.eng.sklearn)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.StandardScaler">StandardScaler (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.StandardScaler">(class in ballet.eng.sklearn)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.templating.html#ballet.templating.start_new_feature">start_new_feature() (in module ballet.templating)</a>
 </li>
       <li><a href="api/ballet.validation.gfssf.html#ballet.validation.gfssf.GFSSFIterationInfo.statistic">statistic (ballet.validation.gfssf.GFSSFIterationInfo attribute)</a>
 </li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.SimpleImputer.statistics_">statistics_ (ballet.eng.sklearn.SimpleImputer attribute)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.SimpleImputer.statistics_">statistics_ (ballet.eng.external.SimpleImputer attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.SimpleImputer.statistics_">(ballet.eng.sklearn.SimpleImputer attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.validation.project_structure.checks.html#ballet.validation.project_structure.checks.SubpackageNameCheck">SubpackageNameCheck (class in ballet.validation.project_structure.checks)</a>
 </li>
       <li><a href="api/ballet.validation.common.html#ballet.validation.common.subsample_data_for_validation">subsample_data_for_validation() (in module ballet.validation.common)</a>
 </li>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.SumEncoder.sum_coding">sum_coding() (ballet.eng.category_encoders.SumEncoder static method)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.SumEncoder.sum_coding">(ballet.eng.external.SumEncoder static method)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.SumEncoder">SumEncoder (class in ballet.eng.category_encoders)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.SumEncoder">(class in ballet.eng.external)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.util.git.html#ballet.util.git.switch_to_new_branch">switch_to_new_branch() (in module ballet.util.git)</a>
 </li>
       <li><a href="api/ballet.util.fs.html#ballet.util.fs.synctree">synctree() (in module ballet.util.fs)</a>
@@ -2309,9 +3100,17 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.TargetEncoder.target_encode">target_encode() (ballet.eng.category_encoders.TargetEncoder method)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.TargetEncoder.target_encode">(ballet.eng.external.TargetEncoder method)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.TargetEncoder">TargetEncoder (class in ballet.eng.category_encoders)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.TargetEncoder">(class in ballet.eng.external)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.validation.gfssf.html#ballet.validation.gfssf.GFSSFIterationInfo.threshold">threshold (ballet.validation.gfssf.GFSSFIterationInfo attribute)</a>
 </li>
       <li><a href="api/ballet.eng.base.html#ballet.eng.base.ConditionalTransformer.transform">transform() (ballet.eng.base.ConditionalTransformer method)</a>
@@ -2354,6 +3153,138 @@
         <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.TargetEncoder.transform">(ballet.eng.category_encoders.TargetEncoder method)</a>
 </li>
         <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.WOEEncoder.transform">(ballet.eng.category_encoders.WOEEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.html#ballet.eng.ComputedValueTransformer.transform">(ballet.eng.ComputedValueTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.html#ballet.eng.ConditionalTransformer.transform">(ballet.eng.ConditionalTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.AddMissingIndicator.transform">(ballet.eng.external.AddMissingIndicator method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.ArbitraryNumberImputer.transform">(ballet.eng.external.ArbitraryNumberImputer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.ArbitraryOutlierCapper.transform">(ballet.eng.external.ArbitraryOutlierCapper method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.AutoregressiveTransformer.transform">(ballet.eng.external.AutoregressiveTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.BackwardDifferenceEncoder.transform">(ballet.eng.external.BackwardDifferenceEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.BaseNEncoder.transform">(ballet.eng.external.BaseNEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.Binarizer.transform">(ballet.eng.external.Binarizer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.BinaryEncoder.transform">(ballet.eng.external.BinaryEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.BoxCoxTransformer.transform">(ballet.eng.external.BoxCoxTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.CatBoostEncoder.transform">(ballet.eng.external.CatBoostEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.CategoricalVariableImputer.transform">(ballet.eng.external.CategoricalVariableImputer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.CountEncoder.transform">(ballet.eng.external.CountEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.CountFrequencyCategoricalEncoder.transform">(ballet.eng.external.CountFrequencyCategoricalEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.DecisionTreeDiscretiser.transform">(ballet.eng.external.DecisionTreeDiscretiser method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.DFSTransformer.transform">(ballet.eng.external.DFSTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.DifferenceTransformer.transform">(ballet.eng.external.DifferenceTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.EndTailImputer.transform">(ballet.eng.external.EndTailImputer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.EqualFrequencyDiscretiser.transform">(ballet.eng.external.EqualFrequencyDiscretiser method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.EqualWidthDiscretiser.transform">(ballet.eng.external.EqualWidthDiscretiser method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.FeatureAugmenter.transform">(ballet.eng.external.FeatureAugmenter method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.FourierTransformer.transform">(ballet.eng.external.FourierTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.FunctionTransformer.transform">(ballet.eng.external.FunctionTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.GLMMEncoder.transform">(ballet.eng.external.GLMMEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.HashingEncoder.transform">(ballet.eng.external.HashingEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.HelmertEncoder.transform">(ballet.eng.external.HelmertEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.HorizonTransformer.transform">(ballet.eng.external.HorizonTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.IntegratedTransformer.transform">(ballet.eng.external.IntegratedTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.JamesSteinEncoder.transform">(ballet.eng.external.JamesSteinEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.KBinsDiscretizer.transform">(ballet.eng.external.KBinsDiscretizer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.KNNImputer.transform">(ballet.eng.external.KNNImputer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.LeaveOneOutEncoder.transform">(ballet.eng.external.LeaveOneOutEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.LogTransformer.transform">(ballet.eng.external.LogTransformer method)</a>, <a href="api/ballet.eng.external.html#id19">[1]</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.MaxAbsScaler.transform">(ballet.eng.external.MaxAbsScaler method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.MeanCategoricalEncoder.transform">(ballet.eng.external.MeanCategoricalEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.MeanMedianImputer.transform">(ballet.eng.external.MeanMedianImputer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.MEstimateEncoder.transform">(ballet.eng.external.MEstimateEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.MinMaxScaler.transform">(ballet.eng.external.MinMaxScaler method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.MissingIndicator.transform">(ballet.eng.external.MissingIndicator method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.Normalizer.transform">(ballet.eng.external.Normalizer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.OneHotCategoricalEncoder.transform">(ballet.eng.external.OneHotCategoricalEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.OneHotEncoder.transform">(ballet.eng.external.OneHotEncoder method)</a>, <a href="api/ballet.eng.external.html#id30">[1]</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.OrdinalCategoricalEncoder.transform">(ballet.eng.external.OrdinalCategoricalEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.OrdinalEncoder.transform">(ballet.eng.external.OrdinalEncoder method)</a>, <a href="api/ballet.eng.external.html#id35">[1]</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.OutlierTrimmer.transform">(ballet.eng.external.OutlierTrimmer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.PolynomialEncoder.transform">(ballet.eng.external.PolynomialEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.PolynomialFeatures.transform">(ballet.eng.external.PolynomialFeatures method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.PowerTransformer.transform">(ballet.eng.external.PowerTransformer method)</a>, <a href="api/ballet.eng.external.html#id52">[1]</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.QuantileTransformer.transform">(ballet.eng.external.QuantileTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.RandomSampleImputer.transform">(ballet.eng.external.RandomSampleImputer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.RareLabelCategoricalEncoder.transform">(ballet.eng.external.RareLabelCategoricalEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.ReciprocalTransformer.transform">(ballet.eng.external.ReciprocalTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.ReversibleImputer.transform">(ballet.eng.external.ReversibleImputer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.RobustScaler.transform">(ballet.eng.external.RobustScaler method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.RollingMeanTransformer.transform">(ballet.eng.external.RollingMeanTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.SimpleImputer.transform">(ballet.eng.external.SimpleImputer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.StandardScaler.transform">(ballet.eng.external.StandardScaler method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.SumEncoder.transform">(ballet.eng.external.SumEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.TargetEncoder.transform">(ballet.eng.external.TargetEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.TrendTransformer.transform">(ballet.eng.external.TrendTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.UserInputDiscretiser.transform">(ballet.eng.external.UserInputDiscretiser method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.Winsorizer.transform">(ballet.eng.external.Winsorizer method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.WOEEncoder.transform">(ballet.eng.external.WOEEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.WoERatioCategoricalEncoder.transform">(ballet.eng.external.WoERatioCategoricalEncoder method)</a>
+</li>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.YeoJohnsonTransformer.transform">(ballet.eng.external.YeoJohnsonTransformer method)</a>
 </li>
         <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.AddMissingIndicator.transform">(ballet.eng.feature_engine.AddMissingIndicator method)</a>
 </li>
@@ -2405,6 +3336,10 @@
 </li>
         <li><a href="api/ballet.eng.featuretools.html#ballet.eng.featuretools.DFSTransformer.transform">(ballet.eng.featuretools.DFSTransformer method)</a>
 </li>
+        <li><a href="api/ballet.eng.html#ballet.eng.GroupedFunctionTransformer.transform">(ballet.eng.GroupedFunctionTransformer method)</a>
+</li>
+        <li><a href="api/ballet.eng.html#ballet.eng.GroupwiseTransformer.transform">(ballet.eng.GroupwiseTransformer method)</a>
+</li>
         <li><a href="api/ballet.eng.misc.html#ballet.eng.misc.ComputedValueTransformer.transform">(ballet.eng.misc.ComputedValueTransformer method)</a>
 </li>
         <li><a href="api/ballet.eng.misc.html#ballet.eng.misc.NamedFramer.transform">(ballet.eng.misc.NamedFramer method)</a>
@@ -2414,6 +3349,12 @@
         <li><a href="api/ballet.eng.missing.html#ballet.eng.missing.NullFiller.transform">(ballet.eng.missing.NullFiller method)</a>
 </li>
         <li><a href="api/ballet.eng.missing.html#ballet.eng.missing.NullIndicator.transform">(ballet.eng.missing.NullIndicator method)</a>
+</li>
+        <li><a href="api/ballet.eng.html#ballet.eng.NamedFramer.transform">(ballet.eng.NamedFramer method)</a>
+</li>
+        <li><a href="api/ballet.eng.html#ballet.eng.NullFiller.transform">(ballet.eng.NullFiller method)</a>
+</li>
+        <li><a href="api/ballet.eng.html#ballet.eng.NullIndicator.transform">(ballet.eng.NullIndicator method)</a>
 </li>
         <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.AutoregressiveTransformer.transform">(ballet.eng.skits.AutoregressiveTransformer method)</a>
 </li>
@@ -2467,17 +3408,27 @@
 </li>
         <li><a href="api/ballet.eng.tsfresh.html#ballet.eng.tsfresh.FeatureAugmenter.transform">(ballet.eng.tsfresh.FeatureAugmenter method)</a>
 </li>
+        <li><a href="api/ballet.eng.html#ballet.eng.ValueReplacer.transform">(ballet.eng.ValueReplacer method)</a>
+</li>
         <li><a href="api/ballet.transformer.html#ballet.transformer.DelegatingRobustTransformer.transform">(ballet.transformer.DelegatingRobustTransformer method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.LeaveOneOutEncoder.transform_leave_one_out">transform_leave_one_out() (ballet.eng.category_encoders.LeaveOneOutEncoder method)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.LeaveOneOutEncoder.transform_leave_one_out">(ballet.eng.external.LeaveOneOutEncoder method)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.util.ci.html#ballet.util.ci.TravisPullRequestBuildDiffer">TravisPullRequestBuildDiffer (class in ballet.util.ci)</a>
 </li>
-      <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.TrendTransformer">TrendTransformer (class in ballet.eng.skits)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.TrendTransformer">TrendTransformer (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.TrendTransformer">(class in ballet.eng.skits)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.util.html#ballet.util.truthy">truthy() (in module ballet.util)</a>
 </li>
   </ul></td>
@@ -2494,8 +3445,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/ballet.update.html#ballet.update.update_project_template">update_project_template() (in module ballet.update)</a>
 </li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.UserInputDiscretiser">UserInputDiscretiser (class in ballet.eng.feature_engine)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.UserInputDiscretiser">UserInputDiscretiser (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.UserInputDiscretiser">(class in ballet.eng.feature_engine)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -2520,22 +3475,34 @@
         <li><a href="api/ballet.validation.feature_acceptance.html#ballet.validation.feature_acceptance.validate_feature_acceptance">(in module ballet.validation.feature_acceptance)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/ballet.client.html#ballet.client.Client.validate_feature_api">validate_feature_api() (ballet.client.Client method)</a>
 
       <ul>
         <li><a href="api/ballet.validation.feature_api.html#ballet.validation.feature_api.validate_feature_api">(in module ballet.validation.feature_api)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/ballet.validation.main.html#ballet.validation.main.validation_stage">validation_stage() (in module ballet.validation.main)</a>
 </li>
-      <li><a href="api/ballet.eng.misc.html#ballet.eng.misc.ValueReplacer">ValueReplacer (class in ballet.eng.misc)</a>
+      <li><a href="api/ballet.eng.html#ballet.eng.ValueReplacer">ValueReplacer (class in ballet.eng)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.misc.html#ballet.eng.misc.ValueReplacer">(class in ballet.eng.misc)</a>
 </li>
-      <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.StandardScaler.var_">var_ (ballet.eng.sklearn.StandardScaler attribute)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.StandardScaler.var_">var_ (ballet.eng.external.StandardScaler attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.StandardScaler.var_">(ballet.eng.sklearn.StandardScaler attribute)</a>
 </li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.AddMissingIndicator.variables_">variables_ (ballet.eng.feature_engine.AddMissingIndicator attribute)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.AddMissingIndicator.variables_">variables_ (ballet.eng.external.AddMissingIndicator attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.AddMissingIndicator.variables_">(ballet.eng.feature_engine.AddMissingIndicator attribute)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -2544,18 +3511,30 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/ballet.util.html#ballet.util.warn">warn() (in module ballet.util)</a>
 </li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.Winsorizer">Winsorizer (class in ballet.eng.feature_engine)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.Winsorizer">Winsorizer (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.Winsorizer">(class in ballet.eng.feature_engine)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.util.testing.html#ballet.util.testing.withfailure">withfailure() (in module ballet.util.testing)</a>
+</li>
+      <li><a href="api/ballet.validation.project_structure.checks.html#ballet.validation.project_structure.checks.WithinContribCheck">WithinContribCheck (class in ballet.validation.project_structure.checks)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/ballet.validation.project_structure.checks.html#ballet.validation.project_structure.checks.WithinContribCheck">WithinContribCheck (class in ballet.validation.project_structure.checks)</a>
-</li>
       <li><a href="api/ballet.eng.category_encoders.html#ballet.eng.category_encoders.WOEEncoder">WOEEncoder (class in ballet.eng.category_encoders)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.external.html#ballet.eng.external.WOEEncoder">(class in ballet.eng.external)</a>
 </li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.WoERatioCategoricalEncoder">WoERatioCategoricalEncoder (class in ballet.eng.feature_engine)</a>
+      </ul></li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.WoERatioCategoricalEncoder">WoERatioCategoricalEncoder (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.WoERatioCategoricalEncoder">(class in ballet.eng.feature_engine)</a>
 </li>
+      </ul></li>
       <li><a href="api/ballet.util.io.html#ballet.util.io.write_tabular">write_tabular() (in module ballet.util.io)</a>
 </li>
   </ul></td>
@@ -2566,10 +3545,14 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/ballet.pipeline.html#ballet.pipeline.EngineerFeaturesResult.X">X (ballet.pipeline.EngineerFeaturesResult attribute)</a>
 </li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.RandomSampleImputer.X_">X_ (ballet.eng.external.RandomSampleImputer attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.RandomSampleImputer.X_">(ballet.eng.feature_engine.RandomSampleImputer attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.RandomSampleImputer.X_">X_ (ballet.eng.feature_engine.RandomSampleImputer attribute)</a>
-</li>
       <li><a href="api/ballet.pipeline.html#ballet.pipeline.EngineerFeaturesResult.X_df">X_df (ballet.pipeline.EngineerFeaturesResult attribute)</a>
 </li>
   </ul></td>
@@ -2582,12 +3565,20 @@
 </li>
       <li><a href="api/ballet.pipeline.html#ballet.pipeline.EngineerFeaturesResult.y_df">y_df (ballet.pipeline.EngineerFeaturesResult attribute)</a>
 </li>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.HorizonTransformer.y_only">y_only (ballet.eng.external.HorizonTransformer attribute)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.HorizonTransformer.y_only">(ballet.eng.skits.HorizonTransformer attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/ballet.eng.skits.html#ballet.eng.skits.HorizonTransformer.y_only">y_only (ballet.eng.skits.HorizonTransformer attribute)</a>
+      <li><a href="api/ballet.eng.external.html#ballet.eng.external.YeoJohnsonTransformer">YeoJohnsonTransformer (class in ballet.eng.external)</a>
+
+      <ul>
+        <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.YeoJohnsonTransformer">(class in ballet.eng.feature_engine)</a>
 </li>
-      <li><a href="api/ballet.eng.feature_engine.html#ballet.eng.feature_engine.YeoJohnsonTransformer">YeoJohnsonTransformer (class in ballet.eng.feature_engine)</a>
-</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 

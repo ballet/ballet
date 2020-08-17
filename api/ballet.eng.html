@@ -114,10 +114,29 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../contributor_guide.html">Contributor Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../contributor_guide.html#cloud-feature-development-workflow">Cloud Feature Development Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../contributor_guide.html#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../contributor_guide.html#setup-your-development-environment">Setup your development environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributor_guide.html#cloud-feature-development-workflow">Cloud Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributor_guide.html#launch-binder">Launch binder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributor_guide.html#work-in-a-notebook">Work in a notebook</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributor_guide.html#authenticate-with-github">Authenticate with GitHub</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../contributor_guide.html#develop-a-new-feature">Develop a new feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributor_guide.html#test-your-feature">Test your feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributor_guide.html#submit-your-feature">Submit your feature</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributor_guide.html#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributor_guide.html#setup-your-development-environment">Setup your development environment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../contributor_guide.html#fork-the-project">Fork the project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../contributor_guide.html#clone-your-fork">Clone your fork</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../contributor_guide.html#create-a-virtualenv">Create a virtualenv</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../contributor_guide.html#contributor-guide-develop-a-new-feature-local">Develop a new feature</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../contributor_guide.html#update-and-install-the-project">Update and install the project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../contributor_guide.html#start-working-on-a-new-feature">Start working on a new feature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../contributor_guide.html#write-your-feature">Write your feature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../contributor_guide.html#contributor-guide-test-your-feature-local">Test your feature</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../contributor_guide.html#submit-the-feature">Submit the feature</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../contributor_guide.html#option-1-git-workflow">Option 1: Git workflow</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../contributor_guide.html#option-2-in-lab-workflow">Option 2: In-Lab Workflow</a></li>
@@ -151,12 +170,20 @@
 <li class="toctree-l3"><a class="reference internal" href="../feature_engineering_guide.html#external-libraries">External libraries</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../feature_engineering_guide.html#pandas-lrarrow-ballet-examples">Pandas ⇔ Ballet Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../feature_engineering_guide.html#pandas-ballet-examples">Pandas ⇔ Ballet Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../feature_engineering_guide.html#rolling-your-own-transformers">Rolling your own transformers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../feature_engineering_guide.html#example">Example</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../feature_engineering_guide.html#further-reading">Further reading</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#how-can-i-check-the-performance-of-a-feature">How can I check the performance of a feature?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#my-feature-has-a-valid-api-locally-why-was-it-rejected">My feature has a valid API locally, why was it rejected?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#why-did-my-feature-fail-the-feature-acceptance-validation">Why did my feature fail the feature acceptance validation?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#my-feature-relies-on-a-new-library-how-can-i-add-it-to-the-project">My feature relies on a new library, how can I add it to the project?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#how-can-i-learn-to-write-better-features">How can I learn to write better features?</a></li>
 </ul>
 </li>
 </ul>
@@ -314,6 +341,347 @@
             
   <div class="section" id="module-ballet.eng">
 <span id="ballet-eng-package"></span><h1>ballet.eng package<a class="headerlink" href="#module-ballet.eng" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="ballet.eng.BaseTransformer">
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.</code><code class="sig-name descname">BaseTransformer</code><a class="reference internal" href="../_modules/ballet/eng/base.html#BaseTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.BaseTransformer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ballet.eng.base.html#ballet.eng.base.NoFitMixin" title="ballet.eng.base.NoFitMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.base.NoFitMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.TransformerMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code></p>
+<p>Base transformer class for developing new transformers</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="ballet.eng.BoxCoxTransformer">
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.</code><code class="sig-name descname">BoxCoxTransformer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">threshold</span></em>, <em class="sig-param"><span class="n">lmbda</span><span class="o">=</span><span class="default_value">0.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/misc.html#BoxCoxTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.BoxCoxTransformer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ballet.eng.base.html#ballet.eng.base.ConditionalTransformer" title="ballet.eng.base.ConditionalTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.base.ConditionalTransformer</span></code></a></p>
+<p>Conditionally apply the Box-Cox transformation</p>
+<p>In the fit stage, determines which variables (columns) have absolute skew
+above <code class="docutils literal notranslate"><span class="pre">threshold</span></code>. In the transform stage, applies the Box-Cox
+transformation of 1+x to each variable selected previously.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>threshold</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – skew threshold.</p></li>
+<li><p><strong>lmbda</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – power parameter of the Box-Cox transform. Defaults to 0.0</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.boxcox1p.html">https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.boxcox1p.html</a></p>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt id="ballet.eng.ComputedValueTransformer">
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.</code><code class="sig-name descname">ComputedValueTransformer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="n">pass_y</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/misc.html#ComputedValueTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.ComputedValueTransformer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ballet.eng.base.html#ballet.eng.base.BaseTransformer" title="ballet.eng.base.BaseTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.base.BaseTransformer</span></code></a></p>
+<p>Compute a value on the training data and transform to a constant</p>
+<p>For example, compute the mean of a column of the training data, then
+transform any input array by producing an output of the same shape but
+filled with the computed mean.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – function to apply during fit</p></li>
+<li><p><strong>pass_y</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – whether to pass y to the function during fit</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="ballet.eng.ComputedValueTransformer.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">fit_kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/misc.html#ComputedValueTransformer.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.ComputedValueTransformer.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ballet.eng.ComputedValueTransformer.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">transform_kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/misc.html#ComputedValueTransformer.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.ComputedValueTransformer.transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ballet.eng.ConditionalTransformer">
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.</code><code class="sig-name descname">ConditionalTransformer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">condition</span></em>, <em class="sig-param"><span class="n">trans</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/base.html#ConditionalTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.ConditionalTransformer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ballet.eng.base.html#ballet.eng.base.BaseTransformer" title="ballet.eng.base.BaseTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.base.BaseTransformer</span></code></a></p>
+<p>Transform columns that satisfy a condition during training</p>
+<p>In the fit stage, determines which variables (columns) satisfy the
+condition. In the transform stage, applies the given transformation to
+the selected columns, passing through the complement unchanged.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>condition</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – condition function</p></li>
+<li><p><strong>trans</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – transform function</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="ballet.eng.ConditionalTransformer.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">fit_args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/base.html#ConditionalTransformer.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.ConditionalTransformer.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ballet.eng.ConditionalTransformer.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">transform_args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/base.html#ConditionalTransformer.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.ConditionalTransformer.transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ballet.eng.GroupedFunctionTransformer">
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.</code><code class="sig-name descname">GroupedFunctionTransformer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="n">func_kwargs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">groupby_kwargs</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/base.html#GroupedFunctionTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.GroupedFunctionTransformer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.preprocessing._function_transformer.FunctionTransformer</span></code></p>
+<p>Transformer that applies a callable to each group of a groupby</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – callable to apply</p></li>
+<li><p><strong>func_kwargs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – keyword arguments to pass</p></li>
+<li><p><strong>groupby_kwargs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – keyword arguments to pd.DataFrame.groupby. If omitted,
+no grouping is performed and the function is called on the entire
+DataFrame.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="ballet.eng.GroupedFunctionTransformer.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">transform_kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/base.html#GroupedFunctionTransformer.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.GroupedFunctionTransformer.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform X using the forward function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Input array.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>X_out</strong> – Transformed input.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array-like, shape (n_samples, n_features)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ballet.eng.GroupwiseTransformer">
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.</code><code class="sig-name descname">GroupwiseTransformer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">transformer</span></em>, <em class="sig-param"><span class="n">groupby_kwargs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">column_selection</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">handle_unknown</span><span class="o">=</span><span class="default_value">'error'</span></em>, <em class="sig-param"><span class="n">handle_error</span><span class="o">=</span><span class="default_value">'error'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/base.html#GroupwiseTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.GroupwiseTransformer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ballet.eng.base.html#ballet.eng.base.BaseTransformer" title="ballet.eng.base.BaseTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.base.BaseTransformer</span></code></a></p>
+<p>Transformer that does something different for every group</p>
+<p>For each group identified in the training set by the groupby operation,
+a separate transformer is cloned and fit. This is useful to learn
+group-wise transformers that do not leak data between the training and
+test sets. Consider the case of imputing missing values with the mean of
+some group. A normal, pure-pandas implementation, such as
+<code class="docutils literal notranslate"><span class="pre">X_te.groupby(by='foo').apply('mean')</span></code> would leak information about
+the test set means, which might differ from the training set means.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transformer</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]) – the transformer to apply
+to each group. If transformer is a transformer-like instance (i.e.
+has fit, transform methods etc.), then it is cloned for each group.
+If transformer is a transformer-like class (i.e. instances of
+the class are transformer-like), then it is initialized with no
+arguments for each group. If it is a callable, then it is called
+with no arguments for each group.</p></li>
+<li><p><strong>groupby_kwargs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>) – keyword arguments to pd.DataFrame.groupby</p></li>
+<li><p><strong>column_selection</strong><strong>)</strong> – column, or list of columns,
+to select after the groupby. Equivalent to
+<cite>df.groupby(…)[column_selection]</cite>. Defaults to None, i.e. no
+column selection is performed.</p></li>
+<li><p><strong>handle_unknown</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – ‘error’ or ‘ignore’, default=’error’. Whether to
+raise an error or ignore if an unknown group is encountered during
+transform. When this parameter is set to ‘ignore’ and an unknown
+group is encountered during transform, the group’s values will be
+passed through unchanged.</p></li>
+<li><p><strong>handle_error</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – ‘error’ or ‘ignore’, default=’error’. Whether to
+raise an error or ignore if an error is raised during transforming
+an individual group. When this parameter is set to ‘ignore’ and
+an error is raised when calling the transformer’s transform
+method on an individual group, the group’s values will be passed
+through unchanged.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example usage:</p>
+<blockquote>
+<div><p>In this example, we create a groupwise transformer that fits a
+separate imputer for each group encountered. For new data points,
+values will be imputed according to the mean of its group on the
+training set, avoiding any data leakage.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sklearn.impute</span> <span class="kn">import</span> <span class="n">SimpleImputer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transformer</span> <span class="o">=</span> <span class="n">GroupwiseTransformer</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">groupby_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="s1">&#39;name&#39;</span><span class="p">}</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference internal" href="ballet.exc.html#ballet.exc.BalletError" title="ballet.exc.BalletError"><strong>ballet.exc.BalletError</strong></a> – if handle_unknown==’error’ and an unknown group
+    is encountered at transform-time.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="ballet.eng.GroupwiseTransformer.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">fit_kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/base.html#GroupwiseTransformer.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.GroupwiseTransformer.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ballet.eng.GroupwiseTransformer.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">transform_kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/base.html#GroupwiseTransformer.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.GroupwiseTransformer.transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ballet.eng.IdentityTransformer">
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.</code><code class="sig-name descname">IdentityTransformer</code><a class="reference internal" href="../_modules/ballet/eng/misc.html#IdentityTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.IdentityTransformer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.preprocessing._function_transformer.FunctionTransformer</span></code></p>
+<p>Simple transformer that passes through its input</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="ballet.eng.LagImputer">
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.</code><code class="sig-name descname">LagImputer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">groupby_kwargs</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/missing.html#LagImputer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.LagImputer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ballet.eng.base.html#ballet.eng.base.GroupedFunctionTransformer" title="ballet.eng.base.GroupedFunctionTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.base.GroupedFunctionTransformer</span></code></a></p>
+<p>Fill missing values using group-specific lags</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="ballet.eng.NamedFramer">
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.</code><code class="sig-name descname">NamedFramer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/misc.html#NamedFramer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.NamedFramer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ballet.eng.base.html#ballet.eng.base.BaseTransformer" title="ballet.eng.base.BaseTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.base.BaseTransformer</span></code></a></p>
+<p>Convert object to named 1d DataFrame</p>
+<p>If transformation is successful, the resulting object is a DataFrame with a
+<code class="docutils literal notranslate"><span class="pre">name</span></code> attribute as given.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – name for resulting DataFrame</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="ballet.eng.NamedFramer.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">transform_kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/misc.html#NamedFramer.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.NamedFramer.transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ballet.eng.NoFitMixin">
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.</code><code class="sig-name descname">NoFitMixin</code><a class="reference internal" href="../_modules/ballet/eng/base.html#NoFitMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.NoFitMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Mix-in class for transformations that do not require a fit stage</p>
+<dl class="py method">
+<dt id="ballet.eng.NoFitMixin.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">fit_kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/base.html#NoFitMixin.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.NoFitMixin.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ballet.eng.NullFiller">
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.</code><code class="sig-name descname">NullFiller</code><span class="sig-paren">(</span><em class="sig-param">isnull=&lt;function isna&gt;</em>, <em class="sig-param">replacement=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/missing.html#NullFiller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.NullFiller" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ballet.eng.base.html#ballet.eng.base.BaseTransformer" title="ballet.eng.base.BaseTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.base.BaseTransformer</span></code></a></p>
+<p>Fill values passing a filter with a given replacement</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>isnull</strong> (<em>callable</em>) – vectorized test of whether a value is consider null.
+Defaults to <code class="docutils literal notranslate"><span class="pre">pandas.isnull</span></code>.</p></li>
+<li><p><strong>replacement</strong> – replacement for each null value</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="ballet.eng.NullFiller.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">transform_kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/missing.html#NullFiller.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.NullFiller.transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ballet.eng.NullIndicator">
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.</code><code class="sig-name descname">NullIndicator</code><a class="reference internal" href="../_modules/ballet/eng/missing.html#NullIndicator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.NullIndicator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ballet.eng.base.html#ballet.eng.base.BaseTransformer" title="ballet.eng.base.BaseTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.base.BaseTransformer</span></code></a></p>
+<p>Indicate whether values are null or not</p>
+<dl class="py method">
+<dt id="ballet.eng.NullIndicator.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">tranform_kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/missing.html#NullIndicator.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.NullIndicator.transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ballet.eng.SimpleFunctionTransformer">
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.</code><code class="sig-name descname">SimpleFunctionTransformer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="n">func_kwargs</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/base.html#SimpleFunctionTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.SimpleFunctionTransformer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.preprocessing._function_transformer.FunctionTransformer</span></code></p>
+<p>Transformer that applies a callable to its input</p>
+<p>The callable will be called on the input X in the transform stage,
+optionally with additional arguments and keyword arguments.</p>
+<p>A simple wrapper around :py:class:<code class="docutils literal notranslate"><span class="pre">FunctionTransformer</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – callable to apply</p></li>
+<li><p><strong>func_kwargs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – keyword arguments to pass</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="ballet.eng.SingleLagger">
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.</code><code class="sig-name descname">SingleLagger</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lag</span></em>, <em class="sig-param"><span class="n">groupby_kwargs</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/ts.html#SingleLagger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.SingleLagger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ballet.eng.base.html#ballet.eng.base.GroupedFunctionTransformer" title="ballet.eng.base.GroupedFunctionTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.base.GroupedFunctionTransformer</span></code></a></p>
+<p>Transformer that applies a lag operator to each group</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lag</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – lag to apply</p></li>
+<li><p><strong>groupby_kwargs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – keyword arguments to pd.DataFrame.groupby</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="ballet.eng.ValueReplacer">
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.</code><code class="sig-name descname">ValueReplacer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">replacement</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/misc.html#ValueReplacer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.ValueReplacer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ballet.eng.base.html#ballet.eng.base.BaseTransformer" title="ballet.eng.base.BaseTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.base.BaseTransformer</span></code></a></p>
+<p>Replace instances of some value with some replacement</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – value to replace (checked by equality testing)</p></li>
+<li><p><strong>replacement</strong> – replacement</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="ballet.eng.ValueReplacer.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">transform_kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/misc.html#ValueReplacer.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.ValueReplacer.transform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="ballet.eng.make_multi_lagger">
+<code class="sig-prename descclassname">ballet.eng.</code><code class="sig-name descname">make_multi_lagger</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lags</span></em>, <em class="sig-param"><span class="n">groupby_kwargs</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/ts.html#make_multi_lagger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.make_multi_lagger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a union of transformers that apply different lags</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lags</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – collection of lags to apply</p></li>
+<li><p><strong>groupby_kwargs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – keyword arguments to pd.DataFrame.groupby</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">FeatureUnion</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">

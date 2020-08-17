@@ -112,10 +112,29 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributor_guide.html">Contributor Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#cloud-feature-development-workflow">Cloud Feature Development Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#setup-your-development-environment">Setup your development environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#cloud-feature-development-workflow">Cloud Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#launch-binder">Launch binder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#work-in-a-notebook">Work in a notebook</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#authenticate-with-github">Authenticate with GitHub</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#develop-a-new-feature">Develop a new feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#test-your-feature">Test your feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#submit-your-feature">Submit your feature</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#setup-your-development-environment">Setup your development environment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#fork-the-project">Fork the project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#clone-your-fork">Clone your fork</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#create-a-virtualenv">Create a virtualenv</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#contributor-guide-develop-a-new-feature-local">Develop a new feature</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#update-and-install-the-project">Update and install the project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#start-working-on-a-new-feature">Start working on a new feature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#write-your-feature">Write your feature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#contributor-guide-test-your-feature-local">Test your feature</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#submit-the-feature">Submit the feature</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#option-1-git-workflow">Option 1: Git workflow</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#option-2-in-lab-workflow">Option 2: In-Lab Workflow</a></li>
@@ -149,12 +168,20 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#external-libraries">External libraries</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#pandas-lrarrow-ballet-examples">Pandas ⇔ Ballet Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#pandas-ballet-examples">Pandas ⇔ Ballet Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#rolling-your-own-transformers">Rolling your own transformers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#example">Example</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#further-reading">Further reading</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">FAQ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#how-can-i-check-the-performance-of-a-feature">How can I check the performance of a feature?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#my-feature-has-a-valid-api-locally-why-was-it-rejected">My feature has a valid API locally, why was it rejected?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#why-did-my-feature-fail-the-feature-acceptance-validation">Why did my feature fail the feature acceptance validation?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#my-feature-relies-on-a-new-library-how-can-i-add-it-to-the-project">My feature relies on a new library, how can I add it to the project?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#how-can-i-learn-to-write-better-features">How can I learn to write better features?</a></li>
 </ul>
 </li>
 </ul>
@@ -504,7 +531,7 @@
     <span class="k">return</span> <span class="n">X</span>
 
 
-<div class="viewcode-block" id="MinMaxScaler"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.MinMaxScaler">[docs]</a><span class="k">class</span> <span class="nc">MinMaxScaler</span><span class="p">(</span><span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
+<div class="viewcode-block" id="MinMaxScaler"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.MinMaxScaler">[docs]</a><span class="k">class</span> <span class="nc">MinMaxScaler</span><span class="p">(</span><span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Transform features by scaling each feature to a given range.</span>
 
 <span class="sd">    This estimator scales and translates each feature individually such</span>
@@ -620,7 +647,7 @@
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_max_</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_range_</span>
 
-<div class="viewcode-block" id="MinMaxScaler.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.MinMaxScaler.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="MinMaxScaler.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.MinMaxScaler.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Compute the minimum and maximum to be used for later scaling.</span>
 
 <span class="sd">        Parameters</span>
@@ -642,7 +669,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">partial_fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="MinMaxScaler.partial_fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.MinMaxScaler.partial_fit">[docs]</a>    <span class="k">def</span> <span class="nf">partial_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="MinMaxScaler.partial_fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.MinMaxScaler.partial_fit">[docs]</a>    <span class="k">def</span> <span class="nf">partial_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Online computation of min and max on X for later scaling.</span>
 
 <span class="sd">        All of X is processed as a single batch. This is intended for cases</span>
@@ -696,7 +723,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">data_range_</span> <span class="o">=</span> <span class="n">data_range</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="MinMaxScaler.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.MinMaxScaler.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="MinMaxScaler.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.MinMaxScaler.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Scale features of X according to feature_range.</span>
 
 <span class="sd">        Parameters</span>
@@ -718,7 +745,7 @@
         <span class="n">X</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_</span>
         <span class="k">return</span> <span class="n">X</span></div>
 
-<div class="viewcode-block" id="MinMaxScaler.inverse_transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.MinMaxScaler.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="MinMaxScaler.inverse_transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.MinMaxScaler.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Undo the scaling of X according to feature_range.</span>
 
 <span class="sd">        Parameters</span>
@@ -821,7 +848,7 @@
     <span class="k">return</span> <span class="n">X</span>
 
 
-<div class="viewcode-block" id="StandardScaler"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.StandardScaler">[docs]</a><span class="k">class</span> <span class="nc">StandardScaler</span><span class="p">(</span><span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
+<div class="viewcode-block" id="StandardScaler"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.StandardScaler">[docs]</a><span class="k">class</span> <span class="nc">StandardScaler</span><span class="p">(</span><span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Standardize features by removing the mean and scaling to unit variance</span>
 
 <span class="sd">    The standard score of a sample `x` is calculated as:</span>
@@ -956,7 +983,7 @@
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean_</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">var_</span>
 
-<div class="viewcode-block" id="StandardScaler.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.StandardScaler.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="StandardScaler.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.StandardScaler.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Compute the mean and std to be used for later scaling.</span>
 
 <span class="sd">        Parameters</span>
@@ -973,7 +1000,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">partial_fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="StandardScaler.partial_fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.StandardScaler.partial_fit">[docs]</a>    <span class="k">def</span> <span class="nf">partial_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="StandardScaler.partial_fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.StandardScaler.partial_fit">[docs]</a>    <span class="k">def</span> <span class="nf">partial_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Online computation of mean and std on X for later scaling.</span>
 
@@ -1082,7 +1109,7 @@
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="StandardScaler.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.StandardScaler.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="StandardScaler.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.StandardScaler.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Perform standardization by centering and scaling</span>
 
 <span class="sd">        Parameters</span>
@@ -1114,7 +1141,7 @@
                 <span class="n">X</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_</span>
         <span class="k">return</span> <span class="n">X</span></div>
 
-<div class="viewcode-block" id="StandardScaler.inverse_transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.StandardScaler.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="StandardScaler.inverse_transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.StandardScaler.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Scale back the data to the original representation</span>
 
 <span class="sd">        Parameters</span>
@@ -1158,7 +1185,7 @@
         <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;allow_nan&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span></div>
 
 
-<div class="viewcode-block" id="MaxAbsScaler"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.MaxAbsScaler">[docs]</a><span class="k">class</span> <span class="nc">MaxAbsScaler</span><span class="p">(</span><span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
+<div class="viewcode-block" id="MaxAbsScaler"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.MaxAbsScaler">[docs]</a><span class="k">class</span> <span class="nc">MaxAbsScaler</span><span class="p">(</span><span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Scale each feature by its maximum absolute value.</span>
 
 <span class="sd">    This estimator scales and translates each feature individually such</span>
@@ -1236,7 +1263,7 @@
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_samples_seen_</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_abs_</span>
 
-<div class="viewcode-block" id="MaxAbsScaler.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.MaxAbsScaler.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="MaxAbsScaler.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.MaxAbsScaler.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Compute the maximum absolute value to be used for later scaling.</span>
 
 <span class="sd">        Parameters</span>
@@ -1250,7 +1277,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">partial_fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="MaxAbsScaler.partial_fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.MaxAbsScaler.partial_fit">[docs]</a>    <span class="k">def</span> <span class="nf">partial_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="MaxAbsScaler.partial_fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.MaxAbsScaler.partial_fit">[docs]</a>    <span class="k">def</span> <span class="nf">partial_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Online computation of max absolute value of X for later scaling.</span>
 
@@ -1294,7 +1321,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">scale_</span> <span class="o">=</span> <span class="n">_handle_zeros_in_scale</span><span class="p">(</span><span class="n">max_abs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="MaxAbsScaler.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.MaxAbsScaler.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="MaxAbsScaler.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.MaxAbsScaler.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Scale the data</span>
 
 <span class="sd">        Parameters</span>
@@ -1313,7 +1340,7 @@
             <span class="n">X</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_</span>
         <span class="k">return</span> <span class="n">X</span></div>
 
-<div class="viewcode-block" id="MaxAbsScaler.inverse_transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.MaxAbsScaler.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="MaxAbsScaler.inverse_transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.MaxAbsScaler.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Scale back the data to the original representation</span>
 
 <span class="sd">        Parameters</span>
@@ -1396,7 +1423,7 @@
     <span class="k">return</span> <span class="n">X</span>
 
 
-<div class="viewcode-block" id="RobustScaler"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.RobustScaler">[docs]</a><span class="k">class</span> <span class="nc">RobustScaler</span><span class="p">(</span><span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
+<div class="viewcode-block" id="RobustScaler"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.RobustScaler">[docs]</a><span class="k">class</span> <span class="nc">RobustScaler</span><span class="p">(</span><span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Scale features using statistics that are robust to outliers.</span>
 
 <span class="sd">    This Scaler removes the median and scales the data according to</span>
@@ -1493,7 +1520,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">quantile_range</span> <span class="o">=</span> <span class="n">quantile_range</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">copy</span> <span class="o">=</span> <span class="n">copy</span>
 
-<div class="viewcode-block" id="RobustScaler.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.RobustScaler.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="RobustScaler.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.RobustScaler.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Compute the median and quantiles to be used for scaling.</span>
 
 <span class="sd">        Parameters</span>
@@ -1545,7 +1572,7 @@
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="RobustScaler.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.RobustScaler.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="RobustScaler.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.RobustScaler.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Center and scale the data.</span>
 
 <span class="sd">        Parameters</span>
@@ -1568,7 +1595,7 @@
                 <span class="n">X</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_</span>
         <span class="k">return</span> <span class="n">X</span></div>
 
-<div class="viewcode-block" id="RobustScaler.inverse_transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.RobustScaler.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="RobustScaler.inverse_transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.RobustScaler.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Scale back the data to the original representation</span>
 
 <span class="sd">        Parameters</span>
@@ -1676,7 +1703,7 @@
     <span class="k">return</span> <span class="n">X</span>
 
 
-<div class="viewcode-block" id="PolynomialFeatures"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.PolynomialFeatures">[docs]</a><span class="k">class</span> <span class="nc">PolynomialFeatures</span><span class="p">(</span><span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
+<div class="viewcode-block" id="PolynomialFeatures"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.PolynomialFeatures">[docs]</a><span class="k">class</span> <span class="nc">PolynomialFeatures</span><span class="p">(</span><span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Generate polynomial and interaction features.</span>
 
 <span class="sd">    Generate a new feature matrix consisting of all polynomial combinations</span>
@@ -1772,7 +1799,7 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">minlength</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_input_features_</span><span class="p">)</span>
                           <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">])</span>
 
-<div class="viewcode-block" id="PolynomialFeatures.get_feature_names"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.PolynomialFeatures.get_feature_names">[docs]</a>    <span class="k">def</span> <span class="nf">get_feature_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_features</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="PolynomialFeatures.get_feature_names"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.PolynomialFeatures.get_feature_names">[docs]</a>    <span class="k">def</span> <span class="nf">get_feature_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_features</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return feature names for output features</span>
 
@@ -1802,7 +1829,7 @@
             <span class="n">feature_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">feature_names</span></div>
 
-<div class="viewcode-block" id="PolynomialFeatures.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.PolynomialFeatures.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="PolynomialFeatures.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.PolynomialFeatures.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute number of output features.</span>
 
@@ -1825,7 +1852,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">n_output_features_</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="PolynomialFeatures.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.PolynomialFeatures.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="PolynomialFeatures.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.PolynomialFeatures.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Transform data to polynomial features</span>
 
 <span class="sd">        Parameters</span>
@@ -2053,7 +2080,7 @@
         <span class="k">return</span> <span class="n">X</span>
 
 
-<div class="viewcode-block" id="Normalizer"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.Normalizer">[docs]</a><span class="k">class</span> <span class="nc">Normalizer</span><span class="p">(</span><span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
+<div class="viewcode-block" id="Normalizer"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.Normalizer">[docs]</a><span class="k">class</span> <span class="nc">Normalizer</span><span class="p">(</span><span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Normalize samples individually to unit norm.</span>
 
 <span class="sd">    Each sample (i.e. each row of the data matrix) with at least one</span>
@@ -2118,7 +2145,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="n">norm</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">copy</span> <span class="o">=</span> <span class="n">copy</span>
 
-<div class="viewcode-block" id="Normalizer.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.Normalizer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Normalizer.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.Normalizer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Do nothing and return the estimator unchanged</span>
 
 <span class="sd">        This method is just there to implement the usual API and hence</span>
@@ -2131,7 +2158,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_data</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">accept_sparse</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="Normalizer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.Normalizer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Normalizer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.Normalizer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Scale each non zero row of X to unit norm</span>
 
 <span class="sd">        Parameters</span>
@@ -2195,7 +2222,7 @@
     <span class="k">return</span> <span class="n">X</span>
 
 
-<div class="viewcode-block" id="Binarizer"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.Binarizer">[docs]</a><span class="k">class</span> <span class="nc">Binarizer</span><span class="p">(</span><span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
+<div class="viewcode-block" id="Binarizer"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.Binarizer">[docs]</a><span class="k">class</span> <span class="nc">Binarizer</span><span class="p">(</span><span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Binarize data (set feature values to 0 or 1) according to a threshold</span>
 
 <span class="sd">    Values greater than the threshold map to 1, while values less than</span>
@@ -2254,7 +2281,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">copy</span> <span class="o">=</span> <span class="n">copy</span>
 
-<div class="viewcode-block" id="Binarizer.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.Binarizer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Binarizer.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.Binarizer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Do nothing and return the estimator unchanged</span>
 
 <span class="sd">        This method is just there to implement the usual API and hence</span>
@@ -2267,7 +2294,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_data</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">accept_sparse</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="Binarizer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.Binarizer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Binarizer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.Binarizer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Binarize each element of X</span>
 
 <span class="sd">        Parameters</span>
@@ -2448,7 +2475,7 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">n_samples</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">value</span><span class="p">),</span> <span class="n">X</span><span class="p">))</span>
 
 
-<div class="viewcode-block" id="QuantileTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.QuantileTransformer">[docs]</a><span class="k">class</span> <span class="nc">QuantileTransformer</span><span class="p">(</span><span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
+<div class="viewcode-block" id="QuantileTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.QuantileTransformer">[docs]</a><span class="k">class</span> <span class="nc">QuantileTransformer</span><span class="p">(</span><span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Transform features using quantiles information.</span>
 
 <span class="sd">    This method transforms the features to follow a uniform or a normal</span>
@@ -2636,7 +2663,7 @@
         <span class="c1"># https://github.com/numpy/numpy/issues/14685</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">quantiles_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quantiles_</span><span class="p">)</span>
 
-<div class="viewcode-block" id="QuantileTransformer.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.QuantileTransformer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="QuantileTransformer.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.QuantileTransformer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Compute the quantiles used for transforming.</span>
 
 <span class="sd">        Parameters</span>
@@ -2833,7 +2860,7 @@
 
         <span class="k">return</span> <span class="n">X</span>
 
-<div class="viewcode-block" id="QuantileTransformer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.QuantileTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="QuantileTransformer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.QuantileTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Feature-wise transformation of the data.</span>
 
 <span class="sd">        Parameters</span>
@@ -2854,7 +2881,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="QuantileTransformer.inverse_transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.QuantileTransformer.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="QuantileTransformer.inverse_transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.QuantileTransformer.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Back-projection to the original space.</span>
 
 <span class="sd">        Parameters</span>
@@ -3002,7 +3029,7 @@
                          <span class="s2">&quot; axis=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">axis</span><span class="p">))</span>
 
 
-<div class="viewcode-block" id="PowerTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.PowerTransformer">[docs]</a><span class="k">class</span> <span class="nc">PowerTransformer</span><span class="p">(</span><span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
+<div class="viewcode-block" id="PowerTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.PowerTransformer">[docs]</a><span class="k">class</span> <span class="nc">PowerTransformer</span><span class="p">(</span><span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Apply a power transform featurewise to make data more Gaussian-like.</span>
 
 <span class="sd">    Power transforms are a family of parametric, monotonic transformations</span>
@@ -3091,7 +3118,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">standardize</span> <span class="o">=</span> <span class="n">standardize</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">copy</span> <span class="o">=</span> <span class="n">copy</span>
 
-<div class="viewcode-block" id="PowerTransformer.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.PowerTransformer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="PowerTransformer.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.PowerTransformer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Estimate the optimal parameter lambda for each feature.</span>
 
 <span class="sd">        The optimal lambda parameter for minimizing skewness is estimated on</span>
@@ -3111,7 +3138,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">force_transform</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="PowerTransformer.fit_transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.PowerTransformer.fit_transform">[docs]</a>    <span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="PowerTransformer.fit_transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.PowerTransformer.fit_transform">[docs]</a>    <span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">force_transform</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">force_transform</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -3144,7 +3171,7 @@
 
         <span class="k">return</span> <span class="n">X</span>
 
-<div class="viewcode-block" id="PowerTransformer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.PowerTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="PowerTransformer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.PowerTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Apply the power transform to each feature using the fitted lambdas.</span>
 
 <span class="sd">        Parameters</span>
@@ -3173,7 +3200,7 @@
 
         <span class="k">return</span> <span class="n">X</span></div>
 
-<div class="viewcode-block" id="PowerTransformer.inverse_transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.PowerTransformer.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="PowerTransformer.inverse_transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.PowerTransformer.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Apply the inverse power transformation using the fitted lambdas.</span>
 
 <span class="sd">        The inverse of the Box-Cox transformation is given by::</span>

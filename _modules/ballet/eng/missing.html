@@ -112,10 +112,29 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributor_guide.html">Contributor Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#cloud-feature-development-workflow">Cloud Feature Development Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#setup-your-development-environment">Setup your development environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#cloud-feature-development-workflow">Cloud Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#launch-binder">Launch binder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#work-in-a-notebook">Work in a notebook</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#authenticate-with-github">Authenticate with GitHub</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#develop-a-new-feature">Develop a new feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#test-your-feature">Test your feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#submit-your-feature">Submit your feature</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#setup-your-development-environment">Setup your development environment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#fork-the-project">Fork the project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#clone-your-fork">Clone your fork</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#create-a-virtualenv">Create a virtualenv</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#contributor-guide-develop-a-new-feature-local">Develop a new feature</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#update-and-install-the-project">Update and install the project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#start-working-on-a-new-feature">Start working on a new feature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#write-your-feature">Write your feature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#contributor-guide-test-your-feature-local">Test your feature</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#submit-the-feature">Submit the feature</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#option-1-git-workflow">Option 1: Git workflow</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#option-2-in-lab-workflow">Option 2: In-Lab Workflow</a></li>
@@ -149,12 +168,20 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#external-libraries">External libraries</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#pandas-lrarrow-ballet-examples">Pandas ⇔ Ballet Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#pandas-ballet-examples">Pandas ⇔ Ballet Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#rolling-your-own-transformers">Rolling your own transformers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#example">Example</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#further-reading">Further reading</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">FAQ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#how-can-i-check-the-performance-of-a-feature">How can I check the performance of a feature?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#my-feature-has-a-valid-api-locally-why-was-it-rejected">My feature has a valid API locally, why was it rejected?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#why-did-my-feature-fail-the-feature-acceptance-validation">Why did my feature fail the feature acceptance validation?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#my-feature-relies-on-a-new-library-how-can-i-add-it-to-the-project">My feature relies on a new library, how can I add it to the project?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#how-can-i-learn-to-write-better-features">How can I learn to write better features?</a></li>
 </ul>
 </li>
 </ul>
@@ -316,7 +343,7 @@
 <span class="p">)</span>
 
 
-<div class="viewcode-block" id="LagImputer"><a class="viewcode-back" href="../../../api/ballet.eng.missing.html#ballet.eng.missing.LagImputer">[docs]</a><span class="k">class</span> <span class="nc">LagImputer</span><span class="p">(</span><span class="n">GroupedFunctionTransformer</span><span class="p">):</span>
+<div class="viewcode-block" id="LagImputer"><a class="viewcode-back" href="../../../api/ballet.eng.missing.html#ballet.eng.LagImputer">[docs]</a><span class="k">class</span> <span class="nc">LagImputer</span><span class="p">(</span><span class="n">GroupedFunctionTransformer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Fill missing values using group-specific lags&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groupby_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -324,7 +351,7 @@
                          <span class="n">groupby_kwargs</span><span class="o">=</span><span class="n">groupby_kwargs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="NullFiller"><a class="viewcode-back" href="../../../api/ballet.eng.missing.html#ballet.eng.missing.NullFiller">[docs]</a><span class="k">class</span> <span class="nc">NullFiller</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">):</span>
+<div class="viewcode-block" id="NullFiller"><a class="viewcode-back" href="../../../api/ballet.eng.missing.html#ballet.eng.NullFiller">[docs]</a><span class="k">class</span> <span class="nc">NullFiller</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Fill values passing a filter with a given replacement</span>
 
 <span class="sd">    Args:</span>
@@ -338,17 +365,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">replacement</span> <span class="o">=</span> <span class="n">replacement</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">isnull</span> <span class="o">=</span> <span class="n">isnull</span>
 
-<div class="viewcode-block" id="NullFiller.transform"><a class="viewcode-back" href="../../../api/ballet.eng.missing.html#ballet.eng.missing.NullFiller.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="NullFiller.transform"><a class="viewcode-back" href="../../../api/ballet.eng.missing.html#ballet.eng.NullFiller.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_kwargs</span><span class="p">):</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="n">X</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">replacement</span>
         <span class="k">return</span> <span class="n">X</span></div></div>
 
 
-<div class="viewcode-block" id="NullIndicator"><a class="viewcode-back" href="../../../api/ballet.eng.missing.html#ballet.eng.missing.NullIndicator">[docs]</a><span class="k">class</span> <span class="nc">NullIndicator</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">):</span>
+<div class="viewcode-block" id="NullIndicator"><a class="viewcode-back" href="../../../api/ballet.eng.missing.html#ballet.eng.NullIndicator">[docs]</a><span class="k">class</span> <span class="nc">NullIndicator</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Indicate whether values are null or not&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="NullIndicator.transform"><a class="viewcode-back" href="../../../api/ballet.eng.missing.html#ballet.eng.missing.NullIndicator.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">tranform_kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="NullIndicator.transform"><a class="viewcode-back" href="../../../api/ballet.eng.missing.html#ballet.eng.NullIndicator.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">tranform_kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span></div></div>
 </pre></div>
 

@@ -114,10 +114,29 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Contributor Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#cloud-feature-development-workflow">Cloud Feature Development Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#setup-your-development-environment">Setup your development environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cloud-feature-development-workflow">Cloud Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#launch-binder">Launch binder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#work-in-a-notebook">Work in a notebook</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#authenticate-with-github">Authenticate with GitHub</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#develop-a-new-feature">Develop a new feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-your-feature">Test your feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#submit-your-feature">Submit your feature</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#setup-your-development-environment">Setup your development environment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#fork-the-project">Fork the project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#clone-your-fork">Clone your fork</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#create-a-virtualenv">Create a virtualenv</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#contributor-guide-develop-a-new-feature-local">Develop a new feature</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#update-and-install-the-project">Update and install the project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#start-working-on-a-new-feature">Start working on a new feature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#write-your-feature">Write your feature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#contributor-guide-test-your-feature-local">Test your feature</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#submit-the-feature">Submit the feature</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#option-1-git-workflow">Option 1: Git workflow</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#option-2-in-lab-workflow">Option 2: In-Lab Workflow</a></li>
@@ -151,12 +170,20 @@
 <li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#external-libraries">External libraries</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="feature_engineering_guide.html#pandas-lrarrow-ballet-examples">Pandas ⇔ Ballet Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feature_engineering_guide.html#pandas-ballet-examples">Pandas ⇔ Ballet Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="feature_engineering_guide.html#rolling-your-own-transformers">Rolling your own transformers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#example">Example</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="feature_engineering_guide.html#further-reading">Further reading</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#how-can-i-check-the-performance-of-a-feature">How can I check the performance of a feature?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#my-feature-has-a-valid-api-locally-why-was-it-rejected">My feature has a valid API locally, why was it rejected?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-did-my-feature-fail-the-feature-acceptance-validation">Why did my feature fail the feature acceptance validation?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#my-feature-relies-on-a-new-library-how-can-i-add-it-to-the-project">My feature relies on a new library, how can I add it to the project?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#how-can-i-learn-to-write-better-features">How can I learn to write better features?</a></li>
 </ul>
 </li>
 </ul>
@@ -327,22 +354,47 @@ used for predicting the sale price of houses in Ames, Iowa, given raw data about
 <p>Some Ballet projects may have set up a development workflow using a hosted Jupyter Lab
 environment and an in-lab submission extension. This greatly simplifies the development workflow
 at the cost of some flexibility.</p>
-<ol class="arabic">
-<li><p><strong>Launch</strong>. Click the <img alt="launch-binder" src="https://mybinder.org/badge_logo.svg" /> link in the project’s README to launch an interactive notebook. This may take a few minutes while Binder builds the repository – grab a cup of coffee!</p></li>
-<li><p><strong>Notebook</strong>. Begin editing the demo notebook or create a new notebook.</p></li>
-<li><p><strong>GitHub</strong>. Authenticate with GitHub by clicking the GitHub icon on the right side of the Notebook toolbar as shown. This will initiate an authentication process in which you will be able to log into your GitHub account and authorize <code class="docutils literal notranslate"><span class="pre">ballet-github-oauth-gateway</span></code> for limited access to your account. As a result of this secure process, the Ballet Lab extension will be able to submit your feature on your behalf to the upstream project.</p>
+<div class="section" id="launch-binder">
+<h3>Launch binder<a class="headerlink" href="#launch-binder" title="Permalink to this headline">¶</a></h3>
+<p>Click the <img alt="launch-binder" src="https://mybinder.org/badge_logo.svg" /> link in the project’s README to launch an interactive notebook. This may take a few minutes while Binder builds the repository – grab a cup of coffee!</p>
+</div>
+<div class="section" id="work-in-a-notebook">
+<h3>Work in a notebook<a class="headerlink" href="#work-in-a-notebook" title="Permalink to this headline">¶</a></h3>
+<p>Begin editing the demo notebook or create a new notebook.</p>
+</div>
+<div class="section" id="authenticate-with-github">
+<h3>Authenticate with GitHub<a class="headerlink" href="#authenticate-with-github" title="Permalink to this headline">¶</a></h3>
+<p>Authenticate with GitHub by clicking the GitHub icon on the right side of
+the Notebook toolbar as shown. This will initiate an authentication process
+in which you will be able to log into your GitHub account and authorize
+<code class="docutils literal notranslate"><span class="pre">ballet-github-oauth-gateway</span></code> for limited access to your account. As a
+result of this secure process, the Ballet Lab extension will be able to
+submit your feature on your behalf to the upstream project.</p>
 <a class="reference internal image-reference" href="_images/auth_with_github.gif"><img alt="An animation of a user proceeding with the GitHub authentication flow in a demo notebook." class="align-center" src="_images/auth_with_github.gif" style="width: 450.0px; height: 273.0px;" /></a>
-<p>When you have successfully authenticated, the GitHub icon will change color to green.</p>
-</li>
-<li><p><strong>Develop</strong>. Develop a new feature. See <a class="reference internal" href="#write-your-feature">write your feature</a> below, and the project may have prompts in the notebook to guide you. See also the <a class="reference internal" href="feature_engineering_guide.html"><span class="doc">Feature Engineering Guide</span></a>.</p></li>
-<li><p><strong>Test</strong>. Test your feature. See <a class="reference internal" href="#test-your-feature">test your feature</a> below, and the project may have prompts in the notebook to guide you.</p></li>
-<li><p><strong>Submit</strong>. Submit your feature.</p>
+<p>When you have successfully authenticated, the GitHub icon will change color
+to green.</p>
+</div>
+<div class="section" id="develop-a-new-feature">
+<span id="contributor-guide-develop-a-new-feature-cloud"></span><h3>Develop a new feature<a class="headerlink" href="#develop-a-new-feature" title="Permalink to this headline">¶</a></h3>
+<p>Develop a new feature in the notebook. See <a class="reference internal" href="#write-your-feature"><span class="std std-ref">Write your feature</span></a> below, and the project may have prompts in the notebook to guide you. See also the <a class="reference internal" href="feature_engineering_guide.html"><span class="doc">Feature Engineering Guide</span></a>.</p>
+</div>
+<div class="section" id="test-your-feature">
+<span id="contributor-guide-test-your-feature-cloud"></span><h3>Test your feature<a class="headerlink" href="#test-your-feature" title="Permalink to this headline">¶</a></h3>
+<p>Test your feature. See <a class="reference internal" href="#contributor-guide-test-your-feature-local"><span class="std std-ref">Test your feature</span></a>
+below, and the project may have prompts in the notebook to guide you.</p>
+</div>
+<div class="section" id="submit-your-feature">
+<h3>Submit your feature<a class="headerlink" href="#submit-your-feature" title="Permalink to this headline">¶</a></h3>
+<p>Submit your feature.</p>
 <p>First, <em>select the code cell</em> that contains the feature.</p>
 <p>Next, locate the submission button provided by the Jupyter Lab extension, as
 shown in the screenshot.</p>
 <a class="reference internal image-reference" href="_images/labextension_submit_button_annotated_submit.png"><img alt="The submission button illustrated in a notebook." class="align-center" src="_images/labextension_submit_button_annotated_submit.png" style="width: 699.0px; height: 145.5px;" /></a>
-<p>When you are ready, press the “Submit” button. You will be asked to confirm that you want to submit the feature.</p>
-<p>If the submission succeeds, you will get a link to the pull request that is associated with your feature. If it fails, you will get an explanation of the failure.</p>
+<p>When you are ready, press the “Submit” button. You will be asked to confirm
+that you want to submit the feature.</p>
+<p>If the submission succeeds, you will get a link to the pull request that is
+associated with your feature. If it fails, you will get an explanation of
+the failure.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The content of the cell must be a standalone Python module, as it will be placed in an
@@ -350,41 +402,47 @@ empty Python source file. This means that any imports or helper functions must b
 (or re-defined) within this cell, otherwise your submitted feature will fail to validate
 due to missing imports/helpers.</p>
 </div>
-</li>
-</ol>
+</div>
 </div>
 <div class="section" id="local-feature-development-workflow">
 <h2>Local Feature Development Workflow<a class="headerlink" href="#local-feature-development-workflow" title="Permalink to this headline">¶</a></h2>
-<p>The most flexible and powerful development workflow is based on developing locally making heavy
-use of your command line. There are two parts to the workflow. First, you setup your development
-environment (only do this once). Second, you develop a new feature (repeat the steps every time you
-create a new feature).</p>
-<p>This section discusses the use of many concepts commonly used in software development, including
-git, GitHub, make, and virtual environments.</p>
+<p>The most flexible and powerful development workflow is based on developing
+locally making heavy use of your command line. There are two parts to the
+workflow. First, you setup your development environment (only do this once).
+Second, you develop a new feature (repeat the steps every time you create a
+new feature).</p>
+<p>This section discusses the use of many concepts commonly used in software
+development, including git, GitHub, make, and virtual environments.</p>
 <div class="section" id="setup-your-development-environment">
 <h3>Setup your development environment<a class="headerlink" href="#setup-your-development-environment" title="Permalink to this headline">¶</a></h3>
-<ol class="arabic">
-<li><p>Fork the project.</p></li>
-<li><p>Clone your fork in your local development environment.</p>
+<div class="section" id="fork-the-project">
+<h4>Fork the project<a class="headerlink" href="#fork-the-project" title="Permalink to this headline">¶</a></h4>
+<p>For example, use the GitHub UI, or the <code class="docutils literal notranslate"><span class="pre">hub</span></code> cli.</p>
+</div>
+<div class="section" id="clone-your-fork">
+<h4>Clone your fork<a class="headerlink" href="#clone-your-fork" title="Permalink to this headline">¶</a></h4>
+<p>Clone your fork in your local development environment:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> git clone https://github.com/your_user_name/ballet-predict-house-prices
 <span class="gp">$</span> <span class="nb">cd</span> ballet-predict-house-prices
 <span class="gp">$</span> git remote add upstream https://github.com/HDI-Project/ballet-predict-house-prices
 </pre></div>
 </div>
-</li>
-<li><p>Create and activate a new virtual environment using your environment manager of choice, such
-as <a class="reference external" href="https://conda.io/en/latest/">conda</a>.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> conda create -n myenv <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.7 -y <span class="o">&amp;&amp;</span> conda activate myenv
+</div>
+<div class="section" id="create-a-virtualenv">
+<h4>Create a virtualenv<a class="headerlink" href="#create-a-virtualenv" title="Permalink to this headline">¶</a></h4>
+<p>Create and activate a new virtual environment using your environment manager of choice, such as <a class="reference external" href="https://conda.io/en/latest/">conda</a>.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> conda create -y -n myenv <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.7
+<span class="gp">$</span> conda activate myenv
 </pre></div>
 </div>
-</li>
-</ol>
 </div>
-<div class="section" id="develop-a-new-feature">
-<h3>Develop a new feature<a class="headerlink" href="#develop-a-new-feature" title="Permalink to this headline">¶</a></h3>
-<ol class="arabic">
-<li><p>Update and install the project. This will make the feature engineering pipeline accessible in
-interactive settings (Python interpreter, Jupyter notebook) and as a command-line tool.</p>
+</div>
+<div class="section" id="contributor-guide-develop-a-new-feature-local">
+<span id="id1"></span><h3>Develop a new feature<a class="headerlink" href="#contributor-guide-develop-a-new-feature-local" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="update-and-install-the-project">
+<h4>Update and install the project<a class="headerlink" href="#update-and-install-the-project" title="Permalink to this headline">¶</a></h4>
+<p>This will make the feature engineering pipeline accessible in interactive
+settings (Python interpreter, Jupyter notebook) and as a command-line tool.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$</span> git checkout master
 <span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$</span> git pull upstream master
 <span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$</span> git push origin master
@@ -393,13 +451,14 @@ interactive settings (Python interpreter, Jupyter notebook) and as a command-lin
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>You should repeat the entirety of this step every time before you begin working on a new
-feature, in order to synchronize changes made to the upstream project, such as the
-introduction of new features by other collaborators or an update to the ballet framework
-itself.</p>
+<p>You should repeat the entirety of this step every time before you begin
+working on a new feature, in order to synchronize changes made to the
+upstream project, such as the introduction of new features by other
+collaborators or an update to the ballet framework itself.</p>
 </div>
-</li>
-<li><p>Start working on a new feature.</p>
+</div>
+<div class="section" id="start-working-on-a-new-feature">
+<h4>Start working on a new feature<a class="headerlink" href="#start-working-on-a-new-feature" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$</span> git checkout -b develop-my-feature
 <span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$</span> ballet start-new-feature
 <span class="go">Starting new feature...</span>
@@ -410,20 +469,24 @@ itself.</p>
 <span class="go">Starting new feature...DONE</span>
 </pre></div>
 </div>
-<p>This will create a new Python module within the project’s “contrib” directory to hold your
-feature.</p>
+<p>This will create a new Python module within the project’s “contrib”
+directory to hold your feature.</p>
 <ul class="simple">
 <li><p>The contrib directory is named like <code class="docutils literal notranslate"><span class="pre">src/&lt;ballet_project&gt;/features/contrib</span></code>.</p></li>
 <li><p>The new subpackage must be named like <code class="docutils literal notranslate"><span class="pre">user_&lt;github</span> <span class="pre">username&gt;</span></code>.</p></li>
 <li><p>The new submodule that will contain the feature must be named like <code class="docutils literal notranslate"><span class="pre">feature_&lt;feature</span> <span class="pre">name&gt;.py</span></code>.</p></li>
 </ul>
-</li>
-<li id="write-your-feature"><p>Write your feature. We call the code you write to extract one group of related feature values
-a <em>logical feature</em>. Within your feature submodule, you can write arbitrary Python code.
-Ultimately, a single object that is an instance of <code class="docutils literal notranslate"><span class="pre">ballet.Feature</span></code> must be defined; it will
-be imported by the feature engineering pipeline.</p>
-<p>In this example, a feature is defined that receives column <code class="docutils literal notranslate"><span class="pre">'Lot</span> <span class="pre">Frontage'</span></code> from the
-data and imputes missing values with the mean of the training data.</p>
+</div>
+<div class="section" id="write-your-feature">
+<h4>Write your feature<a class="headerlink" href="#write-your-feature" title="Permalink to this headline">¶</a></h4>
+<p>We call the code you write to extract one group of related feature values a
+<em>logical feature</em>. Within your feature submodule, you can write arbitrary
+Python code. Ultimately, a single object that is an instance of
+<code class="docutils literal notranslate"><span class="pre">ballet.Feature</span></code> must be defined; it will be imported by the feature
+engineering pipeline.</p>
+<p>In this example, a feature is defined that receives column <code class="docutils literal notranslate"><span class="pre">'Lot</span>
+<span class="pre">Frontage'</span></code> from the data and imputes missing values with the mean of the
+training data.</p>
 <div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ballet</span> <span class="kn">import</span> <span class="n">Feature</span>
 <span class="kn">from</span> <span class="nn">ballet.eng.sklearn</span> <span class="kn">import</span> <span class="n">SimpleImputer</span>
 
@@ -436,14 +499,21 @@ data and imputes missing values with the mean of the training data.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>For a full tutorial on feature engineering in Ballet, check out the separate <a class="reference internal" href="feature_engineering_guide.html"><span class="doc">Feature Engineering Guide</span></a>.</p>
+<p>Only the Python packages that are existing dependencies of the project can be used in feature engineering. Otherwise, if the feature were to be accepted, then the feature engineering pipeline would break due to a missing dependency. Usually, the dependencies of a Ballet project are the core <code class="docutils literal notranslate"><span class="pre">ballet</span></code> package and its own dependencies. If Ballet is installed with the <code class="docutils literal notranslate"><span class="pre">[all]</span></code> extra, then it additional re-exports feature engineering primitives from many common libraries. See <a class="reference internal" href="api/ballet.eng.external.html#module-ballet.eng.external" title="ballet.eng.external"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ballet.eng.external</span></code></a> for a summary.</p>
+<p>If you must add a new dependency, see <a class="reference internal" href="faq.html#my-feature-relies-on-a-new-library-how-can-i-add-it-to-the-project"><span class="std std-ref">My feature relies on a new library, how can I add it to the project?</span></a>.</p>
 </div>
-<p>Only the Python packages thare are existing dependencies of the project can be used in feature engineering. Otherwise, if the feature were to be accepted, then the feature engineering pipeline would break due to a missing dependency. Usually, the dependencies of a Ballet project are the core <code class="docutils literal notranslate"><span class="pre">ballet</span></code> package and its own dependencies. You can see all installed dependencies by running <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">freeze</span></code> from within the virtual environment. If you must use a package that is not currently a dependency, first install it locally and ensure that the feature you develop using that dependency is satisfactory. Then before submitting the feature, submit a separate PR that adds the dependency to the <code class="docutils literal notranslate"><span class="pre">install_requires</span></code> key of the project’s <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> file. You can also do this from the GitHub UI by pressing “edit” on the <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> file. A maintainer will manually review your PR and must merge it before you submit your feature.</p>
-</li>
-<li id="test-your-feature"><p>Test your feature. Observe later in this guide that when you submit your feature, there will be
-four separate validation steps. In your local development environment, you can check two of
-them: whether the feature you have written satisfies the “feature API”, and whether the
-feature contributes positively to the ML performance of the feature engineering pipeline.</p>
-<p>To validate your feature, Ballet provides a client <code class="docutils literal notranslate"><span class="pre">b</span></code> for easy access to validation methods. It takes as input the feature and runs a series of tests to make sure that the feature works correctly. You can optionally pass specific entities and labels to use as well.</p>
+</div>
+<div class="section" id="contributor-guide-test-your-feature-local">
+<span id="id2"></span><h4>Test your feature<a class="headerlink" href="#contributor-guide-test-your-feature-local" title="Permalink to this headline">¶</a></h4>
+<p>Observe later in this guide that when you submit your feature, there will be
+four separate validation steps. In your local development environment, you
+can check two of them: whether the feature you have written satisfies the
+“feature API”, and whether the feature contributes positively to the ML
+performance of the feature engineering pipeline.</p>
+<p>To validate your feature, Ballet provides a client <code class="docutils literal notranslate"><span class="pre">b</span></code> for easy access to
+validation methods. It takes as input the feature and runs a series of tests
+to make sure that the feature works correctly. You can optionally pass
+specific entities and labels to use as well.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ballet</span> <span class="kn">import</span> <span class="n">b</span>
 <span class="n">b</span><span class="o">.</span><span class="n">validate_feature_api</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
 <span class="c1"># True</span>
@@ -458,18 +528,19 @@ on performs better with or without your feature.</p>
 <span class="c1"># True</span>
 </pre></div>
 </div>
-<p>Under the hood, it tries to automatically detect the Ballet project that you are working
-on and builds the existing feature engineering pipeline that is part of the project. It also
-loads the specific feature accepter that has been configured for your project.</p>
-<p>To gain additional insight into any of the validation procedures, including details on
-why your feature may have failed to validate, enable ballet logging.</p>
+<p>Under the hood, it tries to automatically detect the Ballet project that you
+are working on and builds the existing feature engineering pipeline that is
+part of the project. It also loads the specific feature accepter that has
+been configured for your project.</p>
+<p>To gain additional insight into any of the validation procedures, including
+details on why your feature may have failed to validate, enable ballet
+logging.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="kn">import</span> <span class="n">enable</span>
 <span class="n">enable</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s1">&#39;INFO&#39;</span><span class="p">)</span>   <span class="c1"># or, level=&#39;DEBUG&#39;</span>
 <span class="c1"># [2019-12-22 10:51:30,336] {ballet: log.py:34} INFO - Logging enabled at level INFO.</span>
 </pre></div>
 </div>
-</li>
-</ol>
+</div>
 </div>
 <div class="section" id="submit-the-feature">
 <h3>Submit the feature<a class="headerlink" href="#submit-the-feature" title="Permalink to this headline">¶</a></h3>
@@ -477,25 +548,42 @@ why your feature may have failed to validate, enable ballet logging.</p>
 <div class="section" id="option-1-git-workflow">
 <h4>Option 1: Git workflow<a class="headerlink" href="#option-1-git-workflow" title="Permalink to this headline">¶</a></h4>
 <p>In this workflow, you work with git directly to commit and push your change and open a pull request with the upstream project repo.</p>
-<ol class="arabic">
-<li><p>Commit your changes and create a pull request to the project repository.</p>
+<div class="section" id="commit-your-changes">
+<h5>Commit your changes<a class="headerlink" href="#commit-your-changes" title="Permalink to this headline">¶</a></h5>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$</span> git add .
 <span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$</span> git commit -m <span class="s2">&quot;Add my new feature&quot;</span>
 <span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$</span> git push origin develop-my-feature
 </pre></div>
 </div>
-<p>The output of the <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">push</span></code> command will include a link to open a new pull request on the
-upstream project. Navigate to the url in your browser and open a new PR. Alternately, you can
-use the command-line tool <a class="reference external" href="https://hub.github.com/">hub</a>:</p>
+</div>
+<div class="section" id="create-a-pull-request">
+<h5>Create a pull request<a class="headerlink" href="#create-a-pull-request" title="Permalink to this headline">¶</a></h5>
+<p>Create a pull request to the project repository.</p>
+<p>The output of the <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">push</span></code> command will include a link to open a new
+pull request on the upstream project. Navigate to the url in your browser
+and open a new PR. Alternately, you can use the command-line tool <a class="reference external" href="https://hub.github.com/">hub</a>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$</span> hub pull-request
 </pre></div>
 </div>
-</li>
-</ol>
+</div>
 </div>
 <div class="section" id="option-2-in-lab-workflow">
 <h4>Option 2: In-Lab Workflow<a class="headerlink" href="#option-2-in-lab-workflow" title="Permalink to this headline">¶</a></h4>
-<p>In this workflow, you use the Ballet JupyterLab extension in order to submit code directly from within your analysis notebook if you are developing in Jupyter Lab. This has the same user experience as described in the cloud feature development workflow above. Here, you should <a class="reference external" href="https://github.com/HDI-Project/ballet-submit-labextension/blob/master/README.md">install ballet-submit-labextension</a> following the directions in that project. Importantly, you must authorize the extension to interact with GitHub on your behalf in one of three ways: (1) use the built-in GitHub OAuth functionality to obtain a new OAuth token with one click (2) obtain a GitHub OAuth token yourself and populate the variable <code class="docutils literal notranslate"><span class="pre">$GITHUB_TOKEN</span></code> (3) optain a GitHub OAuth token and pass it as an option when starting JupyterLab using <code class="docutils literal notranslate"><span class="pre">--BalletApp.github_token=$TOKEN</span></code>.</p>
+<p>In this workflow, you use the Ballet JupyterLab extension in order to submit
+code directly from within your analysis notebook if you are developing in
+Jupyter Lab. This has the same user experience as described in the cloud
+feature development workflow above. Here, you should <a class="reference external" href="https://github.com/HDI-Project/ballet-submit-labextension/blob/master/README.md">install
+ballet-submit-labextension</a> following the directions in that project.
+Importantly, you must authorize the extension to interact with GitHub on
+your behalf in one of three ways:</p>
+<ol class="arabic simple">
+<li><p>use the built-in GitHub OAuth functionality to obtain a new OAuth token
+with one click</p></li>
+<li><p>obtain a GitHub OAuth token yourself and populate the variable
+<code class="docutils literal notranslate"><span class="pre">$GITHUB_TOKEN</span></code></p></li>
+<li><p>obtain a GitHub OAuth token and pass it as an option when starting
+JupyterLab using <code class="docutils literal notranslate"><span class="pre">--BalletApp.github_token=$TOKEN</span></code>.</p></li>
+</ol>
 </div>
 </div>
 </div>
@@ -519,9 +607,9 @@ this debugging.)</p>
 <h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>
 <p>In this guide, we walked through all of the steps required to submit your first feature to a
 ballet collaboration.</p>
-<div class="figure align-center" id="id1">
+<div class="figure align-center" id="id3">
 <a class="reference internal image-reference" href="https://upload.wikimedia.org/wikipedia/en/f/f8/Internet_dog.jpg"><img alt="&quot;On the internet, nobody knows you're a dog&quot; cartoon" src="https://upload.wikimedia.org/wikipedia/en/f/f8/Internet_dog.jpg" style="width: 300px;" /></a>
-<p class="caption"><span class="caption-text">Image from <em>The New Yorker</em> cartoon by Peter Steiner, 1993, via Wikipedia.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Image from <em>The New Yorker</em> cartoon by Peter Steiner, 1993, via Wikipedia.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 </div>

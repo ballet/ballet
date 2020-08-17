@@ -37,7 +37,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="ballet package" href="api/ballet.html" />
+    <link rel="next" title="FAQ" href="faq.html" />
     <link rel="prev" title="Contributor Guide" href="contributor_guide.html" /> 
 </head>
 
@@ -114,10 +114,29 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributor_guide.html">Contributor Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="contributor_guide.html#cloud-feature-development-workflow">Cloud Feature Development Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contributor_guide.html#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="contributor_guide.html#setup-your-development-environment">Setup your development environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributor_guide.html#cloud-feature-development-workflow">Cloud Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="contributor_guide.html#launch-binder">Launch binder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contributor_guide.html#work-in-a-notebook">Work in a notebook</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contributor_guide.html#authenticate-with-github">Authenticate with GitHub</a></li>
 <li class="toctree-l3"><a class="reference internal" href="contributor_guide.html#develop-a-new-feature">Develop a new feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contributor_guide.html#test-your-feature">Test your feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contributor_guide.html#submit-your-feature">Submit your feature</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="contributor_guide.html#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="contributor_guide.html#setup-your-development-environment">Setup your development environment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="contributor_guide.html#fork-the-project">Fork the project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="contributor_guide.html#clone-your-fork">Clone your fork</a></li>
+<li class="toctree-l4"><a class="reference internal" href="contributor_guide.html#create-a-virtualenv">Create a virtualenv</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="contributor_guide.html#contributor-guide-develop-a-new-feature-local">Develop a new feature</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="contributor_guide.html#update-and-install-the-project">Update and install the project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="contributor_guide.html#start-working-on-a-new-feature">Start working on a new feature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="contributor_guide.html#write-your-feature">Write your feature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="contributor_guide.html#contributor-guide-test-your-feature-local">Test your feature</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="contributor_guide.html#submit-the-feature">Submit the feature</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="contributor_guide.html#option-1-git-workflow">Option 1: Git workflow</a></li>
 <li class="toctree-l4"><a class="reference internal" href="contributor_guide.html#option-2-in-lab-workflow">Option 2: In-Lab Workflow</a></li>
@@ -151,12 +170,20 @@
 <li class="toctree-l3"><a class="reference internal" href="#external-libraries">External libraries</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#pandas-lrarrow-ballet-examples">Pandas ⇔ Ballet Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pandas-ballet-examples">Pandas ⇔ Ballet Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#rolling-your-own-transformers">Rolling your own transformers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#example">Example</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#further-reading">Further reading</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#how-can-i-check-the-performance-of-a-feature">How can I check the performance of a feature?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#my-feature-has-a-valid-api-locally-why-was-it-rejected">My feature has a valid API locally, why was it rejected?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-did-my-feature-fail-the-feature-acceptance-validation">Why did my feature fail the feature acceptance validation?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#my-feature-relies-on-a-new-library-how-can-i-add-it-to-the-project">My feature relies on a new library, how can I add it to the project?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#how-can-i-learn-to-write-better-features">How can I learn to write better features?</a></li>
 </ul>
 </li>
 </ul>
@@ -312,12 +339,14 @@
             
   <div class="section" id="feature-engineering-guide">
 <h1>Feature Engineering Guide<a class="headerlink" href="#feature-engineering-guide" title="Permalink to this headline">¶</a></h1>
-<p>Feature engineering is the process of transforming raw variables into feature values that can be
-input to a learning algorithm. In Ballet, feature engineering is centered around creating logical
-features. These are modular, flexible, and expressive and will allow us to compose an entire feature engineering pipeline out of individual feature objects.</p>
-<p>Loosely, a feature is a tuple <code class="docutils literal notranslate"><span class="pre">(input_columns,</span> <span class="pre">transformer_to_apply)</span></code>. Your job
-in feature engineering will be to define this tuple of input columns and a transformer to apply
-on them.</p>
+<p>Feature engineering is the process of transforming raw variables into
+feature values that can be input to a learning algorithm. We include every step that is needed to go from the raw dataset to the learning algorithm: cleaning missing values and outliers, scaling values, deriving complex features from multiple variables, reducing dimensionality, encoding categorical and ordinal variables, and more.</p>
+<p>In Ballet, feature engineering is centered around creating logical features.
+These are modular, flexible, and expressive and will allow us to compose an
+entire feature engineering pipeline out of individual feature objects.</p>
+<p>Loosely, a feature is a tuple <code class="docutils literal notranslate"><span class="pre">(input_columns,</span> <span class="pre">transformer_to_apply)</span></code>.
+Your job in feature engineering will be to define this tuple of input
+columns and a transformer to apply on them.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>By the end of this guide, you will</p>
@@ -341,7 +370,7 @@ on them.</p>
 <li><p>a vector of feature values, as in the case of the embedding of a categorical variable.</p></li>
 </ul>
 <p>Each feature is “parameterized” by a dataset, usually the training dataset, indicating that it learns any information it uses, such as variable means and variances. This formalizes the separation between training and testing data to avoid any “leakage” of information during the feature engineering process.</p>
-<p>In Ballet, features are realized in Python as instances of <code class="docutils literal notranslate"><span class="pre">ballet.feature.Feature</span></code> with the following attributes:</p>
+<p>In Ballet, features are realized in Python as instances of <a class="reference internal" href="api/ballet.feature.html#ballet.feature.Feature" title="ballet.feature.Feature"><code class="xref py py-class docutils literal notranslate"><span class="pre">Feature</span></code></a> with the following attributes:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">input</span></code>: the input to the feature, in terms of columns of the raw dataset.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">transformer</span></code>: the transformation applied to the raw data. The transformer is an object (or sequence of objects) that provide (or each provide) a fit/transform interface.</p></li>
@@ -350,21 +379,28 @@ on them.</p>
 <h3>Why?<a class="headerlink" href="#why" title="Permalink to this headline">¶</a></h3>
 <p>In the data science community, it is common to do feature engineering by applying a sequence of
 mutations to a data frame object or using <code class="docutils literal notranslate"><span class="pre">sklearn.preprocessing</span></code> objects. Why do we go through
-hoops to use <code class="docutils literal notranslate"><span class="pre">Feature</span></code> objects?</p>
+hoops to use <a class="reference internal" href="api/ballet.feature.html#ballet.feature.Feature" title="ballet.feature.Feature"><code class="xref py py-class docutils literal notranslate"><span class="pre">Feature</span></code></a> objects?</p>
 <ol class="arabic simple">
-<li><p><em>Modularity.</em> Each feature stands alone and can be reasoned about, validated, and implemented separately.</p></li>
-<li><p><em>Avoid leakage.</em> By writing all features as learned transformations (with separate
-fit and transform stages) and enforcing a train-test split, we ensure that feature engineering code never sees test data before
-it applies transformations on new instances.</p></li>
-<li><p><em>Clearly declare inputs and outputs.</em> Each feature declares its own inputs (and optionally
-outputs) and can operate on them only. Thus a feature can impute missing values in a single
-column, as opposed to the entire dataset, and different <code class="docutils literal notranslate"><span class="pre">Feature</span></code> objects can target different subsets of the input variable space.</p></li>
-<li><p><em>Pipelines.</em> Feature objects can be easily composed together can be combined into a pipeline that can learn feature transformations from training data and apply them on new instances.</p></li>
-<li><p><em>Robustness.</em> Data scientists are often surprised to find the number of errors that arise from trying
-to use multiple libraries together, such as pandas and scikit-learn. Common errors include
-scikit-learn transformers and estimators failing on columnar data that has the wrong number of
-dimensions (i.e. 1-dimensional or 2-dimensional column vectors). Features in Ballet magically
-transform feature input data appropriately to avoid common errors.</p></li>
+<li><p><em>Modularity.</em> Each feature stands alone and can be reasoned about,
+validated, and implemented separately.</p></li>
+<li><p><em>Avoid leakage.</em> By writing all features as learned transformations (with
+separate fit and transform stages) and enforcing a train-test split, we
+ensure that feature engineering code never sees test data before it applies
+transformations on new instances.</p></li>
+<li><p><em>Clearly declare inputs and outputs.</em> Each feature declares its own inputs
+(and optionally outputs) and can operate on them only. Thus a feature can
+impute missing values in a single column, as opposed to the entire dataset,
+and different <code class="docutils literal notranslate"><span class="pre">Feature</span></code> objects can target different subsets of the input
+variable space.</p></li>
+<li><p><em>Pipelines.</em> Feature objects can be easily composed together can be
+combined into a pipeline that can learn feature transformations from
+training data and apply them on new instances.</p></li>
+<li><p><em>Robustness.</em> Data scientists are often surprised to find the number of
+errors that arise from trying to use multiple libraries together, such as
+pandas and scikit-learn. Common errors include scikit-learn transformers and
+estimators failing on columnar data that has the wrong number of dimensions
+(i.e. 1-dimensional or 2-dimensional column vectors). Features in Ballet
+magically transform feature input data appropriately to avoid common errors.</p></li>
 </ol>
 </div>
 </div>
@@ -436,7 +472,7 @@ the following simplified dataset:</p>
 <span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="n">transformer</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This feature requests one input, the <code class="docutils literal notranslate"><span class="pre">Lot</span> <span class="pre">Area</span></code> column of the raw dataset. It’s transformer is given as <code class="docutils literal notranslate"><span class="pre">None</span></code>, a value indicating the identity transformation. (This is equivalent to providing <code class="docutils literal notranslate"><span class="pre">lambda</span> <span class="pre">df:</span> <span class="pre">df</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.IdentityTransformer</span></code>.) Thus when the feature is executed as part of a pipeline, the transformer’s fit
+<p>This feature requests one input, the <code class="docutils literal notranslate"><span class="pre">Lot</span> <span class="pre">Area</span></code> column of the raw dataset. It’s transformer is given as <code class="docutils literal notranslate"><span class="pre">None</span></code>, a value indicating the identity transformation. (This is equivalent to providing <code class="docutils literal notranslate"><span class="pre">lambda</span> <span class="pre">df:</span> <span class="pre">df</span></code> or <a class="reference internal" href="api/ballet.eng.html#ballet.eng.IdentityTransformer" title="ballet.eng.IdentityTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.IdentityTransformer</span></code></a>.) Thus when the feature is executed as part of a pipeline, the transformer’s fit
 and transform methods will be called receiving the one column as input.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pipeline</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">as_feature_engineering_pipeline</span><span class="p">()</span>  <span class="c1"># type: ballet.pipeline.FeatureEngineeringPipeline</span>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_df</span><span class="p">)</span>
@@ -448,7 +484,7 @@ and transform methods will be called receiving the one column as input.</p>
 </pre></div>
 </div>
 <p>The behavior is similar to the following “imperative” code:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">X_df</span><span class="p">[</span><span class="nb">input</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">X_df</span><span class="p">[</span><span class="nb">input</span><span class="p">]</span>
 <span class="n">transformer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -465,13 +501,13 @@ and transform methods will be called receiving the one column as input.</p>
 <span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="n">transformer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The feature requests one input, the <code class="docutils literal notranslate"><span class="pre">Lot</span> <span class="pre">Frontage</span></code> column. It’s transformer is a <code class="docutils literal notranslate"><span class="pre">SimpleImputer</span></code> instance. It will receive as its input a DataFrame with one column. So we get the following behavior when the feature is executed as part of a pipeline:</p>
+<p>The feature requests one input, the <code class="docutils literal notranslate"><span class="pre">Lot</span> <span class="pre">Frontage</span></code> column. It’s transformer is a <a class="reference internal" href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.SimpleImputer" title="ballet.eng.sklearn.SimpleImputer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimpleImputer</span></code></a> instance. It will receive as its input a DataFrame with one column. So we get the following behavior when the feature is executed as part of a pipeline:</p>
 <ul class="simple">
 <li><p>during training (fit-stage), the transformer will compute the mean of the <code class="docutils literal notranslate"><span class="pre">Lot</span> <span class="pre">Frontage</span></code> values that are not missing</p></li>
 <li><p>during training (transform-stage), the transformer will replace missing values with the computed training mean</p></li>
 <li><p>during testing (transform-stage), the transformer will replace missing values with the computed training mean</p></li>
 </ul>
-<p>The <code class="docutils literal notranslate"><span class="pre">SimpleImputer</span></code> is re-exported by Ballet from scikit-learn; see the full assortment of transformers that are available in <a class="reference internal" href="api/ballet.eng.html#module-ballet.eng" title="ballet.eng"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ballet.eng</span></code></a>.</p>
+<p>The <a class="reference internal" href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.SimpleImputer" title="ballet.eng.sklearn.SimpleImputer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimpleImputer</span></code></a> is re-exported by Ballet from scikit-learn; see the full assortment of transformers that are available in <a class="reference internal" href="api/ballet.eng.html#module-ballet.eng" title="ballet.eng"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ballet.eng</span></code></a>.</p>
 </div>
 <div class="section" id="a-third-example">
 <h3>A third example<a class="headerlink" href="#a-third-example" title="Permalink to this headline">¶</a></h3>
@@ -488,7 +524,7 @@ and transform methods will be called receiving the one column as input.</p>
 <span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="n">transformer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The feature requests three inputs, which are various measures of square footage in the house (basement, first floor, and second floor). The combined transformer is a sequence of two “transformer-likes”. The first transformer in is a function that will receive as its input a DataFrame with three columns, and it sums across rows (<code class="docutils literal notranslate"><span class="pre">axis=1</span></code>), returning a single column with the total square footage. The second transformer is a utility object that replaces missing values. In this case, neither transformer learns anything from data (i.e. it does not need to save parameters learned from the training data) so both can be simple functions. Here, the first function is implicitly converted into a <code class="docutils literal notranslate"><span class="pre">FunctionTransformer</span></code> and the second transformer is already a thin wrapper around <code class="docutils literal notranslate"><span class="pre">pd.fillna</span></code>.</p>
+<p>The feature requests three inputs, which are various measures of square footage in the house (basement, first floor, and second floor). The combined transformer is a sequence of two “transformer-likes”. The first transformer in is a function that will receive as its input a DataFrame with three columns, and it sums across rows (<code class="docutils literal notranslate"><span class="pre">axis=1</span></code>), returning a single column with the total square footage. The second transformer is a utility object that replaces missing values. In this case, neither transformer learns anything from data (i.e. it does not need to save parameters learned from the training data) so both can be simple functions. Here, the first function is implicitly converted into a :py:class`~ballet.eng.sklearn.FunctionTransformer` and the second transformer is already a thin wrapper around <code class="docutils literal notranslate"><span class="pre">pd.fillna</span></code>.</p>
 <p>In this feature, the sum is equivalent to a weighted sum with the weights all equal to 1. But maybe you have the intuition that not all living area is created equal? You might apply custom weights as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Total Bsmt SF&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;1st Flr SF&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;2nd Flr SF&quot;</span><span class="p">]</span>
 </pre></div>
@@ -533,8 +569,8 @@ data.</p>
 <p>A <em>transformer-like</em> is any of the following:</p>
 <ul class="simple">
 <li><p>an object that satisfies the scikit-learn <a class="reference external" href="https://scikit-learn.org/stable/glossary.html#term-transformer">Transformer API</a>, having <code class="docutils literal notranslate"><span class="pre">fit</span></code>, <code class="docutils literal notranslate"><span class="pre">transform</span></code>, and <code class="docutils literal notranslate"><span class="pre">fit_transform</span></code> methods.</p></li>
-<li><p>a callable that accepts the <code class="docutils literal notranslate"><span class="pre">X</span></code> DataFrame as input and produces an array-like as output. This can be thought of as a transformer that does not have a fit stage. Ballet will take care of converting it into a <code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionTransformer</span></code> object.</p></li>
-<li><p>the value <code class="docutils literal notranslate"><span class="pre">None</span></code>, shorthand to indicate the identity transformer. Ballet will convert it into a <code class="xref py py-class docutils literal notranslate"><span class="pre">IdentityTransformer</span></code> object.</p></li>
+<li><p>a callable that accepts the <code class="docutils literal notranslate"><span class="pre">X</span></code> DataFrame as input and produces an array-like as output. This can be thought of as a transformer that does not have a fit stage. Ballet will take care of converting it into a <a class="reference internal" href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.FunctionTransformer" title="ballet.eng.sklearn.FunctionTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionTransformer</span></code></a> object.</p></li>
+<li><p>the value <code class="docutils literal notranslate"><span class="pre">None</span></code>, shorthand to indicate the identity transformer. Ballet will convert it into a <a class="reference internal" href="api/ballet.eng.html#ballet.eng.IdentityTransformer" title="ballet.eng.IdentityTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">IdentityTransformer</span></code></a> object.</p></li>
 </ul>
 </div>
 <div class="section" id="feature-engineering-pipelines">
@@ -558,9 +594,9 @@ style.</p>
 <h3>Operating on groups<a class="headerlink" href="#operating-on-groups" title="Permalink to this headline">¶</a></h3>
 <p>See:</p>
 <ul class="simple">
-<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.GroupedFunctionTransformer</span></code></p></li>
-<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.GroupwiseTransformer</span></code></p></li>
-<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.ConditionalTransformer</span></code></p></li>
+<li><p><a class="reference internal" href="api/ballet.eng.html#ballet.eng.GroupedFunctionTransformer" title="ballet.eng.GroupedFunctionTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.GroupedFunctionTransformer</span></code></a></p></li>
+<li><p><a class="reference internal" href="api/ballet.eng.html#ballet.eng.GroupwiseTransformer" title="ballet.eng.GroupwiseTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.GroupwiseTransformer</span></code></a></p></li>
+<li><p><a class="reference internal" href="api/ballet.eng.html#ballet.eng.ConditionalTransformer" title="ballet.eng.ConditionalTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.ConditionalTransformer</span></code></a></p></li>
 </ul>
 </div>
 <div class="section" id="addressing-missing-values">
@@ -578,8 +614,8 @@ style.</p>
 <h3>Other primitives<a class="headerlink" href="#other-primitives" title="Permalink to this headline">¶</a></h3>
 <p>See:</p>
 <ul class="simple">
-<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.SimpleFunctionTransformer</span></code></p></li>
-<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.ConditionalTransformer</span></code></p></li>
+<li><p><a class="reference internal" href="api/ballet.eng.html#ballet.eng.SimpleFunctionTransformer" title="ballet.eng.SimpleFunctionTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.SimpleFunctionTransformer</span></code></a></p></li>
+<li><p><a class="reference internal" href="api/ballet.eng.html#ballet.eng.ConditionalTransformer" title="ballet.eng.ConditionalTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.ConditionalTransformer</span></code></a></p></li>
 </ul>
 </div>
 <div class="section" id="external-libraries">
@@ -600,8 +636,8 @@ style.</p>
 </ul>
 </div>
 </div>
-<div class="section" id="pandas-lrarrow-ballet-examples">
-<h2>Pandas ⇔ Ballet Examples<a class="headerlink" href="#pandas-lrarrow-ballet-examples" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="pandas-ballet-examples">
+<h2>Pandas ⇔ Ballet Examples<a class="headerlink" href="#pandas-ballet-examples" title="Permalink to this headline">¶</a></h2>
 <p>It may be helpful to see a lot of examples of pandas-style code with the associated Ballet feature implementations, especially if you are more familiar with writing imperative pandas code.</p>
 <p>Recall that we will be working with the simplified table <code class="docutils literal notranslate"><span class="pre">X_df</span></code> <a class="reference external" href="#writing-features-x-df">from above</a>.</p>
 <p>The first two examples are pretty simple.</p>
@@ -695,7 +731,7 @@ style.</p>
 <p>As you come up with more creative features, you may find that you need to create your own
 transformer classes. Here are some tips for creating your own transformers.</p>
 <ol class="arabic">
-<li><p>Build off of <code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.BaseTransformer</span></code> which inherits from <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.TransformerMixin</span></code>, and <code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.NoFitMixin</span></code>.</p></li>
+<li><p>Build off of <a class="reference internal" href="api/ballet.eng.html#ballet.eng.BaseTransformer" title="ballet.eng.BaseTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.BaseTransformer</span></code></a> which inherits from <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.TransformerMixin</span></code>, and <a class="reference internal" href="api/ballet.eng.html#ballet.eng.NoFitMixin" title="ballet.eng.NoFitMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.NoFitMixin</span></code></a>.</p></li>
 <li><p>(Optional) Implement the <code class="docutils literal notranslate"><span class="pre">__init__</span></code> method:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
@@ -763,7 +799,7 @@ demonstrates the steps required to roll your own transformer.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="api/ballet.html" class="btn btn-neutral float-right" title="ballet package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="faq.html" class="btn btn-neutral float-right" title="FAQ" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="contributor_guide.html" class="btn btn-neutral float-left" title="Contributor Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
