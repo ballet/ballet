@@ -1,5 +1,13 @@
 # History
 
+## 0.7.9 (2020-08-15)
+
+* Add give_advice feature for FeatureAPICheck and other checks to log message on how to fix failure
+* Improve logging of GFSSFAccepter and GFSSFPruner
+* Improve `__str__` for DelegatingRobustTransformer and consequently consumers
+* Change default log format to SIMPLE_LOG_FORMAT
+* Various bug fixes and improvements
+
 ## 0.7.8 (2020-08-13)
 
 * Add CanTransformNewRowsCheck to feature API checks
