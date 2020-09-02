@@ -204,9 +204,9 @@ training data.
 
    For a full tutorial on feature engineering in Ballet, check out the separate :doc:`feature_engineering_guide`.
 
-   Only the Python packages that are existing dependencies of the project can be used in feature engineering. Otherwise, if the feature were to be accepted, then the feature engineering pipeline would break due to a missing dependency. Usually, the dependencies of a Ballet project are the core ``ballet`` package and its own dependencies. If Ballet is installed with the ``[all]`` extra, then it additional re-exports feature engineering primitives from many common libraries. See :py:mod:`ballet.eng.external` for a summary.
+Only the Python packages that are existing dependencies of the project can be used in feature engineering. Otherwise, if the feature were to be accepted, then the feature engineering pipeline would break due to a missing dependency. Usually, the dependencies of a Ballet project are the core ``ballet`` package and its own dependencies. If Ballet is installed with the ``[all]`` extra, then it additional re-exports feature engineering primitives from many common libraries. See :py:mod:`ballet.eng.external` for a summary.
 
-   If you must add a new dependency, see :ref:`faq:My feature relies on a new library, how can I add it to the project?`.
+If you must add a new dependency, see :ref:`faq:My feature relies on a new library, how can I add it to the project?`.
 
 .. _`contributor_guide:Test your feature (local)`:
 

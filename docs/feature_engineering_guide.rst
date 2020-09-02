@@ -19,7 +19,7 @@ columns and a transformer to apply on them.
 
    #. understand the concept of a "logical feature"
    #. be able to write a simple ``Feature`` in Ballet
-   #. be familiar with the feature engineering primitives provided in the ``ballet.eng`` package
+   #. be familiar with the feature engineering primitives provided in the :py:mod:`ballet.eng` package
 
 Logical Features
 ----------------
@@ -131,7 +131,7 @@ Let's take a look at a slightly more complex example.
 .. include:: fragments/feature-engineering-guide-second-feature.py
   :code: python
 
-The feature requests one input, the ``Lot Frontage`` column. It's transformer is a :py:class:`~ballet.eng.sklearn.SimpleImputer` instance. It will receive as its input a DataFrame with one column. So we get the following behavior when the feature is executed as part of a pipeline:
+The feature requests one input, the ``Lot Frontage`` column. Its transformer is a :py:class:`~ballet.eng.sklearn.SimpleImputer` instance. It will receive as its input a DataFrame with one column. So we get the following behavior when the feature is executed as part of a pipeline:
 
 - during training (fit-stage), the transformer will compute the mean of the ``Lot Frontage`` values that are not missing
 - during training (transform-stage), the transformer will replace missing values with the computed training mean
@@ -147,7 +147,7 @@ Let's took a look at another example.
 .. include:: fragments/feature-engineering-guide-third-feature.py
    :code: python
 
-The feature requests three inputs, which are various measures of square footage in the house (basement, first floor, and second floor). The combined transformer is a sequence of two "transformer-likes". The first transformer in is a function that will receive as its input a DataFrame with three columns, and it sums across rows (``axis=1``), returning a single column with the total square footage. The second transformer is a utility object that replaces missing values. In this case, neither transformer learns anything from data (i.e. it does not need to save parameters learned from the training data) so both can be simple functions. Here, the first function is implicitly converted into a :py:class`~ballet.eng.sklearn.FunctionTransformer` and the second transformer is already a thin wrapper around ``pd.fillna``.
+The feature requests three inputs, which are various measures of square footage in the house (basement, first floor, and second floor). The combined transformer is a sequence of two "transformer-likes". The first transformer in is a function that will receive as its input a DataFrame with three columns, and it sums across rows (``axis=1``), returning a single column with the total square footage. The second transformer is a utility object that replaces missing values. In this case, neither transformer learns anything from data (i.e. it does not need to save parameters learned from the training data) so both can be simple functions. Here, the first function is implicitly converted into a :py:class:`~ballet.eng.sklearn.FunctionTransformer` and the second transformer is already a thin wrapper around ``pd.fillna``.
 
 In this feature, the sum is equivalent to a weighted sum with the weights all equal to 1. But maybe you have the intuition that not all living area is created equal? You might apply custom weights as follows:
 
@@ -173,13 +173,13 @@ columns from the raw data.
 - if ``input`` is a collection of keys, a 2-dimensional pandas DataFrame or numpy array is
   passed to the transformer
 
-With respect to the discussion about robustness above, ballet tries to pass the most obvious
+With respect to the discussion about robustness above, Ballet tries to pass the most obvious
 objects to the transformer. For example, if the raw data is a pandas ``DataFrame`` and ``input``
-is a scalar key, ballet tries to pass a ``Series`` to the transformer. If that fails in a
-predictable way (i.e. the transformer appears to not be able to handle that data type), then ballet
+is a scalar key, Ballet tries to pass a ``Series`` to the transformer. If that fails in a
+predictable way (i.e. the transformer appears to not be able to handle that data type), then Ballet
 tries again with the next most obvious input data type (a 1-d numpy array), continuous on to a
 pandas ``DataFrame`` with one column and finally a 2-d numpy array with one column. The same
-principles apply when ``input`` is a collection of keys, except ballet will not try to pass any 1-d
+principles apply when ``input`` is a collection of keys, except Ballet will not try to pass any 1-d
 data.
 
 Transformers
