@@ -355,7 +355,7 @@ columns and a transformer to apply on them.</p>
 <ol class="arabic simple">
 <li><p>understand the concept of a “logical feature”</p></li>
 <li><p>be able to write a simple <code class="docutils literal notranslate"><span class="pre">Feature</span></code> in Ballet</p></li>
-<li><p>be familiar with the feature engineering primitives provided in the <code class="docutils literal notranslate"><span class="pre">ballet.eng</span></code> package</p></li>
+<li><p>be familiar with the feature engineering primitives provided in the <a class="reference internal" href="api/ballet.eng.html#module-ballet.eng" title="ballet.eng"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ballet.eng</span></code></a> package</p></li>
 </ol>
 </div>
 <div class="section" id="logical-features">
@@ -503,7 +503,7 @@ and transform methods will be called receiving the one column as input.</p>
 <span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="n">transformer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The feature requests one input, the <code class="docutils literal notranslate"><span class="pre">Lot</span> <span class="pre">Frontage</span></code> column. It’s transformer is a <a class="reference internal" href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.SimpleImputer" title="ballet.eng.sklearn.SimpleImputer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimpleImputer</span></code></a> instance. It will receive as its input a DataFrame with one column. So we get the following behavior when the feature is executed as part of a pipeline:</p>
+<p>The feature requests one input, the <code class="docutils literal notranslate"><span class="pre">Lot</span> <span class="pre">Frontage</span></code> column. Its transformer is a <a class="reference internal" href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.SimpleImputer" title="ballet.eng.sklearn.SimpleImputer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimpleImputer</span></code></a> instance. It will receive as its input a DataFrame with one column. So we get the following behavior when the feature is executed as part of a pipeline:</p>
 <ul class="simple">
 <li><p>during training (fit-stage), the transformer will compute the mean of the <code class="docutils literal notranslate"><span class="pre">Lot</span> <span class="pre">Frontage</span></code> values that are not missing</p></li>
 <li><p>during training (transform-stage), the transformer will replace missing values with the computed training mean</p></li>
@@ -526,7 +526,7 @@ and transform methods will be called receiving the one column as input.</p>
 <span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="n">transformer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The feature requests three inputs, which are various measures of square footage in the house (basement, first floor, and second floor). The combined transformer is a sequence of two “transformer-likes”. The first transformer in is a function that will receive as its input a DataFrame with three columns, and it sums across rows (<code class="docutils literal notranslate"><span class="pre">axis=1</span></code>), returning a single column with the total square footage. The second transformer is a utility object that replaces missing values. In this case, neither transformer learns anything from data (i.e. it does not need to save parameters learned from the training data) so both can be simple functions. Here, the first function is implicitly converted into a :py:class`~ballet.eng.sklearn.FunctionTransformer` and the second transformer is already a thin wrapper around <code class="docutils literal notranslate"><span class="pre">pd.fillna</span></code>.</p>
+<p>The feature requests three inputs, which are various measures of square footage in the house (basement, first floor, and second floor). The combined transformer is a sequence of two “transformer-likes”. The first transformer in is a function that will receive as its input a DataFrame with three columns, and it sums across rows (<code class="docutils literal notranslate"><span class="pre">axis=1</span></code>), returning a single column with the total square footage. The second transformer is a utility object that replaces missing values. In this case, neither transformer learns anything from data (i.e. it does not need to save parameters learned from the training data) so both can be simple functions. Here, the first function is implicitly converted into a <a class="reference internal" href="api/ballet.eng.sklearn.html#ballet.eng.sklearn.FunctionTransformer" title="ballet.eng.sklearn.FunctionTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionTransformer</span></code></a> and the second transformer is already a thin wrapper around <code class="docutils literal notranslate"><span class="pre">pd.fillna</span></code>.</p>
 <p>In this feature, the sum is equivalent to a weighted sum with the weights all equal to 1. But maybe you have the intuition that not all living area is created equal? You might apply custom weights as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Total Bsmt SF&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;1st Flr SF&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;2nd Flr SF&quot;</span><span class="p">]</span>
 </pre></div>
@@ -556,13 +556,13 @@ transformer</p></li>
 <li><p>if <code class="docutils literal notranslate"><span class="pre">input</span></code> is a collection of keys, a 2-dimensional pandas DataFrame or numpy array is
 passed to the transformer</p></li>
 </ul>
-<p>With respect to the discussion about robustness above, ballet tries to pass the most obvious
+<p>With respect to the discussion about robustness above, Ballet tries to pass the most obvious
 objects to the transformer. For example, if the raw data is a pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> and <code class="docutils literal notranslate"><span class="pre">input</span></code>
-is a scalar key, ballet tries to pass a <code class="docutils literal notranslate"><span class="pre">Series</span></code> to the transformer. If that fails in a
-predictable way (i.e. the transformer appears to not be able to handle that data type), then ballet
+is a scalar key, Ballet tries to pass a <code class="docutils literal notranslate"><span class="pre">Series</span></code> to the transformer. If that fails in a
+predictable way (i.e. the transformer appears to not be able to handle that data type), then Ballet
 tries again with the next most obvious input data type (a 1-d numpy array), continuous on to a
 pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> with one column and finally a 2-d numpy array with one column. The same
-principles apply when <code class="docutils literal notranslate"><span class="pre">input</span></code> is a collection of keys, except ballet will not try to pass any 1-d
+principles apply when <code class="docutils literal notranslate"><span class="pre">input</span></code> is a collection of keys, except Ballet will not try to pass any 1-d
 data.</p>
 </div>
 <div class="section" id="transformers">
