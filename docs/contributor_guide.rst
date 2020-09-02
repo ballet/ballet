@@ -11,11 +11,11 @@ used for predicting the sale price of houses in Ames, Iowa, given raw data about
 
 .. tip::
 
-   Please ask for help on our Zulip chat!
+   Please ask for help on our Gitter chat!
 
-   .. image:: https://img.shields.io/badge/zulip-join_chat-brightgreen.svg
-      :alt: Chat on Zulip
-      :target: https://ballet.zulipchat.com/join/v5213tzw4dm7b4djxcwzfl1q/
+   .. image:: https://badges.gitter.im/ballet-project/community.svg
+      :alt: Chat on Gitter
+      :target: https://gitter.im/ballet-project/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
 
 
 Cloud Feature Development Workflow
