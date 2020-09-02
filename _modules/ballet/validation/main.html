@@ -451,14 +451,16 @@
         <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on PR&#39;</span><span class="p">)</span>
 
     <span class="n">result</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">engineer_features</span><span class="p">()</span>
-    <span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">features</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">features</span>
+    <span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">y_df</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">y</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">features</span>
 
     <span class="n">proposed_feature</span> <span class="o">=</span> <span class="n">get_proposed_feature</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
     <span class="n">accepted_features</span> <span class="o">=</span> <span class="n">get_accepted_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">proposed_feature</span><span class="p">)</span>
 
     <span class="n">accepter_class</span> <span class="o">=</span> <span class="n">_load_validator_class_params</span><span class="p">(</span>
         <span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.feature_accepter&#39;</span><span class="p">)</span>
-    <span class="n">accepter</span> <span class="o">=</span> <span class="n">accepter_class</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">accepted_features</span><span class="p">,</span> <span class="n">proposed_feature</span><span class="p">)</span>
+    <span class="n">accepter</span> <span class="o">=</span> <span class="n">accepter_class</span><span class="p">(</span>
+        <span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">accepted_features</span><span class="p">,</span> <span class="n">proposed_feature</span><span class="p">)</span>
     <span class="n">accepted</span> <span class="o">=</span> <span class="n">accepter</span><span class="o">.</span><span class="n">judge</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">accepted</span><span class="p">:</span>
@@ -479,12 +481,13 @@
         <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;No features collected&#39;</span><span class="p">)</span>
 
     <span class="n">result</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">engineer_features</span><span class="p">()</span>
-    <span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">features</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">features</span>
+    <span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">y_df</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">y</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">features</span>
     <span class="n">accepted_features</span> <span class="o">=</span> <span class="n">get_accepted_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">proposed_feature</span><span class="p">)</span>
 
     <span class="n">pruner_class</span> <span class="o">=</span> <span class="n">_load_validator_class_params</span><span class="p">(</span>
         <span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.feature_pruner&#39;</span><span class="p">)</span>
-    <span class="n">pruner</span> <span class="o">=</span> <span class="n">pruner_class</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">accepted_features</span><span class="p">,</span> <span class="n">proposed_feature</span><span class="p">)</span>
+    <span class="n">pruner</span> <span class="o">=</span> <span class="n">pruner_class</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">accepted_features</span><span class="p">,</span> <span class="n">proposed_feature</span><span class="p">)</span>
     <span class="n">redundant_features</span> <span class="o">=</span> <span class="n">pruner</span><span class="o">.</span><span class="n">prune</span><span class="p">()</span>
 
     <span class="c1"># &quot;propose removal&quot;</span>
