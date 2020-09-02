@@ -35,7 +35,8 @@ class RandomAccepterTest(unittest.TestCase):
 
         mock_uniform.return_value = 0.0  # makes sure feature is accepted
 
-        accepter = RandomAccepter(X_df, y_df, y, existing_features, candidate_feature)
+        accepter = RandomAccepter(
+            X_df, y_df, y, existing_features, candidate_feature)
         actual = accepter.judge()
 
         self.assertEqual(expected, actual)
