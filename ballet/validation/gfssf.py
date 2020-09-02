@@ -136,7 +136,7 @@ class GFSSFPerformanceEvaluator(FeaturePerformanceEvaluator):
             return (
                 feature
                 .as_feature_engineering_pipeline()
-                .fit_transform(self.X_df, self.y))
+                .fit_transform(self.X_df, y=self.y_df))
 
         # map logical feature "id" -> feature values
         feature_df_map = {

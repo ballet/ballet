@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from typing import Iterable, List, Optional
+from typing import Iterable, List, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -21,10 +21,12 @@ class FeaturePerformanceEvaluator(metaclass=ABCMeta):
 
     def __init__(self,
                  X_df: pd.DataFrame,
+                 y_df: Union[pd.DataFrame, pd.Series],
                  y: np.ndarray,
                  features: Iterable[Feature],
                  candidate_feature: Feature):
         self.X_df = X_df
+        self.y_df = y_df
         self.y = y
         self.features = features
         self.candidate_feature = candidate_feature

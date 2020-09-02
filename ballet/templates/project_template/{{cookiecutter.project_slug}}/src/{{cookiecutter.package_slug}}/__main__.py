@@ -26,7 +26,7 @@ def engineer_features(input_dir, output_dir):
     result = api.engineer_features()
     pipeline, encoder = result.pipeline, result.encoder
 
-    X_ft = pipeline.transform(X_df)
+    X_ft = pipeline.transform(X_df, y=y_df)
     y_ft = encoder.transform(y_df)
 
     save_features(X_ft, output_dir)

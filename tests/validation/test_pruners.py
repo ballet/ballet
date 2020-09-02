@@ -15,14 +15,13 @@ from tests.util import load_regression_data
 class NoOpPrunerTest(unittest.TestCase):
 
     def test_pruner(self):
-        X = None
-        y = None
+        X_df = y_df = y = None
         existing_features = []
         feature = None
 
         expected = []
 
-        pruner = NoOpPruner(X, y, existing_features, feature)
+        pruner = NoOpPruner(X_df, y_df, y, existing_features, feature)
         actual = pruner.prune()
 
         self.assertEqual(expected, actual)
@@ -39,11 +38,10 @@ class RandomPrunerTest(unittest.TestCase):
         mock_choice.return_value = existing_features[0]  # the pruned feature
         expected = [existing_features[0]]
 
-        X = None
-        y = None
+        X_df = y_df = y = None
         feature = None
 
-        pruner = RandomPruner(X, y, existing_features, feature)
+        pruner = RandomPruner(X_df, y_df, y, existing_features, feature)
         actual = pruner.prune()
 
         self.assertEqual(expected, actual)
@@ -52,8 +50,9 @@ class RandomPrunerTest(unittest.TestCase):
 class GFSSFPrunerTest(unittest.TestCase):
 
     def setUp(self):
-        self.X, self.y = load_regression_data(n_informative=1,
-                                              n_uninformative=14)
+        self.X_df, self.y_df = load_regression_data(
+            n_informative=1, n_uninformative=14)
+        self.y = self.y_df
 
     def test_prune_exact_replicas(self):
         feature_1 = Feature(
@@ -65,7 +64,7 @@ class GFSSFPrunerTest(unittest.TestCase):
             transformer=IdentityTransformer(),
             source='2nd Feature')
         gfssf_pruner = GFSSFPruner(
-            self.X, self.y, [feature_1], feature_2)
+            self.X_df, self.y_df, self.y, [feature_1], feature_2)
 
         redunant_features = gfssf_pruner.prune()
         self.assertIn(
@@ -89,7 +88,7 @@ class GFSSFPrunerTest(unittest.TestCase):
             transformer=IdentityTransformer(),
             source='2nd Feature')
         gfssf_pruner = GFSSFPruner(
-            self.X, self.y, [feature_weak], feature_strong)
+            self.X_df, self.y_df, self.y, [feature_weak], feature_strong)
 
         redunant_features = gfssf_pruner.prune()
         self.assertIn(
@@ -107,7 +106,7 @@ class GFSSFPrunerTest(unittest.TestCase):
             transformer=IdentityTransformer(),
             source='2nd Feature')
         gfssf_pruner = GFSSFPruner(
-            self.X, self.y, [feature_1], feature_2)
+            self.X_df, self.y_df, self.y, [feature_1], feature_2)
 
         redunant_features = gfssf_pruner.prune()
         self.assertNotIn(
@@ -126,7 +125,7 @@ class GFSSFPrunerTest(unittest.TestCase):
             transformer=IdentityTransformer(),
             source='2nd Feature')
         gfssf_pruner = GFSSFPruner(
-            self.X, self.y, [feature_1], feature_2)
+            self.X_df, self.y_df, self.y, [feature_1], feature_2)
 
         redunant_features = gfssf_pruner.prune()
         self.assertIn(

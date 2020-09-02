@@ -250,8 +250,8 @@ class ChangeCollector:
             yield importer, modname, modpath
 
 
-def subsample_data_for_validation(X, y):
-    return X, y
+def subsample_data_for_validation(*args):
+    return args
 
 
 def get_subclasses(cls):

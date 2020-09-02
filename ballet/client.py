@@ -93,8 +93,8 @@ class Client:
         accepter_class = _load_validator_class_params(
             self.project, 'validation.feature_accepter')
         return validate_feature_acceptance(
-            accepter_class, feature, result.features, result.X_df, result.y,
-            False)
+            accepter_class, feature, result.features, result.X_df,
+            result.y_df, result.y, False)
 
 
 b = Client()

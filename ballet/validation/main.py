@@ -115,14 +115,16 @@ def _evaluate_feature_performance(project: Project, force: bool = False):
         raise SkippedValidationTest('Not on PR')
 
     result = project.api.engineer_features()
-    X_df, y, features = result.X_df, result.y, result.features
+    X_df, y_df, y = result.X_df, result.y_df, result.y
+    features = result.features
 
     proposed_feature = get_proposed_feature(project)
     accepted_features = get_accepted_features(features, proposed_feature)
 
     accepter_class = _load_validator_class_params(
         project, 'validation.feature_accepter')
-    accepter = accepter_class(X_df, y, accepted_features, proposed_feature)
+    accepter = accepter_class(
+        X_df, y_df, y, accepted_features, proposed_feature)
     accepted = accepter.judge()
 
     if not accepted:
@@ -143,12 +145,13 @@ def _prune_existing_features(
         raise SkippedValidationTest('No features collected')
 
     result = project.api.engineer_features()
-    X_df, y, features = result.X_df, result.y, result.features
+    X_df, y_df, y = result.X_df, result.y_df, result.y
+    features = result.features
     accepted_features = get_accepted_features(features, proposed_feature)
 
     pruner_class = _load_validator_class_params(
         project, 'validation.feature_pruner')
-    pruner = pruner_class(X_df, y, accepted_features, proposed_feature)
+    pruner = pruner_class(X_df, y_df, y, accepted_features, proposed_feature)
     redundant_features = pruner.prune()
 
     # "propose removal"

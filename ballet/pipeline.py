@@ -83,7 +83,7 @@ def make_engineer_features(
             y_df = _y_df
 
         pipeline = FeatureEngineeringPipeline(features)
-        X = pipeline.fit_transform(X_df)
+        X = pipeline.fit_transform(X_df, y=y_df)
         y = encoder.fit_transform(y_df)
 
         return EngineerFeaturesResult(
