@@ -12,7 +12,7 @@ with open('HISTORY.md') as history_file:
     history = history_file.read()
 
 requirements = [
-    'black<20',  # TODO resolve https://travis-ci.com/github/HDI-Project/ballet/jobs/380315627
+    'black',  # TODO resolve https://travis-ci.com/github/HDI-Project/ballet/jobs/380315627
     'cookiecutter',
     'Click>=6.0',
     'dataclasses; python_version=="3.6"',

@@ -2,7 +2,7 @@ import ast
 import inspect
 import platform
 from types import FunctionType
-from typing import Iterator
+from typing import Iterator, Set
 
 import black
 from funcy import notnone
@@ -22,16 +22,19 @@ def is_valid_python(code: str) -> bool:
         return True
 
 
+def get_target_python_versions() -> Set[black.TargetVersion]:
+    major, minor, _ = platform.python_version_tuple()
+    pyversion = 'py{major}{minor}'.format(major=major, minor=minor)
+    return {black.TargetVersion[pyversion.upper()]}
+
+
 def blacken_code(code: str) -> str:
     """Format code content using Black
 
     Args:
         code: code as string
     """
-    major, minor, _ = platform.python_version_tuple()
-    pyversion = 'py{major}{minor}'.format(major=major, minor=minor)
-    target_versions = [black.TargetVersion[pyversion.upper()]]
-
+    target_versions = get_target_python_versions()
     line_length = black.DEFAULT_LINE_LENGTH
     string_normalization = True
 
