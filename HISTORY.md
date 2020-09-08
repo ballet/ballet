@@ -1,5 +1,10 @@
 # History
 
+## 0.7.10 (2020-09-08)
+
+* Fix bug with different treatment of y_df and y; now, y_df is passed to the feature engineering pipeline, and y is passed to the feature validation routines as applicable.
+* Switch back to using Gitter
+
 ## 0.7.9 (2020-08-15)
 
 * Add give_advice feature for FeatureAPICheck and other checks to log message on how to fix failure
