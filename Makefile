@@ -101,7 +101,7 @@ docs: clean-docs _apidoc ## generate Sphinx HTML documentation, including API do
 
 .PHONY: docs
 check-docs: clean-docs _apidoc ## check generation of Sphinx HTML documentation
-	find -E ./docs -name '*.rst' -and -not -regex '.*(external|category_encoders|feature_engine|featuretools|skits|sklearn|tsfresh).rst' -exec rstcheck {} +
+	find ./docs -regextype posix-egrep -name '*.rst' -and -not -regex '.*(external|category_encoders|feature_engine|featuretools|skits|sklearn|tsfresh).rst' -exec rstcheck {} +
 	$(MAKE) -C docs linkcheck text
 
 .PHONY: view-docs
