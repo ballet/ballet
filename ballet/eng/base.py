@@ -145,17 +145,20 @@ class GroupwiseTransformer(BaseTransformer):
                  column_selection: OneOrMore[str] = None,
                  handle_unknown: str = 'error',
                  handle_error: str = 'error'):
-        self.transformer = transformer
+        self.satisfy_transformer = transformer
         self.groupby_kwargs = groupby_kwargs
         self.column_selection = column_selection
         self.handle_unknown = handle_unknown
         self.handle_error = handle_error
 
     def _make_transformer(self):
-        if isinstance(self.transformer, type) or callable(self.transformer):
-            return self.transformer()
+        if (
+            isinstance(self.satisfy_transformer, type)
+            or callable(self.satisfy_transformer)
+        ):
+            return self.satisfy_transformer()
         else:
-            return sklearn.base.clone(self.transformer)
+            return sklearn.base.clone(self.satisfy_transformer)
 
     def fit(self, X, y=None, **fit_kwargs):
         # validation on inputs
@@ -183,8 +186,7 @@ class GroupwiseTransformer(BaseTransformer):
 
             if y is not None:
                 # Extract y by integer indexing
-                inds = grouper.indices[group_name]
-                y_group = y[inds]
+                y_group = y[grouper.indices[group_name]]
                 transformer.fit(x_group, y_group)
             else:
                 transformer.fit(x_group)
@@ -257,16 +259,16 @@ class ConditionalTransformer(BaseTransformer):
 
     Args:
         condition: condition function
-        trans: transform function
+        satisfy_transform: transform function for satisfied columns
     """
 
-    def __init__(self, condition: Callable, trans: Callable):
+    def __init__(self, condition: Callable, satisfy_transform: Callable):
         super().__init__()
         self.condition = condition
         # 1. can't call it transform because conflicts with method name
         # 2. can't call it transform and assign to a different attribute
         # because sklearn.clone would complain
-        self.trans = trans
+        self.satisfy_transform = satisfy_transform
 
     def fit(self, X, y=None, **fit_args):
         # features_to_transform_ is a bool or array[bool]
@@ -278,17 +280,21 @@ class ConditionalTransformer(BaseTransformer):
 
         if isinstance(X, pd.DataFrame):
             X = X.copy()
-            X.loc[:, self.features_to_transform_] = self.trans(
+            X.loc[:, self.features_to_transform_] = self.satisfy_transform(
                 X.loc[:, self.features_to_transform_])
             return X
         elif np.ndim(X) == 1:
-            return self.trans(X) if self.features_to_transform_ else X
+            return (
+                self.satisfy_transform(X)
+                if self.features_to_transform_
+                else X
+            )
         elif isinstance(X, np.ndarray):
             if self.features_to_transform_.any():
                 X = X.copy()
                 X = X.astype('float')
                 mask = np.tile(self.features_to_transform_, (X.shape[0], 1))
-                np.putmask(X, mask, self.trans(
+                np.putmask(X, mask, self.satisfy_transform(
                     X[:, self.features_to_transform_]))
             return X
         elif not self.features_to_transform_:
