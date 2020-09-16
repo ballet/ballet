@@ -10,7 +10,7 @@ import ballet.exc
 from ballet.util.testing import ArrayLikeEqualityTestingMixin
 
 
-class TestBase(ArrayLikeEqualityTestingMixin, unittest.TestCase):
+class BaseTest(ArrayLikeEqualityTestingMixin, unittest.TestCase):
 
     def setUp(self):
         pass
@@ -71,9 +71,7 @@ class TestBase(ArrayLikeEqualityTestingMixin, unittest.TestCase):
         self.assertSeriesEqual(result, expected_result)
 
 
-class GroupwiseTransformerTest(
-    ArrayLikeEqualityTestingMixin, unittest.TestCase
-):
+class _SetupMixin:
 
     def setUp(self):
         self.X_tr = pd.DataFrame(
@@ -89,11 +87,18 @@ class GroupwiseTransformerTest(
             data={
                 'name': ['A', 'B', 'C'],
                 'year': [2004, 2004, 2004],
-                'value': [np.nan, np.nan, np.nan],
+                'value': [np.nan, 1.5, np.nan],
                 'size': [4, 1, np.nan],
             }
         ).set_index(['name', 'year']).sort_index()
 
+
+class GroupwiseTransformerTest(
+    _SetupMixin, ArrayLikeEqualityTestingMixin, unittest.TestCase
+):
+
+    def setUp(self):
+        super().setUp()
         self.groupby_kwargs = {'level': 'name'}
 
         # mean-impute within groups
@@ -118,7 +123,7 @@ class GroupwiseTransformerTest(
 
         result_te = self.trans.transform(self.X_te)
         expected_te = self.X_te.copy()
-        expected_te['value'] = np.array([1.5, 4, 5])
+        expected_te['value'] = np.array([1.5, 1.5, 5])
         expected_te = expected_te.drop('size', axis=1)
         self.assertFrameEqual(result_te, expected_te)
 
@@ -156,7 +161,7 @@ class GroupwiseTransformerTest(
         # the first group, Z, is new, and values are passed through, so such
         # be nan
         expected = X_te.copy()
-        expected['value'] = np.array([np.nan, 4.0, 5.0])
+        expected['value'] = np.array([np.nan, 1.5, 5.0])
         expected['size'] = np.array([4.0, 1.0, 4.0])
 
         self.assertFrameEqual(result, expected)
@@ -204,3 +209,44 @@ class GroupwiseTransformerTest(
         result_te = trans.transform(self.X_te)
         expected_te = self.X_te
         self.assertFrameEqual(result_te, expected_te)
+
+
+class ConditionalTransformerTest(
+    _SetupMixin, ArrayLikeEqualityTestingMixin, unittest.TestCase
+):
+
+    def test_both_satisfied(self):
+        t = ballet.eng.ConditionalTransformer(
+            lambda ser: ser.sum() > 0,
+            lambda ser: ser + 1,
+        )
+
+        # all the features are selected by sum > 0
+        t.fit(self.X_tr)
+        result_tr = t.transform(self.X_tr)
+        for col in ['value', 'size']:
+            self.assertSeriesNotEqual(result_tr[col], self.X_tr[col])
+
+        result_te = t.transform(self.X_te)
+        for col in ['value', 'size']:
+            self.assertSeriesNotEqual(result_te[col], self.X_te[col])
+
+    def test_one_satisfied(self):
+        t = ballet.eng.ConditionalTransformer(
+            lambda ser: (ser.dropna() >= 3).all(),
+            lambda ser: ser.fillna(0) + 1,
+        )
+
+        t.fit(self.X_tr)
+        result_tr = t.transform(self.X_tr)
+        result_te = t.transform(self.X_te)
+
+        # only 'size' is selected by the condition
+        for col in ['size']:
+            self.assertSeriesNotEqual(result_tr[col], self.X_tr[col])
+            self.assertSeriesNotEqual(result_te[col], self.X_te[col])
+
+        # 'value' is not selected by the condition, has items less than 3
+        for col in ['value']:
+            self.assertSeriesEqual(result_tr[col], self.X_tr[col])
+            self.assertSeriesEqual(result_te[col], self.X_te[col])
