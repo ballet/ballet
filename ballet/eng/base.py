@@ -256,7 +256,10 @@ class ConditionalTransformer(BaseTransformer):
 
     In the fit stage, determines which variables (columns) satisfy the
     condition. In the transform stage, applies the given transformation to
-    the selected columns, passing through the complement unchanged.
+    the satisfied columns. If a second transformation is given, applies the
+    second transformation to the complement of the satisfied columns (i.e.
+    the columns that fail to satisfy the condition). Otherwise, these
+    unsatisfied columns are passed through unchanged.
 
     Args:
         condition: condition function
