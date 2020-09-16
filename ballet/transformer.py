@@ -209,7 +209,8 @@ class DelegatingRobustTransformer(DeepcopyMixin, BaseTransformer):
             raise UnsuccessfulInputConversionError
 
     def _log_attempt_using_stored_approach(self, approach):
-        logger.log(TRACE,
+        logger.log(
+            TRACE,
             '{tname}: '
             'Attempting to convert using stored, '
             'previously-successful approach {approach.name!r}'
@@ -227,14 +228,16 @@ class DelegatingRobustTransformer(DeepcopyMixin, BaseTransformer):
                     tb=pretty_tb))
 
     def _log_success_using_stored_approach(self, approach):
-        logger.log(TRACE,
+        logger.log(
+            TRACE,
             '{tname}: '
             'Conversion with stored, previously-successful approach '
             '{approach.name!r} succeeded!'
             .format(tname=self._tname, approach=approach))
 
     def _log_attempt(self, approach):
-        logger.log(TRACE,
+        logger.log(
+            TRACE,
             '{tname}: '
             'Attempting to convert using approach {approach.name!r}...'
             .format(tname=self._tname, approach=approach))
@@ -266,7 +269,8 @@ class DelegatingRobustTransformer(DeepcopyMixin, BaseTransformer):
                     tb=pretty_tb))
 
     def _log_success(self, approach):
-        logger.log(TRACE,
+        logger.log(
+            TRACE,
             '{tname}: '
             'Conversion approach {approach.name!r} succeeded!'
             .format(tname=self._tname, approach=approach))
