@@ -242,11 +242,28 @@ class ConditionalTransformerTest(
         result_te = t.transform(self.X_te)
 
         # only 'size' is selected by the condition
-        for col in ['size']:
-            self.assertSeriesNotEqual(result_tr[col], self.X_tr[col])
-            self.assertSeriesNotEqual(result_te[col], self.X_te[col])
+        self.assertSeriesNotEqual(result_tr['size'], self.X_tr['size'])
+        self.assertSeriesNotEqual(result_te['size'], self.X_te['size'])
 
         # 'value' is not selected by the condition, has items less than 3
-        for col in ['value']:
-            self.assertSeriesEqual(result_tr[col], self.X_tr[col])
-            self.assertSeriesEqual(result_te[col], self.X_te[col])
+        self.assertSeriesEqual(result_tr['value'], self.X_tr['value'])
+        self.assertSeriesEqual(result_te['value'], self.X_te['value'])
+
+    def test_unsatisfy_transform(self):
+        t = ballet.eng.ConditionalTransformer(
+            lambda ser: (ser.dropna() >= 3).all(),
+            lambda ser: ser,
+            lambda ser: ser.fillna(0) - 1,
+        )
+
+        t.fit(self.X_tr)
+        result_tr = t.transform(self.X_tr)
+        result_te = t.transform(self.X_te)
+
+        # size is transformed by satisfy condition, but passed through
+        self.assertSeriesEqual(result_tr['size'], self.X_tr['size'])
+        self.assertSeriesEqual(result_te['size'], self.X_te['size'])
+
+        # value is transformed by unsatisfy condition and is not equal
+        self.assertSeriesNotEqual(result_tr['value'], self.X_tr['value'])
+        self.assertSeriesNotEqual(result_te['value'], self.X_te['value'])
