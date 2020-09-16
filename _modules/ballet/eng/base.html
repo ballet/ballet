@@ -337,6 +337,7 @@
   <h1>Source code for ballet.eng.base</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span>
 
+<span class="kn">import</span> <span class="nn">funcy</span> <span class="k">as</span> <span class="nn">fy</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">sklearn.base</span>
@@ -482,17 +483,20 @@
                  <span class="n">column_selection</span><span class="p">:</span> <span class="n">OneOrMore</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">handle_unknown</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span>
                  <span class="n">handle_error</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;error&#39;</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span> <span class="o">=</span> <span class="n">transformer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">satisfy_transformer</span> <span class="o">=</span> <span class="n">transformer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs</span> <span class="o">=</span> <span class="n">groupby_kwargs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">column_selection</span> <span class="o">=</span> <span class="n">column_selection</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span> <span class="o">=</span> <span class="n">handle_unknown</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span> <span class="o">=</span> <span class="n">handle_error</span>
 
     <span class="k">def</span> <span class="nf">_make_transformer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="ow">or</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">()</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">satisfy_transformer</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">satisfy_transformer</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">satisfy_transformer</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">satisfy_transformer</span><span class="p">)</span>
 
 <div class="viewcode-block" id="GroupwiseTransformer.fit"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.GroupwiseTransformer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">fit_kwargs</span><span class="p">):</span>
         <span class="c1"># validation on inputs</span>
@@ -520,8 +524,7 @@
 
             <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># Extract y by integer indexing</span>
-                <span class="n">inds</span> <span class="o">=</span> <span class="n">grouper</span><span class="o">.</span><span class="n">indices</span><span class="p">[</span><span class="n">group_name</span><span class="p">]</span>
-                <span class="n">y_group</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">inds</span><span class="p">]</span>
+                <span class="n">y_group</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">grouper</span><span class="o">.</span><span class="n">indices</span><span class="p">[</span><span class="n">group_name</span><span class="p">]]</span>
                 <span class="n">transformer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_group</span><span class="p">,</span> <span class="n">y_group</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">transformer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_group</span><span class="p">)</span>
@@ -590,48 +593,67 @@
 
 <span class="sd">    In the fit stage, determines which variables (columns) satisfy the</span>
 <span class="sd">    condition. In the transform stage, applies the given transformation to</span>
-<span class="sd">    the selected columns, passing through the complement unchanged.</span>
+<span class="sd">    the satisfied columns. If a second transformation is given, applies the</span>
+<span class="sd">    second transformation to the complement of the satisfied columns (i.e.</span>
+<span class="sd">    the columns that fail to satisfy the condition). Otherwise, these</span>
+<span class="sd">    unsatisfied columns are passed through unchanged.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        condition: condition function</span>
-<span class="sd">        trans: transform function</span>
+<span class="sd">        satisfy_transform: transform function for satisfied columns</span>
+<span class="sd">        unsatisfy_transform: transform function for unsatisfied columns</span>
+<span class="sd">            (defaults to identity)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">trans</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">condition</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+        <span class="n">satisfy_transform</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+        <span class="n">unsatisfy_transform</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">condition</span> <span class="o">=</span> <span class="n">condition</span>
-        <span class="c1"># 1. can&#39;t call it transform because conflicts with method name</span>
-        <span class="c1"># 2. can&#39;t call it transform and assign to a different attribute</span>
-        <span class="c1"># because sklearn.clone would complain</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="n">trans</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">satisfy_transform</span> <span class="o">=</span> <span class="n">satisfy_transform</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unsatisfy_transform</span> <span class="o">=</span> <span class="n">unsatisfy_transform</span> <span class="ow">or</span> <span class="n">fy</span><span class="o">.</span><span class="n">identity</span>
 
 <div class="viewcode-block" id="ConditionalTransformer.fit"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.ConditionalTransformer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">fit_args</span><span class="p">):</span>
-        <span class="c1"># features_to_transform_ is a bool or array[bool]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">features_to_transform_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">condition</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="c1"># satisfied_columns_ is a bool or array[bool]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">satisfied_columns_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">condition</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unsatisfied_columns_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">satisfied_columns_</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="ConditionalTransformer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.ConditionalTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_args</span><span class="p">):</span>
-        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;features_to_transform_&#39;</span><span class="p">)</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;satisfied_columns_&#39;</span><span class="p">,</span> <span class="s1">&#39;unsatisfied_columns_&#39;</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
             <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_to_transform_</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trans</span><span class="p">(</span>
-                <span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_to_transform_</span><span class="p">])</span>
+            <span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">satisfied_columns_</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">satisfy_transform</span><span class="p">(</span>
+                <span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">satisfied_columns_</span><span class="p">])</span>
+            <span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unsatisfied_columns_</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unsatisfy_transform</span><span class="p">(</span>
+                <span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unsatisfied_columns_</span><span class="p">]</span>
+            <span class="p">)</span>
             <span class="k">return</span> <span class="n">X</span>
         <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trans</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_to_transform_</span> <span class="k">else</span> <span class="n">X</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">satisfy_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">satisfied_columns_</span>
+                <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">unsatisfy_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_to_transform_</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-                <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
-                <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features_to_transform_</span><span class="p">,</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">putmask</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">trans</span><span class="p">(</span>
-                    <span class="n">X</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_to_transform_</span><span class="p">]))</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">satisfied_columns_</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">satisfied_columns_</span><span class="p">,</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">putmask</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">satisfy_transform</span><span class="p">(</span>
+                    <span class="n">X</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">satisfied_columns_</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unsatisfied_columns_</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unsatisfied_columns_</span><span class="p">,</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">putmask</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unsatisfy_transform</span><span class="p">(</span>
+                    <span class="n">X</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unsatisfied_columns_</span><span class="p">]))</span>
             <span class="k">return</span> <span class="n">X</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_to_transform_</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">satisfied_columns_</span><span class="p">:</span>
             <span class="c1"># if we wouldn&#39;t otherwise have known what to do, we can pass</span>
             <span class="c1"># through X if transformation was not necessary anyways</span>
-            <span class="k">return</span> <span class="n">X</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unsatisfy_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                 <span class="s2">&quot;Couldn&#39;t apply transformer on features in </span><span class="si">{}</span><span class="s2">.&quot;</span>

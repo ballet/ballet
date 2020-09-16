@@ -403,17 +403,22 @@ filled with the computed mean.</p>
 
 <dl class="py class">
 <dt id="ballet.eng.ConditionalTransformer">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.</code><code class="sig-name descname">ConditionalTransformer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">condition</span></em>, <em class="sig-param"><span class="n">trans</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/base.html#ConditionalTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.ConditionalTransformer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.</code><code class="sig-name descname">ConditionalTransformer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">condition</span></em>, <em class="sig-param"><span class="n">satisfy_transform</span></em>, <em class="sig-param"><span class="n">unsatisfy_transform</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/eng/base.html#ConditionalTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.ConditionalTransformer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="ballet.eng.base.html#ballet.eng.base.BaseTransformer" title="ballet.eng.base.BaseTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.eng.base.BaseTransformer</span></code></a></p>
 <p>Transform columns that satisfy a condition during training</p>
 <p>In the fit stage, determines which variables (columns) satisfy the
 condition. In the transform stage, applies the given transformation to
-the selected columns, passing through the complement unchanged.</p>
+the satisfied columns. If a second transformation is given, applies the
+second transformation to the complement of the satisfied columns (i.e.
+the columns that fail to satisfy the condition). Otherwise, these
+unsatisfied columns are passed through unchanged.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>condition</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – condition function</p></li>
-<li><p><strong>trans</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – transform function</p></li>
+<li><p><strong>satisfy_transform</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – transform function for satisfied columns</p></li>
+<li><p><strong>unsatisfy_transform</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>]) – transform function for unsatisfied columns
+(defaults to identity)</p></li>
 </ul>
 </dd>
 </dl>

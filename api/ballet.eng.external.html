@@ -1994,21 +1994,24 @@ of the function of that module, which was used for the calculation.</p>
 <li><p>the time series container with the timeseries data. This container (for the format see <span class="xref std std-ref">data-formats-label</span>)
 contains the data which is used for calculating the
 features. It must be groupable by ids which are used to identify which feature should be attached to which row
-in the second dataframe:</p></li>
-<li><p>the input data, where the features will be added to.</p></li>
+in the second dataframe.</p></li>
+<li><p>the input data X, where the features will be added to. Its rows are identifies by the index and each index in
+X must be present as an id in the time series container.</p></li>
 </ol>
 <p>Imagine the following situation: You want to classify 10 different financial shares and you have their development
 in the last year as a time series. You would then start by creating features from the metainformation of the
-shares, e.g. how long they were on the market etc. and filling up a table - the features of one stock in one row.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+shares, e.g. how long they were on the market etc. and filling up a table - the features of one stock in one row.
+This is the input array X, which each row identified by e.g. the stock name as an index.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;AAA&quot;</span><span class="p">,</span> <span class="s2">&quot;BBB&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Fill in the information of the stocks</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;started_since_days&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># add a feature</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;started_since_days&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span> <span class="c1"># add a feature</span>
 </pre></div>
 </div>
-<p>You can then extract all the features from the time development of the shares, by using this estimator:</p>
+<p>You can then extract all the features from the time development of the shares, by using this estimator.
+The time series container must include a column of ids, which are the same as the index of X.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">time_series</span> <span class="o">=</span> <span class="n">read_in_timeseries</span><span class="p">()</span> <span class="c1"># get the development of the shares</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tsfresh.transformers</span> <span class="kn">import</span> <span class="n">FeatureAugmenter</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">augmenter</span> <span class="o">=</span> <span class="n">FeatureAugmenter</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">augmenter</span> <span class="o">=</span> <span class="n">FeatureAugmenter</span><span class="p">(</span><span class="n">column_id</span><span class="o">=</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">augmenter</span><span class="o">.</span><span class="n">set_timeseries_container</span><span class="p">(</span><span class="n">time_series</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df_with_time_series_features</span> <span class="o">=</span> <span class="n">augmenter</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </pre></div>

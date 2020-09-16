@@ -361,23 +361,26 @@
 <span class="sd">    1. the time series container with the timeseries data. This container (for the format see :ref:`data-formats-label`)</span>
 <span class="sd">       contains the data which is used for calculating the</span>
 <span class="sd">       features. It must be groupable by ids which are used to identify which feature should be attached to which row</span>
-<span class="sd">       in the second dataframe:</span>
+<span class="sd">       in the second dataframe.</span>
 
-<span class="sd">    2. the input data, where the features will be added to.</span>
+<span class="sd">    2. the input data X, where the features will be added to. Its rows are identifies by the index and each index in</span>
+<span class="sd">       X must be present as an id in the time series container.</span>
 
 <span class="sd">    Imagine the following situation: You want to classify 10 different financial shares and you have their development</span>
 <span class="sd">    in the last year as a time series. You would then start by creating features from the metainformation of the</span>
 <span class="sd">    shares, e.g. how long they were on the market etc. and filling up a table - the features of one stock in one row.</span>
+<span class="sd">    This is the input array X, which each row identified by e.g. the stock name as an index.</span>
 
-<span class="sd">    &gt;&gt;&gt; df = pandas.DataFrame()</span>
+<span class="sd">    &gt;&gt;&gt; df = pandas.DataFrame(index=[&quot;AAA&quot;, &quot;BBB&quot;, ...])</span>
 <span class="sd">    &gt;&gt;&gt; # Fill in the information of the stocks</span>
-<span class="sd">    &gt;&gt;&gt; df[&quot;started_since_days&quot;] = 0 # add a feature</span>
+<span class="sd">    &gt;&gt;&gt; df[&quot;started_since_days&quot;] = ... # add a feature</span>
 
-<span class="sd">    You can then extract all the features from the time development of the shares, by using this estimator:</span>
+<span class="sd">    You can then extract all the features from the time development of the shares, by using this estimator.</span>
+<span class="sd">    The time series container must include a column of ids, which are the same as the index of X.</span>
 
 <span class="sd">    &gt;&gt;&gt; time_series = read_in_timeseries() # get the development of the shares</span>
 <span class="sd">    &gt;&gt;&gt; from tsfresh.transformers import FeatureAugmenter</span>
-<span class="sd">    &gt;&gt;&gt; augmenter = FeatureAugmenter()</span>
+<span class="sd">    &gt;&gt;&gt; augmenter = FeatureAugmenter(column_id=&quot;id&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; augmenter.set_timeseries_container(time_series)</span>
 <span class="sd">    &gt;&gt;&gt; df_with_time_series_features = augmenter.transform(df)</span>
 
