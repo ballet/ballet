@@ -15,7 +15,7 @@ from sklearn_pandas.pipeline import TransformerPipeline
 from ballet.eng import BaseTransformer, IdentityTransformer
 from ballet.exc import UnsuccessfulInputConversionError
 from ballet.util import DeepcopyMixin, asarray2d, indent, quiet
-from ballet.util.log import logger
+from ballet.util.log import TRACE, logger
 from ballet.util.typing import OneOrMore, TransformerLike
 
 RobustTransformer = Union[TransformerPipeline, 'DelegatingRobustTransformer']
@@ -209,7 +209,7 @@ class DelegatingRobustTransformer(DeepcopyMixin, BaseTransformer):
             raise UnsuccessfulInputConversionError
 
     def _log_attempt_using_stored_approach(self, approach):
-        logger.debug(
+        logger.log(TRACE,
             '{tname}: '
             'Attempting to convert using stored, '
             'previously-successful approach {approach.name!r}'
@@ -227,14 +227,14 @@ class DelegatingRobustTransformer(DeepcopyMixin, BaseTransformer):
                     tb=pretty_tb))
 
     def _log_success_using_stored_approach(self, approach):
-        logger.debug(
+        logger.log(TRACE,
             '{tname}: '
             'Conversion with stored, previously-successful approach '
             '{approach.name!r} succeeded!'
             .format(tname=self._tname, approach=approach))
 
     def _log_attempt(self, approach):
-        logger.debug(
+        logger.log(TRACE,
             '{tname}: '
             'Attempting to convert using approach {approach.name!r}...'
             .format(tname=self._tname, approach=approach))
@@ -249,7 +249,8 @@ class DelegatingRobustTransformer(DeepcopyMixin, BaseTransformer):
         exc_name = type(e).__name__
         logger.debug(
             '{tname}: '
-            'Conversion approach {approach.name!r} didn\'t work, '
+            'Conversion approach {approach.name!r} didn\'t work so we\'ll try '
+            'another approach, '
             'caught exception {exc_name!r}\n\n{tb}'
             .format(tname=self._tname, approach=approach, exc_name=exc_name,
                     tb=pretty_tb))
@@ -265,13 +266,13 @@ class DelegatingRobustTransformer(DeepcopyMixin, BaseTransformer):
                     tb=pretty_tb))
 
     def _log_success(self, approach):
-        logger.debug(
+        logger.log(TRACE,
             '{tname}: '
             'Conversion approach {approach.name!r} succeeded!'
             .format(tname=self._tname, approach=approach))
 
     def _log_failure_no_more_approaches(self):
-        logger.info('Conversion failed, and we\'re not sure why...')
+        logger.debug('Conversion failed, and we\'re not sure why...')
 
 
 def _validate_transformer_api(transformer: BaseTransformer):
