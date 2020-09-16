@@ -53,7 +53,7 @@ class GFSSFAccepter(FeatureAcceptanceMixin, GFSSFPerformanceEvaluator):
             self.lmbda_1, self.lmbda_2, feature_df_map)
 
         logger.debug(
-            f'Recomputed lambda_1={lmbda_1:0.4f}, lambda_2={lmbda_2:0.4f}')
+            f'Recomputed lambda_1={lmbda_1:0.3e}, lambda_2={lmbda_2:0.3e}')
 
         info = []
 
@@ -118,6 +118,6 @@ class GFSSFAccepter(FeatureAcceptanceMixin, GFSSFPerformanceEvaluator):
         statistic_closest = info_closest.statistic
         threshold_closest = info_closest.threshold
         logger.info(
-            f'Rejected feature: best marginal conditional mutual information was not greater than threshold ({cmi_closest:0.4f} - {omitted_cmi_closest:0.4f} = {statistic_closest:0.4f}, vs needed {threshold_closest:0.4f}).')  # noqa
+            f'Rejected feature: best marginal conditional mutual information was not greater than threshold ({cmi_closest:0.3e} - {omitted_cmi_closest:0.3e} = {statistic_closest:0.3e}, vs needed {threshold_closest:0.3e}).')  # noqa
 
         return False
