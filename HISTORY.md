@@ -1,5 +1,11 @@
 # History
 
+## 0.7.11 (2020-09-16)
+
+* Reduce verbosity of conversion approach logging by moving some messages to TRACE level
+* Implement "else" transformer for `ConditionalTransformer`
+* Improve GFSSF iteration logging
+
 ## 0.7.10 (2020-09-08)
 
 * Fix bug with different treatment of y_df and y; now, y_df is passed to the feature engineering pipeline, and y is passed to the feature validation routines as applicable.
