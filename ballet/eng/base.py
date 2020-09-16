@@ -1,5 +1,6 @@
 from typing import Callable, Optional
 
+import funcy as fy
 import numpy as np
 import pandas as pd
 import sklearn.base
@@ -260,47 +261,59 @@ class ConditionalTransformer(BaseTransformer):
     Args:
         condition: condition function
         satisfy_transform: transform function for satisfied columns
+        unsatisfy_transform: transform function for unsatisfied columns
+            (defaults to identity)
     """
 
-    def __init__(self, condition: Callable, satisfy_transform: Callable):
+    def __init__(
+        self,
+        condition: Callable,
+        satisfy_transform: Callable,
+        unsatisfy_transform: Optional[Callable] = None
+    ):
         super().__init__()
         self.condition = condition
-        # 1. can't call it transform because conflicts with method name
-        # 2. can't call it transform and assign to a different attribute
-        # because sklearn.clone would complain
         self.satisfy_transform = satisfy_transform
+        self.unsatisfy_transform = unsatisfy_transform or fy.identity
 
     def fit(self, X, y=None, **fit_args):
-        # features_to_transform_ is a bool or array[bool]
-        self.features_to_transform_ = self.condition(X)
+        # satisfied_columns_ is a bool or array[bool]
+        self.satisfied_columns_ = self.condition(X)
+        self.unsatisfied_columns_ = np.logical_not(self.satisfied_columns_)
         return self
 
     def transform(self, X, **transform_args):
-        check_is_fitted(self, 'features_to_transform_')
+        check_is_fitted(self, ['satisfied_columns_', 'unsatisfied_columns_'])
 
         if isinstance(X, pd.DataFrame):
             X = X.copy()
-            X.loc[:, self.features_to_transform_] = self.satisfy_transform(
-                X.loc[:, self.features_to_transform_])
+            X.loc[:, self.satisfied_columns_] = self.satisfy_transform(
+                X.loc[:, self.satisfied_columns_])
+            X.loc[:, self.unsatisfied_columns_] = self.unsatisfy_transform(
+                X.loc[:, self.unsatisfied_columns_]
+            )
             return X
         elif np.ndim(X) == 1:
             return (
                 self.satisfy_transform(X)
-                if self.features_to_transform_
-                else X
+                if self.satisfied_columns_
+                else self.unsatisfy_transform(X)
             )
         elif isinstance(X, np.ndarray):
-            if self.features_to_transform_.any():
-                X = X.copy()
-                X = X.astype('float')
-                mask = np.tile(self.features_to_transform_, (X.shape[0], 1))
+            X = X.copy().astype('float')
+            if self.satisfied_columns_.any():
+                mask = np.tile(self.satisfied_columns_, (X.shape[0], 1))
                 np.putmask(X, mask, self.satisfy_transform(
-                    X[:, self.features_to_transform_]))
+                    X[:, self.satisfied_columns_]))
+            if self.unsatisfied_columns_.any():
+                mask = np.tile(self.unsatisfied_columns_, (X.shape[0], 1))
+                np.putmask(X, mask, self.unsatisfy_transform(
+                    X[:, self.unsatisfied_columns_]))
             return X
-        elif not self.features_to_transform_:
+        elif not self.satisfied_columns_:
             # if we wouldn't otherwise have known what to do, we can pass
             # through X if transformation was not necessary anyways
-            return X
+            return self.unsatisfy_transform(X)
         else:
             raise TypeError(
                 "Couldn't apply transformer on features in {}."
