@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 requirements = [
-    'ballet==0.7.10',
+    'ballet==0.7.11',
 ]
 
 setup(
