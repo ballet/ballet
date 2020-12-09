@@ -21,9 +21,10 @@ used for predicting the sale price of houses in Ames, Iowa, given raw data about
 Cloud Feature Development Workflow
 ==================================
 
-Some Ballet projects may have set up a development workflow using a hosted Jupyter Lab
-environment and an in-lab submission extension. This greatly simplifies the development workflow
-at the cost of some flexibility.
+Some Ballet projects may have set up a development workflow using `Assemblé`_,
+a development environment for Ballet on top of Jupyter Lab, with a hosted
+Jupyter Lab environment and an in-Lab submission extension. This greatly
+simplifies the development workflow at the cost of some flexibility.
 
 Launch binder
 -------------
@@ -78,7 +79,7 @@ First, *select the code cell* that contains the feature.
 Next, locate the submission button provided by the Jupyter Lab extension, as
 shown in the screenshot.
 
-.. image:: _static/labextension_submit_button_annotated_submit.png
+.. image:: _static/assemble_submit_button_annotated_submit.png
    :alt: The submission button illustrated in a notebook.
    :align: center
    :scale: 75%
@@ -161,7 +162,7 @@ settings (Python interpreter, Jupyter notebook) and as a command-line tool.
    You should repeat the entirety of this step every time before you begin
    working on a new feature, in order to synchronize changes made to the
    upstream project, such as the introduction of new features by other
-   collaborators or an update to the ballet framework itself.
+   collaborators or an update to the Ballet framework itself.
 
 Start working on a new feature
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -188,7 +189,7 @@ Write your feature
 ^^^^^^^^^^^^^^^^^^
 
 We call the code you write to extract one group of related feature values a
-*logical feature*. Within your feature submodule, you can write arbitrary
+*feature definition*, or simply *feature*. Within your feature submodule, you can write arbitrary
 Python code. Ultimately, a single object that is an instance of
 ``ballet.Feature`` must be defined; it will be imported by the feature
 engineering pipeline.
@@ -292,11 +293,11 @@ and open a new PR. Alternately, you can use the command-line tool `hub`_:
 Option 2: In-Lab Workflow
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In this workflow, you use the Ballet JupyterLab extension in order to submit
+In this workflow, you use Ballet Assemblé in order to submit
 code directly from within your analysis notebook if you are developing in
 Jupyter Lab. This has the same user experience as described in the cloud
 feature development workflow above. Here, you should `install
-ballet-submit-labextension`_ following the directions in that project.
+ballet-assemble`_ following the directions in that project.
 Importantly, you must authorize the extension to interact with GitHub on
 your behalf in one of three ways:
 
@@ -307,7 +308,7 @@ your behalf in one of three ways:
    ``$GITHUB_TOKEN``
 
 #. obtain a GitHub OAuth token and pass it as an option when starting
-   JupyterLab using ``--BalletApp.github_token=$TOKEN``.
+   JupyterLab using ``--AssembleApp.github_token=$TOKEN``.
 
 Understanding Validation Results
 ================================
@@ -342,9 +343,10 @@ ballet collaboration.
 
    Image from *The New Yorker* cartoon by Peter Steiner, 1993, via Wikipedia.
 
-.. |launch-binder| image:: https://mybinder.org/badge_logo.svg
+.. _`Assemblé`: https://github.com/HDI-Project/ballet-assemble
+.. |launch-binder| image:: https://static.mybinder.org/badge_logo.svg
 .. _`Predict House Prices`: https://github.com/HDI-Project/ballet-predict-house-prices
 .. _`conda`: https://conda.io/en/latest/
 .. _`hub`: https://hub.github.com/
 .. _`Ballet Bot`: https://github.com/apps/ballet-bot
-.. _`install ballet-submit-labextension`: https://github.com/HDI-Project/ballet-submit-labextension/blob/master/README.md
+.. _`install ballet-assemble`: https://github.com/HDI-Project/ballet-assemble/blob/master/README.md

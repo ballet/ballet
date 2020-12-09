@@ -1,5 +1,5 @@
 [![PyPI Shield](https://img.shields.io/pypi/v/ballet.svg)](https://pypi.org/project/ballet)
-[![Travis CI Shield](https://travis-ci.com/HDI-Project/ballet.svg?branch=master)](https://travis-ci.com/HDI-Project/ballet)
+[![Travis CI Shield](https://api.travis-ci.com/HDI-Project/ballet.svg?branch=master)](https://travis-ci.com/HDI-Project/ballet)
 [![codecov Shield](https://codecov.io/gh/HDI-Project/ballet/branch/master/graph/badge.svg)](https://codecov.io/gh/HDI-Project/ballet)
 
 
