@@ -42,15 +42,15 @@ Currently, Ballet focuses on supporting collaboratively developing
 *feature engineering pipelines*, an important part of many data science
 projects. Individual features are represented as separate Python modules,
 declaring the subset of a dataframe that they operate on and a
-scikit-learn-style learned transformer that extracts feature values from the raw
-data. Ballet collects individual features and composes them into a feature
-engineering pipeline. At any point, a project built on Ballet can be installed
-for end-to-end feature engineering on new data instances for the same problem.
-How do we ensure the feature engineering pipeline is always useful? Ballet
-thoroughly validates proposed features for correctness and machine learning
-performance, using an extensive test suite and a novel streaming logical
-feature selection algorithm. Accepted features can be automatically merged by
-the ballet GitHub app into projects.
+scikit-learn-style learned transformer that extracts feature values from the
+raw data. Ballet collects individual features and composes them into a
+feature engineering pipeline. At any point, a project built on Ballet can be
+installed for end-to-end feature engineering on new data instances for the
+same problem. How do we ensure the feature engineering pipeline is always
+useful? Ballet thoroughly validates proposed features for correctness and
+machine learning performance, using an extensive test suite and a novel
+streaming feature definition selection algorithm. Accepted features can be
+automatically merged by the ballet GitHub app into projects.
 
 <img src="./docs/_static/feature_lifecycle.png" alt="Ballet Feature Lifecycle" width="400" />
 

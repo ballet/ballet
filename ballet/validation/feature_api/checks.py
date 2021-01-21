@@ -162,7 +162,7 @@ class HasCorrectOutputDimensionsCheck(FeatureApiCheck):
         """Check that the dimensions of the transformed data are correct
 
         For input X, an n x p array, a n x q array should be produced,
-        where q is the number of features produced by the logical feature.
+        where q is the number of feature values produced by the feature.
         """
         mapper = feature.as_feature_engineering_pipeline()
         X = mapper.fit_transform(self.X, y=self.y)

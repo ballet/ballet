@@ -11,13 +11,13 @@ __all__ = ('Feature', )
 
 
 class Feature:
-    """A logical feature
+    """A feature definition
 
-    Conceptually, a logical feature is a learned function that maps raw
-    variables in one data instance to a vector of feature values. A logical
-    feature can produce either a scalar feature value for each instance or a
-    vector of feature values, as in the case of an embedding technique like PCA
-    or the one-hot encoding of a categorical variable.
+    Conceptually, a feature definition is a learned function that maps raw
+    variables in one data instance to a vector of feature values. A feature
+    definition can produce either a scalar feature value for each instance
+    or a vector of feature values, as in the case of an embedding technique
+    like PCA or the one-hot encoding of a categorical variable.
 
     Args:
         input: required columns from the input dataframe needed for the
