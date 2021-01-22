@@ -5,10 +5,10 @@
 
 from setuptools import setup, find_packages
 
-with open('README.md') as readme_file:
+with open('README.md', encoding='utf-8') as readme_file:
     readme = readme_file.read()
 
-with open('HISTORY.md') as history_file:
+with open('HISTORY.md', encoding='utf-8') as history_file:
     history = history_file.read()
 
 requirements = [
@@ -23,10 +23,11 @@ requirements = [
     'h5py',
     'numpy',
     'packaging',
-    'pandas',
+    'pandas>=1.0',
     'pyyaml',
     'requests',
-    'scikit_learn>=0.20',
+    'scikit_learn>=0.20,<0.23; python_version=="3.6"',
+    'scikit_learn>=0.20; python_version>"3.6"',
     'scipy',
     'sklearn_pandas',
     'stacklog',
@@ -109,7 +110,7 @@ setup(
     keywords='ballet',
     name='ballet',
     packages=find_packages(include=['ballet', 'ballet.*']),
-    python_requires='>=3.6',
+    python_requires='>=3.6.1',
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/HDI-Project/ballet',
