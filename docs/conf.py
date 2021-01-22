@@ -184,3 +184,9 @@ texinfo_documents = [
 # -- Options for autosectionlabel ---------------------------------------
 
 autosectionlabel_prefix_document = True
+
+# -- Options for linkcheck ----------------------------------------------
+
+linkcheck_ignore = [
+    'cli_reference.html#ballet-update-project-template',
+]

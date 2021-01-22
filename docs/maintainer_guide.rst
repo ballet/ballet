@@ -21,7 +21,7 @@ Prerequisites
 Before creating the project, the maintainer must have a training dataset used for developing
 features and details about the prediction problem they are ultimately trying to solve.
 
-Then, `install Ballet <Installation.html>`__ on your development machine.
+Then, :doc:`install Ballet </installation>` on your development machine.
 
 Project instantiation
 ~~~~~~~~~~~~~~~~~~~~~
@@ -215,8 +215,7 @@ At this point, your feature engineering pipeline contains no features. How will 
 contributors add more?
 
 Using any of a number of development workflows, contributors write new features and submit them
-to your project for validation. For more details on the contributor workflow, see `Contributor
-Guide`_.
+to your project for validation. For more details on the contributor workflow, see :doc:`/contributor_guide`.
 
 Validating features
 ~~~~~~~~~~~~~~~~~~~
@@ -305,4 +304,3 @@ detail `here <cli_reference.html#ballet-update-project-template>`__.
 
 .. _cookiecutter: https://cookiecutter.readthedocs.io/en/latest
 .. _`Travis CI`: https://travis-ci.com
-.. _`Contributor Guide`: contributor_guide.html

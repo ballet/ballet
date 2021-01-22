@@ -22,7 +22,7 @@ columns and a transformer to apply on them.
    #. be familiar with the feature engineering primitives provided in the :py:mod:`ballet.eng` package
 
 Feature Definitions
-----------------
+-------------------
 
 A feature definition (or simply "feature") is the semantics and implementation of code to extract feature values from raw data. It is a learned map from raw variables in one data instance to feature values.
 
