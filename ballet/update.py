@@ -33,6 +33,7 @@ DEFAULT_BRANCH = 'master'
 TEMPLATE_BRANCH = 'project-template'
 
 
+@funcy.ignore(subprocess.CalledProcessError)
 def _query_pip_search_ballet() -> str:
     """Call python -m pip search ballet"""
     # compat: use subprocess.run on py37+ and text=True on py37+
@@ -71,10 +72,11 @@ def _get_latest_ballet_version_string() -> Optional[str]:
     # something-else-that-has-ballet-in-the-name (1.1.1)  - some description
 
     output = _query_pip_search_ballet()
-    for triple in funcy.partition(3, 1, output):
-        match = _extract_latest_from_search_triple(triple)
-        if match:
-            return match
+    if output is not None:
+        for triple in funcy.partition(3, 1, output):
+            match = _extract_latest_from_search_triple(triple)
+            if match:
+                return match
 
     return None
 

@@ -14,6 +14,9 @@ from ballet.update import (
 
 class UpdateTest(unittest.TestCase):
 
+    @unittest.skip(
+        'Disabled due to https://status.python.org/incidents/grk0k7sz6zkp'
+    )
     def test_query_pip_search_ballet(self):
         # nothing better to do that just call the function...
         # actually hits PyPI but difficult to mock because uses subprocess >:(
