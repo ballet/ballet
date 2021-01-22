@@ -3,7 +3,7 @@ from collections import Counter
 from inspect import signature
 from typing import (
     Callable, Collection, List, NamedTuple, Optional, Sequence, Tuple, Union,
-    cast)
+    cast,)
 
 import numpy as np
 import pandas as pd

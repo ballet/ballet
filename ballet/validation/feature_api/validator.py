@@ -3,7 +3,7 @@ from ballet.project import Project
 from ballet.util.log import logger
 from ballet.validation.base import BaseValidator
 from ballet.validation.common import (
-    ChangeCollector, subsample_data_for_validation)
+    ChangeCollector, subsample_data_for_validation,)
 from ballet.validation.feature_api import validate_feature_api
 
 

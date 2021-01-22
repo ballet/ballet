@@ -26,7 +26,7 @@ from ballet.util.code import blacken_code, get_source, is_valid_python
 from ballet.util.log import logger
 from ballet.util.mod import (  # noqa F401
     import_module_at_path, import_module_from_modname,
-    import_module_from_relpath, modname_to_relpath, relpath_to_modname)
+    import_module_from_relpath, modname_to_relpath, relpath_to_modname,)
 from ballet.util.testing import ArrayLikeEqualityTestingMixin
 
 from .util import make_mock_commit, make_mock_commits, mock_repo

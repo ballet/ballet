@@ -5,7 +5,7 @@ from click.testing import CliRunner
 
 import ballet
 from ballet.cli import (  # noqa F401
-    cli, quickstart, start_new_feature, update_project_template, validate)
+    cli, quickstart, start_new_feature, update_project_template, validate,)
 
 
 class CliTest(unittest.TestCase):

@@ -8,7 +8,7 @@ from ballet.validation.common import ChangeCollector
 
 from .util import (
     SampleDataMixin, make_mock_project, mock_feature_api_validator,
-    mock_file_change_validator, null_change_collector)
+    mock_file_change_validator, null_change_collector,)
 from ..util import make_mock_commits, mock_repo
 
 

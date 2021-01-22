@@ -11,7 +11,7 @@ from ballet.validation.common import check_from_class
 from ballet.validation.feature_api.checks import (
     CanDeepcopyCheck, CanTransformCheck, FeatureApiCheck,
     HasCorrectInputTypeCheck, HasCorrectOutputDimensionsCheck,
-    NoMissingValuesCheck)
+    NoMissingValuesCheck,)
 
 from .util import SampleDataMixin
 from ..util import FragileTransformer

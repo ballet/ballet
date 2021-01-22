@@ -11,7 +11,7 @@ from ballet.validation.entropy import (
     _compute_volume_unit_ball, _estimate_cont_entropy, _estimate_disc_entropy,
     _is_column_cont, _is_column_disc, _make_neighbors,
     estimate_conditional_information, estimate_entropy,
-    estimate_mutual_information)
+    estimate_mutual_information,)
 
 
 class EntropyTest(ArrayLikeEqualityTestingMixin, unittest.TestCase):

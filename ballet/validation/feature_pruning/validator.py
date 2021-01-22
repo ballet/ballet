@@ -7,7 +7,7 @@ from ballet.validation.common import RandomFeaturePerformanceEvaluator
 from ballet.validation.entropy import estimate_conditional_information
 from ballet.validation.gfssf import (
     GFSSFPerformanceEvaluator, _compute_lmbdas, _compute_threshold,
-    _concat_datasets)
+    _concat_datasets,)
 
 
 class NoOpPruner(FeaturePruner):

@@ -4,7 +4,7 @@ from unittest.mock import patch
 from ballet.eng.misc import IdentityTransformer
 from ballet.feature import Feature
 from ballet.validation.feature_acceptance.validator import (
-    GFSSFAccepter, NeverAccepter, RandomAccepter)
+    GFSSFAccepter, NeverAccepter, RandomAccepter,)
 from tests.util import load_regression_data
 
 

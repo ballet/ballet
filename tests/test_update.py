@@ -9,7 +9,7 @@ from ballet.update import (
     _check_for_updated_ballet, _extract_latest_from_search_triple,
     _get_latest_ballet_version_string, _log_recommended_reinstall,
     _make_template_branch_merge_commit_message, _query_pip_search_ballet,
-    _safe_delete_remote, _warn_of_updated_ballet)
+    _safe_delete_remote, _warn_of_updated_ballet,)
 
 
 class UpdateTest(unittest.TestCase):

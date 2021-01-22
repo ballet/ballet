@@ -5,7 +5,7 @@ from unittest.mock import Mock
 from ballet.project import relative_to_contrib
 from ballet.validation.project_structure.checks import (
     IsAdditionCheck, IsPythonSourceCheck, ModuleNameCheck,
-    RelativeNameDepthCheck, SubpackageNameCheck, WithinContribCheck)
+    RelativeNameDepthCheck, SubpackageNameCheck, WithinContribCheck,)
 
 from .util import make_mock_project
 

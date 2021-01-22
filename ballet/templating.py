@@ -12,7 +12,7 @@ from ballet.util.fs import pwalk, synctree
 from ballet.util.log import logger
 from ballet.util.typing import Pathy
 from ballet.validation.project_structure.checks import (
-    FEATURE_MODULE_NAME_REGEX, SUBPACKAGE_NAME_REGEX)
+    FEATURE_MODULE_NAME_REGEX, SUBPACKAGE_NAME_REGEX,)
 
 TEMPLATES_PATH = pathlib.Path(__file__).resolve().parent.joinpath('templates')
 FEATURE_TEMPLATE_PATH = TEMPLATES_PATH.joinpath('feature_template')

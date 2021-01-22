@@ -5,7 +5,7 @@ import pandas as pd
 from ballet import logger
 from ballet.feature import Feature
 from ballet.validation.common import (
-    check_from_class, subsample_data_for_validation)
+    check_from_class, subsample_data_for_validation,)
 from ballet.validation.feature_api.checks import FeatureApiCheck
 
 

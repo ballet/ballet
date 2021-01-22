@@ -6,7 +6,7 @@ import git
 from ballet.exc import UnexpectedTravisEnvironmentError
 from ballet.util import falsy, truthy
 from ballet.util.git import (
-    PullRequestBuildDiffer, get_diff_endpoints_from_commit_range)
+    PullRequestBuildDiffer, get_diff_endpoints_from_commit_range,)
 from ballet.util.log import logger
 
 

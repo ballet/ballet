@@ -6,7 +6,7 @@ from ballet.exc import SkippedValidationTest
 from ballet.validation.main import (  # noqa F401
     _check_project_structure, _evaluate_feature_performance,
     _load_validator_class_params, _prune_existing_features,
-    _validate_feature_api, validate, validation_stage)
+    _validate_feature_api, validate, validation_stage,)
 
 
 class MainTest(unittest.TestCase):
