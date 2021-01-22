@@ -16,7 +16,8 @@ from ballet.eng import BaseTransformer
 from ballet.exc import ConfigurationError
 from ballet.feature import Feature
 from ballet.pipeline import (
-    EngineerFeaturesResult, FeatureEngineeringPipeline, make_engineer_features,)
+    EngineerFeaturesResult, FeatureEngineeringPipeline,
+    make_engineer_features,)
 from ballet.util import raiseifnone
 from ballet.util.ci import get_travis_branch, get_travis_pr_num
 from ballet.util.git import get_branch, get_pr_num, is_merge_commit

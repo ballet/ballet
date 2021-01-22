@@ -68,7 +68,7 @@ development_requirements = [
 
     # style check
     'flake8>=3.5.0',
-    'isort>=4.3.4,<=4.3.9',
+    'isort>=5.0',
 
     # fix style issues
     'autopep8>=1.3.5',

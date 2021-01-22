@@ -16,6 +16,7 @@ from ballet import __version__ as version
 def cli(verbose, quiet):
     """The Ballet command line interface"""
     import ballet.util.log
+
     # Process logging
     count = verbose - quiet
     if count <= -1:
@@ -81,8 +82,8 @@ def start_new_feature():
 def validate(check_all, check_project_structure, check_feature_api,
              evaluate_feature_acceptance, evaluate_feature_pruning):
     """Validate project changes from a candidate branch"""
-    import ballet.util.log
     import ballet.project
+    import ballet.util.log
     import ballet.validation.main
 
     # over-write logging settings?

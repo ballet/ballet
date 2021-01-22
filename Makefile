@@ -59,13 +59,13 @@ clean-test: ## remove test and coverage artifacts
 .PHONY: lint
 lint: ## check style with flake8 and isort
 	flake8 ballet tests
-	isort -c --recursive ballet tests
-	mypy ballet tests
+	isort --check ballet tests
+	-mypy ballet tests
 
 .PHONY: fix-lint
 fix-lint: ## fix lint issues using autopep8 and isort
 	autopep8 --in-place --recursive --aggressive --aggressive ballet tests
-	isort --apply --atomic --recursive ballet tests
+	isort --atomic ballet tests
 
 .PHONY: test
 test: ## run tests quickly with the default Python

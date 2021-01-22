@@ -46,8 +46,8 @@ class MainTest(unittest.TestCase):
         """Check that _load_validator_class_params works"""
 
         import ballet.validation.project_structure.validator
-        from ballet.validation.project_structure.validator import \
-            ProjectStructureValidator
+        from ballet.validation.project_structure.validator import (
+            ProjectStructureValidator,)
         mock_import.return_value = \
             ballet.validation.project_structure.validator
 

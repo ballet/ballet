@@ -9,7 +9,8 @@ class ExternalTest(unittest.TestCase):
         except ImportError:
             pass
         else:
-            from ballet.eng.category_encoders import BackwardDifferenceEncoder  # noqa F401
+            from ballet.eng.category_encoders import (  # noqa F401
+                BackwardDifferenceEncoder,)
 
     def test_feature_engine(self):
         try:
@@ -17,7 +18,8 @@ class ExternalTest(unittest.TestCase):
         except ImportError:
             pass
         else:
-            from ballet.eng.feature_engine import CountFrequencyCategoricalEncoder  # noqa F401
+            from ballet.eng.feature_engine import (  # noqa F401
+                CountFrequencyCategoricalEncoder,)
 
     def test_featuretools(self):
         try:
@@ -33,7 +35,8 @@ class ExternalTest(unittest.TestCase):
         except ImportError:
             pass
         else:
-            from ballet.eng.skits import AutoregressiveTransformer  # noqa F401
+            from ballet.eng.skits import (  # noqa F401
+                AutoregressiveTransformer,)
 
     def test_sklearn(self):
         from ballet.eng.sklearn import KNNImputer  # noqa F401

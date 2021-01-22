@@ -13,8 +13,8 @@ from ballet.validation.feature_api.checks import (
     HasCorrectInputTypeCheck, HasCorrectOutputDimensionsCheck,
     NoMissingValuesCheck,)
 
-from .util import SampleDataMixin
 from ..util import FragileTransformer
+from .util import SampleDataMixin
 
 
 class FeatureApiCheckTest(SampleDataMixin, unittest.TestCase):
