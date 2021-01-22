@@ -1,4 +1,5 @@
 .DEFAULT_GOAL := help
+ENVTMPDIR ?= $(shell mktemp -d)
 
 define BROWSER_PYSCRIPT
 import os, webbrowser, sys
@@ -68,7 +69,7 @@ fix-lint: ## fix lint issues using autopep8 and isort
 
 .PHONY: test
 test: ## run tests quickly with the default Python
-	python -m pytest --basetemp=${ENVTMPDIR} --cov=ballet
+	python -m pytest --basetemp=$(ENVTMPDIR) --cov=ballet
 
 .PHONY: test-fast
 test-fast:  ## run tests that are not marked as 'slow'
