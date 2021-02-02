@@ -10,7 +10,7 @@ class ExternalTest(unittest.TestCase):
             pass
         else:
             from ballet.eng.category_encoders import (  # noqa F401
-                BackwardDifferenceEncoder,)
+                WOEEncoder,)
 
     def test_feature_engine(self):
         try:
@@ -19,7 +19,7 @@ class ExternalTest(unittest.TestCase):
             pass
         else:
             from ballet.eng.feature_engine import (  # noqa F401
-                CountFrequencyCategoricalEncoder,)
+                YeoJohnsonTransformer,)
 
     def test_featuretools(self):
         try:
@@ -36,7 +36,7 @@ class ExternalTest(unittest.TestCase):
             pass
         else:
             from ballet.eng.skits import (  # noqa F401
-                AutoregressiveTransformer,)
+                HorizonTransformer,)
 
     def test_sklearn(self):
         from ballet.eng.sklearn import KNNImputer  # noqa F401
