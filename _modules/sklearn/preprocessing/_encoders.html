@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>sklearn.preprocessing._encoders &mdash; ballet 0.7.11 documentation</title>
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,7 +32,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
@@ -50,7 +52,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> ballet
+            <a href="../../../index.html" class="icon icon-home"> ballet
           
 
           
@@ -147,7 +149,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../feature_engineering_guide.html">Feature Engineering Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#logical-features">Logical Features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#feature-definitions">Feature Definitions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#why">Why?</a></li>
 </ul>
 </li>
@@ -178,7 +180,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../faq.html">FAQ</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../faq.html#how-can-i-check-the-performance-of-a-feature">How can I check the performance of a feature?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#there-was-an-error-submitting-my-feature-using-the-ballet-submit-button-in-jupyter-lab">There was an error submitting my feature using the Ballet Submit button in Jupyter Lab.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#there-was-an-error-submitting-my-feature-using-assemble-in-jupyter-lab">There was an error submitting my feature using Assemblé in Jupyter Lab.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../faq.html#my-feature-has-a-valid-api-locally-why-was-it-rejected">My feature has a valid API locally, why was it rejected?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../faq.html#why-did-my-feature-fail-the-feature-acceptance-validation">Why did my feature fail the feature acceptance validation?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../faq.html#my-feature-relies-on-a-new-library-how-can-i-add-it-to-the-project">My feature relies on a new library, how can I add it to the project?</a></li>
@@ -312,6 +314,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -342,13 +346,14 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">sparse</span>
+<span class="kn">import</span> <span class="nn">numbers</span>
 
 <span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span>
-<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">check_array</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">check_array</span><span class="p">,</span> <span class="n">is_scalar_nan</span>
 <span class="kn">from</span> <span class="nn">..utils.validation</span> <span class="kn">import</span> <span class="n">check_is_fitted</span>
 <span class="kn">from</span> <span class="nn">..utils.validation</span> <span class="kn">import</span> <span class="n">_deprecate_positional_args</span>
 
-<span class="kn">from</span> <span class="nn">._label</span> <span class="kn">import</span> <span class="n">_encode</span><span class="p">,</span> <span class="n">_encode_check_unknown</span>
+<span class="kn">from</span> <span class="nn">..utils._encode</span> <span class="kn">import</span> <span class="n">_encode</span><span class="p">,</span> <span class="n">_check_unknown</span><span class="p">,</span> <span class="n">_unique</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
@@ -364,7 +369,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">_check_X</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_check_X</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">force_all_finite</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Perform custom check_array:</span>
 <span class="sd">        - convert list of strings to object dtype</span>
@@ -378,17 +383,19 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="s1">&#39;iloc&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="s1">&#39;ndim&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
             <span class="c1"># if not a dataframe, do normal check_array validation</span>
-            <span class="n">X_temp</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+            <span class="n">X_temp</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                 <span class="n">force_all_finite</span><span class="o">=</span><span class="n">force_all_finite</span><span class="p">)</span>
             <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="s1">&#39;dtype&#39;</span><span class="p">)</span>
                     <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">X_temp</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">)):</span>
-                <span class="n">X</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">)</span>
+                <span class="n">X</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">,</span>
+                                <span class="n">force_all_finite</span><span class="o">=</span><span class="n">force_all_finite</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">X</span> <span class="o">=</span> <span class="n">X_temp</span>
             <span class="n">needs_validation</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># pandas dataframe, do validation later column by column, in order</span>
             <span class="c1"># to keep the dtype information to be used in the encoder.</span>
-            <span class="n">needs_validation</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">needs_validation</span> <span class="o">=</span> <span class="n">force_all_finite</span>
 
         <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
         <span class="n">X_columns</span> <span class="o">=</span> <span class="p">[]</span>
@@ -408,8 +415,9 @@
         <span class="c1"># numpy arrays, sparse arrays</span>
         <span class="k">return</span> <span class="n">X</span><span class="p">[:,</span> <span class="n">feature_idx</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">handle_unknown</span><span class="o">=</span><span class="s1">&#39;error&#39;</span><span class="p">):</span>
-        <span class="n">X_list</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_X</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">handle_unknown</span><span class="o">=</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="n">force_all_finite</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">X_list</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_X</span><span class="p">(</span>
+            <span class="n">X</span><span class="p">,</span> <span class="n">force_all_finite</span><span class="o">=</span><span class="n">force_all_finite</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">categories</span> <span class="o">!=</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">categories</span><span class="p">)</span> <span class="o">!=</span> <span class="n">n_features</span><span class="p">:</span>
@@ -421,26 +429,34 @@
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_features</span><span class="p">):</span>
             <span class="n">Xi</span> <span class="o">=</span> <span class="n">X_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">categories</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
-                <span class="n">cats</span> <span class="o">=</span> <span class="n">_encode</span><span class="p">(</span><span class="n">Xi</span><span class="p">)</span>
+                <span class="n">cats</span> <span class="o">=</span> <span class="n">_unique</span><span class="p">(</span><span class="n">Xi</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">cats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">categories</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">Xi</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">Xi</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="nb">object</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">cats</span><span class="p">)</span> <span class="o">==</span> <span class="n">cats</span><span class="p">):</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsorted categories are not &quot;</span>
-                                         <span class="s2">&quot;supported for numerical categories&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">Xi</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="s1">&#39;OU&#39;</span><span class="p">:</span>
+                    <span class="n">sorted_cats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">cats</span><span class="p">)</span>
+                    <span class="n">error_msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Unsorted categories are not &quot;</span>
+                                 <span class="s2">&quot;supported for numerical categories&quot;</span><span class="p">)</span>
+                    <span class="c1"># if there are nans, nan should be the last element</span>
+                    <span class="n">stop_idx</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">sorted_cats</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="k">else</span> <span class="kc">None</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">sorted_cats</span><span class="p">[:</span><span class="n">stop_idx</span><span class="p">]</span> <span class="o">!=</span> <span class="n">cats</span><span class="p">[:</span><span class="n">stop_idx</span><span class="p">])</span> <span class="ow">or</span>
+                        <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">sorted_cats</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="ow">and</span>
+                         <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">sorted_cats</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))):</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
+
                 <span class="k">if</span> <span class="n">handle_unknown</span> <span class="o">==</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span>
-                    <span class="n">diff</span> <span class="o">=</span> <span class="n">_encode_check_unknown</span><span class="p">(</span><span class="n">Xi</span><span class="p">,</span> <span class="n">cats</span><span class="p">)</span>
+                    <span class="n">diff</span> <span class="o">=</span> <span class="n">_check_unknown</span><span class="p">(</span><span class="n">Xi</span><span class="p">,</span> <span class="n">cats</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">diff</span><span class="p">:</span>
                         <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Found unknown categories </span><span class="si">{0}</span><span class="s2"> in column </span><span class="si">{1}</span><span class="s2">&quot;</span>
                                <span class="s2">&quot; during fit&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">categories_</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cats</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">handle_unknown</span><span class="o">=</span><span class="s1">&#39;error&#39;</span><span class="p">):</span>
-        <span class="n">X_list</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_X</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">handle_unknown</span><span class="o">=</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="n">force_all_finite</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">X_list</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_X</span><span class="p">(</span>
+            <span class="n">X</span><span class="p">,</span> <span class="n">force_all_finite</span><span class="o">=</span><span class="n">force_all_finite</span><span class="p">)</span>
 
-        <span class="n">X_int</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
-        <span class="n">X_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
+        <span class="n">X_int</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">X_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">n_features</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">categories_</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -452,8 +468,8 @@
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_features</span><span class="p">):</span>
             <span class="n">Xi</span> <span class="o">=</span> <span class="n">X_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="n">diff</span><span class="p">,</span> <span class="n">valid_mask</span> <span class="o">=</span> <span class="n">_encode_check_unknown</span><span class="p">(</span><span class="n">Xi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">categories_</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                                                     <span class="n">return_mask</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">diff</span><span class="p">,</span> <span class="n">valid_mask</span> <span class="o">=</span> <span class="n">_check_unknown</span><span class="p">(</span><span class="n">Xi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">categories_</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                              <span class="n">return_mask</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">valid_mask</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">handle_unknown</span> <span class="o">==</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span>
@@ -474,11 +490,10 @@
                         <span class="n">Xi</span> <span class="o">=</span> <span class="n">Xi</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
                     <span class="n">Xi</span><span class="p">[</span><span class="o">~</span><span class="n">valid_mask</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">categories_</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-            <span class="c1"># We use check_unknown=False, since _encode_check_unknown was</span>
+            <span class="c1"># We use check_unknown=False, since _check_unknown was</span>
             <span class="c1"># already called above.</span>
-            <span class="n">_</span><span class="p">,</span> <span class="n">encoded</span> <span class="o">=</span> <span class="n">_encode</span><span class="p">(</span><span class="n">Xi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">categories_</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">encode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                 <span class="n">check_unknown</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="n">X_int</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">encoded</span>
+            <span class="n">X_int</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_encode</span><span class="p">(</span><span class="n">Xi</span><span class="p">,</span> <span class="n">uniques</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">categories_</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                  <span class="n">check_unknown</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">X_int</span><span class="p">,</span> <span class="n">X_mask</span>
 
@@ -486,7 +501,7 @@
         <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;X_types&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;categorical&#39;</span><span class="p">]}</span>
 
 
-<div class="viewcode-block" id="OneHotEncoder"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.OneHotEncoder">[docs]</a><span class="k">class</span> <span class="nc">OneHotEncoder</span><span class="p">(</span><span class="n">_BaseEncoder</span><span class="p">):</span>
+<div class="viewcode-block" id="OneHotEncoder"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.OneHotEncoder">[docs]</a><span class="k">class</span> <span class="nc">OneHotEncoder</span><span class="p">(</span><span class="n">_BaseEncoder</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Encode categorical features as a one-hot numeric array.</span>
 
@@ -546,10 +561,13 @@
 <span class="sd">        - array : ``drop[i]`` is the category in feature ``X[:, i]`` that</span>
 <span class="sd">          should be dropped.</span>
 
+<span class="sd">        .. versionchanged:: 0.23</span>
+<span class="sd">           Added option &#39;if_binary&#39;.</span>
+
 <span class="sd">    sparse : bool, default=True</span>
 <span class="sd">        Will return sparse matrix if set True else will return an array.</span>
 
-<span class="sd">    dtype : number type, default=np.float</span>
+<span class="sd">    dtype : number type, default=float</span>
 <span class="sd">        Desired dtype of output.</span>
 
 <span class="sd">    handle_unknown : {&#39;error&#39;, &#39;ignore&#39;}, default=&#39;error&#39;</span>
@@ -577,17 +595,20 @@
 <span class="sd">        - ``drop_idx_ = None`` if all the transformed features will be</span>
 <span class="sd">          retained.</span>
 
+<span class="sd">        .. versionchanged:: 0.23</span>
+<span class="sd">           Added the possibility to contain `None` values.</span>
+
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    sklearn.preprocessing.OrdinalEncoder : Performs an ordinal (integer)</span>
+<span class="sd">    OrdinalEncoder : Performs an ordinal (integer)</span>
 <span class="sd">      encoding of the categorical features.</span>
 <span class="sd">    sklearn.feature_extraction.DictVectorizer : Performs a one-hot encoding of</span>
 <span class="sd">      dictionary items (also handles string-valued features).</span>
 <span class="sd">    sklearn.feature_extraction.FeatureHasher : Performs an approximate one-hot</span>
 <span class="sd">      encoding of dictionary items or strings.</span>
-<span class="sd">    sklearn.preprocessing.LabelBinarizer : Binarizes labels in a one-vs-all</span>
+<span class="sd">    LabelBinarizer : Binarizes labels in a one-vs-all</span>
 <span class="sd">      fashion.</span>
-<span class="sd">    sklearn.preprocessing.MultiLabelBinarizer : Transforms between iterable of</span>
+<span class="sd">    MultiLabelBinarizer : Transforms between iterable of</span>
 <span class="sd">      iterables and a multilabel format, e.g. a (samples x classes) binary</span>
 <span class="sd">      matrix indicating the presence of a class label.</span>
 
@@ -661,10 +682,10 @@
             <span class="k">return</span> <span class="kc">None</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drop</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">drop</span> <span class="o">==</span> <span class="s1">&#39;first&#39;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">categories_</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">categories_</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">drop</span> <span class="o">==</span> <span class="s1">&#39;if_binary&#39;</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cats</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="k">else</span> <span class="kc">None</span>
-                                <span class="k">for</span> <span class="n">cats</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">categories_</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">)</span>
+                                <span class="k">for</span> <span class="n">cats</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">categories_</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="s2">&quot;Wrong input for parameter `drop`. Expected &quot;</span>
@@ -687,8 +708,26 @@
                        <span class="s2">&quot;of features (</span><span class="si">{}</span><span class="s2">), got </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">categories_</span><span class="p">),</span>
                                             <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drop</span><span class="p">)))</span>
-            <span class="n">missing_drops</span> <span class="o">=</span> <span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drop</span><span class="p">)</span>
-                             <span class="k">if</span> <span class="n">val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">categories_</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+            <span class="n">missing_drops</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">drop_indices</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">col_idx</span><span class="p">,</span> <span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">cat_list</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drop</span><span class="p">,</span>
+                                                          <span class="bp">self</span><span class="o">.</span><span class="n">categories_</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">is_scalar_nan</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+                    <span class="n">drop_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">cat_list</span> <span class="o">==</span> <span class="n">val</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">drop_idx</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>  <span class="c1"># found drop idx</span>
+                        <span class="n">drop_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">drop_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">missing_drops</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">col_idx</span><span class="p">,</span> <span class="n">val</span><span class="p">))</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># val is nan, find nan in categories manually</span>
+                <span class="k">for</span> <span class="n">cat_idx</span><span class="p">,</span> <span class="n">cat</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cat_list</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">is_scalar_nan</span><span class="p">(</span><span class="n">cat</span><span class="p">):</span>
+                        <span class="n">drop_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cat_idx</span><span class="p">)</span>
+                        <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>  <span class="c1"># loop did not break thus drop is missing</span>
+                    <span class="n">missing_drops</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">col_idx</span><span class="p">,</span> <span class="n">val</span><span class="p">))</span>
+
             <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">missing_drops</span><span class="p">):</span>
                 <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The following categories were supposed to be &quot;</span>
                        <span class="s2">&quot;dropped, but were not found in the training &quot;</span>
@@ -697,12 +736,9 @@
                                 <span class="p">[</span><span class="s2">&quot;Category: </span><span class="si">{}</span><span class="s2">, Feature: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
                                     <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">missing_drops</span><span class="p">])))</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">cat_list</span> <span class="o">==</span> <span class="n">val</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-                             <span class="k">for</span> <span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">cat_list</span><span class="p">)</span> <span class="ow">in</span>
-                             <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">categories_</span><span class="p">)],</span>
-                            <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">drop_indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
 
-<div class="viewcode-block" id="OneHotEncoder.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.OneHotEncoder.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="OneHotEncoder.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.OneHotEncoder.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Fit OneHotEncoder to X.</span>
 
@@ -713,18 +749,19 @@
 
 <span class="sd">        y : None</span>
 <span class="sd">            Ignored. This parameter exists only for compatibility with</span>
-<span class="sd">            :class:`sklearn.pipeline.Pipeline`.</span>
+<span class="sd">            :class:`~sklearn.pipeline.Pipeline`.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        self</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_keywords</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">handle_unknown</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">handle_unknown</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span><span class="p">,</span>
+                  <span class="n">force_all_finite</span><span class="o">=</span><span class="s1">&#39;allow-nan&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">drop_idx_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_drop_idx</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="OneHotEncoder.fit_transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.OneHotEncoder.fit_transform">[docs]</a>    <span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="OneHotEncoder.fit_transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.OneHotEncoder.fit_transform">[docs]</a>    <span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Fit OneHotEncoder to X, then transform X.</span>
 
@@ -737,7 +774,7 @@
 
 <span class="sd">        y : None</span>
 <span class="sd">            Ignored. This parameter exists only for compatibility with</span>
-<span class="sd">            :class:`sklearn.pipeline.Pipeline`.</span>
+<span class="sd">            :class:`~sklearn.pipeline.Pipeline`.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -747,7 +784,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_keywords</span><span class="p">()</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="OneHotEncoder.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.OneHotEncoder.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="OneHotEncoder.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.OneHotEncoder.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Transform X using one-hot encoding.</span>
 
@@ -763,7 +800,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="c1"># validation of X happens in _check_X called by _transform</span>
-        <span class="n">X_int</span><span class="p">,</span> <span class="n">X_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">handle_unknown</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span><span class="p">)</span>
+        <span class="n">X_int</span><span class="p">,</span> <span class="n">X_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">handle_unknown</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span><span class="p">,</span>
+                                        <span class="n">force_all_finite</span><span class="o">=</span><span class="s1">&#39;allow-nan&#39;</span><span class="p">)</span>
 
         <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="n">X_int</span><span class="o">.</span><span class="n">shape</span>
 
@@ -794,7 +832,7 @@
         <span class="n">feature_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">n_values</span><span class="p">)</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="p">(</span><span class="n">X_int</span> <span class="o">+</span> <span class="n">feature_indices</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[</span><span class="n">mask</span><span class="p">]</span>
 
-        <span class="n">indptr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n_samples</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+        <span class="n">indptr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n_samples</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
         <span class="n">indptr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X_mask</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">indptr</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
         <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">indptr</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">out</span><span class="o">=</span><span class="n">indptr</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
@@ -808,7 +846,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">out</span></div>
 
-<div class="viewcode-block" id="OneHotEncoder.inverse_transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.OneHotEncoder.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="OneHotEncoder.inverse_transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.OneHotEncoder.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert the data back to the original representation.</span>
 
@@ -875,13 +913,20 @@
                 <span class="c1"># ignored unknown categories: we have a row of all zero</span>
                 <span class="k">if</span> <span class="n">unknown</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
                     <span class="n">found_unknown</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">unknown</span>
-            <span class="c1"># drop will either be None or handle_unknown will be error. If</span>
-            <span class="c1"># self.drop_idx_ is not None, then we can safely assume that all of</span>
-            <span class="c1"># the nulls in each column are the dropped value</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">drop_idx_</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">else</span><span class="p">:</span>
                 <span class="n">dropped</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sub</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">dropped</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-                    <span class="n">X_tr</span><span class="p">[</span><span class="n">dropped</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">categories_</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">drop_idx_</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">drop_idx_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">all_zero_samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flatnonzero</span><span class="p">(</span><span class="n">dropped</span><span class="p">)</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Samples </span><span class="si">{</span><span class="n">all_zero_samples</span><span class="si">}</span><span class="s2"> can not be inverted &quot;</span>
+                            <span class="s2">&quot;when drop=None and handle_unknown=&#39;error&#39; &quot;</span>
+                            <span class="s2">&quot;because they contain all zeros&quot;</span><span class="p">)</span>
+                    <span class="c1"># we can safely assume that all of the nulls in each column</span>
+                    <span class="c1"># are the dropped value</span>
+                    <span class="n">X_tr</span><span class="p">[</span><span class="n">dropped</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">categories_</span><span class="p">[</span><span class="n">i</span><span class="p">][</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">drop_idx_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="p">]</span>
 
             <span class="n">j</span> <span class="o">+=</span> <span class="n">n_categories</span>
 
@@ -896,7 +941,7 @@
 
         <span class="k">return</span> <span class="n">X_tr</span></div>
 
-<div class="viewcode-block" id="OneHotEncoder.get_feature_names"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.OneHotEncoder.get_feature_names">[docs]</a>    <span class="k">def</span> <span class="nf">get_feature_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_features</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="OneHotEncoder.get_feature_names"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.OneHotEncoder.get_feature_names">[docs]</a>    <span class="k">def</span> <span class="nf">get_feature_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_features</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return feature names for output features.</span>
 
@@ -932,7 +977,7 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">feature_names</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="OrdinalEncoder"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.OrdinalEncoder">[docs]</a><span class="k">class</span> <span class="nc">OrdinalEncoder</span><span class="p">(</span><span class="n">_BaseEncoder</span><span class="p">):</span>
+<div class="viewcode-block" id="OrdinalEncoder"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.OrdinalEncoder">[docs]</a><span class="k">class</span> <span class="nc">OrdinalEncoder</span><span class="p">(</span><span class="n">_BaseEncoder</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Encode categorical features as an integer array.</span>
 
@@ -960,19 +1005,36 @@
 <span class="sd">    dtype : number type, default np.float64</span>
 <span class="sd">        Desired dtype of output.</span>
 
+<span class="sd">    handle_unknown : {&#39;error&#39;, &#39;use_encoded_value&#39;}, default=&#39;error&#39;</span>
+<span class="sd">        When set to &#39;error&#39; an error will be raised in case an unknown</span>
+<span class="sd">        categorical feature is present during transform. When set to</span>
+<span class="sd">        &#39;use_encoded_value&#39;, the encoded value of unknown categories will be</span>
+<span class="sd">        set to the value given for the parameter `unknown_value`. In</span>
+<span class="sd">        :meth:`inverse_transform`, an unknown category will be denoted as None.</span>
+
+<span class="sd">        .. versionadded:: 0.24</span>
+
+<span class="sd">    unknown_value : int or np.nan, default=None</span>
+<span class="sd">        When the parameter handle_unknown is set to &#39;use_encoded_value&#39;, this</span>
+<span class="sd">        parameter is required and will set the encoded value of unknown</span>
+<span class="sd">        categories. It has to be distinct from the values used to encode any of</span>
+<span class="sd">        the categories in `fit`. If set to np.nan, the `dtype` parameter must</span>
+<span class="sd">        be a float dtype.</span>
+
+<span class="sd">        .. versionadded:: 0.24</span>
+
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    categories_ : list of arrays</span>
-<span class="sd">        The categories of each feature determined during fitting</span>
-<span class="sd">        (in order of the features in X and corresponding with the output</span>
-<span class="sd">        of ``transform``).</span>
+<span class="sd">        The categories of each feature determined during ``fit`` (in order of</span>
+<span class="sd">        the features in X and corresponding with the output of ``transform``).</span>
+<span class="sd">        This does not include categories that weren&#39;t seen during ``fit``.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    sklearn.preprocessing.OneHotEncoder : Performs a one-hot encoding of</span>
-<span class="sd">      categorical features.</span>
-<span class="sd">    sklearn.preprocessing.LabelEncoder : Encodes target labels with values</span>
-<span class="sd">      between 0 and n_classes-1.</span>
+<span class="sd">    OneHotEncoder : Performs a one-hot encoding of categorical features.</span>
+<span class="sd">    LabelEncoder : Encodes target labels with values between 0 and</span>
+<span class="sd">        ``n_classes-1``.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -996,11 +1058,14 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@_deprecate_positional_args</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">categories</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">categories</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+                 <span class="n">handle_unknown</span><span class="o">=</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="n">unknown_value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">categories</span> <span class="o">=</span> <span class="n">categories</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span> <span class="o">=</span> <span class="n">handle_unknown</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unknown_value</span> <span class="o">=</span> <span class="n">unknown_value</span>
 
-<div class="viewcode-block" id="OrdinalEncoder.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.OrdinalEncoder.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="OrdinalEncoder.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.OrdinalEncoder.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Fit the OrdinalEncoder to X.</span>
 
@@ -1011,17 +1076,43 @@
 
 <span class="sd">        y : None</span>
 <span class="sd">            Ignored. This parameter exists only for compatibility with</span>
-<span class="sd">            :class:`sklearn.pipeline.Pipeline`.</span>
+<span class="sd">            :class:`~sklearn.pipeline.Pipeline`.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        self</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span> <span class="o">==</span> <span class="s1">&#39;use_encoded_value&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">is_scalar_nan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unknown_value</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">kind</span> <span class="o">!=</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;When unknown_value is np.nan, the dtype &quot;</span>
+                        <span class="s2">&quot;parameter should be &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;a float dtype. Got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">.&quot;</span>
+                    <span class="p">)</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unknown_value</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unknown_value should be an integer or &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;np.nan when &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;handle_unknown is &#39;use_encoded_value&#39;, &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">unknown_value</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">unknown_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unknown_value should only be set when &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;handle_unknown is &#39;use_encoded_value&#39;, &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">unknown_value</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span> <span class="o">==</span> <span class="s1">&#39;use_encoded_value&#39;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">feature_cats</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">categories_</span><span class="p">:</span>
+                <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unknown_value</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">feature_cats</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The used value for unknown_value &quot;</span>
+                                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">unknown_value</span><span class="si">}</span><span class="s2"> is one of the &quot;</span>
+                                     <span class="sa">f</span><span class="s2">&quot;values already used for encoding the &quot;</span>
+                                     <span class="sa">f</span><span class="s2">&quot;seen categories.&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="OrdinalEncoder.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.OrdinalEncoder.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="OrdinalEncoder.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.OrdinalEncoder.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Transform X to ordinal codes.</span>
 
@@ -1035,10 +1126,15 @@
 <span class="sd">        X_out : sparse matrix or a 2-d array</span>
 <span class="sd">            Transformed input.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">X_int</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">X_int</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="n">X_int</span><span class="p">,</span> <span class="n">X_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">handle_unknown</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span><span class="p">)</span>
+        <span class="n">X_trans</span> <span class="o">=</span> <span class="n">X_int</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-<div class="viewcode-block" id="OrdinalEncoder.inverse_transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.OrdinalEncoder.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="c1"># create separate category for unknown values</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span> <span class="o">==</span> <span class="s1">&#39;use_encoded_value&#39;</span><span class="p">:</span>
+            <span class="n">X_trans</span><span class="p">[</span><span class="o">~</span><span class="n">X_mask</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unknown_value</span>
+        <span class="k">return</span> <span class="n">X_trans</span></div>
+
+<div class="viewcode-block" id="OrdinalEncoder.inverse_transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.OrdinalEncoder.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert the data back to the original representation.</span>
 
@@ -1068,9 +1164,24 @@
         <span class="n">dt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">find_common_type</span><span class="p">([</span><span class="n">cat</span><span class="o">.</span><span class="n">dtype</span> <span class="k">for</span> <span class="n">cat</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">categories_</span><span class="p">],</span> <span class="p">[])</span>
         <span class="n">X_tr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span>
 
+        <span class="n">found_unknown</span> <span class="o">=</span> <span class="p">{}</span>
+
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_features</span><span class="p">):</span>
             <span class="n">labels</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int64&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="n">X_tr</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">categories_</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">labels</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span> <span class="o">==</span> <span class="s1">&#39;use_encoded_value&#39;</span><span class="p">:</span>
+                <span class="n">unknown_labels</span> <span class="o">=</span> <span class="n">labels</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">unknown_value</span>
+                <span class="n">X_tr</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">categories_</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                    <span class="n">unknown_labels</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">labels</span><span class="p">)]</span>
+                <span class="n">found_unknown</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">unknown_labels</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">X_tr</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">categories_</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">labels</span><span class="p">]</span>
+
+        <span class="c1"># insert None values for unknown values</span>
+        <span class="k">if</span> <span class="n">found_unknown</span><span class="p">:</span>
+            <span class="n">X_tr</span> <span class="o">=</span> <span class="n">X_tr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">mask</span> <span class="ow">in</span> <span class="n">found_unknown</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">X_tr</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">return</span> <span class="n">X_tr</span></div></div>
 </pre></div>
@@ -1079,28 +1190,25 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2018, Micah Smith
+        &#169; Copyright 2018, Micah Smith.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

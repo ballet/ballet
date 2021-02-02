@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>sklearn.random_projection &mdash; ballet 0.7.11 documentation</title>
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,7 +32,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
@@ -50,7 +52,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> ballet
+            <a href="../../index.html" class="icon icon-home"> ballet
           
 
           
@@ -147,7 +149,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../feature_engineering_guide.html">Feature Engineering Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#logical-features">Logical Features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../feature_engineering_guide.html#feature-definitions">Feature Definitions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../feature_engineering_guide.html#why">Why?</a></li>
 </ul>
 </li>
@@ -178,7 +180,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../faq.html">FAQ</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../faq.html#how-can-i-check-the-performance-of-a-feature">How can I check the performance of a feature?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../faq.html#there-was-an-error-submitting-my-feature-using-the-ballet-submit-button-in-jupyter-lab">There was an error submitting my feature using the Ballet Submit button in Jupyter Lab.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html#there-was-an-error-submitting-my-feature-using-assemble-in-jupyter-lab">There was an error submitting my feature using Assemblé in Jupyter Lab.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../faq.html#my-feature-has-a-valid-api-locally-why-was-it-rejected">My feature has a valid API locally, why was it rejected?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../faq.html#why-did-my-feature-fail-the-feature-acceptance-validation">Why did my feature fail the feature acceptance validation?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../faq.html#my-feature-relies-on-a-new-library-how-can-i-add-it-to-the-project">My feature relies on a new library, how can I add it to the project?</a></li>
@@ -312,6 +314,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -337,7 +341,7 @@
             
   <h1>Source code for sklearn.random_projection</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf8</span>
-<span class="sd">&quot;&quot;&quot;Random Projection transformers</span>
+<span class="sd">&quot;&quot;&quot;Random Projection transformers.</span>
 
 <span class="sd">Random Projections are a simple and computationally efficient way to</span>
 <span class="sd">reduce the dimensionality of the data by trading a controlled amount</span>
@@ -379,7 +383,6 @@
 <span class="kn">from</span> <span class="nn">.utils.validation</span> <span class="kn">import</span> <span class="n">check_array</span><span class="p">,</span> <span class="n">check_is_fitted</span>
 <span class="kn">from</span> <span class="nn">.utils.validation</span> <span class="kn">import</span> <span class="n">_deprecate_positional_args</span>
 <span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">DataDimensionalityWarning</span>
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">deprecated</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SparseRandomProjection&quot;</span><span class="p">,</span>
@@ -389,7 +392,7 @@
 
 <span class="nd">@_deprecate_positional_args</span>
 <span class="k">def</span> <span class="nf">johnson_lindenstrauss_min_dim</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Find a &#39;safe&#39; number of components to randomly project to</span>
+    <span class="sd">&quot;&quot;&quot;Find a &#39;safe&#39; number of components to randomly project to.</span>
 
 <span class="sd">    The distortion introduced by a random projection `p` only changes the</span>
 <span class="sd">    distance between two points by a factor (1 +- eps) in an euclidean space</span>
@@ -398,9 +401,9 @@
 
 <span class="sd">      (1 - eps) ||u - v||^2 &lt; ||p(u) - p(v)||^2 &lt; (1 + eps) ||u - v||^2</span>
 
-<span class="sd">    Where u and v are any rows taken from a dataset of shape [n_samples,</span>
-<span class="sd">    n_features], eps is in ]0, 1[ and p is a projection by a random Gaussian</span>
-<span class="sd">    N(0, 1) matrix with shape [n_components, n_features] (or a sparse</span>
+<span class="sd">    Where u and v are any rows taken from a dataset of shape (n_samples,</span>
+<span class="sd">    n_features), eps is in ]0, 1[ and p is a projection by a random Gaussian</span>
+<span class="sd">    N(0, 1) matrix of shape (n_components, n_features) (or a sparse</span>
 <span class="sd">    Achlioptas matrix).</span>
 
 <span class="sd">    The minimum number of components to guarantee the eps-embedding is</span>
@@ -417,18 +420,19 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    n_samples : int or numpy array of int greater than 0,</span>
-<span class="sd">        Number of samples. If an array is given, it will compute</span>
-<span class="sd">        a safe number of components array-wise.</span>
+<span class="sd">    n_samples : int or array-like of int</span>
+<span class="sd">        Number of samples that should be a integer greater than 0. If an array</span>
+<span class="sd">        is given, it will compute a safe number of components array-wise.</span>
 
-<span class="sd">    eps : float or numpy array of float in ]0,1[, optional (default=0.1)</span>
-<span class="sd">        Maximum distortion rate as defined by the Johnson-Lindenstrauss lemma.</span>
-<span class="sd">        If an array is given, it will compute a safe number of components</span>
-<span class="sd">        array-wise.</span>
+<span class="sd">    eps : float or ndarray of shape (n_components,), dtype=float, \</span>
+<span class="sd">            default=0.1</span>
+<span class="sd">        Maximum distortion rate in the range (0,1 ) as defined by the</span>
+<span class="sd">        Johnson-Lindenstrauss lemma. If an array is given, it will compute a</span>
+<span class="sd">        safe number of components array-wise.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    n_components : int or numpy array of int,</span>
+<span class="sd">    n_components : int or ndarray of int</span>
 <span class="sd">        The minimal number of components to guarantee with good probability</span>
 <span class="sd">        an eps-embedding with n_samples.</span>
 
@@ -467,7 +471,7 @@
             <span class="o">%</span> <span class="n">n_samples</span><span class="p">)</span>
 
     <span class="n">denominator</span> <span class="o">=</span> <span class="p">(</span><span class="n">eps</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">eps</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span> <span class="o">/</span> <span class="n">denominator</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span> <span class="o">/</span> <span class="n">denominator</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_check_density</span><span class="p">(</span><span class="n">density</span><span class="p">,</span> <span class="n">n_features</span><span class="p">):</span>
@@ -482,20 +486,13 @@
 
 
 <span class="k">def</span> <span class="nf">_check_input_size</span><span class="p">(</span><span class="n">n_components</span><span class="p">,</span> <span class="n">n_features</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Factorize argument checking for random matrix generation&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Factorize argument checking for random matrix generation.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">n_components</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;n_components must be strictly positive, got </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span>
                          <span class="n">n_components</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">n_features</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;n_features must be strictly positive, got </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span>
                          <span class="n">n_features</span><span class="p">)</span>
-
-
-<span class="c1"># TODO: remove in 0.24</span>
-<span class="nd">@deprecated</span><span class="p">(</span><span class="s2">&quot;gaussian_random_matrix is deprecated in &quot;</span>
-            <span class="s2">&quot;0.22 and will be removed in version 0.24.&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">gaussian_random_matrix</span><span class="p">(</span><span class="n">n_components</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">_gaussian_random_matrix</span><span class="p">(</span><span class="n">n_components</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">random_state</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_gaussian_random_matrix</span><span class="p">(</span><span class="n">n_components</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -515,7 +512,7 @@
 <span class="sd">    n_features : int,</span>
 <span class="sd">        Dimensionality of the original source space.</span>
 
-<span class="sd">    random_state : int, RandomState instance or None, optional (default=None)</span>
+<span class="sd">    random_state : int, RandomState instance or None, default=None</span>
 <span class="sd">        Controls the pseudo random number generator used to generate the matrix</span>
 <span class="sd">        at fit time.</span>
 <span class="sd">        Pass an int for reproducible output across multiple function calls.</span>
@@ -523,7 +520,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    components : numpy array of shape [n_components, n_features]</span>
+<span class="sd">    components : ndarray of shape (n_components, n_features)</span>
 <span class="sd">        The generated Gaussian random matrix.</span>
 
 <span class="sd">    See Also</span>
@@ -538,18 +535,9 @@
     <span class="k">return</span> <span class="n">components</span>
 
 
-<span class="c1"># TODO: remove in 0.24</span>
-<span class="nd">@deprecated</span><span class="p">(</span><span class="s2">&quot;gaussian_random_matrix is deprecated in &quot;</span>
-            <span class="s2">&quot;0.22 and will be removed in version 0.24.&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">sparse_random_matrix</span><span class="p">(</span><span class="n">n_components</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
-                         <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">_sparse_random_matrix</span><span class="p">(</span><span class="n">n_components</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">density</span><span class="p">,</span>
-                                 <span class="n">random_state</span><span class="p">)</span>
-
-
 <span class="k">def</span> <span class="nf">_sparse_random_matrix</span><span class="p">(</span><span class="n">n_components</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
                           <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generalized Achlioptas random sparse matrix for random projection</span>
+    <span class="sd">&quot;&quot;&quot;Generalized Achlioptas random sparse matrix for random projection.</span>
 
 <span class="sd">    Setting density to 1 / 3 will yield the original matrix by Dimitris</span>
 <span class="sd">    Achlioptas while setting a lower value will yield the generalization</span>
@@ -572,8 +560,9 @@
 <span class="sd">    n_features : int,</span>
 <span class="sd">        Dimensionality of the original source space.</span>
 
-<span class="sd">    density : float in range ]0, 1] or &#39;auto&#39;, optional (default=&#39;auto&#39;)</span>
-<span class="sd">        Ratio of non-zero component in the random projection matrix.</span>
+<span class="sd">    density : float or &#39;auto&#39;, default=&#39;auto&#39;</span>
+<span class="sd">        Ratio of non-zero component in the random projection matrix in the</span>
+<span class="sd">        range `(0, 1]`</span>
 
 <span class="sd">        If density = &#39;auto&#39;, the value is set to the minimum density</span>
 <span class="sd">        as recommended by Ping Li et al.: 1 / sqrt(n_features).</span>
@@ -581,7 +570,7 @@
 <span class="sd">        Use density = 1 / 3.0 if you want to reproduce the results from</span>
 <span class="sd">        Achlioptas, 2001.</span>
 
-<span class="sd">    random_state : int, RandomState instance or None, optional (default=None)</span>
+<span class="sd">    random_state : int, RandomState instance or None, default=None</span>
 <span class="sd">        Controls the pseudo random number generator used to generate the matrix</span>
 <span class="sd">        at fit time.</span>
 <span class="sd">        Pass an int for reproducible output across multiple function calls.</span>
@@ -589,8 +578,9 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    components : array or CSR matrix with shape [n_components, n_features]</span>
-<span class="sd">        The generated Gaussian random matrix.</span>
+<span class="sd">    components : {ndarray, sparse matrix} of shape (n_components, n_features)</span>
+<span class="sd">        The generated Gaussian random matrix. Sparse matrix will be of CSR</span>
+<span class="sd">        format.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -659,7 +649,7 @@
 
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">_make_random_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_components</span><span class="p">,</span> <span class="n">n_features</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Generate the random projection matrix</span>
+        <span class="sd">&quot;&quot;&quot;Generate the random projection matrix.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -671,17 +661,18 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        components : numpy array or CSR matrix [n_components, n_features]</span>
-<span class="sd">            The generated random matrix.</span>
+<span class="sd">        components : {ndarray, sparse matrix} of shape \</span>
+<span class="sd">                (n_components, n_features)</span>
+<span class="sd">            The generated random matrix. Sparse matrix will be of CSR format.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generate a sparse random projection matrix</span>
+        <span class="sd">&quot;&quot;&quot;Generate a sparse random projection matrix.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : numpy array or scipy.sparse of shape [n_samples, n_features]</span>
+<span class="sd">        X : {ndarray, sparse matrix} of shape (n_samples, n_features)</span>
 <span class="sd">            Training set: only the shape is used to find optimal random</span>
 <span class="sd">            matrix dimensions based on the theory referenced in the</span>
 <span class="sd">            afore mentioned papers.</span>
@@ -745,12 +736,12 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : numpy array or scipy.sparse of shape [n_samples, n_features]</span>
+<span class="sd">        X : {ndarray, sparse matrix} of shape (n_samples, n_features)</span>
 <span class="sd">            The input data to project into a smaller dimensional space.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        X_new : numpy array or scipy sparse of shape [n_samples, n_components]</span>
+<span class="sd">        X_new : {ndarray, sparse matrix} of shape (n_samples, n_components)</span>
 <span class="sd">            Projected array.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">accept_sparse</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;csr&#39;</span><span class="p">,</span> <span class="s1">&#39;csc&#39;</span><span class="p">])</span>
@@ -768,8 +759,8 @@
         <span class="k">return</span> <span class="n">X_new</span>
 
 
-<div class="viewcode-block" id="GaussianRandomProjection"><a class="viewcode-back" href="../../api/ballet.eng.sklearn.html#ballet.eng.external.GaussianRandomProjection">[docs]</a><span class="k">class</span> <span class="nc">GaussianRandomProjection</span><span class="p">(</span><span class="n">BaseRandomProjection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Reduce dimensionality through Gaussian random projection</span>
+<div class="viewcode-block" id="GaussianRandomProjection"><a class="viewcode-back" href="../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.GaussianRandomProjection">[docs]</a><span class="k">class</span> <span class="nc">GaussianRandomProjection</span><span class="p">(</span><span class="n">BaseRandomProjection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Reduce dimensionality through Gaussian random projection.</span>
 
 <span class="sd">    The components of the random matrix are drawn from N(0, 1 / n_components).</span>
 
@@ -779,7 +770,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    n_components : int or &#39;auto&#39;, optional (default = &#39;auto&#39;)</span>
+<span class="sd">    n_components : int or &#39;auto&#39;, default=&#39;auto&#39;</span>
 <span class="sd">        Dimensionality of the target projection space.</span>
 
 <span class="sd">        n_components can be automatically adjusted according to the</span>
@@ -791,15 +782,15 @@
 <span class="sd">        very conservative estimated of the required number of components</span>
 <span class="sd">        as it makes no assumption on the structure of the dataset.</span>
 
-<span class="sd">    eps : strictly positive float, optional (default=0.1)</span>
+<span class="sd">    eps : float, default=0.1</span>
 <span class="sd">        Parameter to control the quality of the embedding according to</span>
-<span class="sd">        the Johnson-Lindenstrauss lemma when n_components is set to</span>
-<span class="sd">        &#39;auto&#39;.</span>
+<span class="sd">        the Johnson-Lindenstrauss lemma when `n_components` is set to</span>
+<span class="sd">        &#39;auto&#39;. The value should be strictly positive.</span>
 
 <span class="sd">        Smaller values lead to better embedding and higher number of</span>
 <span class="sd">        dimensions (n_components) in the target projection space.</span>
 
-<span class="sd">    random_state : int, RandomState instance or None, optional (default=None)</span>
+<span class="sd">    random_state : int, RandomState instance or None, default=None</span>
 <span class="sd">        Controls the pseudo random number generator used to generate the</span>
 <span class="sd">        projection matrix at fit time.</span>
 <span class="sd">        Pass an int for reproducible output across multiple function calls.</span>
@@ -810,7 +801,7 @@
 <span class="sd">    n_components_ : int</span>
 <span class="sd">        Concrete number of components computed when n_components=&quot;auto&quot;.</span>
 
-<span class="sd">    components_ : numpy array of shape [n_components, n_features]</span>
+<span class="sd">    components_ : ndarray of shape (n_components, n_features)</span>
 <span class="sd">        Random matrix used for the projection.</span>
 
 <span class="sd">    Examples</span>
@@ -838,7 +829,7 @@
             <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_make_random_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_components</span><span class="p">,</span> <span class="n">n_features</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Generate the random projection matrix</span>
+        <span class="sd">&quot;&quot;&quot; Generate the random projection matrix.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -850,8 +841,9 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        components : numpy array or CSR matrix [n_components, n_features]</span>
-<span class="sd">            The generated random matrix.</span>
+<span class="sd">        components : {ndarray, sparse matrix} of shape \</span>
+<span class="sd">                (n_components, n_features)</span>
+<span class="sd">            The generated random matrix. Sparse matrix will be of CSR format.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">random_state</span> <span class="o">=</span> <span class="n">check_random_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
@@ -860,8 +852,8 @@
                                        <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="SparseRandomProjection"><a class="viewcode-back" href="../../api/ballet.eng.sklearn.html#ballet.eng.external.SparseRandomProjection">[docs]</a><span class="k">class</span> <span class="nc">SparseRandomProjection</span><span class="p">(</span><span class="n">BaseRandomProjection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Reduce dimensionality through sparse random projection</span>
+<div class="viewcode-block" id="SparseRandomProjection"><a class="viewcode-back" href="../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.SparseRandomProjection">[docs]</a><span class="k">class</span> <span class="nc">SparseRandomProjection</span><span class="p">(</span><span class="n">BaseRandomProjection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Reduce dimensionality through sparse random projection.</span>
 
 <span class="sd">    Sparse random matrix is an alternative to dense random</span>
 <span class="sd">    projection matrix that guarantees similar embedding quality while being</span>
@@ -881,7 +873,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    n_components : int or &#39;auto&#39;, optional (default = &#39;auto&#39;)</span>
+<span class="sd">    n_components : int or &#39;auto&#39;, default=&#39;auto&#39;</span>
 <span class="sd">        Dimensionality of the target projection space.</span>
 
 <span class="sd">        n_components can be automatically adjusted according to the</span>
@@ -893,8 +885,9 @@
 <span class="sd">        very conservative estimated of the required number of components</span>
 <span class="sd">        as it makes no assumption on the structure of the dataset.</span>
 
-<span class="sd">    density : float in range ]0, 1], optional (default=&#39;auto&#39;)</span>
-<span class="sd">        Ratio of non-zero component in the random projection matrix.</span>
+<span class="sd">    density : float or &#39;auto&#39;, default=&#39;auto&#39;</span>
+<span class="sd">        Ratio in the range (0, 1] of non-zero component in the random</span>
+<span class="sd">        projection matrix.</span>
 
 <span class="sd">        If density = &#39;auto&#39;, the value is set to the minimum density</span>
 <span class="sd">        as recommended by Ping Li et al.: 1 / sqrt(n_features).</span>
@@ -902,15 +895,15 @@
 <span class="sd">        Use density = 1 / 3.0 if you want to reproduce the results from</span>
 <span class="sd">        Achlioptas, 2001.</span>
 
-<span class="sd">    eps : strictly positive float, optional, (default=0.1)</span>
+<span class="sd">    eps : float, default=0.1</span>
 <span class="sd">        Parameter to control the quality of the embedding according to</span>
 <span class="sd">        the Johnson-Lindenstrauss lemma when n_components is set to</span>
-<span class="sd">        &#39;auto&#39;.</span>
+<span class="sd">        &#39;auto&#39;. This value should be strictly positive.</span>
 
 <span class="sd">        Smaller values lead to better embedding and higher number of</span>
 <span class="sd">        dimensions (n_components) in the target projection space.</span>
 
-<span class="sd">    dense_output : boolean, optional (default=False)</span>
+<span class="sd">    dense_output : bool, default=False</span>
 <span class="sd">        If True, ensure that the output of the random projection is a</span>
 <span class="sd">        dense numpy array even if the input and random projection matrix</span>
 <span class="sd">        are both sparse. In practice, if the number of components is</span>
@@ -921,7 +914,7 @@
 <span class="sd">        If False, the projected data uses a sparse representation if</span>
 <span class="sd">        the input is sparse.</span>
 
-<span class="sd">    random_state : int, RandomState instance or None, optional (default=None)</span>
+<span class="sd">    random_state : int, RandomState instance or None, default=None</span>
 <span class="sd">        Controls the pseudo random number generator used to generate the</span>
 <span class="sd">        projection matrix at fit time.</span>
 <span class="sd">        Pass an int for reproducible output across multiple function calls.</span>
@@ -932,8 +925,9 @@
 <span class="sd">    n_components_ : int</span>
 <span class="sd">        Concrete number of components computed when n_components=&quot;auto&quot;.</span>
 
-<span class="sd">    components_ : CSR matrix with shape [n_components, n_features]</span>
-<span class="sd">        Random matrix used for the projection.</span>
+<span class="sd">    components_ : sparse matrix of shape (n_components, n_features)</span>
+<span class="sd">        Random matrix used for the projection. Sparse matrix will be of CSR</span>
+<span class="sd">        format.</span>
 
 <span class="sd">    density_ : float in range 0.0 - 1.0</span>
 <span class="sd">        Concrete density computed from when density = &quot;auto&quot;.</span>
@@ -983,16 +977,17 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        n_components : int,</span>
+<span class="sd">        n_components : int</span>
 <span class="sd">            Dimensionality of the target projection space.</span>
 
-<span class="sd">        n_features : int,</span>
+<span class="sd">        n_features : int</span>
 <span class="sd">            Dimensionality of the original source space.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        components : numpy array or CSR matrix [n_components, n_features]</span>
-<span class="sd">            The generated random matrix.</span>
+<span class="sd">        components : {ndarray, sparse matrix} of shape \</span>
+<span class="sd">                (n_components, n_features)</span>
+<span class="sd">            The generated random matrix. Sparse matrix will be of CSR format.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">random_state</span> <span class="o">=</span> <span class="n">check_random_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
@@ -1007,28 +1002,25 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2018, Micah Smith
+        &#169; Copyright 2018, Micah Smith.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

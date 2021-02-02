@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Feature Engineering Guide &mdash; ballet 0.7.11 documentation</title>
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,7 +32,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -52,7 +54,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ballet
+            <a href="index.html" class="icon icon-home"> ballet
           
 
           
@@ -149,7 +151,7 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Feature Engineering Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#logical-features">Logical Features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#feature-definitions">Feature Definitions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#why">Why?</a></li>
 </ul>
 </li>
@@ -180,7 +182,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#how-can-i-check-the-performance-of-a-feature">How can I check the performance of a feature?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#there-was-an-error-submitting-my-feature-using-the-ballet-submit-button-in-jupyter-lab">There was an error submitting my feature using the Ballet Submit button in Jupyter Lab.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#there-was-an-error-submitting-my-feature-using-assemble-in-jupyter-lab">There was an error submitting my feature using Assemblé in Jupyter Lab.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#my-feature-has-a-valid-api-locally-why-was-it-rejected">My feature has a valid API locally, why was it rejected?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-did-my-feature-fail-the-feature-acceptance-validation">Why did my feature fail the feature acceptance validation?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#my-feature-relies-on-a-new-library-how-can-i-add-it-to-the-project">My feature relies on a new library, how can I add it to the project?</a></li>
@@ -314,6 +316,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -325,7 +329,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             
               <a href="https://github.com/HDI-Project/ballet/blob/master/docs/feature_engineering_guide.rst" class="fa fa-github"> Edit on GitHub</a>
             
@@ -345,7 +349,7 @@
 <h1>Feature Engineering Guide<a class="headerlink" href="#feature-engineering-guide" title="Permalink to this headline">¶</a></h1>
 <p>Feature engineering is the process of transforming raw variables into
 feature values that can be input to a learning algorithm. We include every step that is needed to go from the raw dataset to the learning algorithm: cleaning missing values and outliers, scaling values, deriving complex features from multiple variables, reducing dimensionality, encoding categorical and ordinal variables, and more.</p>
-<p>In Ballet, feature engineering is centered around creating logical features.
+<p>In Ballet, feature engineering is centered around creating feature definitions.
 These are modular, flexible, and expressive and will allow us to compose an
 entire feature engineering pipeline out of individual feature objects.</p>
 <p>Loosely, a feature is a tuple <code class="docutils literal notranslate"><span class="pre">(input_columns,</span> <span class="pre">transformer_to_apply)</span></code>.
@@ -355,14 +359,14 @@ columns and a transformer to apply on them.</p>
 <p class="admonition-title">Tip</p>
 <p>By the end of this guide, you will</p>
 <ol class="arabic simple">
-<li><p>understand the concept of a “logical feature”</p></li>
+<li><p>understand the concept of a “feature definition”</p></li>
 <li><p>be able to write a simple <code class="docutils literal notranslate"><span class="pre">Feature</span></code> in Ballet</p></li>
 <li><p>be familiar with the feature engineering primitives provided in the <a class="reference internal" href="api/ballet.eng.html#module-ballet.eng" title="ballet.eng"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ballet.eng</span></code></a> package</p></li>
 </ol>
 </div>
-<div class="section" id="logical-features">
-<h2>Logical Features<a class="headerlink" href="#logical-features" title="Permalink to this headline">¶</a></h2>
-<p>A logical feature (or simply “feature”) is the semantics and implementation of code to extract feature values from raw data. It is a learned map from raw variables in one data instance to feature values.</p>
+<div class="section" id="feature-definitions">
+<h2>Feature Definitions<a class="headerlink" href="#feature-definitions" title="Permalink to this headline">¶</a></h2>
+<p>A feature definition (or simply “feature”) is the semantics and implementation of code to extract feature values from raw data. It is a learned map from raw variables in one data instance to feature values.</p>
 <p>Less formally, a feature has</p>
 <ul class="simple">
 <li><p>a meaning, like “column 1 after it has been cleaned using information from column 2”</p></li>
@@ -636,7 +640,7 @@ style.</p>
 </ul>
 <p>All of these are further re-exported in the catch-all <code class="docutils literal notranslate"><span class="pre">external</span></code> module:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="api/ballet.eng.external.html#module-ballet.eng.external" title="ballet.eng.external"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ballet.eng.external</span></code></a> (all external primitives)</p></li>
+<li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">ballet.eng.external</span></code> (all external primitives)</p></li>
 </ul>
 </div>
 </div>
@@ -800,37 +804,29 @@ demonstrates the steps required to roll your own transformer.</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="faq.html" class="btn btn-neutral float-right" title="FAQ" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="contributor_guide.html" class="btn btn-neutral float-left" title="Contributor Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="faq.html" class="btn btn-neutral float-right" title="FAQ" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="contributor_guide.html" class="btn btn-neutral float-left" title="Contributor Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2018, Micah Smith
+        &#169; Copyright 2018, Micah Smith.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>ballet.validation.common &mdash; ballet 0.7.11 documentation</title>
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,7 +32,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
@@ -50,7 +52,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> ballet
+            <a href="../../../index.html" class="icon icon-home"> ballet
           
 
           
@@ -147,7 +149,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../feature_engineering_guide.html">Feature Engineering Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#logical-features">Logical Features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#feature-definitions">Feature Definitions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#why">Why?</a></li>
 </ul>
 </li>
@@ -178,7 +180,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../faq.html">FAQ</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../faq.html#how-can-i-check-the-performance-of-a-feature">How can I check the performance of a feature?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#there-was-an-error-submitting-my-feature-using-the-ballet-submit-button-in-jupyter-lab">There was an error submitting my feature using the Ballet Submit button in Jupyter Lab.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#there-was-an-error-submitting-my-feature-using-assemble-in-jupyter-lab">There was an error submitting my feature using Assemblé in Jupyter Lab.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../faq.html#my-feature-has-a-valid-api-locally-why-was-it-rejected">My feature has a valid API locally, why was it rejected?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../faq.html#why-did-my-feature-fail-the-feature-acceptance-validation">Why did my feature fail the feature acceptance validation?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../faq.html#my-feature-relies-on-a-new-library-how-can-i-add-it-to-the-project">My feature relies on a new library, how can I add it to the project?</a></li>
@@ -312,6 +314,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -339,22 +343,22 @@
 <span></span><span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">ModuleType</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Callable</span><span class="p">,</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">)</span>
+    <span class="n">Callable</span><span class="p">,</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,)</span>
 
 <span class="kn">import</span> <span class="nn">git</span>
 <span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">collecting</span><span class="p">,</span> <span class="n">complement</span><span class="p">,</span> <span class="n">lfilter</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> <span class="n">post_processing</span><span class="p">,</span> <span class="n">silent</span><span class="p">)</span>
+    <span class="n">collecting</span><span class="p">,</span> <span class="n">complement</span><span class="p">,</span> <span class="n">lfilter</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> <span class="n">post_processing</span><span class="p">,</span> <span class="n">silent</span><span class="p">,)</span>
 <span class="kn">from</span> <span class="nn">stacklog</span> <span class="kn">import</span> <span class="n">stacklog</span>
 
 <span class="kn">from</span> <span class="nn">ballet.contrib</span> <span class="kn">import</span> <span class="n">_collect_contrib_feature_from_module</span>
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">BalletError</span><span class="p">,</span> <span class="n">FeatureCollectionError</span><span class="p">,</span> <span class="n">NoFeaturesCollectedError</span><span class="p">)</span>
+    <span class="n">BalletError</span><span class="p">,</span> <span class="n">FeatureCollectionError</span><span class="p">,</span> <span class="n">NoFeaturesCollectedError</span><span class="p">,)</span>
 <span class="kn">from</span> <span class="nn">ballet.feature</span> <span class="kn">import</span> <span class="n">Feature</span>
 <span class="kn">from</span> <span class="nn">ballet.project</span> <span class="kn">import</span> <span class="n">Project</span>
 <span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">make_plural_suffix</span>
 <span class="kn">from</span> <span class="nn">ballet.util.ci</span> <span class="kn">import</span> <span class="n">TravisPullRequestBuildDiffer</span><span class="p">,</span> <span class="n">can_use_travis_differ</span>
 <span class="kn">from</span> <span class="nn">ballet.util.git</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Differ</span><span class="p">,</span> <span class="n">LocalMergeBuildDiffer</span><span class="p">,</span> <span class="n">LocalPullRequestBuildDiffer</span><span class="p">)</span>
+    <span class="n">Differ</span><span class="p">,</span> <span class="n">LocalMergeBuildDiffer</span><span class="p">,</span> <span class="n">LocalPullRequestBuildDiffer</span><span class="p">,)</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">ballet.util.mod</span> <span class="kn">import</span> <span class="n">import_module_at_path</span><span class="p">,</span> <span class="n">relpath_to_modname</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.base</span> <span class="kn">import</span> <span class="n">FeaturePerformanceEvaluator</span>
@@ -628,28 +632,25 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2018, Micah Smith
+        &#169; Copyright 2018, Micah Smith.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

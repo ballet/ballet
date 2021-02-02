@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>tsfresh.transformers.feature_augmenter &mdash; ballet 0.7.11 documentation</title>
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,7 +32,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
@@ -50,7 +52,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> ballet
+            <a href="../../../index.html" class="icon icon-home"> ballet
           
 
           
@@ -147,7 +149,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../feature_engineering_guide.html">Feature Engineering Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#logical-features">Logical Features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#feature-definitions">Feature Definitions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#why">Why?</a></li>
 </ul>
 </li>
@@ -178,7 +180,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../faq.html">FAQ</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../faq.html#how-can-i-check-the-performance-of-a-feature">How can I check the performance of a feature?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#there-was-an-error-submitting-my-feature-using-the-ballet-submit-button-in-jupyter-lab">There was an error submitting my feature using the Ballet Submit button in Jupyter Lab.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#there-was-an-error-submitting-my-feature-using-assemble-in-jupyter-lab">There was an error submitting my feature using Assemblé in Jupyter Lab.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../faq.html#my-feature-has-a-valid-api-locally-why-was-it-rejected">My feature has a valid API locally, why was it rejected?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../faq.html#why-did-my-feature-fail-the-feature-acceptance-validation">Why did my feature fail the feature acceptance validation?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../faq.html#my-feature-relies-on-a-new-library-how-can-i-add-it-to-the-project">My feature relies on a new library, how can I add it to the project?</a></li>
@@ -312,6 +314,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -347,7 +351,7 @@
 <span class="kn">from</span> <span class="nn">tsfresh.utilities.dataframe_functions</span> <span class="kn">import</span> <span class="n">restrict_input_to_index</span>
 
 
-<div class="viewcode-block" id="FeatureAugmenter"><a class="viewcode-back" href="../../../api/ballet.eng.tsfresh.html#ballet.eng.external.FeatureAugmenter">[docs]</a><span class="k">class</span> <span class="nc">FeatureAugmenter</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
+<div class="viewcode-block" id="FeatureAugmenter"><a class="viewcode-back" href="../../../api/ballet.eng.tsfresh.html#ballet.eng.tsfresh.FeatureAugmenter">[docs]</a><span class="k">class</span> <span class="nc">FeatureAugmenter</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sklearn-compatible estimator, for calculating and adding many features calculated from a given time series</span>
 <span class="sd">    to the data. It is basically a wrapper around :func:`~tsfresh.feature_extraction.extract_features`.</span>
@@ -482,7 +486,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">timeseries_container</span> <span class="o">=</span> <span class="n">timeseries_container</span>
 
-<div class="viewcode-block" id="FeatureAugmenter.set_timeseries_container"><a class="viewcode-back" href="../../../api/ballet.eng.tsfresh.html#ballet.eng.external.FeatureAugmenter.set_timeseries_container">[docs]</a>    <span class="k">def</span> <span class="nf">set_timeseries_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeseries_container</span><span class="p">):</span>
+<div class="viewcode-block" id="FeatureAugmenter.set_timeseries_container"><a class="viewcode-back" href="../../../api/ballet.eng.tsfresh.html#ballet.eng.tsfresh.FeatureAugmenter.set_timeseries_container">[docs]</a>    <span class="k">def</span> <span class="nf">set_timeseries_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeseries_container</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the timeseries, with which the features will be calculated. For a format of the time series container,</span>
 <span class="sd">        please refer to :mod:`~tsfresh.feature_extraction.extraction`. The timeseries must contain the same indices</span>
@@ -498,7 +502,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">timeseries_container</span> <span class="o">=</span> <span class="n">timeseries_container</span></div>
 
-<div class="viewcode-block" id="FeatureAugmenter.fit"><a class="viewcode-back" href="../../../api/ballet.eng.tsfresh.html#ballet.eng.external.FeatureAugmenter.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="FeatureAugmenter.fit"><a class="viewcode-back" href="../../../api/ballet.eng.tsfresh.html#ballet.eng.tsfresh.FeatureAugmenter.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The fit function is not needed for this estimator. It just does nothing and is here for compatibility reasons.</span>
 
@@ -513,7 +517,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="FeatureAugmenter.transform"><a class="viewcode-back" href="../../../api/ballet.eng.tsfresh.html#ballet.eng.external.FeatureAugmenter.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="FeatureAugmenter.transform"><a class="viewcode-back" href="../../../api/ballet.eng.tsfresh.html#ballet.eng.tsfresh.FeatureAugmenter.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add the features calculated using the timeseries_container and add them to the corresponding rows in the input</span>
 <span class="sd">        pandas.DataFrame X.</span>
@@ -556,28 +560,25 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2018, Micah Smith
+        &#169; Copyright 2018, Micah Smith.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

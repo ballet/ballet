@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Maintainer Guide &mdash; ballet 0.7.11 documentation</title>
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,7 +32,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -52,7 +54,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ballet
+            <a href="index.html" class="icon icon-home"> ballet
           
 
           
@@ -149,7 +151,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="feature_engineering_guide.html">Feature Engineering Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="feature_engineering_guide.html#logical-features">Logical Features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="feature_engineering_guide.html#feature-definitions">Feature Definitions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#why">Why?</a></li>
 </ul>
 </li>
@@ -180,7 +182,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#how-can-i-check-the-performance-of-a-feature">How can I check the performance of a feature?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#there-was-an-error-submitting-my-feature-using-the-ballet-submit-button-in-jupyter-lab">There was an error submitting my feature using the Ballet Submit button in Jupyter Lab.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#there-was-an-error-submitting-my-feature-using-assemble-in-jupyter-lab">There was an error submitting my feature using Assemblé in Jupyter Lab.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#my-feature-has-a-valid-api-locally-why-was-it-rejected">My feature has a valid API locally, why was it rejected?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-did-my-feature-fail-the-feature-acceptance-validation">Why did my feature fail the feature acceptance validation?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#my-feature-relies-on-a-new-library-how-can-i-add-it-to-the-project">My feature relies on a new library, how can I add it to the project?</a></li>
@@ -314,6 +316,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -325,7 +329,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             
               <a href="https://github.com/HDI-Project/ballet/blob/master/docs/maintainer_guide.rst" class="fa fa-github"> Edit on GitHub</a>
             
@@ -357,12 +361,12 @@ we will call <code class="docutils literal notranslate"><span class="pre">myproj
 <h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h3>
 <p>Before creating the project, the maintainer must have a training dataset used for developing
 features and details about the prediction problem they are ultimately trying to solve.</p>
-<p>Then, <a class="reference external" href="Installation.html">install Ballet</a> on your development machine.</p>
+<p>Then, <a class="reference internal" href="installation.html"><span class="doc">install Ballet</span></a> on your development machine.</p>
 </div>
 <div class="section" id="project-instantiation">
 <h3>Project instantiation<a class="headerlink" href="#project-instantiation" title="Permalink to this headline">¶</a></h3>
 <p>To instantiate a project, use the <code class="docutils literal notranslate"><span class="pre">ballet</span> <span class="pre">quickstart</span></code> command:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> ballet quickstart
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ballet quickstart
 <span class="go">Generating new ballet project...</span>
 <span class="go">full_name [Your Name]: Jane Developer</span>
 <span class="go">email [you@example.com]: jane@developer.org</span>
@@ -432,7 +436,7 @@ features and details about the prediction problem they are ultimately trying to 
 project maintainer. The resulting files are then committed to a new git repository. Note that the
 specification of a scorer for the not-chosen problem type can be skipped (by selecting <code class="docutils literal notranslate"><span class="pre">n/a</span></code>).</p>
 <p>Let’s see what files have we have created:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> tree -a ballet-my-project -I .git
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>tree -a ballet-my-project -I .git
 <span class="go">ballet-my-project</span>
 <span class="go">├── .cookiecutter_context.json</span>
 <span class="go">├── .github</span>
@@ -475,9 +479,9 @@ functionality are already provided by the template but you can further adapt the
 <p>For local development, you can then install your project. This will make your feature
 engineering pipeline accessible in interactive settings (Python interpreter, Jupyter notebook)
 and as a command-line tool.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">cd</span> ballet-my-project
-<span class="gp">$</span> conda create -n myproject -y <span class="o">&amp;&amp;</span> conda activate myproject  <span class="c1"># or your preferred environment tool</span>
-<span class="gp gp-VirtualEnv">(myproject)</span> <span class="gp">$</span> pip install invoke <span class="o">&amp;&amp;</span> invoke install
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span> ballet-my-project
+<span class="gp">$ </span>conda create -n myproject -y <span class="o">&amp;&amp;</span> conda activate myproject  <span class="c1"># or your preferred environment tool</span>
+<span class="gp gp-VirtualEnv">(myproject)</span> <span class="gp">$ </span>pip install invoke <span class="o">&amp;&amp;</span> invoke install
 </pre></div>
 </div>
 </div>
@@ -486,14 +490,14 @@ and as a command-line tool.</p>
 <p>Under the hood, contributors will collaborate using the powerful functionality provided by git
 and GitHub. In fact, after the quickstart step, you already have a git-tracked repository and a
 git remote set up.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> git log
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git log
 <span class="go">commit 5c8ec6773aff4030fc1256a7c9e13675d620bb6e (HEAD -&gt; master, project-template)</span>
 <span class="go">Author: Jane Developer &lt;jane@developer.org&gt;</span>
 <span class="go">Date:   Tue Apr 16 17:27:44 2019 -0400</span>
 
 <span class="go">    Automatically generated files from ballet quickstart</span>
 
-<span class="gp">$</span> git remote -v
+<span class="gp">$ </span>git remote -v
 <span class="go">origin       git@github.com:jane_developer/ballet-my-project (fetch)</span>
 <span class="go">origin       git@github.com:jane_developer/ballet-my-project (push)</span>
 </pre></div>
@@ -502,14 +506,14 @@ git remote set up.</p>
 <code class="docutils literal notranslate"><span class="pre">github_owner</span></code> that you specified earlier (in this case, <code class="docutils literal notranslate"><span class="pre">jane_developer</span></code>). Do not
 initialize the project with any sample files that GitHub offers.</p>
 <p>After you having created the project on GitHub, push your local copy.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> git push --all origin
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git push --all origin
 </pre></div>
 </div>
 </div>
 <div class="section" id="enabling-continuous-integration">
 <h3>Enabling continuous integration<a class="headerlink" href="#enabling-continuous-integration" title="Permalink to this headline">¶</a></h3>
 <p>Ballet makes uses of the continuous integration service <a class="reference external" href="https://travis-ci.com">Travis CI</a> in order to validate code
-that contributors propose as well as perform streaming logical feature selection. You must
+that contributors propose as well as perform streaming feature definition selection. You must
 enable Travis CI for your project on GitHub by`following these simple directions
 &lt;<a class="reference external" href="https://docs.travis-ci.com/user/tutorial/#to-get-started-with-travis-ci-using-github">https://docs.travis-ci.com/user/tutorial/#to-get-started-with-travis-ci-using-github</a>&gt;`_. You can
 skip any steps that have to do with customizing the <code class="docutils literal notranslate"><span class="pre">.travis.yml</span></code> file, as we have already done
@@ -533,8 +537,7 @@ fail the PR which might accidentally pass otherwise.</p>
 <p>At this point, your feature engineering pipeline contains no features. How will your
 contributors add more?</p>
 <p>Using any of a number of development workflows, contributors write new features and submit them
-to your project for validation. For more details on the contributor workflow, see <a class="reference external" href="contributor_guide.html">Contributor
-Guide</a>.</p>
+to your project for validation. For more details on the contributor workflow, see <a class="reference internal" href="contributor_guide.html"><span class="doc">Contributor Guide</span></a>.</p>
 <div class="section" id="validating-features">
 <h3>Validating features<a class="headerlink" href="#validating-features" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">ballet-my-project</span></code> repository has received a new pull request which triggers an automatic
@@ -582,7 +585,7 @@ engineer features from new data points or datasets.</p>
 </pre></div>
 </div>
 <p>For command-line usage:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> python -m myproject engineer-features path/to/test/data path/to/features/output
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>python -m myproject engineer-features path/to/test/data path/to/features/output
 </pre></div>
 </div>
 </div>
@@ -591,7 +594,7 @@ engineer features from new data points or datasets.</p>
 <p>If there are updates to the Ballet framework after you have started working on your project, you
 can access them easily.</p>
 <p>First, update the <code class="docutils literal notranslate"><span class="pre">ballet</span></code> package itself using the usual <code class="docutils literal notranslate"><span class="pre">pip</span></code> mechanism:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> pip install --upgrade ballet
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pip install --upgrade ballet
 </pre></div>
 </div>
 <p>Pip will complain that the upgraded version of ballet is incompatible with the version required
@@ -599,7 +602,7 @@ by the installed project. That is okay, as we will presently update the project 
 with the new version of ballet.</p>
 <p>Next, use the updated version of <code class="docutils literal notranslate"><span class="pre">ballet</span></code> to incorporate any updates to the “upstream” project
 template used to create new projects.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> ballet update-project-template --push
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ballet update-project-template --push
 </pre></div>
 </div>
 <p>This command will re-render the project template using the saved inputs you have provided in the
@@ -615,37 +618,29 @@ detail <a class="reference external" href="cli_reference.html#ballet-update-proj
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="contributor_guide.html" class="btn btn-neutral float-right" title="Contributor Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="contributor_guide.html" class="btn btn-neutral float-right" title="Contributor Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2018, Micah Smith
+        &#169; Copyright 2018, Micah Smith.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

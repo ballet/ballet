@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>ballet.eng.sklearn module &mdash; ballet 0.7.11 documentation</title>
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,7 +32,6 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
@@ -52,7 +54,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> ballet
+            <a href="../index.html" class="icon icon-home"> ballet
           
 
           
@@ -149,7 +151,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../feature_engineering_guide.html">Feature Engineering Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../feature_engineering_guide.html#logical-features">Logical Features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../feature_engineering_guide.html#feature-definitions">Feature Definitions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../feature_engineering_guide.html#why">Why?</a></li>
 </ul>
 </li>
@@ -180,7 +182,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../faq.html#how-can-i-check-the-performance-of-a-feature">How can I check the performance of a feature?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../faq.html#there-was-an-error-submitting-my-feature-using-the-ballet-submit-button-in-jupyter-lab">There was an error submitting my feature using the Ballet Submit button in Jupyter Lab.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#there-was-an-error-submitting-my-feature-using-assemble-in-jupyter-lab">There was an error submitting my feature using Assemblé in Jupyter Lab.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../faq.html#my-feature-has-a-valid-api-locally-why-was-it-rejected">My feature has a valid API locally, why was it rejected?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../faq.html#why-did-my-feature-fail-the-feature-acceptance-validation">Why did my feature fail the feature acceptance validation?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../faq.html#my-feature-relies-on-a-new-library-how-can-i-add-it-to-the-project">My feature relies on a new library, how can I add it to the project?</a></li>
@@ -314,6 +316,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -329,7 +333,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             
               <a href="https://github.com/HDI-Project/ballet/blob/master/docs/api/ballet.eng.sklearn.rst" class="fa fa-github"> Edit on GitHub</a>
             
@@ -349,9 +353,9 @@
 <span id="ballet-eng-sklearn-module"></span><h1>ballet.eng.sklearn module<a class="headerlink" href="#module-ballet.eng.sklearn" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="ballet.eng.sklearn.Binarizer">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">Binarizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_data.html#Binarizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.Binarizer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">Binarizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">threshold</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">copy</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_data.html#Binarizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.Binarizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.TransformerMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code></p>
-<p>Binarize data (set feature values to 0 or 1) according to a threshold</p>
+<p>Binarize data (set feature values to 0 or 1) according to a threshold.</p>
 <p>Values greater than the threshold map to 1, while values less than
 or equal to the threshold map to 0. With the default threshold of 0,
 only positive values map to 1.</p>
@@ -365,9 +369,9 @@ distribution in a Bayesian setting).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>optional</em><em> (</em><em>0.0 by default</em><em>)</em>) – Feature values below or equal to this are replaced by 0, above it by 1.
+<li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>default=0.0</em>) – Feature values below or equal to this are replaced by 0, above it by 1.
 Threshold may not be less than 0 for operations on sparse matrices.</p></li>
-<li><p><strong>copy</strong> (<em>boolean</em><em>, </em><em>optional</em><em>, </em><em>default True</em>) – set to False to perform inplace binarization and avoid a copy (if
+<li><p><strong>copy</strong> (<em>bool</em><em>, </em><em>default=True</em>) – set to False to perform inplace binarization and avoid a copy (if
 the input is already a numpy array or a scipy.sparse CSR matrix).</p></li>
 </ul>
 </dd>
@@ -394,19 +398,28 @@ fit method does nothing but is useful when used in a pipeline.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">binarize</span></code></dt><dd><p>Equivalent function without the estimator API.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">binarize</span></code></dt><dd><p>Equivalent function without the estimator API.</p>
 </dd>
 </dl>
 </div>
 <dl class="py method">
 <dt id="ballet.eng.sklearn.Binarizer.fit">
 <code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_data.html#Binarizer.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.Binarizer.fit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Do nothing and return the estimator unchanged</p>
+<dd><p>Do nothing and return the estimator unchanged.</p>
 <p>This method is just there to implement the usual API and hence
 work in pipelines.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em>) – </p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix} of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – Ignored.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>self</strong> – Fitted transformer.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>object</p>
 </dd>
 </dl>
 </dd></dl>
@@ -414,15 +427,21 @@ work in pipelines.</p>
 <dl class="py method">
 <dt id="ballet.eng.sklearn.Binarizer.transform">
 <code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">copy</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_data.html#Binarizer.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.Binarizer.transform" title="Permalink to this definition">¶</a></dt>
-<dd><p>Binarize each element of X</p>
+<dd><p>Binarize each element of X.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix}</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to binarize, element by element.
+<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix} of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data to binarize, element by element.
 scipy.sparse matrices should be in CSR format to avoid an
 un-necessary copy.</p></li>
 <li><p><strong>copy</strong> (<em>bool</em>) – Copy the input X or not.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>X_tr</strong> – Transformed array.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>{ndarray, sparse matrix} of shape (n_samples, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -431,7 +450,7 @@ un-necessary copy.</p></li>
 
 <dl class="py class">
 <dt id="ballet.eng.sklearn.FunctionTransformer">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">FunctionTransformer</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_function_transformer.html#FunctionTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.FunctionTransformer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">FunctionTransformer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">inverse_func</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">validate</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">accept_sparse</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">check_inverse</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">kw_args</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">inv_kw_args</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_function_transformer.html#FunctionTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.FunctionTransformer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.TransformerMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code></p>
 <p>Constructs a transformer from an arbitrary callable.</p>
 <p>A FunctionTransformer forwards its X (and optionally y) arguments to a
@@ -447,14 +466,14 @@ transformer will not be pickleable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>func</strong> (<em>callable</em><em>, </em><em>optional default=None</em>) – The callable to use for the transformation. This will be passed
+<li><p><strong>func</strong> (<em>callable</em><em>, </em><em>default=None</em>) – The callable to use for the transformation. This will be passed
 the same arguments as transform, with args and kwargs forwarded.
 If func is None, then func will be the identity function.</p></li>
-<li><p><strong>inverse_func</strong> (<em>callable</em><em>, </em><em>optional default=None</em>) – The callable to use for the inverse transformation. This will be
+<li><p><strong>inverse_func</strong> (<em>callable</em><em>, </em><em>default=None</em>) – The callable to use for the inverse transformation. This will be
 passed the same arguments as inverse transform, with args and
 kwargs forwarded. If inverse_func is None, then inverse_func
 will be the identity function.</p></li>
-<li><p><strong>validate</strong> (<em>bool</em><em>, </em><em>optional default=False</em>) – <p>Indicate that the input X array should be checked before calling
+<li><p><strong>validate</strong> (<em>bool</em><em>, </em><em>default=False</em>) – <p>Indicate that the input X array should be checked before calling
 <code class="docutils literal notranslate"><span class="pre">func</span></code>. The possibilities are:</p>
 <ul>
 <li><p>If False, there is no input validation.</p></li>
@@ -466,7 +485,7 @@ raised.</p></li>
 <p><span class="versionmodified changed">Changed in version 0.22: </span>The default of <code class="docutils literal notranslate"><span class="pre">validate</span></code> changed from True to False.</p>
 </div>
 </p></li>
-<li><p><strong>accept_sparse</strong> (<em>boolean</em><em>, </em><em>optional</em>) – Indicate that func accepts a sparse matrix as input. If validate is
+<li><p><strong>accept_sparse</strong> (<em>bool</em><em>, </em><em>default=False</em>) – Indicate that func accepts a sparse matrix as input. If validate is
 False, this has no effect. Otherwise, if accept_sparse is false,
 sparse matrix inputs will cause an exception to be raised.</p></li>
 <li><p><strong>check_inverse</strong> (<em>bool</em><em>, </em><em>default=True</em>) – <p>Whether to check that or <code class="docutils literal notranslate"><span class="pre">func</span></code> followed by <code class="docutils literal notranslate"><span class="pre">inverse_func</span></code> leads to
@@ -476,12 +495,12 @@ warning when the condition is not fulfilled.</p>
 <p><span class="versionmodified added">New in version 0.20.</span></p>
 </div>
 </p></li>
-<li><p><strong>kw_args</strong> (<em>dict</em><em>, </em><em>optional</em>) – <p>Dictionary of additional keyword arguments to pass to func.</p>
+<li><p><strong>kw_args</strong> (<em>dict</em><em>, </em><em>default=None</em>) – <p>Dictionary of additional keyword arguments to pass to func.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.18.</span></p>
 </div>
 </p></li>
-<li><p><strong>inv_kw_args</strong> (<em>dict</em><em>, </em><em>optional</em>) – <p>Dictionary of additional keyword arguments to pass to inverse_func.</p>
+<li><p><strong>inv_kw_args</strong> (<em>dict</em><em>, </em><em>default=None</em>) – <p>Dictionary of additional keyword arguments to pass to inverse_func.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.18.</span></p>
 </div>
@@ -555,9 +574,9 @@ warning when the condition is not fulfilled.</p>
 
 <dl class="py class">
 <dt id="ballet.eng.sklearn.GaussianRandomProjection">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">GaussianRandomProjection</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/random_projection.html#GaussianRandomProjection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.GaussianRandomProjection" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">GaussianRandomProjection</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_components</span><span class="o">=</span><span class="default_value">'auto'</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">eps</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/random_projection.html#GaussianRandomProjection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.GaussianRandomProjection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.random_projection.BaseRandomProjection</span></code></p>
-<p>Reduce dimensionality through Gaussian random projection</p>
+<p>Reduce dimensionality through Gaussian random projection.</p>
 <p>The components of the random matrix are drawn from N(0, 1 / n_components).</p>
 <p>Read more in the <span class="xref std std-ref">User Guide</span>.</p>
 <div class="versionadded">
@@ -566,7 +585,7 @@ warning when the condition is not fulfilled.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n_components</strong> (<em>int</em><em> or </em><em>'auto'</em><em>, </em><em>optional</em><em> (</em><em>default = 'auto'</em><em>)</em>) – <p>Dimensionality of the target projection space.</p>
+<li><p><strong>n_components</strong> (<em>int</em><em> or </em><em>'auto'</em><em>, </em><em>default='auto'</em>) – <p>Dimensionality of the target projection space.</p>
 <p>n_components can be automatically adjusted according to the
 number of samples in the dataset and the bound given by the
 Johnson-Lindenstrauss lemma. In that case the quality of the
@@ -575,13 +594,13 @@ embedding is controlled by the <code class="docutils literal notranslate"><span 
 very conservative estimated of the required number of components
 as it makes no assumption on the structure of the dataset.</p>
 </p></li>
-<li><p><strong>eps</strong> (<em>strictly positive float</em><em>, </em><em>optional</em><em> (</em><em>default=0.1</em><em>)</em>) – <p>Parameter to control the quality of the embedding according to
-the Johnson-Lindenstrauss lemma when n_components is set to
-‘auto’.</p>
+<li><p><strong>eps</strong> (<em>float</em><em>, </em><em>default=0.1</em>) – <p>Parameter to control the quality of the embedding according to
+the Johnson-Lindenstrauss lemma when <cite>n_components</cite> is set to
+‘auto’. The value should be strictly positive.</p>
 <p>Smaller values lead to better embedding and higher number of
 dimensions (n_components) in the target projection space.</p>
 </p></li>
-<li><p><strong>random_state</strong> (<em>int</em><em>, </em><em>RandomState instance</em><em> or </em><em>None</em><em>, </em><em>optional</em><em> (</em><em>default=None</em><em>)</em>) – Controls the pseudo random number generator used to generate the
+<li><p><strong>random_state</strong> (<em>int</em><em>, </em><em>RandomState instance</em><em> or </em><em>None</em><em>, </em><em>default=None</em>) – Controls the pseudo random number generator used to generate the
 projection matrix at fit time.
 Pass an int for reproducible output across multiple function calls.
 See <span class="xref std std-term">Glossary</span>.</p></li>
@@ -605,7 +624,7 @@ See <span class="xref std std-term">Glossary</span>.</p></li>
 <dd><p>Random matrix used for the projection.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>numpy array of shape [n_components, n_features]</p>
+<dd class="field-odd"><p>ndarray of shape (n_components, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -623,13 +642,13 @@ See <span class="xref std std-term">Glossary</span>.</p></li>
 </div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#ballet.eng.sklearn.SparseRandomProjection" title="ballet.eng.sklearn.SparseRandomProjection"><code class="xref py py-class docutils literal notranslate"><span class="pre">SparseRandomProjection</span></code></a></p>
+<p><a class="reference internal" href="#ballet.eng.sklearn.SparseRandomProjection" title="ballet.eng.sklearn.SparseRandomProjection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SparseRandomProjection</span></code></a></p>
 </div>
 </dd></dl>
 
 <dl class="py class">
 <dt id="ballet.eng.sklearn.KBinsDiscretizer">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">KBinsDiscretizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_discretization.html#KBinsDiscretizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.KBinsDiscretizer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">KBinsDiscretizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_bins</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">encode</span><span class="o">=</span><span class="default_value">'onehot'</span></em>, <em class="sig-param"><span class="n">strategy</span><span class="o">=</span><span class="default_value">'quantile'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_discretization.html#KBinsDiscretizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.KBinsDiscretizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.TransformerMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code></p>
 <p>Bin continuous data into intervals.</p>
 <p>Read more in the <span class="xref std std-ref">User Guide</span>.</p>
@@ -639,8 +658,8 @@ See <span class="xref std std-term">Glossary</span>.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n_bins</strong> (<em>int</em><em> or </em><em>array-like</em><em>, </em><em>shape</em><em> (</em><em>n_features</em><em>,</em><em>) </em><em>(</em><em>default=5</em><em>)</em>) – The number of bins to produce. Raises ValueError if <code class="docutils literal notranslate"><span class="pre">n_bins</span> <span class="pre">&lt;</span> <span class="pre">2</span></code>.</p></li>
-<li><p><strong>encode</strong> (<em>{'onehot'</em><em>, </em><em>'onehot-dense'</em><em>, </em><em>'ordinal'}</em><em>, </em><em>(</em><em>default='onehot'</em><em>)</em>) – <p>Method used to encode the transformed result.</p>
+<li><p><strong>n_bins</strong> (<em>int</em><em> or </em><em>array-like of shape</em><em> (</em><em>n_features</em><em>,</em><em>)</em><em>, </em><em>default=5</em>) – The number of bins to produce. Raises ValueError if <code class="docutils literal notranslate"><span class="pre">n_bins</span> <span class="pre">&lt;</span> <span class="pre">2</span></code>.</p></li>
+<li><p><strong>encode</strong> (<em>{'onehot'</em><em>, </em><em>'onehot-dense'</em><em>, </em><em>'ordinal'}</em><em>, </em><em>default='onehot'</em>) – <p>Method used to encode the transformed result.</p>
 <dl class="simple">
 <dt>onehot</dt><dd><p>Encode the transformed result with one-hot encoding
 and return a sparse matrix. Ignored features are always
@@ -654,7 +673,7 @@ stacked to the right.</p>
 </dd>
 </dl>
 </p></li>
-<li><p><strong>strategy</strong> (<em>{'uniform'</em><em>, </em><em>'quantile'</em><em>, </em><em>'kmeans'}</em><em>, </em><em>(</em><em>default='quantile'</em><em>)</em>) – <p>Strategy used to define the widths of the bins.</p>
+<li><p><strong>strategy</strong> (<em>{'uniform'</em><em>, </em><em>'quantile'</em><em>, </em><em>'kmeans'}</em><em>, </em><em>default='quantile'</em>) – <p>Strategy used to define the widths of the bins.</p>
 <dl class="simple">
 <dt>uniform</dt><dd><p>All bins in each feature have identical widths.</p>
 </dd>
@@ -664,6 +683,13 @@ stacked to the right.</p>
 cluster.</p>
 </dd>
 </dl>
+</p></li>
+<li><p><strong>dtype</strong> (<em>{np.float32</em><em>, </em><em>np.float64}</em><em>, </em><em>default=None</em>) – <p>The desired data-type for the output. If None, output dtype is
+consistent with input dtype. Only np.float32 and np.float64 are
+supported.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.24.</span></p>
+</div>
 </p></li>
 </ul>
 </dd>
@@ -675,7 +701,7 @@ cluster.</p>
 (i.e., &lt;= 1e-8) are removed with a warning.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>int array, shape (n_features,)</p>
+<dd class="field-odd"><p>ndarray of shape (n_features,), dtype=np.int_</p>
 </dd>
 </dl>
 </dd></dl>
@@ -687,7 +713,7 @@ cluster.</p>
 Ignored features will have empty arrays.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>array of arrays, shape (n_features, )</p>
+<dd class="field-odd"><p>ndarray of ndarray of shape (n_features,)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -695,7 +721,7 @@ Ignored features will have empty arrays.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.preprocessing.Binarizer</span></code></dt><dd><p>Class used to bin values as <code class="docutils literal notranslate"><span class="pre">0</span></code> or <code class="docutils literal notranslate"><span class="pre">1</span></code> based on a parameter <code class="docutils literal notranslate"><span class="pre">threshold</span></code>.</p>
+<dt><a class="reference internal" href="#ballet.eng.sklearn.Binarizer" title="ballet.eng.sklearn.Binarizer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Binarizer</span></code></a></dt><dd><p>Class used to bin values as <code class="docutils literal notranslate"><span class="pre">0</span></code> or <code class="docutils literal notranslate"><span class="pre">1</span></code> based on a parameter <code class="docutils literal notranslate"><span class="pre">threshold</span></code>.</p>
 </dd>
 </dl>
 </div>
@@ -706,12 +732,12 @@ Ignored features will have empty arrays.</p>
 </pre></div>
 </div>
 <p>You can combine <code class="docutils literal notranslate"><span class="pre">KBinsDiscretizer</span></code> with
-<code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.compose.ColumnTransformer</span></code> if you only want to preprocess
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ColumnTransformer</span></code> if you only want to preprocess
 part of the features.</p>
 <p><code class="docutils literal notranslate"><span class="pre">KBinsDiscretizer</span></code> might produce constant features (e.g., when
 <code class="docutils literal notranslate"><span class="pre">encode</span> <span class="pre">=</span> <span class="pre">'onehot'</span></code> and certain bins do not contain any data).
 These features can be removed with feature selection algorithms
-(e.g., <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.feature_selection.VarianceThreshold</span></code>).</p>
+(e.g., <code class="xref py py-class docutils literal notranslate"><span class="pre">VarianceThreshold</span></code>).</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span>   <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
 <span class="gp">... </span>     <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">],</span>
@@ -748,9 +774,9 @@ of the two bin edges.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>numeric array-like</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Data to be discretized.</p></li>
+<li><p><strong>X</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Data to be discretized.</p></li>
 <li><p><strong>y</strong> (<em>None</em>) – Ignored. This parameter exists only for compatibility with
-<code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.pipeline.Pipeline</span></code>.</p></li>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -770,13 +796,13 @@ of the two bin edges.</p>
 due to discretization rounding.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>Xt</strong> (<em>numeric array-like</em><em>, </em><em>shape</em><em> (</em><em>n_sample</em><em>, </em><em>n_features</em><em>)</em>) – Transformed data in the binned space.</p>
+<dd class="field-odd"><p><strong>Xt</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Transformed data in the binned space.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>Xinv</strong> – Data in the original feature space.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>numeric array-like</p>
+<dd class="field-odd"><p>ndarray, dtype={np.float32, np.float64}</p>
 </dd>
 </dl>
 </dd></dl>
@@ -787,13 +813,14 @@ due to discretization rounding.</p>
 <dd><p>Discretize the data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<em>numeric array-like</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Data to be discretized.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Data to be discretized.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>Xt</strong> – Data in the binned space.</p>
+<dd class="field-even"><p><strong>Xt</strong> – Data in the binned space. Will be a sparse matrix if
+<cite>self.encode=’onehot’</cite> and ndarray otherwise.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>numeric array-like or sparse matrix</p>
+<dd class="field-odd"><p>{ndarray, sparse matrix}, dtype={np.float32, np.float64}</p>
 </dd>
 </dl>
 </dd></dl>
@@ -802,7 +829,7 @@ due to discretization rounding.</p>
 
 <dl class="py class">
 <dt id="ballet.eng.sklearn.KNNImputer">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">KNNImputer</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/impute/_knn.html#KNNImputer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.KNNImputer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">KNNImputer</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">missing_values</span><span class="o">=</span><span class="default_value">nan</span></em>, <em class="sig-param"><span class="n">n_neighbors</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">weights</span><span class="o">=</span><span class="default_value">'uniform'</span></em>, <em class="sig-param"><span class="n">metric</span><span class="o">=</span><span class="default_value">'nan_euclidean'</span></em>, <em class="sig-param"><span class="n">copy</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">add_indicator</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/impute/_knn.html#KNNImputer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.KNNImputer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.impute._base._BaseImputer</span></code></p>
 <p>Imputation for completing missing values using k-Nearest Neighbors.</p>
 <p>Each sample’s missing values are imputed using the mean value from
@@ -815,10 +842,10 @@ close if the features that neither is missing are close.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>missing_values</strong> (<em>number</em><em>, </em><em>string</em><em>, </em><em>np.nan</em><em> or </em><em>None</em><em>, </em><em>default=`np.nan`</em>) – The placeholder for the missing values. All occurrences of
+<li><p><strong>missing_values</strong> (<em>int</em><em>, </em><em>float</em><em>, </em><em>str</em><em>, </em><em>np.nan</em><em> or </em><em>None</em><em>, </em><em>default=np.nan</em>) – The placeholder for the missing values. All occurrences of
 <cite>missing_values</cite> will be imputed. For pandas’ dataframes with
 nullable integer dtypes with missing values, <cite>missing_values</cite>
-should be set to <cite>np.nan</cite>, since <cite>pd.NA</cite> will be converted to <cite>np.nan</cite>.</p></li>
+should be set to np.nan, since <cite>pd.NA</cite> will be converted to np.nan.</p></li>
 <li><p><strong>n_neighbors</strong> (<em>int</em><em>, </em><em>default=5</em>) – Number of neighboring samples to use for imputation.</p></li>
 <li><p><strong>weights</strong> (<em>{'uniform'</em><em>, </em><em>'distance'}</em><em> or </em><em>callable</em><em>, </em><em>default='uniform'</em>) – <p>Weight function used in prediction.  Possible values:</p>
 <ul>
@@ -859,7 +886,7 @@ time.</p></li>
 <code class="docutils literal notranslate"><span class="pre">None</span></code> if add_indicator is False.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.impute.MissingIndicator</span></code></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">MissingIndicator</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -923,7 +950,7 @@ that is not always missing during <cite>fit</cite>.</p>
 
 <dl class="py class">
 <dt id="ballet.eng.sklearn.MaxAbsScaler">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">MaxAbsScaler</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_data.html#MaxAbsScaler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.MaxAbsScaler" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">MaxAbsScaler</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">copy</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_data.html#MaxAbsScaler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.MaxAbsScaler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.TransformerMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code></p>
 <p>Scale each feature by its maximum absolute value.</p>
 <p>This estimator scales and translates each feature individually such
@@ -936,7 +963,7 @@ thus does not destroy any sparsity.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>copy</strong> (<em>boolean</em><em>, </em><em>optional</em><em>, </em><em>default is True</em>) – Set to False to perform inplace scaling and avoid a copy (if the input
+<dd class="field-odd"><p><strong>copy</strong> (<em>bool</em><em>, </em><em>default=True</em>) – Set to False to perform inplace scaling and avoid a copy (if the input
 is already a numpy array).</p>
 </dd>
 </dl>
@@ -949,7 +976,7 @@ is already a numpy array).</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>ndarray, shape (n_features,)</p>
+<dd class="field-odd"><p>ndarray of shape (n_features,)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -960,7 +987,7 @@ is already a numpy array).</p>
 <dd><p>Per feature maximum absolute value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>ndarray, shape (n_features,)</p>
+<dd class="field-odd"><p>ndarray of shape (n_features,)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -994,7 +1021,7 @@ new calls to fit, but increments across <code class="docutils literal notranslat
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">maxabs_scale</span></code></dt><dd><p>Equivalent function without the estimator API.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">maxabs_scale</span></code></dt><dd><p>Equivalent function without the estimator API.</p>
 </dd>
 </dl>
 </div>
@@ -1009,8 +1036,17 @@ see <span class="xref std std-ref">examples/preprocessing/plot_all_scaling.py</s
 <dd><p>Compute the maximum absolute value to be used for later scaling.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix}</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data used to compute the per-feature minimum and maximum
-used for later scaling along the features axis.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix} of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data used to compute the per-feature minimum and maximum
+used for later scaling along the features axis.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – Ignored.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>self</strong> – Fitted scaler.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>object</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1021,7 +1057,13 @@ used for later scaling along the features axis.</p>
 <dd><p>Scale back the data to the original representation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix}</em>) – The data that should be transformed back.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix} of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data that should be transformed back.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>X_tr</strong> – Transformed array.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>{ndarray, sparse matrix} of shape (n_samples, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1036,13 +1078,13 @@ when <a class="reference internal" href="#ballet.eng.sklearn.MaxAbsScaler.fit" t
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix}</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data used to compute the mean and standard deviation
+<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix} of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data used to compute the mean and standard deviation
 used for later scaling along the features axis.</p></li>
 <li><p><strong>y</strong> (<em>None</em>) – Ignored.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>self</strong> – Transformer instance.</p>
+<dd class="field-even"><p><strong>self</strong> – Fitted scaler.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>object</p>
@@ -1056,7 +1098,13 @@ used for later scaling along the features axis.</p></li>
 <dd><p>Scale the data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix}</em>) – The data that should be scaled.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix} of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data that should be scaled.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>X_tr</strong> – Transformed array.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>{ndarray, sparse matrix} of shape (n_samples, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1065,7 +1113,7 @@ used for later scaling along the features axis.</p></li>
 
 <dl class="py class">
 <dt id="ballet.eng.sklearn.MinMaxScaler">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">MinMaxScaler</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_data.html#MinMaxScaler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.MinMaxScaler" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">MinMaxScaler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">feature_range</span><span class="o">=</span><span class="default_value">(0, 1)</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">copy</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">clip</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_data.html#MinMaxScaler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.MinMaxScaler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.TransformerMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code></p>
 <p>Transform features by scaling each feature to a given range.</p>
 <p>This estimator scales and translates each feature individually such
@@ -1086,6 +1134,12 @@ unit variance scaling.</p>
 <li><p><strong>feature_range</strong> (<em>tuple</em><em> (</em><em>min</em><em>, </em><em>max</em><em>)</em><em>, </em><em>default=</em><em>(</em><em>0</em><em>, </em><em>1</em><em>)</em>) – Desired range of transformed data.</p></li>
 <li><p><strong>copy</strong> (<em>bool</em><em>, </em><em>default=True</em>) – Set to False to perform inplace row normalization and avoid a
 copy (if the input is already a numpy array).</p></li>
+<li><p><strong>clip</strong> (<em>bool</em><em>, </em><em>default=False</em>) – <p>Set to True to clip transformed values of held-out data to
+provided <cite>feature range</cite>.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.24.</span></p>
+</div>
+</p></li>
 </ul>
 </dd>
 </dl>
@@ -1191,7 +1245,7 @@ It will be reset on new calls to fit, but increments across
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">minmax_scale</span></code></dt><dd><p>Equivalent function without the estimator API.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">minmax_scale</span></code></dt><dd><p>Equivalent function without the estimator API.</p>
 </dd>
 </dl>
 </div>
@@ -1233,7 +1287,7 @@ used for later scaling along the features axis.</p></li>
 <dd class="field-even"><p><strong>Xt</strong> – Transformed data.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array-like of shape (n_samples, n_features)</p>
+<dd class="field-odd"><p>ndarray of shape (n_samples, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1254,7 +1308,7 @@ used for later scaling along the features axis.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>self</strong> – Transformer instance.</p>
+<dd class="field-even"><p><strong>self</strong> – Fitted scaler.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>object</p>
@@ -1274,7 +1328,7 @@ used for later scaling along the features axis.</p></li>
 <dd class="field-even"><p><strong>Xt</strong> – Transformed data.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array-like of shape (n_samples, n_features)</p>
+<dd class="field-odd"><p>ndarray of shape (n_samples, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1283,7 +1337,7 @@ used for later scaling along the features axis.</p></li>
 
 <dl class="py class">
 <dt id="ballet.eng.sklearn.MissingIndicator">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">MissingIndicator</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/impute/_base.html#MissingIndicator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.MissingIndicator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">MissingIndicator</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">missing_values</span><span class="o">=</span><span class="default_value">nan</span></em>, <em class="sig-param"><span class="n">features</span><span class="o">=</span><span class="default_value">'missing-only'</span></em>, <em class="sig-param"><span class="n">sparse</span><span class="o">=</span><span class="default_value">'auto'</span></em>, <em class="sig-param"><span class="n">error_on_new</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/impute/_base.html#MissingIndicator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.MissingIndicator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.TransformerMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code></p>
 <p>Binary indicators for missing values.</p>
 <p>Note that this component typically should not be used in a vanilla
@@ -1296,29 +1350,29 @@ could be added using a <code class="xref py py-class docutils literal notranslat
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>missing_values</strong> (<em>number</em><em>, </em><em>string</em><em>, </em><em>np.nan</em><em> (</em><em>default</em><em>) or </em><em>None</em>) – The placeholder for the missing values. All occurrences of
+<li><p><strong>missing_values</strong> (<em>int</em><em>, </em><em>float</em><em>, </em><em>string</em><em>, </em><em>np.nan</em><em> or </em><em>None</em><em>, </em><em>default=np.nan</em>) – The placeholder for the missing values. All occurrences of
 <cite>missing_values</cite> will be imputed. For pandas’ dataframes with
 nullable integer dtypes with missing values, <cite>missing_values</cite>
 should be set to <cite>np.nan</cite>, since <cite>pd.NA</cite> will be converted to <cite>np.nan</cite>.</p></li>
-<li><p><strong>features</strong> (<em>str</em><em>, </em><em>default=None</em>) – <p>Whether the imputer mask should represent all or a subset of
+<li><p><strong>features</strong> (<em>{'missing-only'</em><em>, </em><em>'all'}</em><em>, </em><em>default='missing-only'</em>) – <p>Whether the imputer mask should represent all or a subset of
 features.</p>
 <ul>
-<li><p>If “missing-only” (default), the imputer mask will only represent
+<li><p>If ‘missing-only’ (default), the imputer mask will only represent
 features containing missing values during fit time.</p></li>
-<li><p>If “all”, the imputer mask will represent all features.</p></li>
+<li><p>If ‘all’, the imputer mask will represent all features.</p></li>
 </ul>
 </p></li>
-<li><p><strong>sparse</strong> (<em>boolean</em><em> or </em><em>&quot;auto&quot;</em><em>, </em><em>default=None</em>) – <p>Whether the imputer mask format should be sparse or dense.</p>
+<li><p><strong>sparse</strong> (<em>bool</em><em> or </em><em>'auto'</em><em>, </em><em>default='auto'</em>) – <p>Whether the imputer mask format should be sparse or dense.</p>
 <ul>
-<li><p>If “auto” (default), the imputer mask will be of same type as
+<li><p>If ‘auto’ (default), the imputer mask will be of same type as
 input.</p></li>
 <li><p>If True, the imputer mask will be a sparse matrix.</p></li>
 <li><p>If False, the imputer mask will be a numpy array.</p></li>
 </ul>
 </p></li>
-<li><p><strong>error_on_new</strong> (<em>boolean</em><em>, </em><em>default=None</em>) – If True (default), transform will raise an error when there are
-features with missing values in transform that have no missing values
-in fit. This is applicable only when <code class="docutils literal notranslate"><span class="pre">features=&quot;missing-only&quot;</span></code>.</p></li>
+<li><p><strong>error_on_new</strong> (<em>bool</em><em>, </em><em>default=True</em>) – If True, transform will raise an error when there are features with
+missing values in transform that have no missing values in fit. This is
+applicable only when <cite>features=’missing-only’</cite>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1412,7 +1466,7 @@ will be boolean.</p>
 
 <dl class="py class">
 <dt id="ballet.eng.sklearn.Normalizer">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">Normalizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_data.html#Normalizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.Normalizer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">Normalizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">norm</span><span class="o">=</span><span class="default_value">'l2'</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">copy</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_data.html#Normalizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.Normalizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.TransformerMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code></p>
 <p>Normalize samples individually to unit norm.</p>
 <p>Each sample (i.e. each row of the data matrix) with at least one
@@ -1430,10 +1484,10 @@ Space Model commonly used by the Information Retrieval community.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>norm</strong> (<em>'l1'</em><em>, </em><em>'l2'</em><em>, or </em><em>'max'</em><em>, </em><em>optional</em><em> (</em><em>'l2' by default</em><em>)</em>) – The norm to use to normalize each non zero sample. If norm=’max’
+<li><p><strong>norm</strong> (<em>{'l1'</em><em>, </em><em>'l2'</em><em>, </em><em>'max'}</em><em>, </em><em>default='l2'</em>) – The norm to use to normalize each non zero sample. If norm=’max’
 is used, values will be rescaled by the maximum of the absolute
 values.</p></li>
-<li><p><strong>copy</strong> (<em>boolean</em><em>, </em><em>optional</em><em>, </em><em>default True</em>) – set to False to perform inplace row normalization and avoid a
+<li><p><strong>copy</strong> (<em>bool</em><em>, </em><em>default=True</em>) – set to False to perform inplace row normalization and avoid a
 copy (if the input is already a numpy array or a scipy.sparse
 CSR matrix).</p></li>
 </ul>
@@ -1461,7 +1515,7 @@ see <span class="xref std std-ref">examples/preprocessing/plot_all_scaling.py</s
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">normalize</span></code></dt><dd><p>Equivalent function without the estimator API.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalize</span></code></dt><dd><p>Equivalent function without the estimator API.</p>
 </dd>
 </dl>
 </div>
@@ -1473,7 +1527,16 @@ see <span class="xref std std-ref">examples/preprocessing/plot_all_scaling.py</s
 work in pipelines.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em>) – </p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix} of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data to estimate the normalization parameters.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – Ignored.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>self</strong> – Fitted transformer.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>object</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1485,10 +1548,16 @@ work in pipelines.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix}</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to normalize, row by row. scipy.sparse matrices should be
+<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix} of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data to normalize, row by row. scipy.sparse matrices should be
 in CSR format to avoid an un-necessary copy.</p></li>
-<li><p><strong>copy</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default: None</em><em>)</em>) – Copy the input X or not.</p></li>
+<li><p><strong>copy</strong> (<em>bool</em><em>, </em><em>default=None</em>) – Copy the input X or not.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>X_tr</strong> – Transformed array.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>{ndarray, sparse matrix} of shape (n_samples, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1497,7 +1566,7 @@ in CSR format to avoid an un-necessary copy.</p></li>
 
 <dl class="py class">
 <dt id="ballet.eng.sklearn.OneHotEncoder">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">OneHotEncoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_encoders.html#OneHotEncoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.OneHotEncoder" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">OneHotEncoder</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">categories='auto'</em>, <em class="sig-param">drop=None</em>, <em class="sig-param">sparse=True</em>, <em class="sig-param">dtype=&lt;class 'numpy.float64'&gt;</em>, <em class="sig-param">handle_unknown='error'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_encoders.html#OneHotEncoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.OneHotEncoder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.preprocessing._encoders._BaseEncoder</span></code></p>
 <p>Encode categorical features as a one-hot numeric array.</p>
 <p>The input to this transformer should be an array-like of integers or
@@ -1550,9 +1619,12 @@ left intact.</p></li>
 <li><p>array : <code class="docutils literal notranslate"><span class="pre">drop[i]</span></code> is the category in feature <code class="docutils literal notranslate"><span class="pre">X[:,</span> <span class="pre">i]</span></code> that
 should be dropped.</p></li>
 </ul>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.23: </span>Added option ‘if_binary’.</p>
+</div>
 </p></li>
 <li><p><strong>sparse</strong> (<em>bool</em><em>, </em><em>default=True</em>) – Will return sparse matrix if set True else will return an array.</p></li>
-<li><p><strong>dtype</strong> (<em>number type</em><em>, </em><em>default=np.float</em>) – Desired dtype of output.</p></li>
+<li><p><strong>dtype</strong> (<em>number type</em><em>, </em><em>default=float</em>) – Desired dtype of output.</p></li>
 <li><p><strong>handle_unknown</strong> (<em>{'error'</em><em>, </em><em>'ignore'}</em><em>, </em><em>default='error'</em>) – Whether to raise an error or ignore if an unknown categorical feature
 is present during transform (default is to raise). When this parameter
 is set to ‘ignore’ and an unknown category is encountered during
@@ -1588,6 +1660,9 @@ feature isn’t binary.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">drop_idx_</span> <span class="pre">=</span> <span class="pre">None</span></code> if all the transformed features will be
 retained.</p></li>
 </ul>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.23: </span>Added the possibility to contain <cite>None</cite> values.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>array of shape (n_features,)</p>
@@ -1598,15 +1673,15 @@ retained.</p></li>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.preprocessing.OrdinalEncoder</span></code></dt><dd><p>Performs an ordinal (integer) encoding of the categorical features.</p>
+<dt><a class="reference internal" href="#ballet.eng.sklearn.OrdinalEncoder" title="ballet.eng.sklearn.OrdinalEncoder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OrdinalEncoder</span></code></a></dt><dd><p>Performs an ordinal (integer) encoding of the categorical features.</p>
 </dd>
-<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.feature_extraction.DictVectorizer</span></code></dt><dd><p>Performs a one-hot encoding of dictionary items (also handles string-valued features).</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">sklearn.feature_extraction.DictVectorizer</span></code></dt><dd><p>Performs a one-hot encoding of dictionary items (also handles string-valued features).</p>
 </dd>
-<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.feature_extraction.FeatureHasher</span></code></dt><dd><p>Performs an approximate one-hot encoding of dictionary items or strings.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">sklearn.feature_extraction.FeatureHasher</span></code></dt><dd><p>Performs an approximate one-hot encoding of dictionary items or strings.</p>
 </dd>
-<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.preprocessing.LabelBinarizer</span></code></dt><dd><p>Binarizes labels in a one-vs-all fashion.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">LabelBinarizer</span></code></dt><dd><p>Binarizes labels in a one-vs-all fashion.</p>
 </dd>
-<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.preprocessing.MultiLabelBinarizer</span></code></dt><dd><p>Transforms between iterable of iterables and a multilabel format, e.g. a (samples x classes) binary matrix indicating the presence of a class label.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">MultiLabelBinarizer</span></code></dt><dd><p>Transforms between iterable of iterables and a multilabel format, e.g. a (samples x classes) binary matrix indicating the presence of a class label.</p>
 </dd>
 </dl>
 </div>
@@ -1659,7 +1734,7 @@ values per feature and transform the data to a binary one-hot encoding.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to determine the categories of each feature.</p></li>
 <li><p><strong>y</strong> (<em>None</em>) – Ignored. This parameter exists only for compatibility with
-<code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.pipeline.Pipeline</span></code>.</p></li>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1681,7 +1756,7 @@ values per feature and transform the data to a binary one-hot encoding.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to encode.</p></li>
 <li><p><strong>y</strong> (<em>None</em>) – Ignored. This parameter exists only for compatibility with
-<code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.pipeline.Pipeline</span></code>.</p></li>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1751,7 +1826,7 @@ one-hot encoding), <code class="docutils literal notranslate"><span class="pre">
 
 <dl class="py class">
 <dt id="ballet.eng.sklearn.OrdinalEncoder">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">OrdinalEncoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_encoders.html#OrdinalEncoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.OrdinalEncoder" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">OrdinalEncoder</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">categories='auto'</em>, <em class="sig-param">dtype=&lt;class 'numpy.float64'&gt;</em>, <em class="sig-param">handle_unknown='error'</em>, <em class="sig-param">unknown_value=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_encoders.html#OrdinalEncoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.OrdinalEncoder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.preprocessing._encoders._BaseEncoder</span></code></p>
 <p>Encode categorical features as an integer array.</p>
 <p>The input to this transformer should be an array-like of integers or
@@ -1775,15 +1850,33 @@ values, and should be sorted in case of numeric values.</p></li>
 <p>The used categories can be found in the <code class="docutils literal notranslate"><span class="pre">categories_</span></code> attribute.</p>
 </p></li>
 <li><p><strong>dtype</strong> (<em>number type</em><em>, </em><em>default np.float64</em>) – Desired dtype of output.</p></li>
+<li><p><strong>handle_unknown</strong> (<em>{'error'</em><em>, </em><em>'use_encoded_value'}</em><em>, </em><em>default='error'</em>) – <p>When set to ‘error’ an error will be raised in case an unknown
+categorical feature is present during transform. When set to
+‘use_encoded_value’, the encoded value of unknown categories will be
+set to the value given for the parameter <cite>unknown_value</cite>. In
+<a class="reference internal" href="#ballet.eng.sklearn.OrdinalEncoder.inverse_transform" title="ballet.eng.sklearn.OrdinalEncoder.inverse_transform"><code class="xref py py-meth docutils literal notranslate"><span class="pre">inverse_transform()</span></code></a>, an unknown category will be denoted as None.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.24.</span></p>
+</div>
+</p></li>
+<li><p><strong>unknown_value</strong> (<em>int</em><em> or </em><em>np.nan</em><em>, </em><em>default=None</em>) – <p>When the parameter handle_unknown is set to ‘use_encoded_value’, this
+parameter is required and will set the encoded value of unknown
+categories. It has to be distinct from the values used to encode any of
+the categories in <cite>fit</cite>. If set to np.nan, the <cite>dtype</cite> parameter must
+be a float dtype.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.24.</span></p>
+</div>
+</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py attribute">
 <dt id="ballet.eng.sklearn.OrdinalEncoder.categories_">
 <code class="sig-name descname">categories_</code><a class="headerlink" href="#ballet.eng.sklearn.OrdinalEncoder.categories_" title="Permalink to this definition">¶</a></dt>
-<dd><p>The categories of each feature determined during fitting
-(in order of the features in X and corresponding with the output
-of <code class="docutils literal notranslate"><span class="pre">transform</span></code>).</p>
+<dd><p>The categories of each feature determined during <code class="docutils literal notranslate"><span class="pre">fit</span></code> (in order of
+the features in X and corresponding with the output of <code class="docutils literal notranslate"><span class="pre">transform</span></code>).
+This does not include categories that weren’t seen during <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>list of arrays</p>
@@ -1794,9 +1887,9 @@ of <code class="docutils literal notranslate"><span class="pre">transform</span>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.preprocessing.OneHotEncoder</span></code></dt><dd><p>Performs a one-hot encoding of categorical features.</p>
+<dt><a class="reference internal" href="#ballet.eng.sklearn.OneHotEncoder" title="ballet.eng.sklearn.OneHotEncoder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OneHotEncoder</span></code></a></dt><dd><p>Performs a one-hot encoding of categorical features.</p>
 </dd>
-<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.preprocessing.LabelEncoder</span></code></dt><dd><p>Encodes target labels with values between 0 and n_classes-1.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">LabelEncoder</span></code></dt><dd><p>Encodes target labels with values between 0 and <code class="docutils literal notranslate"><span class="pre">n_classes-1</span></code>.</p>
 </dd>
 </dl>
 </div>
@@ -1829,7 +1922,7 @@ values per feature and transform the data to an ordinal encoding.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to determine the categories of each feature.</p></li>
 <li><p><strong>y</strong> (<em>None</em>) – Ignored. This parameter exists only for compatibility with
-<code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.pipeline.Pipeline</span></code>.</p></li>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1879,7 +1972,7 @@ values per feature and transform the data to an ordinal encoding.</p>
 
 <dl class="py class">
 <dt id="ballet.eng.sklearn.PolynomialFeatures">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">PolynomialFeatures</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_data.html#PolynomialFeatures"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.PolynomialFeatures" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">PolynomialFeatures</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">degree</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">interaction_only</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">include_bias</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">order</span><span class="o">=</span><span class="default_value">'C'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_data.html#PolynomialFeatures"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.PolynomialFeatures" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.TransformerMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code></p>
 <p>Generate polynomial and interaction features.</p>
 <p>Generate a new feature matrix consisting of all polynomial combinations
@@ -1889,14 +1982,14 @@ For example, if an input sample is two dimensional and of the form
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>degree</strong> (<em>integer</em>) – The degree of the polynomial features. Default = 2.</p></li>
-<li><p><strong>interaction_only</strong> (<em>boolean</em><em>, </em><em>default = False</em>) – If true, only interaction features are produced: features that are
+<li><p><strong>degree</strong> (<em>int</em><em>, </em><em>default=2</em>) – The degree of the polynomial features.</p></li>
+<li><p><strong>interaction_only</strong> (<em>bool</em><em>, </em><em>default=False</em>) – If true, only interaction features are produced: features that are
 products of at most <code class="docutils literal notranslate"><span class="pre">degree</span></code> <em>distinct</em> input features (so not
 <code class="docutils literal notranslate"><span class="pre">x[1]</span> <span class="pre">**</span> <span class="pre">2</span></code>, <code class="docutils literal notranslate"><span class="pre">x[0]</span> <span class="pre">*</span> <span class="pre">x[2]</span> <span class="pre">**</span> <span class="pre">3</span></code>, etc.).</p></li>
-<li><p><strong>include_bias</strong> (<em>boolean</em>) – If True (default), then include a bias column, the feature in which
+<li><p><strong>include_bias</strong> (<em>bool</em><em>, </em><em>default=True</em>) – If True (default), then include a bias column, the feature in which
 all polynomial powers are zero (i.e. a column of ones - acts as an
 intercept term in a linear model).</p></li>
-<li><p><strong>order</strong> (<em>str in {'C'</em><em>, </em><em>'F'}</em><em>, </em><em>default 'C'</em>) – <p>Order of output array in the dense case. ‘F’ order is faster to
+<li><p><strong>order</strong> (<em>{'C'</em><em>, </em><em>'F'}</em><em>, </em><em>default='C'</em>) – <p>Order of output array in the dense case. ‘F’ order is faster to
 compute, but may slow down subsequent estimators.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.21.</span></p>
@@ -1931,7 +2024,7 @@ compute, but may slow down subsequent estimators.</p>
 <dd><p>powers_[i, j] is the exponent of the jth input in the ith output.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>array, shape (n_output_features, n_input_features)</p>
+<dd class="field-odd"><p>ndarray of shape (n_output_features, n_input_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1971,13 +2064,16 @@ exponentially in the degree. High degrees can cause overfitting.</p>
 <dd><p>Compute number of output features.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix} of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – Ignored.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>self</strong></p>
+<dd class="field-even"><p><strong>self</strong> – Fitted transformer.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>instance</p>
+<dd class="field-odd"><p>object</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1988,14 +2084,14 @@ exponentially in the degree. High degrees can cause overfitting.</p>
 <dd><p>Return feature names for output features</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>input_features</strong> (<em>list of string</em><em>, </em><em>length n_features</em><em>, </em><em>optional</em>) – String names for input features if available. By default,
+<dd class="field-odd"><p><strong>input_features</strong> (<em>list of str of shape</em><em> (</em><em>n_features</em><em>,</em><em>)</em><em>, </em><em>default=None</em>) – String names for input features if available. By default,
 “x0”, “x1”, … “xn_features” is used.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>output_feature_names</strong></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list of string, length n_output_features</p>
+<dd class="field-odd"><p>list of str of shape (n_output_features,)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2011,7 +2107,7 @@ exponentially in the degree. High degrees can cause overfitting.</p>
 <dd><p>Transform data to polynomial features</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em> or </em><em>CSR/CSC sparse matrix</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – <p>The data to transform, row by row.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix} of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – <p>The data to transform, row by row.</p>
 <p>Prefer CSR over CSC for sparse input (for speed), but CSC is
 required if the degree is 4 or higher. If the degree is less than
 4 and the input format is CSC, it will be converted to CSR, have
@@ -2027,10 +2123,12 @@ preference of CSR.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>XP</strong> – The matrix of features, where NP is the number of polynomial
-features generated from the combination of inputs.</p>
+features generated from the combination of inputs. If a sparse
+matrix is provided, it will be converted into a sparse
+<code class="docutils literal notranslate"><span class="pre">csr_matrix</span></code>.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.ndarray or CSR/CSC sparse matrix, shape [n_samples, NP]</p>
+<dd class="field-odd"><p>{ndarray, sparse matrix} of shape (n_samples, NP)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2039,7 +2137,7 @@ features generated from the combination of inputs.</p>
 
 <dl class="py class">
 <dt id="ballet.eng.sklearn.PowerTransformer">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">PowerTransformer</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_data.html#PowerTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.PowerTransformer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">PowerTransformer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'yeo-johnson'</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">standardize</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">copy</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_data.html#PowerTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.PowerTransformer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.TransformerMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code></p>
 <p>Apply a power transform featurewise to make data more Gaussian-like.</p>
 <p>Power transforms are a family of parametric, monotonic transformations
@@ -2060,15 +2158,15 @@ transformed data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>method</strong> (<em>str</em><em>, </em><em>(</em><em>default='yeo-johnson'</em><em>)</em>) – <p>The power transform method. Available methods are:</p>
+<li><p><strong>method</strong> (<em>{'yeo-johnson'</em><em>, </em><em>'box-cox'}</em><em>, </em><em>default='yeo-johnson'</em>) – <p>The power transform method. Available methods are:</p>
 <ul>
 <li><p>’yeo-johnson’ <a href="#id7"><span class="problematic" id="id1">[1]_</span></a>, works with positive and negative values</p></li>
 <li><p>’box-cox’ <a href="#id8"><span class="problematic" id="id2">[2]_</span></a>, only works with strictly positive values</p></li>
 </ul>
 </p></li>
-<li><p><strong>standardize</strong> (<em>boolean</em><em>, </em><em>default=True</em>) – Set to True to apply zero-mean, unit-variance normalization to the
+<li><p><strong>standardize</strong> (<em>bool</em><em>, </em><em>default=True</em>) – Set to True to apply zero-mean, unit-variance normalization to the
 transformed output.</p></li>
-<li><p><strong>copy</strong> (<em>boolean</em><em>, </em><em>optional</em><em>, </em><em>default=True</em>) – Set to False to perform inplace computation during transformation.</p></li>
+<li><p><strong>copy</strong> (<em>bool</em><em>, </em><em>default=True</em>) – Set to False to perform inplace computation during transformation.</p></li>
 </ul>
 </dd>
 </dl>
@@ -2078,7 +2176,7 @@ transformed output.</p></li>
 <dd><p>The parameters of the power transformation for the selected features.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>array of float, shape (n_features,)</p>
+<dd class="field-odd"><p>ndarray of float of shape (n_features,)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2101,9 +2199,9 @@ transformed output.</p></li>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">power_transform</span></code></dt><dd><p>Equivalent function without the estimator API.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">power_transform</span></code></dt><dd><p>Equivalent function without the estimator API.</p>
 </dd>
-<dt><a class="reference internal" href="#ballet.eng.sklearn.QuantileTransformer" title="ballet.eng.sklearn.QuantileTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantileTransformer</span></code></a></dt><dd><p>Maps data to a standard normal distribution with the parameter <cite>output_distribution=’normal’</cite>.</p>
+<dt><a class="reference internal" href="#ballet.eng.sklearn.QuantileTransformer" title="ballet.eng.sklearn.QuantileTransformer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QuantileTransformer</span></code></a></dt><dd><p>Maps data to a standard normal distribution with the parameter <cite>output_distribution=’normal’</cite>.</p>
 </dd>
 </dl>
 </div>
@@ -2133,12 +2231,12 @@ each feature independently using maximum likelihood.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data used to estimate the optimal transformation parameters.</p></li>
-<li><p><strong>y</strong> (<em>Ignored</em>) – </p></li>
+<li><p><strong>X</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data used to estimate the optimal transformation parameters.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – Ignored.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>self</strong></p>
+<dd class="field-even"><p><strong>self</strong> – Fitted transformer.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>object</p>
@@ -2150,13 +2248,13 @@ each feature independently using maximum likelihood.</p>
 <dt id="ballet.eng.sklearn.PowerTransformer.fit_transform">
 <code class="sig-name descname">fit_transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_data.html#PowerTransformer.fit_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.PowerTransformer.fit_transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit to data, then transform it.</p>
-<p>Fits transformer to X and y with optional parameters fit_params
-and returns a transformed version of X.</p>
+<p>Fits transformer to <cite>X</cite> and <cite>y</cite> with optional parameters <cite>fit_params</cite>
+and returns a transformed version of <cite>X</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix</em><em>, </em><em>dataframe} of shape</em><em>                 (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – </p></li>
-<li><p><strong>y</strong> (<em>ndarray of shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em><em>, </em><em>default=None</em>) – Target values.</p></li>
+<li><p><strong>X</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Input samples.</p></li>
+<li><p><strong>y</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>,</em><em>) or </em><em>(</em><em>n_samples</em><em>, </em><em>n_outputs</em><em>)</em><em>,                 </em><em>default=None</em>) – Target values (None for unsupervised transformations).</p></li>
 <li><p><strong>**fit_params</strong> (<em>dict</em>) – Additional fit parameters.</p></li>
 </ul>
 </dd>
@@ -2193,13 +2291,13 @@ and returns a transformed version of X.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The transformed data.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The transformed data.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>X</strong> – The original data</p>
+<dd class="field-even"><p><strong>X</strong> – The original data.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array-like, shape (n_samples, n_features)</p>
+<dd class="field-odd"><p>ndarray of shape (n_samples, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2210,13 +2308,13 @@ and returns a transformed version of X.</p>
 <dd><p>Apply the power transform to each feature using the fitted lambdas.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data to be transformed using a power transformation.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data to be transformed using a power transformation.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_trans</strong> – The transformed data.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array-like, shape (n_samples, n_features)</p>
+<dd class="field-odd"><p>ndarray of shape (n_samples, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2225,7 +2323,7 @@ and returns a transformed version of X.</p>
 
 <dl class="py class">
 <dt id="ballet.eng.sklearn.QuantileTransformer">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">QuantileTransformer</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_data.html#QuantileTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.QuantileTransformer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">QuantileTransformer</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">n_quantiles</span><span class="o">=</span><span class="default_value">1000</span></em>, <em class="sig-param"><span class="n">output_distribution</span><span class="o">=</span><span class="default_value">'uniform'</span></em>, <em class="sig-param"><span class="n">ignore_implicit_zeros</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">subsample</span><span class="o">=</span><span class="default_value">100000</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">copy</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_data.html#QuantileTransformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.QuantileTransformer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.TransformerMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code></p>
 <p>Transform features using quantiles information.</p>
 <p>This method transforms the features to follow a uniform or a normal
@@ -2248,26 +2346,26 @@ variables measured at different scales more directly comparable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n_quantiles</strong> (<em>int</em><em>, </em><em>optional</em><em> (</em><em>default=1000</em><em> or </em><em>n_samples</em><em>)</em>) – Number of quantiles to be computed. It corresponds to the number
+<li><p><strong>n_quantiles</strong> (<em>int</em><em>, </em><em>default=1000</em><em> or </em><em>n_samples</em>) – Number of quantiles to be computed. It corresponds to the number
 of landmarks used to discretize the cumulative distribution function.
 If n_quantiles is larger than the number of samples, n_quantiles is set
 to the number of samples as a larger number of quantiles does not give
 a better approximation of the cumulative distribution function
 estimator.</p></li>
-<li><p><strong>output_distribution</strong> (<em>str</em><em>, </em><em>optional</em><em> (</em><em>default='uniform'</em><em>)</em>) – Marginal distribution for the transformed data. The choices are
+<li><p><strong>output_distribution</strong> (<em>{'uniform'</em><em>, </em><em>'normal'}</em><em>, </em><em>default='uniform'</em>) – Marginal distribution for the transformed data. The choices are
 ‘uniform’ (default) or ‘normal’.</p></li>
-<li><p><strong>ignore_implicit_zeros</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default=False</em><em>)</em>) – Only applies to sparse matrices. If True, the sparse entries of the
+<li><p><strong>ignore_implicit_zeros</strong> (<em>bool</em><em>, </em><em>default=False</em>) – Only applies to sparse matrices. If True, the sparse entries of the
 matrix are discarded to compute the quantile statistics. If False,
 these entries are treated as zeros.</p></li>
-<li><p><strong>subsample</strong> (<em>int</em><em>, </em><em>optional</em><em> (</em><em>default=1e5</em><em>)</em>) – Maximum number of samples used to estimate the quantiles for
+<li><p><strong>subsample</strong> (<em>int</em><em>, </em><em>default=1e5</em>) – Maximum number of samples used to estimate the quantiles for
 computational efficiency. Note that the subsampling procedure may
 differ for value-identical sparse and dense matrices.</p></li>
-<li><p><strong>random_state</strong> (<em>int</em><em>, </em><em>RandomState instance</em><em> or </em><em>None</em><em>, </em><em>optional</em><em> (</em><em>default=None</em><em>)</em>) – Determines random number generation for subsampling and smoothing
+<li><p><strong>random_state</strong> (<em>int</em><em>, </em><em>RandomState instance</em><em> or </em><em>None</em><em>, </em><em>default=None</em>) – Determines random number generation for subsampling and smoothing
 noise.
 Please see <code class="docutils literal notranslate"><span class="pre">subsample</span></code> for more details.
 Pass an int for reproducible results across multiple function calls.
 See <span class="xref std std-term">Glossary</span></p></li>
-<li><p><strong>copy</strong> (<em>boolean</em><em>, </em><em>optional</em><em>, </em><em>(</em><em>default=True</em><em>)</em>) – Set to False to perform inplace transformation and avoid a copy (if the
+<li><p><strong>copy</strong> (<em>bool</em><em>, </em><em>default=True</em>) – Set to False to perform inplace transformation and avoid a copy (if the
 input is already a numpy array).</p></li>
 </ul>
 </dd>
@@ -2279,7 +2377,7 @@ input is already a numpy array).</p></li>
 distribution function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>integer</p>
+<dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2290,7 +2388,7 @@ distribution function.</p>
 <dd><p>The values corresponding the quantiles of reference.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>ndarray, shape (n_quantiles, n_features)</p>
+<dd class="field-odd"><p>ndarray of shape (n_quantiles, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2301,7 +2399,7 @@ distribution function.</p>
 <dd><p>Quantiles of references.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>ndarray, shape(n_quantiles, )</p>
+<dd class="field-odd"><p>ndarray of shape (n_quantiles, )</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2319,13 +2417,13 @@ distribution function.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">quantile_transform</span></code></dt><dd><p>Equivalent function without the estimator API.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">quantile_transform</span></code></dt><dd><p>Equivalent function without the estimator API.</p>
 </dd>
-<dt><a class="reference internal" href="#ballet.eng.sklearn.PowerTransformer" title="ballet.eng.sklearn.PowerTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">PowerTransformer</span></code></a></dt><dd><p>Perform mapping to a normal distribution using a power transform.</p>
+<dt><a class="reference internal" href="#ballet.eng.sklearn.PowerTransformer" title="ballet.eng.sklearn.PowerTransformer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PowerTransformer</span></code></a></dt><dd><p>Perform mapping to a normal distribution using a power transform.</p>
 </dd>
-<dt><a class="reference internal" href="#ballet.eng.sklearn.StandardScaler" title="ballet.eng.sklearn.StandardScaler"><code class="xref py py-class docutils literal notranslate"><span class="pre">StandardScaler</span></code></a></dt><dd><p>Perform standardization that is faster, but less robust to outliers.</p>
+<dt><a class="reference internal" href="#ballet.eng.sklearn.StandardScaler" title="ballet.eng.sklearn.StandardScaler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StandardScaler</span></code></a></dt><dd><p>Perform standardization that is faster, but less robust to outliers.</p>
 </dd>
-<dt><a class="reference internal" href="#ballet.eng.sklearn.RobustScaler" title="ballet.eng.sklearn.RobustScaler"><code class="xref py py-class docutils literal notranslate"><span class="pre">RobustScaler</span></code></a></dt><dd><p>Perform robust standardization that removes the influence of outliers but does not put outliers and inliers on the same scale.</p>
+<dt><a class="reference internal" href="#ballet.eng.sklearn.RobustScaler" title="ballet.eng.sklearn.RobustScaler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RobustScaler</span></code></a></dt><dd><p>Perform robust standardization that removes the influence of outliers but does not put outliers and inliers on the same scale.</p>
 </dd>
 </dl>
 </div>
@@ -2340,13 +2438,16 @@ see <span class="xref std std-ref">examples/preprocessing/plot_all_scaling.py</s
 <dd><p>Compute the quantiles used for transforming.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<em>ndarray</em><em> or </em><em>sparse matrix</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data used to scale along the features axis. If a sparse
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix} of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data used to scale along the features axis. If a sparse
 matrix is provided, it will be converted into a sparse
 <code class="docutils literal notranslate"><span class="pre">csc_matrix</span></code>. Additionally, the sparse matrix needs to be
-nonnegative if <cite>ignore_implicit_zeros</cite> is False.</p>
+nonnegative if <cite>ignore_implicit_zeros</cite> is False.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – Ignored.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>self</strong></p>
+<dd class="field-even"><p><strong>self</strong> – Fitted transformer.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>object</p>
@@ -2360,7 +2461,7 @@ nonnegative if <cite>ignore_implicit_zeros</cite> is False.</p>
 <dd><p>Back-projection to the original space.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<em>ndarray</em><em> or </em><em>sparse matrix</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data used to scale along the features axis. If a sparse
+<dd class="field-odd"><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix} of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data used to scale along the features axis. If a sparse
 matrix is provided, it will be converted into a sparse
 <code class="docutils literal notranslate"><span class="pre">csc_matrix</span></code>. Additionally, the sparse matrix needs to be
 nonnegative if <cite>ignore_implicit_zeros</cite> is False.</p>
@@ -2369,7 +2470,7 @@ nonnegative if <cite>ignore_implicit_zeros</cite> is False.</p>
 <dd class="field-even"><p><strong>Xt</strong> – The projected data.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray or sparse matrix, shape (n_samples, n_features)</p>
+<dd class="field-odd"><p>{ndarray, sparse matrix} of (n_samples, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2380,7 +2481,7 @@ nonnegative if <cite>ignore_implicit_zeros</cite> is False.</p>
 <dd><p>Feature-wise transformation of the data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<em>ndarray</em><em> or </em><em>sparse matrix</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data used to scale along the features axis. If a sparse
+<dd class="field-odd"><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix} of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data used to scale along the features axis. If a sparse
 matrix is provided, it will be converted into a sparse
 <code class="docutils literal notranslate"><span class="pre">csc_matrix</span></code>. Additionally, the sparse matrix needs to be
 nonnegative if <cite>ignore_implicit_zeros</cite> is False.</p>
@@ -2389,7 +2490,7 @@ nonnegative if <cite>ignore_implicit_zeros</cite> is False.</p>
 <dd class="field-even"><p><strong>Xt</strong> – The projected data.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray or sparse matrix, shape (n_samples, n_features)</p>
+<dd class="field-odd"><p>{ndarray, sparse matrix} of shape (n_samples, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2398,7 +2499,7 @@ nonnegative if <cite>ignore_implicit_zeros</cite> is False.</p>
 
 <dl class="py class">
 <dt id="ballet.eng.sklearn.RobustScaler">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">RobustScaler</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_data.html#RobustScaler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.RobustScaler" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">RobustScaler</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">with_centering</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">with_scaling</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">quantile_range</span><span class="o">=</span><span class="default_value">(25.0, 75.0)</span></em>, <em class="sig-param"><span class="n">copy</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">unit_variance</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_data.html#RobustScaler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.RobustScaler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.TransformerMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code></p>
 <p>Scale features using statistics that are robust to outliers.</p>
 <p>This Scaler removes the median and scales the data according to
@@ -2421,22 +2522,30 @@ the interquartile range often give better results.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>with_centering</strong> (<em>boolean</em><em>, </em><em>True by default</em>) – If True, center the data before scaling.
+<li><p><strong>with_centering</strong> (<em>bool</em><em>, </em><em>default=True</em>) – If True, center the data before scaling.
 This will cause <code class="docutils literal notranslate"><span class="pre">transform</span></code> to raise an exception when attempted on
 sparse matrices, because centering them entails building a dense
 matrix which in common use cases is likely to be too large to fit in
 memory.</p></li>
-<li><p><strong>with_scaling</strong> (<em>boolean</em><em>, </em><em>True by default</em>) – If True, scale the data to interquartile range.</p></li>
-<li><p><strong>quantile_range</strong> (<em>tuple</em><em> (</em><em>q_min</em><em>, </em><em>q_max</em><em>)</em><em>, </em><em>0.0 &lt; q_min &lt; q_max &lt; 100.0</em>) – <p>Default: (25.0, 75.0) = (1st quantile, 3rd quantile) = IQR
-Quantile range used to calculate <code class="docutils literal notranslate"><span class="pre">scale_</span></code>.</p>
+<li><p><strong>with_scaling</strong> (<em>bool</em><em>, </em><em>default=True</em>) – If True, scale the data to interquartile range.</p></li>
+<li><p><strong>quantile_range</strong> (<em>tuple</em><em> (</em><em>q_min</em><em>, </em><em>q_max</em><em>)</em><em>, </em><em>0.0 &lt; q_min &lt; q_max &lt; 100.0</em><em>,         </em><em>default=</em><em>(</em><em>25.0</em><em>, </em><em>75.0</em><em>)</em><em>, </em><em>==</em><em> (</em><em>1st quantile</em><em>, </em><em>3rd quantile</em><em>)</em><em>, </em><em>== IQR</em>) – <p>Quantile range used to calculate <code class="docutils literal notranslate"><span class="pre">scale_</span></code>.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.18.</span></p>
 </div>
 </p></li>
-<li><p><strong>copy</strong> (<em>boolean</em><em>, </em><em>optional</em><em>, </em><em>default is True</em>) – If False, try to avoid a copy and do inplace scaling instead.
+<li><p><strong>copy</strong> (<em>bool</em><em>, </em><em>default=True</em>) – If False, try to avoid a copy and do inplace scaling instead.
 This is not guaranteed to always work inplace; e.g. if the data is
 not a NumPy array or scipy.sparse CSR matrix, a copy may still be
 returned.</p></li>
+<li><p><strong>unit_variance</strong> (<em>bool</em><em>, </em><em>default=False</em>) – <p>If True, scale data so that normally distributed features have a
+variance of 1. In general, if the difference between the x-values of
+<code class="docutils literal notranslate"><span class="pre">q_max</span></code> and <code class="docutils literal notranslate"><span class="pre">q_min</span></code> for a standard normal distribution is greater
+than 1, the dataset will be scaled down. If less than 1, the dataset
+will be scaled up.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.24.</span></p>
+</div>
+</p></li>
 </ul>
 </dd>
 </dl>
@@ -2482,9 +2591,9 @@ returned.</p></li>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">robust_scale</span></code></dt><dd><p>Equivalent function without the estimator API.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">robust_scale</span></code></dt><dd><p>Equivalent function without the estimator API.</p>
 </dd>
-<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.decomposition.PCA</span></code></dt><dd><p>Further removes the linear correlation across features with ‘whiten=True’.</p>
+<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">PCA</span></code></dt><dd><p>Further removes the linear correlation across features with ‘whiten=True’.</p>
 </dd>
 </dl>
 </div>
@@ -2499,8 +2608,17 @@ see <span class="xref std std-ref">examples/preprocessing/plot_all_scaling.py</s
 <dd><p>Compute the median and quantiles to be used for scaling.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data used to compute the median and quantiles
-used for later scaling along the features axis.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix} of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data used to compute the median and quantiles
+used for later scaling along the features axis.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – Ignored.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>self</strong> – Fitted scaler.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>object</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2511,7 +2629,13 @@ used for later scaling along the features axis.</p>
 <dd><p>Scale back the data to the original representation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em>) – The data used to scale along the specified axis.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix} of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The rescaled data to be transformed back.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>X_tr</strong> – Transformed array.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>{ndarray, sparse matrix} of shape (n_samples, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2522,7 +2646,13 @@ used for later scaling along the features axis.</p>
 <dd><p>Center and scale the data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix}</em>) – The data used to scale along the specified axis.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix} of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data used to scale along the specified axis.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>X_tr</strong> – Transformed array.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>{ndarray, sparse matrix} of shape (n_samples, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2531,7 +2661,7 @@ used for later scaling along the features axis.</p>
 
 <dl class="py class">
 <dt id="ballet.eng.sklearn.SimpleImputer">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">SimpleImputer</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/impute/_base.html#SimpleImputer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.SimpleImputer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">SimpleImputer</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">missing_values</span><span class="o">=</span><span class="default_value">nan</span></em>, <em class="sig-param"><span class="n">strategy</span><span class="o">=</span><span class="default_value">'mean'</span></em>, <em class="sig-param"><span class="n">fill_value</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">copy</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">add_indicator</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/impute/_base.html#SimpleImputer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.SimpleImputer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.impute._base._BaseImputer</span></code></p>
 <p>Imputation transformer for completing missing values.</p>
 <p>Read more in the <span class="xref std std-ref">User Guide</span>.</p>
@@ -2542,7 +2672,7 @@ estimator which is now removed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>missing_values</strong> (<em>number</em><em>, </em><em>string</em><em>, </em><em>np.nan</em><em> (</em><em>default</em><em>) or </em><em>None</em>) – The placeholder for the missing values. All occurrences of
+<li><p><strong>missing_values</strong> (<em>int</em><em>, </em><em>float</em><em>, </em><em>str</em><em>, </em><em>np.nan</em><em> or </em><em>None</em><em>, </em><em>default=np.nan</em>) – The placeholder for the missing values. All occurrences of
 <cite>missing_values</cite> will be imputed. For pandas’ dataframes with
 nullable integer dtypes with missing values, <cite>missing_values</cite>
 should be set to <cite>np.nan</cite>, since <cite>pd.NA</cite> will be converted to <cite>np.nan</cite>.</p></li>
@@ -2553,7 +2683,8 @@ each column. Can only be used with numeric data.</p></li>
 <li><p>If “median”, then replace missing values using the median along
 each column. Can only be used with numeric data.</p></li>
 <li><p>If “most_frequent”, then replace missing using the most frequent
-value along each column. Can be used with strings or numeric data.</p></li>
+value along each column. Can be used with strings or numeric data.
+If there is more than one such value, only the smallest is returned.</p></li>
 <li><p>If “constant”, then replace missing values with fill_value. Can be
 used with strings or numeric data.</p></li>
 </ul>
@@ -2605,7 +2736,7 @@ statistics will be discarded.</p>
 <code class="docutils literal notranslate"><span class="pre">None</span></code> if add_indicator is False.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.impute.MissingIndicator</span></code></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">MissingIndicator</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2613,7 +2744,7 @@ statistics will be discarded.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">IterativeImputer</span></code></dt><dd><p>Multivariate imputation of missing values.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">IterativeImputer</span></code></dt><dd><p>Multivariate imputation of missing values.</p>
 </dd>
 </dl>
 </div>
@@ -2646,7 +2777,37 @@ upon <a class="reference internal" href="#ballet.eng.sklearn.SimpleImputer.trans
 <dd class="field-even"><p><strong>self</strong></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="ballet.eng.external.html#ballet.eng.external.SimpleImputer" title="ballet.eng.external.SimpleImputer">SimpleImputer</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="#ballet.eng.sklearn.SimpleImputer" title="ballet.eng.sklearn.SimpleImputer">SimpleImputer</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ballet.eng.sklearn.SimpleImputer.inverse_transform">
+<code class="sig-name descname">inverse_transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/impute/_base.html#SimpleImputer.inverse_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.SimpleImputer.inverse_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the data back to the original representation.</p>
+<p>Inverts the <cite>transform</cite> operation performed on an array.
+This operation can only be performed after <a class="reference internal" href="#ballet.eng.sklearn.SimpleImputer" title="ballet.eng.sklearn.SimpleImputer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimpleImputer</span></code></a> is
+instantiated with <cite>add_indicator=True</cite>.</p>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">inverse_transform</span></code> can only invert the transform in
+features that have binary indicators for missing values. If a feature
+has no missing values at <code class="docutils literal notranslate"><span class="pre">fit</span></code> time, the feature won’t have a binary
+indicator, and the imputation done at <code class="docutils literal notranslate"><span class="pre">transform</span></code> time won’t be
+inverted.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.24.</span></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like of shape</em><em>                 (</em><em>n_samples</em><em>, </em><em>n_features + n_features_missing_indicator</em><em>)</em>) – The imputed data to be reverted to original data. It has to be
+an augmented array of imputed data and the missing indicator mask.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>X_original</strong> – The original X with missing values as it was prior
+to imputation.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray of shape (n_samples, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2666,9 +2827,9 @@ upon <a class="reference internal" href="#ballet.eng.sklearn.SimpleImputer.trans
 
 <dl class="py class">
 <dt id="ballet.eng.sklearn.SparseRandomProjection">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">SparseRandomProjection</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/random_projection.html#SparseRandomProjection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.SparseRandomProjection" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">SparseRandomProjection</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_components</span><span class="o">=</span><span class="default_value">'auto'</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">density</span><span class="o">=</span><span class="default_value">'auto'</span></em>, <em class="sig-param"><span class="n">eps</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">dense_output</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/random_projection.html#SparseRandomProjection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.SparseRandomProjection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.random_projection.BaseRandomProjection</span></code></p>
-<p>Reduce dimensionality through sparse random projection</p>
+<p>Reduce dimensionality through sparse random projection.</p>
 <p>Sparse random matrix is an alternative to dense random
 projection matrix that guarantees similar embedding quality while being
 much more memory efficient and allowing faster computation of the
@@ -2689,7 +2850,7 @@ drawn from:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n_components</strong> (<em>int</em><em> or </em><em>'auto'</em><em>, </em><em>optional</em><em> (</em><em>default = 'auto'</em><em>)</em>) – <p>Dimensionality of the target projection space.</p>
+<li><p><strong>n_components</strong> (<em>int</em><em> or </em><em>'auto'</em><em>, </em><em>default='auto'</em>) – <p>Dimensionality of the target projection space.</p>
 <p>n_components can be automatically adjusted according to the
 number of samples in the dataset and the bound given by the
 Johnson-Lindenstrauss lemma. In that case the quality of the
@@ -2698,19 +2859,20 @@ embedding is controlled by the <code class="docutils literal notranslate"><span 
 very conservative estimated of the required number of components
 as it makes no assumption on the structure of the dataset.</p>
 </p></li>
-<li><p><strong>density</strong> (<em>float in range</em><em> ]</em><em>0</em><em>, </em><em>1</em><em>]</em><em>, </em><em>optional</em><em> (</em><em>default='auto'</em><em>)</em>) – <p>Ratio of non-zero component in the random projection matrix.</p>
+<li><p><strong>density</strong> (<em>float</em><em> or </em><em>'auto'</em><em>, </em><em>default='auto'</em>) – <p>Ratio in the range (0, 1] of non-zero component in the random
+projection matrix.</p>
 <p>If density = ‘auto’, the value is set to the minimum density
 as recommended by Ping Li et al.: 1 / sqrt(n_features).</p>
 <p>Use density = 1 / 3.0 if you want to reproduce the results from
 Achlioptas, 2001.</p>
 </p></li>
-<li><p><strong>eps</strong> (<em>strictly positive float</em><em>, </em><em>optional</em><em>, </em><em>(</em><em>default=0.1</em><em>)</em>) – <p>Parameter to control the quality of the embedding according to
+<li><p><strong>eps</strong> (<em>float</em><em>, </em><em>default=0.1</em>) – <p>Parameter to control the quality of the embedding according to
 the Johnson-Lindenstrauss lemma when n_components is set to
-‘auto’.</p>
+‘auto’. This value should be strictly positive.</p>
 <p>Smaller values lead to better embedding and higher number of
 dimensions (n_components) in the target projection space.</p>
 </p></li>
-<li><p><strong>dense_output</strong> (<em>boolean</em><em>, </em><em>optional</em><em> (</em><em>default=False</em><em>)</em>) – <p>If True, ensure that the output of the random projection is a
+<li><p><strong>dense_output</strong> (<em>bool</em><em>, </em><em>default=False</em>) – <p>If True, ensure that the output of the random projection is a
 dense numpy array even if the input and random projection matrix
 are both sparse. In practice, if the number of components is
 small the number of zero components in the projected data will
@@ -2719,7 +2881,7 @@ use a dense representation.</p>
 <p>If False, the projected data uses a sparse representation if
 the input is sparse.</p>
 </p></li>
-<li><p><strong>random_state</strong> (<em>int</em><em>, </em><em>RandomState instance</em><em> or </em><em>None</em><em>, </em><em>optional</em><em> (</em><em>default=None</em><em>)</em>) – Controls the pseudo random number generator used to generate the
+<li><p><strong>random_state</strong> (<em>int</em><em>, </em><em>RandomState instance</em><em> or </em><em>None</em><em>, </em><em>default=None</em>) – Controls the pseudo random number generator used to generate the
 projection matrix at fit time.
 Pass an int for reproducible output across multiple function calls.
 See <span class="xref std std-term">Glossary</span>.</p></li>
@@ -2740,10 +2902,11 @@ See <span class="xref std std-term">Glossary</span>.</p></li>
 <dl class="py attribute">
 <dt id="ballet.eng.sklearn.SparseRandomProjection.components_">
 <code class="sig-name descname">components_</code><a class="headerlink" href="#ballet.eng.sklearn.SparseRandomProjection.components_" title="Permalink to this definition">¶</a></dt>
-<dd><p>Random matrix used for the projection.</p>
+<dd><p>Random matrix used for the projection. Sparse matrix will be of CSR
+format.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>CSR matrix with shape [n_components, n_features]</p>
+<dd class="field-odd"><p>sparse matrix of shape (n_components, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2775,7 +2938,7 @@ See <span class="xref std std-term">Glossary</span>.</p></li>
 </div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#ballet.eng.sklearn.GaussianRandomProjection" title="ballet.eng.sklearn.GaussianRandomProjection"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianRandomProjection</span></code></a></p>
+<p><a class="reference internal" href="#ballet.eng.sklearn.GaussianRandomProjection" title="ballet.eng.sklearn.GaussianRandomProjection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GaussianRandomProjection</span></code></a></p>
 </div>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
@@ -2793,7 +2956,7 @@ See <span class="xref std std-term">Glossary</span>.</p></li>
 
 <dl class="py class">
 <dt id="ballet.eng.sklearn.StandardScaler">
-<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">StandardScaler</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_data.html#StandardScaler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.StandardScaler" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ballet.eng.sklearn.</code><code class="sig-name descname">StandardScaler</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">copy</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">with_mean</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">with_std</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_data.html#StandardScaler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.StandardScaler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.TransformerMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code></p>
 <p>Standardize features by removing the mean and scaling to unit variance</p>
 <p>The standard score of a sample <cite>x</cite> is calculated as:</p>
@@ -2824,16 +2987,16 @@ estimator unable to learn from other features correctly as expected.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>copy</strong> (<em>boolean</em><em>, </em><em>optional</em><em>, </em><em>default True</em>) – If False, try to avoid a copy and do inplace scaling instead.
+<li><p><strong>copy</strong> (<em>bool</em><em>, </em><em>default=True</em>) – If False, try to avoid a copy and do inplace scaling instead.
 This is not guaranteed to always work inplace; e.g. if the data is
 not a NumPy array or scipy.sparse CSR matrix, a copy may still be
 returned.</p></li>
-<li><p><strong>with_mean</strong> (<em>boolean</em><em>, </em><em>True by default</em>) – If True, center the data before scaling.
+<li><p><strong>with_mean</strong> (<em>bool</em><em>, </em><em>default=True</em>) – If True, center the data before scaling.
 This does not work (and will raise an exception) when attempted on
 sparse matrices, because centering them entails building a dense
 matrix which in common use cases is likely to be too large to fit in
 memory.</p></li>
-<li><p><strong>with_std</strong> (<em>boolean</em><em>, </em><em>True by default</em>) – If True, scale the data to unit variance (or equivalently,
+<li><p><strong>with_std</strong> (<em>bool</em><em>, </em><em>default=True</em>) – If True, scale the data to unit variance (or equivalently,
 unit standard deviation).</p></li>
 </ul>
 </dd>
@@ -2841,14 +3004,17 @@ unit standard deviation).</p></li>
 <dl class="py attribute">
 <dt id="ballet.eng.sklearn.StandardScaler.scale_">
 <code class="sig-name descname">scale_</code><a class="headerlink" href="#ballet.eng.sklearn.StandardScaler.scale_" title="Permalink to this definition">¶</a></dt>
-<dd><p>Per feature relative scaling of the data. This is calculated using
-<cite>np.sqrt(var_)</cite>. Equal to <code class="docutils literal notranslate"><span class="pre">None</span></code> when <code class="docutils literal notranslate"><span class="pre">with_std=False</span></code>.</p>
+<dd><p>Per feature relative scaling of the data to achieve zero mean and unit
+variance. Generally this is calculated using <cite>np.sqrt(var_)</cite>. If a
+variance is zero, we can’t achieve unit variance, and the data is left
+as-is, giving a scaling factor of 1. <cite>scale_</cite> is equal to <cite>None</cite>
+when <cite>with_std=False</cite>.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.17: </span><em>scale_</em></p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>ndarray or None, shape (n_features,)</p>
+<dd class="field-odd"><p>ndarray of shape (n_features,) or None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2860,7 +3026,7 @@ unit standard deviation).</p></li>
 Equal to <code class="docutils literal notranslate"><span class="pre">None</span></code> when <code class="docutils literal notranslate"><span class="pre">with_mean=False</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>ndarray or None, shape (n_features,)</p>
+<dd class="field-odd"><p>ndarray of shape (n_features,) or None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2872,7 +3038,7 @@ Equal to <code class="docutils literal notranslate"><span class="pre">None</span
 <cite>scale_</cite>. Equal to <code class="docutils literal notranslate"><span class="pre">None</span></code> when <code class="docutils literal notranslate"><span class="pre">with_std=False</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>ndarray or None, shape (n_features,)</p>
+<dd class="field-odd"><p>ndarray of shape (n_features,) or None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2881,13 +3047,15 @@ Equal to <code class="docutils literal notranslate"><span class="pre">None</span
 <dt id="ballet.eng.sklearn.StandardScaler.n_samples_seen_">
 <code class="sig-name descname">n_samples_seen_</code><a class="headerlink" href="#ballet.eng.sklearn.StandardScaler.n_samples_seen_" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of samples processed by the estimator for each feature.
-If there are not missing samples, the <code class="docutils literal notranslate"><span class="pre">n_samples_seen</span></code> will be an
-integer, otherwise it will be an array.
+If there are no missing samples, the <code class="docutils literal notranslate"><span class="pre">n_samples_seen</span></code> will be an
+integer, otherwise it will be an array of dtype int. If
+<cite>sample_weights</cite> are used it will be a float (if no missing data)
+or an array of dtype float that sums the weights seen so far.
 Will be reset on new calls to fit, but increments across
 <code class="docutils literal notranslate"><span class="pre">partial_fit</span></code> calls.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>int or array, shape (n_features,)</p>
+<dd class="field-odd"><p>int or ndarray of shape (n_features,)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2912,9 +3080,9 @@ Will be reset on new calls to fit, but increments across
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">scale</span></code></dt><dd><p>Equivalent function without the estimator API.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code></dt><dd><p>Equivalent function without the estimator API.</p>
 </dd>
-<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.decomposition.PCA</span></code></dt><dd><p>Further removes the linear correlation across features with ‘whiten=True’.</p>
+<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">PCA</span></code></dt><dd><p>Further removes the linear correlation across features with ‘whiten=True’.</p>
 </dd>
 </dl>
 </div>
@@ -2928,15 +3096,26 @@ affect model performance.</p>
 see <span class="xref std std-ref">examples/preprocessing/plot_all_scaling.py</span>.</p>
 <dl class="py method">
 <dt id="ballet.eng.sklearn.StandardScaler.fit">
-<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_data.html#StandardScaler.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.StandardScaler.fit" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sample_weight</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_data.html#StandardScaler.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.StandardScaler.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the mean and std to be used for later scaling.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix}</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data used to compute the mean and standard deviation
+<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix} of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data used to compute the mean and standard deviation
 used for later scaling along the features axis.</p></li>
-<li><p><strong>y</strong> – Ignored</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – Ignored.</p></li>
+<li><p><strong>sample_weight</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em><em>, </em><em>default=None</em>) – <p>Individual weights for each sample.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.24: </span>parameter <em>sample_weight</em> support to StandardScaler.</p>
+</div>
+</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>self</strong> – Fitted scaler.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>object</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2948,22 +3127,22 @@ used for later scaling along the features axis.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data used to scale along the features axis.</p></li>
-<li><p><strong>copy</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default: None</em><em>)</em>) – Copy the input X or not.</p></li>
+<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix} of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data used to scale along the features axis.</p></li>
+<li><p><strong>copy</strong> (<em>bool</em><em>, </em><em>default=None</em>) – Copy the input X or not.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_tr</strong> – Transformed array.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array-like, shape [n_samples, n_features]</p>
+<dd class="field-odd"><p>{ndarray, sparse matrix} of shape (n_samples, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="ballet.eng.sklearn.StandardScaler.partial_fit">
-<code class="sig-name descname">partial_fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_data.html#StandardScaler.partial_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.StandardScaler.partial_fit" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">partial_fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sample_weight</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sklearn/preprocessing/_data.html#StandardScaler.partial_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ballet.eng.sklearn.StandardScaler.partial_fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Online computation of mean and std on X for later scaling.</p>
 <p>All of X is processed as a single batch. This is intended for cases
 when <a class="reference internal" href="#ballet.eng.sklearn.StandardScaler.fit" title="ballet.eng.sklearn.StandardScaler.fit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fit()</span></code></a> is not feasible due to very large number of
@@ -2975,13 +3154,18 @@ The American Statistician 37.3 (1983): 242-247:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix}</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data used to compute the mean and standard deviation
+<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix} of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data used to compute the mean and standard deviation
 used for later scaling along the features axis.</p></li>
 <li><p><strong>y</strong> (<em>None</em>) – Ignored.</p></li>
+<li><p><strong>sample_weight</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em><em>, </em><em>default=None</em>) – <p>Individual weights for each sample.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.24: </span>parameter <em>sample_weight</em> support to StandardScaler.</p>
+</div>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>self</strong> – Transformer instance.</p>
+<dd class="field-even"><p><strong>self</strong> – Fitted scaler.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>object</p>
@@ -2996,9 +3180,15 @@ used for later scaling along the features axis.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data used to scale along the features axis.</p></li>
-<li><p><strong>copy</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default: None</em><em>)</em>) – Copy the input X or not.</p></li>
+<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data used to scale along the features axis.</p></li>
+<li><p><strong>copy</strong> (<em>bool</em><em>, </em><em>default=None</em>) – Copy the input X or not.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>X_tr</strong> – Transformed array.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>{ndarray, sparse matrix} of shape (n_samples, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3012,37 +3202,29 @@ used for later scaling along the features axis.</p></li>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="ballet.eng.ts.html" class="btn btn-neutral float-right" title="ballet.eng.ts module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="ballet.eng.skits.html" class="btn btn-neutral float-left" title="ballet.eng.skits module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="ballet.eng.ts.html" class="btn btn-neutral float-right" title="ballet.eng.ts module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="ballet.eng.skits.html" class="btn btn-neutral float-left" title="ballet.eng.skits module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2018, Micah Smith
+        &#169; Copyright 2018, Micah Smith.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

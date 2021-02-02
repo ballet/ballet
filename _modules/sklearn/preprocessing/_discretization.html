@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>sklearn.preprocessing._discretization &mdash; ballet 0.7.11 documentation</title>
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,7 +32,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
@@ -50,7 +52,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> ballet
+            <a href="../../../index.html" class="icon icon-home"> ballet
           
 
           
@@ -147,7 +149,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../feature_engineering_guide.html">Feature Engineering Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#logical-features">Logical Features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#feature-definitions">Feature Definitions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#why">Why?</a></li>
 </ul>
 </li>
@@ -178,7 +180,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../faq.html">FAQ</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../faq.html#how-can-i-check-the-performance-of-a-feature">How can I check the performance of a feature?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#there-was-an-error-submitting-my-feature-using-the-ballet-submit-button-in-jupyter-lab">There was an error submitting my feature using the Ballet Submit button in Jupyter Lab.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#there-was-an-error-submitting-my-feature-using-assemble-in-jupyter-lab">There was an error submitting my feature using Assemblé in Jupyter Lab.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../faq.html#my-feature-has-a-valid-api-locally-why-was-it-rejected">My feature has a valid API locally, why was it rejected?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../faq.html#why-did-my-feature-fail-the-feature-acceptance-validation">Why did my feature fail the feature acceptance validation?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../faq.html#my-feature-relies-on-a-new-library-how-can-i-add-it-to-the-project">My feature relies on a new library, how can I add it to the project?</a></li>
@@ -312,6 +314,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -353,11 +357,10 @@
 <span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span>
 <span class="kn">from</span> <span class="nn">..utils.validation</span> <span class="kn">import</span> <span class="n">check_array</span>
 <span class="kn">from</span> <span class="nn">..utils.validation</span> <span class="kn">import</span> <span class="n">check_is_fitted</span>
-<span class="kn">from</span> <span class="nn">..utils.validation</span> <span class="kn">import</span> <span class="n">FLOAT_DTYPES</span>
 <span class="kn">from</span> <span class="nn">..utils.validation</span> <span class="kn">import</span> <span class="n">_deprecate_positional_args</span>
 
 
-<div class="viewcode-block" id="KBinsDiscretizer"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.KBinsDiscretizer">[docs]</a><span class="k">class</span> <span class="nc">KBinsDiscretizer</span><span class="p">(</span><span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
+<div class="viewcode-block" id="KBinsDiscretizer"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.KBinsDiscretizer">[docs]</a><span class="k">class</span> <span class="nc">KBinsDiscretizer</span><span class="p">(</span><span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Bin continuous data into intervals.</span>
 
@@ -367,10 +370,10 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    n_bins : int or array-like, shape (n_features,) (default=5)</span>
+<span class="sd">    n_bins : int or array-like of shape (n_features,), default=5</span>
 <span class="sd">        The number of bins to produce. Raises ValueError if ``n_bins &lt; 2``.</span>
 
-<span class="sd">    encode : {&#39;onehot&#39;, &#39;onehot-dense&#39;, &#39;ordinal&#39;}, (default=&#39;onehot&#39;)</span>
+<span class="sd">    encode : {&#39;onehot&#39;, &#39;onehot-dense&#39;, &#39;ordinal&#39;}, default=&#39;onehot&#39;</span>
 <span class="sd">        Method used to encode the transformed result.</span>
 
 <span class="sd">        onehot</span>
@@ -384,7 +387,7 @@
 <span class="sd">        ordinal</span>
 <span class="sd">            Return the bin identifier encoded as an integer value.</span>
 
-<span class="sd">    strategy : {&#39;uniform&#39;, &#39;quantile&#39;, &#39;kmeans&#39;}, (default=&#39;quantile&#39;)</span>
+<span class="sd">    strategy : {&#39;uniform&#39;, &#39;quantile&#39;, &#39;kmeans&#39;}, default=&#39;quantile&#39;</span>
 <span class="sd">        Strategy used to define the widths of the bins.</span>
 
 <span class="sd">        uniform</span>
@@ -395,19 +398,26 @@
 <span class="sd">            Values in each bin have the same nearest center of a 1D k-means</span>
 <span class="sd">            cluster.</span>
 
+<span class="sd">    dtype : {np.float32, np.float64}, default=None</span>
+<span class="sd">        The desired data-type for the output. If None, output dtype is</span>
+<span class="sd">        consistent with input dtype. Only np.float32 and np.float64 are</span>
+<span class="sd">        supported.</span>
+
+<span class="sd">        .. versionadded:: 0.24</span>
+
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    n_bins_ : int array, shape (n_features,)</span>
+<span class="sd">    n_bins_ : ndarray of shape (n_features,), dtype=np.int_</span>
 <span class="sd">        Number of bins per feature. Bins whose width are too small</span>
 <span class="sd">        (i.e., &lt;= 1e-8) are removed with a warning.</span>
 
-<span class="sd">    bin_edges_ : array of arrays, shape (n_features, )</span>
+<span class="sd">    bin_edges_ : ndarray of ndarray of shape (n_features,)</span>
 <span class="sd">        The edges of each bin. Contain arrays of varying shapes ``(n_bins_, )``</span>
 <span class="sd">        Ignored features will have empty arrays.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">     sklearn.preprocessing.Binarizer : Class used to bin values as ``0`` or</span>
+<span class="sd">    Binarizer : Class used to bin values as ``0`` or</span>
 <span class="sd">        ``1`` based on a parameter ``threshold``.</span>
 
 <span class="sd">    Notes</span>
@@ -418,13 +428,13 @@
 <span class="sd">      np.concatenate([-np.inf, bin_edges_[i][1:-1], np.inf])</span>
 
 <span class="sd">    You can combine ``KBinsDiscretizer`` with</span>
-<span class="sd">    :class:`sklearn.compose.ColumnTransformer` if you only want to preprocess</span>
+<span class="sd">    :class:`~sklearn.compose.ColumnTransformer` if you only want to preprocess</span>
 <span class="sd">    part of the features.</span>
 
 <span class="sd">    ``KBinsDiscretizer`` might produce constant features (e.g., when</span>
 <span class="sd">    ``encode = &#39;onehot&#39;`` and certain bins do not contain any data).</span>
 <span class="sd">    These features can be removed with feature selection algorithms</span>
-<span class="sd">    (e.g., :class:`sklearn.feature_selection.VarianceThreshold`).</span>
+<span class="sd">    (e.g., :class:`~sklearn.feature_selection.VarianceThreshold`).</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -458,29 +468,43 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@_deprecate_positional_args</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_bins</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">encode</span><span class="o">=</span><span class="s1">&#39;onehot&#39;</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;quantile&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_bins</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">encode</span><span class="o">=</span><span class="s1">&#39;onehot&#39;</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;quantile&#39;</span><span class="p">,</span>
+                 <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_bins</span> <span class="o">=</span> <span class="n">n_bins</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">encode</span> <span class="o">=</span> <span class="n">encode</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">strategy</span> <span class="o">=</span> <span class="n">strategy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype</span>
 
-<div class="viewcode-block" id="KBinsDiscretizer.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.KBinsDiscretizer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="KBinsDiscretizer.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.KBinsDiscretizer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Fit the estimator.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : numeric array-like, shape (n_samples, n_features)</span>
+<span class="sd">        X : array-like of shape (n_samples, n_features)</span>
 <span class="sd">            Data to be discretized.</span>
 
 <span class="sd">        y : None</span>
 <span class="sd">            Ignored. This parameter exists only for compatibility with</span>
-<span class="sd">            :class:`sklearn.pipeline.Pipeline`.</span>
+<span class="sd">            :class:`~sklearn.pipeline.Pipeline`.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        self</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_data</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;numeric&#39;</span><span class="p">)</span>
+
+        <span class="n">supported_dtype</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="n">supported_dtype</span><span class="p">:</span>
+            <span class="n">output_dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">output_dtype</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">dtype</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Valid options for &#39;dtype&#39; are &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">supported_dtype</span> <span class="o">+</span> <span class="p">(</span><span class="kc">None</span><span class="p">,)</span><span class="si">}</span><span class="s2">. Got dtype=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2"> &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; instead.&quot;</span>
+            <span class="p">)</span>
 
         <span class="n">valid_encode</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;onehot&#39;</span><span class="p">,</span> <span class="s1">&#39;onehot-dense&#39;</span><span class="p">,</span> <span class="s1">&#39;ordinal&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_encode</span><span class="p">:</span>
@@ -546,10 +570,11 @@
         <span class="k">if</span> <span class="s1">&#39;onehot&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_encoder</span> <span class="o">=</span> <span class="n">OneHotEncoder</span><span class="p">(</span>
                 <span class="n">categories</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_bins_</span><span class="p">],</span>
-                <span class="n">sparse</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encode</span> <span class="o">==</span> <span class="s1">&#39;onehot&#39;</span><span class="p">)</span>
+                <span class="n">sparse</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encode</span> <span class="o">==</span> <span class="s1">&#39;onehot&#39;</span><span class="p">,</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">output_dtype</span><span class="p">)</span>
             <span class="c1"># Fit the OneHotEncoder with toy datasets</span>
             <span class="c1"># so that it&#39;s ready for use after the KBinsDiscretizer is fitted</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_encoder</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_bins_</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_encoder</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_bins_</span><span class="p">))))</span>
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
@@ -567,9 +592,9 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> received an invalid number &quot;</span>
                                  <span class="s2">&quot;of bins. Received </span><span class="si">{}</span><span class="s2">, expected at least 2.&quot;</span>
                                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">KBinsDiscretizer</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">orig_bins</span><span class="p">))</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">orig_bins</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">orig_bins</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
 
-        <span class="n">n_bins</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">orig_bins</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">n_bins</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">orig_bins</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                              <span class="n">ensure_2d</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">n_bins</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">n_bins</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">n_features</span><span class="p">:</span>
@@ -587,27 +612,26 @@
                              <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">KBinsDiscretizer</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">indices</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">n_bins</span>
 
-<div class="viewcode-block" id="KBinsDiscretizer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.KBinsDiscretizer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="KBinsDiscretizer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.KBinsDiscretizer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Discretize the data.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : numeric array-like, shape (n_samples, n_features)</span>
+<span class="sd">        X : array-like of shape (n_samples, n_features)</span>
 <span class="sd">            Data to be discretized.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Xt : numeric array-like or sparse matrix</span>
-<span class="sd">            Data in the binned space.</span>
+<span class="sd">        Xt : {ndarray, sparse matrix}, dtype={np.float32, np.float64}</span>
+<span class="sd">            Data in the binned space. Will be a sparse matrix if</span>
+<span class="sd">            `self.encode=&#39;onehot&#39;` and ndarray otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-        <span class="n">Xt</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_DTYPES</span><span class="p">)</span>
-        <span class="n">n_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_bins_</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">Xt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">n_features</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Incorrect number of features. Expecting </span><span class="si">{}</span><span class="s2">, &quot;</span>
-                             <span class="s2">&quot;received </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">Xt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="c1"># check input and attribute dtypes</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span>
+        <span class="n">Xt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_data</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="n">bin_edges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span>
         <span class="k">for</span> <span class="n">jj</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Xt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
@@ -624,9 +648,18 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode</span> <span class="o">==</span> <span class="s1">&#39;ordinal&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Xt</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_encoder</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">Xt</span><span class="p">)</span></div>
+        <span class="n">dtype_init</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="s1">&#39;onehot&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode</span><span class="p">:</span>
+            <span class="n">dtype_init</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_encoder</span><span class="o">.</span><span class="n">dtype</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_encoder</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">Xt</span><span class="o">.</span><span class="n">dtype</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">Xt_enc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_encoder</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">Xt</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="c1"># revert the initial dtype to avoid modifying self.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_encoder</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype_init</span>
+        <span class="k">return</span> <span class="n">Xt_enc</span></div>
 
-<div class="viewcode-block" id="KBinsDiscretizer.inverse_transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.KBinsDiscretizer.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Xt</span><span class="p">):</span>
+<div class="viewcode-block" id="KBinsDiscretizer.inverse_transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.KBinsDiscretizer.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Xt</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Transform discretized data back to original feature space.</span>
 
@@ -635,12 +668,12 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        Xt : numeric array-like, shape (n_sample, n_features)</span>
+<span class="sd">        Xt : array-like of shape (n_samples, n_features)</span>
 <span class="sd">            Transformed data in the binned space.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Xinv : numeric array-like</span>
+<span class="sd">        Xinv : ndarray, dtype={np.float32, np.float64}</span>
 <span class="sd">            Data in the original feature space.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -648,7 +681,7 @@
         <span class="k">if</span> <span class="s1">&#39;onehot&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode</span><span class="p">:</span>
             <span class="n">Xt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_encoder</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">Xt</span><span class="p">)</span>
 
-        <span class="n">Xinv</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">Xt</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_DTYPES</span><span class="p">)</span>
+        <span class="n">Xinv</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">Xt</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
         <span class="n">n_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_bins_</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">Xinv</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">n_features</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Incorrect number of features. Expecting </span><span class="si">{}</span><span class="s2">, &quot;</span>
@@ -666,28 +699,25 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2018, Micah Smith
+        &#169; Copyright 2018, Micah Smith.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

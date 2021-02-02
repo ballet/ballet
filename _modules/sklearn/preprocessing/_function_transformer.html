@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>sklearn.preprocessing._function_transformer &mdash; ballet 0.7.11 documentation</title>
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,7 +32,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
@@ -50,7 +52,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> ballet
+            <a href="../../../index.html" class="icon icon-home"> ballet
           
 
           
@@ -147,7 +149,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../feature_engineering_guide.html">Feature Engineering Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#logical-features">Logical Features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#feature-definitions">Feature Definitions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#why">Why?</a></li>
 </ul>
 </li>
@@ -178,7 +180,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../faq.html">FAQ</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../faq.html#how-can-i-check-the-performance-of-a-feature">How can I check the performance of a feature?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#there-was-an-error-submitting-my-feature-using-the-ballet-submit-button-in-jupyter-lab">There was an error submitting my feature using the Ballet Submit button in Jupyter Lab.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#there-was-an-error-submitting-my-feature-using-assemble-in-jupyter-lab">There was an error submitting my feature using Assemblé in Jupyter Lab.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../faq.html#my-feature-has-a-valid-api-locally-why-was-it-rejected">My feature has a valid API locally, why was it rejected?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../faq.html#why-did-my-feature-fail-the-feature-acceptance-validation">Why did my feature fail the feature acceptance validation?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../faq.html#my-feature-relies-on-a-new-library-how-can-i-add-it-to-the-project">My feature relies on a new library, how can I add it to the project?</a></li>
@@ -312,6 +314,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -349,7 +353,7 @@
     <span class="k">return</span> <span class="n">X</span>
 
 
-<div class="viewcode-block" id="FunctionTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.FunctionTransformer">[docs]</a><span class="k">class</span> <span class="nc">FunctionTransformer</span><span class="p">(</span><span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
+<div class="viewcode-block" id="FunctionTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.FunctionTransformer">[docs]</a><span class="k">class</span> <span class="nc">FunctionTransformer</span><span class="p">(</span><span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Constructs a transformer from an arbitrary callable.</span>
 
 <span class="sd">    A FunctionTransformer forwards its X (and optionally y) arguments to a</span>
@@ -366,18 +370,18 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    func : callable, optional default=None</span>
+<span class="sd">    func : callable, default=None</span>
 <span class="sd">        The callable to use for the transformation. This will be passed</span>
 <span class="sd">        the same arguments as transform, with args and kwargs forwarded.</span>
 <span class="sd">        If func is None, then func will be the identity function.</span>
 
-<span class="sd">    inverse_func : callable, optional default=None</span>
+<span class="sd">    inverse_func : callable, default=None</span>
 <span class="sd">        The callable to use for the inverse transformation. This will be</span>
 <span class="sd">        passed the same arguments as inverse transform, with args and</span>
 <span class="sd">        kwargs forwarded. If inverse_func is None, then inverse_func</span>
 <span class="sd">        will be the identity function.</span>
 
-<span class="sd">    validate : bool, optional default=False</span>
+<span class="sd">    validate : bool, default=False</span>
 <span class="sd">        Indicate that the input X array should be checked before calling</span>
 <span class="sd">        ``func``. The possibilities are:</span>
 
@@ -389,7 +393,7 @@
 <span class="sd">        .. versionchanged:: 0.22</span>
 <span class="sd">           The default of ``validate`` changed from True to False.</span>
 
-<span class="sd">    accept_sparse : boolean, optional</span>
+<span class="sd">    accept_sparse : bool, default=False</span>
 <span class="sd">        Indicate that func accepts a sparse matrix as input. If validate is</span>
 <span class="sd">        False, this has no effect. Otherwise, if accept_sparse is false,</span>
 <span class="sd">        sparse matrix inputs will cause an exception to be raised.</span>
@@ -401,12 +405,12 @@
 
 <span class="sd">       .. versionadded:: 0.20</span>
 
-<span class="sd">    kw_args : dict, optional</span>
+<span class="sd">    kw_args : dict, default=None</span>
 <span class="sd">        Dictionary of additional keyword arguments to pass to func.</span>
 
 <span class="sd">        .. versionadded:: 0.18</span>
 
-<span class="sd">    inv_kw_args : dict, optional</span>
+<span class="sd">    inv_kw_args : dict, default=None</span>
 <span class="sd">        Dictionary of additional keyword arguments to pass to inverse_func.</span>
 
 <span class="sd">        .. versionadded:: 0.18</span>
@@ -449,7 +453,7 @@
                           <span class="s2">&quot; want to proceed regardless, set&quot;</span>
                           <span class="s2">&quot; &#39;check_inverse=False&#39;.&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
 
-<div class="viewcode-block" id="FunctionTransformer.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.FunctionTransformer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="FunctionTransformer.fit"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.FunctionTransformer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Fit transformer by checking X.</span>
 
 <span class="sd">        If ``validate`` is ``True``, ``X`` will be checked.</span>
@@ -469,7 +473,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_check_inverse_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="FunctionTransformer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.FunctionTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="FunctionTransformer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.FunctionTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Transform X using the forward function.</span>
 
 <span class="sd">        Parameters</span>
@@ -484,7 +488,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">,</span> <span class="n">kw_args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kw_args</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="FunctionTransformer.inverse_transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.external.FunctionTransformer.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="FunctionTransformer.inverse_transform"><a class="viewcode-back" href="../../../api/ballet.eng.sklearn.html#ballet.eng.sklearn.FunctionTransformer.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Transform X using the inverse function.</span>
 
 <span class="sd">        Parameters</span>
@@ -517,28 +521,25 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2018, Micah Smith
+        &#169; Copyright 2018, Micah Smith.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

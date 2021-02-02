@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>ballet &mdash; ballet 0.7.11 documentation</title>
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,7 +32,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -51,7 +53,7 @@
           
 
           
-            <a href="#" class="icon icon-home" alt="Documentation Home"> ballet
+            <a href="#" class="icon icon-home"> ballet
           
 
           
@@ -148,7 +150,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="feature_engineering_guide.html">Feature Engineering Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="feature_engineering_guide.html#logical-features">Logical Features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="feature_engineering_guide.html#feature-definitions">Feature Definitions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#why">Why?</a></li>
 </ul>
 </li>
@@ -179,7 +181,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#how-can-i-check-the-performance-of-a-feature">How can I check the performance of a feature?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#there-was-an-error-submitting-my-feature-using-the-ballet-submit-button-in-jupyter-lab">There was an error submitting my feature using the Ballet Submit button in Jupyter Lab.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#there-was-an-error-submitting-my-feature-using-assemble-in-jupyter-lab">There was an error submitting my feature using Assemblé in Jupyter Lab.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#my-feature-has-a-valid-api-locally-why-was-it-rejected">My feature has a valid API locally, why was it rejected?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-did-my-feature-fail-the-feature-acceptance-validation">Why did my feature fail the feature acceptance validation?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#my-feature-relies-on-a-new-library-how-can-i-add-it-to-the-project">My feature relies on a new library, how can I add it to the project?</a></li>
@@ -313,6 +315,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -324,7 +328,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             
               <a href="https://github.com/HDI-Project/ballet/blob/master/docs/index.rst" class="fa fa-github"> Edit on GitHub</a>
             
@@ -341,7 +345,7 @@
            <div itemprop="articleBody">
             
   <a class="reference external image-reference" href="https://pypi.org/project/ballet"><img alt="PyPI Shield" src="https://img.shields.io/pypi/v/ballet.svg" /></a>
-<a class="reference external image-reference" href="https://travis-ci.com/HDI-Project/ballet"><img alt="Travis CI Shield" src="https://travis-ci.com/HDI-Project/ballet.svg?branch=master" /></a>
+<a class="reference external image-reference" href="https://travis-ci.com/HDI-Project/ballet"><img alt="Travis CI Shield" src="https://api.travis-ci.com/HDI-Project/ballet.svg?branch=master" /></a>
 <a class="reference external image-reference" href="https://codecov.io/gh/HDI-Project/ballet"><img alt="codecov Shield" src="https://codecov.io/gh/HDI-Project/ballet/branch/master/graph/badge.svg" /></a>
 <div class="section" id="ballet">
 <h1>ballet<a class="headerlink" href="#ballet" title="Permalink to this headline">¶</a></h1>
@@ -380,15 +384,15 @@ that which is commonly used in open-source software development.</p>
 <em>feature engineering pipelines</em>, an important part of many data science
 projects. Individual features are represented as separate Python modules,
 declaring the subset of a dataframe that they operate on and a
-scikit-learn-style learned transformer that extracts feature values from the raw
-data. Ballet collects individual features and composes them into a feature
-engineering pipeline. At any point, a project built on Ballet can be installed
-for end-to-end feature engineering on new data instances for the same problem.
-How do we ensure the feature engineering pipeline is always useful? Ballet
-thoroughly validates proposed features for correctness and machine learning
-performance, using an extensive test suite and a novel streaming logical
-feature selection algorithm. Accepted features can be automatically merged by
-the ballet GitHub app into projects.</p>
+scikit-learn-style learned transformer that extracts feature values from the
+raw data. Ballet collects individual features and composes them into a
+feature engineering pipeline. At any point, a project built on Ballet can be
+installed for end-to-end feature engineering on new data instances for the
+same problem. How do we ensure the feature engineering pipeline is always
+useful? Ballet thoroughly validates proposed features for correctness and
+machine learning performance, using an extensive test suite and a novel
+streaming feature definition selection algorithm. Accepted features can be
+automatically merged by the ballet GitHub app into projects.</p>
 <p><span class="raw-html-m2r"><img src="./docs/_static/feature_lifecycle.png" alt="Ballet Feature Lifecycle" width="400" /></span></p>
 </div>
 <div class="section" id="next-steps">
@@ -426,35 +430,28 @@ collaboration?</em></p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="readme.html" class="btn btn-neutral float-right" title="ballet" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
+        <a href="readme.html" class="btn btn-neutral float-right" title="ballet" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2018, Micah Smith
+        &#169; Copyright 2018, Micah Smith.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
