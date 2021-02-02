@@ -21,15 +21,16 @@ used for predicting the sale price of houses in Ames, Iowa, given raw data about
 Cloud Feature Development Workflow
 ==================================
 
-Some Ballet projects may have set up a development workflow using `Assemblé`_,
-a development environment for Ballet on top of Jupyter Lab, with a hosted
-Jupyter Lab environment and an in-Lab submission extension. This greatly
-simplifies the development workflow at the cost of some flexibility.
+Some Ballet projects may have set up a development workflow using
+`Assemblé`_, a development environment for Ballet on top of Jupyter Lab,
+with a hosted Jupyter Lab environment running on Binder and an in-Lab
+submission extension. This greatly simplifies the development workflow at
+the cost of some flexibility.
 
-Launch binder
--------------
+Launch Assemblé
+---------------
 
-Click the |launch-binder| link in the project's README to launch an interactive notebook. This may take a few minutes while Binder builds the repository -- grab a cup of coffee!
+Click the |launch-assemble| link in the project's README to launch an interactive notebook. This may take a few minutes while Binder builds the repository -- grab a cup of coffee!
 
 Work in a notebook
 ------------------
@@ -344,7 +345,7 @@ ballet collaboration.
    Image from *The New Yorker* cartoon by Peter Steiner, 1993, via Wikipedia.
 
 .. _`Assemblé`: https://github.com/HDI-Project/ballet-assemble
-.. |launch-binder| image:: https://static.mybinder.org/badge_logo.svg
+.. |launch-assemble| image:: _static/launch-assemble.svg
 .. _`Predict House Prices`: https://github.com/HDI-Project/ballet-predict-house-prices
 .. _`conda`: https://conda.io/en/latest/
 .. _`hub`: https://hub.github.com/
