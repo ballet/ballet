@@ -35,7 +35,7 @@ requirements = [
 
 extras = {
     'category_encoders': ['category_encoders >= 2.2.2'],
-    'feature_engine': ['feature_engine >= 0.5'],
+    'feature_engine': ['feature_engine ~= 1.0'],
     'featuretools': ['featuretools_sklearn_transformer >= 0.1'],
     'skits': ['skits >= 0.1.2'],
     'tsfresh': ['tsfresh >= 0.16'],
