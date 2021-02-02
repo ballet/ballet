@@ -9,8 +9,7 @@ class ExternalTest(unittest.TestCase):
         except ImportError:
             pass
         else:
-            from ballet.eng.category_encoders import (  # noqa F401
-                WOEEncoder,)
+            from ballet.eng.category_encoders import WOEEncoder  # noqa F401
 
     def test_feature_engine(self):
         try:
@@ -35,8 +34,7 @@ class ExternalTest(unittest.TestCase):
         except ImportError:
             pass
         else:
-            from ballet.eng.skits import (  # noqa F401
-                HorizonTransformer,)
+            from ballet.eng.skits import HorizonTransformer  # noqa F401
 
     def test_sklearn(self):
         from ballet.eng.sklearn import KNNImputer  # noqa F401
