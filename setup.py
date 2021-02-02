@@ -14,68 +14,68 @@ with open('HISTORY.md', encoding='utf-8') as history_file:
 requirements = [
     'black',
     'cookiecutter',
-    'Click>=6.0',
-    'dataclasses; python_version=="3.6"',
+    'Click >= 6.0',
+    'dataclasses; python_version == "3.6"',
     'dill',
-    'dynaconf>=3.0',
-    'funcy>=1.14',
+    'dynaconf ~= 3.0',
+    'funcy >= 1.14',
     'gitpython',
     'h5py',
     'numpy',
     'packaging',
-    'pandas>=1.0',
+    'pandas ~= 1.0',
     'pyyaml',
     'requests',
-    'scikit_learn>=0.20,<0.23; python_version=="3.6"',
-    'scikit_learn>=0.20; python_version>"3.6"',
+    'scikit_learn >=0.20, <0.23; python_version == "3.6"',
+    'scikit_learn >= 0.20; python_version > "3.6"',
     'scipy',
-    'sklearn_pandas',
+    'sklearn_pandas ~= 1.0',
     'stacklog',
 ]
 
 extras = {
-    'category_encoders': ['category_encoders>=2.2.2'],
-    'feature_engine': ['feature_engine>=0.5'],
-    'featuretools': ['featuretools_sklearn_transformer>=0.1'],
-    'skits': ['skits>=0.1.2'],
-    'tsfresh': ['tsfresh>=0.16'],
+    'category_encoders': ['category_encoders >= 2.2.2'],
+    'feature_engine': ['feature_engine >= 0.5'],
+    'featuretools': ['featuretools_sklearn_transformer >= 0.1'],
+    'skits': ['skits >= 0.1.2'],
+    'tsfresh': ['tsfresh >= 0.16'],
 }
 extras['all'] = [dep for deps in extras.values() for dep in deps]
 
 test_requirements = [
-    'coverage>=4.5.1',
-    'pytest>=3.4.2',
-    'pytest-cov>=2.6',
-    'pytest-virtualenv>=1.7.0',
-    'tox>=2.9.1',
+    'coverage >= 4.5.1',
+    'pytest >= 6',
+    'pytest-cov >= 2.6',
+    'pytest-virtualenv >= 1.7.0',
+    'tox >= 2.9.1',
 ]
 
 development_requirements = [
     # general
-    'bump2version>=1',
-    'pip>=9.0.1',
-    'watchdog[watchmedo]>=0.8.3',
-    'invoke>=1.4',
+    'bump2version >= 1',
+    'pip >= 9.0.1',
+    'watchdog[watchmedo] >= 0.8.3',
+    'invoke >= 1.4',
     'mypy',
 
     # docs
-    'm2r2>=0.2.5',
-    'Sphinx>=3,<4',
-    'sphinx_rtd_theme>=0.2.4',
-    'sphinx-click>=2.2',
-    'sphinx-autodoc-typehints>=1.11',
+    'm2r2 >= 0.2.5',
+    'sphinx ~= 3.0',
+    'sphinx_rtd_theme >= 0.2.4',
+    'sphinx-click >= 2.2',
+    'sphinx-autodoc-typehints >= 1.11',
     'rstcheck',
 
     # style check
-    'flake8>=3.5.0',
-    'isort>=5.0',
+    'flake8 >= 3.5.0',
+    'isort >= 5.0',
 
     # fix style issues
-    'autopep8>=1.3.5',
+    'autopep8 >= 1.3.5',
 
     # distribute on PyPI
-    'twine>=1.10.0',
-    'wheel>=0.30.0',
+    'twine >= 1.10.0',
+    'wheel >= 0.30.0',
 ]
 
 setup(
