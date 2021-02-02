@@ -5,9 +5,9 @@ import tempfile
 
 import git
 from funcy import any_fn, contextmanager, ignore, merge
-from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn_pandas.pipeline import TransformerPipeline
 
+from ballet.eng.base import BaseTransformer
 from ballet.eng.misc import IdentityTransformer
 from ballet.util.git import set_config_variables
 from ballet.util.log import logger
@@ -15,20 +15,19 @@ from ballet.util.log import logger
 EPSILON = 1e-4
 
 
-class FragileTransformer(BaseEstimator, TransformerMixin):
+class FragileTransformer(BaseTransformer):
 
-    def __init__(self, bad_input_checks, errors):
+    def __init__(self, bad_input_checks=None, errors=None):
         """Raises a random error if any input check returns True"""
-        super().__init__()
+        self.bad_input_checks = bad_input_checks
+        self.errors = errors
 
-        self._check = any_fn(*bad_input_checks)
-        self._errors = errors
-
-        self._random = random.Random()
-        self._random.seed = hash(merge(bad_input_checks, errors))
+        self._check = any_fn(*self.bad_input_checks)
+        seed = hash(merge(self.bad_input_checks, self.errors))
+        self._random = random.Random(seed)
 
     def _raise(self):
-        raise self._random.choice(self._errors)
+        raise self._random.choice(self.errors)
 
     def fit(self, X, y=None, **fit_kwargs):
         if self._check(X) or self._check(y):
