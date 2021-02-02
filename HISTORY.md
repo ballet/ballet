@@ -1,5 +1,12 @@
 # History
 
+## 0.8.0 (2021-02-02)
+
+* Fix bug with detecting updates to Ballet due to PyPI API outage
+* Fix some dependency conflicts
+* Reference ballet-assemble in project template
+* Bump feature_engine to 1.0
+
 ## 0.7.11 (2020-09-16)
 
 * Reduce verbosity of conversion approach logging by moving some messages to TRACE level
