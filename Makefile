@@ -98,7 +98,7 @@ docs: clean-docs _apidoc ## generate Sphinx HTML documentation, including API do
 check-docs: clean-docs _apidoc ## check generation of Sphinx HTML documentation
 	rm -f ./docs/api/ballet.eng.{external,category_encoders,feature_engine,featuretools,skits,sklearn,tsfresh}.rst
 	find ./docs -name '*.rst' -exec rstcheck {} +
-	$(MAKE) -C docs linkcheck text
+	$(MAKE) -C docs linkcheck
 
 .PHONY: view-docs
 view-docs: ## view current docs in browser
