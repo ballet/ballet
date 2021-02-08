@@ -52,6 +52,7 @@ clean-pyc: ## remove Python file artifacts
 clean-test: ## remove test and coverage artifacts
 	rm -fr .tox
 	rm -f .coverage
+	rm -f coverage.xml
 	rm -fr htmlcov
 	rm -fr .pytest_cache
 	rm -fr .mypy_cache
@@ -69,23 +70,15 @@ fix-lint: ## fix lint issues using autopep8 and isort
 
 .PHONY: test
 test: ## run tests quickly with the default Python
-	python -m pytest --basetemp=$(ENVTMPDIR) --cov=ballet
+	python -m pytest --basetemp=$(ENVTMPDIR)
 
 .PHONY: test-fast
 test-fast:  ## run tests that are not marked as 'slow'
 	python -m pytest -m 'not slow'
 
-
 .PHONY: test-all
 test-all: ## run tests on every Python version with tox
 	tox -r
-
-.PHONY: coverage
-coverage: ## check code coverage quickly with the default Python
-	coverage run --source ballet -m pytest
-	coverage report -m
-	coverage html
-	$(BROWSER) htmlcov/index.html
 
 .PHONY: clean-docs
 clean-docs: ## remove previously built docs
@@ -100,11 +93,17 @@ _apidoc:
 docs: clean-docs _apidoc ## generate Sphinx HTML documentation, including API docs
 	$(MAKE) -C docs html
 
-.PHONY: docs
+.PHONY: check-docs
 check-docs: clean-docs _apidoc ## check generation of Sphinx HTML documentation
-	rm -f ./docs/api/ballet.eng.{external,category_encoders,feature_engine,featuretools,skits,sklearn,tsfresh}.rst
+	rm docs/api/ballet.eng.external.rst
+	rm docs/api/ballet.eng.category_encoders.rst
+	rm docs/api/ballet.eng.feature_engine.rst
+	rm docs/api/ballet.eng.featuretools.rst
+	rm docs/api/ballet.eng.skits.rst
+	rm docs/api/ballet.eng.sklearn.rst
+	rm docs/api/ballet.eng.tsfresh.rst
 	find ./docs -name '*.rst' -exec rstcheck {} +
-	$(MAKE) -C docs linkcheck text
+	$(MAKE) -C docs linkcheck
 
 .PHONY: view-docs
 view-docs: ## view current docs in browser
