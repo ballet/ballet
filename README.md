@@ -1,5 +1,5 @@
 [![PyPI Shield](https://img.shields.io/pypi/v/ballet.svg)](https://pypi.org/project/ballet)
-[![Travis CI Shield](https://api.travis-ci.com/HDI-Project/ballet.svg?branch=master)](https://travis-ci.com/HDI-Project/ballet)
+[![Run Tests](https://github.com/HDI-Project/ballet/workflows/Run%20Tests/badge.svg)](https://github.com/HDI-Project/ballet/actions?query=workflow%3A%22Run+Tests%22)
 [![codecov Shield](https://codecov.io/gh/HDI-Project/ballet/branch/master/graph/badge.svg)](https://codecov.io/gh/HDI-Project/ballet)
 
 

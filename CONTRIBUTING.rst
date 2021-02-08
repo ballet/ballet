@@ -101,8 +101,8 @@ Before you submit a pull request, check that it meets these guidelines:
    your new functionality into a function with a docstring, and add the
    feature to the list in README.md.
 3. The pull request should work for Python 3.6, 3.7, and 3.8. Check
-   https://travis-ci.com/HDI-Project/ballet/pull_requests
-   and make sure that the tests pass for all supported Python versions.
+   GitHub Actions and make sure that the tests pass for all supported
+   Python versions.
 
 Tips
 ----
@@ -139,4 +139,4 @@ A reminder for the maintainers on how to deploy.
    $ git push
    $ git push --tags
 
-Travis will then deploy to PyPI if tests pass.
+GitHub Actions will then deploy to PyPI if tests pass.
