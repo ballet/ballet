@@ -52,6 +52,7 @@ clean-pyc: ## remove Python file artifacts
 clean-test: ## remove test and coverage artifacts
 	rm -fr .tox
 	rm -f .coverage
+	rm -f coverage.xml
 	rm -fr htmlcov
 	rm -fr .pytest_cache
 	rm -fr .mypy_cache
@@ -69,7 +70,7 @@ fix-lint: ## fix lint issues using autopep8 and isort
 
 .PHONY: test
 test: ## run tests quickly with the default Python
-	python -m pytest --basetemp=$(ENVTMPDIR) --cov=ballet
+	python -m pytest --basetemp=$(ENVTMPDIR)
 
 .PHONY: test-fast
 test-fast:  ## run tests that are not marked as 'slow'
@@ -79,13 +80,6 @@ test-fast:  ## run tests that are not marked as 'slow'
 .PHONY: test-all
 test-all: ## run tests on every Python version with tox
 	tox -r
-
-.PHONY: coverage
-coverage: ## check code coverage quickly with the default Python
-	coverage run --source ballet -m pytest
-	coverage report -m
-	coverage html
-	$(BROWSER) htmlcov/index.html
 
 .PHONY: clean-docs
 clean-docs: ## remove previously built docs
