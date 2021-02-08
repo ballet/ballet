@@ -341,9 +341,7 @@
            <div itemprop="articleBody">
             
   <h1>Source code for featuretools_sklearn_transformer.transformer</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">featuretools.computational_backends</span> <span class="kn">import</span> <span class="n">calculate_feature_matrix</span>
+<span></span><span class="kn">from</span> <span class="nn">featuretools.computational_backends</span> <span class="kn">import</span> <span class="n">calculate_feature_matrix</span>
 <span class="kn">from</span> <span class="nn">featuretools.synthesis</span> <span class="kn">import</span> <span class="n">dfs</span>
 <span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="kn">import</span> <span class="n">TransformerMixin</span>
 
@@ -353,9 +351,6 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">entities</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">relationships</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">entityset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">target_entity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">agg_primitives</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">trans_primitives</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -372,18 +367,6 @@
         <span class="sd">&quot;&quot;&quot;Creates Transformer</span>
 
 <span class="sd">        Args:</span>
-
-<span class="sd">            entities (dict[str -&gt; tuple(pd.DataFrame, str, str)]): Dictionary</span>
-<span class="sd">                of entities. Entries take the format</span>
-<span class="sd">                {entity id -&gt; (dataframe, id column, (time_column))}.</span>
-
-<span class="sd">            relationships (list[(str, str, str, str)]): List of relationships</span>
-<span class="sd">                between entities. List items are a tuple with the format</span>
-<span class="sd">                (parent entity id, parent variable, child entity id, child</span>
-<span class="sd">                variable).</span>
-
-<span class="sd">            entityset (EntitySet): An already initialized entityset. Required</span>
-<span class="sd">                if entities and relationships are not defined.</span>
 
 <span class="sd">            target_entity (str): Entity id of entity on which to make</span>
 <span class="sd">                predictions.</span>
@@ -442,42 +425,41 @@
 <span class="sd">                from sklearn.pipeline import Pipeline</span>
 <span class="sd">                from sklearn.ensemble import ExtraTreesClassifier</span>
 
-<span class="sd">                # Get examle data</span>
-<span class="sd">                n_customers = 3</span>
-<span class="sd">                es = ft.demo.load_mock_customer(return_entityset=True, n_customers=5)</span>
+<span class="sd">                # Get example data</span>
+<span class="sd">                train_es = ft.demo.load_mock_customer(return_entityset=True, n_customers=3)</span>
+<span class="sd">                test_es = ft.demo.load_mock_customer(return_entityset=True, n_customers=2)</span>
 <span class="sd">                y = [True, False, True]</span>
 
-<span class="sd">                # Build dataset</span>
+<span class="sd">                # Build pipeline</span>
 <span class="sd">                pipeline = Pipeline(steps=[</span>
-<span class="sd">                    (&#39;ft&#39;, DFSTransformer(entityset=es,</span>
-<span class="sd">                                          target_entity=&quot;customers&quot;,</span>
+<span class="sd">                    (&#39;ft&#39;, DFSTransformer(target_entity=&quot;customers&quot;,</span>
 <span class="sd">                                          max_features=2)),</span>
 <span class="sd">                    (&#39;et&#39;, ExtraTreesClassifier(n_estimators=100))</span>
 <span class="sd">                ])</span>
 
 <span class="sd">                # Fit and predict</span>
-<span class="sd">                pipeline.fit([1, 2, 3], y=y) # fit on first 3 customers</span>
-<span class="sd">                pipeline.predict_proba([4,5]) # predict probability of each class on last 2</span>
-<span class="sd">                pipeline.predict([4,5]) # predict on last 2</span>
+<span class="sd">                pipeline.fit(X=train_es, y=y) # fit on customers in training entityset</span>
+<span class="sd">                pipeline.predict_proba(test_es) # predict probability of each class on test entityset</span>
+<span class="sd">                pipeline.predict(test_es) # predict on test entityset</span>
 
 <span class="sd">                # Same as above, but using cutoff times</span>
-<span class="sd">                ct = pd.DataFrame()</span>
-<span class="sd">                ct[&#39;customer_id&#39;] = [1, 2, 3, 4, 5]</span>
-<span class="sd">                ct[&#39;time&#39;] = pd.to_datetime([&#39;2014-1-1 04:00&#39;,</span>
-<span class="sd">                                             &#39;2014-1-2 17:20&#39;,</span>
-<span class="sd">                                             &#39;2014-1-4 09:53&#39;,</span>
-<span class="sd">                                             &#39;2014-1-4 13:48&#39;,</span>
-<span class="sd">                                             &#39;2014-1-5 15:32&#39;])</span>
+<span class="sd">                train_ct = pd.DataFrame()</span>
+<span class="sd">                train_ct[&#39;customer_id&#39;] = [1, 2, 3]</span>
+<span class="sd">                train_ct[&#39;time&#39;] = pd.to_datetime([&#39;2014-1-1 04:00&#39;,</span>
+<span class="sd">                                                   &#39;2014-1-2 17:20&#39;,</span>
+<span class="sd">                                                   &#39;2014-1-4 09:53&#39;])</span>
 
-<span class="sd">                pipeline.fit(ct.head(3), y=y)</span>
-<span class="sd">                pipeline.predict_proba(ct.tail(2))</span>
-<span class="sd">                pipeline.predict(ct.tail(2))</span>
+<span class="sd">                pipeline.fit(X=(train_es, train_ct), y=y)</span>
+
+<span class="sd">                test_ct = pd.DataFrame()</span>
+<span class="sd">                test_ct[&#39;customer_id&#39;] = [1, 2]</span>
+<span class="sd">                test_ct[&#39;time&#39;] = pd.to_datetime([&#39;2014-1-4 13:48&#39;,</span>
+<span class="sd">                                                  &#39;2014-1-5 15:32&#39;])</span>
+<span class="sd">                pipeline.predict_proba((test_es, test_ct))</span>
+<span class="sd">                pipeline.predict((test_es, test_ct))</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">feature_defs</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">entities</span> <span class="o">=</span> <span class="n">entities</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">relationships</span> <span class="o">=</span> <span class="n">relationships</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">entityset</span> <span class="o">=</span> <span class="n">entityset</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target_entity</span> <span class="o">=</span> <span class="n">target_entity</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">agg_primitives</span> <span class="o">=</span> <span class="n">agg_primitives</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trans_primitives</span> <span class="o">=</span> <span class="n">trans_primitives</span>
@@ -492,105 +474,73 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">max_features</span> <span class="o">=</span> <span class="n">max_features</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
 
-<div class="viewcode-block" id="DFSTransformer.fit"><a class="viewcode-back" href="../../api/ballet.eng.featuretools.html#ballet.eng.external.DFSTransformer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cuttof_time_ids</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DFSTransformer.fit"><a class="viewcode-back" href="../../api/ballet.eng.featuretools.html#ballet.eng.external.DFSTransformer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Wrapper for DFS</span>
 
-<span class="sd">            Calculates a feature matrix and features given a dictionary of</span>
-<span class="sd">            entities and a list of relationships.</span>
+<span class="sd">            Calculates a list of features given a dictionary of entities and a list</span>
+<span class="sd">            of relationships. Alternatively, an EntitySet can be passed instead of</span>
+<span class="sd">            the entities and relationships.</span>
 
 <span class="sd">            Args:</span>
-<span class="sd">                cuttof_time_ids (list | DataFrame): Instances filtered to</span>
-<span class="sd">                    calculate features on.</span>
+<span class="sd">                X: (ft.Entityset or tuple): Entityset to calculate features on. If a tuple is</span>
+<span class="sd">                    passed it can take one of these forms: (entityset, cutoff_time_dataframe),</span>
+<span class="sd">                    (entities, relationships), or ((entities, relationships), cutoff_time_dataframe)</span>
+<span class="sd">                y: (iterable): Training targets</span>
 
 <span class="sd">            See Also:</span>
 <span class="sd">                :func:`synthesis.dfs`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cuttof_time_ids</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">feature_defs</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">(</span><span class="n">entities</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">entities</span><span class="p">,</span>
-                                    <span class="n">relationships</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">relationships</span><span class="p">,</span>
-                                    <span class="n">entityset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">entityset</span><span class="p">,</span>
-                                    <span class="n">target_entity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">target_entity</span><span class="p">,</span>
-                                    <span class="n">instance_ids</span><span class="o">=</span><span class="n">cuttof_time_ids</span><span class="p">,</span>
-                                    <span class="n">agg_primitives</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">agg_primitives</span><span class="p">,</span>
-                                    <span class="n">trans_primitives</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trans_primitives</span><span class="p">,</span>
-                                    <span class="n">allowed_paths</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">allowed_paths</span><span class="p">,</span>
-                                    <span class="n">max_depth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_depth</span><span class="p">,</span>
-                                    <span class="n">ignore_entities</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore_entities</span><span class="p">,</span>
-                                    <span class="n">ignore_variables</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore_variables</span><span class="p">,</span>
-                                    <span class="n">seed_features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">seed_features</span><span class="p">,</span>
-                                    <span class="n">drop_contains</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">drop_contains</span><span class="p">,</span>
-                                    <span class="n">drop_exact</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">drop_exact</span><span class="p">,</span>
-                                    <span class="n">where_primitives</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">where_primitives</span><span class="p">,</span>
-                                    <span class="n">max_features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_features</span><span class="p">,</span>
-                                    <span class="n">features_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                    <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">es</span><span class="p">,</span> <span class="n">entities</span><span class="p">,</span> <span class="n">relationships</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">parse_x_input</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cuttof_time_ids</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">feature_defs</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">(</span><span class="n">entities</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">entities</span><span class="p">,</span>
-                                    <span class="n">relationships</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">relationships</span><span class="p">,</span>
-                                    <span class="n">entityset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">entityset</span><span class="p">,</span>
-                                    <span class="n">target_entity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">target_entity</span><span class="p">,</span>
-                                    <span class="n">cutoff_time</span><span class="o">=</span><span class="n">cuttof_time_ids</span><span class="p">,</span>
-                                    <span class="n">agg_primitives</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">agg_primitives</span><span class="p">,</span>
-                                    <span class="n">trans_primitives</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trans_primitives</span><span class="p">,</span>
-                                    <span class="n">allowed_paths</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">allowed_paths</span><span class="p">,</span>
-                                    <span class="n">max_depth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_depth</span><span class="p">,</span>
-                                    <span class="n">ignore_entities</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore_entities</span><span class="p">,</span>
-                                    <span class="n">ignore_variables</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore_variables</span><span class="p">,</span>
-                                    <span class="n">seed_features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">seed_features</span><span class="p">,</span>
-                                    <span class="n">drop_contains</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">drop_contains</span><span class="p">,</span>
-                                    <span class="n">drop_exact</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">drop_exact</span><span class="p">,</span>
-                                    <span class="n">where_primitives</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">where_primitives</span><span class="p">,</span>
-                                    <span class="n">max_features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_features</span><span class="p">,</span>
-                                    <span class="n">features_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                    <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;instance_ids must be a list, np.ndarray, pd.Series, or pd.DataFrame&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_defs</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">(</span><span class="n">entityset</span><span class="o">=</span><span class="n">es</span><span class="p">,</span>
+                                <span class="n">entities</span><span class="o">=</span><span class="n">entities</span><span class="p">,</span>
+                                <span class="n">relationships</span><span class="o">=</span><span class="n">relationships</span><span class="p">,</span>
+                                <span class="n">target_entity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">target_entity</span><span class="p">,</span>
+                                <span class="n">agg_primitives</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">agg_primitives</span><span class="p">,</span>
+                                <span class="n">trans_primitives</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trans_primitives</span><span class="p">,</span>
+                                <span class="n">allowed_paths</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">allowed_paths</span><span class="p">,</span>
+                                <span class="n">max_depth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_depth</span><span class="p">,</span>
+                                <span class="n">ignore_entities</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore_entities</span><span class="p">,</span>
+                                <span class="n">ignore_variables</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore_variables</span><span class="p">,</span>
+                                <span class="n">seed_features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">seed_features</span><span class="p">,</span>
+                                <span class="n">drop_contains</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">drop_contains</span><span class="p">,</span>
+                                <span class="n">drop_exact</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">drop_exact</span><span class="p">,</span>
+                                <span class="n">where_primitives</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">where_primitives</span><span class="p">,</span>
+                                <span class="n">max_features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_features</span><span class="p">,</span>
+                                <span class="n">features_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="DFSTransformer.transform"><a class="viewcode-back" href="../../api/ballet.eng.featuretools.html#ballet.eng.external.DFSTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cuttof_time_ids</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Wrapper for calculate_feature_matix</span>
+<div class="viewcode-block" id="DFSTransformer.transform"><a class="viewcode-back" href="../../api/ballet.eng.featuretools.html#ballet.eng.external.DFSTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Wrapper for calculate_feature_matrix</span>
 
-<span class="sd">            Calculates a matrix for a given set of instance ids and calculation</span>
-<span class="sd">            times.</span>
+<span class="sd">            Calculates a feature matrix for a the given input data and calculation times.</span>
 
 <span class="sd">            Args:</span>
-<span class="sd">                cuttof_time_ids (list | DataFrame): Instances filtered to</span>
-<span class="sd">                    calculate features on.</span>
+<span class="sd">                X: (ft.Entityset or tuple): Entityset to calculate features on. If a tuple is</span>
+<span class="sd">                    passed it can take one of these forms: (entityset, cutoff_time_dataframe),</span>
+<span class="sd">                    (entities, relationships), or ((entities, relationships), cutoff_time_dataframe)</span>
 
 <span class="sd">            See Also:</span>
 <span class="sd">                :func:`computational_backends.calculate_feature_matrix`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cuttof_time_ids</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)):</span>
-            <span class="n">X_transformed</span> <span class="o">=</span> <span class="n">calculate_feature_matrix</span><span class="p">(</span>
-                <span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_defs</span><span class="p">,</span>
-                <span class="n">entityset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">entityset</span><span class="p">,</span>
-                <span class="n">instance_ids</span><span class="o">=</span><span class="n">cuttof_time_ids</span><span class="p">,</span>
-                <span class="n">entities</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">entities</span><span class="p">,</span>
-                <span class="n">relationships</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">relationships</span><span class="p">,</span>
-                <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span>
-            <span class="n">X_transformed</span> <span class="o">=</span> <span class="n">X_transformed</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">cuttof_time_ids</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cuttof_time_ids</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
-            <span class="n">ct</span> <span class="o">=</span> <span class="n">cuttof_time_ids</span>
-            <span class="n">X_transformed</span> <span class="o">=</span> <span class="n">calculate_feature_matrix</span><span class="p">(</span>
-                <span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_defs</span><span class="p">,</span>
-                <span class="n">entityset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">entityset</span><span class="p">,</span>
-                <span class="n">cutoff_time</span><span class="o">=</span><span class="n">cuttof_time_ids</span><span class="p">,</span>
-                <span class="n">entities</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">entities</span><span class="p">,</span>
-                <span class="n">relationships</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">relationships</span><span class="p">,</span>
-                <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span>
-            <span class="n">X_transformed</span> <span class="o">=</span> <span class="n">X_transformed</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ct</span><span class="p">[</span><span class="n">ct</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]]]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;instance_ids must be a list or pd.DataFrame&#39;</span><span class="p">)</span>
+        <span class="n">es</span><span class="p">,</span> <span class="n">entities</span><span class="p">,</span> <span class="n">relationships</span><span class="p">,</span> <span class="n">cutoff_time</span> <span class="o">=</span> <span class="n">parse_x_input</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="n">X_transformed</span> <span class="o">=</span> <span class="n">calculate_feature_matrix</span><span class="p">(</span>
+            <span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_defs</span><span class="p">,</span>
+            <span class="n">instance_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">cutoff_time</span><span class="o">=</span><span class="n">cutoff_time</span><span class="p">,</span>
+            <span class="n">entityset</span><span class="o">=</span><span class="n">es</span><span class="p">,</span>
+            <span class="n">entities</span><span class="o">=</span><span class="n">entities</span><span class="p">,</span>
+            <span class="n">relationships</span><span class="o">=</span><span class="n">relationships</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">X_transformed</span></div>
 
 <div class="viewcode-block" id="DFSTransformer.get_params"><a class="viewcode-back" href="../../api/ballet.eng.featuretools.html#ballet.eng.external.DFSTransformer.get_params">[docs]</a>    <span class="k">def</span> <span class="nf">get_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="n">out</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;entityset&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">entityset</span><span class="p">,</span>
             <span class="s1">&#39;target_entity&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_entity</span><span class="p">,</span>
-            <span class="s1">&#39;entities&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">entities</span><span class="p">,</span>
-            <span class="s1">&#39;relationships&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">relationships</span><span class="p">,</span>
             <span class="s1">&#39;agg_primitives&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">agg_primitives</span><span class="p">,</span>
             <span class="s1">&#39;trans_primitives&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">trans_primitives</span><span class="p">,</span>
             <span class="s1">&#39;allowed_paths&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">allowed_paths</span><span class="p">,</span>
@@ -605,6 +555,36 @@
             <span class="s1">&#39;verbose&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="k">return</span> <span class="n">out</span></div></div>
+
+
+<span class="k">def</span> <span class="nf">parse_x_input</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="c1"># Input of ((entities, relationships), cutoff_time)</span>
+            <span class="n">entities</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">relationships</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">es</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">cutoff_time</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="c1"># Input of (entities, relationships)</span>
+            <span class="n">entities</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">relationships</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">es</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">cutoff_time</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Input of (entityset, cutoff_time)</span>
+            <span class="n">es</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">entities</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">relationships</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">cutoff_time</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Input of entityset</span>
+        <span class="n">es</span> <span class="o">=</span> <span class="n">X</span>
+        <span class="n">entities</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">relationships</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">cutoff_time</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="n">es</span><span class="p">,</span> <span class="n">entities</span><span class="p">,</span> <span class="n">relationships</span><span class="p">,</span> <span class="n">cutoff_time</span>
 </pre></div>
 
            </div>
