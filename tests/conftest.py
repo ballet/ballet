@@ -1,9 +1,10 @@
 import pathlib
 import shutil
 import tempfile
-from collections import namedtuple
+from typing import NamedTuple
 from unittest.mock import patch
 
+import git
 import pytest
 
 import ballet
@@ -18,6 +19,14 @@ def tempdir():
     """Tempdir fixture using tempfile.TemporaryDirectory"""
     with tempfile.TemporaryDirectory() as d:
         yield pathlib.Path(d)
+
+
+class QuickstartResult(NamedTuple):
+    project: Project
+    tempdir: pathlib.Path
+    project_slug: str
+    package_slug: str
+    repo: git.Repo
 
 
 @pytest.fixture
@@ -49,10 +58,8 @@ def quickstart(tempdir):
         project = Project.from_path(tempdir.joinpath(project_slug))
         repo = project.repo
 
-        yield (
-            namedtuple('Quickstart',
-                       'project tempdir project_slug package_slug repo')
-            ._make((project, tempdir, project_slug, package_slug, repo))
+        yield QuickstartResult(
+            project, tempdir, project_slug, package_slug, repo
         )
 
 
