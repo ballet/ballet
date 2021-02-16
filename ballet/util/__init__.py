@@ -4,6 +4,7 @@ from copy import deepcopy
 from os import devnull
 from typing import Collection, Optional, Sequence, Tuple, TypeVar
 
+import cookiecutter.utils
 import numpy as np
 import pandas as pd
 import sklearn.datasets
@@ -166,3 +167,7 @@ def nonnegative(call: Call, name: Optional[str] = None):
                     name = 'Result'
             logger.warning('%s should be non-negative.', name)
     return result
+
+
+# re-export cookiecutter work_in
+work_in = cookiecutter.utils.work_in

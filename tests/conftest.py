@@ -5,11 +5,11 @@ from collections import namedtuple
 from unittest.mock import patch
 
 import pytest
-from cookiecutter.utils import work_in
 
 import ballet
 from ballet.project import Project
 from ballet.templating import render_project_template
+from ballet.util import work_in
 from tests.util import tree
 
 

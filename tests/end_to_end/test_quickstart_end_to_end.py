@@ -1,5 +1,6 @@
 import pytest
-from cookiecutter.utils import work_in
+
+from ballet.util import work_in
 
 
 @pytest.mark.slow
