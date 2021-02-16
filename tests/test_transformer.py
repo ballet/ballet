@@ -6,7 +6,9 @@ import pandas as pd
 import sklearn.preprocessing
 
 from ballet.compat import SimpleImputer
-from ballet.transformer import DelegatingRobustTransformer
+from ballet.eng.misc import IdentityTransformer
+from ballet.transformer import (
+    DelegatingRobustTransformer, make_robust_transformer,)
 from ballet.util import asarray2d
 
 from .util import FragileTransformer, FragileTransformerPipeline
@@ -95,6 +97,12 @@ class DelegatingRobustTransformerTest(unittest.TestCase):
                 X, y = self.d[input_type]
                 robust_transformer.fit_transform(X, y=y)
 
+    def test_robust_transformer_str_repr(self):
+        robust_transformer = DelegatingRobustTransformer(IdentityTransformer())
+        for func in [str, repr]:
+            s = func(robust_transformer)
+            self.assertGreater(len(s), 0)
+
     def _test_robust_transformer_pipeline(
         self, input_types, bad_input_checks, catches
     ):
@@ -135,3 +143,9 @@ class DelegatingRobustTransformerTest(unittest.TestCase):
         catches = (ValueError, TypeError)
         self._test_robust_transformer_pipeline(
             input_types, bad_input_checks, catches)
+
+    def test_robust_transformer_pipeline_str_repr(self):
+        robust_transformer = make_robust_transformer([IdentityTransformer()])
+        for func in [str, repr]:
+            s = func(robust_transformer)
+            self.assertGreater(len(s), 0)
