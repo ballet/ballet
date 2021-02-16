@@ -1,5 +1,6 @@
 import traceback
 from collections import Counter
+from copy import deepcopy
 from inspect import signature
 from typing import (
     Callable, Collection, List, NamedTuple, Optional, Sequence, Tuple, Union,
@@ -129,6 +130,14 @@ class DelegatingRobustTransformer(DeepcopyMixin, BaseTransformer):
     def __init__(self, transformer: BaseTransformer):
         self._transformer = transformer
         self._stored_conversion_approach = None
+
+    def get_params(self, deep=False):
+        transformer = self.__getattribute__('_transformer')
+        if deep:
+            transformer = deepcopy(transformer)
+        return {
+            'transformer': transformer
+        }
 
     def __getattr__(self, attr):
         if '_transformer' in self.__dict__:
