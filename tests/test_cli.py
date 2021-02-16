@@ -38,7 +38,7 @@ def test_update_project_template(mock_update, cli):
 @patch('ballet.templating.start_new_feature')
 def test_start_new_feature(mock_start, cli):
     result = cli('start-new-feature')
-    mock_start.assert_called_once_with()
+    mock_start.assert_called_once_with(branching=True)
     assert 'Starting new feature' in result.output
 
 
