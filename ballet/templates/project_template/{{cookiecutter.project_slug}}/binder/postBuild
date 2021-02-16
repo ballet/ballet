@@ -2,5 +2,10 @@
 
 set -ex
 
-jupyter lab build
+# differentiate github icons
+jupyter serverextension disable --py jupyter_offlinenotebook --sys-prefix
+jupyter nbextension disable --py jupyter_offlinenotebook --sys-prefix
+
+# TODO build args seem to be necessary in low memory environment w/ jlab 2.x
+jupyter lab build --dev-build=False --minimize=False
 jupyter lab workspaces import binder/workspace.json
