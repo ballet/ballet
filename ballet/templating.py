@@ -72,11 +72,15 @@ def _fail_if_feature_exists(dst: pathlib.Path) -> None:
 
 
 def start_new_feature(
-    contrib_dir: Pathy = None, **cc_kwargs
+    contrib_dir: Pathy = None,
+    branching: bool = True,
+    **cc_kwargs
 ) -> List[Tuple[pathlib.Path, str]]:
     """Start a new feature within a ballet project
 
-    By default, will prompt the user for input using cookiecutter's input
+    If run from default branch, by default will attempt to switch to a new
+    branch for this feature, given by `<username>/feature-<featurename>`. By
+    default, will prompt the user for input using cookiecutter's input
     interface.
 
     Renders the feature template into a temporary directory, then copies the
@@ -84,6 +88,7 @@ def start_new_feature(
 
     Args:
         contrib_dir: directory under which to place contributed features
+        branching: whether to attempt to manage branching
         **cc_kwargs: options for the cookiecutter template
 
     Raises:
