@@ -1,5 +1,9 @@
 # History
 
+## 0.8.1 (2020-02-16)
+
+* Fix bug with `str(t)` or `repr(t)` for `SimpleFunctionTransformer`
+
 ## 0.8.0 (2021-02-02)
 
 * Fix bug with detecting updates to Ballet due to PyPI API outage
