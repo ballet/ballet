@@ -1,5 +1,9 @@
 # History
 
+## 0.8.2 (2020-02-16)
+
+* Fix bug with `str(t)` or `repr(t)` for `DelegatingRobustTransformer`
+
 ## 0.8.1 (2020-02-16)
 
 * Fix bug with `str(t)` or `repr(t)` for `SimpleFunctionTransformer`
