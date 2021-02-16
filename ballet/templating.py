@@ -9,6 +9,7 @@ from ballet.compat import PathLike
 from ballet.exc import ConfigurationError
 from ballet.project import Project, detect_github_username
 from ballet.util.fs import pwalk, synctree
+from ballet.util.git import switch_to_new_branch
 from ballet.util.log import logger
 from ballet.util.typing import Pathy
 from ballet.validation.project_structure.checks import (
@@ -128,6 +129,23 @@ def start_new_feature(
         src = rendered_dir
         dst = contrib_dir
         result = synctree(src, dst, onexist=_fail_if_feature_exists)
+
+    if branching and project.on_master:
+        # what is the target branch?
+        target_branch = None
+        paths = [path for path, kind in result if kind == 'file']
+        for path in paths:
+            parts = pathlib.Path(path).parts
+            subpackage, module = parts[-2], parts[-1]
+            user_match = fy.re_find(SUBPACKAGE_NAME_REGEX, subpackage)
+            feature_match = fy.re_find(FEATURE_MODULE_NAME_REGEX, module)
+            if feature_match:
+                username = user_match['username']
+                featurename = feature_match['featurename'].replace('_', '-')
+                target_branch = f'{username}/feature-{featurename}'
+
+        if target_branch is not None:
+            switch_to_new_branch(project.repo, target_branch)
 
     _log_start_new_feature_success(result)
 
