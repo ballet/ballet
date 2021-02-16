@@ -50,9 +50,11 @@ class SimpleFunctionTransformer(FunctionTransformer):
     def __init__(self,
                  func: Callable,
                  func_kwargs: Optional[dict] = None):
+        self.func = func
+        self.func_kwargs = func_kwargs or {}
         super().__init__(
-            func=func,
-            kw_args=func_kwargs or {})
+            func=self.func,
+            kw_args=self.func_kwargs)
 
 
 class GroupedFunctionTransformer(FunctionTransformer):
@@ -70,15 +72,16 @@ class GroupedFunctionTransformer(FunctionTransformer):
                  func: Callable,
                  func_kwargs: Optional[dict] = None,
                  groupby_kwargs: Optional[dict] = None):
+        self.func = func
+        self.func_kwargs = func_kwargs or {}
+        self.groupby_kwargs = groupby_kwargs or {}
         super().__init__(
             func=func,
-            kw_args=func_kwargs or {})
-        self.groupby_kwargs = groupby_kwargs
+            kw_args=self.func_kwargs)
 
     def transform(self, X, **transform_kwargs):
-        groupby_kwargs = self.groupby_kwargs or {}
-        if groupby_kwargs:
-            call = X.groupby(**groupby_kwargs).apply
+        if self.groupby_kwargs:
+            call = X.groupby(**self.groupby_kwargs).apply
         else:
             call = X.pipe
         return call(super().transform)

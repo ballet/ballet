@@ -43,6 +43,16 @@ class BaseTest(ArrayLikeEqualityTestingMixin, unittest.TestCase):
 
         self.assertArrayEqual(data_trans, data_func)
 
+    def test_simple_function_transformer_str(self):
+        trans = ballet.eng.SimpleFunctionTransformer(lambda x: x)
+        s = str(trans)
+        self.assertGreater(len(s), 0)
+
+    def test_simple_function_transformer_repr(self):
+        trans = ballet.eng.SimpleFunctionTransformer(lambda x: x)
+        s = repr(trans)
+        self.assertGreater(len(s), 0)
+
     def test_grouped_function_transformer(self):
         df = pd.DataFrame(
             data={
