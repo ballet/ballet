@@ -55,11 +55,14 @@ def update_project_template(push, project_template_path):
 
 
 @cli.command('start-new-feature')
+@click.option('--branching/--no-branching',
+              default=True,
+              help='whether to create a new branch to work on the feature')
 @stacklog(click.echo, 'Starting new feature')
-def start_new_feature():
+def start_new_feature(branching):
     """Start working on a new feature from a template"""
     import ballet.templating
-    ballet.templating.start_new_feature()
+    ballet.templating.start_new_feature(branching=branching)
 
 
 @cli.command('validate')

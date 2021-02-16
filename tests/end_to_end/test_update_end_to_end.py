@@ -2,7 +2,6 @@ from unittest.mock import ANY, patch
 
 import funcy
 import pytest
-from cookiecutter.utils import work_in
 from git import GitCommandError
 
 import ballet.exc
@@ -10,6 +9,7 @@ import ballet.templating
 import ballet.update
 from ballet.project import DEFAULT_CONFIG_NAME
 from ballet.update import DEFAULT_BRANCH, TEMPLATE_BRANCH
+from ballet.util import work_in
 
 # Utility methods -------------------------------------------------------------
 
