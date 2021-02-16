@@ -32,7 +32,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -393,9 +392,11 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
                  <span class="n">func_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">func_kwargs</span> <span class="o">=</span> <span class="n">func_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">func</span><span class="o">=</span><span class="n">func</span><span class="p">,</span>
-            <span class="n">kw_args</span><span class="o">=</span><span class="n">func_kwargs</span> <span class="ow">or</span> <span class="p">{})</span></div>
+            <span class="n">func</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">,</span>
+            <span class="n">kw_args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">func_kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="GroupedFunctionTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.GroupedFunctionTransformer">[docs]</a><span class="k">class</span> <span class="nc">GroupedFunctionTransformer</span><span class="p">(</span><span class="n">FunctionTransformer</span><span class="p">):</span>
@@ -413,15 +414,16 @@
                  <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
                  <span class="n">func_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">groupby_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">func_kwargs</span> <span class="o">=</span> <span class="n">func_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs</span> <span class="o">=</span> <span class="n">groupby_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">func</span><span class="o">=</span><span class="n">func</span><span class="p">,</span>
-            <span class="n">kw_args</span><span class="o">=</span><span class="n">func_kwargs</span> <span class="ow">or</span> <span class="p">{})</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs</span> <span class="o">=</span> <span class="n">groupby_kwargs</span>
+            <span class="n">kw_args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">func_kwargs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="GroupedFunctionTransformer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.GroupedFunctionTransformer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">transform_kwargs</span><span class="p">):</span>
-        <span class="n">groupby_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="n">groupby_kwargs</span><span class="p">:</span>
-            <span class="n">call</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="o">**</span><span class="n">groupby_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs</span><span class="p">:</span>
+            <span class="n">call</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">call</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">pipe</span>
         <span class="k">return</span> <span class="n">call</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span></div></div>
