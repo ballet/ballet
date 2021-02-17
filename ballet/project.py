@@ -33,9 +33,6 @@ DYNACONF_OPTIONS = {
 }
 
 
-config = Dynaconf(**DYNACONF_OPTIONS)
-
-
 def load_config(path: Optional[Pathy] = None, ascend: bool = True) -> Dynaconf:
     """User-facing function to load config from project code
 
