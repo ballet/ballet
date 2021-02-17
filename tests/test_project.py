@@ -1,8 +1,23 @@
+import pathlib
 from unittest.mock import ANY, PropertyMock, patch
 
 import pytest
 
-from ballet.project import Project, detect_github_username
+from ballet.project import Project, detect_github_username, load_config
+
+
+@patch('ballet.project.load_config_in_dir')
+def test_load_config(mock_load_config_in_dir):
+    path = pathlib.Path(__file__)
+    load_config(path=path)
+    mock_load_config_in_dir.assert_called_once_with(path)
+
+
+@patch('ballet.project.load_config_in_dir')
+def test_load_config_detect(mock_load_config_in_dir):
+    path = pathlib.Path(__file__)
+    load_config()
+    mock_load_config_in_dir.assert_called_once_with(path)
 
 
 @pytest.mark.xfail
@@ -21,10 +36,10 @@ def test_detect_github_username_config(mock_project_repo):
 
     # output of project.repo.config_reader().get_value(...)
     mock_get_value = (mock_project_repo
-                        .return_value
-                        .config_reader
-                        .return_value
-                        .get_value)
+                      .return_value
+                      .config_reader
+                      .return_value
+                      .get_value)
     mock_get_value.return_value = expected_username
 
     project = Project(None)
