@@ -1,3 +1,4 @@
+import inspect
 import pathlib
 import sys
 from functools import partial
@@ -32,7 +33,32 @@ DYNACONF_OPTIONS = {
 }
 
 
-config = Dynaconf(**DYNACONF_OPTIONS)
+def load_config(path: Optional[Pathy] = None, ascend: bool = True) -> Dynaconf:
+    """User-facing function to load config from project code
+
+    The default behavior when no arguments are provided is to detect the
+    calling code using introspection and load a config object by ascending
+    the directory of the calling code. If this does not succeed, you should
+    just pass `path` directly.
+    """
+    if path is None:
+        # "The first entry in the returned list represents the caller; the
+        # last entry represents the outermost call on the stack."
+        frame = inspect.stack()[1]
+        try:
+            path = frame.filename
+        finally:
+            del frame
+
+    path = pathlib.Path(path)
+    while path.exists() and not is_mount(path):
+        try:
+            return load_config_in_dir(path)
+        except ConfigurationError:
+            if ascend:
+                path = path.parent
+
+    raise ConfigurationError
 
 
 def load_config_at_path(path: Pathy) -> Dynaconf:

@@ -1,4 +1,4 @@
-from ballet.project import config
+from ballet.project import load_config
 from ballet.util.io import load_table_from_config
 from funcy import some, where
 
@@ -6,6 +6,7 @@ from funcy import some, where
 def load_data(input_dir=None):
     """Load data"""
     if input_dir is not None:
+        config = load_config()
         tables = config.get('data.tables')
 
         entities_table_name = config.get('data.entities_table_name')
