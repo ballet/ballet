@@ -642,7 +642,15 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">api</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;FeatureEngineeringProject&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="s1">&#39;api&#39;</span><span class="p">,</span> <span class="s1">&#39;api&#39;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="s1">&#39;api&#39;</span><span class="p">,</span> <span class="s1">&#39;api&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Some version identifier for the current project</span>
+
+<span class="sd">        Implementation is to return the abbreviated SHA1 of git HEAD.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">repo</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">commit</span><span class="o">.</span><span class="n">hexsha</span><span class="p">[:</span><span class="mi">7</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="FeatureEngineeringProject"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.FeatureEngineeringProject">[docs]</a><span class="k">class</span> <span class="nc">FeatureEngineeringProject</span><span class="p">:</span>
