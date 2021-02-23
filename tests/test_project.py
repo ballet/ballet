@@ -1,9 +1,13 @@
 import pathlib
+import random
+import sys
 from unittest.mock import ANY, PropertyMock, patch
 
+import git
 import pytest
 
 from ballet.project import Project, detect_github_username, load_config
+from ballet.util.testing import seeded
 
 
 @patch('ballet.project.load_config_in_dir')
@@ -58,3 +62,24 @@ def test_project_pr_num(mock_get_pr_num, mock_repo):
     package = None
     project = Project(package)
     assert project.pr_num == expected
+
+
+@pytest.fixture
+def commit_object():
+    with seeded(17):
+        # 20-byte sha1
+        k = 20
+        bits = random.getrandbits(k * 8)
+        data = bits.to_bytes(k, sys.byteorder)  # in py39, can use randbytes(k)
+
+        repo = None
+        commit = git.Commit(repo, data)
+        yield commit
+
+
+@patch('ballet.project.Project.repo', new_callable=PropertyMock)
+def test_project_version(mock_repo, commit_object):
+    mock_repo.return_value.head.commit = commit_object
+    project = Project(None)
+    version = project.version
+    assert isinstance(version, str)

@@ -299,6 +299,14 @@ class Project:
     def api(self) -> 'FeatureEngineeringProject':
         return self.resolve('api', 'api')
 
+    @property
+    def version(self) -> str:
+        """Some version identifier for the current project
+
+        Implementation is to return the abbreviated SHA1 of git HEAD.
+        """
+        return self.repo.head.commit.hexsha[:7]
+
 
 class FeatureEngineeringProject:
 
