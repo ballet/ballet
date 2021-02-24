@@ -1,5 +1,9 @@
 # History
 
+## 0.10.0 (2020-02-23)
+
+* Add `Project.version` property
+
 ## 0.9.0 (2020-02-16)
 
 * Add support for managed branching via `ballet start-new-feature --branching` (defaults to enabled)
