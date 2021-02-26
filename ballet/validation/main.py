@@ -83,8 +83,8 @@ def _load_validator_class_params(
 
 @validation_stage('checking project structure')
 def _check_project_structure(project: Project, force: bool = False):
-    if not force and not project.on_pr:
-        raise SkippedValidationTest('Not on PR')
+    if not force and project.on_master:
+        raise SkippedValidationTest('Not on feature branch')
 
     validator_class = _load_validator_class_params(
         project, 'validation.project_structure_validator')
@@ -97,8 +97,8 @@ def _check_project_structure(project: Project, force: bool = False):
 @validation_stage('validating feature API')
 def _validate_feature_api(project: Project, force: bool = False):
     """Validate feature API"""
-    if not force and not project.on_pr:
-        raise SkippedValidationTest('Not on PR')
+    if not force and project.on_master:
+        raise SkippedValidationTest('Not on feature branch')
 
     validator_class = _load_validator_class_params(
         project, 'validation.feature_api_validator')
@@ -111,8 +111,8 @@ def _validate_feature_api(project: Project, force: bool = False):
 @validation_stage('evaluating feature performance')
 def _evaluate_feature_performance(project: Project, force: bool = False):
     """Evaluate feature performance"""
-    if not force and not project.on_pr:
-        raise SkippedValidationTest('Not on PR')
+    if not force and project.on_master:
+        raise SkippedValidationTest('Not on feature branch')
 
     result = project.api.engineer_features()
     X_df, y_df, y = result.X_df, result.y_df, result.y

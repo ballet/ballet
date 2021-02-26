@@ -250,11 +250,6 @@ class Project:
         return result
 
     @property
-    def on_pr(self) -> bool:
-        """Return whether the project has a source tree on a PR"""
-        return self.pr_num is not None
-
-    @property
     def branch(self) -> Optional[str]:
         """Return current git branch according to git tree or CI environment"""
         result = get_branch(repo=self.repo)
