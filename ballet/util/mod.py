@@ -75,12 +75,19 @@ def import_module_at_path(modname: str, modpath: Pathy) -> ModuleType:
         raise ImportError('Module does not have valid package structure.')
 
     parentpath = str(pathlib.Path(modpath).parent)
+
     finder = pkgutil.get_importer(parentpath)
+    if finder is None:
+        raise ImportError(
+            'Failed to find loader for module {} within dir {}'
+            .format(modname, parentpath))
+
     loader = finder.find_module(modname)
     if loader is None:
         raise ImportError(
             'Failed to find loader for module {} within dir {}'
             .format(modname, parentpath))
+
     mod = loader.load_module(modname)
 
     # TODO figure out what to do about this

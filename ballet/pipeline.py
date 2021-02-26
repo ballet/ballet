@@ -49,10 +49,10 @@ class EngineerFeaturesResult(NamedTuple):
     X_df: pd.DataFrame
     features: Collection['ballet.feature.Feature']
     pipeline: FeatureEngineeringPipeline
-    X: np.array
+    X: np.ndarray
     y_df: pd.DataFrame
     encoder: BaseTransformer
-    y: np.array
+    y: np.ndarray
 
 
 def make_engineer_features(

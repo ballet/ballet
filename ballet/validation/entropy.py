@@ -116,7 +116,7 @@ def _compute_epsilon(x: np.ndarray) -> np.ndarray:
     disc_mask = _get_disc_columns(x)
     if np.all(disc_mask):
         # if no continuous columns, there's no point getting epsilon
-        return -np.inf
+        return np.full((n, 1), -np.inf)
     c = x[:, ~disc_mask]
 
     nn = _make_neighbors(n_neighbors=k)
@@ -154,7 +154,9 @@ def _ithrow(x: np.ndarray, i: int) -> np.ndarray:
     return x[i:i + 1, :]
 
 
-def _compute_n_points_within_radius(x: np.ndarray, radius: np.ndarray) -> int:
+def _compute_n_points_within_radius(
+    x: np.ndarray, radius: np.ndarray
+) -> np.ndarray:
     """Compute the number of points strictly within some radius
 
     Note that points lying exactly on the radius are not counted.
@@ -274,15 +276,15 @@ def _estimate_entropy(x: np.ndarray, epsilon: np.ndarray) -> float:
     if np.all(cont_mask):
         return _estimate_cont_entropy(x, epsilon)
 
-    # Separate the dataset into discrete and continuous datasets d and c
-    d = asarray2d(x[:, disc_mask])
-    c = asarray2d(x[:, cont_mask])
+    # Separate the dataset into discrete and continuous datasets disc and cont
+    disc = asarray2d(x[:, disc_mask])
+    cont = asarray2d(x[:, cont_mask])
 
     # H(c|d)
-    H_c_d = _estimate_conditional_entropy(c, d, epsilon)
+    H_c_d = _estimate_conditional_entropy(cont, disc, epsilon)
 
     # H(d)
-    H_d = _estimate_disc_entropy(d)
+    H_d = _estimate_disc_entropy(disc)
 
     return H_d + H_c_d
 

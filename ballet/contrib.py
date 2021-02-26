@@ -1,7 +1,8 @@
 import pkgutil
 import types
+from importlib.abc import PathEntryFinder
 from types import ModuleType
-from typing import Iterator, List, Optional
+from typing import Iterator, List, Optional, cast
 
 from funcy import collecting, notnone
 
@@ -75,8 +76,18 @@ def _collect_contrib_features_from_package(
             prefix=package.__name__ + '.',
             onerror=logger.error):
 
+        # mistakenly typed as MetaPathFinder
+        importer = cast(PathEntryFinder, importer)
+
         try:
-            mod = importer.find_module(modname).load_module(modname)
+            if importer is None:
+                raise ImportError
+            # TODO use find_spec
+            # https://docs.python.org/3/library/importlib.html#importlib.abc.PathEntryFinder.find_spec)
+            finder = importer.find_module(modname)
+            if finder is None:
+                raise ImportError
+            mod = finder.load_module(modname)
         except ImportError:
             logger.exception(
                 'Failed to import module {modname}'
