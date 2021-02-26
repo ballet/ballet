@@ -56,7 +56,7 @@ development_requirements = [
     'pip >= 9.0.1',
     'watchdog[watchmedo] >= 0.8.3',
     'invoke >= 1.4',
-    'mypy',
+    'mypy >= 0.812',
 
     # docs
     'm2r2 >= 0.2.5',

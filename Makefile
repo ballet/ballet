@@ -61,7 +61,7 @@ clean-test: ## remove test and coverage artifacts
 lint: ## check style with flake8 and isort
 	flake8 ballet tests
 	isort --check ballet tests
-	-mypy ballet tests
+	mypy ballet tests
 
 .PHONY: fix-lint
 fix-lint: ## fix lint issues using autopep8 and isort
