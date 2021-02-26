@@ -88,21 +88,22 @@ def test_validation_end_to_end(quickstart):
     repo.index.commit('Load mock regression dataset')
 
     # call different validation routines
-    def call_validate_all(pr=None):
+    def call_validate_all(ref=None):
+        """Validate branch as if we were running on CI"""
         envvars = {
             'TRAVIS_BUILD_DIR': repo.working_tree_dir,
         }
-        if pr is None:
+        if ref is None:
             envvars['TRAVIS_PULL_REQUEST'] = 'false'
             envvars['TRAVIS_COMMIT_RANGE'] = make_commit_range(
                 repo.commit('HEAD@{-1}').hexsha, repo.commit('HEAD').hexsha)
             envvars['TRAVIS_PULL_REQUEST_BRANCH'] = ''
             envvars['TRAVIS_BRANCH'] = repo.heads.master.name
         else:
-            envvars['TRAVIS_PULL_REQUEST'] = str(pr)
+            envvars['TRAVIS_PULL_REQUEST'] = str(1)  # TODO is this okay for testing?
             envvars['TRAVIS_COMMIT_RANGE'] = make_commit_range(
                 repo.heads.master.name,
-                repo.commit('pull/{pr}'.format(pr=pr)).hexsha)
+                repo.commit(ref).hexsha)
 
         with patch.dict(os.environ, envvars):
             check_call(
@@ -110,31 +111,33 @@ def test_validation_end_to_end(quickstart):
 
     call_validate_all()
 
-    # branch to a fake PR and write a new feature
+    # branch and write a new feature
     contrib_dir = base.joinpath('src', slug, 'features', 'contrib')
-    logger.info('Switching to pull request 1, User Bob, Feature A')
-    switch_to_new_branch(repo, 'pull/1')
+    ref = 'bob/feature-a'
+    logger.info(f'Switching to branch {ref}, User Bob, Feature A')
+    switch_to_new_branch(repo, ref)
     new_feature_str = make_feature_str('A_0')
     username = 'bob'
     featurename = 'A_0'
     submit_feature(repo, contrib_dir, username, featurename, new_feature_str)
 
     # call different validation routines
-    logger.info('Validating pull request 1, User Bob, Feature A')
-    call_validate_all(pr=1)
+    logger.info('Validating User Bob, Feature A')
+    call_validate_all(ref=ref)
 
-    # merge PR with master
+    # merge branch with master
     logger.info('Merging into master')
     repo.git.checkout('master')
-    repo.git.merge('pull/1', no_ff=True)
+    repo.git.merge(ref, no_ff=True)
 
     # call different validation routines
     logger.info('Validating after merge')
     call_validate_all()
 
     # write another new feature
-    logger.info('Switching to pull request 2, User Charlie, Feature Z_1')
-    switch_to_new_branch(repo, 'pull/2')
+    ref = 'charlie/feature-z1'
+    logger.info('Switching to branch ref, User Charlie, Feature Z_1')
+    switch_to_new_branch(repo, ref)
     new_feature_str = make_feature_str('Z_1')
     username = 'charlie'
     featurename = 'Z_1'
@@ -143,16 +146,17 @@ def test_validation_end_to_end(quickstart):
     # TODO we expect this feature to fail but it passes
     cm = pytest.raises(CalledProcessError) if False else nullcontext()
     with cm:
-        logger.info('Validating pull request 2, User Charlie, Feature Z_1')
-        call_validate_all(pr=2)
+        logger.info('Validating User Charlie, Feature Z_1')
+        call_validate_all(ref=ref)
 
-    # write another new feature - redudancy
+    # write another new feature - redundancy
+    ref = 'pull/3'
     repo.git.checkout('master')
-    switch_to_new_branch(repo, 'pull/3')
+    switch_to_new_branch(repo, ref)
     new_feature_str = make_feature_str('A_0')
     username = 'charlie'
     featurename = 'A_0'
     submit_feature(repo, contrib_dir, username, featurename, new_feature_str)
 
     with pytest.raises(CalledProcessError):
-        call_validate_all(pr=3)
+        call_validate_all(ref=ref)
