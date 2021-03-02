@@ -4,7 +4,7 @@ from unittest.mock import patch
 import pytest
 
 from ballet.util.ci import TravisPullRequestBuildDiffer
-from ballet.util.git import make_commit_range
+from ballet.util.git import CustomDiffer, make_commit_range
 from ballet.validation.common import ChangeCollector
 
 from ..util import make_mock_commits
@@ -45,30 +45,19 @@ def test_change_collector_collect_file_diffs(pr_num, mock_repo):
     filename = 'file{i}.py'
 
     commits = make_mock_commits(repo, n=n, filename=filename)
-    contrib_module_path = None
-    commit_range = make_commit_range(
-        commits[0], commits[-1])
 
-    travis_env_vars = {
-        'TRAVIS_BUILD_DIR': repo.working_tree_dir,
-        'TRAVIS_PULL_REQUEST': str(pr_num),
-        'TRAVIS_COMMIT_RANGE': commit_range,
-    }
+    project = None
+    differ = CustomDiffer(endpoints=(commits[0], commits[-1]))
+    change_collector = ChangeCollector(project, differ=differ)
+    file_diffs = change_collector._collect_file_diffs()
 
-    with patch.dict('os.environ', travis_env_vars, clear=True):
-        project_path = repo.working_tree_dir
-        project = make_mock_project(repo, pr_num, project_path,
-                                    contrib_module_path)
-        change_collector = ChangeCollector(project)
-        file_diffs = change_collector._collect_file_diffs()
+    # checks on file_diffs
+    assert len(file_diffs) == n - 1
 
-        # checks on file_diffs
-        assert len(file_diffs) == n - 1
-
-        for diff in file_diffs:
-            assert diff.change_type == 'A'
-            assert diff.b_path.startswith('file')
-            assert diff.b_path.endswith('.py')
+    for diff in file_diffs:
+        assert diff.change_type == 'A'
+        assert diff.b_path.startswith('file')
+        assert diff.b_path.endswith('.py')
 
 
 @pytest.mark.xfail
