@@ -1,4 +1,5 @@
 import pathlib
+import tempfile
 from typing import NamedTuple
 from unittest.mock import MagicMock, create_autospec, patch
 
@@ -14,7 +15,8 @@ from ballet.validation.feature_api.validator import FeatureApiValidator
 from ballet.validation.project_structure.validator import (
     ProjectStructureValidator,)
 
-from ..util import make_mock_commit, mock_repo
+from ..conftest import _mock_repo
+from ..util import make_mock_commit
 
 
 class SampleData(NamedTuple):
@@ -62,30 +64,32 @@ def make_mock_project(repo, pr_num, path, contrib_module_path):
 
 @contextmanager
 def mock_project_content(path_content):
-    with mock_repo() as repo:
-        for path, content in path_content:
-            make_mock_commit(repo, path=path, content=content)
-        yield repo
+    with tempfile.TemporaryDirectory() as tempdir:
+        with _mock_repo(tempdir) as repo:
+            for path, content in path_content:
+                make_mock_commit(repo, path=path, content=content)
+            yield repo
 
 
 @pytest.fixture
-def null_change_collector():
+def null_change_collector(mock_repo):
+    repo = mock_repo
     pr_num = 3
-    with mock_repo() as repo:
-        commit_range = 'HEAD^..HEAD'
-        contrib_module_path = None
 
-        travis_env_vars = {
-            'TRAVIS_BUILD_DIR': repo.working_tree_dir,
-            'TRAVIS_PULL_REQUEST': str(pr_num),
-            'TRAVIS_COMMIT_RANGE': commit_range,
-        }
+    commit_range = 'HEAD^..HEAD'
+    contrib_module_path = None
 
-        with patch.dict('os.environ', travis_env_vars, clear=True):
-            project_path = repo.working_tree_dir
-            project = make_mock_project(repo, pr_num, project_path,
-                                        contrib_module_path)
-            yield ChangeCollector(project)
+    travis_env_vars = {
+        'TRAVIS_BUILD_DIR': repo.working_tree_dir,
+        'TRAVIS_PULL_REQUEST': str(pr_num),
+        'TRAVIS_COMMIT_RANGE': commit_range,
+    }
+
+    with patch.dict('os.environ', travis_env_vars, clear=True):
+        project_path = repo.working_tree_dir
+        project = make_mock_project(repo, pr_num, project_path,
+                                    contrib_module_path)
+        yield ChangeCollector(project)
 
 
 @contextmanager

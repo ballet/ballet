@@ -7,7 +7,7 @@ from ballet.util.ci import TravisPullRequestBuildDiffer
 from ballet.util.git import make_commit_range
 from ballet.validation.common import ChangeCollector
 
-from ..util import make_mock_commits, mock_repo
+from ..util import make_mock_commits
 from .conftest import (
     make_mock_project, mock_feature_api_validator, mock_file_change_validator,)
 
@@ -38,35 +38,37 @@ def test_change_collector_init(null_change_collector):
         null_change_collector.differ, TravisPullRequestBuildDiffer)
 
 
-def test_change_collector_collect_file_diffs(pr_num):
+def test_change_collector_collect_file_diffs(pr_num, mock_repo):
+    repo = mock_repo
+
     n = 10
     filename = 'file{i}.py'
-    with mock_repo() as repo:
-        commits = make_mock_commits(repo, n=n, filename=filename)
-        contrib_module_path = None
-        commit_range = make_commit_range(
-            commits[0], commits[-1])
 
-        travis_env_vars = {
-            'TRAVIS_BUILD_DIR': repo.working_tree_dir,
-            'TRAVIS_PULL_REQUEST': str(pr_num),
-            'TRAVIS_COMMIT_RANGE': commit_range,
-        }
+    commits = make_mock_commits(repo, n=n, filename=filename)
+    contrib_module_path = None
+    commit_range = make_commit_range(
+        commits[0], commits[-1])
 
-        with patch.dict('os.environ', travis_env_vars, clear=True):
-            project_path = repo.working_tree_dir
-            project = make_mock_project(repo, pr_num, project_path,
-                                        contrib_module_path)
-            change_collector = ChangeCollector(project)
-            file_diffs = change_collector._collect_file_diffs()
+    travis_env_vars = {
+        'TRAVIS_BUILD_DIR': repo.working_tree_dir,
+        'TRAVIS_PULL_REQUEST': str(pr_num),
+        'TRAVIS_COMMIT_RANGE': commit_range,
+    }
 
-            # checks on file_diffs
-            assert len(file_diffs) == n - 1
+    with patch.dict('os.environ', travis_env_vars, clear=True):
+        project_path = repo.working_tree_dir
+        project = make_mock_project(repo, pr_num, project_path,
+                                    contrib_module_path)
+        change_collector = ChangeCollector(project)
+        file_diffs = change_collector._collect_file_diffs()
 
-            for diff in file_diffs:
-                assert diff.change_type == 'A'
-                assert diff.b_path.startswith('file')
-                assert diff.b_path.endswith('.py')
+        # checks on file_diffs
+        assert len(file_diffs) == n - 1
+
+        for diff in file_diffs:
+            assert diff.change_type == 'A'
+            assert diff.b_path.startswith('file')
+            assert diff.b_path.endswith('.py')
 
 
 @pytest.mark.xfail

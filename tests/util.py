@@ -1,10 +1,8 @@
 import pathlib
 import random
 import subprocess
-import tempfile
 
-import git
-from funcy import any_fn, contextmanager, ignore, merge
+from funcy import any_fn, ignore, merge
 from sklearn_pandas.pipeline import TransformerPipeline
 
 from ballet.eng.base import BaseTransformer
@@ -106,16 +104,6 @@ def set_ci_git_config_variables(repo, name='Foo Bar', email='foo@bar.com'):
         'user.name': name,
         'user.email': email,
     })
-
-
-@contextmanager
-def mock_repo():
-    """Create a new repo"""
-    with tempfile.TemporaryDirectory() as tempdir:
-        tempdir = pathlib.Path(tempdir)
-        repo = git.Repo.init(str(tempdir))
-        set_ci_git_config_variables(repo)
-        yield repo
 
 
 @ignore((FileNotFoundError, subprocess.CalledProcessError))
