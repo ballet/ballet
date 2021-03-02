@@ -9,8 +9,7 @@ from ballet.validation.common import ChangeCollector
 
 from ..util import make_mock_commits, mock_repo
 from .conftest import (
-    make_mock_project, mock_feature_api_validator, mock_file_change_validator,
-    null_change_collector,)
+    make_mock_project, mock_feature_api_validator, mock_file_change_validator,)
 
 
 @pytest.fixture
@@ -34,10 +33,9 @@ def invalid_feature_code():
     ).strip()
 
 
-def test_change_collector_init(pr_num):
-    with null_change_collector(pr_num) as change_collector:
-        assert isinstance(
-            change_collector.differ, TravisPullRequestBuildDiffer)
+def test_change_collector_init(null_change_collector):
+    assert isinstance(
+        null_change_collector.differ, TravisPullRequestBuildDiffer)
 
 
 def test_change_collector_collect_file_diffs(pr_num):

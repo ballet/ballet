@@ -68,8 +68,9 @@ def mock_project_content(path_content):
         yield repo
 
 
-@contextmanager
-def null_change_collector(pr_num):
+@pytest.fixture
+def null_change_collector():
+    pr_num = 3
     with mock_repo() as repo:
         commit_range = 'HEAD^..HEAD'
         contrib_module_path = None
