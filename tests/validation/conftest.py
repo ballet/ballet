@@ -1,8 +1,10 @@
 import pathlib
+from typing import NamedTuple
 from unittest.mock import MagicMock, create_autospec, patch
 
 import numpy as np
 import pandas as pd
+import pytest
 from funcy import contextmanager
 
 from ballet.project import Project
@@ -15,20 +17,26 @@ from ballet.validation.project_structure.validator import (
 from ..util import make_mock_commit, mock_repo
 
 
-class SampleDataMixin:
-    def setUp(self):
-        self.df = pd.DataFrame(
-            data={
-                'country': ['USA', 'USA', 'Canada', 'Japan'],
-                'year': [2001, 2002, 2001, 2002],
-                'size': [np.nan, -11, 12, 0.0],
-                'strength': [18, 110, np.nan, 101],
-                'happy': [False, True, False, False]
-            }
-        ).set_index(['country', 'year'])
-        self.X = self.df[['size', 'strength']]
-        self.y = self.df[['happy']]
-        super().setUp()
+class SampleData(NamedTuple):
+    df: pd.DataFrame
+    X: pd.DataFrame
+    y: pd.DataFrame
+
+
+@pytest.fixture
+def sample_data():
+    df = pd.DataFrame(
+        data={
+            'country': ['USA', 'USA', 'Canada', 'Japan'],
+            'year': [2001, 2002, 2001, 2002],
+            'size': [np.nan, -11, 12, 0.0],
+            'strength': [18, 110, np.nan, 101],
+            'happy': [False, True, False, False]
+        }
+    ).set_index(['country', 'year'])
+    X = df[['size', 'strength']]
+    y = df[['happy']]
+    return SampleData(df, X, y)
 
 
 def make_mock_project(repo, pr_num, path, contrib_module_path):

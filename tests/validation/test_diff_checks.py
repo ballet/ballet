@@ -8,7 +8,7 @@ from ballet.validation.project_structure.checks import (
     IsAdditionCheck, IsPythonSourceCheck, ModuleNameCheck,
     RelativeNameDepthCheck, SubpackageNameCheck, WithinContribCheck,)
 
-from .util import make_mock_project
+from .conftest import make_mock_project
 
 
 @pytest.fixture
