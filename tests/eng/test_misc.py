@@ -2,6 +2,7 @@ import unittest
 
 import numpy as np
 import pandas as pd
+import pytest
 from scipy.special import boxcox1p
 
 import ballet.eng.misc
@@ -37,9 +38,9 @@ class TestMisc(ArrayLikeEqualityTestingMixin, unittest.TestCase):
         df['skewed'] = skewed
         df['unskewed'] = unskewed
         df_res = trans.fit_transform(df)
-        self.assertIsInstance(df_res, pd.DataFrame)
-        self.assertIn('skewed', df_res.columns)
-        self.assertIn('unskewed', df_res.columns)
+        assert isinstance(df_res, pd.DataFrame)
+        assert 'skewed' in df_res.columns
+        assert 'unskewed' in df_res.columns
         self.assertArrayAlmostEqual(df_res['skewed'], exp_skew_res)
 
         # test on DF, no skewed columns
@@ -47,22 +48,22 @@ class TestMisc(ArrayLikeEqualityTestingMixin, unittest.TestCase):
         df_unskewed['col1'] = unskewed
         df_unskewed['col2'] = unskewed
         df_unskewed_res = trans.fit_transform(df_unskewed)
-        self.assertIsInstance(df_unskewed_res, pd.DataFrame)
-        self.assertIn('col1', df_unskewed_res.columns)
-        self.assertIn('col2', df_unskewed_res.columns)
+        assert isinstance(df_unskewed_res, pd.DataFrame)
+        assert 'col1' in df_unskewed_res.columns
+        assert 'col2' in df_unskewed_res.columns
         self.assertArrayEqual(df_unskewed_res['col1'], exp_unskew_res)
         self.assertArrayEqual(df_unskewed_res['col2'], exp_unskew_res)
 
         # test on skewed Series
         ser_skewed = pd.Series(skewed)
         ser_skewed_res = trans.fit_transform(ser_skewed)
-        self.assertIsInstance(ser_skewed_res, pd.Series)
+        assert isinstance(ser_skewed_res, pd.Series)
         self.assertArrayAlmostEqual(ser_skewed_res, exp_skew_res)
 
         # test on unskewed Series
         ser_unskewed = pd.Series(unskewed)
         ser_unskewed_res = trans.fit_transform(ser_unskewed)
-        self.assertIsInstance(ser_unskewed_res, pd.Series)
+        assert isinstance(ser_unskewed_res, pd.Series)
         self.assertArrayEqual(ser_unskewed_res, exp_unskew_res)
 
         # test on array
@@ -83,16 +84,16 @@ class TestMisc(ArrayLikeEqualityTestingMixin, unittest.TestCase):
         for obj in [index, ser, df, arr]:
             trans = ballet.eng.misc.NamedFramer(name)
             result = trans.fit_transform(obj)
-            self.assertIsInstance(result, pd.DataFrame)
-            self.assertEqual(result.shape[1], 1)
-            self.assertEqual(result.columns, [name])
+            assert isinstance(result, pd.DataFrame)
+            assert result.shape[1] == 1
+            assert result.columns == [name]
 
         # bad objects -- wrong type
         int_ = 1
         str_ = 'hello'
         for obj in [int_, str_]:
             trans = ballet.eng.misc.NamedFramer(name)
-            with self.assertRaises(TypeError):
+            with pytest.raises(TypeError):
                 result = trans.fit_transform(obj)
 
         # bad objects -- too wide
@@ -100,5 +101,5 @@ class TestMisc(ArrayLikeEqualityTestingMixin, unittest.TestCase):
         wide_arr = np.arange(10).reshape(-1, 2)
         for obj in [wide_df, wide_arr]:
             trans = ballet.eng.misc.NamedFramer(name)
-            with self.assertRaises(ValueError):
+            with pytest.raises(ValueError):
                 result = trans.fit_transform(obj)

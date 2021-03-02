@@ -21,7 +21,7 @@ class UpdateTest(unittest.TestCase):
         # nothing better to do that just call the function...
         # actually hits PyPI but difficult to mock because uses subprocess >:(
         result = _query_pip_search_ballet()
-        self.assertIn('ballet', result)
+        assert 'ballet' in result
 
     def test_extract_latest_from_search_triple(self):
         triple = (
@@ -30,7 +30,7 @@ class UpdateTest(unittest.TestCase):
             '  LATEST:    u.v.w',
         )
         result = _extract_latest_from_search_triple(triple)
-        self.assertEqual(result, 'u.v.w')
+        assert result == 'u.v.w'
 
     def test_extract_latest_from_search_triple_not_found(self):
         triple = (
@@ -39,7 +39,7 @@ class UpdateTest(unittest.TestCase):
             'match the expected format'
         )
         result = _extract_latest_from_search_triple(triple)
-        self.assertIsNone(result)
+        assert result is None
 
     @patch('funcy.partition')
     @patch('ballet.update._extract_latest_from_search_triple')
@@ -52,7 +52,7 @@ class UpdateTest(unittest.TestCase):
 
         actual = _get_latest_ballet_version_string()
 
-        self.assertEqual(actual, expected)
+        assert actual == expected
 
     @patch('ballet.update._get_latest_ballet_version_string')
     def test_check_for_updated_ballet(self, mock_latest):
@@ -62,14 +62,14 @@ class UpdateTest(unittest.TestCase):
         mock_latest.return_value = latest
         expected = latest
         actual = _check_for_updated_ballet()
-        self.assertEqual(actual, expected)
+        assert actual == expected
 
     @patch('ballet.update._get_latest_ballet_version_string')
     def test_check_for_updated_ballet_no_updates(self, mock_latest):
         mock_latest.return_value = ballet.__version__
         expected = None  # no updates available
         actual = _check_for_updated_ballet()
-        self.assertEqual(actual, expected)
+        assert actual == expected
 
     def test_warn_of_updated_ballet(self):
         latest = 'x.y.z'
@@ -77,11 +77,11 @@ class UpdateTest(unittest.TestCase):
         with self.assertLogs(logger) as cm:
             _warn_of_updated_ballet(latest)
         output = '\n'.join(cm.output)
-        self.assertIn(latest, output)
+        assert latest in output
 
     def test_make_template_branch_merge_commit_message(self):
         result = _make_template_branch_merge_commit_message()
-        self.assertIn(ballet.__version__, result)
+        assert ballet.__version__ in result
 
     def test_safe_delete_remote(self):
         repo = Mock(spec=git.Repo)

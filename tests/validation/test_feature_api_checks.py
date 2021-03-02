@@ -27,8 +27,8 @@ class FeatureApiCheckTest(SampleDataMixin, unittest.TestCase):
 
         valid, failures, advice = check_from_class(
             FeatureApiCheck, feature, self.X, self.y)
-        self.assertTrue(valid)
-        self.assertEqual(len(failures), 0)
+        assert valid
+        assert len(failures) == 0
 
     def test_bad_feature_input(self):
         # bad input
@@ -38,8 +38,8 @@ class FeatureApiCheckTest(SampleDataMixin, unittest.TestCase):
         )
         valid, failures, advice = check_from_class(
             FeatureApiCheck, feature, self.X, self.y)
-        self.assertFalse(valid)
-        self.assertIn(HasCorrectInputTypeCheck.__name__, failures)
+        assert not valid
+        assert HasCorrectInputTypeCheck.__name__ in failures
 
     def test_bad_feature_transform_errors(self):
         # transformer throws errors
@@ -50,8 +50,8 @@ class FeatureApiCheckTest(SampleDataMixin, unittest.TestCase):
         )
         valid, failures, advice = check_from_class(
             FeatureApiCheck, feature, self.X, self.y)
-        self.assertFalse(valid)
-        self.assertIn(CanTransformCheck.__name__, failures)
+        assert not valid
+        assert CanTransformCheck.__name__ in failures
 
     def test_bad_feature_wrong_transform_length(self):
         class _WrongLengthTransformer(BaseTransformer):
@@ -68,8 +68,8 @@ class FeatureApiCheckTest(SampleDataMixin, unittest.TestCase):
         )
         valid, failures, advice = check_from_class(
             FeatureApiCheck, feature, self.X, self.y)
-        self.assertFalse(valid)
-        self.assertIn(HasCorrectOutputDimensionsCheck.__name__, failures)
+        assert not valid
+        assert HasCorrectOutputDimensionsCheck.__name__ in failures
 
     def test_bad_feature_deepcopy_fails(self):
         class _CopyFailsTransformer(IdentityTransformer):
@@ -81,8 +81,8 @@ class FeatureApiCheckTest(SampleDataMixin, unittest.TestCase):
         )
         valid, failures, advice = check_from_class(
             FeatureApiCheck, feature, self.X, self.y)
-        self.assertFalse(valid)
-        self.assertIn(CanDeepcopyCheck.__name__, failures)
+        assert not valid
+        assert CanDeepcopyCheck.__name__ in failures
 
     def test_producing_missing_values_fails(self):
         assert has_nans(self.X)
@@ -92,5 +92,5 @@ class FeatureApiCheckTest(SampleDataMixin, unittest.TestCase):
         )
         valid, failures, advice = check_from_class(
             FeatureApiCheck, feature, self.X, self.y)
-        self.assertFalse(valid)
-        self.assertIn(NoMissingValuesCheck.__name__, failures)
+        assert not valid
+        assert NoMissingValuesCheck.__name__ in failures

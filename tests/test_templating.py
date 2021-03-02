@@ -11,12 +11,12 @@ class TemplatingTest(unittest.TestCase):
     def test__stringify_path_pathlike(self):
         obj = pathlib.Path()
         output = _stringify_path(obj)
-        self.assertIsInstance(output, str)
+        assert isinstance(output, str)
 
     def test__stringify_path_not_pathlike(self):
         obj = object()
         output = _stringify_path(obj)
-        self.assertNotIsInstance(output, str)
+        assert not isinstance(output, str)
 
     @patch('ballet.templating.cookiecutter')
     def test_render_project_template(self, mock_cookiecutter):
@@ -24,9 +24,9 @@ class TemplatingTest(unittest.TestCase):
 
         args, _ = mock_cookiecutter.call_args
 
-        self.assertEqual(len(args), 1)
+        assert len(args) == 1
         path = args[0]
-        self.assertIn('project_template', str(path))
+        assert 'project_template' in str(path)
 
     @patch('ballet.templating.cookiecutter')
     def test_render_feature_template(self, mock_cookiecutter):
@@ -34,6 +34,6 @@ class TemplatingTest(unittest.TestCase):
 
         args, _ = mock_cookiecutter.call_args
 
-        self.assertEqual(len(args), 1)
+        assert len(args) == 1
         path = args[0]
-        self.assertIn('feature_template', str(path))
+        assert 'feature_template' in str(path)

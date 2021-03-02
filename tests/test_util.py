@@ -12,6 +12,7 @@ from unittest.mock import ANY, Mock, mock_open, patch
 import git
 import numpy as np
 import pandas as pd
+import pytest
 from funcy import identity
 
 import ballet
@@ -54,7 +55,7 @@ class UtilTest(
         a = np.zeros((3,))
         result = ballet.util.asarray2d(a)
         expected_shape = (3, 1)
-        self.assertEqual(result.shape, expected_shape)
+        assert result.shape == expected_shape
         self.assertArrayEqual(np.ravel(result), a)
 
     def test_asarray2d_series(self):
@@ -62,7 +63,7 @@ class UtilTest(
         a = np.zeros((3,))
         ser = pd.Series(a)
         result = ballet.util.asarray2d(ser)
-        self.assertGreaterEqual(result.shape[1], 1)
+        assert result.shape[1] >= 1
         self.assertArrayEqual(
             result, ballet.util.asarray2d(a)
         )
@@ -72,27 +73,27 @@ class UtilTest(
         a = np.zeros((3, 2))
         df = pd.DataFrame(a)
         result = ballet.util.asarray2d(df)
-        self.assertEqual(result.shape, df.shape)
-        self.assertGreaterEqual(result.shape[1], 1)
+        assert result.shape == df.shape
+        assert result.shape[1] >= 1
         self.assertArrayEqual(result, a)
 
     def test_get_arr_desc_array(self):
         a = np.ones((2, 2))
         expected = 'ndarray (2, 2)'
         actual = ballet.util.get_arr_desc(a)
-        self.assertEqual(actual, expected)
+        assert actual == expected
 
     def test_get_arr_desc_frame(self):
         df = pd.DataFrame()
         expected = 'DataFrame (0, 0)'
         actual = ballet.util.get_arr_desc(df)
-        self.assertEqual(actual, expected)
+        assert actual == expected
 
     def test_get_arr_desc_object(self):
         obj = object()
         expected = 'object <no shape>'
         actual = ballet.util.get_arr_desc(obj)
-        self.assertEqual(actual, expected)
+        assert actual == expected
 
     def test_indent(self):
         text = (
@@ -106,21 +107,21 @@ class UtilTest(
             '    ...hi'
         )
         actual = ballet.util.indent(text, n=4)
-        self.assertEqual(actual, expected)
+        assert actual == expected
 
     def test_make_plural_suffix_plural(self):
         objs = ['honda', 'toyota']
         suffix = ballet.util.make_plural_suffix(objs)
         actual = 'car{s}'.format(s=suffix)
         expected = 'cars'
-        self.assertEqual(actual, expected)
+        assert actual == expected
 
     def test_make_plural_suffix_singular(self):
         objs = ['honda']
         suffix = ballet.util.make_plural_suffix(objs)
         actual = 'car{s}'.format(s=suffix)
         expected = 'car'
-        self.assertEqual(actual, expected)
+        assert actual == expected
 
     def test_has_nans(self):
         objs_with_nans = [
@@ -146,10 +147,10 @@ class UtilTest(
         ]
 
         for obj in objs_with_nans:
-            self.assertTrue(ballet.util.has_nans(obj))
+            assert ballet.util.has_nans(obj)
 
         for obj in objs_without_nans:
-            self.assertFalse(ballet.util.has_nans(obj))
+            assert not ballet.util.has_nans(obj)
 
     def test_dfilter(self):
         @ballet.util.dfilter(lambda x: x >= 0)
@@ -158,19 +159,19 @@ class UtilTest(
 
         actual = numbers()
         expected = [2, 0]
-        self.assertEqual(actual, expected)
+        assert actual == expected
 
     def test_load_sklearn_df(self):
         name = 'iris'
         X_df, y_df = ballet.util.load_sklearn_df(name)
 
         # validation on X_df
-        self.assertIsNotNone(X_df)
-        self.assertIsInstance(X_df, pd.DataFrame)
+        assert X_df is not None
+        assert isinstance(X_df, pd.DataFrame)
 
         # validation on y_df
-        self.assertIsNotNone(y_df)
-        self.assertIsInstance(y_df, pd.Series)
+        assert y_df is not None
+        assert isinstance(y_df, pd.Series)
 
     def test_quiet_stderr(self):
         @ballet.util.quiet
@@ -181,7 +182,7 @@ class UtilTest(
         # the stream is reset properly (esp on py<3.5)
         stderr = sys.stderr
         f()
-        self.assertIs(sys.stderr, stderr)
+        assert sys.stderr is stderr
 
     def test_deepcopy_mixin(self):
         class E(Exception):
@@ -198,7 +199,7 @@ class UtilTest(
             pass
 
         a = A(1)
-        with self.assertRaises(E):
+        with pytest.raises(E):
             copy.deepcopy(a)
 
         b = B(1)
@@ -216,25 +217,25 @@ class UtilTest(
         )
         for input, expected in matrix:
             actual = ballet.util.falsy(input)
-            self.assertEqual(expected, actual)
+            assert expected == actual
 
             # truthy is complement of falsy
             actual = ballet.util.truthy(input)
-            self.assertNotEqual(expected, actual)
+            assert expected != actual
 
     def test_nonnegative_positive_output(self):
         @nonnegative()
         def func():
             return 1
 
-        self.assertEqual(1, func())
+        assert 1 == func()
 
     def test_nonnegative_negative_output(self):
         @nonnegative(name="Result")
         def func():
             return -1
 
-        self.assertEqual(0, func())
+        assert 0 == func()
 
     def test_nonnegative_negative_introspection(self):
         @nonnegative()
@@ -243,8 +244,8 @@ class UtilTest(
 
         with self.assertLogs(logger.name, 'WARNING') as cm:
             estimate_something()
-        self.assertEqual(1, len(cm.output))
-        self.assertIn("Something", cm.output[0])
+        assert 1 == len(cm.output)
+        assert "Something" in cm.output[0]
 
 
 class ModTest(unittest.TestCase):
@@ -269,9 +270,9 @@ class ModTest(unittest.TestCase):
             modname = 'foo.bar'
             modpath = str(path)  # e.g. /tmp/foo/bar.py'
             mod = import_module_at_path(modname, modpath)
-            self.assertIsInstance(mod, types.ModuleType)
-            self.assertEqual(mod.__name__, modname)
-            self.assertEqual(mod.x, x)
+            assert isinstance(mod, types.ModuleType)
+            assert mod.__name__ == modname
+            assert mod.x == x
 
         with tempfile.TemporaryDirectory() as tmpdir:
             path = pathlib.Path(tmpdir).joinpath('foo')
@@ -284,9 +285,9 @@ class ModTest(unittest.TestCase):
             modname = 'foo'
             modpath = str(path)
             mod = import_module_at_path(modname, modpath)
-            self.assertIsInstance(mod, types.ModuleType)
-            self.assertEqual(mod.__name__, modname)
-            self.assertEqual(mod.x, x)
+            assert isinstance(mod, types.ModuleType)
+            assert mod.__name__ == modname
+            assert mod.x == x
 
     @unittest.expectedFailure
     def test_import_module_at_path_bad_package_structure(self):
@@ -296,22 +297,22 @@ class ModTest(unittest.TestCase):
         relpath = 'ballet/util/_util.py'
         expected_modname = 'ballet.util._util'
         actual_modname = relpath_to_modname(relpath)
-        self.assertEqual(actual_modname, expected_modname)
+        assert actual_modname == expected_modname
 
         relpath = 'ballet/util/__init__.py'
         expected_modname = 'ballet.util'
         actual_modname = relpath_to_modname(relpath)
-        self.assertEqual(actual_modname, expected_modname)
+        assert actual_modname == expected_modname
 
         relpath = 'ballet/foo/bar/baz.zip'
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             relpath_to_modname(relpath)
 
     def test_modname_to_relpath(self):
         modname = 'ballet.util._util'
         expected_relpath = 'ballet/util/_util.py'
         actual_relpath = modname_to_relpath(modname)
-        self.assertEqual(actual_relpath, expected_relpath)
+        assert actual_relpath == expected_relpath
 
         modname = 'ballet.util'
         # mypackage.__file__ resolves to the __init__.py
@@ -319,7 +320,7 @@ class ModTest(unittest.TestCase):
 
         expected_relpath = 'ballet/util/__init__.py'
         actual_relpath = modname_to_relpath(modname, project_root=project_root)
-        self.assertEqual(actual_relpath, expected_relpath)
+        assert actual_relpath == expected_relpath
 
         # TODO patch this
         # # without providing project root, behavior is undefined, as we don't
@@ -352,7 +353,7 @@ class ModTest(unittest.TestCase):
         expected_relpath = 'ballet/util'
         actual_relpath = modname_to_relpath(
             modname, project_root=project_root, add_init=add_init)
-        self.assertEqual(actual_relpath, expected_relpath)
+        assert actual_relpath == expected_relpath
 
 
 class CiTest(unittest.TestCase):
@@ -377,7 +378,7 @@ class CiTest(unittest.TestCase):
         for env_name, env_value, expected in matrix:
             with patch.dict('os.environ', {env_name: env_value}, clear=True):
                 actual = ballet.util.ci.get_travis_pr_num()
-                self.assertEqual(actual, expected)
+                assert actual == expected
 
     def test_is_travis_pr(self):
         matrix = (
@@ -391,7 +392,7 @@ class CiTest(unittest.TestCase):
         for env_name, env_value, expected in matrix:
             with patch.dict('os.environ', {env_name: env_value}, clear=True):
                 actual = ballet.util.ci.is_travis_pr()
-                self.assertEqual(actual, expected)
+                assert actual == expected
 
     def test_get_travis_branch(self):
         # matrix of env dict, expected result
@@ -417,7 +418,7 @@ class CiTest(unittest.TestCase):
         for env, expected in matrix:
             with patch.dict('os.environ', env, clear=True):
                 actual = ballet.util.ci.get_travis_branch()
-                self.assertEqual(actual, expected)
+                assert actual == expected
 
     def test_travis_pull_request_build_differ(self):
         with mock_repo() as repo:
@@ -435,8 +436,8 @@ class CiTest(unittest.TestCase):
                 expected_a = repo.rev_parse('HEAD^')
                 expected_b = repo.rev_parse('HEAD')
                 actual_a, actual_b = differ._get_diff_endpoints()
-                self.assertEqual(actual_a, expected_a)
-                self.assertEqual(actual_b, expected_b)
+                assert actual_a == expected_a
+                assert actual_b == expected_b
 
     def test_travis_pull_request_build_differ_on_mock_commits(self):
         n = 4
@@ -468,19 +469,19 @@ class CiTest(unittest.TestCase):
             with patch.dict('os.environ', travis_env_vars, clear=True):
                 differ = TravisPullRequestBuildDiffer(pr_num)
                 a, b = differ._get_diff_endpoints()
-                self.assertEqual(a, expected_merge_base)
-                self.assertEqual(b, end_commit)
+                assert a == expected_merge_base
+                assert b == end_commit
 
                 diffs = differ.diff()
 
                 # there should be n diff objects, they should show files
                 # 0 to n-1. merge base just created readme.txt, so all files
                 # on feature branch are new.
-                self.assertEqual(len(diffs), n)
+                assert len(diffs) == n
                 j = i
                 for diff in diffs:
-                    self.assertEqual(diff.change_type, 'A')
-                    self.assertEqual(diff.b_path, 'file{j}.py'.format(j=j))
+                    assert diff.change_type == 'A'
+                    assert diff.b_path == 'file{j}.py'.format(j=j)
                     j += 1
 
 
@@ -498,7 +499,7 @@ class FsTest(unittest.TestCase):
             expected = '/foo/bar/baz_new.txt'
 
             actual = ballet.util.fs.spliceext(filepath, s)
-            self.assertEqual(actual, expected)
+            assert actual == expected
 
     def test_replaceext(self):
         filepath0 = '/foo/bar/baz.txt'
@@ -509,11 +510,11 @@ class FsTest(unittest.TestCase):
 
             new_ext = 'py'
             actual = ballet.util.fs.replaceext(filepath, new_ext)
-            self.assertEqual(actual, expected)
+            assert actual == expected
 
             new_ext = '.py'
             actual = ballet.util.fs.replaceext(filepath, new_ext)
-            self.assertEqual(actual, expected)
+            assert actual == expected
 
     def test_splitext2(self):
         filepath0 = '/foo/bar/baz.txt'
@@ -523,7 +524,7 @@ class FsTest(unittest.TestCase):
             filepath = func(filepath0)
 
             actual = ballet.util.fs.splitext2(filepath)
-            self.assertEqual(actual, expected)
+            assert actual == expected
 
         filepath0 = 'baz.txt'
         expected = ('', 'baz', '.txt')
@@ -532,14 +533,14 @@ class FsTest(unittest.TestCase):
             filepath = func(filepath0)
 
             actual = ballet.util.fs.splitext2(filepath)
-            self.assertEqual(actual, expected)
+            assert actual == expected
 
     @patch('os.path.exists')
     def test_isemptyfile_does_not_exist(self, mock_exists):
         mock_exists.return_value = False
         result = ballet.util.fs.isemptyfile(
             '/path/to/file/that/hopefully/does/not/exist')
-        self.assertFalse(result)
+        assert not result
 
     def test_isemptyfile_is_not_empty(self):
         # file exists and is not empty - false
@@ -548,7 +549,7 @@ class FsTest(unittest.TestCase):
             with open(filepath, 'w') as f:
                 f.write('0')
             result = ballet.util.fs.isemptyfile(filepath)
-            self.assertFalse(result)
+            assert not result
 
     def test_isemptyfile_is_empty(self):
         # file exists and is empty - true
@@ -556,7 +557,7 @@ class FsTest(unittest.TestCase):
             filepath = pathlib.Path(d).joinpath('file')
             filepath.touch()
             result = ballet.util.fs.isemptyfile(filepath)
-            self.assertTrue(result)
+            assert result
 
     def test_synctree(self):
         with tempfile.TemporaryDirectory() as tempdir:
@@ -613,7 +614,7 @@ class GitTest(unittest.TestCase):
         b = 'def4321'
         expected_commit_range = 'abc1234...def4321'
         actual_commit_range = ballet.util.git.make_commit_range(a, b)
-        self.assertEqual(actual_commit_range, expected_commit_range)
+        assert actual_commit_range == expected_commit_range
 
     @unittest.expectedFailure
     def test_get_diff_endpoints_from_commit_range(self):
@@ -647,11 +648,11 @@ class GitTest(unittest.TestCase):
         ballet.util.git.get_pull_requests(owner, repo, state=state)
 
         (url, ), kwargs = mock_requests_get.call_args
-        self.assertIn(owner, url)
-        self.assertIn(repo, url)
-        self.assertIn('headers', kwargs)
-        self.assertIn('params', kwargs)
-        self.assertEqual(kwargs['params']['state'], state)
+        assert owner in url
+        assert repo in url
+        assert 'headers' in kwargs
+        assert 'params' in kwargs
+        assert kwargs['params']['state'] == state
 
     @patch('ballet.util.git.get_pull_requests')
     def test_get_pull_request_outcomes(self, mock_get_pull_requests):
@@ -675,7 +676,7 @@ class GitTest(unittest.TestCase):
 
         expected = ['accepted', 'rejected']
         actual = ballet.util.git.get_pull_request_outcomes(owner, repo)
-        self.assertEqual(actual, expected)
+        assert actual == expected
         mock_get_pull_requests.assert_called_once_with(
             owner, repo, state='closed')
 
@@ -687,12 +688,12 @@ class GitTest(unittest.TestCase):
         flags = 0
         push_info = git.remote.PushInfo(flags, local_ref, remote_ref_string,
                                         remote)
-        self.assertTrue(ballet.util.git.did_git_push_succeed(push_info))
+        assert ballet.util.git.did_git_push_succeed(push_info)
 
         flags = git.remote.PushInfo.ERROR
         push_info = git.remote.PushInfo(flags, local_ref, remote_ref_string,
                                         remote)
-        self.assertFalse(ballet.util.git.did_git_push_succeed(push_info))
+        assert not ballet.util.git.did_git_push_succeed(push_info)
 
 
 class IoTest(unittest.TestCase):
@@ -709,7 +710,7 @@ class IoTest(unittest.TestCase):
     def test_check_ext_invalid_throws(self):
         ext = '.py'
         expected = '.txt'
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             ballet.util.io._check_ext(ext, expected)
 
     @patch('ballet.util.io._write_tabular_pickle')
@@ -728,7 +729,7 @@ class IoTest(unittest.TestCase):
 
         obj = object()
         filepath = '/foo/bar/baz.xyz'
-        with self.assertRaises(NotImplementedError):
+        with pytest.raises(NotImplementedError):
             ballet.util.io.write_tabular(obj, filepath)
 
     @patch('builtins.open', new_callable=mock_open)
@@ -752,7 +753,7 @@ class IoTest(unittest.TestCase):
     def test_write_tabular_pickle_nonarray_raises(self):
         obj = object()
         filepath = '/foo/bar/baz.pkl'
-        with self.assertRaises(NotImplementedError):
+        with pytest.raises(NotImplementedError):
             ballet.util.io._write_tabular_pickle(obj, filepath)
 
     def test_write_tabular_h5_ndarray(self):
@@ -762,7 +763,7 @@ class IoTest(unittest.TestCase):
             ballet.util.io._write_tabular_h5(obj, filepath)
 
             file_size = os.path.getsize(filepath)
-            self.assertGreater(file_size, 0)
+            assert file_size > 0
 
     def test_write_tabular_h5_ndframe(self):
         obj = self.frame
@@ -797,7 +798,7 @@ class LogTest(unittest.TestCase):
             with self.assertLogs(self.logger, level) as cm:
                 ballet.util.log.enable(self.logger, level, echo=True)
             msg = one_or_raise(cm.output)
-            self.assertIn('enabled', msg)
+            assert 'enabled' in msg
 
     def test_level_filter_matches(self):
         ballet.util.log.enable(self.logger, level='DEBUG', echo=False)
@@ -814,7 +815,7 @@ class LogTest(unittest.TestCase):
             ballet.util.log.LevelFilter(logging.DEBUG))
 
         # does *not* log message at level INFO > DEBUG
-        with self.assertRaises(AssertionError):
+        with pytest.raises(AssertionError):
             with self.assertLogs(self.logger, logging.INFO):
                 self.logger.info('msg')
 
@@ -827,7 +828,7 @@ class LogTest(unittest.TestCase):
         # TODO not sure why this fails - think the unittest cm is doing
         # something weird
         with ballet.util.log.LoggingContext(self.logger, level='INFO'):
-            with self.assertRaises(AssertionError):
+            with pytest.raises(AssertionError):
                 with self.assertLogs(self.logger, logging.DEBUG):
                     self.logger.debug('msg')
 
@@ -837,12 +838,12 @@ class CodeTest(unittest.TestCase):
     def test_is_valid_python(self):
         code = '1'
         result = is_valid_python(code)
-        self.assertTrue(result)
+        assert result
 
     def test_is_valid_python_invalid(self):
         code = 'this is not valid python code'
         result = is_valid_python(code)
-        self.assertFalse(result)
+        assert not result
 
     @unittest.skipUnless(sys.version_info >= (3, 6),
                          "black requires py36 or higher")
@@ -856,7 +857,7 @@ class CodeTest(unittest.TestCase):
         expected = 'x = {"a": 37, "b": 42, "c": 927}'.strip()
         actual = blacken_code(input).strip()
 
-        self.assertEqual(actual, expected)
+        assert actual == expected
 
     @unittest.skipUnless(sys.version_info >= (3, 6),
                          "black requires py36 or higher")
@@ -865,7 +866,7 @@ class CodeTest(unittest.TestCase):
         expected = '1\n'
         actual = blacken_code(input)
 
-        self.assertEqual(actual, expected)
+        assert actual == expected
 
     @unittest.expectedFailure
     def test_get_source(self):

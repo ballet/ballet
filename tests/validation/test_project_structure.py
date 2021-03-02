@@ -48,7 +48,7 @@ class ChangeCollectorTest(_CommonSetup, unittest.TestCase):
 
     def test_init(self):
         with null_change_collector(self.pr_num) as change_collector:
-            self.assertIsInstance(
+            assert isinstance(
                 change_collector.differ, TravisPullRequestBuildDiffer)
 
     def test_collect_file_diffs(self):
@@ -74,12 +74,12 @@ class ChangeCollectorTest(_CommonSetup, unittest.TestCase):
                 file_diffs = change_collector._collect_file_diffs()
 
                 # checks on file_diffs
-                self.assertEqual(len(file_diffs), n - 1)
+                assert len(file_diffs) == n - 1
 
                 for diff in file_diffs:
-                    self.assertEqual(diff.change_type, 'A')
-                    self.assertTrue(diff.b_path.startswith('file'))
-                    self.assertTrue(diff.b_path.endswith('.py'))
+                    assert diff.change_type == 'A'
+                    assert diff.b_path.startswith('file')
+                    assert diff.b_path.endswith('.py')
 
     @unittest.expectedFailure
     def test_categorize_file_diffs(self):
@@ -110,18 +110,17 @@ class FileChangeValidatorTest(_CommonSetup, unittest.TestCase):
             path_content, self.pr_num, contrib_module_path
         ) as validator:
             changes = validator.change_collector.collect_changes()
-            self.assertEqual(len(changes.file_diffs), 1)
-            self.assertEqual(len(changes.candidate_feature_diffs), 0)
-            self.assertEqual(len(changes.valid_init_diffs), 0)
-            self.assertEqual(len(changes.inadmissible_diffs), 1)
-            self.assertEqual(
-                changes.inadmissible_diffs[0].b_path, 'invalid.py')
+            assert len(changes.file_diffs) == 1
+            assert len(changes.candidate_feature_diffs) == 0
+            assert len(changes.valid_init_diffs) == 0
+            assert len(changes.inadmissible_diffs) == 1
+            assert changes.inadmissible_diffs[0].b_path == 'invalid.py'
 
             # TODO
             # self.assertTrue(imported_okay)
 
             result = validator.validate()
-            self.assertFalse(result)
+            assert not result
 
     def test_validation_success(self):
         path_content = [
@@ -136,7 +135,7 @@ class FileChangeValidatorTest(_CommonSetup, unittest.TestCase):
             path_content, self.pr_num, contrib_module_path
         ) as validator:
             result = validator.validate()
-            self.assertTrue(result)
+            assert result
 
 
 class FeatureApiValidatorTest(_CommonSetup, unittest.TestCase):
@@ -154,7 +153,7 @@ class FeatureApiValidatorTest(_CommonSetup, unittest.TestCase):
             path_content, self.pr_num, contrib_module_path, self.X, self.y
         ) as validator:
             result = validator.validate()
-            self.assertFalse(result)
+            assert not result
 
     def test_validation_failure_invalid_feature(self):
         path_content = [
@@ -170,17 +169,17 @@ class FeatureApiValidatorTest(_CommonSetup, unittest.TestCase):
             path_content, self.pr_num, contrib_module_path, self.X, self.y
         ) as validator:
             changes = validator.change_collector.collect_changes()
-            self.assertEqual(len(changes.file_diffs), 1)
-            self.assertEqual(len(changes.candidate_feature_diffs), 1)
-            self.assertEqual(len(changes.valid_init_diffs), 0)
-            self.assertEqual(len(changes.inadmissible_diffs), 0)
+            assert len(changes.file_diffs) == 1
+            assert len(changes.candidate_feature_diffs) == 1
+            assert len(changes.valid_init_diffs) == 0
+            assert len(changes.inadmissible_diffs) == 0
 
             # TODO
             # self.assertEqual(len(new_features), 1)
             # self.assertTrue(imported_okay)
 
             result = validator.validate()
-            self.assertFalse(result)
+            assert not result
 
     def test_validation_failure_import_error(self):
         import_error_str = dedent('''
@@ -198,14 +197,14 @@ class FeatureApiValidatorTest(_CommonSetup, unittest.TestCase):
             path_content, self.pr_num, contrib_module_path, self.X, self.y
         ) as validator:
             changes = validator.change_collector.collect_changes()
-            self.assertEqual(len(changes.file_diffs), 1)
-            self.assertEqual(len(changes.candidate_feature_diffs), 1)
-            self.assertEqual(len(changes.valid_init_diffs), 0)
-            self.assertEqual(len(changes.inadmissible_diffs), 0)
+            assert len(changes.file_diffs) == 1
+            assert len(changes.candidate_feature_diffs) == 1
+            assert len(changes.valid_init_diffs) == 0
+            assert len(changes.inadmissible_diffs) == 0
 
             # TODO
             # self.assertEqual(len(new_feature_info), 0)
             # self.assertFalse(imported_okay)
 
             result = validator.validate()
-            self.assertFalse(result)
+            assert not result

@@ -3,6 +3,7 @@ import unittest
 import funcy
 import numpy as np
 import pandas as pd
+import pytest
 import sklearn.preprocessing
 
 from ballet.compat import SimpleImputer
@@ -44,16 +45,14 @@ class DelegatingRobustTransformerTest(unittest.TestCase):
         for input_type in input_types:
             X, y = self.d[input_type]
             # fragile transformer raises error
-            with self.assertRaises(catches):
+            with pytest.raises(catches):
                 fragile_transformer.fit_transform(X, y)
             # robust transformer does not raise error
             X_robust = robust_transformer.fit_transform(X, y)
-            self.assertTrue(
-                np.array_equal(
+            assert np.array_equal(
                     asarray2d(X),
                     asarray2d(X_robust)
                 )
-            )
 
     def test_robust_transformer_ser(self):
         input_types = ('ser',)
@@ -101,7 +100,7 @@ class DelegatingRobustTransformerTest(unittest.TestCase):
         robust_transformer = DelegatingRobustTransformer(IdentityTransformer())
         for func in [str, repr]:
             s = func(robust_transformer)
-            self.assertGreater(len(s), 0)
+            assert len(s) > 0
 
     def _test_robust_transformer_pipeline(
         self, input_types, bad_input_checks, catches
@@ -148,4 +147,4 @@ class DelegatingRobustTransformerTest(unittest.TestCase):
         robust_transformer = make_robust_transformer([IdentityTransformer()])
         for func in [str, repr]:
             s = func(robust_transformer)
-            self.assertGreater(len(s), 0)
+            assert len(s) > 0

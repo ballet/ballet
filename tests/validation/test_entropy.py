@@ -18,8 +18,8 @@ class EntropyTest(ArrayLikeEqualityTestingMixin, unittest.TestCase):
 
     def test_make_neighbors(self):
         nn = _make_neighbors()
-        self.assertEqual(NEIGHBORS_ALGORITHM, nn.algorithm)
-        self.assertEqual(NEIGHBORS_METRIC, nn.metric)
+        assert NEIGHBORS_ALGORITHM == nn.algorithm
+        assert NEIGHBORS_METRIC == nn.metric
 
     def test_compute_nx_i(self):
         # Note the chebyshev distance is used
@@ -53,7 +53,7 @@ class EntropyTest(ArrayLikeEqualityTestingMixin, unittest.TestCase):
             radius_i = radius[i]
             nx_i = _compute_n_points_within_radius_i(nn, x_i, radius_i)
             expected_nx_i = expected_nx[i]
-            self.assertEqual(expected_nx_i, nx_i)
+            assert expected_nx_i == nx_i
 
     def test_compute_empirical_probability(self):
         x = [1, 1, 2, 3, 2, 1, 1, 2]
@@ -69,14 +69,14 @@ class EntropyTest(ArrayLikeEqualityTestingMixin, unittest.TestCase):
         expected_volume = 1
         for d in [1, 2, 5, 11]:
             volume = _compute_volume_unit_ball(d, metric=metric)
-            self.assertEqual(expected_volume, volume)
+            assert expected_volume == volume
 
     def test_compute_volume_unit_ball_euclidean(self):
         metric = 'euclidean'
         volume_upper_bound = 1
         for d in [1, 2, 5, 11]:
             volume = _compute_volume_unit_ball(d, metric=metric)
-            self.assertLessEqual(volume, volume_upper_bound)
+            assert volume <= volume_upper_bound
 
     def test_compute_epsilon(self):
         # data looks like this:
@@ -112,7 +112,7 @@ class EntropyTest(ArrayLikeEqualityTestingMixin, unittest.TestCase):
         """If x (column vector) is constant, then H(x) = 0"""
         same_val_arr_ones = np.ones((50, 1))
         H_hat = _estimate_disc_entropy(same_val_arr_ones)
-        self.assertEqual(0, H_hat)
+        assert 0 == H_hat
 
     def test_disc_entropy_constant_vals_2d(self):
         """If each column in x (matrix), then H(x) = 0"""
@@ -121,7 +121,7 @@ class EntropyTest(ArrayLikeEqualityTestingMixin, unittest.TestCase):
         same_multi_val_arr = np.concatenate(
             (same_val_arr_ones, same_val_arr_zero), axis=1)
         H_hat = _estimate_disc_entropy(same_multi_val_arr)
-        self.assertEqual(0, H_hat)
+        assert 0 == H_hat
 
     def test_disc_entropy_two_values(self):
         """Entropy of fair coin ~= log(2)"""
@@ -132,17 +132,17 @@ class EntropyTest(ArrayLikeEqualityTestingMixin, unittest.TestCase):
 
         expected_h = np.log(2)
         H_hat = _estimate_disc_entropy(diff_val_arr)
-        self.assertAlmostEqual(expected_h, H_hat)
+        assert round(abs(expected_h-H_hat), 7) == 0
 
     def test_is_column_disc(self):
         x = asarray2d(np.arange(50))
         result = _is_column_disc(x)
-        self.assertTrue(result)
+        assert result
 
     def test_is_column_cont(self):
         x = asarray2d(np.random.rand(50))
         result = _is_column_cont(x)
-        self.assertTrue(result)
+        assert result
 
     @unittest.skip('skipping')
     @patch('ballet.validation.entropy._get_disc_columns')
@@ -159,7 +159,7 @@ class EntropyTest(ArrayLikeEqualityTestingMixin, unittest.TestCase):
 
         H_disc = _estimate_disc_entropy(disc)
 
-        self.assertNotEqual(H_cont, H_disc)
+        assert H_cont != H_disc
 
     def test_cont_disc_entropy_differs_cont(self):
         """Expect cont, disc columns to have different entropy"""
@@ -169,7 +169,7 @@ class EntropyTest(ArrayLikeEqualityTestingMixin, unittest.TestCase):
         H_cont = _estimate_cont_entropy(cont, epsilon)
         H_disc = _estimate_disc_entropy(cont)
 
-        self.assertNotEqual(H_cont, H_disc)
+        assert H_cont != H_disc
 
     def test_entropy_multiple_disc(self):
         same_val_arr_zero = np.zeros((50, 1))
@@ -183,30 +183,24 @@ class EntropyTest(ArrayLikeEqualityTestingMixin, unittest.TestCase):
 
         all_disc_h = estimate_entropy(all_disc_arr)
         mixed_h = estimate_entropy(mixed_val_arr)
-        self.assertGreater(
-            mixed_h,
-            all_disc_h,
-            msg='Expected adding continuous column increases entropy')
+        assert mixed_h > all_disc_h, \
+            'Expected adding continuous column increases entropy'
 
     def test_mi_uninformative(self):
         x = np.reshape(np.arange(1, 101), (-1, 1))
         y = np.ones((100, 1))
         mi = estimate_mutual_information(x, y)
         h_z = estimate_entropy(x)
-        self.assertGreater(
-            h_z / 4,
-            mi,
-            'uninformative column should have no information')
+        assert h_z / 4 > mi, \
+            'uninformative column should have no information'
 
     def test_mi_informative(self):
         x = np.reshape(np.arange(1, 101), (-1, 1))
         y = np.reshape(np.arange(1, 101), (-1, 1))
         mi = estimate_mutual_information(x, y)
         h_y = estimate_entropy(y)
-        self.assertGreater(
-            mi,
-            h_y / 4,
-            'exact copy columns should have high information')
+        assert mi > h_y / 4, \
+            'exact copy columns should have high information'
 
     def test_cmi_high_info_uninformative_z(self):
         # redundant copies have little information
@@ -217,10 +211,8 @@ class EntropyTest(ArrayLikeEqualityTestingMixin, unittest.TestCase):
         useless_z = np.ones((100, 1))
         cmi = estimate_conditional_information(x, y, useless_z)
         mi = estimate_mutual_information(x, y)
-        self.assertAlmostEqual(
-            cmi,
-            mi,
-            'uninformative z should not affect mutual information score')
+        assert round(abs(cmi-mi)) == 0, \
+            'uninformative z should not affect mutual information score'
 
     def test_cmi_redundant_info(self):
         x = np.reshape(np.arange(1, 101), (-1, 1))
@@ -229,7 +221,5 @@ class EntropyTest(ArrayLikeEqualityTestingMixin, unittest.TestCase):
 
         h_y = estimate_entropy(y)
         cmi = estimate_conditional_information(x, y, exact_z)
-        self.assertGreater(
-            h_y / 4,
-            cmi,
-            'redundant copies should have little information')
+        assert h_y / 4 > cmi, \
+            'redundant copies should have little information'

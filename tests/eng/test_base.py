@@ -2,6 +2,7 @@ import unittest
 
 import numpy as np
 import pandas as pd
+import pytest
 import sklearn.base
 from sklearn.impute import SimpleImputer
 
@@ -20,7 +21,7 @@ class BaseTest(ArrayLikeEqualityTestingMixin, unittest.TestCase):
             pass
         a = _Foo()
 
-        self.assertTrue(hasattr(a, 'fit'))
+        assert hasattr(a, 'fit')
 
         # method should exist
         a.fit('X')
@@ -29,8 +30,8 @@ class BaseTest(ArrayLikeEqualityTestingMixin, unittest.TestCase):
     def test_base_transformer(self):
         a = ballet.eng.BaseTransformer()
 
-        self.assertIsInstance(a, sklearn.base.BaseEstimator)
-        self.assertTrue(hasattr(a, 'fit'))
+        assert isinstance(a, sklearn.base.BaseEstimator)
+        assert hasattr(a, 'fit')
 
     def test_simple_function_transformer(self):
         def func(x): return x + 5
@@ -47,7 +48,7 @@ class BaseTest(ArrayLikeEqualityTestingMixin, unittest.TestCase):
         trans = ballet.eng.SimpleFunctionTransformer(lambda x: x)
         for func in [str, repr]:
             s = func(trans)
-            self.assertGreater(len(s), 0)
+            assert len(s) > 0
 
     def test_grouped_function_transformer(self):
         df = pd.DataFrame(
@@ -146,7 +147,7 @@ class GroupwiseTransformerTest(
         X_te.loc[0, 'name'] = 'Z'  # new group
         X_te = X_te.set_index(['name', 'year'])
 
-        with self.assertRaises(ballet.exc.BalletError):
+        with pytest.raises(ballet.exc.BalletError):
             trans.transform(X_te)
 
     def test_ignore_on_new_group(self):
@@ -188,7 +189,7 @@ class GroupwiseTransformerTest(
 
         trans.fit(self.X_tr)
 
-        with self.assertRaises(exc):
+        with pytest.raises(exc):
             trans.transform(self.X_tr)
 
     def test_ignore_on_transform_error(self):

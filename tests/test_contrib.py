@@ -51,14 +51,14 @@ class ContribTest(unittest.TestCase):
         features = _collect_contrib_features(math)
 
         # features should be an empty list
-        self.assertEqual(len(features), 0)
+        assert len(features) == 0
 
     def test_collect_contrib_features_thirdparty(self):
         # give a nonsense *package*, shouldn't import anything. this is a bad
         # test because it relies on module not defining certain names
         import funcy
         features = _collect_contrib_features(funcy)
-        self.assertEqual(len(features), 0)
+        assert len(features) == 0
 
     def test_collect_contrib_features_generated(self):
         n = 4
@@ -73,7 +73,7 @@ class ContribTest(unittest.TestCase):
         ).strip()
         modname = 'contrib_features_generated'
         with self.mock_contrib_module(modname, content, n) as (mod, features):
-            self.assertEqual(len(features), n)
+            assert len(features) == n
 
     @contextmanager
     def mock_contrib_module(self, modname, content, n):

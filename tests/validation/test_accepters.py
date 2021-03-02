@@ -20,7 +20,7 @@ class NoOpAccepterTest(unittest.TestCase):
         accepter = NeverAccepter(X_df, y_df, y, existing_features, feature)
         actual = accepter.judge()
 
-        self.assertEqual(expected, actual)
+        assert expected == actual
 
 
 class RandomAccepterTest(unittest.TestCase):
@@ -39,7 +39,7 @@ class RandomAccepterTest(unittest.TestCase):
             X_df, y_df, y, existing_features, candidate_feature)
         actual = accepter.judge()
 
-        self.assertEqual(expected, actual)
+        assert expected == actual
 
 
 class GFSSFAccepterTest(unittest.TestCase):
@@ -65,4 +65,4 @@ class GFSSFAccepterTest(unittest.TestCase):
         accepter = GFSSFAccepter(
             self.X_df, self.y_df, self.y, features, candidate_feature)
 
-        self.assertIsNotNone(accepter)
+        assert accepter is not None

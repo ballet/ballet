@@ -3,6 +3,7 @@ import unittest
 import numpy as np
 import pandas as pd
 import pandas.util.testing as pdt
+import pytest
 
 from ballet.util.testing import ArrayLikeEqualityTestingMixin
 
@@ -21,14 +22,14 @@ class ArrayLikeEqualityTestingMixinTest(
         c = np.arange(9).reshape(3, 3)
         d = c + 1
 
-        with self.assertRaises(AssertionError):
+        with pytest.raises(AssertionError):
             self.assertArrayEqual(c, d)
 
     def test_assert_array_not_equal(self):
         a = np.arange(10 * 7).reshape(10, 7)
         b = a.copy()
 
-        with self.assertRaises(AssertionError):
+        with pytest.raises(AssertionError):
             self.assertArrayNotEqual(a, b)
 
         c = np.arange(9).reshape(3, 3)
@@ -43,37 +44,27 @@ class ArrayLikeEqualityTestingMixinTest(
         self.assertFrameEqual(a, b)
 
         c = a + 1
-        with self.assertRaises(
-                AssertionError, msg='Should find that frames are same size '
-                                    'but different values'):
+        with pytest.raises(AssertionError):
             self.assertFrameEqual(a, c)
 
         d = pdt.makeCustomDataframe(11, 9)
-        with self.assertRaises(
-                AssertionError, msg='Should find that frames are different '
-                                    'size'):
+        with pytest.raises(AssertionError):
             self.assertFrameEqual(a, d)
 
         e = pdt.makeTimeSeries()
-        with self.assertRaises(
-                AssertionError, msg='Should find that the second arg is '
-                                    'wrong type'):
+        with pytest.raises(AssertionError):
             self.assertFrameEqual(a, e)
 
         f = pd.DataFrame([1, 2, 3, 4])
         g = pd.Series([1, 2, 3, 4])
-        with self.assertRaises(
-                AssertionError,
-                msg='Should find that the second arg is wrong type, '
-                    'even though they have the same values'):
+        with pytest.raises(AssertionError):
             self.assertFrameEqual(f, g)
 
     def test_assert_frame_not_equal(self):
         a = pdt.makeCustomDataframe(
             10, 7, data_gen_f=lambda row, col: row * col)
         b = a.copy()
-        with self.assertRaises(AssertionError,
-                               msg='frames are actually equal'):
+        with pytest.raises(AssertionError):
             self.assertFrameNotEqual(a, b)
 
         c = a + 1
@@ -95,29 +86,21 @@ class ArrayLikeEqualityTestingMixinTest(
         self.assertSeriesEqual(a, b)
 
         c = a + 1
-        with self.assertRaises(
-                AssertionError, msg='Should find that series are same size '
-                                    'but different values'):
+        with pytest.raises(AssertionError):
             self.assertSeriesEqual(a, c)
 
         d = pd.Series(np.arange(17))
-        with self.assertRaises(
-                AssertionError, msg='Should find that series are different '
-                                    ' sizes'):
+        with pytest.raises(AssertionError):
             self.assertSeriesEqual(a, d)
 
         e = pdt.makeDataFrame()
-        with self.assertRaises(
-                AssertionError, msg='Should find that the second arg is '
-                                    'wrong type'):
+        with pytest.raises(AssertionError):
             self.assertSeriesEqual(a, e)
 
     def test_assert_series_not_equal(self):
         a = pd.Series(np.arange(21))
         b = a.copy()
-        with self.assertRaises(
-                AssertionError, msg='Should find that the series are '
-                                    'indeed equal'):
+        with pytest.raises(AssertionError):
             self.assertSeriesNotEqual(a, b)
 
         c = a + 1
@@ -135,29 +118,21 @@ class ArrayLikeEqualityTestingMixinTest(
         self.assertIndexEqual(a, b)
 
         c = a + 1
-        with self.assertRaises(
-                AssertionError, msg='Should find that indexes are same '
-                                    'size but different values'):
+        with pytest.raises(AssertionError):
             self.assertIndexEqual(a, c)
 
         d = pd.Index(np.arange(17))
-        with self.assertRaises(
-                AssertionError, msg='Should find that indexes are '
-                                    'different sizes'):
+        with pytest.raises(AssertionError):
             self.assertIndexEqual(a, d)
 
         e = pdt.makeDataFrame()
-        with self.assertRaises(
-                AssertionError, msg='Should find that the second arg is '
-                                    'wrong type'):
+        with pytest.raises(AssertionError):
             self.assertIndexEqual(a, e)
 
     def test_assert_index_not_equal(self):
         a = pd.Index(np.arange(21))
         b = a.copy()
-        with self.assertRaises(
-                AssertionError, msg='Should find that indexes are '
-                                    'indeed equal'):
+        with pytest.raises(AssertionError):
             self.assertIndexNotEqual(a, b)
 
         c = a + 1

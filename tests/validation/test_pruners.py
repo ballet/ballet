@@ -24,7 +24,7 @@ class NoOpPrunerTest(unittest.TestCase):
         pruner = NoOpPruner(X_df, y_df, y, existing_features, feature)
         actual = pruner.prune()
 
-        self.assertEqual(expected, actual)
+        assert expected == actual
 
 
 class RandomPrunerTest(unittest.TestCase):
@@ -44,7 +44,7 @@ class RandomPrunerTest(unittest.TestCase):
         pruner = RandomPruner(X_df, y_df, y, existing_features, feature)
         actual = pruner.prune()
 
-        self.assertEqual(expected, actual)
+        assert expected == actual
 
 
 class GFSSFPrunerTest(unittest.TestCase):
@@ -67,10 +67,9 @@ class GFSSFPrunerTest(unittest.TestCase):
             self.X_df, self.y_df, self.y, [feature_1], feature_2)
 
         redunant_features = gfssf_pruner.prune()
-        self.assertIn(
-            feature_1,
-            redunant_features,
-            'Exact replica features should be pruned')
+        assert feature_1 in \
+            redunant_features, \
+            'Exact replica features should be pruned'
 
     @unittest.expectedFailure
     def test_prune_weak_replicas(self):
@@ -91,10 +90,9 @@ class GFSSFPrunerTest(unittest.TestCase):
             self.X_df, self.y_df, self.y, [feature_weak], feature_strong)
 
         redunant_features = gfssf_pruner.prune()
-        self.assertIn(
-            feature_weak,
-            redunant_features,
-            'Noisy features should be pruned')
+        assert feature_weak in \
+            redunant_features, \
+            'Noisy features should be pruned'
 
     def test_prune_keep_relevant(self):
         feature_1 = Feature(
@@ -109,10 +107,9 @@ class GFSSFPrunerTest(unittest.TestCase):
             self.X_df, self.y_df, self.y, [feature_1], feature_2)
 
         redunant_features = gfssf_pruner.prune()
-        self.assertNotIn(
-            feature_1,
-            redunant_features,
-            'Still relevant features should be pruned')
+        assert feature_1 not in \
+            redunant_features, \
+            'Still relevant features should be pruned'
 
     @unittest.expectedFailure
     def test_prune_irrelevant_features(self):
@@ -128,7 +125,6 @@ class GFSSFPrunerTest(unittest.TestCase):
             self.X_df, self.y_df, self.y, [feature_1], feature_2)
 
         redunant_features = gfssf_pruner.prune()
-        self.assertIn(
-            feature_1,
-            redunant_features,
-            'Irrelevant features should be pruned')
+        assert feature_1 in \
+            redunant_features, \
+            'Irrelevant features should be pruned'
