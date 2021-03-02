@@ -1,15 +1,16 @@
 from textwrap import dedent
-from unittest.mock import patch
+from unittest.mock import create_autospec, patch
 
 import pytest
 
 from ballet.util.ci import TravisPullRequestBuildDiffer
-from ballet.util.git import CustomDiffer, make_commit_range
+from ballet.util.git import CustomDiffer
 from ballet.validation.common import ChangeCollector
+from ballet.validation.project_structure.validator import (
+    ProjectStructureValidator,)
 
-from ..util import make_mock_commits
-from .conftest import (
-    make_mock_project, mock_feature_api_validator, mock_file_change_validator,)
+from ..util import make_mock_commit, make_mock_commits
+from .conftest import mock_feature_api_validator
 
 
 @pytest.fixture
@@ -38,7 +39,7 @@ def test_change_collector_init(null_change_collector):
         null_change_collector.differ, TravisPullRequestBuildDiffer)
 
 
-def test_change_collector_collect_file_diffs(pr_num, mock_repo):
+def test_change_collector_collect_file_diffs_custom_differ(pr_num, mock_repo):
     repo = mock_repo
 
     n = 10
@@ -70,54 +71,71 @@ def test_change_collector_collect_features():
     raise NotImplementedError
 
 
-@pytest.mark.xfail
-def test_change_collector_collect_changes():
-    raise NotImplementedError
-
-
-def test_file_change_validator_validation_failure_inadmissible_file_diffs(
-    pr_num
+def test_change_collector_collect_changes(
+    pr_num, quickstart,
 ):
+    repo = quickstart.repo
+    contrib_path = quickstart.project.config.get('contrib.module_path')
+
     path_content = [
-        ('readme.txt', None),
-        ('src/foo/__init__.py', None),
-        ('src/foo/contrib/__init__.py', None),
-        ('src/foo/contrib/user_foo/feature_bar.py', None),
-        ('src/foo/contrib/user_foo/__init__.py', None),
-        ('invalid.py', None),
+        ('something.txt', None),  # invalid
+        ('invalid.py', None),  # invalid
+        (f'{contrib_path}/foo/bar/baz.py', None),  # invalid
+
+        # candidate_feature, and also new_feature_info
+        (f'{contrib_path}/user_foo/feature_bar.py', None),
+
+        (f'{contrib_path}/user_foo/__init__.py', None),  # valid_init
     ]
-    contrib_module_path = 'src/foo/contrib/'
-    with mock_file_change_validator(
-        path_content, pr_num, contrib_module_path
-    ) as validator:
-        changes = validator.change_collector.collect_changes()
-        assert len(changes.file_diffs) == 1
-        assert len(changes.candidate_feature_diffs) == 0
-        assert len(changes.valid_init_diffs) == 0
-        assert len(changes.inadmissible_diffs) == 1
-        assert changes.inadmissible_diffs[0].b_path == 'invalid.py'
 
-        # TODO
-        # self.assertTrue(imported_okay)
+    old_head = repo.head.commit
 
-        result = validator.validate()
-        assert not result
+    for path, content in path_content:
+        make_mock_commit(repo, path=path, content=content)
 
+    new_head = repo.head.commit
 
-def test_file_change_validator_validation_success(pr_num):
-    path_content = [
-        ('bob.xml', '<hello>'),
-        ('src/foo/__init__.py', None),
-        ('src/foo/contrib/__init__.py', None),
-        ('src/foo/contrib/user_foo/__init__.py', None),
-        ('src/foo/contrib/user_foo/feature_bar.py', None),
+    differ = CustomDiffer(endpoints=(old_head, new_head))
+    change_collector = ChangeCollector(quickstart.project, differ=differ)
+    changes = change_collector.collect_changes()
+
+    assert len(changes.file_diffs) == 5
+    assert len(changes.candidate_feature_diffs) == 1
+    assert len(changes.valid_init_diffs) == 1
+    assert len(changes.inadmissible_diffs) == 3
+    assert len(changes.new_feature_info) == 1
+
+    actual_inadmissible = [
+        diff.b_path
+        for diff in changes.inadmissible_diffs
     ]
-    contrib_module_path = 'src/foo/contrib/'
-    with mock_file_change_validator(
-        path_content, pr_num, contrib_module_path
-    ) as validator:
-        result = validator.validate()
-        assert result
+    expected_inadmissible = [
+        'something.txt', 'invalid.py', f'{contrib_path}/foo/bar/baz.py'
+    ]
+    assert set(actual_inadmissible) == set(expected_inadmissible)
+
+
+@pytest.mark.parametrize(
+    'inadmissible_diffs,expected',
+    [
+        ([create_autospec('git.Diff')], False),
+        ([], True),
+    ]
+)
+@patch('ballet.validation.project_structure.validator.ChangeCollector')
+def test_project_structure_validator(
+    mock_change_collector, inadmissible_diffs, expected,
+):
+    mock_change_collector \
+        .return_value \
+        .collect_changes \
+        .return_value \
+        .inadmissible_diffs = inadmissible_diffs
+
+    project = None
+    validator = ProjectStructureValidator(project)
+    result = validator.validate()
+    assert result == expected
 
 
 def test_feature_api_validator_validation_failure_no_features_found(

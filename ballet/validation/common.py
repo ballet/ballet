@@ -111,7 +111,7 @@ class CollectedChanges(NamedTuple):
 
 
 class ChangeCollector:
-    """Validate the features introduced in a proposed pull request.
+    """Validate the features introduced in a proposed change set.
 
     Args:
         project: project info
@@ -126,14 +126,17 @@ class ChangeCollector:
         if differ is not None:
             self.differ = differ
         else:
-            pr_num = self.project.pr_num
-            repo = self.project.repo
-            if pr_num is None:
-                self.differ = LocalMergeBuildDiffer(repo)
-            elif can_use_travis_differ():
-                self.differ = TravisPullRequestBuildDiffer(pr_num)
-            else:
-                self.differ = LocalPullRequestBuildDiffer(pr_num, repo)
+            self.differ = self._detect_differ()
+
+    def _detect_differ(self):
+        pr_num = self.project.pr_num
+        repo = self.project.repo
+        if pr_num is None:
+            return LocalMergeBuildDiffer(repo)
+        elif can_use_travis_differ():
+            return TravisPullRequestBuildDiffer(pr_num)
+        else:
+            return LocalPullRequestBuildDiffer(pr_num, repo)
 
     def collect_changes(self) -> CollectedChanges:
         """Collect file and feature changes

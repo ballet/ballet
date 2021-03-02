@@ -93,7 +93,7 @@ def null_change_collector(mock_repo):
 
 
 @contextmanager
-def mock_file_change_validator(
+def mock_project_structure_validator(
     path_content, pr_num, contrib_module_path
 ):
     """ProjectStructureValidator for mock repo and mock project content
