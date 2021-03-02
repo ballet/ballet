@@ -7,8 +7,7 @@ import git
 import pytest
 
 from ballet.project import Project
-from ballet.util.ci import TravisPullRequestBuildDiffer
-from ballet.util.git import CustomDiffer
+from ballet.util.git import CustomDiffer, Differ
 from ballet.validation.common import ChangeCollector, NewFeatureInfo
 from ballet.validation.feature_api.validator import FeatureApiValidator
 from ballet.validation.project_structure.validator import (
@@ -56,9 +55,21 @@ def code_to_module(code: str, modname='modname') -> ModuleType:
     return module
 
 
-def test_change_collector_init(null_change_collector):
-    assert isinstance(
-        null_change_collector.differ, TravisPullRequestBuildDiffer)
+def test_change_collector_init():
+    project = create_autospec(Project)
+    differ = Differ()
+    change_collector = ChangeCollector(project, differ=differ)
+    assert change_collector is not None
+
+
+@patch('ballet.validation.common.TravisPullRequestBuildDiffer')
+@patch('ballet.validation.common.can_use_travis_differ', return_value=True)
+def test_change_collector_detect_differ_travis(_, mock_travis_differ):
+    """Check ChangeCollector._detect_differ"""
+    differ_instance = mock_travis_differ.return_value
+    project = create_autospec(Project)
+    change_collector = ChangeCollector(project)
+    assert change_collector.differ is differ_instance
 
 
 def test_change_collector_collect_file_diffs_custom_differ(pr_num, mock_repo):
