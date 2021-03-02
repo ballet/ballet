@@ -99,7 +99,10 @@ def _log_collect_items(name: str, items: Collection):
     return items
 
 
-NewFeatureInfo = Tuple[Callable[..., ModuleType], str, str]
+class NewFeatureInfo(NamedTuple):
+    importer: Callable[[], ModuleType]
+    modname: str
+    modpath: str
 
 
 class CollectedChanges(NamedTuple):
@@ -250,7 +253,7 @@ class ChangeCollector:
             modname = relpath_to_modname(relpath)
             modpath = project_root.joinpath(path)
             importer = partial(import_module_at_path, modname, modpath)
-            yield importer, modname, modpath
+            yield NewFeatureInfo(importer, modname, modpath)
 
 
 def subsample_data_for_validation(*args):

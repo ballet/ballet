@@ -1,22 +1,13 @@
 import pathlib
-import tempfile
 from typing import NamedTuple
 from unittest.mock import MagicMock, create_autospec, patch
 
 import numpy as np
 import pandas as pd
 import pytest
-from funcy import contextmanager
 
 from ballet.project import Project
-from ballet.util.git import make_commit_range
 from ballet.validation.common import ChangeCollector
-from ballet.validation.feature_api.validator import FeatureApiValidator
-from ballet.validation.project_structure.validator import (
-    ProjectStructureValidator,)
-
-from ..conftest import _mock_repo
-from ..util import make_mock_commit
 
 
 class SampleData(NamedTuple):
@@ -62,15 +53,6 @@ def make_mock_project(repo, pr_num, path, contrib_module_path):
     return project
 
 
-@contextmanager
-def mock_project_content(path_content):
-    with tempfile.TemporaryDirectory() as tempdir:
-        with _mock_repo(tempdir) as repo:
-            for path, content in path_content:
-                make_mock_commit(repo, path=path, content=content)
-            yield repo
-
-
 @pytest.fixture
 def null_change_collector(mock_repo):
     repo = mock_repo
@@ -90,60 +72,3 @@ def null_change_collector(mock_repo):
         project = make_mock_project(repo, pr_num, project_path,
                                     contrib_module_path)
         yield ChangeCollector(project)
-
-
-@contextmanager
-def mock_project_structure_validator(
-    path_content, pr_num, contrib_module_path
-):
-    """ProjectStructureValidator for mock repo and mock project content
-
-    Args:
-        path_content: iterable of (relative path, file content)
-    """
-    with mock_project_content(path_content) as repo:
-        travis_build_dir = repo.working_tree_dir
-        travis_pull_request = str(pr_num)
-        travis_commit_range = '{}...{}'.format(
-            repo.head.commit.parents[0], repo.head.commit)
-
-        travis_env_vars = {
-            'TRAVIS_BUILD_DIR': travis_build_dir,
-            'TRAVIS_PULL_REQUEST': travis_pull_request,
-            'TRAVIS_COMMIT_RANGE': travis_commit_range,
-        }
-
-        with patch.dict('os.environ', travis_env_vars, clear=True):
-            project_path = repo.working_tree_dir
-            project = make_mock_project(repo, pr_num, project_path,
-                                        contrib_module_path)
-            yield ProjectStructureValidator(project)
-
-
-@contextmanager
-def mock_feature_api_validator(
-    path_content, pr_num, contrib_module_path, X, y
-):
-    """ProjectStructureValidator for mock repo and mock project content
-
-    Args:
-        path_content: iterable of (relative path, file content)
-    """
-    with mock_project_content(path_content) as repo:
-        travis_build_dir = repo.working_tree_dir
-        travis_pull_request = str(pr_num)
-        travis_commit_range = make_commit_range(
-            repo.head.commit.parents[0], repo.head.commit)
-
-        travis_env_vars = {
-            'TRAVIS_BUILD_DIR': travis_build_dir,
-            'TRAVIS_PULL_REQUEST': travis_pull_request,
-            'TRAVIS_COMMIT_RANGE': travis_commit_range,
-        }
-
-        with patch.dict('os.environ', travis_env_vars, clear=True):
-            project_path = repo.working_tree_dir
-            project = make_mock_project(repo, pr_num, project_path,
-                                        contrib_module_path)
-            project.api.load_data.return_value = X, y
-            yield FeatureApiValidator(project)

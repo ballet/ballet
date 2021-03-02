@@ -1,16 +1,20 @@
+import importlib
 from textwrap import dedent
+from types import ModuleType
 from unittest.mock import create_autospec, patch
 
+import git
 import pytest
 
+from ballet.project import Project
 from ballet.util.ci import TravisPullRequestBuildDiffer
 from ballet.util.git import CustomDiffer
-from ballet.validation.common import ChangeCollector
+from ballet.validation.common import ChangeCollector, NewFeatureInfo
+from ballet.validation.feature_api.validator import FeatureApiValidator
 from ballet.validation.project_structure.validator import (
     ProjectStructureValidator,)
 
 from ..util import make_mock_commit, make_mock_commits
-from .conftest import mock_feature_api_validator
 
 
 @pytest.fixture
@@ -32,6 +36,24 @@ def invalid_feature_code():
         transformer = RaisingTransformer()
         '''
     ).strip()
+
+
+@pytest.fixture
+def import_error_code():
+    return dedent(
+        '''
+        edf foo():
+            pass
+        '''
+    ).strip()
+
+
+def code_to_module(code: str, modname='modname') -> ModuleType:
+    # see https://stackoverflow.com/a/53080237
+    spec = importlib.util.spec_from_loader(modname, loader=None)
+    module = importlib.util.module_from_spec(spec)
+    exec(code, module.__dict__)
+    return module
 
 
 def test_change_collector_init(null_change_collector):
@@ -118,7 +140,7 @@ def test_change_collector_collect_changes(
 @pytest.mark.parametrize(
     'inadmissible_diffs,expected',
     [
-        ([create_autospec('git.Diff')], False),
+        ([create_autospec(git.Diff)], False),
         ([], True),
     ]
 )
@@ -138,80 +160,82 @@ def test_project_structure_validator(
     assert result == expected
 
 
+@patch('ballet.validation.feature_api.validator.ChangeCollector')
 def test_feature_api_validator_validation_failure_no_features_found(
-    pr_num, sample_data
+    mock_change_collector,
+    sample_data,
 ):
-    path_content = [
-        ('readme.txt', None),
-        ('src/foo/__init__.py', None),
-        ('src/foo/contrib/__init__.py', None),
-        ('src/foo/contrib/user_foo/__init__.py', None),
-        ('src/foo/contrib/user_foo/feature_bar.py', None),
-    ]
-    contrib_module_path = 'src/foo/contrib/'
-    with mock_feature_api_validator(
-        path_content, pr_num, contrib_module_path, sample_data.X, sample_data.y
-    ) as validator:
-        result = validator.validate()
-        assert not result
+    """
+    If the change collector does not return any new features, validation fails.
+    """
+    mock_change_collector \
+        .return_value \
+        .collect_changes \
+        .return_value \
+        .new_feature_info = []
+
+    project = create_autospec(Project)
+    project.api.load_data.return_value = sample_data.X, sample_data.y
+    validator = FeatureApiValidator(project)
+    result = validator.validate()
+    assert not result
 
 
+@patch(
+    'ballet.validation.feature_api.validator.validate_feature_api',
+    return_value=True
+)
+@patch('ballet.validation.feature_api.validator.ChangeCollector')
 def test_feature_api_validator_validation_failure_invalid_feature(
-    sample_data, pr_num, invalid_feature_code,
+    mock_change_collector, mock_validate_feature_api,
+    sample_data, invalid_feature_code,
 ):
-    path_content = [
-        ('foo.jpg', None),
-        ('src/foo/__init__.py', None),
-        ('src/foo/contrib/__init__.py', None),
-        ('src/foo/contrib/user_foo/__init__.py', None),
-        ('src/foo/contrib/user_foo/feature_bar.py',
-            invalid_feature_code),
-    ]
-    contrib_module_path = 'src/foo/contrib/'
-    with mock_feature_api_validator(
-        path_content, pr_num, contrib_module_path,
-        sample_data.X, sample_data.y
-    ) as validator:
-        changes = validator.change_collector.collect_changes()
-        assert len(changes.file_diffs) == 1
-        assert len(changes.candidate_feature_diffs) == 1
-        assert len(changes.valid_init_diffs) == 0
-        assert len(changes.inadmissible_diffs) == 0
+    """
+    If change collector returns a feature, but validate_feature_api fails,
+    then validation fails.
+    """
+    mock_change_collector \
+        .return_value \
+        .collect_changes \
+        .return_value \
+        .new_feature_info = [
+            NewFeatureInfo(
+                lambda: code_to_module(invalid_feature_code),
+                'modname',
+                'modpath',
+            ),
+        ]
 
-        # TODO
-        # self.assertEqual(len(new_features), 1)
-        # self.assertTrue(imported_okay)
-
-        result = validator.validate()
-        assert not result
+    project = create_autospec(Project)
+    project.api.load_data.return_value = sample_data.X, sample_data.y
+    validator = FeatureApiValidator(project)
+    result = validator.validate()
+    assert not result
 
 
+@patch('ballet.validation.feature_api.validator.ChangeCollector')
 def test_feature_api_validator_validation_failure_import_error(
-    sample_data, pr_num
+    mock_change_collector,
+    sample_data, import_error_code,
 ):
-    import_error_str = dedent('''
-        edf foo():  pass
-    ''').strip()
-    path_content = [
-        ('foo.jpg', None),
-        ('src/foo/__init__.py', None),
-        ('src/foo/contrib/__init__.py', None),
-        ('src/foo/contrib/user_foo/__init__.py', None),
-        ('src/foo/contrib/user_foo/feature_baz.py', import_error_str),
-    ]
-    contrib_module_path = 'src/foo/contrib/'
-    with mock_feature_api_validator(
-        path_content, pr_num, contrib_module_path, sample_data.X, sample_data.y
-    ) as validator:
-        changes = validator.change_collector.collect_changes()
-        assert len(changes.file_diffs) == 1
-        assert len(changes.candidate_feature_diffs) == 1
-        assert len(changes.valid_init_diffs) == 0
-        assert len(changes.inadmissible_diffs) == 0
+    """
+    If change collector returns a feature, but importer() fails to return a
+    module, then validation fails.
+    """
+    mock_change_collector \
+        .return_value \
+        .collect_changes \
+        .return_value \
+        .new_feature_info = [
+            NewFeatureInfo(
+                lambda: code_to_module(import_error_code),
+                'modname',
+                'modpath',
+            ),
+        ]
 
-        # TODO
-        # self.assertEqual(len(new_feature_info), 0)
-        # self.assertFalse(imported_okay)
-
-        result = validator.validate()
-        assert not result
+    project = create_autospec(Project)
+    project.api.load_data.return_value = sample_data.X, sample_data.y
+    validator = FeatureApiValidator(project)
+    result = validator.validate()
+    assert not result
