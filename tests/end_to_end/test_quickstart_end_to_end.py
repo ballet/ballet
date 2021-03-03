@@ -1,7 +1,7 @@
 import re
-from pkg_resources import working_set
 
 import pytest
+from pkg_resources import working_set
 
 
 @pytest.mark.slow
