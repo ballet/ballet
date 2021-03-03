@@ -1,11 +1,9 @@
-import copy
 import logging
 import os
 import pathlib
 import random
 import sys
 import tempfile
-import types
 import unittest
 from unittest.mock import ANY, Mock, mock_open, patch
 
@@ -21,118 +19,11 @@ import ballet.util.ci
 import ballet.util.fs
 import ballet.util.git
 import ballet.util.io
+from ballet.util import one_or_raise
 from ballet.util.code import blacken_code, get_source, is_valid_python
 from ballet.util.mod import (  # noqa F401
     import_module_at_path, import_module_from_modname,
     import_module_from_relpath, modname_to_relpath, relpath_to_modname,)
-
-
-class ModTest(unittest.TestCase):
-
-    @unittest.expectedFailure
-    def test_import_module_from_modname(self):
-        raise NotImplementedError
-
-    @unittest.expectedFailure
-    def test_import_module_from_relpath(self):
-        raise NotImplementedError
-
-    def test_import_module_at_path_module(self):
-        with tempfile.TemporaryDirectory() as tmpdir:
-            path = pathlib.Path(tmpdir).joinpath('foo', 'bar.py')
-            path.parent.mkdir(parents=True)
-            init = path.parent.joinpath('__init__.py')
-            init.touch()
-            x = 1
-            with path.open('w') as f:
-                f.write('x={x!r}'.format(x=x))
-            modname = 'foo.bar'
-            modpath = str(path)  # e.g. /tmp/foo/bar.py'
-            mod = import_module_at_path(modname, modpath)
-            assert isinstance(mod, types.ModuleType)
-            assert mod.__name__ == modname
-            assert mod.x == x
-
-        with tempfile.TemporaryDirectory() as tmpdir:
-            path = pathlib.Path(tmpdir).joinpath('foo')
-            path.mkdir(parents=True)
-            init = path.joinpath('__init__.py')
-            init.touch()
-            x = 'hello'
-            with init.open('w') as f:
-                f.write('x={x!r}'.format(x=x))
-            modname = 'foo'
-            modpath = str(path)
-            mod = import_module_at_path(modname, modpath)
-            assert isinstance(mod, types.ModuleType)
-            assert mod.__name__ == modname
-            assert mod.x == x
-
-    @unittest.expectedFailure
-    def test_import_module_at_path_bad_package_structure(self):
-        raise NotImplementedError
-
-    def test_relpath_to_modname(self):
-        relpath = 'ballet/util/_util.py'
-        expected_modname = 'ballet.util._util'
-        actual_modname = relpath_to_modname(relpath)
-        assert actual_modname == expected_modname
-
-        relpath = 'ballet/util/__init__.py'
-        expected_modname = 'ballet.util'
-        actual_modname = relpath_to_modname(relpath)
-        assert actual_modname == expected_modname
-
-        relpath = 'ballet/foo/bar/baz.zip'
-        with pytest.raises(ValueError):
-            relpath_to_modname(relpath)
-
-    def test_modname_to_relpath(self):
-        modname = 'ballet.util._util'
-        expected_relpath = 'ballet/util/_util.py'
-        actual_relpath = modname_to_relpath(modname)
-        assert actual_relpath == expected_relpath
-
-        modname = 'ballet.util'
-        # mypackage.__file__ resolves to the __init__.py
-        project_root = pathlib.Path(ballet.__file__).parent.parent
-
-        expected_relpath = 'ballet/util/__init__.py'
-        actual_relpath = modname_to_relpath(modname, project_root=project_root)
-        assert actual_relpath == expected_relpath
-
-        # TODO patch this
-        # # without providing project root, behavior is undefined, as we don't
-        # # know whether the relative path will resolve to a directory
-
-        # # within a temporary directory, the relpath *should not* be a dir
-        # with tempfile.TemporaryDirectory() as tmpdir:
-        #     cwd = os.getcwd()
-        #     try:
-        #         os.chdir(tmpdir)
-        #         actual_relpath = modname_to_relpath(modname)
-        #         expected_relpath = 'ballet/util.py'
-        #         self.assertEqual(actual_relpath, expected_relpath)
-        #     finally:
-        #         os.chdir(cwd)
-
-        # # from the actual project root, the relpath *should* be a dir
-        # cwd = os.getcwd()
-        # try:
-        #     os.chdir(str(project_root))
-        #     actual_relpath = modname_to_relpath(modname)
-        #     expected_relpath = 'ballet/util/__init__.py'
-        #     self.assertEqual(actual_relpath, expected_relpath)
-        # finally:
-        #     os.chdir(cwd)
-
-        # without add_init
-        modname = 'ballet.util'
-        add_init = False
-        expected_relpath = 'ballet/util'
-        actual_relpath = modname_to_relpath(
-            modname, project_root=project_root, add_init=add_init)
-        assert actual_relpath == expected_relpath
 
 
 class FsTest(unittest.TestCase):
