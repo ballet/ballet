@@ -64,7 +64,7 @@ def make_mock_commit(repo, kind='A', path=None, content=None):
         path = 'file{}'.format(random.randint(0, 999))
 
     dir = repo.working_tree_dir
-    abspath = pathlib.Path(dir).joinpath(path)
+    abspath = pathlib.Path(dir).joinpath(path).resolve()
 
     if kind == 'A':
         # TODO make robust
@@ -74,11 +74,8 @@ def make_mock_commit(repo, kind='A', path=None, content=None):
             # because this would be a kind=='M'
             raise FileExistsError(str(abspath))
         else:
-            if content is not None:
-                with abspath.open('w') as f:
-                    f.write(content)
-            else:
-                abspath.touch()
+            with abspath.open('w') as f:
+                f.write(content or '')
         repo.git.add(str(abspath))
         repo.git.commit(m='Commit {}'.format(str(abspath)))
     else:
