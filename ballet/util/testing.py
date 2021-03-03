@@ -91,7 +91,7 @@ def assert_array_almost_equal(first, second, places=6, delta=None):
 
 
 def assert_array_not_almost_equal(
-        first, second, places=6,  delta=None):
+        first, second, places=6, delta=None):
     """Test that arrays first and second are not almost equal"""
 
     if delta is not None:
@@ -102,55 +102,55 @@ def assert_array_not_almost_equal(
             first, second, decimal=places, verbose=False)
 
 
-def assert_frame_equal(first, second,  **kwargs):
+def assert_frame_equal(first, second, **kwargs):
     """Test that DataFrames first and second are equal"""
     _assert_pandas_equal(
-        pdt.assert_frame_equal, first, second,  **kwargs)
+        pdt.assert_frame_equal, first, second, **kwargs)
 
 
-def assert_frame_not_equal(first, second,  **kwargs):
+def assert_frame_not_equal(first, second, **kwargs):
     """Test that DataFrames first and second are not equal"""
     _assert_pandas_not_equal(
-        pdt.assert_frame_equal, first, second,  **kwargs)
+        pdt.assert_frame_equal, first, second, **kwargs)
 
 
-def assert_series_equal(first, second,  **kwargs):
+def assert_series_equal(first, second, **kwargs):
     """Test that Series first and second are equal"""
     _assert_pandas_equal(
-        pdt.assert_series_equal, first, second,  **kwargs)
+        pdt.assert_series_equal, first, second, **kwargs)
 
 
-def assert_series_not_equal(first, second,  **kwargs):
+def assert_series_not_equal(first, second, **kwargs):
     """Test that Series first and second are not equal"""
     _assert_pandas_not_equal(
-        pdt.assert_series_equal, first, second,  **kwargs)
+        pdt.assert_series_equal, first, second, **kwargs)
 
 
-def assert_index_equal(first, second,  **kwargs):
+def assert_index_equal(first, second, **kwargs):
     """Test that Index first and second are equal"""
     _assert_pandas_equal(
-        pdt.assert_index_equal, first, second,  **kwargs)
+        pdt.assert_index_equal, first, second, **kwargs)
 
 
-def assert_index_not_equal(first, second,  **kwargs):
+def assert_index_not_equal(first, second, **kwargs):
     """Test that Index first and second are not equal"""
     _assert_pandas_not_equal(
-        pdt.assert_index_equal, first, second,  **kwargs)
+        pdt.assert_index_equal, first, second, **kwargs)
 
 
 _is_pdobj = funcy.isa(pd.core.base.PandasObject)
 
 
-def assert_pandas_object_equal(first, second,  **kwargs):
+def assert_pandas_object_equal(first, second, **kwargs):
     """Test that arbitrary Pandas objects first and second are equal"""
     if _is_pdobj(first) and _is_pdobj(second):
         if isinstance(first, type(second)):
             if isinstance(first, pd.DataFrame):
-                assert_frame_equal(first, second,  **kwargs)
+                assert_frame_equal(first, second, **kwargs)
             elif isinstance(first, pd.Series):
-                assert_series_equal(first, second,  **kwargs)
+                assert_series_equal(first, second, **kwargs)
             elif isinstance(first, pd.Index):
-                assert_index_equal(first, second,  **kwargs)
+                assert_index_equal(first, second, **kwargs)
             else:
                 # unreachable?
                 raise AssertionError('you found a bug: unreachable code')

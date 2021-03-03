@@ -1,6 +1,6 @@
 import pytest
 
-from ballet.util.code import blacken_code, is_valid_python
+from ballet.util.code import blacken_code, get_source, is_valid_python
 
 
 def test_is_valid_python():
