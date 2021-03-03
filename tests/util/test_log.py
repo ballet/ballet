@@ -42,12 +42,9 @@ def test_level_filter_not_matches(logger, caplog):
     assert not caplog.text
 
 
-@pytest.mark.xfail
 def test_logging_context(logger, caplog):
-    # TODO not sure why this fails - think the unittest cm is doing
-    # something weird
     enable(logger, level='DEBUG', echo=False)
-    with LoggingContext(logger, level='INFO'):
-        with caplog.at_level(logging.DEBUG, logger=logger.name):
+    with caplog.at_level(logging.DEBUG, logger=logger.name):
+        with LoggingContext(logger, level='INFO'):
             logger.debug('msg')
     assert not caplog.text

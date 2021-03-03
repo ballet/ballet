@@ -78,7 +78,7 @@ class LoggingContext:
 
     Configure the given logger to emit messages at and above the configured
     logging level and using the configured logging handler. Useful to
-    temporarily set a lower (or higher log level) or to temporarily add a
+    temporarily set a lower (or higher) log level or to temporarily add a
     local handler. After the context exits, the original state of the logger
     will be restored.
 
