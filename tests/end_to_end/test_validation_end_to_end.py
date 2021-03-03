@@ -100,7 +100,8 @@ def test_validation_end_to_end(quickstart):
             envvars['TRAVIS_PULL_REQUEST_BRANCH'] = ''
             envvars['TRAVIS_BRANCH'] = repo.heads.master.name
         else:
-            envvars['TRAVIS_PULL_REQUEST'] = str(1)  # TODO is this okay for testing?
+            # TODO is this okay for testing?
+            envvars['TRAVIS_PULL_REQUEST'] = str(1)
             envvars['TRAVIS_COMMIT_RANGE'] = make_commit_range(
                 repo.heads.master.name,
                 repo.commit(ref).hexsha)
