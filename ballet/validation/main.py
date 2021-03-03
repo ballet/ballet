@@ -136,10 +136,12 @@ def _prune_existing_features(
     project: Project, force: bool = False
 ) -> List[Feature]:
     """Prune existing features"""
-    if not force and not project.on_master_after_merge:
+    if not force and not project.on_master:
         raise SkippedValidationTest('Not on master')
 
     try:
+        # if on master but not after merge, then we diff master with itself
+        # and collect no features.
         proposed_feature = get_proposed_feature(project)
     except NoFeaturesCollectedError:
         raise SkippedValidationTest('No features collected')

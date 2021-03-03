@@ -94,7 +94,7 @@ def get_travis_branch() -> Optional[str]:
         return None
 
 
-def can_use_travis_differ() -> bool:
+def can_use_travis_differ(repo: Optional[git.Repo]) -> bool:
     """Check if the required travis env vars are set for the travis differ"""
     try:
         ensure_expected_travis_env_vars(

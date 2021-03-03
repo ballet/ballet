@@ -1,7 +1,7 @@
 import importlib
 from textwrap import dedent
 from types import ModuleType
-from unittest.mock import PropertyMock, create_autospec, patch
+from unittest.mock import create_autospec, patch
 
 import git
 import pytest
@@ -63,7 +63,6 @@ def test_change_collector_detect_differ_travis(mock_travis_differ, _):
     """Check ChangeCollector._detect_differ"""
     differ_instance = mock_travis_differ.return_value
     project = create_autospec(Project)
-    project.on_master_after_merge = False
     change_collector = ChangeCollector(project)
     assert change_collector.differ is differ_instance
 

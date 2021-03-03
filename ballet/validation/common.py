@@ -16,7 +16,8 @@ from ballet.project import Project
 from ballet.util import make_plural_suffix
 from ballet.util.ci import TravisPullRequestBuildDiffer, can_use_travis_differ
 from ballet.util.git import (
-    Differ, LocalMergeBuildDiffer, LocalPullRequestBuildDiffer,)
+    Differ, LocalMergeBuildDiffer, LocalPullRequestBuildDiffer,
+    can_use_local_merge_differ)
 from ballet.util.log import logger
 from ballet.util.mod import import_module_at_path, relpath_to_modname
 from ballet.validation.base import FeaturePerformanceEvaluator
@@ -113,6 +114,15 @@ class CollectedChanges(NamedTuple):
     new_feature_info: List[NewFeatureInfo]
 
 
+def detect_differ(repo):
+    if can_use_travis_differ(repo):
+        return TravisPullRequestBuildDiffer(repo)
+    elif can_use_local_merge_differ(repo):
+        return LocalMergeBuildDiffer(repo)
+    else:
+        return LocalPullRequestBuildDiffer(repo)
+
+
 class ChangeCollector:
     """Validate the features introduced in a proposed change set.
 
@@ -129,16 +139,7 @@ class ChangeCollector:
         if differ is not None:
             self.differ = differ
         else:
-            self.differ = self._detect_differ()
-
-    def _detect_differ(self):
-        repo = self.project.repo
-        if can_use_travis_differ():
-            return TravisPullRequestBuildDiffer(repo)
-        elif self.project.on_master_after_merge:
-            return LocalMergeBuildDiffer(repo)
-        else:
-            return LocalPullRequestBuildDiffer(repo)
+            self.differ = detect_differ(self.project.repo)
 
     def collect_changes(self) -> CollectedChanges:
         """Collect file and feature changes

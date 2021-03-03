@@ -74,6 +74,23 @@ class LocalPullRequestBuildDiffer(PullRequestBuildDiffer):
         return a, b
 
 
+def can_use_local_merge_differ(repo: Optional[git.Repo]):
+    """Check the repo HEAD is on master after a merge commit
+
+    Checks for two qualities of the current project:
+    1. The project repo's head is the master branch
+    2. The project repo's head commit is a merge commit.
+
+    Note that fast-forward style merges will not cause the second condition
+    to evaluate to true.
+    """
+    if repo:
+        return (
+            get_branch(repo) == 'master' and
+            is_merge_commit(repo.head.commit)
+        )
+
+
 class LocalMergeBuildDiffer(Differ):
     """Diff files on a merge commit on the current active branch.
 
