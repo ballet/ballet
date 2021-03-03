@@ -22,16 +22,12 @@ import ballet.util.fs
 import ballet.util.git
 import ballet.util.io
 from ballet.util import nonnegative, one_or_raise
-from ballet.util.ci import TravisPullRequestBuildDiffer
 from ballet.util.code import blacken_code, get_source, is_valid_python
 from ballet.util.log import logger
 from ballet.util.mod import (  # noqa F401
     import_module_at_path, import_module_from_modname,
     import_module_from_relpath, modname_to_relpath, relpath_to_modname,)
 from ballet.util.testing import ArrayLikeEqualityTestingMixin
-
-from .conftest import _mock_repo
-from .util import make_mock_commit, make_mock_commits
 
 
 class UtilTest(
@@ -355,140 +351,6 @@ class ModTest(unittest.TestCase):
         actual_relpath = modname_to_relpath(
             modname, project_root=project_root, add_init=add_init)
         assert actual_relpath == expected_relpath
-
-
-class CiTest(unittest.TestCase):
-    def setUp(self):
-        self.pr_num = 7
-        self.commit_range = 'HEAD^..HEAD'
-        self.travis_vars = {
-            'TRAVIS_PULL_REQUEST': str(self.pr_num),
-            'TRAVIS_COMMIT_RANGE': self.commit_range,
-        }
-
-    def test_get_travis_pr_num(self):
-        # matrix of env name, setting for env, expected result
-        matrix = (
-            ('TRAVIS_PULL_REQUEST', str(self.pr_num), self.pr_num),
-            ('TRAVIS_PULL_REQUEST', 'true', None),
-            ('TRAVIS_PULL_REQUEST', 'FALSE', None),
-            ('TRAVIS_PULL_REQUEST', 'false', None),
-            ('TRAVIS_PULL_REQUEST', 'abcd', None),
-            ('UNRELATED', '', None),
-        )
-        for env_name, env_value, expected in matrix:
-            with patch.dict('os.environ', {env_name: env_value}, clear=True):
-                actual = ballet.util.ci.get_travis_pr_num()
-                assert actual == expected
-
-    def test_is_travis_pr(self):
-        matrix = (
-            ('TRAVIS_PULL_REQUEST', str(self.pr_num), True),
-            ('TRAVIS_PULL_REQUEST', 'true', False),
-            ('TRAVIS_PULL_REQUEST', 'FALSE', False),
-            ('TRAVIS_PULL_REQUEST', 'false', False),
-            ('TRAVIS_PULL_REQUEST', 'abcd', False),
-            ('UNRELATED', '', False),
-        )
-        for env_name, env_value, expected in matrix:
-            with patch.dict('os.environ', {env_name: env_value}, clear=True):
-                actual = ballet.util.ci.is_travis_pr()
-                assert actual == expected
-
-    def test_get_travis_branch(self):
-        # matrix of env dict, expected result
-        matrix = (
-            ({
-                'TRAVIS_PULL_REQUEST': 'false',
-                'TRAVIS_PULL_REQUEST_BRANCH': '',
-                'TRAVIS_BRANCH': 'master',
-            }, 'master'),
-            ({
-                'TRAVIS_PULL_REQUEST': 'false',
-                'TRAVIS_PULL_REQUEST_BRANCH': '',
-                'TRAVIS_BRANCH': 'foo',
-            }, 'foo'),
-            ({
-                'TRAVIS_PULL_REQUEST': '1',
-                'TRAVIS_PULL_REQUEST_BRANCH': 'foo',
-                'TRAVIS_BRANCH': 'master',
-            }, 'foo'),
-            ({}, None),
-        )
-
-        for env, expected in matrix:
-            with patch.dict('os.environ', env, clear=True):
-                actual = ballet.util.ci.get_travis_branch()
-                assert actual == expected
-
-    def test_travis_pull_request_build_differ(self):
-        # TODO use mock_repo fixture
-        with tempfile.TemporaryDirectory() as tempdir:
-            with _mock_repo(tempdir) as repo:
-                make_mock_commits(repo, n=3)
-                pr_num = self.pr_num
-                commit_range = 'HEAD^..HEAD'
-
-                travis_env_vars = {
-                    'TRAVIS_BUILD_DIR': repo.working_tree_dir,
-                    'TRAVIS_PULL_REQUEST': str(pr_num),
-                    'TRAVIS_COMMIT_RANGE': commit_range,
-                }
-                with patch.dict('os.environ', travis_env_vars, clear=True):
-                    differ = TravisPullRequestBuildDiffer(pr_num)
-                    expected_a = repo.rev_parse('HEAD^')
-                    expected_b = repo.rev_parse('HEAD')
-                    actual_a, actual_b = differ._get_diff_endpoints()
-                    assert actual_a == expected_a
-                    assert actual_b == expected_b
-
-    def test_travis_pull_request_build_differ_on_mock_commits(self):
-        # TODO use mock_repo fixture
-        with tempfile.TemporaryDirectory() as tempdir:
-            with _mock_repo(tempdir) as repo:
-                n = 4
-                i = 0
-                pr_num = self.pr_num
-                feature_branch_name = 'pull/{}'.format(pr_num)
-
-                make_mock_commit(repo, path='readme.txt')
-                expected_merge_base = repo.head.commit
-                feature_branch = repo.create_head(feature_branch_name)
-
-                # make commits on branch master
-                commits = make_mock_commits(repo, n=3, filename='blah{i}.txt')
-                master = repo.heads.master
-
-                # make commits on feature branch
-                feature_branch.checkout()
-                commits = make_mock_commits(repo, n=n)
-                end_commit = commits[-1]
-
-                commit_range = ballet.util.git.make_commit_range(
-                    master, end_commit)
-
-                travis_env_vars = {
-                    'TRAVIS_BUILD_DIR': repo.working_tree_dir,
-                    'TRAVIS_PULL_REQUEST': str(pr_num),
-                    'TRAVIS_COMMIT_RANGE': commit_range,
-                }
-                with patch.dict('os.environ', travis_env_vars, clear=True):
-                    differ = TravisPullRequestBuildDiffer(pr_num)
-                    a, b = differ._get_diff_endpoints()
-                    assert a == expected_merge_base
-                    assert b == end_commit
-
-                    diffs = differ.diff()
-
-                    # there should be n diff objects, they should show files
-                    # 0 to n-1. merge base just created readme.txt, so all
-                    # files on feature branch are new.
-                    assert len(diffs) == n
-                    j = i
-                    for diff in diffs:
-                        assert diff.change_type == 'A'
-                        assert diff.b_path == 'file{j}.py'.format(j=j)
-                        j += 1
 
 
 class FsTest(unittest.TestCase):
