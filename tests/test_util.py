@@ -5,13 +5,12 @@ import random
 import sys
 import tempfile
 import unittest
-from unittest.mock import ANY, Mock, mock_open, patch
+from unittest.mock import ANY, mock_open, patch
 
 import git
 import numpy as np
 import pandas as pd
 import pytest
-from funcy import identity
 
 import ballet
 import ballet.util
@@ -24,128 +23,6 @@ from ballet.util.code import blacken_code, get_source, is_valid_python
 from ballet.util.mod import (  # noqa F401
     import_module_at_path, import_module_from_modname,
     import_module_from_relpath, modname_to_relpath, relpath_to_modname,)
-
-
-class FsTest(unittest.TestCase):
-
-    def setUp(self):
-        self.fs_path_conversions = [identity, pathlib.Path]
-
-    def test_spliceext(self):
-        filepath0 = '/foo/bar/baz.txt'
-
-        for func in self.fs_path_conversions:
-            filepath = func(filepath0)
-            s = '_new'
-            expected = '/foo/bar/baz_new.txt'
-
-            actual = ballet.util.fs.spliceext(filepath, s)
-            assert actual == expected
-
-    def test_replaceext(self):
-        filepath0 = '/foo/bar/baz.txt'
-        expected = '/foo/bar/baz.py'
-
-        for func in self.fs_path_conversions:
-            filepath = func(filepath0)
-
-            new_ext = 'py'
-            actual = ballet.util.fs.replaceext(filepath, new_ext)
-            assert actual == expected
-
-            new_ext = '.py'
-            actual = ballet.util.fs.replaceext(filepath, new_ext)
-            assert actual == expected
-
-    def test_splitext2(self):
-        filepath0 = '/foo/bar/baz.txt'
-        expected = ('/foo/bar', 'baz', '.txt')
-
-        for func in self.fs_path_conversions:
-            filepath = func(filepath0)
-
-            actual = ballet.util.fs.splitext2(filepath)
-            assert actual == expected
-
-        filepath0 = 'baz.txt'
-        expected = ('', 'baz', '.txt')
-
-        for func in self.fs_path_conversions:
-            filepath = func(filepath0)
-
-            actual = ballet.util.fs.splitext2(filepath)
-            assert actual == expected
-
-    @patch('os.path.exists')
-    def test_isemptyfile_does_not_exist(self, mock_exists):
-        mock_exists.return_value = False
-        result = ballet.util.fs.isemptyfile(
-            '/path/to/file/that/hopefully/does/not/exist')
-        assert not result
-
-    def test_isemptyfile_is_not_empty(self):
-        # file exists and is not empty - false
-        with tempfile.TemporaryDirectory() as d:
-            filepath = os.path.join(d, 'file')
-            with open(filepath, 'w') as f:
-                f.write('0')
-            result = ballet.util.fs.isemptyfile(filepath)
-            assert not result
-
-    def test_isemptyfile_is_empty(self):
-        # file exists and is empty - true
-        with tempfile.TemporaryDirectory() as d:
-            filepath = pathlib.Path(d).joinpath('file')
-            filepath.touch()
-            result = ballet.util.fs.isemptyfile(filepath)
-            assert result
-
-    def test_synctree(self):
-        with tempfile.TemporaryDirectory() as tempdir:
-            tempdir = pathlib.Path(tempdir).resolve()
-
-            src = tempdir.joinpath('x')
-            src.joinpath('a', 'b').mkdir(parents=True)
-            src.joinpath('a', 'b', 'only_in_src.txt').touch()
-            src.joinpath('a', 'c').mkdir()
-
-            dst = tempdir.joinpath('y')
-            dst.joinpath('a', 'b').mkdir(parents=True)
-            dst.joinpath('a', 'only_in_dst.txt').touch()
-
-            # patch here in order to avoid messing up tempdir stuff
-            with patch('pathlib.Path.mkdir') as mock_mkdir, \
-                    patch('os.unlink') as mock_unlink, \
-                    patch('os.rmdir') as mock_rmdir, \
-                    patch('ballet.util.fs.copyfile') as mock_copyfile:
-                ballet.util.fs.synctree(src, dst)
-
-        # one call to mkdir, for 'a/c'
-        mock_mkdir.assert_called_once_with()
-
-        # one call to copyfile, for 'only_in_src.txt'
-        path = ('a', 'b', 'only_in_src.txt')
-        mock_copyfile.assert_called_once_with(
-            src.joinpath(*path),
-            dst.joinpath(*path)
-        )
-
-        # no calls to cleanup
-        mock_rmdir.assert_not_called()
-        mock_unlink.assert_not_called()
-
-    @unittest.skip('skipping')
-    def test__synctree(self):
-        # when src is a directory that exists and dst does not exist,
-        # then copytree should be called
-        src = Mock(spec=pathlib.Path)
-        dst = Mock(spec=pathlib.Path)
-        dst.exists.return_value = False
-        ballet.util.fs._synctree(src, dst, lambda x: None)
-
-    @unittest.expectedFailure
-    def test_pwalk(self):
-        raise NotImplementedError
 
 
 class GitTest(unittest.TestCase):
