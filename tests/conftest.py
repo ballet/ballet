@@ -11,7 +11,8 @@ import ballet
 from ballet.project import Project
 from ballet.templating import render_project_template
 from ballet.util import work_in
-from tests.util import tree
+
+from .util import set_ci_git_config_variables, tree
 
 
 @pytest.fixture
@@ -19,6 +20,18 @@ def tempdir():
     """Tempdir fixture using tempfile.TemporaryDirectory"""
     with tempfile.TemporaryDirectory() as d:
         yield pathlib.Path(d)
+
+
+def _mock_repo(tempdir):
+    repo = git.Repo.init(str(tempdir))
+    set_ci_git_config_variables(repo)
+    return repo
+
+
+@pytest.fixture
+def mock_repo(tempdir):
+    """Create a new repo"""
+    yield _mock_repo(tempdir)
 
 
 class QuickstartResult(NamedTuple):

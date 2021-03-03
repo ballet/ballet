@@ -1,96 +1,97 @@
 import pathlib
-import unittest
 from unittest.mock import Mock
+
+import pytest
 
 from ballet.project import relative_to_contrib
 from ballet.validation.project_structure.checks import (
     IsAdditionCheck, IsPythonSourceCheck, ModuleNameCheck,
     RelativeNameDepthCheck, SubpackageNameCheck, WithinContribCheck,)
 
-from .util import make_mock_project
+
+# @pytest.fixture(scope='module')  # TODO
+@pytest.fixture
+def project(quickstart):
+    yield quickstart.project
 
 
-class DiffCheckTest(unittest.TestCase):
+def test_relative_to_contrib(project):
+    contrib_path = project.config.get('contrib.module_path')
+    diff = Mock(b_path=f'{contrib_path}/abc.py')
 
-    def setUp(self):
-        self.contrib_module_path = 'foo/features/contrib'
-        self.project = make_mock_project(
-            None, None, '', self.contrib_module_path)
+    expected = pathlib.Path('abc.py')
+    actual = relative_to_contrib(diff, project)
 
-    def test_relative_to_contrib(self):
-        diff = Mock(b_path='foo/features/contrib/abc.py')
+    assert actual == expected
 
-        project = Mock()
 
-        def mock_get(path):
-            if path == 'contrib.module_path':
-                return self.contrib_module_path
-            else:
-                raise KeyError
-        project.config.get.side_effect = mock_get
+def test_is_addition_check(project):
+    checker = IsAdditionCheck(project)
 
-        expected = pathlib.Path('abc.py')
-        actual = relative_to_contrib(diff, project)
+    mock_diff = Mock(change_type='A')
+    assert checker.do_check(mock_diff)
 
-        self.assertEqual(actual, expected)
+    mock_diff = Mock(change_type='B')
+    assert not checker.do_check(mock_diff)
 
-    def test_is_addition_check(self):
-        checker = IsAdditionCheck(self.project)
 
-        mock_diff = Mock(change_type='A')
-        self.assertTrue(checker.do_check(mock_diff))
+def test_is_python_source_check(project):
+    contrib_path = project.config.get('contrib.module_path')
+    checker = IsPythonSourceCheck(project)
 
-        mock_diff = Mock(change_type='B')
-        self.assertFalse(checker.do_check(mock_diff))
+    mock_diff = Mock(b_path=f'{contrib_path}/user_bob/feature_1.py')
+    assert checker.do_check(mock_diff)
 
-    def test_is_python_source_check(self):
-        checker = IsPythonSourceCheck(self.project)
+    mock_diff = Mock(b_path=f'{contrib_path}/user_bob/feature_1.xyz')
+    assert not checker.do_check(mock_diff)
 
-        mock_diff = Mock(b_path='foo/features/contrib/user_bob/feature_1.py')
-        self.assertTrue(checker.do_check(mock_diff))
 
-        mock_diff = Mock(b_path='foo/features/contrib/user_bob/feature_1.xyz')
-        self.assertFalse(checker.do_check(mock_diff))
+def test_within_contrib_check(project):
+    contrib_path = project.config.get('contrib.module_path')
+    checker = WithinContribCheck(project)
 
-    def test_within_contrib_check(self):
-        checker = WithinContribCheck(self.project)
+    mock_diff = Mock(b_path=f'{contrib_path}/user_bob/feature_1.py')
+    assert checker.do_check(mock_diff)
 
-        mock_diff = Mock(b_path='foo/features/contrib/user_bob/feature_1.py')
-        self.assertTrue(checker.do_check(mock_diff))
+    mock_diff = Mock(b_path='foo/hack.py')
+    assert not checker.do_check(mock_diff)
 
-        mock_diff = Mock(b_path='foo/hack.py')
-        self.assertFalse(checker.do_check(mock_diff))
 
-    def test_subpackage_name_check(self):
-        checker = SubpackageNameCheck(self.project)
+def test_subpackage_name_check(project):
+    contrib_path = project.config.get('contrib.module_path')
+    checker = SubpackageNameCheck(project)
 
-        mock_diff = Mock(b_path='foo/features/contrib/user_bob/feature_1.py')
-        self.assertTrue(checker.do_check(mock_diff))
+    mock_diff = Mock(b_path=f'{contrib_path}/user_bob/feature_1.py')
+    assert checker.do_check(mock_diff)
 
-        mock_diff = Mock(b_path='foo/features/contrib/bob/feature_1.py')
-        self.assertFalse(checker.do_check(mock_diff))
+    mock_diff = Mock(b_path=f'{contrib_path}/bob/feature_1.py')
+    assert not checker.do_check(mock_diff)
 
-    def test_feature_module_name_check(self):
-        checker = ModuleNameCheck(self.project)
 
-        mock_diff = Mock(b_path='foo/features/contrib/user_bob/feature_1.py')
-        self.assertTrue(checker.do_check(mock_diff))
+def test_feature_module_name_check(project):
+    contrib_path = project.config.get('contrib.module_path')
+    checker = ModuleNameCheck(project)
 
-        bad_paths = [
-            'foo/features/contrib/user_bob/foo1.py',
-            'foo/features/contrib/user_bob/1.py',
-            'foo/features/contrib/user_bob/feature_x-1.py',
-        ]
-        for path in bad_paths:
-            mock_diff = Mock(b_path=path)
-            self.assertFalse(checker.do_check(mock_diff))
+    mock_diff = Mock(b_path=f'{contrib_path}/user_bob/feature_1.py')
+    assert checker.do_check(mock_diff)
 
-    def test_relative_name_depth_check(self):
-        checker = RelativeNameDepthCheck(self.project)
+    bad_paths = [
+        f'{contrib_path}/user_bob/foo1.py',
+        f'{contrib_path}/user_bob/1.py',
+        f'{contrib_path}/user_bob/feature_x-1.py',
+    ]
+    for path in bad_paths:
+        mock_diff = Mock(b_path=path)
+        assert not checker.do_check(mock_diff)
 
-        mock_diff = Mock(b_path='foo/features/contrib/user_bob/feature_1.py')
-        self.assertTrue(checker.do_check(mock_diff))
 
-        mock_diff = Mock(
-            b_path='foo/features/contrib/user_bob/a/b/c/d/feature_1.py')
-        self.assertFalse(checker.do_check(mock_diff))
+def test_relative_name_depth_check(project):
+    contrib_path = project.config.get('contrib.module_path')
+    checker = RelativeNameDepthCheck(project)
+
+    mock_diff = Mock(b_path=f'{contrib_path}/user_bob/feature_1.py')
+    assert checker.do_check(mock_diff)
+
+    mock_diff = Mock(
+        b_path=f'{contrib_path}/user_bob/a/b/c/d/feature_1.py')
+    assert not checker.do_check(mock_diff)

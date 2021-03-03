@@ -55,7 +55,7 @@ def test_detect_github_username_config(mock_project_repo):
 
 @patch('ballet.project.Project.repo', new_callable=PropertyMock)
 @patch('ballet.project.get_pr_num')
-def test_project_pr_num(mock_get_pr_num, mock_repo):
+def test_project_pr_num(mock_get_pr_num, _):
     expected = 3
     mock_get_pr_num.return_value = expected
 

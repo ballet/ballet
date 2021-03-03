@@ -1,211 +1,252 @@
-import unittest
+import importlib
 from textwrap import dedent
-from unittest.mock import patch
+from types import ModuleType
+from unittest.mock import create_autospec, patch
 
-from ballet.util.ci import TravisPullRequestBuildDiffer
-from ballet.util.git import make_commit_range
-from ballet.validation.common import ChangeCollector
+import git
+import pytest
 
-from ..util import make_mock_commits, mock_repo
-from .util import (
-    SampleDataMixin, make_mock_project, mock_feature_api_validator,
-    mock_file_change_validator, null_change_collector,)
+from ballet.project import Project
+from ballet.util.git import CustomDiffer, Differ
+from ballet.validation.common import ChangeCollector, NewFeatureInfo
+from ballet.validation.feature_api.validator import FeatureApiValidator
+from ballet.validation.project_structure.validator import (
+    ProjectStructureValidator,)
 
-
-class _CommonSetup(SampleDataMixin):
-
-    def setUp(self):
-        super().setUp()
-        self.pr_num = 73
-
-        self.valid_feature_str = dedent(
-            '''
-            from sklearn.base import BaseEstimator, TransformerMixin
-            class IdentityTransformer(BaseEstimator, TransformerMixin):
-                def fit(self, X, y=None, **fit_kwargs):
-                    return self
-                def transform(self, X, **transform_kwargs):
-                    return X
-            input = 'size'
-            transformer = IdentityTransformer()
-            '''
-        ).strip()
-        self.invalid_feature_str = dedent(
-            '''
-            from sklearn.base import BaseEstimator, TransformerMixin
-            class RaisingTransformer(BaseEstimator, TransformerMixin):
-                def fit(self, X, y=None, **fit_kwargs):
-                    raise RuntimeError
-                def transform(self, X, **transform_kwargs):
-                    raise RuntimeError
-            input = 'size'
-            transformer = RaisingTransformer()
-            '''
-        ).strip()
+from ..util import make_mock_commit, make_mock_commits
 
 
-class ChangeCollectorTest(_CommonSetup, unittest.TestCase):
-
-    def test_init(self):
-        with null_change_collector(self.pr_num) as change_collector:
-            self.assertIsInstance(
-                change_collector.differ, TravisPullRequestBuildDiffer)
-
-    def test_collect_file_diffs(self):
-        n = 10
-        filename = 'file{i}.py'
-        with mock_repo() as repo:
-            commits = make_mock_commits(repo, n=n, filename=filename)
-            contrib_module_path = None
-            commit_range = make_commit_range(
-                commits[0], commits[-1])
-
-            travis_env_vars = {
-                'TRAVIS_BUILD_DIR': repo.working_tree_dir,
-                'TRAVIS_PULL_REQUEST': str(self.pr_num),
-                'TRAVIS_COMMIT_RANGE': commit_range,
-            }
-
-            with patch.dict('os.environ', travis_env_vars, clear=True):
-                project_path = repo.working_tree_dir
-                project = make_mock_project(repo, self.pr_num, project_path,
-                                            contrib_module_path)
-                change_collector = ChangeCollector(project)
-                file_diffs = change_collector._collect_file_diffs()
-
-                # checks on file_diffs
-                self.assertEqual(len(file_diffs), n - 1)
-
-                for diff in file_diffs:
-                    self.assertEqual(diff.change_type, 'A')
-                    self.assertTrue(diff.b_path.startswith('file'))
-                    self.assertTrue(diff.b_path.endswith('.py'))
-
-    @unittest.expectedFailure
-    def test_categorize_file_diffs(self):
-        raise NotImplementedError
-
-    @unittest.expectedFailure
-    def test_collect_features(self):
-        raise NotImplementedError
-
-    @unittest.expectedFailure
-    def test_collect_changes(self):
-        raise NotImplementedError
+@pytest.fixture
+def pr_num():
+    return 73
 
 
-class FileChangeValidatorTest(_CommonSetup, unittest.TestCase):
+@pytest.fixture
+def invalid_feature_code():
+    return dedent(
+        '''
+        from sklearn.base import BaseEstimator, TransformerMixin
+        class RaisingTransformer(BaseEstimator, TransformerMixin):
+            def fit(self, X, y=None, **fit_kwargs):
+                raise RuntimeError
+            def transform(self, X, **transform_kwargs):
+                raise RuntimeError
+        input = 'size'
+        transformer = RaisingTransformer()
+        '''
+    ).strip()
 
-    def test_validation_failure_inadmissible_file_diffs(self):
-        path_content = [
-            ('readme.txt', None),
-            ('src/foo/__init__.py', None),
-            ('src/foo/contrib/__init__.py', None),
-            ('src/foo/contrib/user_foo/feature_bar.py', None),
-            ('src/foo/contrib/user_foo/__init__.py', None),
-            ('invalid.py', None),
+
+@pytest.fixture
+def import_error_code():
+    return dedent(
+        '''
+        edf foo():
+            pass
+        '''
+    ).strip()
+
+
+def code_to_module(code: str, modname='modname') -> ModuleType:
+    # see https://stackoverflow.com/a/53080237
+    spec = importlib.util.spec_from_loader(modname, loader=None)
+    module = importlib.util.module_from_spec(spec)
+    exec(code, module.__dict__)
+    return module
+
+
+def test_change_collector_init():
+    project = create_autospec(Project)
+    differ = Differ()
+    change_collector = ChangeCollector(project, differ=differ)
+    assert change_collector is not None
+
+
+@patch('ballet.validation.common.TravisPullRequestBuildDiffer')
+@patch('ballet.validation.common.can_use_travis_differ', return_value=True)
+def test_change_collector_detect_differ_travis(_, mock_travis_differ):
+    """Check ChangeCollector._detect_differ"""
+    differ_instance = mock_travis_differ.return_value
+    project = create_autospec(Project)
+    change_collector = ChangeCollector(project)
+    assert change_collector.differ is differ_instance
+
+
+def test_change_collector_collect_file_diffs_custom_differ(pr_num, mock_repo):
+    repo = mock_repo
+
+    n = 10
+    filename = 'file{i}.py'
+
+    commits = make_mock_commits(repo, n=n, filename=filename)
+
+    project = None
+    differ = CustomDiffer(endpoints=(commits[0], commits[-1]))
+    change_collector = ChangeCollector(project, differ=differ)
+    file_diffs = change_collector._collect_file_diffs()
+
+    # checks on file_diffs
+    assert len(file_diffs) == n - 1
+
+    for diff in file_diffs:
+        assert diff.change_type == 'A'
+        assert diff.b_path.startswith('file')
+        assert diff.b_path.endswith('.py')
+
+
+@pytest.mark.xfail
+def test_change_collector_categorize_file_diffs():
+    raise NotImplementedError
+
+
+@pytest.mark.xfail
+def test_change_collector_collect_features():
+    raise NotImplementedError
+
+
+def test_change_collector_collect_changes(
+    pr_num, quickstart,
+):
+    repo = quickstart.repo
+    contrib_path = quickstart.project.config.get('contrib.module_path')
+
+    path_content = [
+        ('something.txt', None),  # invalid
+        ('invalid.py', None),  # invalid
+        (f'{contrib_path}/foo/bar/baz.py', None),  # invalid
+
+        # candidate_feature, and also new_feature_info
+        (f'{contrib_path}/user_foo/feature_bar.py', None),
+
+        (f'{contrib_path}/user_foo/__init__.py', None),  # valid_init
+    ]
+
+    old_head = repo.head.commit
+
+    for path, content in path_content:
+        make_mock_commit(repo, path=path, content=content)
+
+    new_head = repo.head.commit
+
+    differ = CustomDiffer(endpoints=(old_head, new_head))
+    change_collector = ChangeCollector(quickstart.project, differ=differ)
+    changes = change_collector.collect_changes()
+
+    assert len(changes.file_diffs) == 5
+    assert len(changes.candidate_feature_diffs) == 1
+    assert len(changes.valid_init_diffs) == 1
+    assert len(changes.inadmissible_diffs) == 3
+    assert len(changes.new_feature_info) == 1
+
+    actual_inadmissible = [
+        diff.b_path
+        for diff in changes.inadmissible_diffs
+    ]
+    expected_inadmissible = [
+        'something.txt', 'invalid.py', f'{contrib_path}/foo/bar/baz.py'
+    ]
+    assert set(actual_inadmissible) == set(expected_inadmissible)
+
+
+@pytest.mark.parametrize(
+    'inadmissible_diffs,expected',
+    [
+        ([create_autospec(git.Diff)], False),
+        ([], True),
+    ]
+)
+@patch('ballet.validation.project_structure.validator.ChangeCollector')
+def test_project_structure_validator(
+    mock_change_collector, inadmissible_diffs, expected,
+):
+    mock_change_collector \
+        .return_value \
+        .collect_changes \
+        .return_value \
+        .inadmissible_diffs = inadmissible_diffs
+
+    project = None
+    validator = ProjectStructureValidator(project)
+    result = validator.validate()
+    assert result == expected
+
+
+@patch('ballet.validation.feature_api.validator.ChangeCollector')
+def test_feature_api_validator_validation_failure_no_features_found(
+    mock_change_collector,
+    sample_data,
+):
+    """
+    If the change collector does not return any new features, validation fails.
+    """
+    mock_change_collector \
+        .return_value \
+        .collect_changes \
+        .return_value \
+        .new_feature_info = []
+
+    project = create_autospec(Project)
+    project.api.load_data.return_value = sample_data.X, sample_data.y
+    validator = FeatureApiValidator(project)
+    result = validator.validate()
+    assert not result
+
+
+@patch(
+    'ballet.validation.feature_api.validator.validate_feature_api',
+    return_value=True
+)
+@patch('ballet.validation.feature_api.validator.ChangeCollector')
+def test_feature_api_validator_validation_failure_invalid_feature(
+    mock_change_collector, mock_validate_feature_api,
+    sample_data, invalid_feature_code,
+):
+    """
+    If change collector returns a feature, but validate_feature_api fails,
+    then validation fails.
+    """
+    mock_change_collector \
+        .return_value \
+        .collect_changes \
+        .return_value \
+        .new_feature_info = [
+            NewFeatureInfo(
+                lambda: code_to_module(invalid_feature_code),
+                'modname',
+                'modpath',
+            ),
         ]
-        contrib_module_path = 'src/foo/contrib/'
-        with mock_file_change_validator(
-            path_content, self.pr_num, contrib_module_path
-        ) as validator:
-            changes = validator.change_collector.collect_changes()
-            self.assertEqual(len(changes.file_diffs), 1)
-            self.assertEqual(len(changes.candidate_feature_diffs), 0)
-            self.assertEqual(len(changes.valid_init_diffs), 0)
-            self.assertEqual(len(changes.inadmissible_diffs), 1)
-            self.assertEqual(
-                changes.inadmissible_diffs[0].b_path, 'invalid.py')
 
-            # TODO
-            # self.assertTrue(imported_okay)
+    project = create_autospec(Project)
+    project.api.load_data.return_value = sample_data.X, sample_data.y
+    validator = FeatureApiValidator(project)
+    result = validator.validate()
+    assert not result
 
-            result = validator.validate()
-            self.assertFalse(result)
 
-    def test_validation_success(self):
-        path_content = [
-            ('bob.xml', '<hello>'),
-            ('src/foo/__init__.py', None),
-            ('src/foo/contrib/__init__.py', None),
-            ('src/foo/contrib/user_foo/__init__.py', None),
-            ('src/foo/contrib/user_foo/feature_bar.py', None),
+@patch('ballet.validation.feature_api.validator.ChangeCollector')
+def test_feature_api_validator_validation_failure_import_error(
+    mock_change_collector,
+    sample_data, import_error_code,
+):
+    """
+    If change collector returns a feature, but importer() fails to return a
+    module, then validation fails.
+    """
+    mock_change_collector \
+        .return_value \
+        .collect_changes \
+        .return_value \
+        .new_feature_info = [
+            NewFeatureInfo(
+                lambda: code_to_module(import_error_code),
+                'modname',
+                'modpath',
+            ),
         ]
-        contrib_module_path = 'src/foo/contrib/'
-        with mock_file_change_validator(
-            path_content, self.pr_num, contrib_module_path
-        ) as validator:
-            result = validator.validate()
-            self.assertTrue(result)
 
-
-class FeatureApiValidatorTest(_CommonSetup, unittest.TestCase):
-
-    def test_validation_failure_no_features_found(self):
-        path_content = [
-            ('readme.txt', None),
-            ('src/foo/__init__.py', None),
-            ('src/foo/contrib/__init__.py', None),
-            ('src/foo/contrib/user_foo/__init__.py', None),
-            ('src/foo/contrib/user_foo/feature_bar.py', None),
-        ]
-        contrib_module_path = 'src/foo/contrib/'
-        with mock_feature_api_validator(
-            path_content, self.pr_num, contrib_module_path, self.X, self.y
-        ) as validator:
-            result = validator.validate()
-            self.assertFalse(result)
-
-    def test_validation_failure_invalid_feature(self):
-        path_content = [
-            ('foo.jpg', None),
-            ('src/foo/__init__.py', None),
-            ('src/foo/contrib/__init__.py', None),
-            ('src/foo/contrib/user_foo/__init__.py', None),
-            ('src/foo/contrib/user_foo/feature_bar.py',
-             self.invalid_feature_str),
-        ]
-        contrib_module_path = 'src/foo/contrib/'
-        with mock_feature_api_validator(
-            path_content, self.pr_num, contrib_module_path, self.X, self.y
-        ) as validator:
-            changes = validator.change_collector.collect_changes()
-            self.assertEqual(len(changes.file_diffs), 1)
-            self.assertEqual(len(changes.candidate_feature_diffs), 1)
-            self.assertEqual(len(changes.valid_init_diffs), 0)
-            self.assertEqual(len(changes.inadmissible_diffs), 0)
-
-            # TODO
-            # self.assertEqual(len(new_features), 1)
-            # self.assertTrue(imported_okay)
-
-            result = validator.validate()
-            self.assertFalse(result)
-
-    def test_validation_failure_import_error(self):
-        import_error_str = dedent('''
-            edf foo():  pass
-        ''').strip()
-        path_content = [
-            ('foo.jpg', None),
-            ('src/foo/__init__.py', None),
-            ('src/foo/contrib/__init__.py', None),
-            ('src/foo/contrib/user_foo/__init__.py', None),
-            ('src/foo/contrib/user_foo/feature_baz.py', import_error_str),
-        ]
-        contrib_module_path = 'src/foo/contrib/'
-        with mock_feature_api_validator(
-            path_content, self.pr_num, contrib_module_path, self.X, self.y
-        ) as validator:
-            changes = validator.change_collector.collect_changes()
-            self.assertEqual(len(changes.file_diffs), 1)
-            self.assertEqual(len(changes.candidate_feature_diffs), 1)
-            self.assertEqual(len(changes.valid_init_diffs), 0)
-            self.assertEqual(len(changes.inadmissible_diffs), 0)
-
-            # TODO
-            # self.assertEqual(len(new_feature_info), 0)
-            # self.assertFalse(imported_okay)
-
-            result = validator.validate()
-            self.assertFalse(result)
+    project = create_autospec(Project)
+    project.api.load_data.return_value = sample_data.X, sample_data.y
+    validator = FeatureApiValidator(project)
+    result = validator.validate()
+    assert not result

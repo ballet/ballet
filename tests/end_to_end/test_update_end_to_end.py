@@ -300,7 +300,8 @@ def test_update_fails_with_missing_project_template_branch(quickstart):
 
 
 @pytest.mark.slow
-def test_update_push(quickstart, project_template_copy):
+@patch('ballet.update._call_remote_push')
+def test_update_push(mock_call_push, quickstart, project_template_copy):
     # TODO(mjs)
     # make this unit tests instead
     # update this test to test more behaviors of the push
@@ -319,7 +320,6 @@ def test_update_push(quickstart, project_template_copy):
         f.write(new_content)
         f.write('\n')
 
-    with patch('ballet.update._call_remote_push') as mock_call_push:
-        _run_ballet_update_template(tempdir, project_slug, push=True)
+    _run_ballet_update_template(tempdir, project_slug, push=True)
 
     mock_call_push.assert_called_once_with(ANY)

@@ -1,10 +1,8 @@
 import pathlib
 import random
 import subprocess
-import tempfile
 
-import git
-from funcy import any_fn, contextmanager, ignore, merge
+from funcy import any_fn, ignore, merge
 from sklearn_pandas.pipeline import TransformerPipeline
 
 from ballet.eng.base import BaseTransformer
@@ -66,7 +64,7 @@ def make_mock_commit(repo, kind='A', path=None, content=None):
         path = 'file{}'.format(random.randint(0, 999))
 
     dir = repo.working_tree_dir
-    abspath = pathlib.Path(dir).joinpath(path)
+    abspath = pathlib.Path(dir).joinpath(path).resolve()
 
     if kind == 'A':
         # TODO make robust
@@ -76,11 +74,8 @@ def make_mock_commit(repo, kind='A', path=None, content=None):
             # because this would be a kind=='M'
             raise FileExistsError(str(abspath))
         else:
-            if content is not None:
-                with abspath.open('w') as f:
-                    f.write(content)
-            else:
-                abspath.touch()
+            with abspath.open('w') as f:
+                f.write(content or '')
         repo.git.add(str(abspath))
         repo.git.commit(m='Commit {}'.format(str(abspath)))
     else:
@@ -106,16 +101,6 @@ def set_ci_git_config_variables(repo, name='Foo Bar', email='foo@bar.com'):
         'user.name': name,
         'user.email': email,
     })
-
-
-@contextmanager
-def mock_repo():
-    """Create a new repo"""
-    with tempfile.TemporaryDirectory() as tempdir:
-        tempdir = pathlib.Path(tempdir)
-        repo = git.Repo.init(str(tempdir))
-        set_ci_git_config_variables(repo)
-        yield repo
 
 
 @ignore((FileNotFoundError, subprocess.CalledProcessError))

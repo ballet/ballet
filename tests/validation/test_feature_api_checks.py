@@ -1,5 +1,3 @@
-import unittest
-
 import numpy as np
 
 from ballet.compat import SimpleImputer
@@ -14,83 +12,85 @@ from ballet.validation.feature_api.checks import (
     NoMissingValuesCheck,)
 
 from ..util import FragileTransformer
-from .util import SampleDataMixin
 
 
-class FeatureApiCheckTest(SampleDataMixin, unittest.TestCase):
+def test_good_feature(sample_data):
+    feature = Feature(
+        input='size',
+        transformer=SimpleImputer(),
+    )
 
-    def test_good_feature(self):
-        feature = Feature(
-            input='size',
-            transformer=SimpleImputer(),
-        )
+    valid, failures, advice = check_from_class(
+        FeatureApiCheck, feature, sample_data.X, sample_data.y)
+    assert valid
+    assert len(failures) == 0
 
-        valid, failures, advice = check_from_class(
-            FeatureApiCheck, feature, self.X, self.y)
-        self.assertTrue(valid)
-        self.assertEqual(len(failures), 0)
 
-    def test_bad_feature_input(self):
-        # bad input
-        feature = Feature(
-            input=3,
-            transformer=SimpleImputer(),
-        )
-        valid, failures, advice = check_from_class(
-            FeatureApiCheck, feature, self.X, self.y)
-        self.assertFalse(valid)
-        self.assertIn(HasCorrectInputTypeCheck.__name__, failures)
+def test_bad_feature_input(sample_data):
+    # bad input
+    feature = Feature(
+        input=3,
+        transformer=SimpleImputer(),
+    )
+    valid, failures, advice = check_from_class(
+        FeatureApiCheck, feature, sample_data.X, sample_data.y)
+    assert not valid
+    assert HasCorrectInputTypeCheck.__name__ in failures
 
-    def test_bad_feature_transform_errors(self):
-        # transformer throws errors
-        feature = Feature(
-            input='size',
-            transformer=FragileTransformer(
-                (lambda x: True, ), (RuntimeError, ))
-        )
-        valid, failures, advice = check_from_class(
-            FeatureApiCheck, feature, self.X, self.y)
-        self.assertFalse(valid)
-        self.assertIn(CanTransformCheck.__name__, failures)
 
-    def test_bad_feature_wrong_transform_length(self):
-        class _WrongLengthTransformer(BaseTransformer):
-            def transform(self, X, **transform_kwargs):
-                new_shape = list(X.shape)
-                new_shape[0] += 1
-                output = np.arange(np.prod(new_shape)).reshape(new_shape)
-                return output
+def test_bad_feature_transform_errors(sample_data):
+    # transformer throws errors
+    feature = Feature(
+        input='size',
+        transformer=FragileTransformer(
+            (lambda x: True, ), (RuntimeError, ))
+    )
+    valid, failures, advice = check_from_class(
+        FeatureApiCheck, feature, sample_data.X, sample_data.y)
+    assert not valid
+    assert CanTransformCheck.__name__ in failures
 
-        # doesn't return correct length
-        feature = Feature(
-            input='size',
-            transformer=_WrongLengthTransformer(),
-        )
-        valid, failures, advice = check_from_class(
-            FeatureApiCheck, feature, self.X, self.y)
-        self.assertFalse(valid)
-        self.assertIn(HasCorrectOutputDimensionsCheck.__name__, failures)
 
-    def test_bad_feature_deepcopy_fails(self):
-        class _CopyFailsTransformer(IdentityTransformer):
-            def __deepcopy__(self, memo):
-                raise RuntimeError
-        feature = Feature(
-            input='size',
-            transformer=_CopyFailsTransformer(),
-        )
-        valid, failures, advice = check_from_class(
-            FeatureApiCheck, feature, self.X, self.y)
-        self.assertFalse(valid)
-        self.assertIn(CanDeepcopyCheck.__name__, failures)
+def test_bad_feature_wrong_transform_length(sample_data):
+    class _WrongLengthTransformer(BaseTransformer):
+        def transform(self, X, **transform_kwargs):
+            new_shape = list(X.shape)
+            new_shape[0] += 1
+            output = np.arange(np.prod(new_shape)).reshape(new_shape)
+            return output
 
-    def test_producing_missing_values_fails(self):
-        assert has_nans(self.X)
-        feature = Feature(
-            input='size',
-            transformer=IdentityTransformer()
-        )
-        valid, failures, advice = check_from_class(
-            FeatureApiCheck, feature, self.X, self.y)
-        self.assertFalse(valid)
-        self.assertIn(NoMissingValuesCheck.__name__, failures)
+    # doesn't return correct length
+    feature = Feature(
+        input='size',
+        transformer=_WrongLengthTransformer(),
+    )
+    valid, failures, advice = check_from_class(
+        FeatureApiCheck, feature, sample_data.X, sample_data.y)
+    assert not valid
+    assert HasCorrectOutputDimensionsCheck.__name__ in failures
+
+
+def test_bad_feature_deepcopy_fails(sample_data):
+    class _CopyFailsTransformer(IdentityTransformer):
+        def __deepcopy__(self, memo):
+            raise RuntimeError
+    feature = Feature(
+        input='size',
+        transformer=_CopyFailsTransformer(),
+    )
+    valid, failures, advice = check_from_class(
+        FeatureApiCheck, feature, sample_data.X, sample_data.y)
+    assert not valid
+    assert CanDeepcopyCheck.__name__ in failures
+
+
+def test_producing_missing_values_fails(sample_data):
+    assert has_nans(sample_data.X)
+    feature = Feature(
+        input='size',
+        transformer=IdentityTransformer()
+    )
+    valid, failures, advice = check_from_class(
+        FeatureApiCheck, feature, sample_data.X, sample_data.y)
+    assert not valid
+    assert NoMissingValuesCheck.__name__ in failures
