@@ -1,10 +1,10 @@
 import pathlib
 import re
-from typing import Iterator, Optional, Tuple, Union
+from typing import Iterator, Optional, Tuple
 
 import git
 import requests
-from funcy import collecting, re_find, re_test, silent
+from funcy import collecting, re_find, silent
 
 from ballet.util import one_or_raise
 
@@ -13,7 +13,6 @@ REV_REGEX = r'[a-zA-Z0-9_/^@{}-]+'
 COMMIT_RANGE_REGEX = re.compile(
     r'(?P<a>{rev})\.\.(?P<thirddot>\.?)(?P<b>{rev})'
     .format(rev=REV_REGEX))
-PR_REF_PATH_REGEX = re.compile(r'refs/heads/pull/(\d+)')
 GIT_PUSH_FAILURE = (
     git.PushInfo.REJECTED |
     git.PushInfo.REMOTE_REJECTED |
@@ -45,12 +44,10 @@ class PullRequestBuildDiffer(Differ):
     """Diff files from this pull request against a comparison ref
 
     Args:
-        pr_num: pull request number
         repo: repo
     """
 
-    def __init__(self, pr_num: Union[str, int], repo: git.Repo):
-        self.pr_num = int(pr_num)
+    def __init__(self, repo: git.Repo):
         self.repo = repo
         self._check_environment()
 
@@ -61,19 +58,19 @@ class PullRequestBuildDiffer(Differ):
 class LocalPullRequestBuildDiffer(PullRequestBuildDiffer):
 
     @property
-    def _pr_name(self) -> str:
+    def _ref_name(self) -> str:
         return self.repo.head.ref.name
 
     @property
-    def _pr_path(self) -> str:
+    def _ref_path(self) -> str:
         return self.repo.head.ref.path
 
     def _check_environment(self):
-        assert re_test(PR_REF_PATH_REGEX, self._pr_path)
+        assert self._ref_name != 'master'
 
     def _get_diff_endpoints(self) -> Tuple[git.Diffable, git.Diffable]:
         a = self.repo.rev_parse('master')
-        b = self.repo.rev_parse(self._pr_name)
+        b = self.repo.rev_parse(self._ref_name)
         return a, b
 
 
@@ -158,13 +155,6 @@ def get_repo(repo: Optional[git.Repo] = None) -> git.Repo:
         repo = git.Repo(pathlib.Path.cwd(),
                         search_parent_directories=True)
     return repo
-
-
-@silent
-def get_pr_num(repo: Optional[git.Repo] = None) -> int:
-    repo = get_repo(repo)
-    pr_num = re_find(PR_REF_PATH_REGEX, repo.head.ref.path)
-    return int(pr_num)
 
 
 @silent

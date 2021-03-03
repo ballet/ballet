@@ -1,7 +1,7 @@
 import importlib
 from textwrap import dedent
 from types import ModuleType
-from unittest.mock import create_autospec, patch
+from unittest.mock import PropertyMock, create_autospec, patch
 
 import git
 import pytest
@@ -14,11 +14,6 @@ from ballet.validation.project_structure.validator import (
     ProjectStructureValidator,)
 
 from ..util import make_mock_commit, make_mock_commits
-
-
-@pytest.fixture
-def pr_num():
-    return 73
 
 
 @pytest.fixture
@@ -62,17 +57,18 @@ def test_change_collector_init():
     assert change_collector is not None
 
 
-@patch('ballet.validation.common.TravisPullRequestBuildDiffer')
 @patch('ballet.validation.common.can_use_travis_differ', return_value=True)
-def test_change_collector_detect_differ_travis(_, mock_travis_differ):
+@patch('ballet.validation.common.TravisPullRequestBuildDiffer')
+def test_change_collector_detect_differ_travis(mock_travis_differ, _):
     """Check ChangeCollector._detect_differ"""
     differ_instance = mock_travis_differ.return_value
     project = create_autospec(Project)
+    project.on_master_after_merge = False
     change_collector = ChangeCollector(project)
     assert change_collector.differ is differ_instance
 
 
-def test_change_collector_collect_file_diffs_custom_differ(pr_num, mock_repo):
+def test_change_collector_collect_file_diffs_custom_differ(mock_repo):
     repo = mock_repo
 
     n = 10
@@ -104,9 +100,7 @@ def test_change_collector_collect_features():
     raise NotImplementedError
 
 
-def test_change_collector_collect_changes(
-    pr_num, quickstart,
-):
+def test_change_collector_collect_changes(quickstart):
     repo = quickstart.repo
     contrib_path = quickstart.project.config.get('contrib.module_path')
 

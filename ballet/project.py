@@ -20,8 +20,8 @@ from ballet.pipeline import (
     EngineerFeaturesResult, FeatureEngineeringPipeline,
     make_engineer_features,)
 from ballet.util import raiseifnone
-from ballet.util.ci import get_travis_branch, get_travis_pr_num
-from ballet.util.git import get_branch, get_pr_num, is_merge_commit
+from ballet.util.ci import get_travis_branch
+from ballet.util.git import get_branch, is_merge_commit
 from ballet.util.mod import import_module_at_path
 from ballet.util.typing import Pathy
 
@@ -240,14 +240,6 @@ class Project:
             return getattr(module, attr)
         else:
             return module
-
-    @property
-    def pr_num(self) -> Optional[str]:
-        """Return the PR number or None if not on a PR"""
-        result = get_pr_num(repo=self.repo)
-        if result is None:
-            result = get_travis_pr_num()
-        return result
 
     @property
     def branch(self) -> Optional[str]:

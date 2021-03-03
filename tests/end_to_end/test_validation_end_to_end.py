@@ -151,7 +151,7 @@ def test_validation_end_to_end(quickstart):
         call_validate_all(ref=ref)
 
     # write another new feature - redundancy
-    ref = 'pull/3'
+    ref = 'charlie/feature-a0'
     repo.git.checkout('master')
     switch_to_new_branch(repo, ref)
     new_feature_str = make_feature_str('A_0')

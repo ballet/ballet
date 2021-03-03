@@ -132,14 +132,13 @@ class ChangeCollector:
             self.differ = self._detect_differ()
 
     def _detect_differ(self):
-        pr_num = self.project.pr_num
         repo = self.project.repo
-        if pr_num is None:
+        if can_use_travis_differ():
+            return TravisPullRequestBuildDiffer(repo)
+        elif self.project.on_master_after_merge:
             return LocalMergeBuildDiffer(repo)
-        elif can_use_travis_differ():
-            return TravisPullRequestBuildDiffer(pr_num)
         else:
-            return LocalPullRequestBuildDiffer(pr_num, repo)
+            return LocalPullRequestBuildDiffer(repo)
 
     def collect_changes(self) -> CollectedChanges:
         """Collect file and feature changes
