@@ -445,7 +445,10 @@
     <span class="k">return</span> <span class="n">items</span>
 
 
-<span class="n">NewFeatureInfo</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">ModuleType</span><span class="p">],</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
+<div class="viewcode-block" id="NewFeatureInfo"><a class="viewcode-back" href="../../../api/ballet.validation.common.html#ballet.validation.common.NewFeatureInfo">[docs]</a><span class="k">class</span> <span class="nc">NewFeatureInfo</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="n">importer</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">ModuleType</span><span class="p">]</span>
+    <span class="n">modname</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">modpath</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
 <div class="viewcode-block" id="CollectedChanges"><a class="viewcode-back" href="../../../api/ballet.validation.common.html#ballet.validation.common.CollectedChanges">[docs]</a><span class="k">class</span> <span class="nc">CollectedChanges</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
@@ -457,7 +460,7 @@
 
 
 <div class="viewcode-block" id="ChangeCollector"><a class="viewcode-back" href="../../../api/ballet.validation.common.html#ballet.validation.common.ChangeCollector">[docs]</a><span class="k">class</span> <span class="nc">ChangeCollector</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Validate the features introduced in a proposed pull request.</span>
+    <span class="sd">&quot;&quot;&quot;Validate the features introduced in a proposed change set.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        project: project info</span>
@@ -472,14 +475,17 @@
         <span class="k">if</span> <span class="n">differ</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">differ</span> <span class="o">=</span> <span class="n">differ</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">pr_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">pr_num</span>
-            <span class="n">repo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">repo</span>
-            <span class="k">if</span> <span class="n">pr_num</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">differ</span> <span class="o">=</span> <span class="n">LocalMergeBuildDiffer</span><span class="p">(</span><span class="n">repo</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">can_use_travis_differ</span><span class="p">():</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">differ</span> <span class="o">=</span> <span class="n">TravisPullRequestBuildDiffer</span><span class="p">(</span><span class="n">pr_num</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">differ</span> <span class="o">=</span> <span class="n">LocalPullRequestBuildDiffer</span><span class="p">(</span><span class="n">pr_num</span><span class="p">,</span> <span class="n">repo</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">differ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_detect_differ</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_detect_differ</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">pr_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">pr_num</span>
+        <span class="n">repo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">repo</span>
+        <span class="k">if</span> <span class="n">pr_num</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">LocalMergeBuildDiffer</span><span class="p">(</span><span class="n">repo</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">can_use_travis_differ</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">TravisPullRequestBuildDiffer</span><span class="p">(</span><span class="n">pr_num</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">LocalPullRequestBuildDiffer</span><span class="p">(</span><span class="n">pr_num</span><span class="p">,</span> <span class="n">repo</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ChangeCollector.collect_changes"><a class="viewcode-back" href="../../../api/ballet.validation.common.html#ballet.validation.common.ChangeCollector.collect_changes">[docs]</a>    <span class="k">def</span> <span class="nf">collect_changes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CollectedChanges</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Collect file and feature changes</span>
@@ -593,7 +599,7 @@
             <span class="n">modname</span> <span class="o">=</span> <span class="n">relpath_to_modname</span><span class="p">(</span><span class="n">relpath</span><span class="p">)</span>
             <span class="n">modpath</span> <span class="o">=</span> <span class="n">project_root</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
             <span class="n">importer</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">import_module_at_path</span><span class="p">,</span> <span class="n">modname</span><span class="p">,</span> <span class="n">modpath</span><span class="p">)</span>
-            <span class="k">yield</span> <span class="n">importer</span><span class="p">,</span> <span class="n">modname</span><span class="p">,</span> <span class="n">modpath</span></div>
+            <span class="k">yield</span> <span class="n">NewFeatureInfo</span><span class="p">(</span><span class="n">importer</span><span class="p">,</span> <span class="n">modname</span><span class="p">,</span> <span class="n">modpath</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="subsample_data_for_validation"><a class="viewcode-back" href="../../../api/ballet.validation.common.html#ballet.validation.common.subsample_data_for_validation">[docs]</a><span class="k">def</span> <span class="nf">subsample_data_for_validation</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>

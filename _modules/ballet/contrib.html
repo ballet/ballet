@@ -346,8 +346,9 @@
   <h1>Source code for ballet.contrib</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">pkgutil</span>
 <span class="kn">import</span> <span class="nn">types</span>
+<span class="kn">from</span> <span class="nn">importlib.abc</span> <span class="kn">import</span> <span class="n">PathEntryFinder</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">ModuleType</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">cast</span>
 
 <span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">collecting</span><span class="p">,</span> <span class="n">notnone</span>
 
@@ -421,8 +422,18 @@
             <span class="n">prefix</span><span class="o">=</span><span class="n">package</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span>
             <span class="n">onerror</span><span class="o">=</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">):</span>
 
+        <span class="c1"># mistakenly typed as MetaPathFinder</span>
+        <span class="n">importer</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">PathEntryFinder</span><span class="p">,</span> <span class="n">importer</span><span class="p">)</span>
+
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">mod</span> <span class="o">=</span> <span class="n">importer</span><span class="o">.</span><span class="n">find_module</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span><span class="o">.</span><span class="n">load_module</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">importer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ImportError</span>
+            <span class="c1"># TODO use find_spec</span>
+            <span class="c1"># https://docs.python.org/3/library/importlib.html#importlib.abc.PathEntryFinder.find_spec)</span>
+            <span class="n">finder</span> <span class="o">=</span> <span class="n">importer</span><span class="o">.</span><span class="n">find_module</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">finder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ImportError</span>
+            <span class="n">mod</span> <span class="o">=</span> <span class="n">finder</span><span class="o">.</span><span class="n">load_module</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
                 <span class="s1">&#39;Failed to import module </span><span class="si">{modname}</span><span class="s1">&#39;</span>

@@ -347,6 +347,7 @@
             
   <h1>Source code for ballet.util.testing</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span>
 <span class="kn">from</span> <span class="nn">unittest.util</span> <span class="kn">import</span> <span class="n">_common_shorten_repr</span>
 
 <span class="kn">import</span> <span class="nn">funcy</span>
@@ -356,166 +357,6 @@
 <span class="kn">import</span> <span class="nn">pandas.testing</span> <span class="k">as</span> <span class="nn">pdt</span>
 
 <span class="n">EPSILON</span> <span class="o">=</span> <span class="mf">1e-4</span>
-
-
-<div class="viewcode-block" id="withfailure"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.withfailure">[docs]</a><span class="nd">@funcy</span><span class="o">.</span><span class="n">decorator</span>
-<span class="k">def</span> <span class="nf">withfailure</span><span class="p">(</span><span class="n">call</span><span class="p">,</span> <span class="nb">format</span><span class="p">):</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">call</span><span class="p">()</span>
-    <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
-        <span class="n">standardMsg</span> <span class="o">=</span> <span class="nb">format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="o">*</span><span class="n">_common_shorten_repr</span><span class="p">(</span><span class="n">call</span><span class="o">.</span><span class="n">first</span><span class="p">,</span> <span class="n">call</span><span class="o">.</span><span class="n">second</span><span class="p">))</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">self</span><span class="o">.</span><span class="n">_formatMessage</span><span class="p">(</span><span class="n">call</span><span class="o">.</span><span class="n">msg</span><span class="p">,</span> <span class="n">standardMsg</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">call</span><span class="o">.</span><span class="n">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="ArrayLikeEqualityTestingMixin"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin">[docs]</a><span class="k">class</span> <span class="nc">ArrayLikeEqualityTestingMixin</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Mix-in to enable comparisons of array-like objects in unit tests&quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="ArrayLikeEqualityTestingMixin.assertArrayEqual"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin.assertArrayEqual">[docs]</a>    <span class="nd">@withfailure</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> != </span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">assertArrayEqual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Test that arrays first and second are equal&quot;&quot;&quot;</span>
-        <span class="n">npt</span><span class="o">.</span><span class="n">assert_array_equal</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="ArrayLikeEqualityTestingMixin.assertArrayNotEqual"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin.assertArrayNotEqual">[docs]</a>    <span class="nd">@withfailure</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> == </span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">assertArrayNotEqual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Test that arrays first and second are not equal&quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">npt</span><span class="o">.</span><span class="n">assert_array_equal</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
-            <span class="k">pass</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AssertionError</span></div>
-
-<div class="viewcode-block" id="ArrayLikeEqualityTestingMixin.assertArrayAlmostEqual"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin.assertArrayAlmostEqual">[docs]</a>    <span class="nd">@withfailure</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> !≈ </span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">assertArrayAlmostEqual</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Test that arrays first and second are almost equal</span>
-
-<span class="sd">        There are two ways to control the tolerance of the approximate</span>
-<span class="sd">        equality test, using ``places`` or ``delta``. All values are compared</span>
-<span class="sd">        element-wise.</span>
-<span class="sd">        ``delta``</span>
-<span class="sd">        is provided, the allowed tolerance between the values is set to</span>
-<span class="sd">        ``delta. Else if ``places`` is provided, values are compared up to</span>
-<span class="sd">        ``places`` places. Else, ``places`` defaults to 6.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            first: first object</span>
-<span class="sd">            second: second object</span>
-<span class="sd">            places (int, default=6): elements are compared up to this many</span>
-<span class="sd">                places</span>
-<span class="sd">            delta (float): the allowed tolerance between elements</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="c1"># convert between both &quot;places&quot; and &quot;delta&quot; allowed to just &quot;decimal&quot;</span>
-        <span class="c1"># numpy says abs(desired-actual) &lt; 1.5 * 10**(-decimal)</span>
-        <span class="c1"># =&gt; delta = 1.5 * 10**(-decimal)</span>
-        <span class="c1"># =&gt; delta / 1.5 = 10**(-decimal)</span>
-        <span class="c1"># =&gt; log10(delta/1.5) = -decimal</span>
-        <span class="c1"># =&gt; decimal = -log10(delta) + log10(1.5)</span>
-        <span class="k">if</span> <span class="n">delta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">places</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">1.5</span><span class="p">))</span>
-
-        <span class="n">npt</span><span class="o">.</span><span class="n">assert_array_almost_equal</span><span class="p">(</span>
-            <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">decimal</span><span class="o">=</span><span class="n">places</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="ArrayLikeEqualityTestingMixin.assertArrayNotAlmostEqual"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin.assertArrayNotAlmostEqual">[docs]</a>    <span class="nd">@withfailure</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> ≈ </span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">assertArrayNotAlmostEqual</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Test that arrays first and second are not almost equal&quot;&quot;&quot;</span>
-
-        <span class="k">if</span> <span class="n">delta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">places</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">1.5</span><span class="p">))</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">npt</span><span class="o">.</span><span class="n">assert_array_almost_equal</span><span class="p">(</span>
-                <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">decimal</span><span class="o">=</span><span class="n">places</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
-            <span class="k">pass</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AssertionError</span></div>
-
-<div class="viewcode-block" id="ArrayLikeEqualityTestingMixin.assertFrameEqual"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin.assertFrameEqual">[docs]</a>    <span class="k">def</span> <span class="nf">assertFrameEqual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Test that DataFrames first and second are equal&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_assertPandasEqual</span><span class="p">(</span>
-            <span class="n">pdt</span><span class="o">.</span><span class="n">assert_frame_equal</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="ArrayLikeEqualityTestingMixin.assertFrameNotEqual"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin.assertFrameNotEqual">[docs]</a>    <span class="k">def</span> <span class="nf">assertFrameNotEqual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Test that DataFrames first and second are not equal&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_assertPandasNotEqual</span><span class="p">(</span>
-            <span class="n">pdt</span><span class="o">.</span><span class="n">assert_frame_equal</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="ArrayLikeEqualityTestingMixin.assertSeriesEqual"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin.assertSeriesEqual">[docs]</a>    <span class="k">def</span> <span class="nf">assertSeriesEqual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Test that Series first and second are equal&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_assertPandasEqual</span><span class="p">(</span>
-            <span class="n">pdt</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="ArrayLikeEqualityTestingMixin.assertSeriesNotEqual"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin.assertSeriesNotEqual">[docs]</a>    <span class="k">def</span> <span class="nf">assertSeriesNotEqual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Test that Series first and second are not equal&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_assertPandasNotEqual</span><span class="p">(</span>
-            <span class="n">pdt</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="ArrayLikeEqualityTestingMixin.assertIndexEqual"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin.assertIndexEqual">[docs]</a>    <span class="k">def</span> <span class="nf">assertIndexEqual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Test that Index first and second are equal&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_assertPandasEqual</span><span class="p">(</span>
-            <span class="n">pdt</span><span class="o">.</span><span class="n">assert_index_equal</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="ArrayLikeEqualityTestingMixin.assertIndexNotEqual"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin.assertIndexNotEqual">[docs]</a>    <span class="k">def</span> <span class="nf">assertIndexNotEqual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Test that Index first and second are not equal&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_assertPandasNotEqual</span><span class="p">(</span>
-            <span class="n">pdt</span><span class="o">.</span><span class="n">assert_index_equal</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="ArrayLikeEqualityTestingMixin.assertPandasObjectEqual"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin.assertPandasObjectEqual">[docs]</a>    <span class="k">def</span> <span class="nf">assertPandasObjectEqual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Test that arbitrary Pandas objects first and second are equal&quot;&quot;&quot;</span>
-        <span class="n">is_pdobj</span> <span class="o">=</span> <span class="n">funcy</span><span class="o">.</span><span class="n">isa</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">PandasObject</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">is_pdobj</span><span class="p">(</span><span class="n">first</span><span class="p">)</span> <span class="ow">and</span> <span class="n">is_pdobj</span><span class="p">(</span><span class="n">second</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">second</span><span class="p">)):</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">assertFrameEqual</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">assertSeriesEqual</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">assertIndexEqual</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="c1"># unreachable?</span>
-                    <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s1">&#39;you found a bug: unreachable code&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">standardMsg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> and </span><span class="si">{}</span><span class="s1"> are uncomparable types&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="o">*</span><span class="n">_common_shorten_repr</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">))</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_formatMessage</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">standardMsg</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">failureException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="ArrayLikeEqualityTestingMixin.assertPandasObjectNotEqual"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.ArrayLikeEqualityTestingMixin.assertPandasObjectNotEqual">[docs]</a>    <span class="k">def</span> <span class="nf">assertPandasObjectNotEqual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Test that arbitrary Pandas objects first and second are not equal&quot;&quot;&quot;</span>
-        <span class="n">is_pdobj</span> <span class="o">=</span> <span class="n">funcy</span><span class="o">.</span><span class="n">isa</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">PandasObject</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">is_pdobj</span><span class="p">(</span><span class="n">first</span><span class="p">)</span> <span class="ow">and</span> <span class="n">is_pdobj</span><span class="p">(</span><span class="n">second</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">second</span><span class="p">)):</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">assertFrameNotEqual</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">assertSeriesNotEqual</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">assertIndexNotEqual</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="c1"># unreachable?</span>
-                    <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s1">&#39;you found a bug: unreachable code&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># it&#39;s great that they are uncomparable types :)</span>
-            <span class="k">pass</span></div>
-
-    <span class="nd">@withfailure</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> != </span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_assertPandasEqual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">func</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="nd">@withfailure</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> == </span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_assertPandasNotEqual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">func</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
-            <span class="k">pass</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AssertionError</span></div>
 
 
 <div class="viewcode-block" id="seeded"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.seeded">[docs]</a><span class="nd">@funcy</span><span class="o">.</span><span class="n">contextmanager</span>
@@ -544,6 +385,158 @@
             <span class="k">yield</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Error was thrown using seed </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">seed</span><span class="p">))</span></div>
+
+
+<span class="nd">@contextmanager</span>
+<span class="k">def</span> <span class="nf">_invert_assertion</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">yield</span>
+    <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">AssertionError</span>
+
+
+<div class="viewcode-block" id="assert_array_equal"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.assert_array_equal">[docs]</a><span class="k">def</span> <span class="nf">assert_array_equal</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">):</span>
+    <span class="n">npt</span><span class="o">.</span><span class="n">assert_array_equal</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="assert_array_not_equal"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.assert_array_not_equal">[docs]</a><span class="k">def</span> <span class="nf">assert_array_not_equal</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">_invert_assertion</span><span class="p">():</span>
+        <span class="n">npt</span><span class="o">.</span><span class="n">assert_array_equal</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="assert_array_almost_equal"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.assert_array_almost_equal">[docs]</a><span class="k">def</span> <span class="nf">assert_array_almost_equal</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Test that arrays first and second are almost equal</span>
+
+<span class="sd">    There are two ways to control the tolerance of the approximate</span>
+<span class="sd">    equality test, using ``places`` or ``delta``. All values are compared</span>
+<span class="sd">    element-wise.</span>
+<span class="sd">    ``delta``</span>
+<span class="sd">    is provided, the allowed tolerance between the values is set to</span>
+<span class="sd">    ``delta. Else if ``places`` is provided, values are compared up to</span>
+<span class="sd">    ``places`` places. Else, ``places`` defaults to 6.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        first: first object</span>
+<span class="sd">        second: second object</span>
+<span class="sd">        places (int, default=6): elements are compared up to this many</span>
+<span class="sd">            places</span>
+<span class="sd">        delta (float): the allowed tolerance between elements</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># convert between both &quot;places&quot; and &quot;delta&quot; allowed to just &quot;decimal&quot;</span>
+    <span class="c1"># numpy says abs(desired-actual) &lt; 1.5 * 10**(-decimal)</span>
+    <span class="c1"># =&gt; delta = 1.5 * 10**(-decimal)</span>
+    <span class="c1"># =&gt; delta / 1.5 = 10**(-decimal)</span>
+    <span class="c1"># =&gt; log10(delta/1.5) = -decimal</span>
+    <span class="c1"># =&gt; decimal = -log10(delta) + log10(1.5)</span>
+    <span class="k">if</span> <span class="n">delta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">places</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">1.5</span><span class="p">))</span>
+
+    <span class="n">npt</span><span class="o">.</span><span class="n">assert_array_almost_equal</span><span class="p">(</span>
+        <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">decimal</span><span class="o">=</span><span class="n">places</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="assert_array_not_almost_equal"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.assert_array_not_almost_equal">[docs]</a><span class="k">def</span> <span class="nf">assert_array_not_almost_equal</span><span class="p">(</span>
+        <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Test that arrays first and second are not almost equal&quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">delta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">places</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">1.5</span><span class="p">))</span>
+
+    <span class="k">with</span> <span class="n">_invert_assertion</span><span class="p">():</span>
+        <span class="n">npt</span><span class="o">.</span><span class="n">assert_array_almost_equal</span><span class="p">(</span>
+            <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">decimal</span><span class="o">=</span><span class="n">places</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="assert_frame_equal"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.assert_frame_equal">[docs]</a><span class="k">def</span> <span class="nf">assert_frame_equal</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Test that DataFrames first and second are equal&quot;&quot;&quot;</span>
+    <span class="n">_assert_pandas_equal</span><span class="p">(</span>
+        <span class="n">pdt</span><span class="o">.</span><span class="n">assert_frame_equal</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="assert_frame_not_equal"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.assert_frame_not_equal">[docs]</a><span class="k">def</span> <span class="nf">assert_frame_not_equal</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Test that DataFrames first and second are not equal&quot;&quot;&quot;</span>
+    <span class="n">_assert_pandas_not_equal</span><span class="p">(</span>
+        <span class="n">pdt</span><span class="o">.</span><span class="n">assert_frame_equal</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="assert_series_equal"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.assert_series_equal">[docs]</a><span class="k">def</span> <span class="nf">assert_series_equal</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Test that Series first and second are equal&quot;&quot;&quot;</span>
+    <span class="n">_assert_pandas_equal</span><span class="p">(</span>
+        <span class="n">pdt</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="assert_series_not_equal"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.assert_series_not_equal">[docs]</a><span class="k">def</span> <span class="nf">assert_series_not_equal</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Test that Series first and second are not equal&quot;&quot;&quot;</span>
+    <span class="n">_assert_pandas_not_equal</span><span class="p">(</span>
+        <span class="n">pdt</span><span class="o">.</span><span class="n">assert_series_equal</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="assert_index_equal"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.assert_index_equal">[docs]</a><span class="k">def</span> <span class="nf">assert_index_equal</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Test that Index first and second are equal&quot;&quot;&quot;</span>
+    <span class="n">_assert_pandas_equal</span><span class="p">(</span>
+        <span class="n">pdt</span><span class="o">.</span><span class="n">assert_index_equal</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="assert_index_not_equal"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.assert_index_not_equal">[docs]</a><span class="k">def</span> <span class="nf">assert_index_not_equal</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Test that Index first and second are not equal&quot;&quot;&quot;</span>
+    <span class="n">_assert_pandas_not_equal</span><span class="p">(</span>
+        <span class="n">pdt</span><span class="o">.</span><span class="n">assert_index_equal</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<span class="n">_is_pdobj</span> <span class="o">=</span> <span class="n">funcy</span><span class="o">.</span><span class="n">isa</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">PandasObject</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="assert_pandas_object_equal"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.assert_pandas_object_equal">[docs]</a><span class="k">def</span> <span class="nf">assert_pandas_object_equal</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Test that arbitrary Pandas objects first and second are equal&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">_is_pdobj</span><span class="p">(</span><span class="n">first</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_is_pdobj</span><span class="p">(</span><span class="n">second</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">second</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+                <span class="n">assert_frame_equal</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+                <span class="n">assert_series_equal</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">):</span>
+                <span class="n">assert_index_equal</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># unreachable?</span>
+                <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s1">&#39;you found a bug: unreachable code&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> and </span><span class="si">{}</span><span class="s1"> are uncomparable types&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">_common_shorten_repr</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="assert_pandas_object_not_equal"><a class="viewcode-back" href="../../../api/ballet.util.testing.html#ballet.util.testing.assert_pandas_object_not_equal">[docs]</a><span class="k">def</span> <span class="nf">assert_pandas_object_not_equal</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Test that arbitrary Pandas objects first and second are not equal&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">_is_pdobj</span><span class="p">(</span><span class="n">first</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_is_pdobj</span><span class="p">(</span><span class="n">second</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">second</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+                <span class="n">assert_frame_not_equal</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+                <span class="n">assert_series_not_equal</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">):</span>
+                <span class="n">assert_index_not_equal</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># unreachable?</span>
+                <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s1">&#39;you found a bug: unreachable code&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># it&#39;s great that they are uncomparable types :)</span>
+        <span class="k">pass</span></div>
+
+
+<span class="k">def</span> <span class="nf">_assert_pandas_equal</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">func</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_assert_pandas_not_equal</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">func</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">AssertionError</span>
 </pre></div>
 
            </div>
