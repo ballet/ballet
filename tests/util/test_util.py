@@ -178,10 +178,10 @@ def test_deepcopy_mixin():
         pass
 
     class A:
-        def __init__(a):
-            a = a
+        def __init__(self, a):
+            self.a = a
 
-        def __deepcopy__(memo):
+        def __deepcopy__(self, memo):
             raise E
 
     class B(DeepcopyMixin, A):
