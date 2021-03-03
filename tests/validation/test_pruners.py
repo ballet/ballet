@@ -67,8 +67,7 @@ class GFSSFPrunerTest(unittest.TestCase):
             self.X_df, self.y_df, self.y, [feature_1], feature_2)
 
         redunant_features = gfssf_pruner.prune()
-        assert feature_1 in \
-            redunant_features, \
+        assert feature_1 in redunant_features, \
             'Exact replica features should be pruned'
 
     @unittest.expectedFailure
@@ -90,8 +89,7 @@ class GFSSFPrunerTest(unittest.TestCase):
             self.X_df, self.y_df, self.y, [feature_weak], feature_strong)
 
         redunant_features = gfssf_pruner.prune()
-        assert feature_weak in \
-            redunant_features, \
+        assert feature_weak in redunant_features, \
             'Noisy features should be pruned'
 
     def test_prune_keep_relevant(self):
@@ -107,8 +105,7 @@ class GFSSFPrunerTest(unittest.TestCase):
             self.X_df, self.y_df, self.y, [feature_1], feature_2)
 
         redunant_features = gfssf_pruner.prune()
-        assert feature_1 not in \
-            redunant_features, \
+        assert feature_1 not in redunant_features, \
             'Still relevant features should be pruned'
 
     @unittest.expectedFailure
@@ -125,6 +122,5 @@ class GFSSFPrunerTest(unittest.TestCase):
             self.X_df, self.y_df, self.y, [feature_1], feature_2)
 
         redunant_features = gfssf_pruner.prune()
-        assert feature_1 in \
-            redunant_features, \
+        assert feature_1 in redunant_features, \
             'Irrelevant features should be pruned'
