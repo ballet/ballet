@@ -10,11 +10,13 @@ from ballet.util.mod import (
 
 @pytest.mark.xfail
 def test_import_module_from_modname():
+    import ballet.util.mod.import_module_from_modname  # noqa F401
     raise NotImplementedError
 
 
 @pytest.mark.xfail
 def test_import_module_from_relpath():
+    import ballet.util.mod.import_module_from_relpath  # noqa F401
     raise NotImplementedError
 
 
