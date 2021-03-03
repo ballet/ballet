@@ -46,8 +46,9 @@ def test_extract_latest_from_search_triple_not_found():
 @patch('funcy.partition')
 @patch('ballet.update._extract_latest_from_search_triple')
 @patch('ballet.update._query_pip_search_ballet')
-def test_get_latest_ballet_version_string(self, mock_query,
-                                          mock_extract, mock_partition):
+def test_get_latest_ballet_version_string(
+    mock_query, mock_extract, mock_partition
+):
     mock_partition.return_value = ['some', 'iterable']
     expected = 'x.y.z'
     mock_extract.return_value = expected
@@ -58,7 +59,7 @@ def test_get_latest_ballet_version_string(self, mock_query,
 
 
 @patch('ballet.update._get_latest_ballet_version_string')
-def test_check_for_updated_ballet(self, mock_latest):
+def test_check_for_updated_ballet(mock_latest):
     # obviously this will represent an update from whatever the current
     # version is
     latest = '99999999999.0.0'
@@ -69,7 +70,7 @@ def test_check_for_updated_ballet(self, mock_latest):
 
 
 @patch('ballet.update._get_latest_ballet_version_string')
-def test_check_for_updated_ballet_no_updates(self, mock_latest):
+def test_check_for_updated_ballet_no_updates(mock_latest):
     mock_latest.return_value = ballet.__version__
     expected = None  # no updates available
     actual = _check_for_updated_ballet()
