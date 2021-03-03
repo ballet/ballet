@@ -20,7 +20,8 @@ def test_feature_engine():
     except ImportError:
         pass
     else:
-        from ballet.eng.feature_engine import YeoJohnsonTransformer  # noqa f401
+        from ballet.eng.feature_engine import (  # noqa f401
+            YeoJohnsonTransformer,)
 
 
 def test_featuretools():
