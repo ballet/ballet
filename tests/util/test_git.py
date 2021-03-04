@@ -1,11 +1,12 @@
-from unittest.mock import patch
+from unittest.mock import create_autospec, patch
 
 import git
 import pytest
+from github import BadCredentialsException, Github
 
 from ballet.util.git import (
-    did_git_push_succeed, get_pull_request_outcomes, get_pull_requests,
-    make_commit_range,)
+    create_github_repo, did_git_push_succeed, get_pull_request_outcomes,
+    get_pull_requests, make_commit_range,)
 
 
 def test_make_commit_range():
@@ -97,3 +98,30 @@ def test_did_git_push_succeed():
     push_info = git.remote.PushInfo(flags, local_ref, remote_ref_string,
                                     remote)
     assert not did_git_push_succeed(push_info)
+
+
+@pytest.fixture
+def github():
+    return create_autospec(Github)
+
+
+@pytest.mark.parametrize(
+    'owner',
+    ['octocat', 'github-dot-com'],
+)
+def test_create_github_repo(github, owner):
+    user = 'octocat'  # noqa
+    repo = 'Hello-World'
+    repository = create_github_repo(github, owner, repo)
+    assert repository.full_name == f'{owner}/{repo}'
+
+
+@pytest.mark.parametrize(
+    'owner',
+    ['octocat', 'github-dot-com'],
+)
+def test_create_github_repo_not_authorized(github, owner):
+    user = 'octocat'  # noqa
+    repo = 'Hello-World'
+    with pytest.raises(BadCredentialsException):
+        create_github_repo(github, owner, repo)

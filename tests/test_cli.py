@@ -20,10 +20,17 @@ def test_cli_version(cli):
     assert ballet.__version__ in result.output
 
 
+@pytest.mark.parametrize(
+    'create_github_repo',
+    [True, False],
+)
 @patch('ballet.templating.render_project_template')
-def test_quickstart(mock_render, cli):
-    result = cli('quickstart')
-    mock_render.assert_called_once_with()
+def test_quickstart(mock_render, cli, create_github_repo):
+    cmd = 'quickstart'
+    if create_github_repo:
+        cmd += ' --create-github-repo'
+    result = cli(cmd)
+    mock_render.assert_called_once_with(create_github_repo=create_github_repo)
     assert 'Generating new ballet project' in result.output
 
 

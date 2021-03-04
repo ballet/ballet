@@ -28,6 +28,15 @@ def test_render_project_template(mock_cookiecutter):
     assert 'project_template' in str(path)
 
 
+@patch('ballet.util.git.create_github_repo')
+@patch('ballet.templating.cookiecutter')
+def test_render_project_template_create_remote(
+    mock_cookiecutter, mock_create_github_repo
+):
+    render_project_template(create_remote=True)
+    mock_create_github_repo.assert_called_once()
+
+
 @patch('ballet.templating.cookiecutter')
 def test_render_feature_template(mock_cookiecutter):
     render_feature_template()
