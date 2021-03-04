@@ -429,8 +429,8 @@
 
 <span class="nd">@validation_stage</span><span class="p">(</span><span class="s1">&#39;checking project structure&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">_check_project_structure</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="n">Project</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_pr</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on PR&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="n">project</span><span class="o">.</span><span class="n">on_master</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on feature branch&#39;</span><span class="p">)</span>
 
     <span class="n">validator_class</span> <span class="o">=</span> <span class="n">_load_validator_class_params</span><span class="p">(</span>
         <span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.project_structure_validator&#39;</span><span class="p">)</span>
@@ -443,8 +443,8 @@
 <span class="nd">@validation_stage</span><span class="p">(</span><span class="s1">&#39;validating feature API&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">_validate_feature_api</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="n">Project</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Validate feature API&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_pr</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on PR&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="n">project</span><span class="o">.</span><span class="n">on_master</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on feature branch&#39;</span><span class="p">)</span>
 
     <span class="n">validator_class</span> <span class="o">=</span> <span class="n">_load_validator_class_params</span><span class="p">(</span>
         <span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.feature_api_validator&#39;</span><span class="p">)</span>
@@ -457,8 +457,8 @@
 <span class="nd">@validation_stage</span><span class="p">(</span><span class="s1">&#39;evaluating feature performance&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">_evaluate_feature_performance</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="n">Project</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Evaluate feature performance&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_pr</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on PR&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="n">project</span><span class="o">.</span><span class="n">on_master</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on feature branch&#39;</span><span class="p">)</span>
 
     <span class="n">result</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">engineer_features</span><span class="p">()</span>
     <span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">y_df</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">y</span>
@@ -482,10 +482,12 @@
     <span class="n">project</span><span class="p">:</span> <span class="n">Project</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Prune existing features&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_master_after_merge</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">on_master</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;Not on master&#39;</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># if on master but not after merge, then we diff master with itself</span>
+        <span class="c1"># and collect no features.</span>
         <span class="n">proposed_feature</span> <span class="o">=</span> <span class="n">get_proposed_feature</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">NoFeaturesCollectedError</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">SkippedValidationTest</span><span class="p">(</span><span class="s1">&#39;No features collected&#39;</span><span class="p">)</span>

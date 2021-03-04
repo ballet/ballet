@@ -397,23 +397,49 @@ a branch where the most recent commit is a merge.</p>
 
 <dl class="py class">
 <dt id="ballet.util.git.LocalPullRequestBuildDiffer">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.util.git.</span></code><code class="sig-name descname"><span class="pre">LocalPullRequestBuildDiffer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pr_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#LocalPullRequestBuildDiffer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.util.git.LocalPullRequestBuildDiffer" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.util.git.</span></code><code class="sig-name descname"><span class="pre">LocalPullRequestBuildDiffer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#LocalPullRequestBuildDiffer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.util.git.LocalPullRequestBuildDiffer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ballet.util.git.PullRequestBuildDiffer" title="ballet.util.git.PullRequestBuildDiffer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.util.git.PullRequestBuildDiffer</span></code></a></p>
 </dd></dl>
 
 <dl class="py class">
+<dt id="ballet.util.git.NoOpDiffer">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.util.git.</span></code><code class="sig-name descname"><span class="pre">NoOpDiffer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#NoOpDiffer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.util.git.NoOpDiffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ballet.util.git.PullRequestBuildDiffer" title="ballet.util.git.PullRequestBuildDiffer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.util.git.PullRequestBuildDiffer</span></code></a></p>
+<p>A differ that returns an empty changeset</p>
+<dl class="py method">
+<dt id="ballet.util.git.NoOpDiffer.diff">
+<code class="sig-name descname"><span class="pre">diff</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#NoOpDiffer.diff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.util.git.NoOpDiffer.diff" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="ballet.util.git.PullRequestBuildDiffer">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.util.git.</span></code><code class="sig-name descname"><span class="pre">PullRequestBuildDiffer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pr_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#PullRequestBuildDiffer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.util.git.PullRequestBuildDiffer" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.util.git.</span></code><code class="sig-name descname"><span class="pre">PullRequestBuildDiffer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#PullRequestBuildDiffer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.util.git.PullRequestBuildDiffer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ballet.util.git.Differ" title="ballet.util.git.Differ"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.util.git.Differ</span></code></a></p>
 <p>Diff files from this pull request against a comparison ref</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>pr_num</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – pull request number</p></li>
-<li><p><strong>repo</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Repo</span></code>) – repo</p></li>
-</ul>
+<dd class="field-odd"><p><strong>repo</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Repo</span></code>) – repo</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ballet.util.git.can_use_local_differ">
+<code class="sig-prename descclassname"><span class="pre">ballet.util.git.</span></code><code class="sig-name descname"><span class="pre">can_use_local_differ</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#can_use_local_differ"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.util.git.can_use_local_differ" title="Permalink to this definition">¶</a></dt>
+<dd><p>On some non-master branch</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ballet.util.git.can_use_local_merge_differ">
+<code class="sig-prename descclassname"><span class="pre">ballet.util.git.</span></code><code class="sig-name descname"><span class="pre">can_use_local_merge_differ</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#can_use_local_merge_differ"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.util.git.can_use_local_merge_differ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the repo HEAD is on master after a merge commit</p>
+<p>Checks for two qualities of the current project:
+1. The project repo’s head is the master branch
+2. The project repo’s head commit is a merge commit.</p>
+<p>Note that fast-forward style merges will not cause the second condition
+to evaluate to true.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -478,16 +504,6 @@ diff.</p></li>
 <p class="admonition-title">See also</p>
 <p>&lt;<a class="reference external" href="https://stackoverflow.com/q/7251477">https://stackoverflow.com/q/7251477</a>&gt;</p>
 </div>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ballet.util.git.get_pr_num">
-<code class="sig-prename descclassname"><span class="pre">ballet.util.git.</span></code><code class="sig-name descname"><span class="pre">get_pr_num</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#get_pr_num"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.util.git.get_pr_num" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
