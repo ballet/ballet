@@ -55,6 +55,21 @@ class PullRequestBuildDiffer(Differ):
         raise NotImplementedError
 
 
+class NoOpDiffer(PullRequestBuildDiffer):
+    """A differ that returns an empty changeset"""
+
+    def diff(self):
+        return []
+
+    def _check_environment(self):
+        pass
+
+
+def can_use_local_differ(repo: Optional[git.Repo]):
+    """On some non-master branch"""
+    return repo is not None and repo.head.ref.name != 'master'
+
+
 class LocalPullRequestBuildDiffer(PullRequestBuildDiffer):
 
     @property
