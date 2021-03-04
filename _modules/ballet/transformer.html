@@ -500,8 +500,7 @@
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">name</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
-        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{name}</span><span class="s1">(</span><span class="si">{transformer!r}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_transformer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_transformer</span><span class="si">!r}</span><span class="s1">)&#39;</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_transformer</span><span class="p">)</span>
@@ -567,36 +566,31 @@
     <span class="k">def</span> <span class="nf">_log_attempt_using_stored_approach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">approach</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
             <span class="n">TRACE</span><span class="p">,</span>
-            <span class="s1">&#39;</span><span class="si">{tname}</span><span class="s1">: &#39;</span>
-            <span class="s1">&#39;Attempting to convert using stored, &#39;</span>
-            <span class="s1">&#39;previously-successful approach </span><span class="si">{approach.name!r}</span><span class="s1">&#39;</span>
-            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="p">,</span> <span class="n">approach</span><span class="o">=</span><span class="n">approach</span><span class="p">))</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="si">}</span><span class="s1">: &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Attempting to convert using stored, &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;previously-successful approach </span><span class="si">{</span><span class="n">approach</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_log_failure_using_stored_approach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">approach</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="n">pretty_tb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_pretty_tb</span><span class="p">()</span>
         <span class="n">exc_name</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="s1">&#39;</span><span class="si">{tname}</span><span class="s1">: &#39;</span>
-            <span class="s1">&#39;Conversion unexpectedly failed using stored, &#39;</span>
-            <span class="s1">&#39;previously-successful approach </span><span class="si">{approach.name!r}</span><span class="s1"> &#39;</span>
-            <span class="s1">&#39;because of error </span><span class="si">{exc_name!r}</span><span class="se">\n\n</span><span class="si">{tb}</span><span class="s1">&#39;</span>
-            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="p">,</span> <span class="n">approach</span><span class="o">=</span><span class="n">approach</span><span class="p">,</span> <span class="n">exc_name</span><span class="o">=</span><span class="n">exc_name</span><span class="p">,</span>
-                    <span class="n">tb</span><span class="o">=</span><span class="n">pretty_tb</span><span class="p">))</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="si">}</span><span class="s1">: &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Conversion unexpectedly failed using stored, &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;previously-successful approach </span><span class="si">{</span><span class="n">approach</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s1"> &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;because of error </span><span class="si">{</span><span class="n">exc_name</span><span class="si">!r}</span><span class="se">\n\n</span><span class="si">{</span><span class="n">pretty_tb</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_log_success_using_stored_approach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">approach</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
             <span class="n">TRACE</span><span class="p">,</span>
-            <span class="s1">&#39;</span><span class="si">{tname}</span><span class="s1">: &#39;</span>
-            <span class="s1">&#39;Conversion with stored, previously-successful approach &#39;</span>
-            <span class="s1">&#39;</span><span class="si">{approach.name!r}</span><span class="s1"> succeeded!&#39;</span>
-            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="p">,</span> <span class="n">approach</span><span class="o">=</span><span class="n">approach</span><span class="p">))</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="si">}</span><span class="s1">: &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Conversion with stored, previously-successful approach &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">approach</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s1"> succeeded!&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_log_attempt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">approach</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
             <span class="n">TRACE</span><span class="p">,</span>
-            <span class="s1">&#39;</span><span class="si">{tname}</span><span class="s1">: &#39;</span>
-            <span class="s1">&#39;Attempting to convert using approach </span><span class="si">{approach.name!r}</span><span class="s1">...&#39;</span>
-            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="p">,</span> <span class="n">approach</span><span class="o">=</span><span class="n">approach</span><span class="p">))</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="si">}</span><span class="s1">: &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Attempting to convert using approach </span><span class="si">{</span><span class="n">approach</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s1">...&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_pretty_tb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">tb</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
@@ -607,29 +601,24 @@
         <span class="n">pretty_tb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_pretty_tb</span><span class="p">()</span>
         <span class="n">exc_name</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="s1">&#39;</span><span class="si">{tname}</span><span class="s1">: &#39;</span>
-            <span class="s1">&#39;Conversion approach </span><span class="si">{approach.name!r}</span><span class="s1"> didn</span><span class="se">\&#39;</span><span class="s1">t work so we</span><span class="se">\&#39;</span><span class="s1">ll try &#39;</span>
-            <span class="s1">&#39;another approach, &#39;</span>
-            <span class="s1">&#39;caught exception </span><span class="si">{exc_name!r}</span><span class="se">\n\n</span><span class="si">{tb}</span><span class="s1">&#39;</span>
-            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="p">,</span> <span class="n">approach</span><span class="o">=</span><span class="n">approach</span><span class="p">,</span> <span class="n">exc_name</span><span class="o">=</span><span class="n">exc_name</span><span class="p">,</span>
-                    <span class="n">tb</span><span class="o">=</span><span class="n">pretty_tb</span><span class="p">))</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="si">}</span><span class="s1">: &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Conversion approach </span><span class="si">{</span><span class="n">approach</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s1"> didn</span><span class="se">\&#39;</span><span class="s1">t work so we</span><span class="se">\&#39;</span><span class="s1">ll &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;try another approach, &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;caught exception </span><span class="si">{</span><span class="n">exc_name</span><span class="si">!r}</span><span class="se">\n\n</span><span class="si">{</span><span class="n">pretty_tb</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_log_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">approach</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="n">pretty_tb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_pretty_tb</span><span class="p">()</span>
         <span class="n">exc_name</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="s1">&#39;</span><span class="si">{tname}</span><span class="s1">: &#39;</span>
-            <span class="s1">&#39;Conversion failed during </span><span class="si">{approach.name!r}</span><span class="s1"> because of &#39;</span>
-            <span class="s1">&#39;an unrecoverable error </span><span class="si">{exc_name!r}</span><span class="se">\n\n</span><span class="si">{tb}</span><span class="s1">&#39;</span>
-            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="p">,</span> <span class="n">approach</span><span class="o">=</span><span class="n">approach</span><span class="p">,</span> <span class="n">exc_name</span><span class="o">=</span><span class="n">exc_name</span><span class="p">,</span>
-                    <span class="n">tb</span><span class="o">=</span><span class="n">pretty_tb</span><span class="p">))</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="si">}</span><span class="s1">: &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Conversion failed during </span><span class="si">{</span><span class="n">approach</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s1"> because of &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;an unrecoverable error </span><span class="si">{</span><span class="n">exc_name</span><span class="si">!r}</span><span class="se">\n\n</span><span class="si">{</span><span class="n">pretty_tb</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_log_success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">approach</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
             <span class="n">TRACE</span><span class="p">,</span>
-            <span class="s1">&#39;</span><span class="si">{tname}</span><span class="s1">: &#39;</span>
-            <span class="s1">&#39;Conversion approach </span><span class="si">{approach.name!r}</span><span class="s1"> succeeded!&#39;</span>
-            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="p">,</span> <span class="n">approach</span><span class="o">=</span><span class="n">approach</span><span class="p">))</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_tname</span><span class="si">}</span><span class="s1">: &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Conversion approach </span><span class="si">{</span><span class="n">approach</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s1"> succeeded!&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_log_failure_no_more_approaches</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Conversion failed, and we</span><span class="se">\&#39;</span><span class="s1">re not sure why...&#39;</span><span class="p">)</span></div>
@@ -644,15 +633,12 @@
 
     <span class="n">sig_fit</span> <span class="o">=</span> <span class="n">signature</span><span class="p">(</span><span class="n">transformer</span><span class="o">.</span><span class="n">fit</span><span class="p">)</span>
     <span class="k">if</span> <span class="s1">&#39;(X, y=None&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">sig_fit</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s1">&#39;Invalid signature for transformer.fit: </span><span class="si">{sig_fit}</span><span class="s1">&#39;</span>
-            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sig_fit</span><span class="o">=</span><span class="n">sig_fit</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid signature for transformer.fit: </span><span class="si">{</span><span class="n">sig_fit</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="n">sig_transform</span> <span class="o">=</span> <span class="n">signature</span><span class="p">(</span><span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
     <span class="k">if</span> <span class="s1">&#39;(X&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">sig_transform</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s1">&#39;Invalid signature for transformer.transform: </span><span class="si">{sig_transform}</span><span class="s1">&#39;</span>
-            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sig_transform</span><span class="o">=</span><span class="n">sig_transform</span><span class="p">))</span>
+            <span class="sa">f</span><span class="s1">&#39;Invalid signature for transformer.transform: </span><span class="si">{</span><span class="n">sig_transform</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_replace_callable_or_none_with_transformer</span><span class="p">(</span>

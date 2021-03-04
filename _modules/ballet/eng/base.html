@@ -516,12 +516,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="s1">&#39;ignore&#39;</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">&#39;Invalid value for handle_unknown: </span><span class="si">{}</span><span class="s1">&#39;</span>
-                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span><span class="p">))</span>
+                <span class="sa">f</span><span class="s1">&#39;Invalid value for handle_unknown: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="s1">&#39;ignore&#39;</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">&#39;Invalid value for handle_error: </span><span class="si">{}</span><span class="s1">&#39;</span>
-                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">))</span>
+                <span class="sa">f</span><span class="s1">&#39;Invalid value for handle_error: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="c1"># Get the groups</span>
         <span class="n">grouper</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">groupby_kwargs_</span><span class="p">)</span>
@@ -585,9 +583,7 @@
                         <span class="k">raise</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span> <span class="o">==</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">BalletError</span><span class="p">(</span>
-                        <span class="s1">&#39;Unknown group: </span><span class="si">{group_name}</span><span class="s1">&#39;</span>
-                        <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group_name</span><span class="o">=</span><span class="n">group_name</span><span class="p">))</span>
+                    <span class="k">raise</span> <span class="n">BalletError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown group: </span><span class="si">{</span><span class="n">group_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_unknown</span> <span class="o">==</span> <span class="s1">&#39;ignore&#39;</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">x_group</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -669,8 +665,8 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unsatisfy_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;Couldn&#39;t apply transformer on features in </span><span class="si">{}</span><span class="s2">.&quot;</span>
-                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">get_arr_desc</span><span class="p">(</span><span class="n">X</span><span class="p">)))</span></div></div>
+                <span class="sa">f</span><span class="s1">&#39;Couldn</span><span class="se">\&#39;</span><span class="s1">t apply transformer on features in &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">get_arr_desc</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

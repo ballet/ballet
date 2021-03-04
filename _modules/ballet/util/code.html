@@ -373,7 +373,7 @@
 
 <div class="viewcode-block" id="get_target_python_versions"><a class="viewcode-back" href="../../../api/ballet.util.code.html#ballet.util.code.get_target_python_versions">[docs]</a><span class="k">def</span> <span class="nf">get_target_python_versions</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="n">black</span><span class="o">.</span><span class="n">TargetVersion</span><span class="p">]:</span>
     <span class="n">major</span><span class="p">,</span> <span class="n">minor</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_version_tuple</span><span class="p">()</span>
-    <span class="n">pyversion</span> <span class="o">=</span> <span class="s1">&#39;py</span><span class="si">{major}{minor}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">major</span><span class="o">=</span><span class="n">major</span><span class="p">,</span> <span class="n">minor</span><span class="o">=</span><span class="n">minor</span><span class="p">)</span>
+    <span class="n">pyversion</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;py</span><span class="si">{</span><span class="n">major</span><span class="si">}{</span><span class="n">minor</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="k">return</span> <span class="p">{</span><span class="n">black</span><span class="o">.</span><span class="n">TargetVersion</span><span class="p">[</span><span class="n">pyversion</span><span class="o">.</span><span class="n">upper</span><span class="p">()]}</span></div>
 
 
@@ -438,8 +438,7 @@
     <span class="c1"># known limitation: cannot use from stdin</span>
     <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="vm">__code__</span><span class="o">.</span><span class="n">co_filename</span> <span class="o">==</span> <span class="s1">&#39;&lt;stdin&gt;&#39;</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-            <span class="s1">&#39;Cannot use </span><span class="si">{name!r}</span><span class="s1"> on function defined interactively.&#39;</span>
-            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;get_source&#39;</span><span class="p">))</span>
+            <span class="s1">&#39;Cannot use </span><span class="se">\&#39;</span><span class="s1">get_source</span><span class="se">\&#39;</span><span class="s1"> on function defined interactively.&#39;</span><span class="p">)</span>
 
     <span class="c1"># if f was not defined in the same file, return code to import it</span>
     <span class="c1"># TODO</span>

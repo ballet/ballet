@@ -465,8 +465,7 @@
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">dstdir</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
                         <span class="k">raise</span> <span class="n">BalletError</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                        <span class="s1">&#39;Making directory: </span><span class="si">{dstdir!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dstdir</span><span class="o">=</span><span class="n">dstdir</span><span class="p">))</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Making directory: </span><span class="si">{</span><span class="n">dstdir</span><span class="si">!s}</span><span class="s1">&#39;</span><span class="p">)</span>
                     <span class="n">dstdir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">()</span>
                     <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">dstdir</span><span class="p">,</span> <span class="s1">&#39;dir&#39;</span><span class="p">))</span>
                     <span class="n">cleanup</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">rmdir</span><span class="p">,</span> <span class="n">dstdir</span><span class="p">))</span>
@@ -477,9 +476,7 @@
                 <span class="k">if</span> <span class="n">dstfile</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
                     <span class="n">onexist</span><span class="p">(</span><span class="n">dstfile</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                        <span class="s1">&#39;Copying file to destination: </span><span class="si">{dstfile!s}</span><span class="s1">&#39;</span>
-                        <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dstfile</span><span class="o">=</span><span class="n">dstfile</span><span class="p">))</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Copying file to destination: </span><span class="si">{</span><span class="n">dstfile</span><span class="si">!s}</span><span class="s1">&#39;</span><span class="p">)</span>
                     <span class="n">copyfile</span><span class="p">(</span><span class="n">srcfile</span><span class="p">,</span> <span class="n">dstfile</span><span class="p">)</span>
                     <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">dstfile</span><span class="p">,</span> <span class="s1">&#39;file&#39;</span><span class="p">))</span>
                     <span class="n">cleanup</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">,</span> <span class="n">dstfile</span><span class="p">))</span>
