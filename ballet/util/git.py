@@ -5,6 +5,7 @@ from typing import Iterator, Optional, Tuple
 import git
 import requests
 from funcy import collecting, re_find, silent
+from github import Github, Repository
 
 from ballet.util import one_or_raise
 
@@ -256,3 +257,22 @@ def did_git_push_succeed(push_info: git.remote.PushInfo) -> bool:
         push_info: push info
     """
     return push_info.flags & GIT_PUSH_FAILURE == 0
+
+
+def create_github_repo(github: Github, owner: str, name: str) -> Repository:
+    """Create the repo :owner/:name
+
+    The authenticated account must have the permissions to create the desired
+    repo.
+    1. if the desired owner is the user, then this is straightforward
+    2. if the desired owner is an organization, then the user must have
+        permission to create a new repo for the organization
+
+    Returns:
+        the created repository
+
+    Raises:
+        github.GithubException.BadCredentialsException: if the token does not
+            have permission to create the desired repo
+    """
+    pass

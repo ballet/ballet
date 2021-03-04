@@ -31,11 +31,22 @@ def cli(verbose, quiet):
 
 
 @cli.command()
+@click.option('--create-github-repo',
+              default=False,
+              help='Create repo on GitHub for resulting project')
+@click.option('--github-token',
+              envvar='GITHUB_TOKEN',
+              default=None,
+              help='github personal access token')
 @stacklog(click.echo, 'Generating new ballet project')
-def quickstart():
+def quickstart(create_github_repo, github_token):
     """Generate a brand-new ballet project"""
     import ballet.templating
-    ballet.templating.render_project_template()
+    ballet.templating.render_project_template(
+        create_github_repo=create_github_repo,
+        github_token=github_token,
+
+    )
 
 
 @cli.command('update-project-template')

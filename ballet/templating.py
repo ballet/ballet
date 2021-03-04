@@ -37,12 +37,21 @@ def cookiecutter(*args, **kwargs) -> str:
 
 
 def render_project_template(
-    project_template_path: Optional[Pathy] = None, **cc_kwargs
+    project_template_path: Optional[Pathy] = None,
+    create_github_repo: bool = False,
+    github_token: Optional[str] = None,
+    **cc_kwargs
 ) -> str:
     """Generate a ballet project according to the project template
 
     Args:
         project_template_path: path to specific project template
+        create_github_repo: whether to act to create the desired repo on
+            GitHub after rendering the project. The repo will be owned by
+            either the user or an org that the user has relevant permissions
+            for, depending on what is entered during the quickstart prompts.
+            If True, then a valid github token must also be provided.
+        github_token: valid github token with appropriate permissions
         **cc_kwargs: options for the cookiecutter template
     """
     if project_template_path is None:
