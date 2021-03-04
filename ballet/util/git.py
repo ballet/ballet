@@ -5,7 +5,8 @@ from typing import Iterator, Optional, Tuple
 import git
 import requests
 from funcy import collecting, re_find, silent
-from github import Github, Repository
+from github import Github
+from github.Repository import Repository
 
 from ballet.util import one_or_raise
 
@@ -275,4 +276,8 @@ def create_github_repo(github: Github, owner: str, name: str) -> Repository:
         github.GithubException.BadCredentialsException: if the token does not
             have permission to create the desired repo
     """
-    pass
+    user = github.get_user()
+    if user.login == owner:
+        return user.create_repo(owner)
+    else:
+        return github.get_organization(owner).create_repo(owner)
