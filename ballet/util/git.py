@@ -11,8 +11,7 @@ from ballet.util import one_or_raise
 FILE_CHANGES_COMMIT_RANGE = '{a}...{b}'
 REV_REGEX = r'[a-zA-Z0-9_/^@{}-]+'
 COMMIT_RANGE_REGEX = re.compile(
-    r'(?P<a>{rev})\.\.(?P<thirddot>\.?)(?P<b>{rev})'
-    .format(rev=REV_REGEX))
+    fr'(?P<a>{REV_REGEX})\.\.(?P<thirddot>\.?)(?P<b>{REV_REGEX})')
 GIT_PUSH_FAILURE = (
     git.PushInfo.REJECTED |
     git.PushInfo.REMOTE_REJECTED |
@@ -173,8 +172,8 @@ def get_diff_endpoints_from_commit_range(
     result = re_find(COMMIT_RANGE_REGEX, commit_range)
     if not result:
         raise ValueError(
-            'Expected diff str of the form \'a..b\' or \'a...b\' (got {})'
-            .format(commit_range))
+            f'Expected diff str of the form \'a..b\' or \'a...b\' '
+            f'(got {commit_range})')
     a, b = result['a'], result['b']
     a, b = repo.rev_parse(a), repo.rev_parse(b)
     if result['thirddot']:
@@ -221,7 +220,7 @@ def set_config_variables(repo: git.Repo, variables: dict):
 
 def get_pull_requests(owner: str, repo: str, state: str = 'closed') -> dict:
     base = 'https://api.github.com'
-    q = '/repos/{owner}/{repo}/pulls'.format(owner=owner, repo=repo)
+    q = f'/repos/{owner}/{repo}/pulls'
     url = base + q
     headers = {
         'Accept': 'application/vnd.github.v3+json'

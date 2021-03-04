@@ -27,7 +27,7 @@ def test_import_module_at_path_module(tmp_path):
     init.touch()
     x = 1
     with path.open('w') as f:
-        f.write('x={x!r}'.format(x=x))
+        f.write(f'x={x!r}')
     modname = 'foo.bar'
     modpath = str(path)  # e.g. /tmp/foo/bar.py'
     mod = import_module_at_path(modname, modpath)
@@ -43,7 +43,7 @@ def test_import_module_at_path_package(tmp_path):
     init.touch()
     x = 'hello'
     with init.open('w') as f:
-        f.write('x={x!r}'.format(x=x))
+        f.write(f'x={x!r}')
     modname = 'foo'
     modpath = str(path)
     mod = import_module_at_path(modname, modpath)

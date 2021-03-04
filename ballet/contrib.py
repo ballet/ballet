@@ -68,8 +68,7 @@ def _collect_contrib_features_from_package(
     package: ModuleType
 ) -> Iterator[Optional[Feature]]:
     logger.debug(
-        'Walking package path {path} to detect modules...'
-        .format(path=package.__path__))  # type: ignore  # mypy issue #1422
+        f'Walking package path {package.__path__} to detect modules...')  # type: ignore  # mypy issue 1422  # noqa E501
 
     for importer, modname, _ in pkgutil.walk_packages(
             path=package.__path__,  # type: ignore  # mypy issue #1422
@@ -89,9 +88,7 @@ def _collect_contrib_features_from_package(
                 raise ImportError
             mod = finder.load_module(modname)
         except ImportError:
-            logger.exception(
-                'Failed to import module {modname}'
-                .format(modname=modname))
+            logger.exception(f'Failed to import module {modname}')
             continue
 
         yield _collect_contrib_feature_from_module(mod)
@@ -99,8 +96,7 @@ def _collect_contrib_features_from_package(
 
 def _collect_contrib_feature_from_module(mod: ModuleType) -> Optional[Feature]:
     logger.debug(
-        'Trying to import contributed feature from module {modname}...'
-        .format(modname=mod.__name__))
+        f'Trying to import contributed feature from module {mod.__name__}...')
 
     candidates = []
     for attr in dir(mod):
@@ -112,18 +108,15 @@ def _collect_contrib_feature_from_module(mod: ModuleType) -> Optional[Feature]:
         feature = candidates[0]
         feature.source = mod.__name__
         logger.debug(
-            'Imported 1 feature from {modname} from {Feature.__name__} object'
-            .format(modname=mod.__name__, Feature=Feature))
+            f'Imported 1 feature from {mod.__name__} from {Feature.__name__}'
+            ' object')
         return feature
     elif len(candidates) > 1:
         logger.debug(
-            'Found too many {Feature.__name__} objects in module {modname}, '
-            'skipping; candidates were {candidates!r}'
-            .format(Feature=Feature, modname=mod.__name__,
-                    candidates=candidates))
+            f'Found too many {Feature.__name__} objects in module '
+            '{mod.__name__}, skipping; candidates were {candidates!r}')
         return None
     else:
         logger.debug(
-            'Failed to import anything useful from module {modname}'
-            .format(modname=mod.__name__))
+            f'Failed to import anything useful from module {mod.__name__}')
         return None

@@ -80,8 +80,7 @@ def load_config_at_path(path: Pathy) -> Dynaconf:
         return Dynaconf(**options)
     else:
         raise ConfigurationError(
-            'Couldn\'t find ballet.yml config file at {path!s}'
-            .format(path=path))
+            f'Couldn\'t find ballet.yml config file at {path!s}')
 
 
 def load_config_in_dir(path: Pathy) -> Dynaconf:
@@ -116,7 +115,7 @@ def make_feature_path(
 ) -> pathlib.Path:
     contrib_dir = pathlib.Path(contrib_dir)
     return contrib_dir.joinpath(
-        'user_{}'.format(username), 'feature_{}.py'.format(featurename))
+        f'user_{username}', f'feature_{featurename}.py')
 
 
 def detect_github_username(project: 'Project') -> str:

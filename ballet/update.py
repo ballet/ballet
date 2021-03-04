@@ -99,28 +99,28 @@ def _check_for_updated_ballet() -> Optional[str]:
 
 def _warn_of_updated_ballet(latest: str):
     if latest is not None:
-        msg = \
-            '''\
-            A new version of ballet is available: {latest}
+        current = ballet.__version__
+        msg = dedent(
+            f'''
+            A new version of ballet is available: v{latest}
             - you currently have ballet v{current}
             - if you don't update ballet, you won't receive project template updates
             - update ballet and then try again:
 
                 $ pip install --upgrade ballet
             '''  # noqa E501
-        msg = msg.format(latest=latest, current=ballet.__version__)
-        msg = dedent(msg)
+        ).strip()
         logger.warning(msg)
 
 
 def _make_template_branch_merge_commit_message() -> str:
     version = ballet.__version__
-    return 'Merge project template updates from ballet v{}'.format(version)
+    return f'Merge project template updates from ballet v{version}'
 
 
+@funcy.silent
 def _safe_delete_remote(repo: git.Repo, name: str):
-    with funcy.suppress(Exception):
-        repo.delete_remote(name)
+    repo.delete_remote(name)
 
 
 def _render_project_template(
@@ -148,8 +148,8 @@ def _get_full_context(cwd: pathlib.Path) -> dict:
             context = json.load(f)
     else:
         raise FileNotFoundError(
-            'Could not find \'{}\', are you in a ballet project repo?'
-            .format(CONTEXT_FILE_NAME))
+            f'Could not find \'{CONTEXT_FILE_NAME}\', are you in a ballet '
+            'project repo?')
 
     # find out if there are any new keys to prompt for
     with PROJECT_CONTEXT_PATH.open('r') as f:
@@ -166,9 +166,8 @@ def _get_full_context(cwd: pathlib.Path) -> dict:
 
 def _call_remote_push(remote: git.Remote):
     return remote.push([
-        '{master}:{master}'.format(master=DEFAULT_BRANCH),
-        '{project_template}:{project_template}'.format(
-            project_template=TEMPLATE_BRANCH),
+        f'{DEFAULT_BRANCH}:{DEFAULT_BRANCH}',
+        f'{TEMPLATE_BRANCH}:{TEMPLATE_BRANCH}',
     ])
 
 
@@ -191,9 +190,8 @@ def _push(project: Project):
     if failures:
         for push_info in failures:
             logger.error(
-                'Failed to push ref {from_ref} to {to_ref}'
-                .format(from_ref=push_info.local_ref.name,
-                        to_ref=push_info.remote_ref.name))
+                f'Failed to push ref {push_info.local_ref.name} to '
+                f'{push_info.remote_ref.name}')
         raise BalletError('Push failed')
 
 
@@ -253,12 +251,11 @@ def update_project_template(push: bool = False,
 
     if repo.head.ref.name != DEFAULT_BRANCH:
         raise ConfigurationError(
-            'Must run command from branch {master}'
-            .format(master=DEFAULT_BRANCH))
+            f'Must run command from branch {DEFAULT_BRANCH}')
 
     if TEMPLATE_BRANCH not in repo.branches:
         raise ConfigurationError(
-            'Could not find \'{}\' branch.'.format(TEMPLATE_BRANCH))
+            f'Could not find \'{TEMPLATE_BRANCH}\' branch.')
 
     # check for upstream updates to ballet
     new_version = _check_for_updated_ballet()
@@ -269,7 +266,7 @@ def update_project_template(push: bool = False,
         tempdir = pathlib.Path(_tempdir)
 
         # cookiecutter returns path to the resulting project dir
-        logger.debug('Re-rendering project template at {}'.format(tempdir))
+        logger.debug(f'Re-rendering project template at {tempdir}')
         updated_template = _render_project_template(
             cwd, tempdir, project_template_path=project_template_path)
         updated_repo = git.Repo(updated_template)
@@ -296,13 +293,12 @@ def update_project_template(push: bool = False,
                 logger.info('No updates to template -- done.')
                 return
             commit_message = _make_template_branch_merge_commit_message()
-            logger.debug('Committing updates: {}'.format(commit_message))
+            logger.debug(f'Committing updates: {commit_message}')
             repo.git.commit(m=commit_message)
         except GitCommandError:
             logger.critical(
-                'Could not merge changes into {template_branch} branch, '
-                'update failed'
-                .format(template_branch=TEMPLATE_BRANCH))
+                f'Could not merge changes into {TEMPLATE_BRANCH} branch, '
+                f'update failed')
             raise
         finally:
             _safe_delete_remote(repo, remote_name)
@@ -314,14 +310,16 @@ def update_project_template(push: bool = False,
         repo.git.merge(TEMPLATE_BRANCH, no_ff=True)
     except GitCommandError as e:
         if 'merge conflict' in str(e).lower():
-            logger.critical('\n'.join([
-                'Update failed due to a merge conflict.',
-                'Fix conflicts, and then complete merge manually:',
-                '    $ git add .',
-                '    $ git commit --no-edit',
-                'Otherwise, abandon the update:',
-                '    $ git reset --merge {original_head}'
-            ]).format(original_head=original_head))
+            logger.critical(dedent(
+                f'''
+                Update failed due to a merge conflict.
+                Fix conflicts, and then complete merge manually:
+                    $ git add .
+                    $ git commit --no-edit
+                Otherwise, abandon the update:
+                    $ git reset --merge {original_head}
+                '''
+            ).strip())
         raise
 
     if push:

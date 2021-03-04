@@ -67,9 +67,7 @@ def _fail_if_feature_exists(dst: pathlib.Path) -> None:
         and fy.re_test(SUBPACKAGE_NAME_REGEX, subpackage_name)
         and fy.re_test(FEATURE_MODULE_NAME_REGEX, feature_name)
     ):
-        raise FileExistsError(
-            'The feature already exists here: {dst}'
-            .format(dst=dst))
+        raise FileExistsError(f'The feature already exists here: {dst}')
 
 
 def start_new_feature(
@@ -157,4 +155,4 @@ def _log_start_new_feature_success(result: List[Tuple[pathlib.Path, str]]):
     for (name, kind) in result:
         if kind == 'file' and '__init__' not in str(name):
             relname = pathlib.Path(name).relative_to(pathlib.Path.cwd())
-            logger.info('Created {}'.format(relname))
+            logger.info(f'Created {relname}')

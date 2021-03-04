@@ -33,17 +33,19 @@ def submit_feature(repo, contrib_dir, username, featurename, new_feature_str):
 
     added_files = [str(fn) for (fn, kind) in result if kind == 'file']
     repo.index.add(added_files)
-    repo.index.commit('Add {} feature'.format(feature_path))
+    repo.index.commit(f'Add {feature_path} feature')
 
 
 def make_feature_str(input):
-    return dedent("""
+    return dedent(
+        f"""
         from ballet import Feature
         from ballet.eng.misc import IdentityTransformer
         input = {input!r}
         transformer = IdentityTransformer()
         feature = Feature(input, transformer)
-    """.format(input=input)).strip()
+        """
+    ).strip()
 
 
 @pytest.mark.slow

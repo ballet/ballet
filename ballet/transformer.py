@@ -153,8 +153,7 @@ class DelegatingRobustTransformer(DeepcopyMixin, BaseTransformer):
 
     def __repr__(self):
         name = type(self).__name__
-        return '{name}({transformer!r})'.format(
-            name=name, transformer=self._transformer)
+        return f'{name}({self._transformer!r})'
 
     def __str__(self):
         return str(self._transformer)
@@ -220,36 +219,31 @@ class DelegatingRobustTransformer(DeepcopyMixin, BaseTransformer):
     def _log_attempt_using_stored_approach(self, approach):
         logger.log(
             TRACE,
-            '{tname}: '
-            'Attempting to convert using stored, '
-            'previously-successful approach {approach.name!r}'
-            .format(tname=self._tname, approach=approach))
+            f'{self._tname}: '
+            f'Attempting to convert using stored, '
+            f'previously-successful approach {approach.name!r}')
 
     def _log_failure_using_stored_approach(self, approach, e):
         pretty_tb = self._get_pretty_tb()
         exc_name = type(e).__name__
         logger.debug(
-            '{tname}: '
-            'Conversion unexpectedly failed using stored, '
-            'previously-successful approach {approach.name!r} '
-            'because of error {exc_name!r}\n\n{tb}'
-            .format(tname=self._tname, approach=approach, exc_name=exc_name,
-                    tb=pretty_tb))
+            f'{self._tname}: '
+            f'Conversion unexpectedly failed using stored, '
+            f'previously-successful approach {approach.name!r} '
+            f'because of error {exc_name!r}\n\n{pretty_tb}')
 
     def _log_success_using_stored_approach(self, approach):
         logger.log(
             TRACE,
-            '{tname}: '
-            'Conversion with stored, previously-successful approach '
-            '{approach.name!r} succeeded!'
-            .format(tname=self._tname, approach=approach))
+            f'{self._tname}: '
+            f'Conversion with stored, previously-successful approach '
+            f'{approach.name!r} succeeded!')
 
     def _log_attempt(self, approach):
         logger.log(
             TRACE,
-            '{tname}: '
-            'Attempting to convert using approach {approach.name!r}...'
-            .format(tname=self._tname, approach=approach))
+            f'{self._tname}: '
+            f'Attempting to convert using approach {approach.name!r}...')
 
     def _get_pretty_tb(self):
         tb = traceback.format_exc()
@@ -260,29 +254,24 @@ class DelegatingRobustTransformer(DeepcopyMixin, BaseTransformer):
         pretty_tb = self._get_pretty_tb()
         exc_name = type(e).__name__
         logger.debug(
-            '{tname}: '
-            'Conversion approach {approach.name!r} didn\'t work so we\'ll try '
-            'another approach, '
-            'caught exception {exc_name!r}\n\n{tb}'
-            .format(tname=self._tname, approach=approach, exc_name=exc_name,
-                    tb=pretty_tb))
+            f'{self._tname}: '
+            f'Conversion approach {approach.name!r} didn\'t work so we\'ll '
+            f'try another approach, '
+            f'caught exception {exc_name!r}\n\n{pretty_tb}')
 
     def _log_error(self, approach, e):
         pretty_tb = self._get_pretty_tb()
         exc_name = type(e).__name__
         logger.debug(
-            '{tname}: '
-            'Conversion failed during {approach.name!r} because of '
-            'an unrecoverable error {exc_name!r}\n\n{tb}'
-            .format(tname=self._tname, approach=approach, exc_name=exc_name,
-                    tb=pretty_tb))
+            f'{self._tname}: '
+            f'Conversion failed during {approach.name!r} because of '
+            f'an unrecoverable error {exc_name!r}\n\n{pretty_tb}')
 
     def _log_success(self, approach):
         logger.log(
             TRACE,
-            '{tname}: '
-            'Conversion approach {approach.name!r} succeeded!'
-            .format(tname=self._tname, approach=approach))
+            f'{self._tname}: '
+            f'Conversion approach {approach.name!r} succeeded!')
 
     def _log_failure_no_more_approaches(self):
         logger.debug('Conversion failed, and we\'re not sure why...')
@@ -297,15 +286,12 @@ def _validate_transformer_api(transformer: BaseTransformer):
 
     sig_fit = signature(transformer.fit)
     if '(X, y=None' not in str(sig_fit):
-        raise ValueError(
-            'Invalid signature for transformer.fit: {sig_fit}'
-            .format(sig_fit=sig_fit))
+        raise ValueError(f'Invalid signature for transformer.fit: {sig_fit}')
 
     sig_transform = signature(transformer.transform)
     if '(X' not in str(sig_transform):
         raise ValueError(
-            'Invalid signature for transformer.transform: {sig_transform}'
-            .format(sig_transform=sig_transform))
+            f'Invalid signature for transformer.transform: {sig_transform}')
 
 
 def _replace_callable_or_none_with_transformer(

@@ -116,8 +116,7 @@ def _synctree(
                     if not dstdir.is_dir():
                         raise BalletError
                 else:
-                    logger.debug(
-                        'Making directory: {dstdir!s}'.format(dstdir=dstdir))
+                    logger.debug(f'Making directory: {dstdir!s}')
                     dstdir.mkdir()
                     result.append((dstdir, 'dir'))
                     cleanup.append(partial(os.rmdir, dstdir))
@@ -128,9 +127,7 @@ def _synctree(
                 if dstfile.exists():
                     onexist(dstfile)
                 else:
-                    logger.debug(
-                        'Copying file to destination: {dstfile!s}'
-                        .format(dstfile=dstfile))
+                    logger.debug(f'Copying file to destination: {dstfile!s}')
                     copyfile(srcfile, dstfile)
                     result.append((dstfile, 'file'))
                     cleanup.append(partial(os.unlink, dstfile))

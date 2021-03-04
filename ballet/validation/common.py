@@ -50,8 +50,7 @@ def get_proposed_feature(project: Project):
         feature = _collect_contrib_feature_from_module(module)
         return feature
     else:
-        msg = 'Too many features collected (n={})'.format(n)
-        raise FeatureCollectionError(msg)
+        raise FeatureCollectionError(f'Too many features collected (n={n})')
 
 
 def get_accepted_features(
@@ -89,14 +88,14 @@ def get_accepted_features(
             'Did not find match for proposed feature within \'contrib\'')
     else:
         raise BalletError(
-            'Unexpected condition (n_features={}, n_result={})'
-            .format(len(features), len(result)))
+            f'Unexpected condition (n_features={len(features)}, '
+            f'n_result={len(result)})')
 
 
 def _log_collect_items(name: str, items: Collection):
     n = len(items)
     s = make_plural_suffix(items)
-    logger.info('Collected {n} {name}{s}'.format(n=n, name=name, s=s))
+    logger.info(f'Collected {n} {name}{s}')
     return items
 
 
@@ -172,7 +171,7 @@ class ChangeCollector:
 
         # log results
         for i, file in enumerate(file_diffs):
-            logger.debug('File {i}: {file}'.format(i=i, file=file))
+            logger.debug(f'File {i}: {file}')
 
         return file_diffs
 
@@ -193,30 +192,28 @@ class ChangeCollector:
                 if pathlib.Path(diff.b_path).parts[-1] != '__init__.py':
                     candidate_feature_diffs.append(diff)
                     logger.debug(
-                        'Categorized {file} as CANDIDATE FEATURE MODULE'
-                        .format(file=diff.b_path))
+                        f'Categorized {diff.b_path} as '
+                        'CANDIDATE FEATURE MODULE')
                 else:
                     valid_init_diffs.append(diff)
                     logger.debug(
-                        'Categorized {file} as VALID INIT MODULE'
-                        .format(file=diff.b_path))
+                        f'Categorized {diff.b_path} as VALID INIT MODULE')
             else:
                 inadmissible_files.append(diff)
                 logger.debug(
-                    'Categorized {file} as INADMISSIBLE; '
-                    'failures were {failures}'
-                    .format(file=diff.b_path, failures=failures))
+                    f'Categorized {diff.b_path} as INADMISSIBLE; '
+                    f'failures were {failures}')
 
         logger.info(
-            'Admitted {} candidate feature{} '
-            'and {} __init__ module{} '
-            'and rejected {} file{}'
-            .format(len(candidate_feature_diffs),
-                    make_plural_suffix(candidate_feature_diffs),
-                    len(valid_init_diffs),
-                    make_plural_suffix(valid_init_diffs),
-                    len(inadmissible_files),
-                    make_plural_suffix(inadmissible_files)))
+            'Admitted {n1} candidate feature{s1} '
+            'and {n2} __init__ module{s2} '
+            'and rejected {n3} file{s3}'
+            .format(n1=len(candidate_feature_diffs),
+                    s1=make_plural_suffix(candidate_feature_diffs),
+                    n2=len(valid_init_diffs),
+                    s2=make_plural_suffix(valid_init_diffs),
+                    n3=len(inadmissible_files),
+                    s3=make_plural_suffix(inadmissible_files)))
 
         return candidate_feature_diffs, valid_init_diffs, inadmissible_files
 
@@ -290,5 +287,4 @@ class RandomFeaturePerformanceEvaluator(FeaturePerformanceEvaluator):
         self.seed = seed
 
     def __str__(self):
-        return '{str}: p={p}, seed={seed}'.format(
-            str=super().__str__(), p=self.p, seed=self.seed)
+        return f'{super().__str__()}: p={self.p}, seed={self.seed}'

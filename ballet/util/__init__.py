@@ -28,12 +28,8 @@ def asarray2d(a: np.ndarray) -> np.ndarray:
 def get_arr_desc(arr: np.ndarray) -> str:
     """Get array description, in the form '<array type> <array shape>'"""
     type_ = type(arr).__name__  # see also __qualname__
-    shape = getattr(arr, 'shape', None)
-    if shape is not None:
-        desc = '{type_} {shape}'
-    else:
-        desc = '{type_} <no shape>'
-    return desc.format(type_=type_, shape=shape)
+    shape = getattr(arr, 'shape', '<no shape>')
+    return f'{type_} {shape}'
 
 
 def indent(text: str, n=4) -> str:
@@ -76,7 +72,7 @@ def dfilter(call: Call, pred):
 
 
 def load_sklearn_df(name: str) -> Tuple[pd.DataFrame, pd.DataFrame]:
-    method_name = 'load_{name}'.format(name=name)
+    method_name = f'load_{name}'
     method = getattr(sklearn.datasets, method_name)
     data = method()
     X_df = pd.DataFrame(data=data.data, columns=data.feature_names)
@@ -112,8 +108,7 @@ def one_or_raise(seq: Sequence[_T]) -> _T:
     if n == 1:
         return seq[0]
     else:
-        raise ValueError('Expected exactly 1 element, but got {n}'
-                         .format(n=n))
+        raise ValueError(f'Expected exactly 1 element, but got {n}')
 
 
 def warn(msg: str):
@@ -165,7 +160,7 @@ def nonnegative(call: Call, name: Optional[str] = None):
                     name = ''.join(map(str.capitalize, pieces))
                 except RuntimeError:
                     name = 'Result'
-            logger.warning('%s should be non-negative.', name)
+            logger.warning(f'{name} should be non-negative.')
     return result
 
 

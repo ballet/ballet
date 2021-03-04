@@ -124,10 +124,9 @@ class GFSSFPerformanceEvaluator(FeaturePerformanceEvaluator):
         self.lmbda_2 = lmbda_2
 
     def __str__(self):
-        return '{cls}: lmbda_1={lmbda_1:0.4f}, lmbda_2={lmbda_2:0.4f}'.format(
-            cls=super().__str__(),
-            lmbda_1=self.lmbda_1,
-            lmbda_2=self.lmbda_2)
+        cls = super().__str__()
+        return \
+            f'{cls}: lmbda_1={self.lmbda_1:0.4f}, lmbda_2={self.lmbda_2:0.4f}'
 
     def _get_feature_df_map(self):
         all_features = [*self.features, self.candidate_feature]

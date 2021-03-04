@@ -169,12 +169,10 @@ class GroupwiseTransformer(BaseTransformer):
         self.groupby_kwargs_ = self.groupby_kwargs or {}
         if self.handle_unknown not in ['error', 'ignore']:
             raise ValueError(
-                'Invalid value for handle_unknown: {}'
-                .format(self.handle_unknown))
+                f'Invalid value for handle_unknown: {self.handle_unknown}')
         if self.handle_error not in ['error', 'ignore']:
             raise ValueError(
-                'Invalid value for handle_error: {}'
-                .format(self.handle_error))
+                f'Invalid value for handle_error: {self.handle_error}')
 
         # Get the groups
         grouper = X.groupby(**self.groupby_kwargs_)
@@ -238,9 +236,7 @@ class GroupwiseTransformer(BaseTransformer):
                         raise
             else:
                 if self.handle_unknown == 'error':
-                    raise BalletError(
-                        'Unknown group: {group_name}'
-                        .format(group_name=group_name))
+                    raise BalletError(f'Unknown group: {group_name}')
                 elif self.handle_unknown == 'ignore':
                     return x_group
                 else:
@@ -322,5 +318,5 @@ class ConditionalTransformer(BaseTransformer):
             return self.unsatisfy_transform(X)
         else:
             raise TypeError(
-                "Couldn't apply transformer on features in {}."
-                .format(get_arr_desc(X)))
+                f'Couldn\'t apply transformer on features in '
+                f'{get_arr_desc(X)}.')

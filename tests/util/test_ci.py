@@ -117,5 +117,5 @@ def test_travis_pull_request_build_differ_on_mock_commits(mock_repo):
         j = i
         for diff in diffs:
             assert diff.change_type == 'A'
-            assert diff.b_path == 'file{j}.py'.format(j=j)
+            assert diff.b_path == f'file{j}.py'
             j += 1

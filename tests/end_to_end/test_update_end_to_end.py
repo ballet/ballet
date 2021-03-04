@@ -47,8 +47,7 @@ def check_commit_message_on_template(repo):
 
 
 def check_commit_message_on_master(repo):
-    expected_commit_message = 'Merge branch {template_branch!r}'.format(
-        template_branch=TEMPLATE_BRANCH)
+    expected_commit_message = f'Merge branch {TEMPLATE_BRANCH!r}'
     commit = repo.head.commit
     check_commit_message(commit, expected_commit_message)
 
@@ -168,8 +167,7 @@ def test_update_after_change_in_project(quickstart):
     # commit
     repo.git.add(DEFAULT_CONFIG_NAME)
     repo.git.commit(
-        m='Add "{new_content}" to {config_file_name}'
-        .format(new_content=new_content, config_file_name=DEFAULT_CONFIG_NAME))
+        m=f'Add \'{new_content}\' to {DEFAULT_CONFIG_NAME}')
 
     expected_master_commit = repo.head.commit
 

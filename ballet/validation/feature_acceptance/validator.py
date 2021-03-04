@@ -13,7 +13,7 @@ from ballet.validation.gfssf import (
 class NeverAccepter(FeatureAccepter):
 
     def judge(self):
-        logger.info('Judging feature using {}'.format(self))
+        logger.info(f'Judging feature using {self}')
         return False
 
 
@@ -22,14 +22,14 @@ class RandomAccepter(FeatureAcceptanceMixin,
 
     def judge(self):
         """Accept feature with probability p"""
-        logger.info('Judging feature using {}'.format(self))
+        logger.info(f'Judging feature using {self}')
         with seeded(self.seed):
             return random.uniform(0, 1) < self.p
 
 
 class AlwaysAccepter(FeatureAccepter):
     def judge(self):
-        logger.info('Judging feature using {}'.format(self))
+        logger.info(f'Judging feature using {self}')
         return True
 
 

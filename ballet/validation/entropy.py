@@ -58,8 +58,7 @@ def _compute_volume_unit_ball(d: int, metric: str = NEIGHBORS_METRIC) -> float:
     elif metric == 'euclidean':
         return np.power(np.pi, d / 2) / gamma(1 + d / 2) / 2**d
     else:
-        msg = 'metric {metric} not supported'.format(metric=metric)
-        raise ValueError(msg)
+        raise ValueError(f'metric {metric} not supported')
 
 
 def _is_column_disc(col: np.ndarray) -> bool:

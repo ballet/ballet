@@ -44,9 +44,7 @@ def enable(logger: Union[str, logging.Logger] = logger,
         logger.addHandler(_handler)
 
     if echo:
-        logger.log(
-            levelInt, 'Logging enabled at level {name}.'.format(
-                name=levelName))
+        logger.log(levelInt, f'Logging enabled at level {levelName}.')
 
 
 class LevelFilter:

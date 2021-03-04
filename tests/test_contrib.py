@@ -27,16 +27,15 @@ def create_contrib_modules_at_dir(dirname, modcontent, n=1):
     root = pathlib.Path(dirname)
     root.joinpath('__init__.py').touch()
     for i in range(n):
-        root.joinpath('mod{i}'.format(i=i)).mkdir()
-        root.joinpath('mod{i}'.format(i=i), '__init__.py').touch()
+        root.joinpath(f'mod{i}').mkdir()
+        root.joinpath(f'mod{i}', '__init__.py').touch()
 
         try:
             modcontent_i = modcontent.format(i=i)
         except KeyError:
             # shouldn't happen
             modcontent_i = modcontent
-        modpath_i = str(root.joinpath(
-            'mod{i}'.format(i=i), 'foo{i}.py'.format(i=i)))
+        modpath_i = str(root.joinpath(f'mod{i}', f'foo{i}.py'))
         with open(modpath_i, 'w') as f:
             f.write(modcontent_i)
 

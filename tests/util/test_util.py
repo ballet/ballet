@@ -95,7 +95,7 @@ def test_indent():
 def test_make_plural_suffix_plural():
     objs = ['honda', 'toyota']
     suffix = make_plural_suffix(objs)
-    actual = 'car{s}'.format(s=suffix)
+    actual = f'car{suffix}'
     expected = 'cars'
     assert actual == expected
 
@@ -103,7 +103,7 @@ def test_make_plural_suffix_plural():
 def test_make_plural_suffix_singular():
     objs = ['honda']
     suffix = make_plural_suffix(objs)
-    actual = 'car{s}'.format(s=suffix)
+    actual = f'car{suffix}'
     expected = 'car'
     assert actual == expected
 

@@ -21,7 +21,7 @@ PRUNER_MESSAGE = 'Found Redundant Feature: '
 @decorator
 def validation_stage(call: Call, message: str):
     call = stacklog(logger.info,
-                    'Ballet Validation: {message}'.format(message=message),
+                    f'Ballet Validation: {message}',
                     conditions=[(SkippedValidationTest, 'SKIPPED')])(call)
     call = ignore(SkippedValidationTest)(call)
     return call()

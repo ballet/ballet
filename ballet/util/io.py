@@ -15,9 +15,8 @@ from ballet.util.typing import Pathy
 
 def _check_ext(ext: str, expected: str):
     if ext != expected:
-        msg = ('File path has wrong extension: {} (expected {})'
-               .format(ext, expected))
-        raise ValueError(msg)
+        raise ValueError(
+            f'File path has wrong extension: {ext} (expected {expected})')
 
 
 def write_tabular(obj: Union[np.ndarray, pd.DataFrame], filepath: Pathy):
@@ -112,8 +111,8 @@ def save_targets(y, output_dir, name='target'):
 
 
 def _save_thing(thing, output_dir, name, savefn=write_tabular):
-    fn = pathlib.Path(output_dir).joinpath('{}.pkl'.format(name))
-    with stacklog(logger.info, 'Saving {} to {}'.format(name, fn)):
+    fn = pathlib.Path(output_dir).joinpath(f'{name}.pkl')
+    with stacklog(logger.info, f'Saving {name} to {fn}'):
         os.makedirs(output_dir, exist_ok=True)
         savefn(thing, fn)
 

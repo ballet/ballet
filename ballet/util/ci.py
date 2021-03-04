@@ -21,8 +21,7 @@ def get_travis_env_or_fail(name: str) -> str:
     else:
         # dump_travis_env_vars()
         raise UnexpectedTravisEnvironmentError(
-            'Missing TRAVIS environment variable: {name}'
-            .format(name=name))
+            f'Missing TRAVIS environment variable: {name}')
 
 
 def ensure_expected_travis_env_vars(names: Iterable[str]):

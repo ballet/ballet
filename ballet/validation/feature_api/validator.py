@@ -29,9 +29,7 @@ class FeatureApiValidator(BaseValidator):
                 mod = importer()
                 features.extend(_collect_contrib_features(mod))
             except (ImportError, SyntaxError):
-                logger.info(
-                    'Failed to import module at {}'
-                    .format(modpath))
+                logger.info(f'Failed to import module at {modpath}')
                 logger.exception('Exception details: ')
                 imported_okay = False
 

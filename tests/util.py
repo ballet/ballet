@@ -43,7 +43,7 @@ class FragileTransformer(BaseTransformer):
 class FragileTransformerPipeline(TransformerPipeline):
     def __init__(self, nsteps, bad_input_checks, errors, shuffle=True, seed=1):
         steps = [
-            ('IdentityTransformer{:02d}'.format(i), IdentityTransformer())
+            (f'IdentityTransformer{i:02d}', IdentityTransformer())
             for i in range(nsteps - 1)
         ]
         fragile_transformer = FragileTransformer(bad_input_checks, errors)
@@ -77,7 +77,7 @@ def make_mock_commit(repo, kind='A', path=None, content=None):
             with abspath.open('w') as f:
                 f.write(content or '')
         repo.git.add(str(abspath))
-        repo.git.commit(m='Commit {}'.format(str(abspath)))
+        repo.git.commit(m=f'Commit {abspath}')
     else:
         raise NotImplementedError
 
@@ -106,7 +106,7 @@ def set_ci_git_config_variables(repo, name='Foo Bar', email='foo@bar.com'):
 @ignore((FileNotFoundError, subprocess.CalledProcessError))
 def tree(dir):
     cmd = ['tree', '-A', '-n', '--charset', 'ASCII', str(dir)]
-    logger.debug('Popen({cmd!r})'.format(cmd=cmd))
+    logger.debug(f'Popen({cmd!r})')
     tree_output = subprocess.check_output(cmd).decode()
     logger.debug(tree_output)
     return tree_output
@@ -123,10 +123,10 @@ def load_regression_data(n_informative=1, n_uninformative=14, n_samples=500):
         shuffle=True, random_state=1)
 
     # informative columns are 'A_0', 'A_1', ...
-    informative = ['A_{i}'.format(i=i) for i in range(n_informative)]
+    informative = [f'A_{i}' for i in range(n_informative)]
 
     # uninformative columns are 'Z_0', 'Z_1', ...
-    uninformative = ['Z_{i}'.format(i=i) for i in range(n_uninformative)]
+    uninformative = [f'Z_{i}' for i in range(n_uninformative)]
 
     columns = [
         informative.pop(0) if c != 0 else uninformative.pop(0)

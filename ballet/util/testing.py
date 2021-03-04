@@ -36,7 +36,7 @@ def log_seed_on_error(logger, seed=None):
         with seeded(seed):
             yield
     except Exception:
-        logger.exception('Error was thrown using seed {}'.format(seed))
+        logger.exception(f'Error was thrown using seed {seed}')
 
 
 @contextmanager

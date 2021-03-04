@@ -79,14 +79,14 @@ def import_module_at_path(modname: str, modpath: Pathy) -> ModuleType:
     finder = pkgutil.get_importer(parentpath)
     if finder is None:
         raise ImportError(
-            'Failed to find loader for module {} within dir {}'
-            .format(modname, parentpath))
+            f'Failed to find loader for module {modname} within '
+            f'dir {parentpath}')
 
     loader = finder.find_module(modname)
     if loader is None:
         raise ImportError(
-            'Failed to find loader for module {} within dir {}'
-            .format(modname, parentpath))
+            f'Failed to find loader for module {modname} within '
+            f'dir {parentpath}')
 
     mod = loader.load_module(modname)
 
@@ -120,7 +120,7 @@ def relpath_to_modname(relpath: Pathy) -> str:
         p = p.with_suffix('')
     else:
         msg = 'Cannot convert a non-python file to a modname'
-        msg_detail = 'The relpath given is: {}'.format(relpath)
+        msg_detail = f'The relpath given is: {relpath}'
         logger.error(msg + '\n' + msg_detail)
         raise ValueError(msg)
 

@@ -24,7 +24,7 @@ def is_valid_python(code: str) -> bool:
 
 def get_target_python_versions() -> Set[black.TargetVersion]:
     major, minor, _ = platform.python_version_tuple()
-    pyversion = 'py{major}{minor}'.format(major=major, minor=minor)
+    pyversion = f'py{major}{minor}'
     return {black.TargetVersion[pyversion.upper()]}
 
 
@@ -89,8 +89,7 @@ def _get_source(
     # known limitation: cannot use from stdin
     if f.__code__.co_filename == '<stdin>':
         raise NotImplementedError(
-            'Cannot use {name!r} on function defined interactively.'
-            .format(name='get_source'))
+            'Cannot use \'get_source\' on function defined interactively.')
 
     # if f was not defined in the same file, return code to import it
     # TODO

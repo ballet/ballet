@@ -89,7 +89,10 @@ class NamedFramer(BaseTransformer):
         self.name = name
 
     def transform(self, X, **transform_kwargs):
-        msg = "Couldn't convert object {} to named 1d DataFrame."
+        error_msg = (
+            f'Couldn\'t convert object {get_arr_desc(X)} to named 1d '
+            'DataFrame.'
+        )
         if isinstance(X, pd.Index):
             return X.to_series().to_frame(name=self.name)
         elif isinstance(X, pd.Series):
@@ -100,16 +103,16 @@ class NamedFramer(BaseTransformer):
                 X.columns = [self.name]
                 return X
             else:
-                raise ValueError(msg.format(get_arr_desc(X)))
+                raise ValueError(error_msg)
         elif isinstance(X, np.ndarray):
             if X.ndim == 1:
                 return pd.DataFrame(data=X.reshape(-1, 1), columns=[self.name])
             elif X.ndim == 2 and X.shape[1] == 1:
                 return pd.DataFrame(data=X, columns=[self.name])
             else:
-                raise ValueError(msg.format(get_arr_desc(X)))
+                raise ValueError(error_msg)
 
-        raise TypeError(msg.format(get_arr_desc(X)))
+        raise TypeError(error_msg)
 
 
 class NullTransformer(BaseTransformer):

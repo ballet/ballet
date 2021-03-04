@@ -39,7 +39,7 @@ def clean_cookiecutter_context():
 
 def echo():
     fn = pathlib.Path.cwd().resolve()
-    logger.info('New project created in {!s}'.format(fn))
+    logger.info(f'New project created in {fn!s}')
 
 
 def main():
