@@ -3,15 +3,9 @@ from unittest.mock import patch
 import pytest
 
 from ballet.util.ci import (
-    TravisPullRequestBuildDiffer, get_travis_branch, get_travis_pr_num,
-    is_travis_pr,)
+    TravisPullRequestBuildDiffer, get_travis_branch, is_travis_pr,)
 from ballet.util.git import make_commit_range
 from tests.util import make_mock_commit, make_mock_commits
-
-
-@pytest.fixture
-def pr_num():
-    return 7
 
 
 @pytest.fixture
@@ -19,35 +13,21 @@ def commit_range():
     return 'HEAD^..HEAD'
 
 
-def test_get_travis_pr_num(pr_num):
-    # matrix of env name, setting for env, expected result
-    matrix = (
-        ('TRAVIS_PULL_REQUEST', str(pr_num), pr_num),
-        ('TRAVIS_PULL_REQUEST', 'true', None),
-        ('TRAVIS_PULL_REQUEST', 'FALSE', None),
-        ('TRAVIS_PULL_REQUEST', 'false', None),
-        ('TRAVIS_PULL_REQUEST', 'abcd', None),
-        ('UNRELATED', '', None),
-    )
-    for env_name, env_value, expected in matrix:
-        with patch.dict('os.environ', {env_name: env_value}, clear=True):
-            actual = get_travis_pr_num()
-            assert actual == expected
-
-
-def test_is_travis_pr(pr_num):
-    matrix = (
-        ('TRAVIS_PULL_REQUEST', str(pr_num), True),
+@pytest.mark.parametrize(
+    ('key, value, expected'),
+    [
+        ('TRAVIS_PULL_REQUEST', '7', True),
         ('TRAVIS_PULL_REQUEST', 'true', False),
         ('TRAVIS_PULL_REQUEST', 'FALSE', False),
         ('TRAVIS_PULL_REQUEST', 'false', False),
         ('TRAVIS_PULL_REQUEST', 'abcd', False),
         ('UNRELATED', '', False),
-    )
-    for env_name, env_value, expected in matrix:
-        with patch.dict('os.environ', {env_name: env_value}, clear=True):
-            actual = is_travis_pr()
-            assert actual == expected
+    ],
+)
+def test_is_travis_pr(key, value, expected):
+    with patch.dict('os.environ', {key: value}, clear=True):
+        actual = is_travis_pr()
+        assert actual == expected
 
 
 def test_get_travis_branch():
@@ -77,17 +57,17 @@ def test_get_travis_branch():
             assert actual == expected
 
 
-def test_travis_pull_request_build_differ(mock_repo, pr_num, commit_range):
+def test_travis_pull_request_build_differ(mock_repo, commit_range):
     repo = mock_repo
     make_mock_commits(repo, n=3)
 
     travis_env_vars = {
         'TRAVIS_BUILD_DIR': repo.working_tree_dir,
-        'TRAVIS_PULL_REQUEST': str(pr_num),
+        'TRAVIS_PULL_REQUEST': '1',
         'TRAVIS_COMMIT_RANGE': commit_range,
     }
     with patch.dict('os.environ', travis_env_vars, clear=True):
-        differ = TravisPullRequestBuildDiffer(pr_num)
+        differ = TravisPullRequestBuildDiffer(repo)
         expected_a = repo.rev_parse('HEAD^')
         expected_b = repo.rev_parse('HEAD')
         actual_a, actual_b = differ._get_diff_endpoints()
@@ -95,11 +75,11 @@ def test_travis_pull_request_build_differ(mock_repo, pr_num, commit_range):
         assert actual_b == expected_b
 
 
-def test_travis_pull_request_build_differ_on_mock_commits(mock_repo, pr_num):
+def test_travis_pull_request_build_differ_on_mock_commits(mock_repo):
     repo = mock_repo
     n = 4
     i = 0
-    feature_branch_name = 'pull/{}'.format(pr_num)
+    feature_branch_name = 'alice/feature-x'
 
     make_mock_commit(repo, path='readme.txt')
     expected_merge_base = repo.head.commit
@@ -119,11 +99,11 @@ def test_travis_pull_request_build_differ_on_mock_commits(mock_repo, pr_num):
 
     travis_env_vars = {
         'TRAVIS_BUILD_DIR': repo.working_tree_dir,
-        'TRAVIS_PULL_REQUEST': str(pr_num),
+        'TRAVIS_PULL_REQUEST': '1',
         'TRAVIS_COMMIT_RANGE': commit_range,
     }
     with patch.dict('os.environ', travis_env_vars, clear=True):
-        differ = TravisPullRequestBuildDiffer(pr_num)
+        differ = TravisPullRequestBuildDiffer(repo)
         a, b = differ._get_diff_endpoints()
         assert a == expected_merge_base
         assert b == end_commit

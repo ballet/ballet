@@ -27,11 +27,6 @@ def test_get_repo():
 
 
 @pytest.mark.xfail
-def test_get_pr_num():
-    raise NotImplementedError
-
-
-@pytest.mark.xfail
 def test_get_branch():
     raise NotImplementedError
 

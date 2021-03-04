@@ -1,5 +1,5 @@
 import os
-from typing import Dict, Iterable, Optional, Union
+from typing import Dict, Iterable, Optional
 
 import git
 
@@ -41,6 +41,7 @@ def dump_travis_env_vars():
     logger.info(repr(get_travis_env_vars()))
 
 
+# TODO delete
 def get_travis_pr_num() -> Optional[int]:
     """Return the PR number if the job is a pull request, None otherwise
 
@@ -68,6 +69,7 @@ def is_travis_pr() -> bool:
     return get_travis_pr_num() is not None
 
 
+# TODO delete
 def get_travis_branch() -> Optional[str]:
     """Get current branch per Travis environment variables
 
@@ -92,7 +94,7 @@ def get_travis_branch() -> Optional[str]:
         return None
 
 
-def can_use_travis_differ() -> bool:
+def can_use_travis_differ(repo: Optional[git.Repo]) -> bool:
     """Check if the required travis env vars are set for the travis differ"""
     try:
         ensure_expected_travis_env_vars(
@@ -113,7 +115,6 @@ class TravisPullRequestBuildDiffer(PullRequestBuildDiffer):
         - TRAVIS_COMMIT_RANGE, to determine which commits to diff.
 
     Args:
-        pr_num: pull request number
         repo: repo object for the project
     """
 
@@ -125,20 +126,14 @@ class TravisPullRequestBuildDiffer(PullRequestBuildDiffer):
         'TRAVIS_COMMIT_RANGE',
     )
 
-    def __init__(self, pr_num: Union[int, str], repo: git.Repo = None):
+    def __init__(self, repo: git.Repo = None):
+        super().__init__(repo)
         if repo is None:
             repo = self._detect_repo()
-        super().__init__(pr_num, repo)
 
     def _check_environment(self):
         ensure_expected_travis_env_vars(
             TravisPullRequestBuildDiffer.EXPECTED_TRAVIS_ENV_VARS)
-
-        travis_pr_num = get_travis_pr_num()
-        if travis_pr_num != self.pr_num:
-            raise UnexpectedTravisEnvironmentError(
-                'TRAVIS_PULL_REQUEST {tpr!r} did not match expected {pr!r}'
-                .format(tpr=travis_pr_num, pr=self.pr_num))
 
     def _get_diff_endpoints(self):
         commit_range = get_travis_env_or_fail('TRAVIS_COMMIT_RANGE')
