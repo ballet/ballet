@@ -1,20 +1,24 @@
 # History
 
-## 0.10.0 (2020-02-23)
+## 0.11.0 (2021-03-04)
+
+* Allow validation to be run from topic branches locally
+
+## 0.10.0 (2021-02-23)
 
 * Add `Project.version` property
 
-## 0.9.0 (2020-02-16)
+## 0.9.0 (2021-02-16)
 
 * Add support for managed branching via `ballet start-new-feature --branching` (defaults to enabled)
 * Remove confusing `ballet.project.config` attribute
 * Implement `ballet.project.load_config` as a better alternative, and use this in the project template's `load_data`
 
-## 0.8.2 (2020-02-16)
+## 0.8.2 (2021-02-16)
 
 * Fix bug with `str(t)` or `repr(t)` for `DelegatingRobustTransformer`
 
-## 0.8.1 (2020-02-16)
+## 0.8.1 (2021-02-16)
 
 * Fix bug with `str(t)` or `repr(t)` for `SimpleFunctionTransformer`
 
