@@ -1,12 +1,13 @@
-from unittest.mock import create_autospec, patch
+from unittest.mock import Mock, create_autospec, patch
 
 import git
 import pytest
 from github import BadCredentialsException, Github
 
+from ballet.project import Project
 from ballet.util.git import (
     create_github_repo, did_git_push_succeed, get_pull_request_outcomes,
-    get_pull_requests, make_commit_range,)
+    get_pull_requests, make_commit_range, push_branches_to_remote,)
 
 
 def test_make_commit_range():
@@ -111,6 +112,7 @@ def github():
 )
 def test_create_github_repo(github, owner):
     user = 'octocat'  # noqa
+    # TODO mock user's permissions
     repo = 'Hello-World'
     repository = create_github_repo(github, owner, repo)
     assert repository.full_name == f'{owner}/{repo}'
@@ -122,6 +124,19 @@ def test_create_github_repo(github, owner):
 )
 def test_create_github_repo_not_authorized(github, owner):
     user = 'octocat'  # noqa
+    # TODO mock user's permissions
     repo = 'Hello-World'
     with pytest.raises(BadCredentialsException):
         create_github_repo(github, owner, repo)
+
+
+@patch('git.Remote.push')
+def test_push_branches_to_remote(mock_push, mock_repo):
+    project = Mock(spec=Project)
+    project.repo = mock_repo
+    project.config.get.return_value = 'http://some/remote.git'
+
+    branch_name = 'master'
+    branches = [branch_name]
+    push_branches_to_remote(project, branches)
+    mock_push.assert_called_once_with([f'{branch_name}:{branch_name}'])

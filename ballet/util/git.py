@@ -1,14 +1,18 @@
 import pathlib
 import re
-from typing import Iterator, Optional, Tuple
+from typing import Iterator, Iterable, Optional, Tuple
 
 import git
 import requests
-from funcy import collecting, re_find, silent
+from funcy import collecting, re_find, silent, lfilter, complement
 from github import Github
 from github.Repository import Repository
+from stacklog import stacklog
 
+import ballet.project
 from ballet.util import one_or_raise
+from ballet.util.log import logger
+from ballet.exc import BalletError
 
 FILE_CHANGES_COMMIT_RANGE = '{a}...{b}'
 REV_REGEX = r'[a-zA-Z0-9_/^@{}-]+'
@@ -20,6 +24,7 @@ GIT_PUSH_FAILURE = (
     git.PushInfo.REMOTE_FAILURE |
     git.PushInfo.ERROR
 )
+DEFAULT_BRANCH = 'master'
 
 
 class Differ:
@@ -281,3 +286,33 @@ def create_github_repo(github: Github, owner: str, name: str) -> Repository:
         return user.create_repo(owner)
     else:
         return github.get_organization(owner).create_repo(owner)
+
+
+@stacklog(logger.info, 'Pushing branches to remote')
+def push_branches_to_remote(
+    project: 'ballet.project.Project',
+    branches: Iterable[str]
+):
+    """Push default branch and project template branch to remote
+
+    With default config (i.e. remote and branch names), equivalent to::
+
+        $ git push origin master:master project-template:project-template
+
+    Raises:
+        ballet.exc.BalletError: Push failed in some way
+    """
+    repo = project.repo
+    remote_name = project.config.get('github.remote')
+    remote = repo.remote(remote_name)
+    result = remote.push([
+        f'{b}:{b}'
+        for b in branches
+    ])
+    failures = lfilter(complement(did_git_push_succeed), result)
+    if failures:
+        for push_info in failures:
+            logger.error(
+                f'Failed to push ref {push_info.local_ref.name} to '
+                f'{push_info.remote_ref.name}')
+        raise BalletError('Push failed')
