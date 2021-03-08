@@ -23,6 +23,7 @@ def test_cli_version(cli):
 @pytest.mark.parametrize(
     'create_github_repo',
     [True, False],
+    ids=['--create-github-repo', '--no-create-github-repo'],
 )
 @patch('ballet.templating.render_project_template')
 def test_quickstart(mock_render, cli, create_github_repo):
