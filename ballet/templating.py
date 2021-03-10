@@ -4,11 +4,11 @@ from typing import List, Optional, Tuple
 
 import funcy as fy
 from cookiecutter.main import cookiecutter as _cookiecutter
-from github import Github
+from github import Github, GithubException
 
 import ballet.util.git
 from ballet.compat import PathLike
-from ballet.exc import ConfigurationError
+from ballet.exc import ConfigurationError, BalletError
 from ballet.project import Project, detect_github_username
 from ballet.util.fs import pwalk, synctree
 from ballet.util.git import (
@@ -47,6 +47,11 @@ def render_project_template(
 ) -> str:
     """Generate a ballet project according to the project template
 
+    If creating the GitHub repo is requested and the process fails for any
+    reason, quickstart will complete successfully and users are instructed
+    to read the corresponding section of the Maintainer's Guide to continue
+    manually.
+
     Args:
         project_template_path: path to specific project template
         create_github_repo: whether to act to create the desired repo on
@@ -73,8 +78,19 @@ def render_project_template(
         name = project.config.get('project.project_slug')
 
         # create repo on github
-        github_repo = ballet.util.git.create_github_repo(g, owner, name)
-        logger.info(f'Created repo on GitHub at {github_repo.html_url}')
+        try:
+            github_repo = ballet.util.git.create_github_repo(g, owner, name)
+            logger.info(f'Created repo on GitHub at {github_repo.html_url}')
+        except GithubException:
+            logger.exception('Failed to create GitHub repo for this project')
+            logger.warning(
+                'Failed to create GitHub repo for this project...\n'
+                'did you specify the intended repo owner, and do you have'
+                ' permissions to create a repo under that owner?\n'
+                'Try manually creating the repo: https://hdi-project.github.io/ballet/maintainer_guide.html#manual-repository-creation'
+            )  # noqa E501
+            return project_path
+
 
         # now push to remote
         # we don't need to set up the remote, as it has already been setup in
@@ -82,7 +98,15 @@ def render_project_template(
         local_repo = project.repo
         remote_name = project.config.get('github.remote')
         branches = [DEFAULT_BRANCH]
-        push_branches_to_remote(local_repo, remote_name, branches)
+        try:
+            push_branches_to_remote(local_repo, remote_name, branches)
+        except BalletError:
+            logger.exception('Failed to push branches to GitHub repo')
+            logger.warning(
+                'Failed to push branches to GitHub repo...\n'
+                'Try manually pushing the branches: https://hdi-project.github.io/ballet/maintainer_guide.html#manual-repository-creation'
+            )  # noqa E501
+            return project_path
 
     return project_path
 
