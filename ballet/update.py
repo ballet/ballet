@@ -11,15 +11,14 @@ import funcy
 import git
 import packaging.version
 from cookiecutter.prompt import prompt_for_config
-from funcy import complement, lfilter, re_find, re_test
+from funcy import re_find, re_test
 from git import GitCommandError
-from stacklog import stacklog
 
 import ballet
 from ballet.exc import BalletError, ConfigurationError
 from ballet.project import Project
 from ballet.templating import render_project_template
-from ballet.util.git import did_git_push_succeed
+from ballet.util.git import DEFAULT_BRANCH, push_branches_to_remote
 from ballet.util.log import logger
 from ballet.util.typing import Pathy
 
@@ -29,7 +28,6 @@ PROJECT_CONTEXT_PATH = (
         'project_template',
         'cookiecutter.json'))
 CONTEXT_FILE_NAME = '.cookiecutter_context.json'
-DEFAULT_BRANCH = 'master'
 TEMPLATE_BRANCH = 'project-template'
 
 
@@ -164,37 +162,6 @@ def _get_full_context(cwd: pathlib.Path) -> dict:
     return context['cookiecutter']
 
 
-def _call_remote_push(remote: git.Remote):
-    return remote.push([
-        f'{DEFAULT_BRANCH}:{DEFAULT_BRANCH}',
-        f'{TEMPLATE_BRANCH}:{TEMPLATE_BRANCH}',
-    ])
-
-
-@stacklog(logger.info, 'Pushing updates to remote')
-def _push(project: Project):
-    """Push default branch and project template branch to remote
-
-    With default config (i.e. remote and branch names), equivalent to::
-
-        $ git push origin master:master project-template:project-template
-
-    Raises:
-        ballet.exc.BalletError: Push failed in some way
-    """
-    repo = project.repo
-    remote_name = project.config.get('github.remote')
-    remote = repo.remote(remote_name)
-    result = _call_remote_push(remote)
-    failures = lfilter(complement(did_git_push_succeed), result)
-    if failures:
-        for push_info in failures:
-            logger.error(
-                f'Failed to push ref {push_info.local_ref.name} to '
-                f'{push_info.remote_ref.name}')
-        raise BalletError('Push failed')
-
-
 def _log_recommended_reinstall():
     logger.info(
         'After a successful project template update, try re-installing the\n'
@@ -323,6 +290,9 @@ def update_project_template(push: bool = False,
         raise
 
     if push:
-        _push(project)
+        repo = project.repo
+        remote_name = project.config.get('github.remote')
+        branches = [DEFAULT_BRANCH, TEMPLATE_BRANCH]
+        push_branches_to_remote(repo, remote_name, branches)
 
     _log_recommended_reinstall()

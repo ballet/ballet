@@ -28,13 +28,13 @@ def create_git_repo():
 def clean_cookiecutter_context():
     fn = '.cookiecutter_context.json'
     with open(fn, 'r') as f:
-        j = json.load(f, object_pairs_hook=collections.OrderedDict)
+        context = json.load(f, object_pairs_hook=collections.OrderedDict)
 
     # strip _template key
-    j['cookiecutter'].pop('_template')
+    context['cookiecutter'].pop('_template')
 
     with open(fn, 'w') as f:
-        json.dump(j, f)
+        json.dump(context, f)
 
 
 def echo():

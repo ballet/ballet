@@ -20,10 +20,24 @@ def test_cli_version(cli):
     assert ballet.__version__ in result.output
 
 
+@pytest.mark.parametrize(
+    'create_github_repo',
+    [True, False],
+    ids=['--create-github-repo', '--no-create-github-repo'],
+)
 @patch('ballet.templating.render_project_template')
-def test_quickstart(mock_render, cli):
-    result = cli('quickstart')
-    mock_render.assert_called_once_with()
+def test_quickstart(mock_render, cli, create_github_repo):
+    cmd = 'quickstart'
+    if create_github_repo:
+        cmd += ' --create-github-repo'
+    result = cli(cmd)
+
+    # want to do a partial match on kwargs
+    # compat: call.kwargs introduced in py3.8
+    mock_render.assert_called_once()
+    _, kwargs = mock_render.call_args
+    assert kwargs['create_github_repo'] == create_github_repo
+
     assert 'Generating new ballet project' in result.output
 
 

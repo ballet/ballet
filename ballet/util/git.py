@@ -1,12 +1,17 @@
 import pathlib
 import re
-from typing import Iterator, Optional, Tuple
+from typing import Iterable, Iterator, Optional, Tuple
 
 import git
 import requests
-from funcy import collecting, re_find, silent
+from funcy import collecting, complement, lfilter, re_find, silent
+from github import Github
+from github.Repository import Repository
+from stacklog import stacklog
 
+from ballet.exc import BalletError
 from ballet.util import one_or_raise
+from ballet.util.log import logger
 
 FILE_CHANGES_COMMIT_RANGE = '{a}...{b}'
 REV_REGEX = r'[a-zA-Z0-9_/^@{}-]+'
@@ -18,6 +23,7 @@ GIT_PUSH_FAILURE = (
     git.PushInfo.REMOTE_FAILURE |
     git.PushInfo.ERROR
 )
+DEFAULT_BRANCH = 'master'
 
 
 class Differ:
@@ -92,6 +98,7 @@ def can_use_local_merge_differ(repo: Optional[git.Repo]):
     """Check the repo HEAD is on master after a merge commit
 
     Checks for two qualities of the current project:
+
     1. The project repo's head is the master branch
     2. The project repo's head commit is a merge commit.
 
@@ -209,7 +216,7 @@ def set_config_variables(repo: git.Repo, variables: dict):
 
     Args:
         repo: repo
-        variables: entries of the form 'user.email': 'you@example.com'
+        variables: entries of the form ``'user.email': 'you@example.com'``
     """
     with repo.config_writer() as writer:
         for k, value in variables.items():
@@ -256,3 +263,56 @@ def did_git_push_succeed(push_info: git.remote.PushInfo) -> bool:
         push_info: push info
     """
     return push_info.flags & GIT_PUSH_FAILURE == 0
+
+
+def create_github_repo(github: Github, owner: str, name: str) -> Repository:
+    """Create the repo ``:owner/:name``
+
+    The authenticated account must have the permissions to create the desired
+    repo.
+
+    1. if the desired owner is the user, then this is straightforward
+    2. if the desired owner is an organization, then the user must have
+       permission to create a new repo for the organization
+
+    Returns:
+        the created repository
+
+    Raises:
+        github.GithubException.BadCredentialsException: if the token does not
+            have permission to create the desired repo
+    """
+    user = github.get_user()
+    if user.login == owner:
+        return user.create_repo(name)
+    else:
+        return github.get_organization(owner).create_repo(name)
+
+
+@stacklog(logger.info, 'Pushing branches to remote')
+def push_branches_to_remote(
+    repo: git.Repo,
+    remote_name: str,
+    branches: Iterable[str]
+):
+    """Push selected branches to origin
+
+    Similar to::
+
+        $ git push origin branch1:branch1 branch2:branch2
+
+    Raises:
+        ballet.exc.BalletError: Push failed in some way
+    """
+    remote = repo.remote(remote_name)
+    result = remote.push([
+        f'{b}:{b}'
+        for b in branches
+    ])
+    failures = lfilter(complement(did_git_push_succeed), result)
+    if failures:
+        for push_info in failures:
+            logger.error(
+                f'Failed to push ref {push_info.local_ref.name} to '
+                f'{push_info.remote_ref.name}')
+        raise BalletError('Push failed')

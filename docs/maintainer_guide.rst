@@ -26,7 +26,7 @@ Then, :doc:`install Ballet </installation>` on your development machine.
 Project instantiation
 ~~~~~~~~~~~~~~~~~~~~~
 
-To instantiate a project, use the ``ballet quickstart`` command:
+To instantiate a project, use the ``ballet quickstart`` command. (You may want to :ref:`look ahead<maintainer_guide:Automatic repository creation>` and see `what options <cli_reference.html#ballet-quickstart>`__ are available for this command, such as for automatically creating a GitHub repository for the project.):
 
 .. code-block:: console
 
@@ -156,7 +156,7 @@ Collaboration via git and GitHub
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Under the hood, contributors will collaborate using the powerful functionality provided by git
-and GitHub. In fact, after the quickstart step, you already have a git-tracked repository and a
+and GitHub. In fact, after the quickstart step, you will already have a git-tracked repository and a
 git remote set up.
 
 .. code-block:: console
@@ -172,11 +172,16 @@ git remote set up.
    origin	git@github.com:jane_developer/ballet-my-project (fetch)
    origin	git@github.com:jane_developer/ballet-my-project (push)
 
-Next, you must create the matching GitHub project, ``myproject``, under the account of the
-``github_owner`` that you specified earlier (in this case, ``jane_developer``). Do not
-initialize the project with any sample files that GitHub offers.
+Automatic repository creation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-After you having created the project on GitHub, push your local copy.
+The matching remote repository on GitHub must be created. This can be done automatically by the quickstart command by passing the ``--create-github-repo`` flag. This causes Ballet to use the GitHub API to create a repository under the account of the ``github_owner`` that you specified earlier (in this case, ``jane_developer``), and then push the local repository to GitHub. You must provide a GitHub access token with the appropriate permissions, either by exposing the ``GITHUB_TOKEN`` environment variable, or by passing it to the quickstart command using the ``--github-token`` option. See more details on these options `here <cli_reference.html#ballet-quickstart>`__.
+
+Manual repository creation
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Alternately, you can manually create the repository on GitHub. Do not
+initialize the project with any sample files that GitHub offers. Once you do this, push your local copy.
 
 .. code-block:: console
 
@@ -188,8 +193,8 @@ Enabling continuous integration
 
 Ballet makes uses of the continuous integration service `Travis CI`_ in order to validate code
 that contributors propose as well as perform streaming feature definition selection. You must
-enable Travis CI for your project on GitHub by`following these simple directions
-<https://docs.travis-ci.com/user/tutorial/#to-get-started-with-travis-ci-using-github>`_. You can
+enable Travis CI for your project on GitHub by `following these simple directions
+<https://docs.travis-ci.com/user/tutorial/#to-get-started-with-travis-ci-using-github>`__. You can
 skip any steps that have to do with customizing the ``.travis.yml`` file, as we have already done
 that for you in the quickstart.
 

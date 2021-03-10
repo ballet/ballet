@@ -1,11 +1,12 @@
-from unittest.mock import patch
+from unittest.mock import create_autospec, patch
 
 import git
 import pytest
+from github import Github
 
 from ballet.util.git import (
-    did_git_push_succeed, get_pull_request_outcomes, get_pull_requests,
-    make_commit_range,)
+    create_github_repo, did_git_push_succeed, get_pull_request_outcomes,
+    get_pull_requests, make_commit_range, push_branches_to_remote,)
 
 
 def test_make_commit_range():
@@ -97,3 +98,36 @@ def test_did_git_push_succeed():
     push_info = git.remote.PushInfo(flags, local_ref, remote_ref_string,
                                     remote)
     assert not did_git_push_succeed(push_info)
+
+
+@pytest.fixture
+def github():
+    g = create_autospec(Github)
+    g.get_user.return_value.login = 'octocat'
+    return g
+
+
+@pytest.mark.parametrize(
+    'owner',
+    ['octocat', 'github-dot-com'],
+)
+def test_create_github_repo(github, owner):
+    name = 'Hello-World'
+    create_github_repo(github, owner, name)
+
+    if owner == 'octocat':
+        create_repo = github.get_user.return_value.create_repo
+    else:
+        create_repo = github.get_organization.return_value.create_repo
+
+    create_repo.assert_called_once_with(name)
+
+
+@patch('git.Repo.remote')
+def test_push_branches_to_remote(mock_remote, mock_repo):
+    mock_push = mock_remote.return_value.push
+    remote_name = 'origin'
+    branch_name = 'master'
+    branches = [branch_name]
+    push_branches_to_remote(mock_repo, remote_name, branches)
+    mock_push.assert_called_once_with([f'{branch_name}:{branch_name}'])

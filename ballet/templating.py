@@ -4,12 +4,15 @@ from typing import List, Optional, Tuple
 
 import funcy as fy
 from cookiecutter.main import cookiecutter as _cookiecutter
+from github import Github, GithubException
 
+import ballet.util.git
 from ballet.compat import PathLike
-from ballet.exc import ConfigurationError
+from ballet.exc import ConfigurationError, BalletError
 from ballet.project import Project, detect_github_username
 from ballet.util.fs import pwalk, synctree
-from ballet.util.git import switch_to_new_branch
+from ballet.util.git import (
+    DEFAULT_BRANCH, push_branches_to_remote, switch_to_new_branch,)
 from ballet.util.log import logger
 from ballet.util.typing import Pathy
 from ballet.validation.project_structure.checks import (
@@ -37,17 +40,75 @@ def cookiecutter(*args, **kwargs) -> str:
 
 
 def render_project_template(
-    project_template_path: Optional[Pathy] = None, **cc_kwargs
+    project_template_path: Optional[Pathy] = None,
+    create_github_repo: bool = False,
+    github_token: Optional[str] = None,
+    **cc_kwargs
 ) -> str:
     """Generate a ballet project according to the project template
 
+    If creating the GitHub repo is requested and the process fails for any
+    reason, quickstart will complete successfully and users are instructed
+    to read the corresponding section of the Maintainer's Guide to continue
+    manually.
+
     Args:
         project_template_path: path to specific project template
+        create_github_repo: whether to act to create the desired repo on
+            GitHub after rendering the project. The repo will be owned by
+            either the user or an org that the user has relevant permissions
+            for, depending on what is entered during the quickstart prompts.
+            If True, then a valid github token must also be provided.
+        github_token: valid github token with appropriate permissions
         **cc_kwargs: options for the cookiecutter template
     """
     if project_template_path is None:
         project_template_path = PROJECT_TEMPLATE_PATH
-    return cookiecutter(project_template_path, **cc_kwargs)
+
+    project_path = cookiecutter(project_template_path, **cc_kwargs)
+
+    if create_github_repo:
+        if github_token is None:
+            raise ValueError('Need to provide github token')
+        g = Github(github_token)
+
+        # need to get params from new project config
+        project = Project.from_path(project_path)
+        owner = project.config.get('github.github_owner')
+        name = project.config.get('project.project_slug')
+
+        # create repo on github
+        try:
+            github_repo = ballet.util.git.create_github_repo(g, owner, name)
+            logger.info(f'Created repo on GitHub at {github_repo.html_url}')
+        except GithubException:
+            logger.exception('Failed to create GitHub repo for this project')
+            logger.warning(
+                'Failed to create GitHub repo for this project...\n'
+                'did you specify the intended repo owner, and do you have'
+                ' permissions to create a repo under that owner?\n'
+                'Try manually creating the repo: https://hdi-project.github.io/ballet/maintainer_guide.html#manual-repository-creation'
+            )  # noqa E501
+            return project_path
+
+
+        # now push to remote
+        # we don't need to set up the remote, as it has already been setup in
+        # post_gen_hook.py
+        local_repo = project.repo
+        remote_name = project.config.get('github.remote')
+        branches = [DEFAULT_BRANCH]
+        try:
+            push_branches_to_remote(local_repo, remote_name, branches)
+        except BalletError:
+            logger.exception('Failed to push branches to GitHub repo')
+            logger.warning(
+                'Failed to push branches to GitHub repo...\n'
+                'Try manually pushing the branches: https://hdi-project.github.io/ballet/maintainer_guide.html#manual-repository-creation'
+            )  # noqa E501
+            return project_path
+
+    return project_path
 
 
 def render_feature_template(**cc_kwargs) -> str:

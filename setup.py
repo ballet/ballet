@@ -24,6 +24,7 @@ requirements = [
     'numpy',
     'packaging',
     'pandas ~= 1.0',
+    'pygithub ~= 1.54',
     'pyyaml',
     'requests',
     'scikit_learn >=0.20, <0.23; python_version == "3.6"',
