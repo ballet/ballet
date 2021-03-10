@@ -187,6 +187,8 @@ autosectionlabel_prefix_document = True
 
 # -- Options for linkcheck ----------------------------------------------
 
+# these anchors do exist, and manual testing confirms they work
 linkcheck_ignore = [
     'cli_reference.html#ballet-update-project-template',
+    'cli_reference.html#ballet-quickstart',
 ]
