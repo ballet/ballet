@@ -1,5 +1,9 @@
 # History
 
+## 0.12.0 (2021-03-10)
+
+* Automate creation of GitHub repository in quickstart
+
 ## 0.11.0 (2021-03-04)
 
 * Allow validation to be run from topic branches locally
