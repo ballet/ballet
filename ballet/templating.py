@@ -4,12 +4,15 @@ from typing import List, Optional, Tuple
 
 import funcy as fy
 from cookiecutter.main import cookiecutter as _cookiecutter
+from github import Github
 
+import ballet.util.git
 from ballet.compat import PathLike
 from ballet.exc import ConfigurationError
 from ballet.project import Project, detect_github_username
 from ballet.util.fs import pwalk, synctree
-from ballet.util.git import switch_to_new_branch
+from ballet.util.git import (
+    DEFAULT_BRANCH, push_branches_to_remote, switch_to_new_branch,)
 from ballet.util.log import logger
 from ballet.util.typing import Pathy
 from ballet.validation.project_structure.checks import (
@@ -56,7 +59,32 @@ def render_project_template(
     """
     if project_template_path is None:
         project_template_path = PROJECT_TEMPLATE_PATH
-    return cookiecutter(project_template_path, **cc_kwargs)
+
+    project_path = cookiecutter(project_template_path, **cc_kwargs)
+
+    if create_github_repo:
+        if github_token is None:
+            raise ValueError('Need to provide github token')
+        g = Github(github_token)
+
+        # need to get params from new project config
+        project = Project.from_path(project_path)
+        owner = project.config.get('github.github_owner')
+        name = project.config.get('project.project_slug')
+
+        # create repo on github
+        github_repo = ballet.util.git.create_github_repo(g, owner, name)
+        logger.info(f'Created repo on GitHub at {github_repo.html_url}')
+
+        # now push to remote
+        # we don't need to set up the remote, as it has already been setup in
+        # post_gen_hook.py
+        local_repo = project.repo
+        remote_name = project.config.get('github.remote')
+        branches = [DEFAULT_BRANCH]
+        push_branches_to_remote(local_repo, remote_name, branches)
+
+    return project_path
 
 
 def render_feature_template(**cc_kwargs) -> str:
