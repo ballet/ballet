@@ -32,6 +32,7 @@ def cli(verbose, quiet):
 
 @cli.command()
 @click.option('--create-github-repo',
+              is_flag=True,
               default=False,
               help='Create repo on GitHub for resulting project')
 @click.option('--github-token',

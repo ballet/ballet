@@ -31,7 +31,13 @@ def test_quickstart(mock_render, cli, create_github_repo):
     if create_github_repo:
         cmd += ' --create-github-repo'
     result = cli(cmd)
-    mock_render.assert_called_once_with(create_github_repo=create_github_repo)
+
+    # want to do a partial match on kwargs
+    # compat: call.kwargs introduced in py3.8
+    mock_render.assert_called_once()
+    _, kwargs = mock_render.call_args
+    assert kwargs['create_github_repo'] == create_github_repo
+
     assert 'Generating new ballet project' in result.output
 
 
