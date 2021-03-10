@@ -98,6 +98,7 @@ def can_use_local_merge_differ(repo: Optional[git.Repo]):
     """Check the repo HEAD is on master after a merge commit
 
     Checks for two qualities of the current project:
+
     1. The project repo's head is the master branch
     2. The project repo's head commit is a merge commit.
 
@@ -215,7 +216,7 @@ def set_config_variables(repo: git.Repo, variables: dict):
 
     Args:
         repo: repo
-        variables: entries of the form 'user.email': 'you@example.com'
+        variables: entries of the form ``'user.email': 'you@example.com'``
     """
     with repo.config_writer() as writer:
         for k, value in variables.items():
@@ -265,13 +266,14 @@ def did_git_push_succeed(push_info: git.remote.PushInfo) -> bool:
 
 
 def create_github_repo(github: Github, owner: str, name: str) -> Repository:
-    """Create the repo :owner/:name
+    """Create the repo ``:owner/:name``
 
     The authenticated account must have the permissions to create the desired
     repo.
+
     1. if the desired owner is the user, then this is straightforward
     2. if the desired owner is an organization, then the user must have
-        permission to create a new repo for the organization
+       permission to create a new repo for the organization
 
     Returns:
         the created repository

@@ -40,7 +40,7 @@ class SimpleFunctionTransformer(FunctionTransformer):
     The callable will be called on the input X in the transform stage,
     optionally with additional arguments and keyword arguments.
 
-    A simple wrapper around :py:class:``FunctionTransformer``.
+    A simple wrapper around :py:class:`FunctionTransformer`.
 
     Args:
         func: callable to apply
@@ -63,9 +63,9 @@ class GroupedFunctionTransformer(FunctionTransformer):
     Args:
         func: callable to apply
         func_kwargs: keyword arguments to pass
-        groupby_kwargs: keyword arguments to pd.DataFrame.groupby. If omitted,
-            no grouping is performed and the function is called on the entire
-            DataFrame.
+        groupby_kwargs: keyword arguments to ``pd.DataFrame.groupby``. If
+            omitted, no grouping is performed and the function is called on
+            the entire DataFrame.
     """
 
     def __init__(self,
@@ -109,9 +109,9 @@ class GroupwiseTransformer(BaseTransformer):
         groupby_kwargs: keyword arguments to pd.DataFrame.groupby
         column_selection): column, or list of columns,
             to select after the groupby. Equivalent to
-            `df.groupby(...)[column_selection]`. Defaults to None, i.e. no
+            ``df.groupby(...)[column_selection]``. Defaults to None, i.e. no
             column selection is performed.
-        handle_unknown: 'error' or 'ignore', default=’error’. Whether to
+        handle_unknown: 'error' or 'ignore', default='error'. Whether to
             raise an error or ignore if an unknown group is encountered during
             transform. When this parameter is set to 'ignore' and an unknown
             group is encountered during transform, the group's values will be
