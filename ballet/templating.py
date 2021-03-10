@@ -8,7 +8,7 @@ from github import Github, GithubException
 
 import ballet.util.git
 from ballet.compat import PathLike
-from ballet.exc import ConfigurationError, BalletError
+from ballet.exc import BalletError, ConfigurationError
 from ballet.project import Project, detect_github_username
 from ballet.util.fs import pwalk, synctree
 from ballet.util.git import (
@@ -87,10 +87,9 @@ def render_project_template(
                 'Failed to create GitHub repo for this project...\n'
                 'did you specify the intended repo owner, and do you have'
                 ' permissions to create a repo under that owner?\n'
-                'Try manually creating the repo: https://hdi-project.github.io/ballet/maintainer_guide.html#manual-repository-creation'
-            )  # noqa E501
+                'Try manually creating the repo: https://hdi-project.github.io/ballet/maintainer_guide.html#manual-repository-creation'  # noqa E501
+            )
             return project_path
-
 
         # now push to remote
         # we don't need to set up the remote, as it has already been setup in
@@ -104,8 +103,8 @@ def render_project_template(
             logger.exception('Failed to push branches to GitHub repo')
             logger.warning(
                 'Failed to push branches to GitHub repo...\n'
-                'Try manually pushing the branches: https://hdi-project.github.io/ballet/maintainer_guide.html#manual-repository-creation'
-            )  # noqa E501
+                'Try manually pushing the branches: https://hdi-project.github.io/ballet/maintainer_guide.html#manual-repository-creation'  # noqa E501
+            )
             return project_path
 
     return project_path
