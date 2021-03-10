@@ -282,9 +282,9 @@ def create_github_repo(github: Github, owner: str, name: str) -> Repository:
     """
     user = github.get_user()
     if user.login == owner:
-        return user.create_repo(owner)
+        return user.create_repo(name)
     else:
-        return github.get_organization(owner).create_repo(owner)
+        return github.get_organization(owner).create_repo(name)
 
 
 @stacklog(logger.info, 'Pushing branches to remote')

@@ -2,7 +2,7 @@ from unittest.mock import create_autospec, patch
 
 import git
 import pytest
-from github import BadCredentialsException, Github
+from github import Github
 
 from ballet.util.git import (
     create_github_repo, did_git_push_succeed, get_pull_request_outcomes,
@@ -102,7 +102,9 @@ def test_did_git_push_succeed():
 
 @pytest.fixture
 def github():
-    return create_autospec(Github)
+    g = create_autospec(Github)
+    g.get_user.return_value.login = 'octocat'
+    return g
 
 
 @pytest.mark.parametrize(
@@ -110,23 +112,15 @@ def github():
     ['octocat', 'github-dot-com'],
 )
 def test_create_github_repo(github, owner):
-    user = 'octocat'  # noqa
-    # TODO mock user's permissions
-    repo = 'Hello-World'
-    repository = create_github_repo(github, owner, repo)
-    assert repository.full_name == f'{owner}/{repo}'
+    name = 'Hello-World'
+    create_github_repo(github, owner, name)
 
+    if owner == 'octocat':
+        create_repo = github.get_user.return_value.create_repo
+    else:
+        create_repo = github.get_organization.return_value.create_repo
 
-@pytest.mark.parametrize(
-    'owner',
-    ['octocat', 'github-dot-com'],
-)
-def test_create_github_repo_not_authorized(github, owner):
-    user = 'octocat'  # noqa
-    # TODO mock user's permissions
-    repo = 'Hello-World'
-    with pytest.raises(BadCredentialsException):
-        create_github_repo(github, owner, repo)
+    create_repo.assert_called_once_with(name)
 
 
 @patch('git.Repo.remote')
