@@ -1,18 +1,17 @@
 import pathlib
 import re
-from typing import Iterator, Iterable, Optional, Tuple
+from typing import Iterable, Iterator, Optional, Tuple
 
 import git
 import requests
-from funcy import collecting, re_find, silent, lfilter, complement
+from funcy import collecting, complement, lfilter, re_find, silent
 from github import Github
 from github.Repository import Repository
 from stacklog import stacklog
 
-import ballet.project
+from ballet.exc import BalletError
 from ballet.util import one_or_raise
 from ballet.util.log import logger
-from ballet.exc import BalletError
 
 FILE_CHANGES_COMMIT_RANGE = '{a}...{b}'
 REV_REGEX = r'[a-zA-Z0-9_/^@{}-]+'
@@ -290,20 +289,19 @@ def create_github_repo(github: Github, owner: str, name: str) -> Repository:
 
 @stacklog(logger.info, 'Pushing branches to remote')
 def push_branches_to_remote(
-    project: 'ballet.project.Project',
+    repo: git.Repo,
+    remote_name: str,
     branches: Iterable[str]
 ):
-    """Push default branch and project template branch to remote
+    """Push selected branches to origin
 
-    With default config (i.e. remote and branch names), equivalent to::
+    Similar to::
 
-        $ git push origin master:master project-template:project-template
+        $ git push origin branch1:branch1 branch2:branch2
 
     Raises:
         ballet.exc.BalletError: Push failed in some way
     """
-    repo = project.repo
-    remote_name = project.config.get('github.remote')
     remote = repo.remote(remote_name)
     result = remote.push([
         f'{b}:{b}'

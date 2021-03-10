@@ -11,16 +11,14 @@ import funcy
 import git
 import packaging.version
 from cookiecutter.prompt import prompt_for_config
-from funcy import complement, lfilter, re_find, re_test
+from funcy import re_find, re_test
 from git import GitCommandError
-from stacklog import stacklog
 
 import ballet
 from ballet.exc import BalletError, ConfigurationError
 from ballet.project import Project
 from ballet.templating import render_project_template
-from ballet.util.git import (
-    DEFAULT_BRANCH, did_git_push_succeed, push_branches_to_remote,)
+from ballet.util.git import DEFAULT_BRANCH, push_branches_to_remote
 from ballet.util.log import logger
 from ballet.util.typing import Pathy
 
@@ -292,7 +290,9 @@ def update_project_template(push: bool = False,
         raise
 
     if push:
+        repo = project.repo
+        remote_name = project.config.get('github.remote')
         branches = [DEFAULT_BRANCH, TEMPLATE_BRANCH]
-        push_branches_to_remote(project, branches)
+        push_branches_to_remote(repo, remote_name, branches)
 
     _log_recommended_reinstall()
