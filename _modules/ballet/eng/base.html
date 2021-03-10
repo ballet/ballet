@@ -98,7 +98,11 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#project-instantiation">Project instantiation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#project-installation">Project installation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#collaboration-via-git-and-github">Collaboration via git and GitHub</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#collaboration-via-git-and-github">Collaboration via git and GitHub</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../maintainer_guide.html#automatic-repository-creation">Automatic repository creation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../maintainer_guide.html#manual-repository-creation">Manual repository creation</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#enabling-continuous-integration">Enabling continuous integration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#installing-bots">Installing bots</a></li>
 </ul>
@@ -387,7 +391,7 @@
 <span class="sd">    The callable will be called on the input X in the transform stage,</span>
 <span class="sd">    optionally with additional arguments and keyword arguments.</span>
 
-<span class="sd">    A simple wrapper around :py:class:``FunctionTransformer``.</span>
+<span class="sd">    A simple wrapper around :py:class:`FunctionTransformer`.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        func: callable to apply</span>
@@ -410,9 +414,9 @@
 <span class="sd">    Args:</span>
 <span class="sd">        func: callable to apply</span>
 <span class="sd">        func_kwargs: keyword arguments to pass</span>
-<span class="sd">        groupby_kwargs: keyword arguments to pd.DataFrame.groupby. If omitted,</span>
-<span class="sd">            no grouping is performed and the function is called on the entire</span>
-<span class="sd">            DataFrame.</span>
+<span class="sd">        groupby_kwargs: keyword arguments to ``pd.DataFrame.groupby``. If</span>
+<span class="sd">            omitted, no grouping is performed and the function is called on</span>
+<span class="sd">            the entire DataFrame.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
@@ -456,9 +460,9 @@
 <span class="sd">        groupby_kwargs: keyword arguments to pd.DataFrame.groupby</span>
 <span class="sd">        column_selection): column, or list of columns,</span>
 <span class="sd">            to select after the groupby. Equivalent to</span>
-<span class="sd">            `df.groupby(...)[column_selection]`. Defaults to None, i.e. no</span>
+<span class="sd">            ``df.groupby(...)[column_selection]``. Defaults to None, i.e. no</span>
 <span class="sd">            column selection is performed.</span>
-<span class="sd">        handle_unknown: &#39;error&#39; or &#39;ignore&#39;, default=’error’. Whether to</span>
+<span class="sd">        handle_unknown: &#39;error&#39; or &#39;ignore&#39;, default=&#39;error&#39;. Whether to</span>
 <span class="sd">            raise an error or ignore if an unknown group is encountered during</span>
 <span class="sd">            transform. When this parameter is set to &#39;ignore&#39; and an unknown</span>
 <span class="sd">            group is encountered during transform, the group&#39;s values will be</span>

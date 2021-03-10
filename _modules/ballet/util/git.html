@@ -98,7 +98,11 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#project-instantiation">Project instantiation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#project-installation">Project installation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#collaboration-via-git-and-github">Collaboration via git and GitHub</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#collaboration-via-git-and-github">Collaboration via git and GitHub</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../maintainer_guide.html#automatic-repository-creation">Automatic repository creation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../maintainer_guide.html#manual-repository-creation">Manual repository creation</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#enabling-continuous-integration">Enabling continuous integration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#installing-bots">Installing bots</a></li>
 </ul>
@@ -349,13 +353,18 @@
   <h1>Source code for ballet.util.git</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span> <span class="nn">git</span>
 <span class="kn">import</span> <span class="nn">requests</span>
-<span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">collecting</span><span class="p">,</span> <span class="n">re_find</span><span class="p">,</span> <span class="n">silent</span>
+<span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">collecting</span><span class="p">,</span> <span class="n">complement</span><span class="p">,</span> <span class="n">lfilter</span><span class="p">,</span> <span class="n">re_find</span><span class="p">,</span> <span class="n">silent</span>
+<span class="kn">from</span> <span class="nn">github</span> <span class="kn">import</span> <span class="n">Github</span>
+<span class="kn">from</span> <span class="nn">github.Repository</span> <span class="kn">import</span> <span class="n">Repository</span>
+<span class="kn">from</span> <span class="nn">stacklog</span> <span class="kn">import</span> <span class="n">stacklog</span>
 
+<span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="kn">import</span> <span class="n">BalletError</span>
 <span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">one_or_raise</span>
+<span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="kn">import</span> <span class="n">logger</span>
 
 <span class="n">FILE_CHANGES_COMMIT_RANGE</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{a}</span><span class="s1">...</span><span class="si">{b}</span><span class="s1">&#39;</span>
 <span class="n">REV_REGEX</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;[a-zA-Z0-9_/^@</span><span class="si">{}</span><span class="s1">-]+&#39;</span>
@@ -367,6 +376,7 @@
     <span class="n">git</span><span class="o">.</span><span class="n">PushInfo</span><span class="o">.</span><span class="n">REMOTE_FAILURE</span> <span class="o">|</span>
     <span class="n">git</span><span class="o">.</span><span class="n">PushInfo</span><span class="o">.</span><span class="n">ERROR</span>
 <span class="p">)</span>
+<span class="n">DEFAULT_BRANCH</span> <span class="o">=</span> <span class="s1">&#39;master&#39;</span>
 
 
 <div class="viewcode-block" id="Differ"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.Differ">[docs]</a><span class="k">class</span> <span class="nc">Differ</span><span class="p">:</span>
@@ -441,6 +451,7 @@
     <span class="sd">&quot;&quot;&quot;Check the repo HEAD is on master after a merge commit</span>
 
 <span class="sd">    Checks for two qualities of the current project:</span>
+
 <span class="sd">    1. The project repo&#39;s head is the master branch</span>
 <span class="sd">    2. The project repo&#39;s head commit is a merge commit.</span>
 
@@ -558,7 +569,7 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        repo: repo</span>
-<span class="sd">        variables: entries of the form &#39;user.email&#39;: &#39;you@example.com&#39;</span>
+<span class="sd">        variables: entries of the form ``&#39;user.email&#39;: &#39;you@example.com&#39;``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="n">repo</span><span class="o">.</span><span class="n">config_writer</span><span class="p">()</span> <span class="k">as</span> <span class="n">writer</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">variables</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -605,6 +616,59 @@
 <span class="sd">        push_info: push info</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">push_info</span><span class="o">.</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">GIT_PUSH_FAILURE</span> <span class="o">==</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="create_github_repo"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.create_github_repo">[docs]</a><span class="k">def</span> <span class="nf">create_github_repo</span><span class="p">(</span><span class="n">github</span><span class="p">:</span> <span class="n">Github</span><span class="p">,</span> <span class="n">owner</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Repository</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Create the repo ``:owner/:name``</span>
+
+<span class="sd">    The authenticated account must have the permissions to create the desired</span>
+<span class="sd">    repo.</span>
+
+<span class="sd">    1. if the desired owner is the user, then this is straightforward</span>
+<span class="sd">    2. if the desired owner is an organization, then the user must have</span>
+<span class="sd">       permission to create a new repo for the organization</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        the created repository</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        github.GithubException.BadCredentialsException: if the token does not</span>
+<span class="sd">            have permission to create the desired repo</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">github</span><span class="o">.</span><span class="n">get_user</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">login</span> <span class="o">==</span> <span class="n">owner</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">user</span><span class="o">.</span><span class="n">create_repo</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">github</span><span class="o">.</span><span class="n">get_organization</span><span class="p">(</span><span class="n">owner</span><span class="p">)</span><span class="o">.</span><span class="n">create_repo</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="push_branches_to_remote"><a class="viewcode-back" href="../../../api/ballet.util.git.html#ballet.util.git.push_branches_to_remote">[docs]</a><span class="nd">@stacklog</span><span class="p">(</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">,</span> <span class="s1">&#39;Pushing branches to remote&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">push_branches_to_remote</span><span class="p">(</span>
+    <span class="n">repo</span><span class="p">:</span> <span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">,</span>
+    <span class="n">remote_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">branches</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Push selected branches to origin</span>
+
+<span class="sd">    Similar to::</span>
+
+<span class="sd">        $ git push origin branch1:branch1 branch2:branch2</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ballet.exc.BalletError: Push failed in some way</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">remote</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="n">remote_name</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">remote</span><span class="o">.</span><span class="n">push</span><span class="p">([</span>
+        <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">branches</span>
+    <span class="p">])</span>
+    <span class="n">failures</span> <span class="o">=</span> <span class="n">lfilter</span><span class="p">(</span><span class="n">complement</span><span class="p">(</span><span class="n">did_git_push_succeed</span><span class="p">),</span> <span class="n">result</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">failures</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">push_info</span> <span class="ow">in</span> <span class="n">failures</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Failed to push ref </span><span class="si">{</span><span class="n">push_info</span><span class="o">.</span><span class="n">local_ref</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> to &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">push_info</span><span class="o">.</span><span class="n">remote_ref</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">BalletError</span><span class="p">(</span><span class="s1">&#39;Push failed&#39;</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

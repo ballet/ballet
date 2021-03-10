@@ -100,7 +100,11 @@
 <li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#project-instantiation">Project instantiation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#project-installation">Project installation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#collaboration-via-git-and-github">Collaboration via git and GitHub</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#collaboration-via-git-and-github">Collaboration via git and GitHub</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../maintainer_guide.html#automatic-repository-creation">Automatic repository creation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../maintainer_guide.html#manual-repository-creation">Manual repository creation</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#enabling-continuous-integration">Enabling continuous integration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#installing-bots">Installing bots</a></li>
 </ul>
@@ -370,12 +374,22 @@
 
 <dl class="py function">
 <dt id="ballet.templating.render_project_template">
-<code class="sig-prename descclassname"><span class="pre">ballet.templating.</span></code><code class="sig-name descname"><span class="pre">render_project_template</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_template_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">cc_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/templating.html#render_project_template"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.templating.render_project_template" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">ballet.templating.</span></code><code class="sig-name descname"><span class="pre">render_project_template</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_template_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_github_repo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">github_token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">cc_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/templating.html#render_project_template"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.templating.render_project_template" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a ballet project according to the project template</p>
+<p>If creating the GitHub repo is requested and the process fails for any
+reason, quickstart will complete successfully and users are instructed
+to read the corresponding section of the Maintainer’s Guide to continue
+manually.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>project_template_path</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">PathLike</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – path to specific project template</p></li>
+<li><p><strong>create_github_repo</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – whether to act to create the desired repo on
+GitHub after rendering the project. The repo will be owned by
+either the user or an org that the user has relevant permissions
+for, depending on what is entered during the quickstart prompts.
+If True, then a valid github token must also be provided.</p></li>
+<li><p><strong>github_token</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – valid github token with appropriate permissions</p></li>
 <li><p><strong>**cc_kwargs</strong> – options for the cookiecutter template</p></li>
 </ul>
 </dd>

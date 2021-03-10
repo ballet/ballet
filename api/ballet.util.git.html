@@ -100,7 +100,11 @@
 <li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#project-instantiation">Project instantiation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#project-installation">Project installation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#collaboration-via-git-and-github">Collaboration via git and GitHub</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#collaboration-via-git-and-github">Collaboration via git and GitHub</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../maintainer_guide.html#automatic-repository-creation">Automatic repository creation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../maintainer_guide.html#manual-repository-creation">Manual repository creation</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#enabling-continuous-integration">Enabling continuous integration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../maintainer_guide.html#installing-bots">Installing bots</a></li>
 </ul>
@@ -436,11 +440,38 @@ a branch where the most recent commit is a merge.</p>
 <dt id="ballet.util.git.can_use_local_merge_differ">
 <code class="sig-prename descclassname"><span class="pre">ballet.util.git.</span></code><code class="sig-name descname"><span class="pre">can_use_local_merge_differ</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#can_use_local_merge_differ"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.util.git.can_use_local_merge_differ" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check the repo HEAD is on master after a merge commit</p>
-<p>Checks for two qualities of the current project:
-1. The project repo’s head is the master branch
-2. The project repo’s head commit is a merge commit.</p>
+<p>Checks for two qualities of the current project:</p>
+<ol class="arabic simple">
+<li><p>The project repo’s head is the master branch</p></li>
+<li><p>The project repo’s head commit is a merge commit.</p></li>
+</ol>
 <p>Note that fast-forward style merges will not cause the second condition
 to evaluate to true.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ballet.util.git.create_github_repo">
+<code class="sig-prename descclassname"><span class="pre">ballet.util.git.</span></code><code class="sig-name descname"><span class="pre">create_github_repo</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">github</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">owner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#create_github_repo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.util.git.create_github_repo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the repo <code class="docutils literal notranslate"><span class="pre">:owner/:name</span></code></p>
+<p>The authenticated account must have the permissions to create the desired
+repo.</p>
+<ol class="arabic simple">
+<li><p>if the desired owner is the user, then this is straightforward</p></li>
+<li><p>if the desired owner is an organization, then the user must have
+permission to create a new repo for the organization</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Repository</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the created repository</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>github.GithubException.BadCredentialsException</strong> – if the token does not
+    have permission to create the desired repo</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -558,6 +589,21 @@ diff.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ballet.util.git.push_branches_to_remote">
+<code class="sig-prename descclassname"><span class="pre">ballet.util.git.</span></code><code class="sig-name descname"><span class="pre">push_branches_to_remote</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remote_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">branches</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#push_branches_to_remote"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.util.git.push_branches_to_remote" title="Permalink to this definition">¶</a></dt>
+<dd><p>Push selected branches to origin</p>
+<p>Similar to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git push origin branch1:branch1 branch2:branch2
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference internal" href="ballet.exc.html#ballet.exc.BalletError" title="ballet.exc.BalletError"><strong>ballet.exc.BalletError</strong></a> – Push failed in some way</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ballet.util.git.set_config_variables">
 <code class="sig-prename descclassname"><span class="pre">ballet.util.git.</span></code><code class="sig-name descname"><span class="pre">set_config_variables</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util/git.html#set_config_variables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.util.git.set_config_variables" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set config variables</p>
@@ -565,7 +611,7 @@ diff.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>repo</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Repo</span></code>) – repo</p></li>
-<li><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>) – entries of the form ‘user.email’: <a class="reference external" href="mailto:'you&#37;&#52;&#48;example&#46;com">‘you<span>&#64;</span>example<span>&#46;</span>com</a>’</p></li>
+<li><p><strong>variables</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>) – entries of the form <code class="docutils literal notranslate"><span class="pre">'user.email':</span> <span class="pre">'you&#64;example.com'</span></code></p></li>
 </ul>
 </dd>
 </dl>
