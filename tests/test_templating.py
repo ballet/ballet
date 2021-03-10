@@ -28,13 +28,17 @@ def test_render_project_template(mock_cookiecutter):
     assert 'project_template' in str(path)
 
 
+@patch('ballet.templating.push_branches_to_remote')
 @patch('ballet.util.git.create_github_repo')
+@patch('ballet.templating.Project.from_path')
 @patch('ballet.templating.cookiecutter')
 def test_render_project_template_create_remote(
-    mock_cookiecutter, mock_create_github_repo
+    mock_cookiecutter, mock_from_path, mock_create_github_repo,
+    mock_push_branches_to_remote,
 ):
-    render_project_template(create_remote=True)
+    render_project_template(create_github_repo=True, github_token='token')
     mock_create_github_repo.assert_called_once()
+    mock_push_branches_to_remote.assert_called_once()
 
 
 @patch('ballet.templating.cookiecutter')
