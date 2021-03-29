@@ -344,10 +344,10 @@ ballet collaboration.
 
    Image from *The New Yorker* cartoon by Peter Steiner, 1993, via Wikipedia.
 
-.. _`Assemblé`: https://github.com/HDI-Project/ballet-assemble
+.. _`Assemblé`: https://github.com/ballet/ballet-assemble
 .. |launch-assemble| image:: _static/launch-assemble.svg
 .. _`Predict House Prices`: https://github.com/HDI-Project/ballet-predict-house-prices
 .. _`conda`: https://conda.io/en/latest/
 .. _`hub`: https://hub.github.com/
 .. _`Ballet Bot`: https://github.com/apps/ballet-bot
-.. _`install ballet-assemble`: https://github.com/HDI-Project/ballet-assemble/blob/master/README.md
+.. _`install ballet-assemble`: https://github.com/ballet/ballet-assemble/blob/master/README.md

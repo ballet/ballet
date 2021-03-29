@@ -31,7 +31,7 @@ Here are common situations:
 
    Solution: Please report this error -- thanks for your help!
 
-   1. `Open a new issue on the ballet-assemble project <https://github.com/HDI-Project/ballet-assemble/issues/new>`__
+   1. `Open a new issue on the ballet-assemble project <https://github.com/ballet/ballet-assemble/issues/new>`__
 
    2. Open the web console. (See `Open the web console on Firefox <https://developer.mozilla.org/en-US/docs/Tools/Web_Console#opening_the_web_console>`__ or `Open the web console on Chrome <https://developers.google.com/web/tools/chrome-devtools/open#console>`__.)
 
