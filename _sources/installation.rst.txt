@@ -38,13 +38,13 @@ You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/HDI-Project/ballet
+    $ git clone git://github.com/ballet/ballet
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl  -OL https://github.com/HDI-Project/ballet/tarball/master
+    $ curl  -OL https://github.com/ballet/ballet/tarball/master
 
 Once you have a copy of the source, you can install it with:
 
@@ -53,5 +53,5 @@ Once you have a copy of the source, you can install it with:
     $ make install
 
 
-.. _Github repo: https://github.com/HDI-Project/ballet
-.. _tarball: https://github.com/HDI-Project/ballet/tarball/master
+.. _Github repo: https://github.com/ballet/ballet
+.. _tarball: https://github.com/ballet/ballet/tarball/master
