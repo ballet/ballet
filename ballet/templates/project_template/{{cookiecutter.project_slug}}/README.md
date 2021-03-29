@@ -1,9 +1,9 @@
-[![ballet](https://img.shields.io/static/v1?label=built%20with&message=ballet&color=FCDD35)](https://github.com/ballet/ballet)
+[![ballet](https://img.shields.io/static/v1?label=built%20with&message=ballet&color=FCDD35)](https://ballet.github.io)
 <a href="https://mybinder.org/v2/gh/{{ cookiecutter.github_owner }}/{{ cookiecutter.project_slug }}/master?urlpath=lab" target="_blank" rel="nofollow"><img src="https://ballet.github.io/ballet/_static/launch-assemble.svg" style="max-width:100%;"></a>
 
 # {{ cookiecutter.project_name }}
 
-This is a collaborative predictive modeling project built on the [ballet framework](https://github.com/ballet/ballet).
+This is a collaborative predictive modeling project built on the [ballet framework](https://ballet.github.io).
 
 ## Join the collaboration
 
