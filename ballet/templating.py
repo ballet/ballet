@@ -87,7 +87,7 @@ def render_project_template(
                 'Failed to create GitHub repo for this project...\n'
                 'did you specify the intended repo owner, and do you have'
                 ' permissions to create a repo under that owner?\n'
-                'Try manually creating the repo: https://hdi-project.github.io/ballet/maintainer_guide.html#manual-repository-creation'  # noqa E501
+                'Try manually creating the repo: https://ballet.github.io/ballet/maintainer_guide.html#manual-repository-creation'  # noqa E501
             )
             return project_path
 
@@ -103,7 +103,7 @@ def render_project_template(
             logger.exception('Failed to push branches to GitHub repo')
             logger.warning(
                 'Failed to push branches to GitHub repo...\n'
-                'Try manually pushing the branches: https://hdi-project.github.io/ballet/maintainer_guide.html#manual-repository-creation'  # noqa E501
+                'Try manually pushing the branches: https://ballet.github.io/ballet/maintainer_guide.html#manual-repository-creation'  # noqa E501
             )
             return project_path
 

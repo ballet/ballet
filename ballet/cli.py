@@ -57,7 +57,7 @@ def quickstart(create_github_repo, github_token):
 @click.option('--path', 'project_template_path',
               default=None,
               help='Specify override for project template path '
-                   '(i.e. gh:HDI-Project/ballet)')
+                   '(i.e. gh:ballet/ballet)')
 @stacklog(click.echo, 'Updating project template')
 def update_project_template(push, project_template_path):
     """Update an existing ballet project from the upstream template"""

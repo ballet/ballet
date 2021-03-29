@@ -114,7 +114,7 @@ setup(
     python_requires='>=3.6.1',
     test_suite='tests',
     tests_require=test_requirements,
-    url='https://github.com/HDI-Project/ballet',
+    url='https://github.com/ballet/ballet',
     version='0.12.0',
     zip_safe=False,
 )

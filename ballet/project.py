@@ -135,7 +135,7 @@ def detect_github_username(project: 'Project') -> str:
     @raiseifnone
     def get_remote():
         url = list(project.repo.remote('origin').urls)[0]
-        # protocol:user/repo, i.e. 'git@github.com:HDI-Project/ballet'
+        # protocol:user/repo, i.e. 'git@github.com:ballet/ballet'
         return re_find(r'.+:(.+)/.+', url)
 
     @raiseifnone

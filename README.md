@@ -1,6 +1,6 @@
 [![PyPI Shield](https://img.shields.io/pypi/v/ballet.svg)](https://pypi.org/project/ballet)
-[![Run Tests](https://github.com/HDI-Project/ballet/workflows/Run%20Tests/badge.svg)](https://github.com/HDI-Project/ballet/actions?query=workflow%3A%22Run+Tests%22)
-[![codecov Shield](https://codecov.io/gh/HDI-Project/ballet/branch/master/graph/badge.svg)](https://codecov.io/gh/HDI-Project/ballet)
+[![Run Tests](https://github.com/ballet/ballet/workflows/Run%20Tests/badge.svg)](https://github.com/ballet/ballet/actions?query=workflow%3A%22Run+Tests%22)
+[![codecov Shield](https://codecov.io/gh/ballet/ballet/branch/master/graph/badge.svg)](https://codecov.io/gh/ballet/ballet)
 
 
 # ballet
@@ -9,8 +9,8 @@ A **light**weight framework for collaborative, open-source data science
 projects through **feat**ure engineering.
 
 - Free software: MIT license
-- Documentation: https://hdi-project.github.io/ballet
-- Homepage: https://github.com/HDI-Project/ballet
+- Documentation: https://ballet.github.io/ballet
+- Homepage: https://github.com/ballet/ballet
 
 ## Overview
 
@@ -59,15 +59,15 @@ automatically merged by the ballet GitHub app into projects.
 *Are you a data owner or project maintainer that wants to organize a
 collaboration?*
 
-👉 Check out the [Ballet Maintainer Guide](https://hdi-project.github.io/ballet/maintainer_guide.html)
+👉 Check out the [Ballet Maintainer Guide](https://ballet.github.io/ballet/maintainer_guide.html)
 
 *Are you a data scientist or enthusiast that wants to join a collaboration?*
 
-👉 Check out the [Ballet Contributor Guide](https://hdi-project.github.io/ballet/contributor_guide.html)
+👉 Check out the [Ballet Contributor Guide](https://ballet.github.io/ballet/contributor_guide.html)
 
 *Want to learn about how Ballet enables Better Feature Engineering™️?*
 
-👉 Check out the [Feature Engineering Guide](https://hdi-project.github.io/ballet/feature_engineering_guide.html)
+👉 Check out the [Feature Engineering Guide](https://ballet.github.io/ballet/feature_engineering_guide.html)
 
 *Want to see a demo collaboration in progress and maybe even participate yourself?*
 
