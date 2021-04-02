@@ -1,5 +1,9 @@
 # History
 
+## 0.13.1 (2021-04-02)
+
+* Fix upgrade check in `ballet update-project-template` to migrate away from deprecated PyPI XML-RPC API.
+
 ## 0.13.0 (2021-03-30)
 
 * Fix links in project template
