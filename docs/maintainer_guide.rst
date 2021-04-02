@@ -28,8 +28,8 @@ Project instantiation
 
 To instantiate a project, use the ``ballet quickstart`` command. (You may want to :ref:`look ahead<maintainer_guide:Automatic repository creation>` and see `what options <cli_reference.html#ballet-quickstart>`__ are available for this command, such as for automatically creating a GitHub repository for the project.):
 
-.. include:: fragments/maintainer-guide/ballet-quickstart.txt
-   :code: console
+.. literalinclude:: fragments/maintainer-guide/ballet-quickstart.txt
+   :language: console
 
 This command uses `cookiecutter`_ to render a project template using information supplied by the
 project maintainer. The resulting files are then committed to a new git repository. Note that the
@@ -37,8 +37,8 @@ specification of a scorer for the not-chosen problem type can be skipped (by sel
 
 Let's see what files have we have created:
 
-.. include:: fragments/maintainer-guide/tree-project.txt
-   :code: console
+.. literalinclude:: fragments/maintainer-guide/tree-project.txt
+   :language: console
 
 Importantly, by keeping this project structure intact, Ballet will be able to automatically care
 for your feature engineering pipeline.
@@ -71,8 +71,8 @@ Under the hood, contributors will collaborate using the powerful functionality p
 and GitHub. In fact, after the quickstart step, you will already have a git-tracked repository and a
 git remote set up.
 
-.. include:: fragments/maintainer-guide/git-log.txt
-   :code: console
+.. literalinclude:: fragments/maintainer-guide/git-log.txt
+   :language: console
 
 Automatic repository creation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
