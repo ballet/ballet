@@ -6,6 +6,7 @@ from unittest.mock import patch
 
 import git
 import pytest
+import responses as _responses
 
 import ballet
 from ballet.project import Project
@@ -85,3 +86,9 @@ def project_template_copy(tempdir):
     with patch('ballet.templating.PROJECT_TEMPLATE_PATH', new_path):
         tree(new_path)
         yield new_path
+
+
+@pytest.fixture
+def responses():
+    with _responses.RequestsMock() as rsps:
+        yield rsps

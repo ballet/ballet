@@ -49,6 +49,7 @@ test_requirements = [
     'pytest-cov >= 2.6',
     'pytest-virtualenv >= 1.7.0',
     'tox >= 2.9.1',
+    'responses >= 0.13.2',
 ]
 
 development_requirements = [
