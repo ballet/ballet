@@ -1,5 +1,5 @@
 [![PyPI Shield](https://img.shields.io/pypi/v/ballet.svg)](https://pypi.org/project/ballet)
-[![Run Tests](https://github.com/ballet/ballet/workflows/Run%20Tests/badge.svg)](https://github.com/ballet/ballet/actions?query=workflow%3A%22Run+Tests%22)
+[![Tests](https://github.com/ballet/ballet/workflows/Tests/badge.svg)](https://github.com/ballet/ballet/actions?query=workflow%3A%22Tests%22)
 [![codecov Shield](https://codecov.io/gh/ballet/ballet/branch/master/graph/badge.svg)](https://codecov.io/gh/ballet/ballet)
 
 
