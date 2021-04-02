@@ -1,5 +1,9 @@
 # History
 
+## 0.13.0 (2021-03-30)
+
+* Fix links in project template
+
 ## 0.12.0 (2021-03-10)
 
 * Automate creation of GitHub repository in quickstart
