@@ -23,6 +23,11 @@ def tempdir():
         yield pathlib.Path(d)
 
 
+@pytest.fixture
+def testdatadir():
+    return pathlib.Path(__file__).resolve().parent.joinpath('testdata')
+
+
 def _mock_repo(tempdir):
     repo = git.Repo.init(str(tempdir))
     set_ci_git_config_variables(repo)
