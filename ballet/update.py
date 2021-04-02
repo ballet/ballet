@@ -1,17 +1,15 @@
 import json
 import pathlib
-import subprocess
-import sys
 import tempfile
 from textwrap import dedent
-from typing import Optional, Tuple
+from typing import Optional
 from unittest.mock import patch
 
 import funcy
 import git
 import packaging.version
+import requests
 from cookiecutter.prompt import prompt_for_config
-from funcy import re_find, re_test
 from git import GitCommandError
 
 import ballet
@@ -29,54 +27,33 @@ PROJECT_CONTEXT_PATH = (
         'cookiecutter.json'))
 CONTEXT_FILE_NAME = '.cookiecutter_context.json'
 TEMPLATE_BRANCH = 'project-template'
+PYPI_PROJECT_JSON_URL = 'https://pypi.org/pypi/{project}/json'
 
 
-@funcy.ignore(subprocess.CalledProcessError)
-def _query_pip_search_ballet() -> str:
-    """Call python -m pip search ballet"""
-    # compat: use subprocess.run on py37+ and text=True on py37+
-    popen_args = [sys.executable, '-m', 'pip', 'search', 'ballet']
-    return subprocess.check_output(popen_args, universal_newlines=True)
+def _get_latest_project_version_string(project: str) -> Optional[str]:
+    """Get the latest version of a project according to the PyPI Warehouse API
+
+    For context, the `sampleproject` project returns 10KB of data.
+
+    Returns:
+        latest version of `project` or None if something went wrong
+    """
+    url = PYPI_PROJECT_JSON_URL.format(project=project)
+    response = requests.get(url)
+    releases = response.json()['releases'].keys()
+    return max(releases, key=packaging.version.parse)
 
 
-def _extract_latest_from_search_triple(
-    triple: Tuple[str, str, str]
-) -> Optional[str]:
-    """Try to extract latest version number from a triple of search results"""
-    description, installed, latest = triple
-    if re_test(r'\s*ballet \(.+\)\s*-\s*\w*', description):
-        if 'INSTALLED' in installed and 'LATEST' in latest:
-            return re_find(r'\s*LATEST:\s*(.+)', latest)
-    return None
-
-
+@funcy.ignore(Exception)
 def _get_latest_ballet_version_string() -> Optional[str]:
-    """Get the latest version of ballet according to pip
+    """Get the latest version of ballet according to the PyPI Warehouse API
 
-    Parses the result of `pip search ballet`. Looks for something named
-    `ballet` to be installed. If something appears to be named `ballet` but
-    is not installed, then obviously it is not correct because otherwise how
-    would this code be running? :)
+    This returns on the order of 50KB of data.
 
     Returns:
         latest version of ballet or None if something went wrong
     """
-
-    # $ pip search ballet
-    # something-else-that-has-ballet-in-the-name (1.1.1)  - some description
-    # ballet (x.y.z)  - some description
-    #   INSTALLED: x.y.z
-    #   LATEST:    u.v.w
-    # something-else-that-has-ballet-in-the-name (1.1.1)  - some description
-
-    output = _query_pip_search_ballet()
-    if output is not None:
-        for triple in funcy.partition(3, 1, output):
-            match = _extract_latest_from_search_triple(triple)
-            if match:
-                return match
-
-    return None
+    return _get_latest_project_version_string(ballet.__name__)
 
 
 def _check_for_updated_ballet() -> Optional[str]:
@@ -95,7 +72,7 @@ def _check_for_updated_ballet() -> Optional[str]:
         return None
 
 
-def _warn_of_updated_ballet(latest: str):
+def _warn_of_updated_ballet(latest: Optional[str]):
     if latest is not None:
         current = ballet.__version__
         msg = dedent(
@@ -105,7 +82,7 @@ def _warn_of_updated_ballet(latest: str):
             - if you don't update ballet, you won't receive project template updates
             - update ballet and then try again:
 
-                $ pip install --upgrade ballet
+                $ python -m pip install --upgrade ballet
             '''  # noqa E501
         ).strip()
         logger.warning(msg)

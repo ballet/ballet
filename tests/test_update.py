@@ -1,60 +1,34 @@
+import json
 import logging
 from unittest.mock import Mock, patch
 
 import git
-import pytest
 
 import ballet
 import ballet.util.log
 from ballet.update import (
-    _check_for_updated_ballet, _extract_latest_from_search_triple,
-    _get_latest_ballet_version_string, _log_recommended_reinstall,
-    _make_template_branch_merge_commit_message, _query_pip_search_ballet,
+    PYPI_PROJECT_JSON_URL, _check_for_updated_ballet,
+    _get_latest_ballet_version_string, _get_latest_project_version_string,
+    _log_recommended_reinstall, _make_template_branch_merge_commit_message,
     _safe_delete_remote, _warn_of_updated_ballet,)
 
 
-@pytest.mark.skip(
-    reason='Disabled due to https://status.python.org/incidents/grk0k7sz6zkp'
-)
-def test_query_pip_search_ballet():
-    # nothing better to do that just call the function...
-    # actually hits PyPI but difficult to mock because uses subprocess >:(
-    result = _query_pip_search_ballet()
-    assert 'ballet' in result
+def test_get_latest_project_version_string(testdatadir, responses):
+    with testdatadir.joinpath('sampleproject.json').open('r') as f:
+        data = json.load(f)
+    url = PYPI_PROJECT_JSON_URL.format(project='sampleproject')
+    responses.add(responses.GET, url, json=data)
+    expected = '1.2.0'
+
+    actual = _get_latest_project_version_string('sampleproject')
+
+    assert actual == expected
 
 
-def test_extract_latest_from_search_triple():
-    triple = (
-        'ballet (x.y.z)  - some description',
-        '  INSTALLED: x.y.z',
-        '  LATEST:    u.v.w',
-    )
-    result = _extract_latest_from_search_triple(triple)
-    assert result == 'u.v.w'
-
-
-def test_extract_latest_from_search_triple_not_found():
-    triple = (
-        'something',
-        'that does not',
-        'match the expected format'
-    )
-    result = _extract_latest_from_search_triple(triple)
-    assert result is None
-
-
-@patch('funcy.partition')
-@patch('ballet.update._extract_latest_from_search_triple')
-@patch('ballet.update._query_pip_search_ballet')
-def test_get_latest_ballet_version_string(
-    mock_query, mock_extract, mock_partition
-):
-    mock_partition.return_value = ['some', 'iterable']
-    expected = 'x.y.z'
-    mock_extract.return_value = expected
-
+@patch('ballet.update._get_latest_project_version_string')
+def test_get_latest_ballet_version_string(mock_latest):
+    expected = mock_latest.return_value
     actual = _get_latest_ballet_version_string()
-
     assert actual == expected
 
 
