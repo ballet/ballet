@@ -85,6 +85,7 @@
 <li class="toctree-l1"><a class="reference internal" href="readme.html">Overview</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="readme.html#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="readme.html#next-steps">Next steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#source-code-organization">Source code organization</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
@@ -465,32 +466,27 @@ Python versions.</p></li>
 </div>
 <div class="section" id="deploying">
 <h2>Deploying<a class="headerlink" href="#deploying" title="Permalink to this headline">¶</a></h2>
-<p>A reminder for the maintainers on how to deploy.</p>
+<p>A reminder for the maintainers on how to deploy. This is a simplified release workflow that does not update the version with a dev postfix (i.e. there is no 0.1.2-dev after 0.1.1 release).</p>
+<ol class="arabic simple">
+<li><p>Make sure all your changes are committed.</p></li>
+</ol>
 <ol class="arabic">
-<li><p>Make sure all your changes are committed (including an entry in HISTORY.md).</p></li>
-<li><p>Bumpversion
-- if on a dev version, use <code class="docutils literal notranslate"><span class="pre">bumpversion</span> <span class="pre">release</span></code>:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ bumpversion release  <span class="c1"># i.e. 0.1.1-dev -&gt; 0.1.1</span>
-$ bumpversion --new-version <span class="m">0</span>.2.0 release  <span class="c1"># i.e. 0.1.1-dev -&gt; 0.2.0</span>
-</pre></div>
-</div>
-<ul>
-<li><p>if you forgot to bump to dev version, use <code class="docutils literal notranslate"><span class="pre">bumpversion</span> <span class="pre">major/minor/patch</span></code>
-directly:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ bumpversion minor  <span class="c1"># i.e. 0.1.1 -&gt; 0.2.0</span>
+<li><p>Create an entry in HISTORY.md for this release, and stage your changes (without committing yet):</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ git add HISTORY.md
 </pre></div>
 </div>
 </li>
-</ul>
-</li>
-<li><p>Bumpversion back to dev:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ bumpversion --no-tag patch   <span class="c1"># i.e. 0.1.1 -&gt; 0.1.2-dev</span>
+</ol>
+<ol class="arabic">
+<li><p>Create and tag a new release:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ bumpversion --allow-dirty minor  <span class="c1"># i.e. 0.1.1 -&gt; 0.2.0</span>
 </pre></div>
 </div>
 </li>
+</ol>
+<ol class="arabic">
 <li><p>Push changes:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ git push
-$ git push --tags
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ git push --tags origin master
 </pre></div>
 </div>
 </li>
