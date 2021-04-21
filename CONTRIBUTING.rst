@@ -115,28 +115,20 @@ $ python -m pytest -k some_test
 Deploying
 ---------
 
-A reminder for the maintainers on how to deploy.
+A reminder for the maintainers on how to deploy. This is a simplified release workflow that does not update the version with a dev postfix (i.e. there is no 0.1.2-dev after 0.1.1 release).
 
-1. Make sure all your changes are committed (including an entry in HISTORY.md).
+1. Make sure all your changes are committed.
 
-2. Bumpversion
-   - if on a dev version, use ``bumpversion release``::
+1. Create an entry in HISTORY.md for this release, and stage your changes (without committing yet)::
 
-      $ bumpversion release  # i.e. 0.1.1-dev -> 0.1.1
-      $ bumpversion --new-version 0.2.0 release  # i.e. 0.1.1-dev -> 0.2.0
+   $ git add HISTORY.md
 
-   - if you forgot to bump to dev version, use ``bumpversion major/minor/patch``
-     directly::
+1. Create and tag a new release::
 
-      $ bumpversion minor  # i.e. 0.1.1 -> 0.2.0
+   $ bumpversion --allow-dirty minor  # i.e. 0.1.1 -> 0.2.0
 
-3. Bumpversion back to dev::
+1. Push changes::
 
-   $ bumpversion --no-tag patch   # i.e. 0.1.1 -> 0.1.2-dev
-
-4. Push changes::
-
-   $ git push
-   $ git push --tags
+   $ git push --tags origin master
 
 GitHub Actions will then deploy to PyPI if tests pass.
