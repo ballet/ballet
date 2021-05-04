@@ -5770,9 +5770,6 @@ estimators, notably linear models and SVMs with the standard kernels.</p>
 <p>Note: a one-hot encoding of y labels should use a LabelBinarizer
 instead.</p>
 <p>Read more in the <span class="xref std std-ref">User Guide</span>.</p>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.20.</span></p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -5806,8 +5803,11 @@ left intact.</p></li>
 <li><p>array : <code class="docutils literal notranslate"><span class="pre">drop[i]</span></code> is the category in feature <code class="docutils literal notranslate"><span class="pre">X[:,</span> <span class="pre">i]</span></code> that
 should be dropped.</p></li>
 </ul>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.21: </span>The parameter <cite>drop</cite> was added in 0.21.</p>
+</div>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.23: </span>Added option ‘if_binary’.</p>
+<p><span class="versionmodified changed">Changed in version 0.23: </span>The option <cite>drop=’if_binary’</cite> was added in 0.23.</p>
 </div>
 </p></li>
 <li><p><strong>sparse</strong> (<em>bool</em><em>, </em><em>default=True</em>) – Will return sparse matrix if set True else will return an array.</p></li>
@@ -5919,7 +5919,7 @@ values per feature and transform the data to a binary one-hot encoding.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to determine the categories of each feature.</p></li>
+<li><p><strong>X</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data to determine the categories of each feature.</p></li>
 <li><p><strong>y</strong> (<em>None</em>) – Ignored. This parameter exists only for compatibility with
 <code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code>.</p></li>
 </ul>
@@ -5941,16 +5941,17 @@ values per feature and transform the data to a binary one-hot encoding.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to encode.</p></li>
+<li><p><strong>X</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data to encode.</p></li>
 <li><p><strong>y</strong> (<em>None</em>) – Ignored. This parameter exists only for compatibility with
 <code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>X_out</strong> – Transformed input.</p>
+<dd class="field-even"><p><strong>X_out</strong> – Transformed input. If <cite>sparse=True</cite>, a sparse matrix will be
+returned.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>sparse matrix if sparse=True else a 2-d array</p>
+<dd class="field-odd"><p>{ndarray, sparse matrix} of shape                 (n_samples, n_encoded_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -5981,13 +5982,13 @@ values per feature and transform the data to a binary one-hot encoding.</p>
 one-hot encoding), <code class="docutils literal notranslate"><span class="pre">None</span></code> is used to represent this category.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em> or </em><em>sparse matrix</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_encoded_features</em><em>]</em>) – The transformed data.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix} of shape</em><em>                 (</em><em>n_samples</em><em>, </em><em>n_encoded_features</em><em>)</em>) – The transformed data.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_tr</strong> – Inverse transformed array.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array-like, shape [n_samples, n_features]</p>
+<dd class="field-odd"><p>ndarray of shape (n_samples, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -5998,13 +5999,14 @@ one-hot encoding), <code class="docutils literal notranslate"><span class="pre">
 <dd><p>Transform X using one-hot encoding.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to encode.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data to encode.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>X_out</strong> – Transformed input.</p>
+<dd class="field-even"><p><strong>X_out</strong> – Transformed input. If <cite>sparse=True</cite>, a sparse matrix will be
+returned.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>sparse matrix if sparse=True else a 2-d array</p>
+<dd class="field-odd"><p>{ndarray, sparse matrix} of shape                 (n_samples, n_encoded_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -6107,7 +6109,7 @@ values per feature and transform the data to an ordinal encoding.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to determine the categories of each feature.</p></li>
+<li><p><strong>X</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data to determine the categories of each feature.</p></li>
 <li><p><strong>y</strong> (<em>None</em>) – Ignored. This parameter exists only for compatibility with
 <code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code>.</p></li>
 </ul>
@@ -6127,13 +6129,13 @@ values per feature and transform the data to an ordinal encoding.</p>
 <dd><p>Convert the data back to the original representation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em> or </em><em>sparse matrix</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_encoded_features</em><em>]</em>) – The transformed data.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix} of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The transformed data.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_tr</strong> – Inverse transformed array.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array-like, shape [n_samples, n_features]</p>
+<dd class="field-odd"><p>ndarray of shape (n_samples, n_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -6144,13 +6146,13 @@ values per feature and transform the data to an ordinal encoding.</p>
 <dd><p>Transform X to ordinal codes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to encode.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data to encode.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>X_out</strong> – Transformed input.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>sparse matrix or a 2-d array</p>
+<dd class="field-odd"><p>ndarray of shape (n_samples, n_features)</p>
 </dd>
 </dl>
 </dd></dl>

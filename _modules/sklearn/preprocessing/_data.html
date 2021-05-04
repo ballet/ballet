@@ -424,7 +424,7 @@
 
     <span class="c1"># if we are fitting on 1D arrays, scale might be a scalar</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">scale</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">scale</span> <span class="o">==</span> <span class="o">.</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">scale</span> <span class="o">==</span> <span class="mf">.0</span><span class="p">:</span>
             <span class="n">scale</span> <span class="o">=</span> <span class="mf">1.</span>
         <span class="k">return</span> <span class="n">scale</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
@@ -600,7 +600,7 @@
 <span class="sd">        Set to False to perform inplace row normalization and avoid a</span>
 <span class="sd">        copy (if the input is already a numpy array).</span>
 
-<span class="sd">    clip: bool, default=False</span>
+<span class="sd">    clip : bool, default=False</span>
 <span class="sd">        Set to True to clip transformed values of held-out data to</span>
 <span class="sd">        provided `feature range`.</span>
 
@@ -1182,9 +1182,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># First pass</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;scale_&#39;</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">mean_</span> <span class="o">=</span> <span class="o">.</span><span class="mi">0</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mean_</span> <span class="o">=</span> <span class="mf">.0</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_std</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">var_</span> <span class="o">=</span> <span class="o">.</span><span class="mi">0</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">var_</span> <span class="o">=</span> <span class="mf">.0</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">var_</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -3024,7 +3024,7 @@
             <span class="c1"># If we don&#39;t do this, only one extreme of the duplicated is</span>
             <span class="c1"># used (the upper when we do ascending, and the</span>
             <span class="c1"># lower for descending). We take the mean of these two</span>
-            <span class="n">X_col</span><span class="p">[</span><span class="n">isfinite_mask</span><span class="p">]</span> <span class="o">=</span> <span class="o">.</span><span class="mi">5</span> <span class="o">*</span> <span class="p">(</span>
+            <span class="n">X_col</span><span class="p">[</span><span class="n">isfinite_mask</span><span class="p">]</span> <span class="o">=</span> <span class="mf">.5</span> <span class="o">*</span> <span class="p">(</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">X_col_finite</span><span class="p">,</span> <span class="n">quantiles</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">references_</span><span class="p">)</span>
                 <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="o">-</span><span class="n">X_col_finite</span><span class="p">,</span> <span class="o">-</span><span class="n">quantiles</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
                             <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">references_</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
