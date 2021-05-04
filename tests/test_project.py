@@ -27,7 +27,8 @@ def test_load_config_detect(mock_load_config_in_dir):
 
 
 @patch('ballet.project.load_config_in_dir')
-def test_load_config_repl(mock_load_config_in_dir, quickstart):
+def test_load_config_dash_c(mock_load_config_in_dir, quickstart):
+    # note that this tests python -c 'cmd' which is different from the repl!
     pycmd = 'from ballet.project import load_config; config=load_config()'
     cmd = f"{sys.executable} -c '{pycmd}'"
     result = subprocess.run(
