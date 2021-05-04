@@ -34,4 +34,4 @@ def engineer_features(input_dir, output_dir):
 
 
 if __name__ == '__main__':
-    cli()
+    cli(prog_name='{{ cookiecutter.package_slug }}')
