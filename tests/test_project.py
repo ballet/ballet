@@ -26,6 +26,9 @@ def test_load_config_detect(mock_load_config_in_dir):
     mock_load_config_in_dir.assert_called_once_with(path)
 
 
+@pytest.mark.skipif(
+    sys.version_info < (3, 7),
+    reason='capture_output added in py37, not worth it to add compat')
 @patch('ballet.project.load_config_in_dir')
 def test_load_config_dash_c(mock_load_config_in_dir, quickstart):
     # note that this tests python -c 'cmd' which is different from the repl!
