@@ -39,3 +39,10 @@ def test_quickstart_install(quickstart, virtualenv):
     virtualenv.run(
         f'python -c "import {quickstart.package_slug}"',
         capture=True)
+
+    # GH-71 CLI should be enabled and should have correct name
+    output = virtualenv.run(
+        f'python -m {quickstart.package_slug} --help',
+        capture=True
+    )
+    assert quickstart.package_slug in output
