@@ -50,6 +50,9 @@ def load_config(path: Optional[Pathy] = None, ascend: bool = True) -> Dynaconf:
         finally:
             del frame
 
+    if path in ('<stdin>', '<string>'):
+        path = pathlib.Path.cwd()
+
     path = pathlib.Path(path)
     while path.exists() and not is_mount(path):
         try:

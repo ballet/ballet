@@ -1,5 +1,7 @@
 import pathlib
 import random
+import shlex
+import subprocess
 import sys
 from unittest.mock import ANY, PropertyMock, patch
 
@@ -22,6 +24,19 @@ def test_load_config_detect(mock_load_config_in_dir):
     path = pathlib.Path(__file__)
     load_config()
     mock_load_config_in_dir.assert_called_once_with(path)
+
+
+@pytest.mark.skipif(
+    sys.version_info < (3, 7),
+    reason='capture_output added in py37, not worth it to add compat')
+@patch('ballet.project.load_config_in_dir')
+def test_load_config_dash_c(mock_load_config_in_dir, quickstart):
+    # note that this tests python -c 'cmd' which is different from the repl!
+    pycmd = 'from ballet.project import load_config; config=load_config()'
+    cmd = f"{sys.executable} -c '{pycmd}'"
+    result = subprocess.run(
+        shlex.split(cmd), cwd=quickstart.project.path, capture_output=True)
+    assert not result.returncode, result.stderr
 
 
 @pytest.mark.xfail
