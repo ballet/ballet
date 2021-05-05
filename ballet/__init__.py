@@ -14,7 +14,7 @@ warnings.filterwarnings(
 # silence sklearn deprecation warnings
 import logging  # noqa E402
 logging.captureWarnings(True)
-import sklearn  # noqa
+import sklearn  # noqa E402
 logging.captureWarnings(False)
 warnings.filterwarnings(
     action='ignore', module='sklearn', category=DeprecationWarning)
@@ -26,6 +26,7 @@ from ballet.util.log import logger  # noqa E402
 logger.addHandler(logging.NullHandler())
 
 # re-export some names
-from ballet.client import b  # noqa
-from ballet.contrib import *  # noqa
-from ballet.feature import *  # noqa
+from ballet.client import b  # noqa E402
+from ballet.contrib import collect_contrib_features  # noqa E402
+from ballet.feature import Feature  # noqa E402
+from ballet.project import load_config, Project  # noqa E402

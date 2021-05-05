@@ -14,6 +14,7 @@ from ballet.util.typing import OneOrMore
 
 __all__ = (
     'BoxCoxTransformer',
+    'ColumnSelector',
     'ComputedValueTransformer',
     'IdentityTransformer',
     'NamedFramer',
