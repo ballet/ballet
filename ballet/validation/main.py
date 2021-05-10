@@ -124,7 +124,7 @@ def _evaluate_feature_performance(project: Project, force: bool = False):
     accepter_class = _load_validator_class_params(
         project, 'validation.feature_accepter')
     accepter = accepter_class(
-        X_df, y_df, None, y, accepted_features, proposed_feature)
+        X_df, y_df, X_df, y, accepted_features, proposed_feature)
     accepted = accepter.judge()
 
     if not accepted:
@@ -153,7 +153,7 @@ def _prune_existing_features(
 
     pruner_class = _load_validator_class_params(
         project, 'validation.feature_pruner')
-    pruner = pruner_class(X_df, y_df, None, y, accepted_features, proposed_feature)
+    pruner = pruner_class(X_df, y_df, X_df, y, accepted_features, proposed_feature)
     redundant_features = pruner.prune()
 
     # "propose removal"
