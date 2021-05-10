@@ -115,11 +115,11 @@ class GFSSFPerformanceEvaluator(FeaturePerformanceEvaluator):
         lambda_2_adjustment: float = LAMBDA_2_ADJUSTMENT
     ):
         super().__init__(*args)
-        self.y = asarray2d(self.y)
+        self.y_val = asarray2d(self.y_val)
         if lmbda_1 <= 0:
-            lmbda_1 = estimate_entropy(self.y) / lambda_1_adjustment
+            lmbda_1 = estimate_entropy(self.y_val) / lambda_1_adjustment
         if lmbda_2 <= 0:
-            lmbda_2 = estimate_entropy(self.y) / lambda_2_adjustment
+            lmbda_2 = estimate_entropy(self.y_val) / lambda_2_adjustment
         self.lmbda_1 = lmbda_1
         self.lmbda_2 = lmbda_2
 
@@ -135,7 +135,9 @@ class GFSSFPerformanceEvaluator(FeaturePerformanceEvaluator):
             return (
                 feature
                 .as_feature_engineering_pipeline()
-                .fit_transform(self.X_df, y=self.y_df))
+                .fit(self.X_df, y=self.y_df)
+                .transform(self.X_df_val)
+            )
 
         # map feature defintion "id" -> feature values
         feature_df_map = {

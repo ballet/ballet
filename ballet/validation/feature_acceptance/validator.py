@@ -66,7 +66,7 @@ class GFSSFAccepter(FeatureAcceptanceMixin, GFSSFPerformanceEvaluator):
                 omit=[self.candidate_feature, omitted_feature])
 
             # Calculate CMI of candidate feature
-            cmi = estimate_conditional_information(candidate_df, self.y, z)
+            cmi = estimate_conditional_information(candidate_df, self.y_val, z)
 
             if omitted_feature is not None:
                 omit_df = feature_df_map[omitted_feature]
@@ -74,7 +74,7 @@ class GFSSFAccepter(FeatureAcceptanceMixin, GFSSFPerformanceEvaluator):
 
                 # Calculate CMI of omitted feature
                 cmi_omit = estimate_conditional_information(
-                    omit_df, self.y, z)
+                    omit_df, self.y_val, z)
             else:
                 cmi_omit = 0
                 n_omit_cols = 0

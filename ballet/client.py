@@ -94,7 +94,7 @@ class Client:
             self.project, 'validation.feature_accepter')
         return validate_feature_acceptance(
             accepter_class, feature, result.features, result.X_df,
-            result.y_df, result.y, False)
+            result.y_df, result.X_df, result.y, False)
 
 
 b = Client()

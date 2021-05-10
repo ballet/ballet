@@ -20,22 +20,23 @@ class FeaturePerformanceEvaluator(metaclass=ABCMeta):
     """Evaluate the performance of features from an ML point-of-view
 
     Args:
-        X_df_fit: entities frame for fitting the features
-        y_df_fit: targets frame/series for fitting the features
-        X_df_eval: entities frame for evaluating the features
-        y_eval: target values for evaluating the features
+        X_df: entities frame for fitting the features
+        y_df: targets frame/series for fitting the features
+        X_df_val: entities frame for evaluating the features
+        y_val: target values for evaluating the features
     """
 
     def __init__(self,
-                 X_df_fit: pd.DataFrame,
-                 y_df_fit: Union[pd.DataFrame, pd.Series],
-                 X_df_eval: pd.DataFrame,
-                 y_eval: np.ndarray,
+                 X_df: pd.DataFrame,
+                 y_df: Union[pd.DataFrame, pd.Series],
+                 X_df_val: pd.DataFrame,
+                 y_val: np.ndarray,
                  features: Iterable[Feature],
                  candidate_feature: Feature):
-        self.X_df = X_df_fit
-        self.y_df = y_df_fit
-        self.y = y_eval
+        self.X_df = X_df
+        self.y_df = y_df
+        self.X_df_val = X_df_val
+        self.y_val = y_val
         self.features = features
         self.candidate_feature = candidate_feature
 
