@@ -30,3 +30,9 @@ from ballet.client import b  # noqa E402
 from ballet.contrib import collect_contrib_features  # noqa E402
 from ballet.feature import Feature  # noqa E402
 from ballet.project import load_config, Project  # noqa E402
+
+# for feature development, you really only need these two members
+__all__ = (
+    'b',
+    'Feature',
+)
