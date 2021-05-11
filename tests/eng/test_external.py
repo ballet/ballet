@@ -11,7 +11,7 @@ def test_category_encoders():
     except ImportError:
         pass
     else:
-        from ballet.eng.category_encoders import WOEEncoder  # noqa F401
+        from ballet.eng.external.category_encoders import WOEEncoder  # noqa F401
 
 
 def test_feature_engine():
@@ -20,7 +20,7 @@ def test_feature_engine():
     except ImportError:
         pass
     else:
-        from ballet.eng.feature_engine import (  # noqa f401
+        from ballet.eng.external.feature_engine import (  # noqa f401
             YeoJohnsonTransformer,)
 
 
@@ -30,7 +30,7 @@ def test_featuretools():
     except ImportError:
         pass
     else:
-        from ballet.eng.featuretools import DFSTransformer  # noqa F401
+        from ballet.eng.external.featuretools import DFSTransformer  # noqa F401
 
 
 def test_skits():
@@ -39,11 +39,11 @@ def test_skits():
     except ImportError:
         pass
     else:
-        from ballet.eng.skits import HorizonTransformer  # noqa F401
+        from ballet.eng.external.skits import HorizonTransformer  # noqa F401
 
 
 def test_sklearn():
-    from ballet.eng.sklearn import KNNImputer  # noqa F401
+    from ballet.eng.external.sklearn import KNNImputer  # noqa F401
 
 
 def test_tsfresh():
@@ -52,4 +52,4 @@ def test_tsfresh():
     except ImportError:
         pass
     else:
-        from ballet.eng.tsfresh import FeatureAugmenter  # noqa F401
+        from ballet.eng.external.tsfresh import FeatureAugmenter  # noqa F401

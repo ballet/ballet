@@ -33,7 +33,7 @@ Here are common situations:
 
    1. `Open a new issue on the ballet-assemble project <https://github.com/ballet/ballet-assemble/issues/new>`__
 
-   2. Open the web console. (See `Open the web console on Firefox <https://developer.mozilla.org/en-US/docs/Tools/Web_Console#opening_the_web_console>`__ or `Open the web console on Chrome <https://developers.google.com/web/tools/chrome-devtools/open#console>`__.)
+   2. Open the web console. (See `Open the web console on Firefox <https://developer.mozilla.org/en-US/docs/Tools/Web_Console#opening_the_web_console>`__ or `Open the web console on Chrome <https://developer.chrome.com/docs/devtools/open/#console>`__.)
 
    3. Scroll to the bottom of the console log. Copy the detailed error information. It should be an object that has as its ``message`` field the same message you just saw in the popup.
 

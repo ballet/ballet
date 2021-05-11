@@ -95,13 +95,7 @@ docs: clean-docs _apidoc ## generate Sphinx HTML documentation, including API do
 
 .PHONY: check-docs
 check-docs: clean-docs _apidoc ## check generation of Sphinx HTML documentation
-	rm docs/api/ballet.eng.external.rst
-	rm docs/api/ballet.eng.category_encoders.rst
-	rm docs/api/ballet.eng.feature_engine.rst
-	rm docs/api/ballet.eng.featuretools.rst
-	rm docs/api/ballet.eng.skits.rst
-	rm docs/api/ballet.eng.sklearn.rst
-	rm docs/api/ballet.eng.tsfresh.rst
+	rm docs/api/ballet.eng.external*.rst
 	find ./docs -name '*.rst' -exec rstcheck {} +
 	$(MAKE) -C docs linkcheck
 
