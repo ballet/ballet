@@ -11,7 +11,8 @@ def test_category_encoders():
     except ImportError:
         pass
     else:
-        from ballet.eng.external.category_encoders import WOEEncoder  # noqa F401
+        from ballet.eng.external.category_encoders import (  # noqa F401
+            WOEEncoder,)
 
 
 def test_feature_engine():
@@ -30,7 +31,8 @@ def test_featuretools():
     except ImportError:
         pass
     else:
-        from ballet.eng.external.featuretools import DFSTransformer  # noqa F401
+        from ballet.eng.external.featuretools import (  # noqa F401
+            DFSTransformer,)
 
 
 def test_skits():
