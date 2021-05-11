@@ -108,6 +108,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#installing-bots">Installing bots</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../maintainer_guide.html#configuring-the-project">Configuring the project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../maintainer_guide.html#developing-new-features">Developing new features</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#validating-features">Validating features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../maintainer_guide.html#pruning-features">Pruning features</a></li>
@@ -443,14 +444,14 @@
         <span class="n">y_df</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">subsample</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Evaluate the performance of this feature&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Evaluate the performance of this feature on the development data&quot;&quot;&quot;</span>
         <span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_validation_data</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span><span class="p">,</span> <span class="n">subsample</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">engineer_features</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span><span class="p">)</span>
         <span class="n">accepter_class</span> <span class="o">=</span> <span class="n">_load_validator_class_params</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">,</span> <span class="s1">&#39;validation.feature_accepter&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">validate_feature_acceptance</span><span class="p">(</span>
             <span class="n">accepter_class</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">features</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span>
-            <span class="n">result</span><span class="o">.</span><span class="n">y_df</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div></div>
+            <span class="n">result</span><span class="o">.</span><span class="n">y_df</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div></div>
 
 
 <span class="n">b</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span>

@@ -110,6 +110,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#installing-bots">Installing bots</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#configuring-the-project">Configuring the project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#developing-new-features">Developing new features</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#validating-features">Validating features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pruning-features">Pruning features</a></li>
@@ -559,6 +560,19 @@ config file on the master branch. A contributor might accidentally modify a prot
 fail the PR which might accidentally pass otherwise.</p>
 </div>
 </div>
+<div class="section" id="configuring-the-project">
+<h2>Configuring the project<a class="headerlink" href="#configuring-the-project" title="Permalink to this headline">¶</a></h2>
+<p>Ballet allows you to configure many aspects of your project.</p>
+<p>Configuration is stored in the project root <code class="docutils literal notranslate"><span class="pre">ballet.yml</span></code> file. More details about project configuration will be added soon.</p>
+<p>Here is an incomplete list of configuration options, identified by the dotted keys from a root <code class="docutils literal notranslate"><span class="pre">config</span></code> object:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">config.validation.project_structure_validator</span></code>: fully-qualified name of the class used to validate changes to the project structure</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">config.validation.feature_api_validator</span></code>: fully-qualified name of the class used to validate the feature API of new features</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">config.validation.feature_accepter</span></code>: fully-qualified name of the class used to validate the ML performance of new features</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">config.validation.feature_pruner</span></code>: fully-qualified name of the class used to prune existing features with respect to their ML performance</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">config.validation.split</span></code>: the name of the data split used for validating contributions. It will be passed as a keyword argument to your <code class="docutils literal notranslate"><span class="pre">load_data</span></code> function, i.e. <code class="docutils literal notranslate"><span class="pre">load_data(split=split)</span></code>. This split should probably appear under the list at <code class="docutils literal notranslate"><span class="pre">config.data.splits</span></code>.</p></li>
+</ul>
+</div>
 <div class="section" id="developing-new-features">
 <h2>Developing new features<a class="headerlink" href="#developing-new-features" title="Permalink to this headline">¶</a></h2>
 <p>At this point, your feature engineering pipeline contains no features. How will your
@@ -596,17 +610,17 @@ merge commit that comes from merging an accepted feature.</p></li>
 <p>As your repository fills with features, your feature engineering pipeline is always available to
 engineer features from new data points or datasets.</p>
 <p>For interactive usage:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">myproject.api</span> <span class="kn">import</span> <span class="n">build</span><span class="p">,</span> <span class="n">load_data</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">myproject.api</span> <span class="kn">import</span> <span class="n">api</span>
 
 <span class="c1"># load training data</span>
-<span class="n">X_df_tr</span><span class="p">,</span> <span class="n">y_df_tr</span> <span class="o">=</span> <span class="n">load_data</span><span class="p">()</span>
+<span class="n">X_df_tr</span><span class="p">,</span> <span class="n">y_df_tr</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">load_data</span><span class="p">()</span>
 
 <span class="c1"># fit pipeline to training data</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">build</span><span class="p">(</span><span class="n">X_df_tr</span><span class="p">,</span> <span class="n">y_df_tr</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">engineer_features</span><span class="p">(</span><span class="n">X_df_tr</span><span class="p">,</span> <span class="n">y_df_tr</span><span class="p">)</span>
 <span class="n">pipeline</span><span class="p">,</span> <span class="n">encoder</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">encoder</span>
 
 <span class="c1"># load new data and apply pipeline</span>
-<span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span> <span class="o">=</span> <span class="n">load_data</span><span class="p">(</span><span class="n">input_dir</span><span class="o">=</span><span class="s1">&#39;/path/to/new/data&#39;</span><span class="p">)</span>
+<span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">input_dir</span><span class="o">=</span><span class="s1">&#39;/path/to/new/data&#39;</span><span class="p">)</span>
 <span class="n">X</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_df</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">encoder</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">y_df</span><span class="p">)</span>
 </pre></div>

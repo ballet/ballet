@@ -108,6 +108,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#installing-bots">Installing bots</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../maintainer_guide.html#configuring-the-project">Configuring the project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../maintainer_guide.html#developing-new-features">Developing new features</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#validating-features">Validating features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#pruning-features">Pruning features</a></li>
@@ -373,17 +374,26 @@
 
 
 <div class="viewcode-block" id="FeaturePerformanceEvaluator"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.FeaturePerformanceEvaluator">[docs]</a><span class="k">class</span> <span class="nc">FeaturePerformanceEvaluator</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Evaluate the performance of features from an ML point-of-view&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Evaluate the performance of features from an ML point-of-view</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        X_df: entities frame for fitting the features</span>
+<span class="sd">        y_df: targets frame/series for fitting the features</span>
+<span class="sd">        X_df_val: entities frame for evaluating the features</span>
+<span class="sd">        y_val: target values for evaluating the features</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">X_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
                  <span class="n">y_df</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">],</span>
-                 <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                 <span class="n">X_df_val</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+                 <span class="n">y_val</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
                  <span class="n">features</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Feature</span><span class="p">],</span>
                  <span class="n">candidate_feature</span><span class="p">:</span> <span class="n">Feature</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">X_df</span> <span class="o">=</span> <span class="n">X_df</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y_df</span> <span class="o">=</span> <span class="n">y_df</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">X_df_val</span> <span class="o">=</span> <span class="n">X_df_val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_val</span> <span class="o">=</span> <span class="n">y_val</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">features</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">candidate_feature</span> <span class="o">=</span> <span class="n">candidate_feature</span>
 

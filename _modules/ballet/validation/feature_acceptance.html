@@ -108,6 +108,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#installing-bots">Installing bots</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../maintainer_guide.html#configuring-the-project">Configuring the project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../maintainer_guide.html#developing-new-features">Developing new features</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#validating-features">Validating features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#pruning-features">Pruning features</a></li>
@@ -358,10 +359,11 @@
 
 
 <div class="viewcode-block" id="validate_feature_acceptance"><a class="viewcode-back" href="../../../api/ballet.validation.feature_acceptance.html#ballet.validation.feature_acceptance.validate_feature_acceptance">[docs]</a><span class="k">def</span> <span class="nf">validate_feature_acceptance</span><span class="p">(</span><span class="n">accepter_class</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span><span class="p">,</span>
-                                <span class="n">y</span><span class="p">,</span> <span class="n">subsample</span><span class="p">):</span>
+                                <span class="n">X_df_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">subsample</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">subsample</span><span class="p">:</span>
-        <span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">subsample_data_for_validation</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-    <span class="n">accepter</span> <span class="o">=</span> <span class="n">accepter_class</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
+        <span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span><span class="p">,</span> <span class="n">X_df_val</span><span class="p">,</span> <span class="n">y_val</span> <span class="o">=</span> <span class="n">subsample_data_for_validation</span><span class="p">(</span>
+            <span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span><span class="p">,</span> <span class="n">X_df_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">)</span>
+    <span class="n">accepter</span> <span class="o">=</span> <span class="n">accepter_class</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span><span class="p">,</span> <span class="n">X_df_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">accepter</span><span class="o">.</span><span class="n">judge</span><span class="p">()</span></div>
 </pre></div>
 

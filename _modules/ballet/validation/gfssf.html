@@ -108,6 +108,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#installing-bots">Installing bots</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../maintainer_guide.html#configuring-the-project">Configuring the project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../maintainer_guide.html#developing-new-features">Developing new features</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#validating-features">Validating features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#pruning-features">Pruning features</a></li>
@@ -471,11 +472,11 @@
         <span class="n">lambda_2_adjustment</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">LAMBDA_2_ADJUSTMENT</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_val</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_val</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">lmbda_1</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">lmbda_1</span> <span class="o">=</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">lambda_1_adjustment</span>
+            <span class="n">lmbda_1</span> <span class="o">=</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_val</span><span class="p">)</span> <span class="o">/</span> <span class="n">lambda_1_adjustment</span>
         <span class="k">if</span> <span class="n">lmbda_2</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">lmbda_2</span> <span class="o">=</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">lambda_2_adjustment</span>
+            <span class="n">lmbda_2</span> <span class="o">=</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_val</span><span class="p">)</span> <span class="o">/</span> <span class="n">lambda_2_adjustment</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lmbda_1</span> <span class="o">=</span> <span class="n">lmbda_1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lmbda_2</span> <span class="o">=</span> <span class="n">lmbda_2</span>
 
@@ -491,7 +492,9 @@
             <span class="k">return</span> <span class="p">(</span>
                 <span class="n">feature</span>
                 <span class="o">.</span><span class="n">as_feature_engineering_pipeline</span><span class="p">()</span>
-                <span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y_df</span><span class="p">))</span>
+                <span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y_df</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_df_val</span><span class="p">)</span>
+            <span class="p">)</span>
 
         <span class="c1"># map feature defintion &quot;id&quot; -&gt; feature values</span>
         <span class="n">feature_df_map</span> <span class="o">=</span> <span class="p">{</span>
