@@ -117,17 +117,17 @@ Deploying
 
 A reminder for the maintainers on how to deploy. This is a simplified release workflow that does not update the version with a dev postfix (i.e. there is no 0.1.2-dev after 0.1.1 release).
 
-1. Make sure all your changes are committed.
+#. Make sure all your changes are committed.
 
-1. Create an entry in HISTORY.md for this release, and stage your changes (without committing yet)::
+#. Create an entry in HISTORY.md for this release, and stage your changes (without committing yet)::
 
    $ git add HISTORY.md
 
-1. Create and tag a new release::
+#. Create and tag a new release::
 
    $ bumpversion --allow-dirty minor  # i.e. 0.1.1 -> 0.2.0
 
-1. Push changes::
+#. Push changes::
 
    $ git push --tags origin master
 
