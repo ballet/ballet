@@ -197,6 +197,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../api/ballet.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/ballet.html#subpackages">Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.eng.html">ballet.eng package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.eng.html#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.eng.html#submodules">Submodules</a></li>
 </ul>
 </li>
@@ -365,7 +366,7 @@
 <span class="kn">from</span> <span class="nn">feature_engine.encoding.base_encoder</span> <span class="kn">import</span> <span class="n">BaseCategoricalTransformer</span>
 
 
-<div class="viewcode-block" id="CountFrequencyEncoder"><a class="viewcode-back" href="../../../api/ballet.eng.feature_engine.html#ballet.eng.external.CountFrequencyEncoder">[docs]</a><span class="k">class</span> <span class="nc">CountFrequencyEncoder</span><span class="p">(</span><span class="n">BaseCategoricalTransformer</span><span class="p">):</span>
+<div class="viewcode-block" id="CountFrequencyEncoder"><a class="viewcode-back" href="../../../api/ballet.eng.external.feature_engine.html#ballet.eng.external.CountFrequencyEncoder">[docs]</a><span class="k">class</span> <span class="nc">CountFrequencyEncoder</span><span class="p">(</span><span class="n">BaseCategoricalTransformer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The CountFrequencyEncoder() replaces categories by either the count or the</span>
 <span class="sd">    percentage of observations per category.</span>
@@ -437,7 +438,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">encoding_method</span> <span class="o">=</span> <span class="n">encoding_method</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_check_input_parameter_variables</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CountFrequencyEncoder.fit"><a class="viewcode-back" href="../../../api/ballet.eng.feature_engine.html#ballet.eng.external.CountFrequencyEncoder.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="CountFrequencyEncoder.fit"><a class="viewcode-back" href="../../../api/ballet.eng.external.feature_engine.html#ballet.eng.external.CountFrequencyEncoder.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Learn the counts or frequencies which will be used to replace the categories.</span>
 
@@ -484,14 +485,14 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
     <span class="c1"># Ugly work around to import the docstring for Sphinx, otherwise not necessary</span>
-<div class="viewcode-block" id="CountFrequencyEncoder.transform"><a class="viewcode-back" href="../../../api/ballet.eng.feature_engine.html#ballet.eng.external.CountFrequencyEncoder.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<div class="viewcode-block" id="CountFrequencyEncoder.transform"><a class="viewcode-back" href="../../../api/ballet.eng.external.feature_engine.html#ballet.eng.external.CountFrequencyEncoder.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
         <span class="n">X</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">X</span></div>
 
     <span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">BaseCategoricalTransformer</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="vm">__doc__</span>
 
-<div class="viewcode-block" id="CountFrequencyEncoder.inverse_transform"><a class="viewcode-back" href="../../../api/ballet.eng.feature_engine.html#ballet.eng.external.CountFrequencyEncoder.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<div class="viewcode-block" id="CountFrequencyEncoder.inverse_transform"><a class="viewcode-back" href="../../../api/ballet.eng.external.feature_engine.html#ballet.eng.external.CountFrequencyEncoder.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
         <span class="n">X</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">X</span></div>

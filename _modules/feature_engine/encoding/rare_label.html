@@ -197,6 +197,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../api/ballet.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/ballet.html#subpackages">Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.eng.html">ballet.eng package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.eng.html#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.eng.html#submodules">Submodules</a></li>
 </ul>
 </li>
@@ -366,7 +367,7 @@
 <span class="kn">from</span> <span class="nn">feature_engine.variable_manipulation</span> <span class="kn">import</span> <span class="n">_check_input_parameter_variables</span>
 
 
-<div class="viewcode-block" id="RareLabelEncoder"><a class="viewcode-back" href="../../../api/ballet.eng.feature_engine.html#ballet.eng.external.RareLabelEncoder">[docs]</a><span class="k">class</span> <span class="nc">RareLabelEncoder</span><span class="p">(</span><span class="n">BaseCategoricalTransformer</span><span class="p">):</span>
+<div class="viewcode-block" id="RareLabelEncoder"><a class="viewcode-back" href="../../../api/ballet.eng.external.feature_engine.html#ballet.eng.external.RareLabelEncoder">[docs]</a><span class="k">class</span> <span class="nc">RareLabelEncoder</span><span class="p">(</span><span class="n">BaseCategoricalTransformer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The RareLabelCategoricalEncoder() groups rare / infrequent categories in</span>
 <span class="sd">    a new category called &quot;Rare&quot;, or any other name entered by the user.</span>
@@ -457,7 +458,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_check_input_parameter_variables</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">replace_with</span> <span class="o">=</span> <span class="n">replace_with</span>
 
-<div class="viewcode-block" id="RareLabelEncoder.fit"><a class="viewcode-back" href="../../../api/ballet.eng.feature_engine.html#ballet.eng.external.RareLabelEncoder.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="RareLabelEncoder.fit"><a class="viewcode-back" href="../../../api/ballet.eng.external.feature_engine.html#ballet.eng.external.RareLabelEncoder.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Learn the frequent categories for each variable.</span>
 
@@ -522,7 +523,7 @@
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="RareLabelEncoder.transform"><a class="viewcode-back" href="../../../api/ballet.eng.feature_engine.html#ballet.eng.external.RareLabelEncoder.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<div class="viewcode-block" id="RareLabelEncoder.transform"><a class="viewcode-back" href="../../../api/ballet.eng.external.feature_engine.html#ballet.eng.external.RareLabelEncoder.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Group infrequent categories. Replace infrequent categories by the string &#39;Rare&#39;</span>
 <span class="sd">        or any other name provided by the user.</span>
@@ -557,7 +558,7 @@
 
         <span class="k">return</span> <span class="n">X</span></div>
 
-<div class="viewcode-block" id="RareLabelEncoder.inverse_transform"><a class="viewcode-back" href="../../../api/ballet.eng.feature_engine.html#ballet.eng.external.RareLabelEncoder.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+<div class="viewcode-block" id="RareLabelEncoder.inverse_transform"><a class="viewcode-back" href="../../../api/ballet.eng.external.feature_engine.html#ballet.eng.external.RareLabelEncoder.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;inverse_transform is not implemented for this transformer yet.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span></div></div>
 </pre></div>

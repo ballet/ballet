@@ -199,6 +199,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="ballet.eng.html">ballet.eng package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ballet.eng.html#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ballet.eng.html#submodules">Submodules</a></li>
 </ul>
 </li>
@@ -361,23 +362,79 @@
   <div class="section" id="module-ballet">
 <span id="ballet-package"></span><h1>ballet package<a class="headerlink" href="#module-ballet" title="Permalink to this headline">¶</a></h1>
 <p>Top-level package for ballet.</p>
+<dl class="py class">
+<dt id="ballet.Feature">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.</span></code><code class="sig-name descname"><span class="pre">Feature</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transformer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/feature.html#Feature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.Feature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A feature definition</p>
+<p>Conceptually, a feature definition is a learned function that maps raw
+variables in one data instance to a vector of feature values. A feature
+definition can produce either a scalar feature value for each instance
+or a vector of feature values, as in the case of an embedding technique
+like PCA or the one-hot encoding of a categorical variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – required columns from the input dataframe needed for the
+transformation</p></li>
+<li><p><strong>transformer</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>, <a class="reference internal" href="ballet.eng.base.html#ballet.eng.base.BaseTransformer" title="ballet.eng.base.BaseTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTransformer</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>, <a class="reference internal" href="ballet.eng.base.html#ballet.eng.base.BaseTransformer" title="ballet.eng.base.BaseTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTransformer</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]]]) – transformer, sequence of transformers, or <code class="docutils literal notranslate"><span class="pre">None</span></code>. A
+“transformer” is an instance of a class that provides a
+fit/transform-style learned transformation. Alternately, a
+callable can be provided, either by itself or in a list, in
+which case it will be converted into a
+:py:class:<code class="docutils literal notranslate"><span class="pre">FunctionTransformer</span></code> for convenience. If <code class="docutils literal notranslate"><span class="pre">None</span></code>
+is provided, it will be replaced with the
+:py:class:<code class="docutils literal notranslate"><span class="pre">IdentityTransformer</span></code>.</p></li>
+<li><p><strong>name</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – name of the feature</p></li>
+<li><p><strong>description</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – description of the feature</p></li>
+<li><p><strong>output</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – ordered sequence of names of features
+produced by this transformer</p></li>
+<li><p><strong>source</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">PathLike</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – the source file in which this feature was defined</p></li>
+<li><p><strong>options</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – options</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="ballet.Feature.as_feature_engineering_pipeline">
+<code class="sig-name descname"><span class="pre">as_feature_engineering_pipeline</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/feature.html#Feature.as_feature_engineering_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.Feature.as_feature_engineering_pipeline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return standalone FeatureEngineeringPipeline with this feature</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="ballet.pipeline.html#ballet.pipeline.FeatureEngineeringPipeline" title="ballet.pipeline.FeatureEngineeringPipeline"><code class="xref py py-class docutils literal notranslate"><span class="pre">FeatureEngineeringPipeline</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ballet.Feature.as_input_transformer_tuple">
+<code class="sig-name descname"><span class="pre">as_input_transformer_tuple</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/feature.html#Feature.as_input_transformer_tuple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.Feature.as_input_transformer_tuple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an tuple for passing to DataFrameMapper constructor</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]], <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TransformerPipeline</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 <div class="section" id="subpackages">
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="ballet.eng.html">ballet.eng package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ballet.eng.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ballet.eng.external.html">ballet.eng.external package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ballet.eng.external.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="ballet.eng.html#submodules">Submodules</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="ballet.eng.base.html">ballet.eng.base module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ballet.eng.category_encoders.html">ballet.eng.category_encoders module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ballet.eng.external.html">ballet.eng.external module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ballet.eng.feature_engine.html">ballet.eng.feature_engine module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ballet.eng.featuretools.html">ballet.eng.featuretools module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.eng.misc.html">ballet.eng.misc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.eng.missing.html">ballet.eng.missing module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ballet.eng.skits.html">ballet.eng.skits module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ballet.eng.sklearn.html">ballet.eng.sklearn module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.eng.ts.html">ballet.eng.ts module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ballet.eng.tsfresh.html">ballet.eng.tsfresh module</a></li>
 </ul>
 </li>
 </ul>
