@@ -115,6 +115,21 @@ config file on the master branch. A contributor might accidentally modify a prot
 ``ballet.yml`` which could break the project or the CI pipeline; Repolockr will detect this and
 fail the PR which might accidentally pass otherwise.
 
+Configuring the project
+-----------------------
+
+Ballet allows you to configure many aspects of your project.
+
+Configuration is stored in the project root ``ballet.yml`` file. More details about project configuration will be added soon.
+
+Here is an incomplete list of configuration options, identified by the dotted keys from a root ``config`` object:
+
+* ``config.validation.project_structure_validator``: fully-qualified name of the class used to validate changes to the project structure
+* ``config.validation.feature_api_validator``: fully-qualified name of the class used to validate the feature API of new features
+* ``config.validation.feature_accepter``: fully-qualified name of the class used to validate the ML performance of new features
+* ``config.validation.feature_pruner``: fully-qualified name of the class used to prune existing features with respect to their ML performance
+* ``config.validation.split``: the name of the data split used for validating contributions. It will be passed as a keyword argument to your ``load_data`` function, i.e. ``load_data(split=split)``. This split should probably appear under the list at ``config.data.splits``.
+
 Developing new features
 -----------------------
 
@@ -159,17 +174,17 @@ For interactive usage:
 
 .. code-block:: python
 
-   from myproject.api import build, load_data
+   from myproject.api import api
 
    # load training data
-   X_df_tr, y_df_tr = load_data()
+   X_df_tr, y_df_tr = api.load_data()
 
    # fit pipeline to training data
-   result = build(X_df_tr, y_df_tr)
+   result = api.engineer_features(X_df_tr, y_df_tr)
    pipeline, encoder = result.pipeline, result.encoder
 
    # load new data and apply pipeline
-   X_df, y_df = load_data(input_dir='/path/to/new/data')
+   X_df, y_df = api.load_data(input_dir='/path/to/new/data')
    X = pipeline.transform(X_df)
    y = encoder.transform(y_df)
 

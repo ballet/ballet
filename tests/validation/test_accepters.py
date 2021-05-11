@@ -16,7 +16,7 @@ def test_noop_accepter():
 
     expected = False
 
-    accepter = NeverAccepter(X_df, y_df, y, existing_features, feature)
+    accepter = NeverAccepter(X_df, y_df, X_df, y, existing_features, feature)
     actual = accepter.judge()
 
     assert expected == actual
@@ -31,7 +31,7 @@ def test_random_accepter(mock_uniform):
     expected = True
 
     accepter = RandomAccepter(
-        X_df, y_df, y, existing_features, candidate_feature)
+        X_df, y_df, X_df, y, existing_features, candidate_feature)
     actual = accepter.judge()
 
     assert expected == actual
@@ -61,6 +61,6 @@ def test_gfssf_accepter_init(sample_data):
     candidate_feature = feature_2
 
     accepter = GFSSFAccepter(
-        X_df, y_df, y, features, candidate_feature)
+        X_df, y_df, X_df, y, features, candidate_feature)
 
     assert accepter is not None

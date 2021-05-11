@@ -54,7 +54,7 @@ class GFSSFPruner(FeaturePruningMixin, GFSSFPerformanceEvaluator):
             _, n_candidate_cols = candidate_df.shape
             z = _concat_datasets(feature_df_map, omit=[candidate_feature])
             logger.debug(CMI_MESSAGE)
-            cmi = estimate_conditional_information(candidate_df, self.y, z)
+            cmi = estimate_conditional_information(candidate_df, self.y_val, z)
 
             logger.debug(f'Conditional Mutual Information Score: {cmi}')
             statistic = cmi

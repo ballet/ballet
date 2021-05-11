@@ -87,14 +87,14 @@ class Client:
         y_df: Optional[pd.DataFrame] = None,
         subsample: bool = False
     ) -> bool:
-        """Evaluate the performance of this feature"""
+        """Evaluate the performance of this feature on the development data"""
         X_df, y_df = self._load_validation_data(X_df, y_df, subsample)
         result = self.api.engineer_features(X_df, y_df)
         accepter_class = _load_validator_class_params(
             self.project, 'validation.feature_accepter')
         return validate_feature_acceptance(
             accepter_class, feature, result.features, result.X_df,
-            result.y_df, result.y, False)
+            result.y_df, result.X_df, result.y, False)
 
 
 b = Client()

@@ -19,7 +19,7 @@ def test_noop_pruner():
 
     expected = []
 
-    pruner = NoOpPruner(X_df, y_df, y, existing_features, feature)
+    pruner = NoOpPruner(X_df, y_df, X_df, y, existing_features, feature)
     actual = pruner.prune()
 
     assert expected == actual
@@ -36,7 +36,7 @@ def test_random_pruner(mock_uniform, mock_choice):
     X_df = y_df = y = None
     feature = None
 
-    pruner = RandomPruner(X_df, y_df, y, existing_features, feature)
+    pruner = RandomPruner(X_df, y_df, X_df, y, existing_features, feature)
     actual = pruner.prune()
 
     assert expected == actual
@@ -62,7 +62,7 @@ def test_gfssf_pruner_prune_exact_replicas(sample_data):
         transformer=IdentityTransformer(),
         source='2nd Feature')
     gfssf_pruner = GFSSFPruner(
-        X_df, y_df, y, [feature_1], feature_2)
+        X_df, y_df, X_df, y, [feature_1], feature_2)
 
     redunant_features = gfssf_pruner.prune()
     assert feature_1 in redunant_features, \
@@ -87,7 +87,7 @@ def test_gfssf_pruner_prune_weak_replicas(sample_data):
         transformer=IdentityTransformer(),
         source='2nd Feature')
     gfssf_pruner = GFSSFPruner(
-        X_df, y_df, y, [feature_weak], feature_strong)
+        X_df, y_df, X_df, y, [feature_weak], feature_strong)
 
     redunant_features = gfssf_pruner.prune()
     assert feature_weak in redunant_features, \
@@ -106,7 +106,7 @@ def test_gfssf_pruner_keep_relevant(sample_data):
         transformer=IdentityTransformer(),
         source='2nd Feature')
     gfssf_pruner = GFSSFPruner(
-        X_df, y_df, y, [feature_1], feature_2)
+        X_df, y_df, X_df, y, [feature_1], feature_2)
 
     redunant_features = gfssf_pruner.prune()
     assert feature_1 not in redunant_features, \
@@ -126,7 +126,7 @@ def test_gfssf_pruner_prune_irrelevant_features(sample_data):
         transformer=IdentityTransformer(),
         source='2nd Feature')
     gfssf_pruner = GFSSFPruner(
-        X_df, y_df, y, [feature_1], feature_2)
+        X_df, y_df, X_df, y, [feature_1], feature_2)
 
     redunant_features = gfssf_pruner.prune()
     assert feature_1 in redunant_features, \
