@@ -1,5 +1,12 @@
 # History
 
+## 0.14.0 (2021-05-11)
+
+* Support using holdout data splits in validation ([#75](https://github.com/ballet/ballet/pull/75))
+* Fix CLI program name in projects ([#74](https://github.com/ballet/ballet/pull/74))
+* Fix bug with `load_config` usage in python REPL ([#73](https://github.com/ballet/ballet/pull/73))
+* Reorganize external feature engineering primitives to `ballet/eng/external/**.py`. Imports like `from ballet.eng.external import MyPrimitive` are unaffected.
+
 ## 0.13.1 (2021-04-02)
 
 * Fix upgrade check in `ballet update-project-template` to migrate away from deprecated PyPI XML-RPC API.
