@@ -1,5 +1,7 @@
-from typing import Callable, List
+import inspect
+from typing import Callable, List, Tuple, Union
 
+import pandas as pd
 from funcy import decorator, func_partial, ignore
 from funcy.decorators import Call
 from stacklog import stacklog
@@ -81,6 +83,27 @@ def _load_validator_class_params(
     return func_partial(cls, **params)
 
 
+def _load_validation_data(
+    project: Project
+) -> Tuple[pd.DataFrame, Union[pd.DataFrame, pd.Series]]:
+    """Load the validation data split
+
+    The validation data split should be given by the key `validation.split` in
+    the project's config. If the key is not present, or the `load_data` method
+    does not support loading splits, then the default dataset is returned.
+    """
+    kwargs = {}
+    try:
+        val_split = project.config.validation.split
+        sig = inspect.signature(project.api.load_data)
+        if 'split' in sig.parameters:
+            kwargs['split'] = val_split
+    except Exception:
+        pass
+    X_df, y_df = project.api.load_data(**kwargs)
+    return X_df, y_df
+
+
 @validation_stage('checking project structure')
 def _check_project_structure(project: Project, force: bool = False):
     if not force and project.on_master:
@@ -114,17 +137,20 @@ def _evaluate_feature_performance(project: Project, force: bool = False):
     if not force and project.on_master:
         raise SkippedValidationTest('Not on feature branch')
 
-    result = project.api.engineer_features()
-    X_df, y_df, y = result.X_df, result.y_df, result.y
-    features = result.features
+    X_df, y_df = project.api.load_data()
+    X_df_val, y_df_val = _load_validation_data(project)
 
+    encoder = project.api.encoder
+    y_val = encoder.fit(y_df).transform(y_df_val)
+
+    features = project.api.features
     proposed_feature = get_proposed_feature(project)
     accepted_features = get_accepted_features(features, proposed_feature)
 
     accepter_class = _load_validator_class_params(
         project, 'validation.feature_accepter')
     accepter = accepter_class(
-        X_df, y_df, X_df, y, accepted_features, proposed_feature)
+        X_df, y_df, X_df_val, y_val, accepted_features, proposed_feature)
     accepted = accepter.judge()
 
     if not accepted:
@@ -146,15 +172,19 @@ def _prune_existing_features(
     except NoFeaturesCollectedError:
         raise SkippedValidationTest('No features collected')
 
-    result = project.api.engineer_features()
-    X_df, y_df, y = result.X_df, result.y_df, result.y
-    features = result.features
+    X_df, y_df = project.api.load_data()
+    X_df_val, y_df_val = _load_validation_data(project)
+
+    encoder = project.api.encoder
+    y_val = encoder.fit(y_df).transform(y_df_val)
+
+    features = project.api.features
     accepted_features = get_accepted_features(features, proposed_feature)
 
     pruner_class = _load_validator_class_params(
         project, 'validation.feature_pruner')
     pruner = pruner_class(
-        X_df, y_df, X_df, y, accepted_features, proposed_feature)
+        X_df, y_df, X_df_val, y_val, accepted_features, proposed_feature)
     redundant_features = pruner.prune()
 
     # "propose removal"
