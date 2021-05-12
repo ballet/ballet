@@ -1,5 +1,9 @@
 # History
 
+## 0.15.0 (2021-05-12)
+
+* Add `VarianceThresholdAccepter`, `MutualInformationAccepter`, and `CompoundAccepter` ([#76](https://github.com/ballet/ballet/pull/76))
+
 ## 0.14.0 (2021-05-11)
 
 * Support using holdout data splits in validation ([#75](https://github.com/ballet/ballet/pull/75))
