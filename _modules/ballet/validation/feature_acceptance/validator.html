@@ -359,12 +359,18 @@
             
   <h1>Source code for ballet.validation.feature_acceptance.validator</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">asarray2d</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">ballet.util.testing</span> <span class="kn">import</span> <span class="n">seeded</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.base</span> <span class="kn">import</span> <span class="n">FeatureAcceptanceMixin</span><span class="p">,</span> <span class="n">FeatureAccepter</span>
-<span class="kn">from</span> <span class="nn">ballet.validation.common</span> <span class="kn">import</span> <span class="n">RandomFeaturePerformanceEvaluator</span>
-<span class="kn">from</span> <span class="nn">ballet.validation.entropy</span> <span class="kn">import</span> <span class="n">estimate_conditional_information</span>
+<span class="kn">from</span> <span class="nn">ballet.validation.common</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">RandomFeaturePerformanceEvaluator</span><span class="p">,</span> <span class="n">load_spec</span><span class="p">,)</span>
+<span class="kn">from</span> <span class="nn">ballet.validation.entropy</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">estimate_conditional_information</span><span class="p">,</span> <span class="n">estimate_mutual_information</span><span class="p">,)</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.gfssf</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">GFSSFIterationInfo</span><span class="p">,</span> <span class="n">GFSSFPerformanceEvaluator</span><span class="p">,</span> <span class="n">_compute_lmbdas</span><span class="p">,</span>
     <span class="n">_compute_threshold</span><span class="p">,</span> <span class="n">_concat_datasets</span><span class="p">,)</span>
@@ -481,6 +487,130 @@
             <span class="sa">f</span><span class="s1">&#39;Rejected feature: best marginal conditional mutual information was not greater than threshold (</span><span class="si">{</span><span class="n">cmi_closest</span><span class="si">:</span><span class="s1">0.3e</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="n">omitted_cmi_closest</span><span class="si">:</span><span class="s1">0.3e</span><span class="si">}</span><span class="s1"> = </span><span class="si">{</span><span class="n">statistic_closest</span><span class="si">:</span><span class="s1">0.3e</span><span class="si">}</span><span class="s1">, vs needed </span><span class="si">{</span><span class="n">threshold_closest</span><span class="si">:</span><span class="s1">0.3e</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>  <span class="c1"># noqa</span>
 
         <span class="k">return</span> <span class="kc">False</span></div></div>
+
+
+<div class="viewcode-block" id="VarianceThresholdAccepter"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.VarianceThresholdAccepter">[docs]</a><span class="k">class</span> <span class="nc">VarianceThresholdAccepter</span><span class="p">(</span><span class="n">FeatureAccepter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Accept features with variance above a threshold</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        threshold: variance threshold</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.05</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
+
+<div class="viewcode-block" id="VarianceThresholdAccepter.judge"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.VarianceThresholdAccepter.judge">[docs]</a>    <span class="k">def</span> <span class="nf">judge</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Judging feature using </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">candidate_feature</span>
+            <span class="o">.</span><span class="n">as_feature_engineering_pipeline</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y_df</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_df_val</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span><span class="si">}</span><span class="s1">: threshold=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="si">}</span><span class="s1">&#39;</span></div>
+
+
+<div class="viewcode-block" id="MutualInformationAccepter"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.MutualInformationAccepter">[docs]</a><span class="k">class</span> <span class="nc">MutualInformationAccepter</span><span class="p">(</span><span class="n">FeatureAccepter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Accept features with mutual information with the target above a threshold</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        threshold: mutual information threshold</span>
+<span class="sd">        handle_nan_targets: one of ``&#39;fail&#39;`` or ``&#39;ignore&#39;``, whether to</span>
+<span class="sd">            fail validation if NaN-valued targets are discovered or to drop</span>
+<span class="sd">            those rows in calculation of the mutual information score</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">handle_nan_targets</span><span class="o">=</span><span class="s1">&#39;fail&#39;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handle_nan_targets</span> <span class="o">=</span> <span class="n">handle_nan_targets</span>
+
+<div class="viewcode-block" id="MutualInformationAccepter.judge"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.MutualInformationAccepter.judge">[docs]</a>    <span class="k">def</span> <span class="nf">judge</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Judging feature using </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">candidate_feature</span>
+            <span class="o">.</span><span class="n">as_feature_engineering_pipeline</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y_df</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_df_val</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_val</span>
+        <span class="n">z</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="n">asarray2d</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">z</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_nans</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">z</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># nans were found and handle_nan_targets == &#39;fail&#39;</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">mi</span> <span class="o">=</span> <span class="n">estimate_mutual_information</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mi</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span></div>
+
+    <span class="k">def</span> <span class="nf">_handle_nans</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">nans</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># whether there are any nans in this row</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">nans</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_nan_targets</span> <span class="o">==</span> <span class="s1">&#39;fail&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>  <span class="c1"># hack</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_nan_targets</span> <span class="o">==</span> <span class="s1">&#39;ignore&#39;</span><span class="p">:</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="o">~</span><span class="n">nans</span><span class="p">,</span> <span class="p">:]</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="o">~</span><span class="n">nans</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;Invalid value for handle_nan_targets: &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_nan_targets</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">z</span><span class="p">,</span> <span class="n">y</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span><span class="si">}</span><span class="s1">: threshold=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="si">}</span><span class="s1">&#39;</span></div>
+
+
+<div class="viewcode-block" id="CompoundAccepter"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.CompoundAccepter">[docs]</a><span class="k">class</span> <span class="nc">CompoundAccepter</span><span class="p">(</span><span class="n">FeatureAccepter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A compound accepter that runs a list of individual accepters</span>
+
+<span class="sd">    An accepter spec is just a simple serialization of a class and its kwargs::</span>
+
+<span class="sd">        name: ballet.validation.feature_acceptance.validator.CompoundAccepter</span>
+<span class="sd">        params:</span>
+<span class="sd">          agg: any</span>
+<span class="sd">          specs:</span>
+<span class="sd">            - name: ballet.validation.feature_acceptance.validator.VarianceThresholdAccepter</span>
+<span class="sd">              params:</span>
+<span class="sd">                threshold: 0.1</span>
+<span class="sd">            - name: ballet.validation.feature_acceptance.validator.MutualInformationAccepter</span>
+<span class="sd">              params:</span>
+<span class="sd">                threshold: 0.1</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        agg: one of ``&#39;all&#39;`` or ``&#39;any&#39;``; whether to accept if all</span>
+<span class="sd">            underlying accepters accept or if any accepter accepts.</span>
+<span class="sd">        specs: list of dicts of accepter specs</span>
+<span class="sd">    &quot;&quot;&quot;</span> <span class="c1"># noqa</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">agg</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">specs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">specs</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Missing list of accepter specs!&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">accepters</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">spec</span> <span class="ow">in</span> <span class="n">specs</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="n">load_spec</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">accepters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">agg</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">agg</span> <span class="o">=</span> <span class="nb">all</span>
+        <span class="k">elif</span> <span class="n">agg</span> <span class="o">==</span> <span class="s1">&#39;any&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">agg</span> <span class="o">=</span> <span class="nb">any</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unsupported value for parameter agg: </span><span class="si">{</span><span class="n">agg</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CompoundAccepter.judge"><a class="viewcode-back" href="../../../../api/ballet.validation.feature_acceptance.validator.html#ballet.validation.feature_acceptance.validator.CompoundAccepter.judge">[docs]</a>    <span class="k">def</span> <span class="nf">judge</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Judging feature using </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span>
+            <span class="n">accepter</span><span class="o">.</span><span class="n">judge</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">accepter</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">accepters</span>
+        <span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">accepter_str</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">accepter</span><span class="p">)</span> <span class="k">for</span> <span class="n">accepter</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">accepters</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">accepter_str</span><span class="si">}</span><span class="s1">)&#39;</span></div>
 </pre></div>
 
            </div>
