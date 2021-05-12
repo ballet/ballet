@@ -1,7 +1,7 @@
 import pathlib
 from types import ModuleType
 from typing import (
-    Callable, Collection, Iterator, List, NamedTuple, Optional, Tuple,)
+    Callable, Collection, Iterator, List, NamedTuple, Optional, Tuple, Union,)
 
 import git
 from funcy import (
@@ -19,7 +19,8 @@ from ballet.util.git import (
     Differ, LocalMergeBuildDiffer, LocalPullRequestBuildDiffer, NoOpDiffer,
     can_use_local_differ, can_use_local_merge_differ,)
 from ballet.util.log import logger
-from ballet.util.mod import import_module_at_path, relpath_to_modname
+from ballet.util.mod import (
+    import_module_at_path, import_module_from_modname, relpath_to_modname,)
 from ballet.validation.base import FeaturePerformanceEvaluator
 from ballet.validation.project_structure.checks import ProjectStructureCheck
 
@@ -288,3 +289,20 @@ class RandomFeaturePerformanceEvaluator(FeaturePerformanceEvaluator):
 
     def __str__(self):
         return f'{super().__str__()}: p={self.p}, seed={self.seed}'
+
+
+def load_spec(spec: Union[str, dict]) -> Tuple[type, dict]:
+    if isinstance(spec, str):
+        path = spec
+        params = {}
+    else:
+        path = spec['name']
+        params = spec.get('params', {})
+    modname, clsname = path.rsplit('.', maxsplit=1)
+    mod = import_module_from_modname(modname)
+    cls = getattr(mod, clsname)
+    modfile = getattr(mod, '__file__', '<unknown>')
+    logger.debug(
+        f'Loaded class {clsname} from module at {modfile} '
+        f'with params {params!r}')
+    return cls, params

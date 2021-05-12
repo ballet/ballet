@@ -1,5 +1,5 @@
 import logging
-from unittest.mock import MagicMock, patch
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -9,6 +9,8 @@ from ballet.validation.main import (  # noqa F401
     _check_project_structure, _evaluate_feature_performance,
     _load_validator_class_params, _prune_existing_features,
     _validate_feature_api, validate, validation_stage,)
+from ballet.validation.project_structure.validator import (
+    ProjectStructureValidator,)
 
 
 def test_validation_stage_success(caplog):
@@ -46,23 +48,17 @@ def test_validation_stage_failure():
         call()
 
 
-@patch('ballet.validation.project_structure.validator.ChangeCollector')
-@patch('ballet.validation.main.import_module_from_modname')
-def test_load_validator_class_params_noparams(mock_import, _, caplog):
+@patch('ballet.validation.common.load_spec')
+def test_load_validator_class_params_noparams(mock_load_spec, caplog):
     """Check that _load_validator_class_params works"""
 
-    import ballet.validation.project_structure.validator
-    from ballet.validation.project_structure.validator import (
-        ProjectStructureValidator,)
-    mock_import.return_value = \
-        ballet.validation.project_structure.validator
+    mock_load_spec.return_value = (ProjectStructureValidator, {})
 
-    mock_project = MagicMock()
+    mock_project = Mock()
     modname = 'ballet.validation.project_structure.validator'
     clsname = 'ProjectStructureValidator'
     path = modname + '.' + clsname
     mock_project.config.get.return_value = path
-
     config_key = None
 
     with caplog.at_level(logging.DEBUG, logger=ballet.util.log.logger.name):
