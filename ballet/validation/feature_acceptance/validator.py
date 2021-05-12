@@ -148,7 +148,13 @@ class VarianceThresholdAccepter(FeatureAccepter):
             .fit(self.X_df, y=self.y_df)
             .transform(self.X_df_val)
         )
-        return np.var(z) >= self.threshold
+        var = np.var(z)
+        delta = var - self.threshold
+        outcome = delta > 0
+        logger.debug(
+            f'Feature variance is {var} vs. threshold {self.threshold}'
+            f'({delta} above threshold)')
+        return outcome
 
     def __str__(self):
         return f'{super().__str__()}: threshold={self.threshold}'
@@ -183,7 +189,12 @@ class MutualInformationAccepter(FeatureAccepter):
             # nans were found and handle_nan_targets == 'fail'
             return False
         mi = estimate_mutual_information(z, y)
-        return mi >= self.threshold
+        delta = mi - self.threshold
+        outcome = delta > 0
+        logger.debug(
+            f'Mutual information with target I(Z;Y) is {mi} vs. '
+            f'threshold {self.threshold} ({delta} above threshold)')
+        return outcome
 
     def _handle_nans(self, z, y):
         nans = np.any(np.isnan(y), 1)  # whether there are any nans in this row
@@ -243,11 +254,14 @@ class CompoundAccepter(FeatureAccepter):
 
     def judge(self):
         logger.info(f'Judging feature using {self}')
-        return self.agg(
-            accepter.judge()
+        outcomes = {
+            accepter.__class__.__name__: accepter.judge()
             for accepter in self.accepters
-        )
+        }
+        logger.debug(f'Got outcomes {outcomes!r} from underlying accepters')
+        return self.agg(outcomes.values())
 
     def __str__(self):
         accepter_str = ', '.join(str(accepter) for accepter in self.accepters)
-        return f'{super().__str__()} ({accepter_str})'
+        return f'{super().__str__()}: '\
+            f'agg={self.agg}, accepters=({accepter_str})'
