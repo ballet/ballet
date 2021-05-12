@@ -1,5 +1,9 @@
 # History
 
+## 0.15.1 (2021-05-12)
+
+* Add debug logging for new accepters
+
 ## 0.15.0 (2021-05-12)
 
 * Add `VarianceThresholdAccepter`, `MutualInformationAccepter`, and `CompoundAccepter` ([#76](https://github.com/ballet/ballet/pull/76))
