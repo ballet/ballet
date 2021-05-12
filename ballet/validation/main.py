@@ -12,9 +12,8 @@ from ballet.exc import (
 from ballet.feature import Feature
 from ballet.project import Project
 from ballet.util.log import logger
-from ballet.util.mod import import_module_from_modname
 from ballet.validation.common import (
-    get_accepted_features, get_proposed_feature,)
+    get_accepted_features, get_proposed_feature, load_spec,)
 
 # helpful for log parsing
 PRUNER_MESSAGE = 'Found Redundant Feature: '
@@ -64,22 +63,8 @@ def _load_validator_class_params(
        make_validator(arg)
        baz.qux.MyFeatureAccepter(arg, key1=value1)
     """  # noqa E501
-    entry = project.config.get(config_key)
-    if isinstance(entry, str):
-        path = entry
-        params = {}
-    else:
-        path = entry.get('name')
-        params = dict(entry.get('params'))
-
-    modname, clsname = path.rsplit('.', maxsplit=1)
-    mod = import_module_from_modname(modname)
-    cls = getattr(mod, clsname)
-    clsname = getattr(cls, '__name__', '<unknown>')
-    modfile = getattr(mod, '__file__', '<unknown>')
-    logger.debug(
-        'Loaded class %s from module at %s with params %r',
-        clsname, modfile, params)
+    spec = project.config.get(config_key)
+    cls, params = load_spec(spec)
     return func_partial(cls, **params)
 
 

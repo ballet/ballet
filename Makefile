@@ -51,9 +51,7 @@ clean-pyc: ## remove Python file artifacts
 .PHONY: clean-test
 clean-test: ## remove test and coverage artifacts
 	rm -fr .tox
-	rm -f .coverage
-	rm -f coverage.xml
-	rm -fr htmlcov
+	rm -fr .cov
 	rm -fr .pytest_cache
 	rm -fr .mypy_cache
 

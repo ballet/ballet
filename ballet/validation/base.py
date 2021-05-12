@@ -24,6 +24,8 @@ class FeaturePerformanceEvaluator(metaclass=ABCMeta):
         y_df: targets frame/series for fitting the features
         X_df_val: entities frame for evaluating the features
         y_val: target values for evaluating the features
+        features: all collected features
+        candidate_feature: the feature to evaluate
     """
 
     def __init__(self,
