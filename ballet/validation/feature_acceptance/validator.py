@@ -1,10 +1,16 @@
 import random
+from typing import List
 
+import numpy as np
+
+from ballet.util import asarray2d
 from ballet.util.log import logger
 from ballet.util.testing import seeded
 from ballet.validation.base import FeatureAcceptanceMixin, FeatureAccepter
-from ballet.validation.common import RandomFeaturePerformanceEvaluator
-from ballet.validation.entropy import estimate_conditional_information
+from ballet.validation.common import (
+    RandomFeaturePerformanceEvaluator, load_spec,)
+from ballet.validation.entropy import (
+    estimate_conditional_information, estimate_mutual_information,)
 from ballet.validation.gfssf import (
     GFSSFIterationInfo, GFSSFPerformanceEvaluator, _compute_lmbdas,
     _compute_threshold, _concat_datasets,)
@@ -121,3 +127,127 @@ class GFSSFAccepter(FeatureAcceptanceMixin, GFSSFPerformanceEvaluator):
             f'Rejected feature: best marginal conditional mutual information was not greater than threshold ({cmi_closest:0.3e} - {omitted_cmi_closest:0.3e} = {statistic_closest:0.3e}, vs needed {threshold_closest:0.3e}).')  # noqa
 
         return False
+
+
+class VarianceThresholdAccepter(FeatureAccepter):
+    """Accept features with variance above a threshold
+
+    Args:
+        threshold: variance threshold
+    """
+
+    def __init__(self, *args, threshold=0.05):
+        super().__init__(*args)
+        self.threshold = threshold
+
+    def judge(self):
+        logger.info(f'Judging feature using {self}')
+        z = (
+            self.candidate_feature
+            .as_feature_engineering_pipeline()
+            .fit(self.X_df, y=self.y_df)
+            .transform(self.X_df_val)
+        )
+        return np.var(z) >= self.threshold
+
+    def __str__(self):
+        return f'{super().__str__()}: threshold={self.threshold}'
+
+
+class MutualInformationAccepter(FeatureAccepter):
+    """Accept features with mutual information with the target above a threshold
+
+    Args:
+        threshold: mutual information threshold
+        handle_nan_targets: one of ``'fail'`` or ``'ignore'``, whether to
+            fail validation if NaN-valued targets are discovered or to drop
+            those rows in calculation of the mutual information score
+    """
+    def __init__(self, *args, threshold=0.05, handle_nan_targets='fail'):
+        super().__init__(*args)
+        self.threshold = threshold
+        self.handle_nan_targets = handle_nan_targets
+
+    def judge(self):
+        logger.info(f'Judging feature using {self}')
+        z = (
+            self.candidate_feature
+            .as_feature_engineering_pipeline()
+            .fit(self.X_df, y=self.y_df)
+            .transform(self.X_df_val)
+        )
+        y = self.y_val
+        z, y = asarray2d(z), asarray2d(y)
+        z, y = self._handle_nans(z, y)
+        if z is None and y is None:
+            # nans were found and handle_nan_targets == 'fail'
+            return False
+        mi = estimate_mutual_information(z, y)
+        return mi >= self.threshold
+
+    def _handle_nans(self, z, y):
+        nans = np.any(np.isnan(y), 1)  # whether there are any nans in this row
+        if np.any(nans):
+            if self.handle_nan_targets == 'fail':
+                return None, None  # hack
+            elif self.handle_nan_targets == 'ignore':
+                z = z[~nans, :]
+                y = y[~nans, :]
+            else:
+                raise ValueError(
+                    'Invalid value for handle_nan_targets: '
+                    f'{self.handle_nan_targets}'
+                )
+
+        return z, y
+
+    def __str__(self):
+        return f'{super().__str__()}: threshold={self.threshold}'
+
+
+class CompoundAccepter(FeatureAccepter):
+    """A compound accepter that runs a list of individual accepters
+
+    An accepter spec is just a simple serialization of a class and its kwargs::
+
+        name: ballet.validation.feature_acceptance.validator.CompoundAccepter
+        params:
+          agg: any
+          specs:
+            - name: ballet.validation.feature_acceptance.validator.VarianceThresholdAccepter
+              params:
+                threshold: 0.1
+            - name: ballet.validation.feature_acceptance.validator.MutualInformationAccepter
+              params:
+                threshold: 0.1
+
+    Args:
+        agg: one of ``'all'`` or ``'any'``; whether to accept if all
+            underlying accepters accept or if any accepter accepts.
+        specs: list of dicts of accepter specs
+    """ # noqa
+    def __init__(self, *args, agg='all', specs: List[dict] = []):
+        super().__init__(*args)
+        if not specs:
+            raise ValueError('Missing list of accepter specs!')
+        self.accepters = []
+        for spec in specs:
+            cls, params = load_spec(spec)
+            self.accepters.append(cls(*args, **params))
+        if agg == 'all':
+            self.agg = all
+        elif agg == 'any':
+            self.agg = any
+        else:
+            raise ValueError(f'Unsupported value for parameter agg: {agg}')
+
+    def judge(self):
+        logger.info(f'Judging feature using {self}')
+        return self.agg(
+            accepter.judge()
+            for accepter in self.accepters
+        )
+
+    def __str__(self):
+        accepter_str = ', '.join(str(accepter) for accepter in self.accepters)
+        return f'{super().__str__()} ({accepter_str})'

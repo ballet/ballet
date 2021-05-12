@@ -1,11 +1,14 @@
 from unittest.mock import patch
 
+import numpy as np
+import pandas as pd
 import pytest
 
 from ballet.eng.misc import IdentityTransformer
 from ballet.feature import Feature
 from ballet.validation.feature_acceptance.validator import (
-    GFSSFAccepter, NeverAccepter, RandomAccepter,)
+    CompoundAccepter, GFSSFAccepter, MutualInformationAccepter, NeverAccepter,
+    RandomAccepter, VarianceThresholdAccepter,)
 from tests.util import load_regression_data
 
 
@@ -64,3 +67,80 @@ def test_gfssf_accepter_init(sample_data):
         X_df, y_df, X_df, y, features, candidate_feature)
 
     assert accepter is not None
+
+
+@patch('numpy.var', return_value=0.0)
+def test_variance_threshold_accepter(mock_var, sample_data):
+    expected = False
+    X_df, y_df, y = sample_data
+    feature = Feature(
+        input='A_0',
+        transformer=IdentityTransformer(),
+        source='1st Feature')
+    accepter = VarianceThresholdAccepter(
+        X_df, y_df, X_df, y, [], feature)
+    actual = accepter.judge()
+
+    assert expected == actual
+
+
+@patch(
+    'ballet.validation.feature_acceptance.validator.estimate_mutual_information',  # noqa
+    return_value=0.99
+)
+def test_mutual_information_accepter(_, sample_data):
+    expected = True
+    X_df, y_df, y = sample_data
+    feature = Feature(
+        input='A_0',
+        transformer=IdentityTransformer(),
+        source='1st Feature')
+    accepter = MutualInformationAccepter(
+        X_df, y_df, X_df, y, [], feature)
+    actual = accepter.judge()
+
+    assert expected == actual
+
+
+@pytest.mark.parametrize(
+    'handle_nan_targets, expected',
+    [
+        ('fail', False),
+        ('ignore', True)
+    ],
+)
+def test_mutual_information_accepter_nans(handle_nan_targets, expected):
+    X_df = pd.DataFrame({'A': [1, 2, 3]})
+    y = np.array([np.nan, 2, 3]).reshape(-1, 1)
+    feature = Feature(
+        input='A',
+        transformer=IdentityTransformer())
+    accepter = MutualInformationAccepter(
+        X_df, y, X_df, y, [], feature, handle_nan_targets=handle_nan_targets)
+    actual = accepter.judge()
+    assert expected == actual
+
+
+def test_compound_accepter(sample_data):
+    expected = False
+    X_df, y_df, y = sample_data
+    agg = 'all'
+    specs = [
+        'ballet.validation.feature_acceptance.validator.AlwaysAccepter',
+        {
+            'name': 'ballet.validation.feature_acceptance.validator.RandomAccepter',  # noqa
+            'params': {
+                'p': 0.00,
+            }
+        }
+    ]
+    feature = Feature(
+        input='A_0',
+        transformer=IdentityTransformer(),
+        source='1st Feature')
+    accepter = CompoundAccepter(
+        X_df, y_df, X_df, y, [], feature, agg=agg, specs=specs
+    )
+    actual = accepter.judge()
+
+    assert expected == actual
