@@ -148,11 +148,11 @@ class VarianceThresholdAccepter(FeatureAccepter):
             .fit(self.X_df, y=self.y_df)
             .transform(self.X_df_val)
         )
-        var = np.var(z)
+        var = np.var(z, axis=0)
         delta = var - self.threshold
-        outcome = delta > 0
+        outcome = np.all(delta > 0)
         logger.debug(
-            f'Feature variance is {var} vs. threshold {self.threshold}'
+            f'Feature variance is {var} vs. threshold {self.threshold} '
             f'({delta} above threshold)')
         return outcome
 

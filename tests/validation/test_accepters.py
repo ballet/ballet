@@ -84,6 +84,22 @@ def test_variance_threshold_accepter(mock_var, sample_data):
     assert expected == actual
 
 
+def test_variance_threshold_accepter_feature_group():
+    expected = True
+    # variance is 0.25 per column, > 0.05 threshold
+    X = pd.DataFrame(np.eye(2))
+    y = None
+    feature = Feature(
+        input=[0, 1],
+        transformer=IdentityTransformer(),
+        source='1st Feature')
+    accepter = VarianceThresholdAccepter(
+        X, y, X, y, [], feature)
+    actual = accepter.judge()
+
+    assert expected == actual
+
+
 @patch(
     'ballet.validation.feature_acceptance.validator.estimate_mutual_information',  # noqa
     return_value=0.99
