@@ -36,7 +36,7 @@ def enable(logger: Union[str, logging.Logger] = logger,
 
     if isinstance(level, str):
         level = level.upper()
-    levelInt: int = logging._checkLevel(level) # type: ignore
+    levelInt: int = logging._checkLevel(level)  # type: ignore
     levelName: str = logging.getLevelName(levelInt)
 
     logger.setLevel(levelName)
