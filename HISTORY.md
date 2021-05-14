@@ -1,5 +1,10 @@
 # History
 
+## 0.15.2 (2021-05-14)
+
+* Operate columnwise in `VarianceThresholdAccepter`, rather than computing the variance of
+    the entire feature group.
+
 ## 0.15.1 (2021-05-12)
 
 * Add debug logging for new accepters
