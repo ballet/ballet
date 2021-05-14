@@ -487,23 +487,34 @@ collaborators or an update to the Ballet framework itself.</p>
 </div>
 <div class="section" id="start-working-on-a-new-feature">
 <h4>Start working on a new feature<a class="headerlink" href="#start-working-on-a-new-feature" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$ </span>git checkout -b develop-my-feature
-<span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$ </span>ballet start-new-feature
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$ </span>ballet start-new-feature
 <span class="go">Starting new feature...</span>
 <span class="go">username [your_user_name]:</span>
 <span class="go">featurename [featurename]: impute_lot_frontage</span>
-<span class="go">2019-12-11 10:56:00,517 INFO - Start new feature successful.</span>
+<span class="go">2019-12-11 10:56:00,517 INFO - Start new feature successful</span>
 <span class="go">2019-12-11 10:56:00,517 INFO - Created src/ballet_predict_house_prices/features/contrib/user_your_user_name/feature_impute_lot_frontage.py</span>
+<span class="go">2019-12-11 10:56:00,517 INFO - Switched to branch your_user_name/feature-impute-lot-frontage</span>
 <span class="go">Starting new feature...DONE</span>
 </pre></div>
 </div>
 <p>This will create a new Python module within the project’s “contrib”
-directory to hold your feature.</p>
+directory to hold your feature. It will also try to create and checkeout a new topic branch <a class="footnote-reference brackets" href="#id3" id="id2">1</a> for you to work on your feature.</p>
+<dl class="footnote brackets">
+<dt class="label" id="id3"><span class="brackets"><a class="fn-backref" href="#id2">1</a></span></dt>
+<dd><p>The automatic branching requires that you are currently on the default branch and have a clean index.</p>
+</dd>
+</dl>
 <ul class="simple">
 <li><p>The contrib directory is named like <code class="docutils literal notranslate"><span class="pre">src/&lt;ballet_project&gt;/features/contrib</span></code>.</p></li>
 <li><p>The new subpackage must be named like <code class="docutils literal notranslate"><span class="pre">user_&lt;github</span> <span class="pre">username&gt;</span></code>.</p></li>
 <li><p>The new submodule that will contain the feature must be named like <code class="docutils literal notranslate"><span class="pre">feature_&lt;feature</span> <span class="pre">name&gt;.py</span></code>.</p></li>
 </ul>
+<p>You can see the new files that have been created for you. The second file shown is the one you will want to modify.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$ </span>git status --short --untracked-files
+<span class="go">?? src/ballet_predict_house_prices/features/contrib/user_your_user_name/__init__.py</span>
+<span class="go">?? src/ballet_predict_house_prices/features/contrib/user_your_user_name/feature_impute_lot_frontage.py</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="write-your-feature">
 <h4>Write your feature<a class="headerlink" href="#write-your-feature" title="Permalink to this headline">¶</a></h4>
@@ -532,10 +543,10 @@ training data.</p>
 <p>If you must add a new dependency, see <a class="reference internal" href="faq.html#my-feature-relies-on-a-new-library-how-can-i-add-it-to-the-project"><span class="std std-ref">My feature relies on a new library, how can I add it to the project?</span></a>.</p>
 </div>
 <div class="section" id="contributor-guide-test-your-feature-local">
-<span id="id2"></span><h4>Test your feature<a class="headerlink" href="#contributor-guide-test-your-feature-local" title="Permalink to this headline">¶</a></h4>
+<span id="id4"></span><h4>Test your feature<a class="headerlink" href="#contributor-guide-test-your-feature-local" title="Permalink to this headline">¶</a></h4>
 <p>Observe later in this guide that when you submit your feature, there will be
-four separate validation steps. In your local development environment, you
-can check two of them: whether the feature you have written satisfies the
+four separate validation steps. In a Python development session, you can check
+two of them right away: whether the feature you have written satisfies the
 “feature API”, and whether the feature contributes positively to the ML
 performance of the feature engineering pipeline.</p>
 <p>To validate your feature, Ballet provides a client <code class="docutils literal notranslate"><span class="pre">b</span></code> for easy access to
@@ -580,7 +591,23 @@ logging.</p>
 <h5>Commit your changes<a class="headerlink" href="#commit-your-changes" title="Permalink to this headline">¶</a></h5>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$ </span>git add .
 <span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$ </span>git commit -m <span class="s2">&quot;Add my new feature&quot;</span>
-<span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$ </span>git push origin develop-my-feature
+</pre></div>
+</div>
+</div>
+<div class="section" id="re-run-all-tests">
+<h5>Re-run all tests<a class="headerlink" href="#re-run-all-tests" title="Permalink to this headline">¶</a></h5>
+<p>From a topic branch with your changes committed, you can run the full test
+suite which runs all validation steps. The additional step here compared to
+<a class="reference internal" href="#contributor-guide-test-your-feature-local"><span class="std std-ref">Test your feature</span></a> is that the changes to the project
+structure are validated to make sure that you are contributing a new feature
+definition and not modifying unrelated project files.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$ </span>ballet validate -A
+</pre></div>
+</div>
+</div>
+<div class="section" id="push-your-branch">
+<h5>Push your branch<a class="headerlink" href="#push-your-branch" title="Permalink to this headline">¶</a></h5>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(myenv)</span> <span class="gp">$ </span>git push origin your_user_name/feature-impute-lot-frontage
 </pre></div>
 </div>
 </div>
@@ -607,10 +634,10 @@ your behalf in one of three ways:</p>
 <ol class="arabic simple">
 <li><p>use the built-in GitHub OAuth functionality to obtain a new OAuth token
 with one click</p></li>
-<li><p>obtain a GitHub OAuth token yourself and populate the variable
+<li><p>obtain a GitHub OAuth token yourself and export the environment variable
 <code class="docutils literal notranslate"><span class="pre">$GITHUB_TOKEN</span></code></p></li>
 <li><p>obtain a GitHub OAuth token and pass it as an option when starting
-JupyterLab using <code class="docutils literal notranslate"><span class="pre">--AssembleApp.github_token=$TOKEN</span></code>.</p></li>
+JupyterLab using <code class="docutils literal notranslate"><span class="pre">--AssembleApp.github_token=mytoken</span></code>.</p></li>
 </ol>
 </div>
 </div>
@@ -635,9 +662,9 @@ this debugging.)</p>
 <h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>
 <p>In this guide, we walked through all of the steps required to submit your first feature to a
 ballet collaboration.</p>
-<div class="figure align-center" id="id3">
+<div class="figure align-center" id="id5">
 <a class="reference internal image-reference" href="https://upload.wikimedia.org/wikipedia/en/f/f8/Internet_dog.jpg"><img alt="&quot;On the internet, nobody knows you're a dog&quot; cartoon" src="https://upload.wikimedia.org/wikipedia/en/f/f8/Internet_dog.jpg" style="width: 300px;" /></a>
-<p class="caption"><span class="caption-text">Image from <em>The New Yorker</em> cartoon by Peter Steiner, 1993, via Wikipedia.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Image from <em>The New Yorker</em> cartoon by Peter Steiner, 1993, via Wikipedia.</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 </div>

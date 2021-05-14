@@ -548,9 +548,10 @@
         <span class="n">dst</span> <span class="o">=</span> <span class="n">contrib_dir</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">synctree</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">onexist</span><span class="o">=</span><span class="n">_fail_if_feature_exists</span><span class="p">)</span>
 
+    <span class="n">target_branch</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">branching</span> <span class="ow">and</span> <span class="n">project</span><span class="o">.</span><span class="n">on_master</span><span class="p">:</span>
-        <span class="c1"># what is the target branch?</span>
-        <span class="n">target_branch</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># try to set the target branch name</span>
         <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span> <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">kind</span> <span class="ow">in</span> <span class="n">result</span> <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;file&#39;</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
             <span class="n">parts</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">parts</span>
@@ -566,16 +567,22 @@
             <span class="n">switch_to_new_branch</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">repo</span><span class="p">,</span> <span class="n">target_branch</span><span class="p">)</span>
 
     <span class="n">_log_start_new_feature_success</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="n">_log_switch_to_new_branch</span><span class="p">(</span><span class="n">target_branch</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">result</span></div>
 
 
 <span class="k">def</span> <span class="nf">_log_start_new_feature_success</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]):</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Start new feature successful.&#39;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Start new feature successful&#39;</span><span class="p">)</span>
     <span class="k">for</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">kind</span><span class="p">)</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;file&#39;</span> <span class="ow">and</span> <span class="s1">&#39;__init__&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
             <span class="n">relname</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">())</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Created </span><span class="si">{</span><span class="n">relname</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_log_switch_to_new_branch</span><span class="p">(</span><span class="n">branch</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="k">if</span> <span class="n">branch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Switched to branch </span><span class="si">{</span><span class="n">branch</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 
            </div>
