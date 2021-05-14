@@ -34,7 +34,9 @@ def enable(logger: Union[str, logging.Logger] = logger,
         _handler = logging.StreamHandler()
         _handler.setFormatter(logging.Formatter(format))
 
-    levelInt: int = logging._checkLevel(level)  # type: ignore
+    if isinstance(level, str):
+        level = level.upper()
+    levelInt: int = logging._checkLevel(level) # type: ignore
     levelName: str = logging.getLevelName(levelInt)
 
     logger.setLevel(levelName)

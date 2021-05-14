@@ -304,5 +304,5 @@ def load_spec(spec: Union[str, dict]) -> Tuple[type, dict]:
     modfile = getattr(mod, '__file__', '<unknown>')
     logger.debug(
         f'Loaded class {clsname} from module at {modfile} '
-        f'with params {params!r}')
+        f'with params {params}')
     return cls, params
