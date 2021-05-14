@@ -21,12 +21,12 @@ class NullFiller(BaseTransformer):
     """Fill values passing a filter with a given replacement
 
     Args:
+        replacement: replacement for each null value
         isnull (callable): vectorized test of whether a value is consider null.
             Defaults to ``pandas.isnull``.
-        replacement: replacement for each null value
     """
 
-    def __init__(self, isnull=pd.isnull, replacement=0.0):
+    def __init__(self, replacement=0.0, isnull=pd.isnull):
         super().__init__()
         self.replacement = replacement
         self.isnull = isnull
