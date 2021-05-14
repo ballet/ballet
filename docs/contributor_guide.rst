@@ -170,21 +170,31 @@ Start working on a new feature
 
 .. code-block:: console
 
-   (myenv) $ git checkout -b develop-my-feature
    (myenv) $ ballet start-new-feature
    Starting new feature...
    username [your_user_name]:
    featurename [featurename]: impute_lot_frontage
-   2019-12-11 10:56:00,517 INFO - Start new feature successful.
+   2019-12-11 10:56:00,517 INFO - Start new feature successful
    2019-12-11 10:56:00,517 INFO - Created src/ballet_predict_house_prices/features/contrib/user_your_user_name/feature_impute_lot_frontage.py
+   2019-12-11 10:56:00,517 INFO - Switched to branch your_user_name/feature-impute-lot-frontage
    Starting new feature...DONE
 
 This will create a new Python module within the project's "contrib"
-directory to hold your feature.
+directory to hold your feature. It will also try to create and checkeout a new topic branch [#]_ for you to work on your feature.
+
+.. [#] The automatic branching requires that you are currently on the default branch and have a clean index.
 
 * The contrib directory is named like ``src/<ballet_project>/features/contrib``.
 * The new subpackage must be named like ``user_<github username>``.
 * The new submodule that will contain the feature must be named like ``feature_<feature name>.py``.
+
+You can see the new files that have been created for you. The second file shown is the one you will want to modify.
+
+.. code-block:: console
+
+   (myenv) $ git status --short --untracked-files
+   ?? src/ballet_predict_house_prices/features/contrib/user_your_user_name/__init__.py
+   ?? src/ballet_predict_house_prices/features/contrib/user_your_user_name/feature_impute_lot_frontage.py
 
 Write your feature
 ^^^^^^^^^^^^^^^^^^
@@ -216,8 +226,8 @@ Test your feature
 ^^^^^^^^^^^^^^^^^
 
 Observe later in this guide that when you submit your feature, there will be
-four separate validation steps. In your local development environment, you
-can check two of them: whether the feature you have written satisfies the
+four separate validation steps. In a Python development session, you can check
+two of them right away: whether the feature you have written satisfies the
 "feature API", and whether the feature contributes positively to the ML
 performance of the feature engineering pipeline.
 
@@ -276,7 +286,26 @@ Commit your changes
 
    (myenv) $ git add .
    (myenv) $ git commit -m "Add my new feature"
-   (myenv) $ git push origin develop-my-feature
+
+Re-run all tests
+""""""""""""""""
+
+From a topic branch with your changes committed, you can run the full test
+suite which runs all validation steps. The additional step here compared to
+:ref:`contributor_guide:Test your feature` is that the changes to the project
+structure are validated to make sure that you are contributing a new feature
+definition and not modifying unrelated project files.
+
+.. code-block:: console
+
+   (myenv) $ ballet validate -A
+
+Push your branch
+""""""""""""""""
+
+.. code-block:: console
+
+   (myenv) $ git push origin your_user_name/feature-impute-lot-frontage
 
 Create a pull request
 """""""""""""""""""""
@@ -305,11 +334,11 @@ your behalf in one of three ways:
 #. use the built-in GitHub OAuth functionality to obtain a new OAuth token
    with one click
 
-#. obtain a GitHub OAuth token yourself and populate the variable
+#. obtain a GitHub OAuth token yourself and export the environment variable
    ``$GITHUB_TOKEN``
 
 #. obtain a GitHub OAuth token and pass it as an option when starting
-   JupyterLab using ``--AssembleApp.github_token=$TOKEN``.
+   JupyterLab using ``--AssembleApp.github_token=mytoken``.
 
 Understanding Validation Results
 ================================

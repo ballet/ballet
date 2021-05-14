@@ -188,9 +188,10 @@ def start_new_feature(
         dst = contrib_dir
         result = synctree(src, dst, onexist=_fail_if_feature_exists)
 
+    target_branch = None
     if branching and project.on_master:
-        # what is the target branch?
-        target_branch = None
+
+        # try to set the target branch name
         paths = [path for path, kind in result if kind == 'file']
         for path in paths:
             parts = pathlib.Path(path).parts
@@ -206,13 +207,19 @@ def start_new_feature(
             switch_to_new_branch(project.repo, target_branch)
 
     _log_start_new_feature_success(result)
+    _log_switch_to_new_branch(target_branch)
 
     return result
 
 
 def _log_start_new_feature_success(result: List[Tuple[pathlib.Path, str]]):
-    logger.info('Start new feature successful.')
+    logger.info('Start new feature successful')
     for (name, kind) in result:
         if kind == 'file' and '__init__' not in str(name):
             relname = pathlib.Path(name).relative_to(pathlib.Path.cwd())
             logger.info(f'Created {relname}')
+
+
+def _log_switch_to_new_branch(branch: Optional[str]):
+    if branch is not None:
+        logger.info(f'Switched to branch {branch}')
