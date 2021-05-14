@@ -151,8 +151,8 @@ class VarianceThresholdAccepter(FeatureAccepter):
         var = np.var(z)
         delta = var - self.threshold
         outcome = delta > 0
-        logger.debug(
-            f'Feature variance is {var} vs. threshold {self.threshold}'
+        logger.info(
+            f'Feature variance is {var} vs. threshold {self.threshold} '
             f'({delta} above threshold)')
         return outcome
 
@@ -191,7 +191,7 @@ class MutualInformationAccepter(FeatureAccepter):
         mi = estimate_mutual_information(z, y)
         delta = mi - self.threshold
         outcome = delta > 0
-        logger.debug(
+        logger.info(
             f'Mutual information with target I(Z;Y) is {mi} vs. '
             f'threshold {self.threshold} ({delta} above threshold)')
         return outcome
@@ -239,18 +239,21 @@ class CompoundAccepter(FeatureAccepter):
     """ # noqa
     def __init__(self, *args, agg='all', specs: List[dict] = []):
         super().__init__(*args)
-        if not specs:
+        self._agg = agg
+        self._specs = specs
+        if not self._specs:
             raise ValueError('Missing list of accepter specs!')
         self.accepters = []
-        for spec in specs:
+        for spec in self._specs:
             cls, params = load_spec(spec)
             self.accepters.append(cls(*args, **params))
-        if agg == 'all':
+        if self._agg == 'all':
             self.agg = all
-        elif agg == 'any':
+        elif self._agg == 'any':
             self.agg = any
         else:
-            raise ValueError(f'Unsupported value for parameter agg: {agg}')
+            raise ValueError(
+                f'Unsupported value for parameter agg: {self._agg}')
 
     def judge(self):
         logger.info(f'Judging feature using {self}')
@@ -264,4 +267,4 @@ class CompoundAccepter(FeatureAccepter):
     def __str__(self):
         accepter_str = ', '.join(str(accepter) for accepter in self.accepters)
         return f'{super().__str__()}: '\
-            f'agg={self.agg}, accepters=({accepter_str})'
+            f'agg={self._agg}, accepters=({accepter_str})'
