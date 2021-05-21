@@ -96,5 +96,17 @@ class Client:
             accepter_class, feature, result.features, result.X_df,
             result.y_df, result.X_df, result.y, False)
 
+    def discover(self, **kwargs) -> pd.DataFrame:
+        """Discover existing features
+
+        Display information about existing features.
+
+        Returns:
+            data frame with features on the row index and the following
+            columns: ``name``, ``description``, ``input``, ``transformer``,
+            ``output``, ``author``, ``source``, ``mutual_information``,
+            ``conditional_mutual_information``, ``average_variance``,
+            ``average_nunique``.
+        """
 
 b = Client()
