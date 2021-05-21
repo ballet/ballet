@@ -1,5 +1,3 @@
-import pandas as pd
-import numpy as np
 import pathlib
 import shutil
 import tempfile
@@ -7,6 +5,8 @@ from typing import NamedTuple
 from unittest.mock import patch
 
 import git
+import numpy as np
+import pandas as pd
 import pytest
 import responses as _responses
 

@@ -1,9 +1,10 @@
-from ballet.eng import NullFiller
 import numpy as np
-from ballet.feature import Feature
-from ballet.discovery import discover, countunique
-from ballet.util.testing import assert_array_equal
 import pytest
+
+from ballet.discovery import countunique, discover
+from ballet.eng import NullFiller
+from ballet.feature import Feature
+from ballet.util.testing import assert_array_equal
 
 
 @pytest.mark.parametrize(
