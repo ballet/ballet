@@ -3,10 +3,9 @@ from types import ModuleType
 from typing import Optional, Union
 
 import pandas as pd
-import numpy as np
 from funcy import cached_property
 
-from ballet.validation.entropy import estimate_mutual_information
+from ballet.discovery import discover as _discover
 from ballet.feature import Feature
 from ballet.project import FeatureEngineeringProject, Project
 from ballet.validation.common import subsample_data_for_validation
@@ -99,52 +98,14 @@ class Client:
             result.y_df, result.X_df, result.y, False)
 
     def discover(self, **kwargs) -> pd.DataFrame:
-        """Discover existing features
-
-        Display information about existing features.
-
-        Returns:
-            data frame with features on the row index and the following
-            columns: ``name``, ``description``, ``input``, ``transformer``,
-            ``output``, ``author``, ``source``, ``mutual_information``,
-            ``conditional_mutual_information``, ``average_variance``,
-            ``average_nunique``.
-        """
         features = self.api.features
         X_df, y_df = self.api.load_data()
         encoder = self.api.encoder
         y = encoder.fit_transform(y_df)
 
-        records = []
-        for feature in features:
-            z = (
-                feature
-                .as_feature_engineering_pipeline()
-                .fit_transform(X_df, y_df)
-            )
-            mutual_information = estimate_mutual_information(z, y)
-            conditional_mutual_information = np.nan
-            variance = np.var(z, axis=0)
+        return _discover(features, X_df, y_df, y)
 
-            def countunique(arr):
-                return np.unique(arr, return_counts=True)[1]
-
-            nunique = np.apply_along_axis(countunique, 0, z)
-            records.append({
-                'name': feature.name,
-                'description': feature.description,
-                'input': feature.input,
-                'transformer': feature.transformer,
-                'output': feature.output,
-                'author': feature.author,
-                'source': feature.source,
-                'mutual_information': mutual_information,
-                'conditional_mutual_information':
-                    conditional_mutual_information,
-                'average_variance': np.mean(variance),
-                'average_nunique': np.mean(nunique),
-            })
-        return pd.DataFrame.from_records(records)
+    discover.__doc__ = _discover.__doc__
 
 
 b = Client()

@@ -1,0 +1,45 @@
+from ballet.eng import NullFiller
+import numpy as np
+from ballet.feature import Feature
+from ballet.discovery import discover, countunique
+from ballet.util.testing import assert_array_equal
+import pytest
+
+
+@pytest.mark.parametrize(
+    'z,expected',
+    [
+        (np.array([[1, 2, 3]]).T, np.array([3])),
+        (np.array([[1, 2, 3], [2, 2, 3]]).T, np.array([3, 2])),
+    ]
+)
+def test_countunique(z, expected):
+    nunique = countunique(z)
+    assert_array_equal(nunique, expected)
+
+
+def test_discover(sample_data):
+    features = [
+        Feature(
+            'size', NullFiller(0),
+            source='foo.features.contrib.user_a.feature_1'
+        ),
+        Feature(
+            'strength', NullFiller(100),
+            source='foo.features.contrib.user_b.feature_1'
+        )
+    ]
+    X_df, y_df = sample_data.X, sample_data.y
+    y = np.asfarray(y_df)
+
+    df = discover(features, X_df, y_df, y)
+
+    expected_cols = {
+        'name', 'description', 'input', 'transformer', 'output', 'author',
+        'source', 'mutual_information', 'conditional_mutual_information',
+        'mean', 'std', 'variance', 'nunique',
+    }
+    actual_cols = df.columns
+    assert not expected_cols.symmetric_difference(actual_cols)
+
+    assert df.shape[0] == len(features)
