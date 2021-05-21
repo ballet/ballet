@@ -5,7 +5,7 @@ from funcy import cached_property
 
 import ballet.pipeline
 from ballet.transformer import RobustTransformer, make_robust_transformer
-from ballet.util.typing import OneOrMore, Pathy, TransformerLike
+from ballet.util.typing import OneOrMore, TransformerLike
 
 __all__ = ('Feature', )
 

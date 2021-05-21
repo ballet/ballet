@@ -37,13 +37,13 @@ def discover(features, X_df, y_df, y) -> pd.DataFrame:
     for feature in features:
         z = values[feature]
 
-        x = [
+        feature_values_list = [
             feature_values
             for other_feature, feature_values in values.items()
             if other_feature is not feature
         ]
-        if x:
-            x = np.concatenate(x, axis=1)
+        if feature_values_list:
+            x = np.concatenate(feature_values_list, axis=1)
         else:
             x = np.empty((z.shape[0], 0))
 
