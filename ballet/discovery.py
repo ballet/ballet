@@ -1,3 +1,4 @@
+from ballet.util import asarray2d
 import numpy as np
 import pandas as pd
 
@@ -25,9 +26,10 @@ def discover(features, X_df, y_df, y) -> pd.DataFrame:
         ``conditional_mutual_information``, ``mean``, ``std``, ``var``,
         ``nunique``.
     """
+    y = asarray2d(y)
     records = []
     values = {
-        feature: (
+        feature: asarray2d(
             feature
             .as_feature_engineering_pipeline()
             .fit_transform(X_df, y_df)
@@ -70,4 +72,5 @@ def discover(features, X_df, y_df, y) -> pd.DataFrame:
             'variance': np.mean(variance),
             'nunique': np.mean(nunique),
         })
+
     return pd.DataFrame.from_records(records)
