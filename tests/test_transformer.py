@@ -7,7 +7,8 @@ import sklearn.preprocessing
 from ballet.compat import SimpleImputer
 from ballet.eng.misc import IdentityTransformer
 from ballet.transformer import (
-    DelegatingRobustTransformer, make_robust_transformer,)
+    DelegatingRobustTransformer, get_transformer_primitives,
+    make_robust_transformer,)
 from ballet.util import asarray2d
 
 from .util import FragileTransformer, FragileTransformerPipeline
@@ -120,3 +121,22 @@ def test_robust_str_repr(robust_maker):
     for func in [str, repr]:
         s = func(robust_transformer)
         assert len(s) > 0
+
+
+@pytest.mark.parametrize(
+    'transformer,expected',
+    [
+        (
+            IdentityTransformer(),
+            ['IdentityTransformer'],
+        ),
+        (
+            [IdentityTransformer(), IdentityTransformer()],
+            ['IdentityTransformer', 'IdentityTransformer'],
+        )
+    ]
+)
+def test_get_transformer_primitives(transformer, expected):
+    robust_transformer = make_robust_transformer(transformer)
+    primitives = get_transformer_primitives(robust_transformer)
+    assert primitives == expected

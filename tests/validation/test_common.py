@@ -25,7 +25,7 @@ def test_load_spec_noparams():
 def test_load_spec_params():
     threshold = 0.88
     spec = {
-        'name':  'ballet.validation.feature_acceptance.validator.RandomAccepter',  # noqa
+        'name': 'ballet.validation.feature_acceptance.validator.RandomAccepter',  # noqa
         'params': {
             'threshold': threshold
         }

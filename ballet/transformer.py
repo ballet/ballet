@@ -25,6 +25,12 @@ RobustTransformer = Union[TransformerPipeline, 'DelegatingRobustTransformer']
 def make_robust_transformer(
     transformer: OneOrMore[TransformerLike]
 ) -> RobustTransformer:
+    """Convert to robust transformer or pipeline
+
+    Convert to either a single DelegatingRobustTransformer or a
+    TransformerPipeline where each transformer in the pipeline is a
+    DelegatingRobustTransformer.
+    """
     if is_seqcont(transformer):
         transformer = cast(Collection[TransformerLike], transformer)
         transformers = list(
@@ -304,3 +310,21 @@ def _replace_callable_or_none_with_transformer(
     else:
         transformer = cast(BaseTransformer, transformer)
         return transformer
+
+
+def get_transformer_primitives(
+    transformer: TransformerLike
+) -> List[str]:
+    """Get the primitives used in this transformer or pipeline
+
+    The primitives are just the class names underlying the transformer or
+    pipeline.
+    """
+    if isinstance(transformer, DelegatingRobustTransformer):
+        return [transformer._tname]
+    else:
+        _transformer = cast(TransformerPipeline, transformer)
+        return [
+            t._tname
+            for _, t in _transformer.steps
+        ]

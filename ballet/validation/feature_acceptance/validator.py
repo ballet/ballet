@@ -169,6 +169,7 @@ class MutualInformationAccepter(FeatureAccepter):
             fail validation if NaN-valued targets are discovered or to drop
             those rows in calculation of the mutual information score
     """
+
     def __init__(self, *args, threshold=0.05, handle_nan_targets='fail'):
         super().__init__(*args)
         self.threshold = threshold
@@ -236,7 +237,8 @@ class CompoundAccepter(FeatureAccepter):
         agg: one of ``'all'`` or ``'any'``; whether to accept if all
             underlying accepters accept or if any accepter accepts.
         specs: list of dicts of accepter specs
-    """ # noqa
+    """  # noqa
+
     def __init__(self, *args, agg='all', specs: List[dict] = []):
         super().__init__(*args)
         self._agg = agg

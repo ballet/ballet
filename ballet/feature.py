@@ -5,7 +5,7 @@ from funcy import cached_property
 
 import ballet.pipeline
 from ballet.transformer import RobustTransformer, make_robust_transformer
-from ballet.util.typing import OneOrMore, Pathy, TransformerLike
+from ballet.util.typing import OneOrMore, TransformerLike
 
 __all__ = ('Feature', )
 
@@ -34,7 +34,7 @@ class Feature:
         description: description of the feature
         output: ordered sequence of names of features
             produced by this transformer
-        source: the source file in which this feature was defined
+        source: the module in which this feature was defined
         options: options
     """
 
@@ -45,7 +45,7 @@ class Feature:
         name: Optional[str] = None,
         description: Optional[str] = None,
         output: OneOrMore[str] = None,
-        source: Pathy = None,
+        source: Optional[str] = None,
         options: dict = None
     ):
         self.input = input
@@ -84,3 +84,21 @@ class Feature:
     ) -> ballet.pipeline.FeatureEngineeringPipeline:
         """Return standalone FeatureEngineeringPipeline with this feature"""
         return ballet.pipeline.FeatureEngineeringPipeline(self)
+
+    @property
+    def author(self) -> Optional[str]:
+        """The author of this feature if it can be inferred from its source
+
+        The author can be inferred if the module the feature was defined in
+        follows the pattern
+        ``package.subpackage.user_username.feature_featurename``. Otherwise,
+        returns ``None``.
+        """
+        if self.source:
+            pieces = self.source.rsplit('.', maxsplit=2)
+            if len(pieces) >= 2:
+                user_str = pieces[-2]
+                if user_str.startswith('user_'):
+                    return user_str[len('user_'):]
+
+        return None

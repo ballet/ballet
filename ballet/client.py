@@ -5,6 +5,7 @@ from typing import Optional, Union
 import pandas as pd
 from funcy import cached_property
 
+from ballet.discovery import discover as _discover
 from ballet.feature import Feature
 from ballet.project import FeatureEngineeringProject, Project
 from ballet.validation.common import subsample_data_for_validation
@@ -95,6 +96,17 @@ class Client:
         return validate_feature_acceptance(
             accepter_class, feature, result.features, result.X_df,
             result.y_df, result.X_df, result.y, False)
+
+    def discover(self, input=None, primitive=None) -> pd.DataFrame:
+        features = self.api.features
+        X_df, y_df = self.api.load_data()
+        encoder = self.api.encoder
+        y = encoder.fit_transform(y_df)
+
+        return _discover(
+            features, X_df, y_df, y, input=input, primitive=primitive)
+
+    discover.__doc__ = _discover.__doc__
 
 
 b = Client()

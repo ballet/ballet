@@ -5,6 +5,8 @@ from typing import NamedTuple
 from unittest.mock import patch
 
 import git
+import numpy as np
+import pandas as pd
 import pytest
 import responses as _responses
 
@@ -97,3 +99,25 @@ def project_template_copy(tempdir):
 def responses():
     with _responses.RequestsMock() as rsps:
         yield rsps
+
+
+class SampleData(NamedTuple):
+    df: pd.DataFrame
+    X: pd.DataFrame
+    y: pd.DataFrame
+
+
+@pytest.fixture
+def sample_data():
+    df = pd.DataFrame(
+        data={
+            'country': ['USA', 'USA', 'Canada', 'Japan'],
+            'year': [2001, 2002, 2001, 2002],
+            'size': [np.nan, -11, 12, 0.0],
+            'strength': [18, 110, np.nan, 101],
+            'happy': [False, True, False, False]
+        }
+    ).set_index(['country', 'year'])
+    X = df[['size', 'strength']]
+    y = df[['happy']]
+    return SampleData(df, X, y)
