@@ -220,6 +220,7 @@
 <li class="toctree-l3"><a class="reference internal" href="ballet.client.html">ballet.client module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.compat.html">ballet.compat module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.contrib.html">ballet.contrib module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.discovery.html">ballet.discovery module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.exc.html">ballet.exc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.feature.html">ballet.feature module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.pipeline.html">ballet.pipeline module</a></li>
@@ -462,9 +463,26 @@ contained subobjects that are estimators.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ballet.transformer.get_transformer_primitives">
+<code class="sig-prename descclassname"><span class="pre">ballet.transformer.</span></code><code class="sig-name descname"><span class="pre">get_transformer_primitives</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transformer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/transformer.html#get_transformer_primitives"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.transformer.get_transformer_primitives" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the primitives used in this transformer or pipeline</p>
+<p>The primitives are just the class names underlying the transformer or
+pipeline.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ballet.transformer.make_robust_transformer">
 <code class="sig-prename descclassname"><span class="pre">ballet.transformer.</span></code><code class="sig-name descname"><span class="pre">make_robust_transformer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transformer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/transformer.html#make_robust_transformer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.transformer.make_robust_transformer" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Convert to robust transformer or pipeline</p>
+<p>Convert to either a single DelegatingRobustTransformer or a
+TransformerPipeline where each transformer in the pipeline is a
+DelegatingRobustTransformer.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TransformerPipeline</span></code>, <a class="reference internal" href="#ballet.transformer.DelegatingRobustTransformer" title="ballet.transformer.DelegatingRobustTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">DelegatingRobustTransformer</span></code></a>]</p>
 </dd>

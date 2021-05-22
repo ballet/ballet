@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>ballet.util &mdash; ballet 0.15.2 documentation</title>
+  <title>ballet.discovery &mdash; ballet 0.15.2 documentation</title>
   
 
   
@@ -344,7 +344,7 @@
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
-      <li>ballet.util</li>
+      <li>ballet.discovery</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -359,175 +359,140 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for ballet.util</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">redirect_stderr</span><span class="p">,</span> <span class="n">redirect_stdout</span><span class="p">,</span> <span class="n">suppress</span>
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
-<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">devnull</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TypeVar</span>
-
-<span class="kn">import</span> <span class="nn">cookiecutter.utils</span>
+  <h1>Source code for ballet.discovery</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">funcy</span> <span class="k">as</span> <span class="nn">fy</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">sklearn.datasets</span>
-<span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">complement</span><span class="p">,</span> <span class="n">decorator</span><span class="p">,</span> <span class="n">lfilter</span>
-<span class="kn">from</span> <span class="nn">funcy.decorators</span> <span class="kn">import</span> <span class="n">Call</span>
 
-<span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="kn">import</span> <span class="n">BalletWarning</span>
-<span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="kn">import</span> <span class="n">logger</span>
-
-<span class="n">RANDOM_STATE</span> <span class="o">=</span> <span class="mi">1754</span>
+<span class="kn">from</span> <span class="nn">ballet.transformer</span> <span class="kn">import</span> <span class="n">get_transformer_primitives</span>
+<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">asarray2d</span>
+<span class="kn">from</span> <span class="nn">ballet.validation.entropy</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">estimate_conditional_information</span><span class="p">,</span> <span class="n">estimate_mutual_information</span><span class="p">,)</span>
 
 
-<div class="viewcode-block" id="asarray2d"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.asarray2d">[docs]</a><span class="k">def</span> <span class="nf">asarray2d</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Cast to 2d array&quot;&quot;&quot;</span>
-    <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">arr</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">arr</span></div>
+<div class="viewcode-block" id="countunique"><a class="viewcode-back" href="../../api/ballet.discovery.html#ballet.discovery.countunique">[docs]</a><span class="k">def</span> <span class="nf">countunique</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">arr</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">arr</span><span class="p">)),</span> <span class="n">axis</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_arr_desc"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.get_arr_desc">[docs]</a><span class="k">def</span> <span class="nf">get_arr_desc</span><span class="p">(</span><span class="n">arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Get array description, in the form &#39;&lt;array type&gt; &lt;array shape&gt;&#39;&quot;&quot;&quot;</span>
-    <span class="n">type_</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>  <span class="c1"># see also __qualname__</span>
-    <span class="n">shape</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="s1">&#39;shape&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;no shape&gt;&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">type_</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span></div>
+<span class="nd">@fy</span><span class="o">.</span><span class="n">memoize</span><span class="p">(</span><span class="n">key_func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">feature</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">id</span><span class="p">(</span><span class="n">feature</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">_summarize_feature</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span>
 
-
-<div class="viewcode-block" id="indent"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.indent">[docs]</a><span class="k">def</span> <span class="nf">indent</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Indent each line of text by n spaces&quot;&quot;&quot;</span>
-    <span class="n">_indent</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="n">n</span>
-    <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_indent</span> <span class="o">+</span> <span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span></div>
-
-
-<div class="viewcode-block" id="make_plural_suffix"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.make_plural_suffix">[docs]</a><span class="k">def</span> <span class="nf">make_plural_suffix</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">suffix</span>
+    <span class="n">feature_values_list</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">feature_values</span>
+        <span class="k">for</span> <span class="n">other_feature</span><span class="p">,</span> <span class="n">feature_values</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">other_feature</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">feature</span>
+    <span class="p">]</span>
+    <span class="k">if</span> <span class="n">feature_values_list</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">feature_values_list</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s1">&#39;&#39;</span></div>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">))</span>
+
+    <span class="n">mutual_information</span> <span class="o">=</span> <span class="n">estimate_mutual_information</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">conditional_mutual_information</span> <span class="o">=</span> \
+        <span class="n">estimate_conditional_information</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">variance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">nunique</span> <span class="o">=</span> <span class="n">countunique</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">feature</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="n">feature</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+        <span class="s1">&#39;input&#39;</span><span class="p">:</span>
+            <span class="p">[</span><span class="n">feature</span><span class="o">.</span><span class="n">input</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+            <span class="k">else</span> <span class="n">feature</span><span class="o">.</span><span class="n">input</span><span class="p">,</span>
+        <span class="s1">&#39;transformer&#39;</span><span class="p">:</span> <span class="n">feature</span><span class="o">.</span><span class="n">transformer</span><span class="p">,</span>
+        <span class="s1">&#39;primitives&#39;</span><span class="p">:</span> <span class="n">get_transformer_primitives</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">transformer</span><span class="p">),</span>
+        <span class="s1">&#39;output&#39;</span><span class="p">:</span> <span class="n">feature</span><span class="o">.</span><span class="n">output</span><span class="p">,</span>
+        <span class="s1">&#39;author&#39;</span><span class="p">:</span> <span class="n">feature</span><span class="o">.</span><span class="n">author</span><span class="p">,</span>
+        <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">feature</span><span class="o">.</span><span class="n">source</span><span class="p">,</span>
+        <span class="s1">&#39;mutual_information&#39;</span><span class="p">:</span> <span class="n">mutual_information</span><span class="p">,</span>
+        <span class="s1">&#39;conditional_mutual_information&#39;</span><span class="p">:</span>
+            <span class="n">conditional_mutual_information</span><span class="p">,</span>
+        <span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mean</span><span class="p">),</span>  <span class="c1"># same as mean over flattened anyways</span>
+        <span class="s1">&#39;std&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">std</span><span class="p">),</span>
+        <span class="s1">&#39;variance&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">variance</span><span class="p">),</span>
+        <span class="s1">&#39;nunique&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">nunique</span><span class="p">),</span>
+    <span class="p">}</span>
 
 
-<div class="viewcode-block" id="has_nans"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.has_nans">[docs]</a><span class="k">def</span> <span class="nf">has_nans</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Check if obj has any NaNs</span>
+<div class="viewcode-block" id="discover"><a class="viewcode-back" href="../../api/ballet.discovery.html#ballet.discovery.discover">[docs]</a><span class="k">def</span> <span class="nf">discover</span><span class="p">(</span>
+    <span class="n">features</span><span class="p">,</span> <span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="nb">input</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">primitive</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Discover existing features</span>
 
-<span class="sd">    Compatible with different behavior of np.isnan, which sometimes applies</span>
-<span class="sd">    over all axes (py35+) and sometimes does not (py34).</span>
+<span class="sd">    Display information about existing features including summary statistics.</span>
+<span class="sd">    If the feature extracts multiple feature values, then the summary</span>
+<span class="sd">    statistics (e.g. mean, std, nunique) are computed for each feature value</span>
+<span class="sd">    and then averaged.</span>
+
+<span class="sd">    The following information is shown:</span>
+<span class="sd">    - name: the name of the feature</span>
+<span class="sd">    - description: the description of the feature</span>
+<span class="sd">    - input: the variables that are used as input to the feature</span>
+<span class="sd">    - transformer: the transformer/transformer pipeline</span>
+<span class="sd">    - output: the output columns of the feature (not usually specified)</span>
+<span class="sd">    - author: the GitHub username of the feature&#39;s author</span>
+<span class="sd">    - source: the fully-qualified name of the Python module that contains the</span>
+<span class="sd">        feature</span>
+<span class="sd">    - mutual_information: estimated mutual information between the feature (or</span>
+<span class="sd">        averaged over feature values) and the target on the development</span>
+<span class="sd">        dataset split</span>
+<span class="sd">    - conditional_mutual_information: estimated conditional mutual information</span>
+<span class="sd">        between the feature (or averaged over feature values) and the target</span>
+<span class="sd">        conditional on all other features on the development dataset split</span>
+<span class="sd">    - mean: mean of the feature on the development dataset split</span>
+<span class="sd">    - std: standard deviation of the feature (or averaged over feature values)</span>
+<span class="sd">        on the development dataset split</span>
+<span class="sd">    - var: variance of the feature (or averaged over feature values) on the</span>
+<span class="sd">        development dataset split</span>
+<span class="sd">    - nunique: number of unique values of the feature (or averaged over</span>
+<span class="sd">        feature values) on the development dataset split</span>
+
+<span class="sd">    The following query operators are supported:</span>
+<span class="sd">    - input (str): filter to only features that have ``input`` in their input/</span>
+<span class="sd">        list of inputs</span>
+<span class="sd">    - primitive (str): filter to only features that use primitive</span>
+<span class="sd">        ``primitive`` (i.e. a class with name ``primitive``) in the</span>
+<span class="sd">        transformer/transformer pipeline</span>
+
+<span class="sd">    For other queries, you should just use normal DataFrame indexing::</span>
+
+<span class="sd">       &gt;&gt;&gt; features_df[features_df[&#39;author&#39;] == &#39;jane&#39;]</span>
+<span class="sd">       &gt;&gt;&gt; features_df[features_df[&#39;name&#39;].str.contains(&#39;married&#39;)]</span>
+<span class="sd">       &gt;&gt;&gt; features_df[features_df[&#39;mutual_information&#39;] &gt; 0.05]</span>
+<span class="sd">       &gt;&gt;&gt; features_df[features_df[&#39;input&#39;].apply(</span>
+<span class="sd">               lambda input: &#39;A&#39; in input and &#39;B&#39; in input)]</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        data frame with features on the row index and columns as described</span>
+<span class="sd">        above</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">nans</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-    <span class="k">while</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">nans</span><span class="p">):</span>
-        <span class="n">nans</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">nans</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">nans</span><span class="p">)</span></div>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">records</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">feature</span><span class="p">:</span> <span class="n">asarray2d</span><span class="p">(</span>
+            <span class="n">feature</span>
+            <span class="o">.</span><span class="n">as_feature_engineering_pipeline</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">input</span> <span class="ow">and</span> <span class="nb">input</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">feature</span><span class="o">.</span><span class="n">input</span> <span class="ow">and</span> <span class="nb">input</span> <span class="o">!=</span> <span class="n">feature</span><span class="o">.</span><span class="n">input</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">primitive</span>
+            <span class="ow">and</span> <span class="n">primitive</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">get_transformer_primitives</span><span class="p">(</span>
+                <span class="n">feature</span><span class="o">.</span><span class="n">transformer</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="n">summary</span> <span class="o">=</span> <span class="n">_summarize_feature</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">records</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">summary</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="dfilter"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.dfilter">[docs]</a><span class="nd">@decorator</span>
-<span class="k">def</span> <span class="nf">dfilter</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">Call</span><span class="p">,</span> <span class="n">pred</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Decorate a callable with a filter that accepts a predicate</span>
-
-<span class="sd">    Example::</span>
-
-<span class="sd">        &gt;&gt;&gt; @dfilter(lambda x: x &gt;= 0)</span>
-<span class="sd">        ... def numbers():</span>
-<span class="sd">        ...     return [-1, 2, 0, -2]</span>
-<span class="sd">        [2, 0]</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">lfilter</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">call</span><span class="p">())</span></div>
-
-
-<div class="viewcode-block" id="load_sklearn_df"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.load_sklearn_df">[docs]</a><span class="k">def</span> <span class="nf">load_sklearn_df</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
-    <span class="n">method_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;load_</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
-    <span class="n">method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sklearn</span><span class="o">.</span><span class="n">datasets</span><span class="p">,</span> <span class="n">method_name</span><span class="p">)</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">method</span><span class="p">()</span>
-    <span class="n">X_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">feature_names</span><span class="p">)</span>
-    <span class="n">y_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;target&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span></div>
-
-
-<div class="viewcode-block" id="quiet"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.quiet">[docs]</a><span class="nd">@decorator</span>
-<span class="k">def</span> <span class="nf">quiet</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">Call</span><span class="p">):</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">devnull</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fnull</span><span class="p">:</span>
-        <span class="k">with</span> <span class="n">redirect_stderr</span><span class="p">(</span><span class="n">fnull</span><span class="p">),</span> <span class="n">redirect_stdout</span><span class="p">(</span><span class="n">fnull</span><span class="p">):</span>
-            <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">call</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="DeepcopyMixin"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.DeepcopyMixin">[docs]</a><span class="k">class</span> <span class="nc">DeepcopyMixin</span><span class="p">:</span>
-
-    <span class="k">def</span> <span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memo</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="bp">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
-        <span class="n">memo</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)]</span> <span class="o">=</span> <span class="n">result</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">memo</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">result</span></div>
-
-
-<span class="n">_T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;_T&#39;</span><span class="p">)</span>
-
-
-<div class="viewcode-block" id="one_or_raise"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.one_or_raise">[docs]</a><span class="k">def</span> <span class="nf">one_or_raise</span><span class="p">(</span><span class="n">seq</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">_T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">_T</span><span class="p">:</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">seq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Expected exactly 1 element, but got </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="warn"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.warn">[docs]</a><span class="k">def</span> <span class="nf">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Issue a warning message of category BalletWarning&quot;&quot;&quot;</span>
-    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">BalletWarning</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="raiseifnone"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.raiseifnone">[docs]</a><span class="nd">@decorator</span>
-<span class="k">def</span> <span class="nf">raiseifnone</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">Call</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Decorate a function to raise a ValueError if result is None&quot;&quot;&quot;</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">call</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">result</span></div>
-
-
-<div class="viewcode-block" id="falsy"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.falsy">[docs]</a><span class="k">def</span> <span class="nf">falsy</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Check whether o is falsy</span>
-
-<span class="sd">    In this case, a falsy value is one of the following:</span>
-<span class="sd">    1. the singleton value `False`</span>
-<span class="sd">    2. the string &#39;false&#39; (ignoring case)</span>
-<span class="sd">    3. the empty string</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-        <span class="k">return</span> <span class="ow">not</span> <span class="n">o</span>
-    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;false&#39;</span> <span class="ow">or</span> <span class="n">o</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">)</span></div>
-
-
-<span class="n">truthy</span> <span class="o">=</span> <span class="n">complement</span><span class="p">(</span><span class="n">falsy</span><span class="p">)</span>
-<span class="sd">&quot;&quot;&quot;Check whether o is truthy</span>
-
-<span class="sd">In this case, a truthy value is any value that is not falsy.</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-
-<div class="viewcode-block" id="nonnegative"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.nonnegative">[docs]</a><span class="nd">@decorator</span>
-<span class="k">def</span> <span class="nf">nonnegative</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">Call</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Warn if the function&#39;s return value is negative and set it to 0&quot;&quot;&quot;</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">call</span><span class="p">()</span>
-    <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">result</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="mf">0.0</span>
-            <span class="c1"># Format a nice log message</span>
-            <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">pieces</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">_func</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
-                    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">capitalize</span><span class="p">,</span> <span class="n">pieces</span><span class="p">))</span>
-                <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
-                    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Result&#39;</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> should be non-negative.&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">result</span></div>
-
-
-<span class="c1"># re-export cookiecutter work_in</span>
-<span class="n">work_in</span> <span class="o">=</span> <span class="n">cookiecutter</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">work_in</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">records</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

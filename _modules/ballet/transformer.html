@@ -218,6 +218,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.client.html">ballet.client module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.compat.html">ballet.compat module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.contrib.html">ballet.contrib module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.discovery.html">ballet.discovery module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.exc.html">ballet.exc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.feature.html">ballet.feature module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.pipeline.html">ballet.pipeline module</a></li>
@@ -386,6 +387,12 @@
 <div class="viewcode-block" id="make_robust_transformer"><a class="viewcode-back" href="../../api/ballet.transformer.html#ballet.transformer.make_robust_transformer">[docs]</a><span class="k">def</span> <span class="nf">make_robust_transformer</span><span class="p">(</span>
     <span class="n">transformer</span><span class="p">:</span> <span class="n">OneOrMore</span><span class="p">[</span><span class="n">TransformerLike</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RobustTransformer</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Convert to robust transformer or pipeline</span>
+
+<span class="sd">    Convert to either a single DelegatingRobustTransformer or a</span>
+<span class="sd">    TransformerPipeline where each transformer in the pipeline is a</span>
+<span class="sd">    DelegatingRobustTransformer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">is_seqcont</span><span class="p">(</span><span class="n">transformer</span><span class="p">):</span>
         <span class="n">transformer</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Collection</span><span class="p">[</span><span class="n">TransformerLike</span><span class="p">],</span> <span class="n">transformer</span><span class="p">)</span>
         <span class="n">transformers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
@@ -665,6 +672,24 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">transformer</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">,</span> <span class="n">transformer</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">transformer</span>
+
+
+<div class="viewcode-block" id="get_transformer_primitives"><a class="viewcode-back" href="../../api/ballet.transformer.html#ballet.transformer.get_transformer_primitives">[docs]</a><span class="k">def</span> <span class="nf">get_transformer_primitives</span><span class="p">(</span>
+    <span class="n">transformer</span><span class="p">:</span> <span class="n">TransformerLike</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Get the primitives used in this transformer or pipeline</span>
+
+<span class="sd">    The primitives are just the class names underlying the transformer or</span>
+<span class="sd">    pipeline.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">transformer</span><span class="p">,</span> <span class="n">DelegatingRobustTransformer</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">transformer</span><span class="o">.</span><span class="n">_tname</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_transformer</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">TransformerPipeline</span><span class="p">,</span> <span class="n">transformer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">_tname</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">_transformer</span><span class="o">.</span><span class="n">steps</span>
+        <span class="p">]</span></div>
 </pre></div>
 
            </div>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>ballet.pipeline module &mdash; ballet 0.15.2 documentation</title>
+  <title>ballet.discovery module &mdash; ballet 0.15.2 documentation</title>
   
 
   
@@ -38,8 +38,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="ballet.project module" href="ballet.project.html" />
-    <link rel="prev" title="ballet.feature module" href="ballet.feature.html" /> 
+    <link rel="next" title="ballet.exc module" href="ballet.exc.html" />
+    <link rel="prev" title="ballet.contrib module" href="ballet.contrib.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -220,10 +220,10 @@
 <li class="toctree-l3"><a class="reference internal" href="ballet.client.html">ballet.client module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.compat.html">ballet.compat module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.contrib.html">ballet.contrib module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ballet.discovery.html">ballet.discovery module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ballet.discovery module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.exc.html">ballet.exc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.feature.html">ballet.feature module</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">ballet.pipeline module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.pipeline.html">ballet.pipeline module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.project.html">ballet.project module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.templating.html">ballet.templating module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.transformer.html">ballet.transformer module</a></li>
@@ -346,14 +346,14 @@
         
           <li><a href="ballet.html">ballet package</a> &raquo;</li>
         
-      <li>ballet.pipeline module</li>
+      <li>ballet.discovery module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
             
-              <a href="https://github.com/ballet/ballet/blob/master/docs/api/ballet.pipeline.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/ballet/ballet/blob/master/docs/api/ballet.discovery.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -367,84 +367,90 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-ballet.pipeline">
-<span id="ballet-pipeline-module"></span><h1>ballet.pipeline module<a class="headerlink" href="#module-ballet.pipeline" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt id="ballet.pipeline.EngineerFeaturesResult">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.pipeline.</span></code><code class="sig-name descname"><span class="pre">EngineerFeaturesResult</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipeline</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/pipeline.html#EngineerFeaturesResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.pipeline.EngineerFeaturesResult" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
-<dl class="py attribute">
-<dt id="ballet.pipeline.EngineerFeaturesResult.X">
-<code class="sig-name descname"><span class="pre">X</span></code><em class="property"><span class="pre">:</span> <span class="pre">numpy.ndarray</span></em><a class="headerlink" href="#ballet.pipeline.EngineerFeaturesResult.X" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 3</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="ballet.pipeline.EngineerFeaturesResult.X_df">
-<code class="sig-name descname"><span class="pre">X_df</span></code><em class="property"><span class="pre">:</span> <span class="pre">pandas.core.frame.DataFrame</span></em><a class="headerlink" href="#ballet.pipeline.EngineerFeaturesResult.X_df" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 0</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="ballet.pipeline.EngineerFeaturesResult.encoder">
-<code class="sig-name descname"><span class="pre">encoder</span></code><em class="property"><span class="pre">:</span> <a class="reference internal" href="ballet.eng.base.html#ballet.eng.base.BaseTransformer" title="ballet.eng.base.BaseTransformer"><span class="pre">ballet.eng.base.BaseTransformer</span></a></em><a class="headerlink" href="#ballet.pipeline.EngineerFeaturesResult.encoder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 5</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="ballet.pipeline.EngineerFeaturesResult.features">
-<code class="sig-name descname"><span class="pre">features</span></code><em class="property"><span class="pre">:</span> <span class="pre">Collection</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="ballet.feature.html#ballet.feature.Feature" title="ballet.feature.Feature"><span class="pre">ballet.feature.Feature</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ballet.pipeline.EngineerFeaturesResult.features" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 1</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="ballet.pipeline.EngineerFeaturesResult.pipeline">
-<code class="sig-name descname"><span class="pre">pipeline</span></code><em class="property"><span class="pre">:</span> <a class="reference internal" href="#ballet.pipeline.FeatureEngineeringPipeline" title="ballet.pipeline.FeatureEngineeringPipeline"><span class="pre">ballet.pipeline.FeatureEngineeringPipeline</span></a></em><a class="headerlink" href="#ballet.pipeline.EngineerFeaturesResult.pipeline" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 2</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="ballet.pipeline.EngineerFeaturesResult.y">
-<code class="sig-name descname"><span class="pre">y</span></code><em class="property"><span class="pre">:</span> <span class="pre">numpy.ndarray</span></em><a class="headerlink" href="#ballet.pipeline.EngineerFeaturesResult.y" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 6</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="ballet.pipeline.EngineerFeaturesResult.y_df">
-<code class="sig-name descname"><span class="pre">y_df</span></code><em class="property"><span class="pre">:</span> <span class="pre">pandas.core.frame.DataFrame</span></em><a class="headerlink" href="#ballet.pipeline.EngineerFeaturesResult.y_df" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 4</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="ballet.pipeline.FeatureEngineeringPipeline">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.pipeline.</span></code><code class="sig-name descname"><span class="pre">FeatureEngineeringPipeline</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">features</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/pipeline.html#FeatureEngineeringPipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.pipeline.FeatureEngineeringPipeline" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn_pandas.dataframe_mapper.DataFrameMapper</span></code></p>
-<p>Feature engineering pipeline</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>features</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="ballet.feature.html#ballet.feature.Feature" title="ballet.feature.Feature"><code class="xref py py-class docutils literal notranslate"><span class="pre">Feature</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code>[<a class="reference internal" href="ballet.feature.html#ballet.feature.Feature" title="ballet.feature.Feature"><code class="xref py py-class docutils literal notranslate"><span class="pre">Feature</span></code></a>]]) – feature or list of features</p>
-</dd>
-</dl>
-<dl class="py method">
-<dt id="ballet.pipeline.FeatureEngineeringPipeline.ballet_features">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ballet_features</span></code><a class="headerlink" href="#ballet.pipeline.FeatureEngineeringPipeline.ballet_features" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code>[<a class="reference internal" href="ballet.feature.html#ballet.feature.Feature" title="ballet.feature.Feature"><code class="xref py py-class docutils literal notranslate"><span class="pre">Feature</span></code></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
+  <div class="section" id="module-ballet.discovery">
+<span id="ballet-discovery-module"></span><h1>ballet.discovery module<a class="headerlink" href="#module-ballet.discovery" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ballet.discovery.countunique">
+<code class="sig-prename descclassname"><span class="pre">ballet.discovery.</span></code><code class="sig-name descname"><span class="pre">countunique</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/discovery.html#countunique"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.discovery.countunique" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
-<dt id="ballet.pipeline.make_engineer_features">
-<code class="sig-prename descclassname"><span class="pre">ballet.pipeline.</span></code><code class="sig-name descname"><span class="pre">make_engineer_features</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/pipeline.html#make_engineer_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.pipeline.make_engineer_features" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dt id="ballet.discovery.discover">
+<code class="sig-prename descclassname"><span class="pre">ballet.discovery.</span></code><code class="sig-name descname"><span class="pre">discover</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primitive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/discovery.html#discover"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.discovery.discover" title="Permalink to this definition">¶</a></dt>
+<dd><p>Discover existing features</p>
+<p>Display information about existing features including summary statistics.
+If the feature extracts multiple feature values, then the summary
+statistics (e.g. mean, std, nunique) are computed for each feature value
+and then averaged.</p>
+<p>The following information is shown:
+- name: the name of the feature
+- description: the description of the feature
+- input: the variables that are used as input to the feature
+- transformer: the transformer/transformer pipeline
+- output: the output columns of the feature (not usually specified)
+- author: the GitHub username of the feature’s author
+- source: the fully-qualified name of the Python module that contains the</p>
+<blockquote>
+<div><p>feature</p>
+</div></blockquote>
+<ul class="simple">
+<li><dl class="simple">
+<dt>mutual_information: estimated mutual information between the feature (or</dt><dd><p>averaged over feature values) and the target on the development
+dataset split</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>conditional_mutual_information: estimated conditional mutual information</dt><dd><p>between the feature (or averaged over feature values) and the target
+conditional on all other features on the development dataset split</p>
+</dd>
+</dl>
+</li>
+<li><p>mean: mean of the feature on the development dataset split</p></li>
+<li><dl class="simple">
+<dt>std: standard deviation of the feature (or averaged over feature values)</dt><dd><p>on the development dataset split</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>var: variance of the feature (or averaged over feature values) on the</dt><dd><p>development dataset split</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>nunique: number of unique values of the feature (or averaged over</dt><dd><p>feature values) on the development dataset split</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>The following query operators are supported:
+- input (str): filter to only features that have <code class="docutils literal notranslate"><span class="pre">input</span></code> in their input/</p>
+<blockquote>
+<div><p>list of inputs</p>
+</div></blockquote>
+<ul class="simple">
+<li><dl class="simple">
+<dt>primitive (str): filter to only features that use primitive</dt><dd><p><code class="docutils literal notranslate"><span class="pre">primitive</span></code> (i.e. a class with name <code class="docutils literal notranslate"><span class="pre">primitive</span></code>) in the
+transformer/transformer pipeline</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>For other queries, you should just use normal DataFrame indexing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">features_df</span><span class="p">[</span><span class="n">features_df</span><span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;jane&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features_df</span><span class="p">[</span><span class="n">features_df</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;married&#39;</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features_df</span><span class="p">[</span><span class="n">features_df</span><span class="p">[</span><span class="s1">&#39;mutual_information&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.05</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features_df</span><span class="p">[</span><span class="n">features_df</span><span class="p">[</span><span class="s1">&#39;input&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+<span class="go">        lambda input: &#39;A&#39; in input and &#39;B&#39; in input)]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>], <a class="reference internal" href="#ballet.pipeline.EngineerFeaturesResult" title="ballet.pipeline.EngineerFeaturesResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">EngineerFeaturesResult</span></code></a>]</p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>data frame with features on the row index and columns as described
+above</p>
 </dd>
 </dl>
 </dd></dl>
@@ -457,8 +463,8 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="ballet.project.html" class="btn btn-neutral float-right" title="ballet.project module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="ballet.feature.html" class="btn btn-neutral float-left" title="ballet.feature module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ballet.exc.html" class="btn btn-neutral float-right" title="ballet.exc module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="ballet.contrib.html" class="btn btn-neutral float-left" title="ballet.contrib module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

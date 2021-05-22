@@ -218,6 +218,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.client.html">ballet.client module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.compat.html">ballet.compat module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.contrib.html">ballet.contrib module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.discovery.html">ballet.discovery module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.exc.html">ballet.exc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.feature.html">ballet.feature module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.pipeline.html">ballet.pipeline module</a></li>
@@ -366,7 +367,7 @@
 
 <span class="kn">import</span> <span class="nn">ballet.pipeline</span>
 <span class="kn">from</span> <span class="nn">ballet.transformer</span> <span class="kn">import</span> <span class="n">RobustTransformer</span><span class="p">,</span> <span class="n">make_robust_transformer</span>
-<span class="kn">from</span> <span class="nn">ballet.util.typing</span> <span class="kn">import</span> <span class="n">OneOrMore</span><span class="p">,</span> <span class="n">Pathy</span><span class="p">,</span> <span class="n">TransformerLike</span>
+<span class="kn">from</span> <span class="nn">ballet.util.typing</span> <span class="kn">import</span> <span class="n">OneOrMore</span><span class="p">,</span> <span class="n">TransformerLike</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Feature&#39;</span><span class="p">,</span> <span class="p">)</span>
 
@@ -395,7 +396,7 @@
 <span class="sd">        description: description of the feature</span>
 <span class="sd">        output: ordered sequence of names of features</span>
 <span class="sd">            produced by this transformer</span>
-<span class="sd">        source: the source file in which this feature was defined</span>
+<span class="sd">        source: the module in which this feature was defined</span>
 <span class="sd">        options: options</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -406,7 +407,7 @@
         <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">output</span><span class="p">:</span> <span class="n">OneOrMore</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">source</span><span class="p">:</span> <span class="n">Pathy</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">source</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">options</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="nb">input</span>
@@ -444,7 +445,25 @@
         <span class="bp">self</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ballet</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">FeatureEngineeringPipeline</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return standalone FeatureEngineeringPipeline with this feature&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ballet</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">FeatureEngineeringPipeline</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">ballet</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">FeatureEngineeringPipeline</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">author</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;The author of this feature if it can be inferred from its source</span>
+
+<span class="sd">        The author can be inferred if the module the feature was defined in</span>
+<span class="sd">        follows the pattern</span>
+<span class="sd">        ``package.subpackage.user_username.feature_featurename``. Otherwise,</span>
+<span class="sd">        returns ``None``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">:</span>
+            <span class="n">pieces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pieces</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">user_str</span> <span class="o">=</span> <span class="n">pieces</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">user_str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;user_&#39;</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">user_str</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="s1">&#39;user_&#39;</span><span class="p">):]</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
 </pre></div>
 
            </div>
