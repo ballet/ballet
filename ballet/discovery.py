@@ -119,7 +119,7 @@ def discover(
         for feature in features
     }
     for feature in features:
-        if input and (input not in feature.input or input != feature.input):
+        if input and input not in feature.input and input != feature.input:
             continue
         if (
             primitive
