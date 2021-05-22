@@ -1,5 +1,10 @@
 # History
 
+## 0.16.0 (2021-05-22)
+
+* Add `Client.discover` functionality ([#80](https://github.com/ballet/ballet/pull/80))
+* Switch the order of `NullFiller` parameters to more closely resemble `fillna` signature
+
 ## 0.15.2 (2021-05-14)
 
 * Operate columnwise in `VarianceThresholdAccepter`, rather than computing the variance of
