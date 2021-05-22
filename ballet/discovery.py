@@ -11,7 +11,7 @@ def countunique(z, axis=0):
         lambda arr: len(np.unique(arr)), axis, z)
 
 
-def discover(features, X_df, y_df, y) -> pd.DataFrame:
+def discover(features, X_df, y_df, y, query=None) -> pd.DataFrame:
     """Discover existing features
 
     Display information about existing features including summary statistics.
@@ -19,12 +19,31 @@ def discover(features, X_df, y_df, y) -> pd.DataFrame:
     statistics (e.g. mean, std, nunique) are computed for each feature value
     and then averaged.
 
+    The following information is shown:
+    - name: the name of the feature
+    - description: the description of the feature
+    - input: the variables that are used as input to the feature
+    - transformer: the transformer/transformer pipeline
+    - output: the output columns of the feature (not usually specified)
+    - author: the GitHub username of the feature's author
+    - source: the fully-qualified name of the Python module that contains the
+        feature
+    - mutual_information: estimated mutual information between the feature (or
+        averaged over feature values) and the target on the development
+        dataset split
+    - conditional_mutual_information: estimated conditional mutual information
+        between the feature (or averaged over feature values) and the target
+        conditional on all other features on the development dataset split
+    - mean: mean of the feature on the development dataset split
+    - std: standard deviation of the feature (or averaged over feature values)
+        on the development dataset split
+    - var: variance of the feature (or averaged over feature values) on the
+        development dataset split
+    - nunique: number of unique values of the feature (or averaged over
+        feature values) on the development dataset split
+
     Returns:
-        data frame with features on the row index and the following
-        columns: ``name``, ``description``, ``input``, ``transformer``,
-        ``output``, ``author``, ``source``, ``mutual_information``,
-        ``conditional_mutual_information``, ``mean``, ``std``, ``var``,
-        ``nunique``.
+        data frame with features on the row index and columns as described above
     """
     y = asarray2d(y)
     records = []
