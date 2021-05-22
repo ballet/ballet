@@ -7,7 +7,8 @@ import sklearn.preprocessing
 from ballet.compat import SimpleImputer
 from ballet.eng.misc import IdentityTransformer
 from ballet.transformer import (
-    DelegatingRobustTransformer, make_robust_transformer, get_transformer_primitives)
+    DelegatingRobustTransformer, get_transformer_primitives,
+    make_robust_transformer,)
 from ballet.util import asarray2d
 
 from .util import FragileTransformer, FragileTransformerPipeline

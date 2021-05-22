@@ -323,8 +323,8 @@ def get_transformer_primitives(
     if isinstance(transformer, DelegatingRobustTransformer):
         return [transformer._tname]
     else:
-        transformer = cast(TransformerPipeline, transformer)
+        _transformer = cast(TransformerPipeline, transformer)
         return [
             t._tname
-            for _, t in transformer.steps
+            for _, t in _transformer.steps
         ]
