@@ -97,13 +97,14 @@ class Client:
             accepter_class, feature, result.features, result.X_df,
             result.y_df, result.X_df, result.y, False)
 
-    def discover(self, **kwargs) -> pd.DataFrame:
+    def discover(self, input=None, primitive=None) -> pd.DataFrame:
         features = self.api.features
         X_df, y_df = self.api.load_data()
         encoder = self.api.encoder
         y = encoder.fit_transform(y_df)
 
-        return _discover(features, X_df, y_df, y)
+        return _discover(
+            features, X_df, y_df, y, input=input, primitive=primitive)
 
     discover.__doc__ = _discover.__doc__
 

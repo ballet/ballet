@@ -36,11 +36,20 @@ def test_discover(sample_data):
     df = discover(features, X_df, y_df, y)
 
     expected_cols = {
-        'name', 'description', 'input', 'transformer', 'output', 'author',
-        'source', 'mutual_information', 'conditional_mutual_information',
-        'mean', 'std', 'variance', 'nunique',
+        'name', 'description', 'input', 'transformer', 'primitives', 'output',
+        'author', 'source', 'mutual_information',
+        'conditional_mutual_information', 'mean', 'std', 'variance', 'nunique',
     }
     actual_cols = df.columns
     assert not expected_cols.symmetric_difference(actual_cols)
 
     assert df.shape[0] == len(features)
+
+    # test filter
+    input = 'size'
+    df = discover(features, X_df, y_df, y, input=input)
+    assert df.shape[0] == len([
+        feature
+        for feature in features
+        if feature.input == input or input in feature.input
+    ])
