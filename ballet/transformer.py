@@ -309,6 +309,7 @@ def _desugar_transformer(
     - `None` is replaced with an IdentityTransformer
     - a callable (function or lambda) is replaced with a FunctionTransformer
         that wraps that callable
+    - a tuple (input, transformer) is replaced with an inner feature
     """
     if transformer is None:
         return IdentityTransformer()
