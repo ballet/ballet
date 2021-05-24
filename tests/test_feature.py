@@ -70,3 +70,12 @@ def test_feature_as_feature_engineering_pipeline(inputs):
     feature = Feature(input, transformer)
     mapper = feature.as_feature_engineering_pipeline()
     assert isinstance(mapper, FeatureEngineeringPipeline)
+
+
+def test_feature_pipeline(inputs):
+    input, transformer = inputs
+    feature = Feature(input, transformer)
+    pipeline = feature.pipeline
+    assert isinstance(pipeline, FeatureEngineeringPipeline)
+    pipeline2 = feature.pipeline
+    assert pipeline is pipeline2
