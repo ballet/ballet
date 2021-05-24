@@ -330,12 +330,21 @@ class SubsetTransformer(DataFrameMapper):
 
     Args:
         input:
-        transformer
+        transformer:
+        alias:
     """
 
-    def __init__(self, input: OneOrMore[str], transformer: TransformerLike):
+    def __init__(self,
+                 input: OneOrMore[str],
+                 transformer: TransformerLike,
+                 alias: Optional[str] = None):
+        self.input = input
+        self.transformer = transformer
+        self.alias = alias
         super().__init__(
-            [(input, ballet.transformer.desugar_transformer(transformer))],
+            [(input,
+              ballet.transformer.desugar_transformer(transformer),
+              {'alias': alias})],
             default=None,
             input_df=True,
             df_out=True,
