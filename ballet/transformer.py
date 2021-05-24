@@ -96,7 +96,7 @@ class ConversionApproach(NamedTuple):
     convert: Callable
     caught: Collection[type]
 
-    isokay: Optional[Callable[[Exception], bool]] = None
+    isokay: Optional[Callable[[Exception], bool]] = lambda exc: False
     """Opportunity to catch other exceptions that match a condition"""
 
 
