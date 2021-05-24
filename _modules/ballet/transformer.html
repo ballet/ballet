@@ -376,7 +376,7 @@
 <span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">FunctionTransformer</span>
 <span class="kn">from</span> <span class="nn">sklearn_pandas.pipeline</span> <span class="kn">import</span> <span class="n">TransformerPipeline</span>
 
-<span class="kn">from</span> <span class="nn">ballet.eng</span> <span class="kn">import</span> <span class="n">BaseTransformer</span><span class="p">,</span> <span class="n">IdentityTransformer</span>
+<span class="kn">from</span> <span class="nn">ballet.eng</span> <span class="kn">import</span> <span class="n">BaseTransformer</span><span class="p">,</span> <span class="n">IdentityTransformer</span><span class="p">,</span> <span class="n">SubsetTransformer</span>
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="kn">import</span> <span class="n">UnsuccessfulInputConversionError</span>
 <span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">DeepcopyMixin</span><span class="p">,</span> <span class="n">asarray2d</span><span class="p">,</span> <span class="n">indent</span><span class="p">,</span> <span class="n">quiet</span>
 <span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="kn">import</span> <span class="n">TRACE</span><span class="p">,</span> <span class="n">logger</span>
@@ -397,13 +397,13 @@
     <span class="k">if</span> <span class="n">is_seqcont</span><span class="p">(</span><span class="n">transformer</span><span class="p">):</span>
         <span class="n">transformer</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Collection</span><span class="p">[</span><span class="n">TransformerLike</span><span class="p">],</span> <span class="n">transformer</span><span class="p">)</span>
         <span class="n">transformers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
-            <span class="nb">map</span><span class="p">(</span><span class="n">_replace_callable_or_none_with_transformer</span><span class="p">,</span> <span class="n">transformer</span><span class="p">))</span>
+            <span class="nb">map</span><span class="p">(</span><span class="n">desugar_transformer</span><span class="p">,</span> <span class="n">transformer</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">transformers</span><span class="p">:</span>
             <span class="n">_validate_transformer_api</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">make_robust_transformer_pipeline</span><span class="p">(</span><span class="n">transformers</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">transformer</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">TransformerLike</span><span class="p">,</span> <span class="n">transformer</span><span class="p">)</span>
-        <span class="n">transformer</span> <span class="o">=</span> <span class="n">_replace_callable_or_none_with_transformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
+        <span class="n">transformer</span> <span class="o">=</span> <span class="n">desugar_transformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
         <span class="n">_validate_transformer_api</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">DelegatingRobustTransformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span></div>
 
@@ -663,16 +663,26 @@
             <span class="sa">f</span><span class="s1">&#39;Invalid signature for transformer.transform: </span><span class="si">{</span><span class="n">sig_transform</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_replace_callable_or_none_with_transformer</span><span class="p">(</span>
+<div class="viewcode-block" id="desugar_transformer"><a class="viewcode-back" href="../../api/ballet.transformer.html#ballet.transformer.desugar_transformer">[docs]</a><span class="k">def</span> <span class="nf">desugar_transformer</span><span class="p">(</span>
     <span class="n">transformer</span><span class="p">:</span> <span class="n">TransformerLike</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseTransformer</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Replace transformer syntactic sugar with actual transformer</span>
+
+<span class="sd">    The following syntactic sugar is supported:</span>
+<span class="sd">    - `None` is replaced with an IdentityTransformer</span>
+<span class="sd">    - a callable (function or lambda) is replaced with a FunctionTransformer</span>
+<span class="sd">        that wraps that callable</span>
+<span class="sd">    - a tuple (input, transformer) is replaced with a SubsetTransformer</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">transformer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">IdentityTransformer</span><span class="p">()</span>
     <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">transformer</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">FunctionTransformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">transformer</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">SubsetTransformer</span><span class="p">(</span><span class="o">*</span><span class="n">transformer</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">transformer</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">BaseTransformer</span><span class="p">,</span> <span class="n">transformer</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">transformer</span>
+        <span class="k">return</span> <span class="n">transformer</span></div>
 
 
 <div class="viewcode-block" id="get_transformer_primitives"><a class="viewcode-back" href="../../api/ballet.transformer.html#ballet.transformer.get_transformer_primitives">[docs]</a><span class="k">def</span> <span class="nf">get_transformer_primitives</span><span class="p">(</span>

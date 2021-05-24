@@ -369,7 +369,7 @@
   <div class="section" id="feature-engineering-guide">
 <h1>Feature Engineering Guide<a class="headerlink" href="#feature-engineering-guide" title="Permalink to this headline">¶</a></h1>
 <p>Feature engineering is the process of transforming raw variables into
-feature values that can be input to a learning algorithm. We include every step that is needed to go from the raw dataset to the learning algorithm: cleaning missing values and outliers, scaling values, deriving complex features from multiple variables, reducing dimensionality, encoding categorical and ordinal variables, and more.</p>
+feature values that can be input to a learning algorithm. We consider in this process every step that is needed to go from the raw dataset to the learning algorithm: cleaning missing values and outliers, scaling values, deriving complex features from multiple variables, reducing dimensionality, encoding categorical and ordinal variables, and more.</p>
 <p>In Ballet, feature engineering is centered around creating feature definitions.
 These are modular, flexible, and expressive and will allow us to compose an
 entire feature engineering pipeline out of individual feature objects.</p>
@@ -387,22 +387,14 @@ columns and a transformer to apply on them.</p>
 </div>
 <div class="section" id="feature-definitions">
 <h2>Feature Definitions<a class="headerlink" href="#feature-definitions" title="Permalink to this headline">¶</a></h2>
-<p>A feature definition (or simply “feature”) is the semantics and implementation of code to extract feature values from raw data. It is a learned map from raw variables in one data instance to feature values.</p>
-<p>Less formally, a feature has</p>
-<ul class="simple">
-<li><p>a meaning, like “column 1 after it has been cleaned using information from column 2”</p></li>
-<li><p>a code representation, like a Python object that takes as input rows of raw data and produces as output rows of feature values. It also has a separate stage to <em>learn</em> import parameters from the rows of training data before it can be applied to the training data or to unseen test data.</p></li>
-</ul>
-<p>A feature can produce either</p>
-<ul class="simple">
-<li><p>a scalar feature value for each instance</p></li>
-<li><p>a vector of feature values, as in the case of the embedding of a categorical variable.</p></li>
-</ul>
-<p>Each feature is “parameterized” by a dataset, usually the training dataset, indicating that it learns any information it uses, such as variable means and variances. This formalizes the separation between training and testing data to avoid any “leakage” of information during the feature engineering process.</p>
+<p>A feature definition (or simply “feature”) is the code to extract feature values from raw data, paired with meta-information about the transformation.</p>
+<p>A feature can produce either a scalar feature value for each instance, or a vector of feature values (e.g. the embedding of a categorical variable).</p>
 <p>In Ballet, features are realized in Python as instances of <a class="reference internal" href="api/ballet.feature.html#ballet.feature.Feature" title="ballet.feature.Feature"><code class="xref py py-class docutils literal notranslate"><span class="pre">Feature</span></code></a> with the following attributes:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">input</span></code>: the input to the feature, in terms of columns of the raw dataset.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">transformer</span></code>: the transformation applied to the raw data. The transformer is an object (or sequence of objects) that provide (or each provide) a fit/transform interface.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">input</span></code>: the input columns to the feature from the raw dataset.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">transformer</span></code>: the transformation applied to the selected columns. The transformer is an object (or sequence of objects) that provide (or each provide) a fit/transform interface.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: the name of the feature.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">description</span></code>: a longer human-readable description of the feature.</p></li>
 </ul>
 <div class="section" id="why">
 <h3>Why?<a class="headerlink" href="#why" title="Permalink to this headline">¶</a></h3>
@@ -412,10 +404,10 @@ hoops to use <a class="reference internal" href="api/ballet.feature.html#ballet.
 <ol class="arabic simple">
 <li><p><em>Modularity.</em> Each feature stands alone and can be reasoned about,
 validated, and implemented separately.</p></li>
-<li><p><em>Avoid leakage.</em> By writing all features as learned transformations (with
+<li><p><em>Leakage.</em> By writing all features as learned transformations (with
 separate fit and transform stages) and enforcing a train-test split, we
 ensure that feature engineering code never sees test data before it applies
-transformations on new instances.</p></li>
+transformations on new instances, helping better estimate generalization performance.</p></li>
 <li><p><em>Clearly declare inputs and outputs.</em> Each feature declares its own inputs
 (and optionally outputs) and can operate on them only. Thus a feature can
 impute missing values in a single column, as opposed to the entire dataset,
@@ -553,7 +545,7 @@ and transform methods will be called receiving the one column as input.</p>
 <span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="n">transformer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The feature requests three inputs, which are various measures of square footage in the house (basement, first floor, and second floor). The combined transformer is a sequence of two “transformer-likes”. The first transformer in is a function that will receive as its input a DataFrame with three columns, and it sums across rows (<code class="docutils literal notranslate"><span class="pre">axis=1</span></code>), returning a single column with the total square footage. The second transformer is a utility object that replaces missing values. In this case, neither transformer learns anything from data (i.e. it does not need to save parameters learned from the training data) so both can be simple functions. Here, the first function is implicitly converted into a <code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionTransformer</span></code> and the second transformer is already a thin wrapper around <code class="docutils literal notranslate"><span class="pre">pd.fillna</span></code>.</p>
+<p>The feature requests three inputs, which are various measures of square footage in the house (basement, first floor, and second floor – not shown in the sample dataset). The combined transformer is a sequence of two “transformer-like” steps. The first transformer step is a function that will receive as its input a DataFrame with three columns, and it sums across rows (<code class="docutils literal notranslate"><span class="pre">axis=1</span></code>), returning a single column with the total square footage. The second transformer step is a utility object that replaces missing values. In this case, neither transformer learns anything from data (i.e. it does not need to save parameters learned from the training data) so both can be simple functions. Here, the first function is implicitly converted into a <code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionTransformer</span></code> and the second transformer is already a thin wrapper around <code class="docutils literal notranslate"><span class="pre">pd.fillna</span></code>.</p>
 <p>In this feature, the sum is equivalent to a weighted sum with the weights all equal to 1. But maybe you have the intuition that not all living area is created equal? You might apply custom weights as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Total Bsmt SF&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;1st Flr SF&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;2nd Flr SF&quot;</span><span class="p">]</span>
 </pre></div>
@@ -600,6 +592,8 @@ data.</p>
 <li><p>an object that satisfies the scikit-learn <a class="reference external" href="https://scikit-learn.org/stable/glossary.html#term-transformer">Transformer API</a>, having <code class="docutils literal notranslate"><span class="pre">fit</span></code>, <code class="docutils literal notranslate"><span class="pre">transform</span></code>, and <code class="docutils literal notranslate"><span class="pre">fit_transform</span></code> methods.</p></li>
 <li><p>a callable that accepts the <code class="docutils literal notranslate"><span class="pre">X</span></code> DataFrame as input and produces an array-like as output. This can be thought of as a transformer that does not have a fit stage. Ballet will take care of converting it into a <code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionTransformer</span></code> object.</p></li>
 <li><p>the value <code class="docutils literal notranslate"><span class="pre">None</span></code>, shorthand to indicate the identity transformer. Ballet will convert it into a <a class="reference internal" href="api/ballet.eng.html#ballet.eng.IdentityTransformer" title="ballet.eng.IdentityTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">IdentityTransformer</span></code></a> object.</p></li>
+<li><p>a tuple of <code class="docutils literal notranslate"><span class="pre">(input,</span> <span class="pre">transformer)</span></code>. This allows nested transformations that operate on only a subset of the inputs that your feature is already working on. Both elements of the tuple are interpreted the same as if they were passed to the <a class="reference internal" href="api/ballet.feature.html#ballet.feature.Feature" title="ballet.feature.Feature"><code class="xref py py-class docutils literal notranslate"><span class="pre">Feature</span></code></a> constructor. Internally, they will be converted to a <a class="reference internal" href="api/ballet.eng.base.html#ballet.eng.base.SubsetTransformer" title="ballet.eng.base.SubsetTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SubsetTransformer</span></code></a>, which you can also use directly.</p></li>
+<li><p>another feature instance itself! This is another way to nest transformations. You can import a feature from another module and use it within your own transformer.</p></li>
 </ul>
 </div>
 <div class="section" id="feature-engineering-pipelines">

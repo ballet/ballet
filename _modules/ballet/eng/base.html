@@ -370,7 +370,9 @@
 <span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="kn">import</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span>
 <span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">FunctionTransformer</span>
 <span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="kn">import</span> <span class="n">check_is_fitted</span>
+<span class="kn">from</span> <span class="nn">sklearn_pandas</span> <span class="kn">import</span> <span class="n">DataFrameMapper</span>
 
+<span class="kn">import</span> <span class="nn">ballet.transformer</span>  <span class="c1"># avoid circular import</span>
 <span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="kn">import</span> <span class="n">BalletError</span>
 <span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">get_arr_desc</span>
 <span class="kn">from</span> <span class="nn">ballet.util.typing</span> <span class="kn">import</span> <span class="n">OneOrMore</span><span class="p">,</span> <span class="n">TransformerLike</span>
@@ -382,6 +384,7 @@
     <span class="s1">&#39;GroupwiseTransformer&#39;</span><span class="p">,</span>
     <span class="s1">&#39;NoFitMixin&#39;</span><span class="p">,</span>
     <span class="s1">&#39;SimpleFunctionTransformer&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;SubsetTransformer&#39;</span><span class="p">,</span>
 <span class="p">)</span>
 
 
@@ -683,6 +686,32 @@
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s1">&#39;Couldn</span><span class="se">\&#39;</span><span class="s1">t apply transformer on features in &#39;</span>
                 <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">get_arr_desc</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="SubsetTransformer"><a class="viewcode-back" href="../../../api/ballet.eng.base.html#ballet.eng.SubsetTransformer">[docs]</a><span class="k">class</span> <span class="nc">SubsetTransformer</span><span class="p">(</span><span class="n">DataFrameMapper</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Transform a subset of columns with another transformer</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        input:</span>
+<span class="sd">        transformer:</span>
+<span class="sd">        alias:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="nb">input</span><span class="p">:</span> <span class="n">OneOrMore</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                 <span class="n">transformer</span><span class="p">:</span> <span class="n">TransformerLike</span><span class="p">,</span>
+                 <span class="n">alias</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="nb">input</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span> <span class="o">=</span> <span class="n">transformer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alias</span> <span class="o">=</span> <span class="n">alias</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="p">[(</span><span class="nb">input</span><span class="p">,</span>
+              <span class="n">ballet</span><span class="o">.</span><span class="n">transformer</span><span class="o">.</span><span class="n">desugar_transformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">),</span>
+              <span class="p">{</span><span class="s1">&#39;alias&#39;</span><span class="p">:</span> <span class="n">alias</span><span class="p">})],</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">input_df</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">df_out</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span></div>
 </pre></div>
 
            </div>
