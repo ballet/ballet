@@ -13,7 +13,7 @@ from sklearn.base import BaseEstimator
 from sklearn.preprocessing import FunctionTransformer
 from sklearn_pandas.pipeline import TransformerPipeline
 
-from ballet.eng import BaseTransformer, IdentityTransformer
+from ballet.eng import BaseTransformer, IdentityTransformer, SubsetTransformer
 from ballet.exc import UnsuccessfulInputConversionError
 from ballet.util import DeepcopyMixin, asarray2d, indent, quiet
 from ballet.util.log import TRACE, logger
@@ -309,12 +309,14 @@ def desugar_transformer(
     - `None` is replaced with an IdentityTransformer
     - a callable (function or lambda) is replaced with a FunctionTransformer
         that wraps that callable
-    - a tuple (input, transformer) is replaced with an inner feature
+    - a tuple (input, transformer) is replaced with a SubsetTransformer
     """
     if transformer is None:
         return IdentityTransformer()
     elif callable(transformer) and not isinstance(transformer, type):
         return FunctionTransformer(transformer)
+    elif isinstance(transformer, tuple):
+        return SubsetTransformer(*transformer)
     else:
         transformer = cast(BaseTransformer, transformer)
         return transformer
