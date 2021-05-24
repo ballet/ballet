@@ -7,7 +7,9 @@ import sklearn.base
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import FunctionTransformer
 from sklearn.utils.validation import check_is_fitted
+from sklearn_pandas import DataFrameMapper
 
+import ballet.transformer  # avoid circular import
 from ballet.exc import BalletError
 from ballet.util import get_arr_desc
 from ballet.util.typing import OneOrMore, TransformerLike
@@ -19,6 +21,7 @@ __all__ = (
     'GroupwiseTransformer',
     'NoFitMixin',
     'SimpleFunctionTransformer',
+    'SubsetTransformer',
 )
 
 
@@ -320,3 +323,20 @@ class ConditionalTransformer(BaseTransformer):
             raise TypeError(
                 f'Couldn\'t apply transformer on features in '
                 f'{get_arr_desc(X)}.')
+
+
+class SubsetTransformer(DataFrameMapper):
+    """Transform a subset of columns with another transformer
+
+    Args:
+        input:
+        transformer
+    """
+
+    def __init__(self, input: OneOrMore[str], transformer: TransformerLike):
+        super().__init__(
+            [(input, ballet.transformer.desugar_transformer(transformer))],
+            default=None,
+            input_df=True,
+            df_out=True,
+        )
