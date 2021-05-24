@@ -34,13 +34,13 @@ def make_robust_transformer(
     if is_seqcont(transformer):
         transformer = cast(Collection[TransformerLike], transformer)
         transformers = list(
-            map(_replace_callable_or_none_with_transformer, transformer))
+            map(_desugar_transformer, transformer))
         for t in transformers:
             _validate_transformer_api(t)
         return make_robust_transformer_pipeline(transformers)
     else:
         transformer = cast(TransformerLike, transformer)
-        transformer = _replace_callable_or_none_with_transformer(transformer)
+        transformer = _desugar_transformer(transformer)
         _validate_transformer_api(transformer)
         return DelegatingRobustTransformer(transformer)
 
@@ -300,9 +300,16 @@ def _validate_transformer_api(transformer: BaseTransformer):
             f'Invalid signature for transformer.transform: {sig_transform}')
 
 
-def _replace_callable_or_none_with_transformer(
+def _desugar_transformer(
     transformer: TransformerLike,
 ) -> BaseTransformer:
+    """Replace transformer syntactic sugar with actual transformer
+
+    The following syntactic sugar is supported:
+    - `None` is replaced with an IdentityTransformer
+    - a callable (function or lambda) is replaced with a FunctionTransformer
+        that wraps that callable
+    """
     if transformer is None:
         return IdentityTransformer()
     elif callable(transformer) and not isinstance(transformer, type):
