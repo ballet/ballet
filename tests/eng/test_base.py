@@ -305,3 +305,34 @@ def test_conditional_transformer_unsatisfy_transform(sample_data):
     # value is transformed by unsatisfy condition and is not equal
     assert_series_not_equal(result_tr['value'], X_tr['value'])
     assert_series_not_equal(result_te['value'], X_te['value'])
+
+
+def test_subset_transformer_identity(sample_data):
+    """After passing through a column unchanged, the entire df is the same as before"""  # noqa
+    X_tr, X_te = sample_data
+
+    t = ballet.eng.SubsetTransformer('value', None)
+    result_tr = t.fit_transform(X_tr)
+    result_te = t.transform(X_te)
+
+    assert_frame_equal(result_tr, X_tr)
+    assert_frame_equal(result_te, X_te)
+
+
+def test_subset_transformer_mutate(sample_data):
+    """After modifying one column, that column is different and the complement is the same"""  # noqa
+    X_tr, X_te = sample_data
+
+    input = 'size'
+    t = ballet.eng.SubsetTransformer(input, lambda x: x+1)
+    result_tr = t.fit_transform(X_tr)
+    result_te = t.transform(X_te)
+
+    # the input col is modified
+    assert_series_not_equal(result_tr[input], X_tr[input])
+    assert_series_not_equal(result_te[input], X_te[input])
+
+    # the complement is passed through unchanged
+    complement = [col for col in X_tr.columns if col != input]
+    assert_frame_equal(result_tr[complement], X_tr[complement])
+    assert_frame_equal(result_te[complement], X_te[complement])

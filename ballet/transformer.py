@@ -13,7 +13,7 @@ from sklearn.base import BaseEstimator
 from sklearn.preprocessing import FunctionTransformer
 from sklearn_pandas.pipeline import TransformerPipeline
 
-from ballet.eng import BaseTransformer, IdentityTransformer
+from ballet.eng import BaseTransformer, IdentityTransformer, SubsetTransformer
 from ballet.exc import UnsuccessfulInputConversionError
 from ballet.util import DeepcopyMixin, asarray2d, indent, quiet
 from ballet.util.log import TRACE, logger
@@ -34,13 +34,13 @@ def make_robust_transformer(
     if is_seqcont(transformer):
         transformer = cast(Collection[TransformerLike], transformer)
         transformers = list(
-            map(_replace_callable_or_none_with_transformer, transformer))
+            map(desugar_transformer, transformer))
         for t in transformers:
             _validate_transformer_api(t)
         return make_robust_transformer_pipeline(transformers)
     else:
         transformer = cast(TransformerLike, transformer)
-        transformer = _replace_callable_or_none_with_transformer(transformer)
+        transformer = desugar_transformer(transformer)
         _validate_transformer_api(transformer)
         return DelegatingRobustTransformer(transformer)
 
@@ -300,13 +300,23 @@ def _validate_transformer_api(transformer: BaseTransformer):
             f'Invalid signature for transformer.transform: {sig_transform}')
 
 
-def _replace_callable_or_none_with_transformer(
+def desugar_transformer(
     transformer: TransformerLike,
 ) -> BaseTransformer:
+    """Replace transformer syntactic sugar with actual transformer
+
+    The following syntactic sugar is supported:
+    - `None` is replaced with an IdentityTransformer
+    - a callable (function or lambda) is replaced with a FunctionTransformer
+        that wraps that callable
+    - a tuple (input, transformer) is replaced with a SubsetTransformer
+    """
     if transformer is None:
         return IdentityTransformer()
     elif callable(transformer) and not isinstance(transformer, type):
         return FunctionTransformer(transformer)
+    elif isinstance(transformer, tuple):
+        return SubsetTransformer(*transformer)
     else:
         transformer = cast(BaseTransformer, transformer)
         return transformer

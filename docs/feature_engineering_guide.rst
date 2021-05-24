@@ -3,7 +3,7 @@ Feature Engineering Guide
 =========================
 
 Feature engineering is the process of transforming raw variables into
-feature values that can be input to a learning algorithm. We include every step that is needed to go from the raw dataset to the learning algorithm: cleaning missing values and outliers, scaling values, deriving complex features from multiple variables, reducing dimensionality, encoding categorical and ordinal variables, and more.
+feature values that can be input to a learning algorithm. We consider in this process every step that is needed to go from the raw dataset to the learning algorithm: cleaning missing values and outliers, scaling values, deriving complex features from multiple variables, reducing dimensionality, encoding categorical and ordinal variables, and more.
 
 In Ballet, feature engineering is centered around creating feature definitions.
 These are modular, flexible, and expressive and will allow us to compose an
@@ -24,24 +24,18 @@ columns and a transformer to apply on them.
 Feature Definitions
 -------------------
 
-A feature definition (or simply "feature") is the semantics and implementation of code to extract feature values from raw data. It is a learned map from raw variables in one data instance to feature values.
+A feature definition (or simply "feature") is the code to extract feature values from raw data, paired with meta-information about the transformation.
 
-Less formally, a feature has
+A feature can produce either a scalar feature value for each instance, or a vector of feature values (e.g. the embedding of a categorical variable).
 
-- a meaning, like "column 1 after it has been cleaned using information from column 2"
-- a code representation, like a Python object that takes as input rows of raw data and produces as output rows of feature values. It also has a separate stage to *learn* import parameters from the rows of training data before it can be applied to the training data or to unseen test data.
-
-A feature can produce either
-
-- a scalar feature value for each instance
-- a vector of feature values, as in the case of the embedding of a categorical variable.
-
-Each feature is "parameterized" by a dataset, usually the training dataset, indicating that it learns any information it uses, such as variable means and variances. This formalizes the separation between training and testing data to avoid any "leakage" of information during the feature engineering process.
+.. Each feature is "parameterized" by a dataset, usually the training dataset, indicating that it learns any information it uses, such as variable means and variances. This formalizes the separation between training and testing data to avoid any "leakage" of information during the feature engineering process.
 
 In Ballet, features are realized in Python as instances of :py:class:`~ballet.feature.Feature` with the following attributes:
 
-- ``input``: the input to the feature, in terms of columns of the raw dataset.
-- ``transformer``: the transformation applied to the raw data. The transformer is an object (or sequence of objects) that provide (or each provide) a fit/transform interface.
+- ``input``: the input columns to the feature from the raw dataset.
+- ``transformer``: the transformation applied to the selected columns. The transformer is an object (or sequence of objects) that provide (or each provide) a fit/transform interface.
+- ``name``: the name of the feature.
+- ``description``: a longer human-readable description of the feature.
 
 Why?
 ^^^^
@@ -53,10 +47,10 @@ hoops to use :py:class:`~ballet.feature.Feature` objects?
 #. *Modularity.* Each feature stands alone and can be reasoned about,
    validated, and implemented separately.
 
-#. *Avoid leakage.* By writing all features as learned transformations (with
+#. *Leakage.* By writing all features as learned transformations (with
    separate fit and transform stages) and enforcing a train-test split, we
    ensure that feature engineering code never sees test data before it applies
-   transformations on new instances.
+   transformations on new instances, helping better estimate generalization performance.
 
 #. *Clearly declare inputs and outputs.* Each feature declares its own inputs
    (and optionally outputs) and can operate on them only. Thus a feature can
@@ -147,7 +141,7 @@ Let's took a look at another example.
 .. include:: fragments/feature-engineering-guide-third-feature.py
    :code: python
 
-The feature requests three inputs, which are various measures of square footage in the house (basement, first floor, and second floor). The combined transformer is a sequence of two "transformer-likes". The first transformer in is a function that will receive as its input a DataFrame with three columns, and it sums across rows (``axis=1``), returning a single column with the total square footage. The second transformer is a utility object that replaces missing values. In this case, neither transformer learns anything from data (i.e. it does not need to save parameters learned from the training data) so both can be simple functions. Here, the first function is implicitly converted into a :py:class:`~ballet.eng.sklearn.FunctionTransformer` and the second transformer is already a thin wrapper around ``pd.fillna``.
+The feature requests three inputs, which are various measures of square footage in the house (basement, first floor, and second floor -- not shown in the sample dataset). The combined transformer is a sequence of two "transformer-like" steps. The first transformer step is a function that will receive as its input a DataFrame with three columns, and it sums across rows (``axis=1``), returning a single column with the total square footage. The second transformer step is a utility object that replaces missing values. In this case, neither transformer learns anything from data (i.e. it does not need to save parameters learned from the training data) so both can be simple functions. Here, the first function is implicitly converted into a :py:class:`~ballet.eng.sklearn.FunctionTransformer` and the second transformer is already a thin wrapper around ``pd.fillna``.
 
 In this feature, the sum is equivalent to a weighted sum with the weights all equal to 1. But maybe you have the intuition that not all living area is created equal? You might apply custom weights as follows:
 
@@ -192,6 +186,8 @@ A *transformer-like* is any of the following:
 - an object that satisfies the scikit-learn `Transformer API`_, having ``fit``, ``transform``, and ``fit_transform`` methods.
 - a callable that accepts the ``X`` DataFrame as input and produces an array-like as output. This can be thought of as a transformer that does not have a fit stage. Ballet will take care of converting it into a :py:class:`~ballet.eng.sklearn.FunctionTransformer` object.
 - the value ``None``, shorthand to indicate the identity transformer. Ballet will convert it into a :py:class:`~ballet.eng.IdentityTransformer` object.
+- a tuple of ``(input, transformer)``. This allows nested transformations that operate on only a subset of the inputs that your feature is already working on. Both elements of the tuple are interpreted the same as if they were passed to the :py:class:`~ballet.feature.Feature` constructor. Internally, they will be converted to a :py:class:`~ballet.eng.base.SubsetTransformer`, which you can also use directly.
+- another feature instance itself! This is another way to nest transformations. You can import a feature from another module and use it within your own transformer.
 
 Feature engineering pipelines
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -7,22 +7,30 @@ from ballet.feature import Feature
 from ballet.pipeline import FeatureEngineeringPipeline
 
 
-@pytest.fixture
-def inputs():
-    input = 'foo'
-    transformer = IdentityTransformer()
+@pytest.fixture(
+    params=[
+        IdentityTransformer(),
+        [IdentityTransformer()],
+        [None, IdentityTransformer(), lambda x: x],
+        Feature(['foo', 'bar'], IdentityTransformer()),
+        [None, IdentityTransformer(),
+            Feature(['foo', 'bar'], IdentityTransformer())],
+    ],
+    ids=[
+        'scalar',
+        'list of transformer',
+        'list of mixed',
+        'nested feature',
+        'list of mixed and nested features',
+    ]
+)
+def inputs(request):
+    input = ['foo', 'bar']
+    transformer = request.param
     return input, transformer
 
 
-def test_init_seqcont(inputs):
-    input, transformer = inputs
-    feature = Feature(input, transformer)
-    features = [feature]
-    mapper = FeatureEngineeringPipeline(features)
-    assert isinstance(mapper, FeatureEngineeringPipeline)
-
-
-def test_init_scalar(inputs):
+def test_init(inputs):
     input, transformer = inputs
     feature = Feature(input, transformer)
     mapper = FeatureEngineeringPipeline(feature)
@@ -46,4 +54,4 @@ def test_transform(inputs):
     df.columns = ['foo', 'bar']
     mapper.fit(df)
     X = mapper.transform(df)
-    assert np.shape(X) == (5, 1)
+    assert np.shape(X) == (5, len(inputs))

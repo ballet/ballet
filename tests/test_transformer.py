@@ -3,9 +3,11 @@ import numpy as np
 import pandas as pd
 import pytest
 import sklearn.preprocessing
+from sklearn_pandas.pipeline import TransformerPipeline
 
 from ballet.compat import SimpleImputer
 from ballet.eng.misc import IdentityTransformer
+from ballet.feature import Feature
 from ballet.transformer import (
     DelegatingRobustTransformer, get_transformer_primitives,
     make_robust_transformer,)
@@ -140,3 +142,17 @@ def test_get_transformer_primitives(transformer, expected):
     robust_transformer = make_robust_transformer(transformer)
     primitives = get_transformer_primitives(robust_transformer)
     assert primitives == expected
+
+
+def test_robust_transformer_desugar():
+    """Should be able to "desugar" multiple things into a valid transformer pipeline"""  # noqa
+    transformer = [
+        None,
+        IdentityTransformer(),
+        lambda x: x,
+        Feature('A', IdentityTransformer()),
+        ('A', IdentityTransformer()),
+        ('A', [None, IdentityTransformer()]),
+    ]
+    robust_transformer = make_robust_transformer(transformer)
+    assert isinstance(robust_transformer, TransformerPipeline)
