@@ -102,3 +102,25 @@ class Feature:
                     return user_str[len('user_'):]
 
         return None
+
+    _pipeline = None
+
+    @property
+    def pipeline(self) -> ballet.pipeline.FeatureEngineeringPipeline:
+        """A feature engineering pipeline containing just this feature"""
+        if self._pipeline is None:
+            self._pipeline = self.as_feature_engineering_pipeline()
+
+        return self._pipeline
+
+    def fit(self, X, y=None):
+        """Fit feature.pipeline"""
+        return self.pipeline.fit(X, y=y)
+
+    def transform(self, X):
+        """Transform data using feature.pipeline"""
+        return self.pipeline.transform(X)
+
+    def fit_transform(self, X, y=None):
+        """Fit feature.pipeline and then transform data"""
+        return self.fit(X, y=y).transform(X)
