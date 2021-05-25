@@ -1,5 +1,10 @@
 # History
 
+## 0.17.0 (2021-05-24)
+
+* Support nested transformers, both with nested features and with input/transformer tuples wrapped with SubsetTransformers ([#82](https://github.com/ballet/ballet/pull/82))
+* Allow `Client.discover` to skip summary statistics if development dataset cannot be loaded or if features produce errors
+
 ## 0.16.0 (2021-05-22)
 
 * Add `Client.discover` functionality ([#80](https://github.com/ballet/ballet/pull/80))
