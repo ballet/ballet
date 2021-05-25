@@ -2,7 +2,7 @@ import pathlib
 import random
 import subprocess
 
-from funcy import any_fn, ignore, merge
+import funcy as fy
 from sklearn_pandas.pipeline import TransformerPipeline
 
 from ballet.eng.base import BaseTransformer
@@ -15,13 +15,17 @@ EPSILON = 1e-4
 
 class FragileTransformer(BaseTransformer):
 
-    def __init__(self, bad_input_checks=None, errors=None):
+    def __init__(
+        self,
+        bad_input_checks=(fy.constantly(True), ),
+        errors=tuple(Exception.__subclasses__()),
+    ):
         """Raises a random error if any input check returns True"""
         self.bad_input_checks = bad_input_checks
         self.errors = errors
 
-        self._check = any_fn(*self.bad_input_checks)
-        seed = hash(merge(self.bad_input_checks, self.errors))
+        self._check = fy.any_fn(*self.bad_input_checks)
+        seed = hash(fy.merge(self.bad_input_checks, self.errors))
         self._random = random.Random(seed)
 
     def _raise(self):
@@ -103,7 +107,7 @@ def set_ci_git_config_variables(repo, name='Foo Bar', email='foo@bar.com'):
     })
 
 
-@ignore((FileNotFoundError, subprocess.CalledProcessError))
+@fy.ignore((FileNotFoundError, subprocess.CalledProcessError))
 def tree(dir):
     cmd = ['tree', '-A', '-n', '--charset', 'ASCII', str(dir)]
     logger.debug(f'Popen({cmd!r})')
