@@ -1,6 +1,7 @@
 import numpy as np
 import pytest
 
+import ballet.discovery
 from ballet.discovery import countunique, discover
 from ballet.eng import NullFiller
 from ballet.feature import Feature
@@ -53,3 +54,12 @@ def test_discover(sample_data):
         for feature in features
         if feature.input == input or input in feature.input
     ])
+
+    # test no data available
+    # have to clear cache, as values on data already known
+    ballet.discovery._summarize_feature.memory.clear()
+    df = discover(features, None, None, None)
+    assert df.shape[0] == len(features)
+    actual_cols = df.columns
+    assert not expected_cols.symmetric_difference(actual_cols)
+    assert np.isnan(df['mean'].at[0])

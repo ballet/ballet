@@ -99,9 +99,14 @@ class Client:
 
     def discover(self, input=None, primitive=None) -> pd.DataFrame:
         features = self.api.features
-        X_df, y_df = self.api.load_data()
         encoder = self.api.encoder
-        y = encoder.fit_transform(y_df)
+
+        # recover if we can't load data
+        try:
+            X_df, y_df = self.api.load_data()
+            y = encoder.fit_transform(y_df)
+        except Exception:
+            X_df = y_df = y = None
 
         return _discover(
             features, X_df, y_df, y, input=input, primitive=primitive)

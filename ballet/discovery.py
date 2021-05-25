@@ -1,40 +1,28 @@
+from typing import Dict, List, Optional
+
 import funcy as fy
 import numpy as np
 import pandas as pd
 
+import ballet
 from ballet.transformer import get_transformer_primitives
 from ballet.util import asarray2d
 from ballet.validation.entropy import (
     estimate_conditional_information, estimate_mutual_information,)
 
 
-def countunique(z, axis=0):
+def countunique(z: np.ndarray, axis=0):
     return np.apply_along_axis(
         lambda arr: len(np.unique(arr)), axis, z)
 
 
 @fy.memoize(key_func=lambda feature, values, y: id(feature))
-def _summarize_feature(feature, values, y) -> dict:
-    z = values[feature]
-
-    feature_values_list = [
-        feature_values
-        for other_feature, feature_values in values.items()
-        if other_feature is not feature
-    ]
-    if feature_values_list:
-        x = np.concatenate(feature_values_list, axis=1)
-    else:
-        x = np.empty((z.shape[0], 0))
-
-    mutual_information = estimate_mutual_information(z, y)
-    conditional_mutual_information = \
-        estimate_conditional_information(z, y, x)
-    mean = np.mean(z, axis=0)
-    std = np.std(z, axis=0)
-    variance = np.var(z, axis=0)
-    nunique = countunique(z, axis=0)
-    return {
+def _summarize_feature(
+    feature: 'ballet.feature.Feature',
+    values: Optional[Dict['ballet.feature.Feature', np.ndarray]],
+    y: Optional[np.ndarray],
+) -> dict:
+    result = {
         'name': feature.name,
         'description': feature.description,
         'input':
@@ -46,25 +34,53 @@ def _summarize_feature(feature, values, y) -> dict:
         'output': feature.output,
         'author': feature.author,
         'source': feature.source,
-        'mutual_information': mutual_information,
-        'conditional_mutual_information':
-            conditional_mutual_information,
-        'mean': np.mean(mean),  # same as mean over flattened anyways
-        'std': np.mean(std),
-        'variance': np.mean(variance),
-        'nunique': np.mean(nunique),
     }
+
+    if values is not None and y is not None:
+        z = values[feature]
+
+        feature_values_list = [
+            feature_values
+            for other_feature, feature_values in values.items()
+            if other_feature is not feature
+        ]
+        if feature_values_list:
+            x = np.concatenate(feature_values_list, axis=1)
+        else:
+            x = np.empty((z.shape[0], 0))
+
+        result['mutual_information'] = estimate_mutual_information(z, y)
+        result['conditional_mutual_information'] = \
+            estimate_conditional_information(z, y, x)
+        result['mean'] = np.mean(np.mean(z, axis=0))  # same thing anyway
+        result['std'] = np.mean(np.std(z, axis=0))
+        result['variance'] = np.mean(np.var(z, axis=0))
+        result['nunique'] = np.mean(countunique(z, axis=0))
+    else:
+        for col in (
+            'mutual_information', 'conditional_mutual_information', 'mean',
+            'std', 'variance', 'nunique'
+        ):
+            result[col] = np.nan
+
+    return result
 
 
 def discover(
-    features, X_df, y_df, y, input=None, primitive=None
+    features: List['ballet.feature.Feature'],
+    X_df: Optional[pd.DataFrame],
+    y_df: Optional[pd.DataFrame],
+    y: Optional[np.ndarray],
+    input: Optional[str] = None,
+    primitive: Optional[str] = None
 ) -> pd.DataFrame:
     """Discover existing features
 
-    Display information about existing features including summary statistics.
-    If the feature extracts multiple feature values, then the summary
-    statistics (e.g. mean, std, nunique) are computed for each feature value
-    and then averaged.
+    Display information about existing features including summary statistics on
+    the development dataset.  If the feature extracts multiple feature values,
+    then the summary statistics (e.g. mean, std, nunique) are computed for each
+    feature value and then averaged. If the development dataset cannot be
+    loaded, computation of summary statistics is skipped.
 
     The following information is shown:
     - name: the name of the feature
@@ -108,16 +124,22 @@ def discover(
         data frame with features on the row index and columns as described
         above
     """
-    y = asarray2d(y)
     records = []
-    values = {
-        feature: asarray2d(
-            feature
-            .as_feature_engineering_pipeline()
-            .fit_transform(X_df, y_df)
-        )
-        for feature in features
-    }
+
+    if X_df is not None and y_df is not None and y is not None:
+        values = {
+            feature: asarray2d(
+                feature
+                .as_feature_engineering_pipeline()
+                .fit_transform(X_df, y_df)
+            )
+            for feature in features
+        }
+        y = asarray2d(y)
+        summarize = fy.rpartial(_summarize_feature, values, y)
+    else:
+        summarize = fy.rpartial(_summarize_feature, None, None)
+
     for feature in features:
         if input and input not in feature.input and input != feature.input:
             continue
@@ -127,7 +149,7 @@ def discover(
                 feature.transformer)
         ):
             continue
-        summary = _summarize_feature(feature, values, y)
+        summary = summarize(feature)
         records.append(summary)
 
     return pd.DataFrame.from_records(records)
