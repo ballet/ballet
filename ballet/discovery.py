@@ -40,6 +40,9 @@ def _summarize_feature(
         'mean': np.nan,
         'std': np.nan,
         'variance': np.nan,
+        'min': np.nan,
+        'median': np.nan,
+        'max': np.nan,
         'nunique': np.nan,
     }
 
@@ -64,6 +67,9 @@ def _summarize_feature(
             result['mean'] = np.mean(np.mean(z, axis=0))  # same thing anyway
             result['std'] = np.mean(np.std(z, axis=0))
             result['variance'] = np.mean(np.var(z, axis=0))
+            result['min'] = np.min(z)
+            result['median'] = np.median(np.median(z, axis=0))
+            result['max'] = np.max(z)
             result['nunique'] = np.mean(countunique(z, axis=0))
 
     return result
@@ -105,6 +111,10 @@ def discover(
         on the development dataset split
     - var: variance of the feature (or averaged over feature values) on the
         development dataset split
+    - min: minimum of the feature on the development dataset split
+    - median: median of the feature (or median over feature values) on the
+        development dataset split
+    - max: maximum of the feature on the development dataset split
     - nunique: number of unique values of the feature (or averaged over
         feature values) on the development dataset split
 
