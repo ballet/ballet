@@ -6,6 +6,7 @@ from ballet.discovery import countunique, discover
 from ballet.eng import NullFiller
 from ballet.feature import Feature
 from ballet.util.testing import assert_array_equal
+from tests.util import FragileTransformer
 
 
 @pytest.mark.parametrize(
@@ -62,4 +63,17 @@ def test_discover(sample_data):
     assert df.shape[0] == len(features)
     actual_cols = df.columns
     assert not expected_cols.symmetric_difference(actual_cols)
+    assert np.isnan(df['mean'].at[0])
+
+
+def test_discover_feature_error(sample_data):
+    features = [
+        Feature('size', FragileTransformer()),
+    ]
+    X_df, y_df = sample_data.X, sample_data.y
+    y = np.asfarray(y_df)
+
+    df = discover(features, X_df, y_df, y)
+
+    assert df.shape[0] == len(features)
     assert np.isnan(df['mean'].at[0])

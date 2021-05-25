@@ -324,7 +324,7 @@ def test_subset_transformer_mutate(sample_data):
     X_tr, X_te = sample_data
 
     input = 'size'
-    t = ballet.eng.SubsetTransformer(input, lambda x: x+1)
+    t = ballet.eng.SubsetTransformer(input, lambda x: x + 1)
     result_tr = t.fit_transform(X_tr)
     result_te = t.transform(X_te)
 
