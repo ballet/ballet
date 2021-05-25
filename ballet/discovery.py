@@ -19,9 +19,10 @@ def countunique(z: np.ndarray, axis=0):
 @fy.memoize(key_func=lambda feature, values, y: id(feature))
 def _summarize_feature(
     feature: 'ballet.feature.Feature',
-    values: Optional[Dict['ballet.feature.Feature', np.ndarray]],
+    values: Optional[Dict['ballet.feature.Feature', Optional[np.ndarray]]],
     y: Optional[np.ndarray],
 ) -> dict:
+    """Summarize a single feature"""
     result = {
         'name': feature.name,
         'description': feature.description,
@@ -34,34 +35,36 @@ def _summarize_feature(
         'output': feature.output,
         'author': feature.author,
         'source': feature.source,
+        'mutual_information': np.nan,
+        'conditional_mutual_information': np.nan,
+        'mean': np.nan,
+        'std': np.nan,
+        'variance': np.nan,
+        'nunique': np.nan,
     }
 
+    # if feature values are missing here, the values are left at nans from
+    # above
     if values is not None and y is not None:
         z = values[feature]
+        if z is not None:
+            feature_values_list = [
+                feature_values
+                for other_feature, feature_values in values.items()
+                if other_feature is not feature and feature_values is not None
+            ]
+            if feature_values_list:
+                x = np.concatenate(feature_values_list, axis=1)
+            else:
+                x = np.empty((z.shape[0], 0))
 
-        feature_values_list = [
-            feature_values
-            for other_feature, feature_values in values.items()
-            if other_feature is not feature
-        ]
-        if feature_values_list:
-            x = np.concatenate(feature_values_list, axis=1)
-        else:
-            x = np.empty((z.shape[0], 0))
-
-        result['mutual_information'] = estimate_mutual_information(z, y)
-        result['conditional_mutual_information'] = \
-            estimate_conditional_information(z, y, x)
-        result['mean'] = np.mean(np.mean(z, axis=0))  # same thing anyway
-        result['std'] = np.mean(np.std(z, axis=0))
-        result['variance'] = np.mean(np.var(z, axis=0))
-        result['nunique'] = np.mean(countunique(z, axis=0))
-    else:
-        for col in (
-            'mutual_information', 'conditional_mutual_information', 'mean',
-            'std', 'variance', 'nunique'
-        ):
-            result[col] = np.nan
+            result['mutual_information'] = estimate_mutual_information(z, y)
+            result['conditional_mutual_information'] = \
+                estimate_conditional_information(z, y, x)
+            result['mean'] = np.mean(np.mean(z, axis=0))  # same thing anyway
+            result['std'] = np.mean(np.std(z, axis=0))
+            result['variance'] = np.mean(np.var(z, axis=0))
+            result['nunique'] = np.mean(countunique(z, axis=0))
 
     return result
 
@@ -127,16 +130,21 @@ def discover(
     records = []
 
     if X_df is not None and y_df is not None and y is not None:
-        values = {
-            feature: asarray2d(
+
+        @fy.ignore(Exception)
+        def get_feature_values(feature):
+            return asarray2d(
                 feature
                 .as_feature_engineering_pipeline()
-                .fit_transform(X_df, y_df)
-            )
+                .fit_transform(X_df, y_df))
+
+        values = {
+            feature: get_feature_values(feature)
             for feature in features
         }
         y = asarray2d(y)
         summarize = fy.rpartial(_summarize_feature, values, y)
+
     else:
         summarize = fy.rpartial(_summarize_feature, None, None)
 
