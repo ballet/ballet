@@ -5,7 +5,7 @@ from pkg_resources import working_set
 
 
 @pytest.mark.slow
-def test_quickstart_install(quickstart, virtualenv):
+def test_quickstart_install(quickstart, virtualenv, testdatadir, tmp_path):
     """Test that we can install the project resulting from quickstart
 
     Note that virtualenv.install_package is just bogus and should be avoided.
@@ -46,3 +46,11 @@ def test_quickstart_install(quickstart, virtualenv):
         capture=True
     )
     assert quickstart.package_slug in output
+
+    # CLI should engineer features on sample dataset
+    inputdir = testdatadir.joinpath('project-template')
+    outputdir = tmp_path
+    output = virtualenv.run(
+        f'python -m {quickstart.package_slug} engineer-features'
+        f' --train-dir {inputdir} {inputdir} {outputdir}'
+    )
