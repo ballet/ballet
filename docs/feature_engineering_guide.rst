@@ -105,6 +105,38 @@ Feature engineering pipelines
 
 A feature engineering pipeline can be created out of zero or more features. It has a fit/transform API. When applied to raw data, it applies each underlying feature in parallel and concatenates the results.
 
+Okay, but why?
+^^^^^^^^^^^^^^
+
+In the data science community, it is common to do feature engineering by applying a sequence of
+mutations to a data frame object or using ``sklearn.preprocessing`` objects. Why do we go through
+hoops to use :py:class:`~ballet.feature.Feature` objects?
+
+#. *Modularity.* Each feature stands alone and can be reasoned about,
+   validated, and implemented separately.
+
+#. *Leakage.* By writing all features as learned transformations (with
+   separate fit and transform stages) and enforcing a train-test split, we
+   ensure that feature engineering code never sees test data before it applies
+   transformations on new instances, helping better estimate generalization performance.
+
+#. *Clearly declare inputs and outputs.* Each feature declares its own inputs
+   (and optionally outputs) and can operate on them only. Thus a feature can
+   impute missing values in a single column, as opposed to the entire dataset,
+   and different ``Feature`` objects can target different subsets of the input
+   variable space.
+
+#. *Pipelines.* Feature objects can be easily composed together can be
+   combined into a pipeline that can learn feature transformations from
+   training data and apply them on new instances.
+
+#. *Robustness.* Data scientists are often surprised to find the number of
+   errors that arise from trying to use multiple libraries together, such as
+   pandas and scikit-learn. Common errors include scikit-learn transformers and
+   estimators failing on columnar data that has the wrong number of dimensions
+   (i.e. 1-dimensional or 2-dimensional column vectors). Features in Ballet
+   magically transform feature input data appropriately to avoid common errors.
+
 Learn by example
 ----------------
 
@@ -359,39 +391,6 @@ Let's create a feature that captures whether a string variable is the longest va
 
 
 Okay, let's unpack what happened here. First, we declared the input to this feature, ``'Exterior 1st'``, a scalar key, so the feature will receive a pandas ``Series`` as the input ``X``. Next we created a new class that inherits from ``BaseTransformer``. The transformer does not have any "hyperparameters" so we can skip defining an ``__init__`` method. We learn the ``longest_string_length_`` parameter during the fit stage and set it on ``self``. We were able to assume that ``X`` is a series, and thus has the ``.str`` vectorized string accessor. We can assume this because Ballet will automatically try to pass the input in various formats and will store the format that worked, i.e. "series". (If this were to be a new feature engineering primitive that would be used in more than this one situation, we might want to add logic to allow the feature to operate on a DataFrame as well.) Next, in the transform stage, we check for each new instance whether the length is greater than or equal to the longest string length observed in the training data. The result will be a 1-d array (series) of ``bool``\ s. Finally, having created the transformer class, we create an instance of it and create our ``Feature`` object.
-
-Okay, but why?
-^^^^^^^^^^^^^^
-
-In the data science community, it is common to do feature engineering by applying a sequence of
-mutations to a data frame object or using ``sklearn.preprocessing`` objects. Why do we go through
-hoops to use :py:class:`~ballet.feature.Feature` objects?
-
-#. *Modularity.* Each feature stands alone and can be reasoned about,
-   validated, and implemented separately.
-
-#. *Leakage.* By writing all features as learned transformations (with
-   separate fit and transform stages) and enforcing a train-test split, we
-   ensure that feature engineering code never sees test data before it applies
-   transformations on new instances, helping better estimate generalization performance.
-
-#. *Clearly declare inputs and outputs.* Each feature declares its own inputs
-   (and optionally outputs) and can operate on them only. Thus a feature can
-   impute missing values in a single column, as opposed to the entire dataset,
-   and different ``Feature`` objects can target different subsets of the input
-   variable space.
-
-#. *Pipelines.* Feature objects can be easily composed together can be
-   combined into a pipeline that can learn feature transformations from
-   training data and apply them on new instances.
-
-#. *Robustness.* Data scientists are often surprised to find the number of
-   errors that arise from trying to use multiple libraries together, such as
-   pandas and scikit-learn. Common errors include scikit-learn transformers and
-   estimators failing on columnar data that has the wrong number of dimensions
-   (i.e. 1-dimensional or 2-dimensional column vectors). Features in Ballet
-   magically transform feature input data appropriately to avoid common errors.
-
 
 Further reading
 ---------------
