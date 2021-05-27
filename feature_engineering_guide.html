@@ -166,6 +166,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#transformers">Transformers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#automatic-data-conversions">Automatic data conversions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#feature-engineering-pipelines">Feature engineering pipelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#okay-but-why">Okay, but why?</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#learn-by-example">Learn by example</a><ul>
@@ -189,7 +190,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#differences-from-pandas">Differences from Pandas</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#rolling-your-own-transformers">Rolling your own transformers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#example">Example</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#okay-but-why">Okay, but why?</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#further-reading">Further reading</a></li>
@@ -473,6 +473,34 @@ entire feature engineering pipeline out of individual feature objects.</p>
 <div class="section" id="feature-engineering-pipelines">
 <h3>Feature engineering pipelines<a class="headerlink" href="#feature-engineering-pipelines" title="Permalink to this headline">¶</a></h3>
 <p>A feature engineering pipeline can be created out of zero or more features. It has a fit/transform API. When applied to raw data, it applies each underlying feature in parallel and concatenates the results.</p>
+</div>
+<div class="section" id="okay-but-why">
+<h3>Okay, but why?<a class="headerlink" href="#okay-but-why" title="Permalink to this headline">¶</a></h3>
+<p>In the data science community, it is common to do feature engineering by applying a sequence of
+mutations to a data frame object or using <code class="docutils literal notranslate"><span class="pre">sklearn.preprocessing</span></code> objects. Why do we go through
+hoops to use <a class="reference internal" href="api/ballet.feature.html#ballet.feature.Feature" title="ballet.feature.Feature"><code class="xref py py-class docutils literal notranslate"><span class="pre">Feature</span></code></a> objects?</p>
+<ol class="arabic simple">
+<li><p><em>Modularity.</em> Each feature stands alone and can be reasoned about,
+validated, and implemented separately.</p></li>
+<li><p><em>Leakage.</em> By writing all features as learned transformations (with
+separate fit and transform stages) and enforcing a train-test split, we
+ensure that feature engineering code never sees test data before it applies
+transformations on new instances, helping better estimate generalization performance.</p></li>
+<li><p><em>Clearly declare inputs and outputs.</em> Each feature declares its own inputs
+(and optionally outputs) and can operate on them only. Thus a feature can
+impute missing values in a single column, as opposed to the entire dataset,
+and different <code class="docutils literal notranslate"><span class="pre">Feature</span></code> objects can target different subsets of the input
+variable space.</p></li>
+<li><p><em>Pipelines.</em> Feature objects can be easily composed together can be
+combined into a pipeline that can learn feature transformations from
+training data and apply them on new instances.</p></li>
+<li><p><em>Robustness.</em> Data scientists are often surprised to find the number of
+errors that arise from trying to use multiple libraries together, such as
+pandas and scikit-learn. Common errors include scikit-learn transformers and
+estimators failing on columnar data that has the wrong number of dimensions
+(i.e. 1-dimensional or 2-dimensional column vectors). Features in Ballet
+magically transform feature input data appropriately to avoid common errors.</p></li>
+</ol>
 </div>
 </div>
 <div class="section" id="learn-by-example">
@@ -852,34 +880,6 @@ the following simplified dataset:</p>
 <h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
 <p>Let’s create a feature that captures whether a string variable is the longest value observed in the data. This is a silly feature for a number of reasons, so don’t take it too seriously, but it demonstrates the steps required to roll your own transformer.</p>
 <p>Okay, let’s unpack what happened here. First, we declared the input to this feature, <code class="docutils literal notranslate"><span class="pre">'Exterior</span> <span class="pre">1st'</span></code>, a scalar key, so the feature will receive a pandas <code class="docutils literal notranslate"><span class="pre">Series</span></code> as the input <code class="docutils literal notranslate"><span class="pre">X</span></code>. Next we created a new class that inherits from <code class="docutils literal notranslate"><span class="pre">BaseTransformer</span></code>. The transformer does not have any “hyperparameters” so we can skip defining an <code class="docutils literal notranslate"><span class="pre">__init__</span></code> method. We learn the <code class="docutils literal notranslate"><span class="pre">longest_string_length_</span></code> parameter during the fit stage and set it on <code class="docutils literal notranslate"><span class="pre">self</span></code>. We were able to assume that <code class="docutils literal notranslate"><span class="pre">X</span></code> is a series, and thus has the <code class="docutils literal notranslate"><span class="pre">.str</span></code> vectorized string accessor. We can assume this because Ballet will automatically try to pass the input in various formats and will store the format that worked, i.e. “series”. (If this were to be a new feature engineering primitive that would be used in more than this one situation, we might want to add logic to allow the feature to operate on a DataFrame as well.) Next, in the transform stage, we check for each new instance whether the length is greater than or equal to the longest string length observed in the training data. The result will be a 1-d array (series) of <code class="docutils literal notranslate"><span class="pre">bool</span></code>s. Finally, having created the transformer class, we create an instance of it and create our <code class="docutils literal notranslate"><span class="pre">Feature</span></code> object.</p>
-</div>
-<div class="section" id="okay-but-why">
-<h3>Okay, but why?<a class="headerlink" href="#okay-but-why" title="Permalink to this headline">¶</a></h3>
-<p>In the data science community, it is common to do feature engineering by applying a sequence of
-mutations to a data frame object or using <code class="docutils literal notranslate"><span class="pre">sklearn.preprocessing</span></code> objects. Why do we go through
-hoops to use <a class="reference internal" href="api/ballet.feature.html#ballet.feature.Feature" title="ballet.feature.Feature"><code class="xref py py-class docutils literal notranslate"><span class="pre">Feature</span></code></a> objects?</p>
-<ol class="arabic simple">
-<li><p><em>Modularity.</em> Each feature stands alone and can be reasoned about,
-validated, and implemented separately.</p></li>
-<li><p><em>Leakage.</em> By writing all features as learned transformations (with
-separate fit and transform stages) and enforcing a train-test split, we
-ensure that feature engineering code never sees test data before it applies
-transformations on new instances, helping better estimate generalization performance.</p></li>
-<li><p><em>Clearly declare inputs and outputs.</em> Each feature declares its own inputs
-(and optionally outputs) and can operate on them only. Thus a feature can
-impute missing values in a single column, as opposed to the entire dataset,
-and different <code class="docutils literal notranslate"><span class="pre">Feature</span></code> objects can target different subsets of the input
-variable space.</p></li>
-<li><p><em>Pipelines.</em> Feature objects can be easily composed together can be
-combined into a pipeline that can learn feature transformations from
-training data and apply them on new instances.</p></li>
-<li><p><em>Robustness.</em> Data scientists are often surprised to find the number of
-errors that arise from trying to use multiple libraries together, such as
-pandas and scikit-learn. Common errors include scikit-learn transformers and
-estimators failing on columnar data that has the wrong number of dimensions
-(i.e. 1-dimensional or 2-dimensional column vectors). Features in Ballet
-magically transform feature input data appropriately to avoid common errors.</p></li>
-</ol>
 </div>
 </div>
 <div class="section" id="further-reading">
