@@ -13,6 +13,7 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
 
   
   
@@ -32,6 +33,8 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -156,30 +159,37 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="feature_engineering_guide.html">Feature Engineering Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="feature_engineering_guide.html#feature-definitions">Feature Definitions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#why">Why?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feature_engineering_guide.html#feature-engineering-in-90-seconds">Feature engineering in 90 seconds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feature_engineering_guide.html#writing-features">Writing features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#feature-definitions">Feature definitions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#input-types">Input types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#transformers">Transformers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#automatic-data-conversions">Automatic data conversions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#feature-engineering-pipelines">Feature engineering pipelines</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="feature_engineering_guide.html#writing-features">Writing features</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#a-first-example">A first example</a></li>
-<li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#a-second-example">A second example</a></li>
-<li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#a-third-example">A third example</a></li>
-<li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#input-types-and-conversions">Input types and conversions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#transformers">Transformers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#feature-engineering-pipelines">Feature engineering pipelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feature_engineering_guide.html#learn-by-example">Learn by example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#a-simple-feature">A simple feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#learned-transformations">Learned transformations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#multi-column-inputs-and-transformer-lists">Multi-column inputs and transformer lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#nested-transformers">Nested transformers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#complex-features">Complex features</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="feature_engineering_guide.html#feature-engineering-primitives">Feature engineering primitives</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#operating-on-groups">Operating on groups</a></li>
-<li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#addressing-missing-values">Addressing missing values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#logic-to-avoid-leakage">Logic to avoid leakage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#data-cleaning">Data cleaning</a></li>
 <li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#operating-on-time-series-data">Operating on time series data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#utilities">Utilities</a></li>
 <li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#other-primitives">Other primitives</a></li>
 <li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#external-libraries">External libraries</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="feature_engineering_guide.html#pandas-ballet-examples">Pandas ⇔ Ballet Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feature_engineering_guide.html#differences-from-pandas">Differences from Pandas</a></li>
 <li class="toctree-l2"><a class="reference internal" href="feature_engineering_guide.html#rolling-your-own-transformers">Rolling your own transformers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#example">Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="feature_engineering_guide.html#okay-but-why">Okay, but why?</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="feature_engineering_guide.html#further-reading">Further reading</a></li>
@@ -531,9 +541,9 @@ engineering pipeline.</p>
 <span class="pre">Frontage'</span></code> from the data and imputes missing values with the mean of the
 training data.</p>
 <div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ballet</span> <span class="kn">import</span> <span class="n">Feature</span>
-<span class="kn">from</span> <span class="nn">ballet.eng.sklearn</span> <span class="kn">import</span> <span class="n">SimpleImputer</span>
+<span class="kn">from</span> <span class="nn">ballet.eng.external</span> <span class="kn">import</span> <span class="n">SimpleImputer</span>
 
-<span class="nb">input</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Lot Frontage&quot;</span><span class="p">]</span>
+<span class="nb">input</span> <span class="o">=</span> <span class="s2">&quot;Lot Frontage&quot;</span>
 <span class="n">transformer</span> <span class="o">=</span> <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">)</span>
 <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Imputed Lot Frontage&quot;</span>
 <span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="n">transformer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
