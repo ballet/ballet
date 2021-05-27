@@ -1,2 +1,1 @@
-(X_df[['Lot Frontage', 'Lot Area']]
- .fillna(0))
+(X_df[["Lot Frontage", "Lot Area"]].fillna(0))

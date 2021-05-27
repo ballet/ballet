@@ -110,7 +110,7 @@ class GroupwiseTransformer(BaseTransformer):
             arguments for each group. If it is a callable, then it is called
             with no arguments for each group.
         groupby_kwargs: keyword arguments to pd.DataFrame.groupby
-        column_selection): column, or list of columns,
+        column_selection: column, or list of columns,
             to select after the groupby. Equivalent to
             ``df.groupby(...)[column_selection]``. Defaults to None, i.e. no
             column selection is performed.
@@ -152,7 +152,7 @@ class GroupwiseTransformer(BaseTransformer):
                  column_selection: OneOrMore[str] = None,
                  handle_unknown: str = 'error',
                  handle_error: str = 'error'):
-        self.satisfy_transformer = transformer
+        self.transformer = transformer
         self.groupby_kwargs = groupby_kwargs
         self.column_selection = column_selection
         self.handle_unknown = handle_unknown
@@ -160,12 +160,12 @@ class GroupwiseTransformer(BaseTransformer):
 
     def _make_transformer(self):
         if (
-            isinstance(self.satisfy_transformer, type)
-            or callable(self.satisfy_transformer)
+            isinstance(self.transformer, type)
+            or callable(self.transformer)
         ):
-            return self.satisfy_transformer()
+            return self.transformer()
         else:
-            return sklearn.base.clone(self.satisfy_transformer)
+            return sklearn.base.clone(self.transformer)
 
     def fit(self, X, y=None, **fit_kwargs):
         # validation on inputs

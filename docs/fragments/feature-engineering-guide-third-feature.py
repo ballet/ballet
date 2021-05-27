@@ -1,10 +1,10 @@
 from ballet import Feature
-from ballet.eng import NullFiller
+from ballet.eng.external import SimpleImputer
 
-input = ["Total Bsmt SF", "1st Flr SF", "2nd Flr SF"]
+input = ["Lot Area", "Garage Area", "1st Flr SF"]
 transformer = [
-    lambda df: df.sum(axis=1),
-    NullFiller()
+    lambda df: df["Lot Area"] - df["Garage Area"] - df["1st Flr SF"],
+    SimpleImputer(strategy="median"),
 ]
-name = "Total Area"
+name = "Yard Area"
 feature = Feature(input=input, transformer=transformer, name=name)

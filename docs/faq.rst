@@ -93,4 +93,4 @@ The way that feature engineering code is written in Ballet may be unfamiliar at 
 
 Make sure to review the :doc:`feature_engineering_guide`.
 
-If you are coming from a background of using *pandas* for feature engineering, make sure to look over the :ref:`feature_engineering_guide:Pandas ⇔ Ballet Examples`.
+If you are coming from a background of using *pandas* for feature engineering, make sure to look over the :ref:`feature_engineering_guide:Differences from Pandas`.

@@ -66,6 +66,7 @@ development_requirements = [
     'sphinx_rtd_theme >= 0.2.4',
     'sphinx-click >= 2.2',
     'sphinx-autodoc-typehints >= 1.11',
+    'sphinx-copybutton >= 0.3.1',
     'rstcheck',
 
     # style check
