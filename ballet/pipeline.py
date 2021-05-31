@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 from funcy import iterable
 from sklearn_pandas import DataFrameMapper
+from sklearn.pipeline import Pipeline, _name_estimators
 from stacklog import stacklog
 
 # n.b. cannot import Feature here bc of circular import
@@ -38,7 +39,8 @@ class FeatureEngineeringPipeline(DataFrameMapper):
 
         super().__init__(
             [t.as_input_transformer_tuple() for t in _features],
-            input_df=True)
+            input_df=True,
+            df_out=True,)
 
     @property
     def ballet_features(self) -> Collection['ballet.feature.Feature']:
@@ -91,3 +93,25 @@ def make_engineer_features(
             y_df=y_df, encoder=encoder, y=y)
 
     return engineer_features
+
+
+class EncoderPipeline(Pipeline):
+    """Pipeline of target encoder steps
+
+    This wraps sklearn.pipeline.Pipeline. Each step receives a single argument
+    ``y`` to their fit and transform methods. This is needed because some
+    consumers like MLBlocks passes arguments by keyword, and we need to pass an
+    argument named ``y`` rather than one named ``X``.
+    """
+    def __init__(self, steps):
+        names, steps = _name_estimators(steps)
+        steps = [
+
+        ]
+        super().__init__(steps)
+
+    def fit(self, y, **fit_params):
+        return super().fit(X=y, **fit_params)
+
+    def transform(self, y):
+        return super().transform(X=y)
