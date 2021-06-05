@@ -3,8 +3,8 @@ from collections import Counter
 from copy import deepcopy
 from inspect import signature
 from typing import (
-    Callable, Collection, List, NamedTuple, Optional, Sequence, Tuple, Union,
-    cast,)
+    Callable, Collection, List, NamedTuple, Optional, Sequence, Tuple, Type,
+    Union, cast,)
 
 import numpy as np
 import pandas as pd
@@ -33,11 +33,8 @@ def make_robust_transformer(
     """
     if is_seqcont(transformer):
         transformer = cast(Collection[TransformerLike], transformer)
-        transformers = list(
-            map(desugar_transformer, transformer))
-        for t in transformers:
-            _validate_transformer_api(t)
-        return make_robust_transformer_pipeline(transformers)
+        transformers = list(map(make_robust_transformer, transformer))
+        return make_transformer_pipeline(transformers)
     else:
         transformer = cast(TransformerLike, transformer)
         transformer = desugar_transformer(transformer)
@@ -45,12 +42,23 @@ def make_robust_transformer(
         return DelegatingRobustTransformer(transformer)
 
 
+def make_transformer_pipeline(
+    steps: Sequence[BaseTransformer],
+) -> TransformerPipeline:
+    """Construct a TransformerPipeline from the given estimators.
+
+    Source: sklearn_pandas.cont_method
+    """
+    return TransformerPipeline(_name_estimators(steps))
+
+
 def _name_estimators(
     estimators: Sequence[BaseEstimator]
 ) -> List[Tuple[str, BaseEstimator]]:
     """Generate names for estimators.
 
-    Adapted from sklearn.pipeline._name_estimators
+    Adapted from sklearn.pipeline._name_estimators to use the name of the
+    underlying transformer within a DelegatingRobustTransformer.
     """
 
     def get_name(estimator):
@@ -72,29 +80,10 @@ def _name_estimators(
     return list(zip(names, estimators))
 
 
-def make_transformer_pipeline(
-    steps: Sequence[BaseTransformer],
-) -> TransformerPipeline:
-    """Construct a TransformerPipeline from the given estimators.
-
-    Source: sklearn_pandas.cont_method
-    """
-    return TransformerPipeline(_name_estimators(steps))
-
-
-def make_robust_transformer_pipeline(
-    steps: Collection[BaseTransformer]
-) -> TransformerPipeline:
-    """Construct a transformer pipeline of DelegatingRobustTransformers"""
-    return make_transformer_pipeline([
-        DelegatingRobustTransformer(step) for step in steps
-    ])
-
-
 class ConversionApproach(NamedTuple):
     name: str
     convert: Callable
-    caught: Collection[type]
+    caught: Collection[Type[Exception]]
 
     isokay: Optional[Callable[[Exception], bool]] = lambda exc: False
     """Opportunity to catch other exceptions that match a condition"""
