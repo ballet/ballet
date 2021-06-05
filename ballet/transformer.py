@@ -8,7 +8,7 @@ from typing import (
 
 import numpy as np
 import pandas as pd
-from funcy import identity, is_seqcont, select_values
+from funcy import identity, select_values
 from sklearn.base import BaseEstimator
 from sklearn.preprocessing import FunctionTransformer
 from sklearn_pandas.pipeline import TransformerPipeline
@@ -31,12 +31,10 @@ def make_robust_transformer(
     TransformerPipeline where each transformer in the pipeline is a
     DelegatingRobustTransformer.
     """
-    if is_seqcont(transformer):
-        transformer = cast(Collection[TransformerLike], transformer)
+    if isinstance(transformer, Collection):
         transformers = list(map(make_robust_transformer, transformer))
         return make_transformer_pipeline(transformers)
     else:
-        transformer = cast(TransformerLike, transformer)
         transformer = desugar_transformer(transformer)
         _validate_transformer_api(transformer)
         return DelegatingRobustTransformer(transformer)

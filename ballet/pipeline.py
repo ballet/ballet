@@ -1,8 +1,7 @@
-from typing import Callable, Collection, NamedTuple, Tuple, cast
+from typing import Callable, Collection, NamedTuple, Tuple
 
 import numpy as np
 import pandas as pd
-from funcy import iterable
 from sklearn_pandas import DataFrameMapper
 from stacklog import stacklog
 
@@ -28,11 +27,9 @@ class FeatureEngineeringPipeline(DataFrameMapper):
                 ballet.feature.Feature(input=[],
                                        transformer=NullTransformer())
             ]
-        elif not iterable(features):
-            features = cast(ballet.feature.Feature, features)
+        elif not isinstance(features, Collection):
             _features = [features, ]
         else:
-            features = cast(Collection[ballet.feature.Feature], features)
             _features = list(features)
 
         self._ballet_features = _features
