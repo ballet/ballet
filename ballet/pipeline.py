@@ -8,6 +8,7 @@ from stacklog import stacklog
 
 # n.b. cannot import Feature here bc of circular import
 import ballet.feature
+import ballet.transformer
 from ballet.eng import BaseTransformer
 from ballet.eng.misc import NullTransformer
 from ballet.util.log import logger
@@ -38,7 +39,8 @@ class FeatureEngineeringPipeline(DataFrameMapper):
 
         super().__init__(
             [t.as_input_transformer_tuple() for t in _features],
-            input_df=True)
+            input_df=True,
+            df_out=True,)
 
     @property
     def ballet_features(self) -> Collection['ballet.feature.Feature']:
