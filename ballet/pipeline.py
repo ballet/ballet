@@ -1,4 +1,4 @@
-from typing import Callable, Collection, NamedTuple, Tuple
+from typing import Callable, List, NamedTuple, Tuple
 
 import numpy as np
 import pandas as pd
@@ -27,7 +27,7 @@ class FeatureEngineeringPipeline(DataFrameMapper):
                 ballet.feature.Feature(input=[],
                                        transformer=NullTransformer())
             ]
-        elif not isinstance(features, Collection):
+        elif not isinstance(features, list):
             _features = [features, ]
         else:
             _features = list(features)
@@ -40,13 +40,13 @@ class FeatureEngineeringPipeline(DataFrameMapper):
             df_out=True,)
 
     @property
-    def ballet_features(self) -> Collection['ballet.feature.Feature']:
+    def ballet_features(self) -> List['ballet.feature.Feature']:
         return self._ballet_features
 
 
 class EngineerFeaturesResult(NamedTuple):
     X_df: pd.DataFrame
-    features: Collection['ballet.feature.Feature']
+    features: List['ballet.feature.Feature']
     pipeline: FeatureEngineeringPipeline
     X: np.ndarray
     y_df: pd.DataFrame

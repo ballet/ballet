@@ -1,5 +1,3 @@
-from typing import Collection
-
 from sklearn_pandas.pipeline import TransformerPipeline
 
 import ballet.transformer
@@ -28,7 +26,7 @@ def make_encoder_pipeline(steps):
 def make_robust_encoder(
     steps: OneOrMore[TransformerLike],
 ):
-    if not isinstance(steps, Collection):
+    if not isinstance(steps, list):
         steps = [steps]
     steps = [
         ballet.transformer.make_robust_transformer(step)

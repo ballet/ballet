@@ -31,7 +31,7 @@ def make_robust_transformer(
     TransformerPipeline where each transformer in the pipeline is a
     DelegatingRobustTransformer.
     """
-    if isinstance(transformer, Collection):
+    if isinstance(transformer, list):
         transformers = list(map(make_robust_transformer, transformer))
         return make_transformer_pipeline(transformers)
     else:

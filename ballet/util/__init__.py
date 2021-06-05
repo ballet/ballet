@@ -2,7 +2,7 @@ import warnings
 from contextlib import redirect_stderr, redirect_stdout, suppress
 from copy import deepcopy
 from os import devnull
-from typing import Collection, Optional, Sequence, Tuple, TypeVar
+from typing import Optional, Sequence, Sized, Tuple, TypeVar
 
 import cookiecutter.utils
 import numpy as np
@@ -38,7 +38,7 @@ def indent(text: str, n=4) -> str:
     return '\n'.join(_indent + line for line in text.split('\n'))
 
 
-def make_plural_suffix(obj: Collection, suffix='s') -> str:
+def make_plural_suffix(obj: Sized, suffix='s') -> str:
     if len(obj) != 1:
         return suffix
     else:

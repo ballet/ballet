@@ -1,7 +1,8 @@
 import pathlib
 from types import ModuleType
 from typing import (
-    Callable, Collection, Iterator, List, NamedTuple, Optional, Tuple, Union,)
+    Callable, Collection, Iterator, List, NamedTuple, Optional, Sized, Tuple,
+    Union,)
 
 import git
 from funcy import (
@@ -93,7 +94,7 @@ def get_accepted_features(
             f'n_result={len(result)})')
 
 
-def _log_collect_items(name: str, items: Collection):
+def _log_collect_items(name: str, items: Sized):
     n = len(items)
     s = make_plural_suffix(items)
     logger.info(f'Collected {n} {name}{s}')
