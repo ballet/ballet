@@ -1,3 +1,4 @@
+import funcy as fy
 import numpy as np
 import pandas as pd
 import pytest
@@ -55,3 +56,26 @@ def test_transform(inputs):
     mapper.fit(df)
     X = mapper.transform(df)
     assert np.shape(X) == (5, len(inputs))
+
+
+@pytest.mark.parametrize(
+    'output',
+    [
+        None,
+        'baz',
+        ['foobaz', 'barbaz'],
+    ]
+)
+def test_df_colnames(inputs, output):
+    input, transformer = inputs
+    feature = Feature(input, transformer, output=output)
+    mapper = FeatureEngineeringPipeline(feature)
+    entities_df = pd.util.testing.makeCustomDataframe(5, 2)
+    entities_df.columns = ['foo', 'bar']
+    feature_matrix = mapper.fit_transform(entities_df)
+    feature_frame = pd.DataFrame(
+        feature_matrix,
+        columns=mapper.transformed_names_,
+        index=entities_df.index,
+    )
+    assert fy.all(fy.isa(str), feature_frame.columns)

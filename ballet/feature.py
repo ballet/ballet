@@ -2,6 +2,7 @@ from inspect import signature
 from typing import Optional, Tuple
 
 from funcy import cached_property
+from slugify import slugify
 
 import ballet.pipeline
 from ballet.transformer import RobustTransformer, make_robust_transformer
@@ -32,7 +33,7 @@ class Feature:
             :py:class:``IdentityTransformer``.
         name: name of the feature
         description: description of the feature
-        output: ordered sequence of names of features
+        output: base name or ordered sequence of names of feature values
             produced by this transformer
         source: the module in which this feature was defined
         options: options
@@ -44,17 +45,20 @@ class Feature:
         transformer: OneOrMore[TransformerLike],
         name: Optional[str] = None,
         description: Optional[str] = None,
-        output: OneOrMore[str] = None,
+        output: Optional[OneOrMore[str]] = None,
         source: Optional[str] = None,
-        options: dict = None
+        options: Optional[dict] = None
     ):
         self.input = input
         self.transformer = make_robust_transformer(transformer)
         self.name = name
         self.description = description
-        self.output = output  # unused
+        self.output = (
+            output
+            or (slugify(self.name, separator='_') if self.name else None)
+        )
         self.source = source
-        self.options = options if options is not None else {}
+        self.options = options or {}
 
     @cached_property
     def _init_attr_list(self):

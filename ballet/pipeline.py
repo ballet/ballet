@@ -37,11 +37,23 @@ class FeatureEngineeringPipeline(DataFrameMapper):
         super().__init__(
             [t.as_input_transformer_tuple() for t in _features],
             input_df=True,
-            df_out=True,)
+        )
 
     @property
     def ballet_features(self) -> List['ballet.feature.Feature']:
         return self._ballet_features
+
+    def get_names(self, columns, transformer, x, alias=None):
+        """Return verbose names for the transformed columns.
+
+        This extends the behavior of DataFrameMapper to allow ``alias`` to
+        rename all of the output columns, rather than just providing a common
+        base.
+        """
+        num_cols = x.shape[1] if len(x.shape) > 1 else 1
+        if isinstance(alias, list) and len(alias) == num_cols:
+            return alias
+        return super().get_names(columns, transformer, x, alias=alias)
 
 
 class EngineerFeaturesResult(NamedTuple):

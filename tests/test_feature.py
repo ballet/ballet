@@ -79,3 +79,19 @@ def test_feature_pipeline(inputs):
     assert isinstance(pipeline, FeatureEngineeringPipeline)
     pipeline2 = feature.pipeline
     assert pipeline is pipeline2
+
+
+@pytest.mark.parametrize(
+    'name,output,expected_output',
+    [
+        (None, 'baz', 'baz'),
+        (None, ['foobaz', 'barbaz'], ['foobaz', 'barbaz']),
+        (None, None, None),
+        ('baz', None, 'baz'),
+        ('Some long name', None, 'some_long_name'),
+    ]
+)
+def test_feature_output(inputs, name, output, expected_output):
+    input, transformer = inputs
+    feature = Feature(input, transformer, name=name, output=output)
+    assert feature.output == expected_output
