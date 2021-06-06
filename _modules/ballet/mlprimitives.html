@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>ballet.feature &mdash; ballet 0.17.0 documentation</title>
+  <title>ballet.mlprimitives &mdash; ballet 0.17.0 documentation</title>
   
 
   
@@ -358,7 +358,7 @@
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
-      <li>ballet.feature</li>
+      <li>ballet.mlprimitives</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -373,137 +373,63 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for ballet.feature</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">signature</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+  <h1>Source code for ballet.mlprimitives</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
-<span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">cached_property</span>
-<span class="kn">from</span> <span class="nn">slugify</span> <span class="kn">import</span> <span class="n">slugify</span>
+<span class="kn">from</span> <span class="nn">ballet.encoder</span> <span class="kn">import</span> <span class="n">EncoderPipeline</span><span class="p">,</span> <span class="n">make_robust_encoder</span>
+<span class="kn">from</span> <span class="nn">ballet.pipeline</span> <span class="kn">import</span> <span class="n">FeatureEngineeringPipeline</span>
+<span class="kn">from</span> <span class="nn">ballet.project</span> <span class="kn">import</span> <span class="n">Project</span>
+<span class="kn">from</span> <span class="nn">ballet.util.mod</span> <span class="kn">import</span> <span class="n">import_module_from_modname</span>
 
-<span class="kn">import</span> <span class="nn">ballet.pipeline</span>
-<span class="kn">from</span> <span class="nn">ballet.transformer</span> <span class="kn">import</span> <span class="n">RobustTransformer</span><span class="p">,</span> <span class="n">make_robust_transformer</span>
-<span class="kn">from</span> <span class="nn">ballet.util.typing</span> <span class="kn">import</span> <span class="n">OneOrMore</span><span class="p">,</span> <span class="n">TransformerLike</span>
-
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Feature&#39;</span><span class="p">,</span> <span class="p">)</span>
+<span class="n">PRIMITIVES_PATH</span> <span class="o">=</span> <span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">with_name</span><span class="p">(</span><span class="s1">&#39;primitives&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()]</span>
+<span class="n">PIPELINES_PATH</span> <span class="o">=</span> <span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">with_name</span><span class="p">(</span><span class="s1">&#39;pipelines&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()]</span>
 
 
-<div class="viewcode-block" id="Feature"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.Feature">[docs]</a><span class="k">class</span> <span class="nc">Feature</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;A feature definition</span>
+<span class="k">def</span> <span class="nf">_get_project</span><span class="p">(</span><span class="n">package_slug</span><span class="p">,</span> <span class="n">project_path</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">package_slug</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">package</span> <span class="o">=</span> <span class="n">import_module_from_modname</span><span class="p">(</span><span class="n">package_slug</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Project</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">project_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Project</span><span class="o">.</span><span class="n">from_path</span><span class="p">(</span><span class="n">project_path</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Project</span><span class="o">.</span><span class="n">from_cwd</span><span class="p">()</span>
 
-<span class="sd">    Conceptually, a feature definition is a learned function that maps raw</span>
-<span class="sd">    variables in one data instance to a vector of feature values. A feature</span>
-<span class="sd">    definition can produce either a scalar feature value for each instance</span>
-<span class="sd">    or a vector of feature values, as in the case of an embedding technique</span>
-<span class="sd">    like PCA or the one-hot encoding of a categorical variable.</span>
+
+<div class="viewcode-block" id="make_engineer_features"><a class="viewcode-back" href="../../api/ballet.mlprimitives.html#ballet.mlprimitives.make_engineer_features">[docs]</a><span class="k">def</span> <span class="nf">make_engineer_features</span><span class="p">(</span>
+    <span class="n">package_slug</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">project_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FeatureEngineeringPipeline</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Make the engineer_features primitive for the given Ballet project</span>
+
+<span class="sd">    The primitive detects the Ballet project in one of three ways. First, if</span>
+<span class="sd">    the package slug is given, then Ballet will import the package and detect</span>
+<span class="sd">    the project. Second, if a path to the project is given (i.e. the directory</span>
+<span class="sd">    containing the ballet.yml configuration file), then the project will be</span>
+<span class="sd">    detected that way. Third, if neither is given, then Ballet will try to</span>
+<span class="sd">    detect a project in the current working directory. This third option is the</span>
+<span class="sd">    least robust and sensitive to where you are running the MLPipeline from.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        input: required columns from the input dataframe needed for the</span>
-<span class="sd">            transformation</span>
-<span class="sd">        transformer: transformer, sequence of transformers, or ``None``. A</span>
-<span class="sd">            &quot;transformer&quot; is an instance of a class that provides a</span>
-<span class="sd">            fit/transform-style learned transformation. Alternately, a</span>
-<span class="sd">            callable can be provided, either by itself or in a list, in</span>
-<span class="sd">            which case it will be converted into a</span>
-<span class="sd">            :py:class:``FunctionTransformer`` for convenience. If ``None``</span>
-<span class="sd">            is provided, it will be replaced with the</span>
-<span class="sd">            :py:class:``IdentityTransformer``.</span>
-<span class="sd">        name: name of the feature</span>
-<span class="sd">        description: description of the feature</span>
-<span class="sd">        output: base name or ordered sequence of names of feature values</span>
-<span class="sd">            produced by this transformer</span>
-<span class="sd">        source: the module in which this feature was defined</span>
-<span class="sd">        options: options</span>
+<span class="sd">        package_slug: name of top-level package for the Ballet project</span>
+<span class="sd">        project_path: filesystem path to the directory containing a valid</span>
+<span class="sd">          ballet.yml configuration file</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        a deepcopy of the feature engineering pipeline defined by the project</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">project</span> <span class="o">=</span> <span class="n">_get_project</span><span class="p">(</span><span class="n">package_slug</span><span class="p">,</span> <span class="n">project_path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">pipeline</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="nb">input</span><span class="p">:</span> <span class="n">OneOrMore</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-        <span class="n">transformer</span><span class="p">:</span> <span class="n">OneOrMore</span><span class="p">[</span><span class="n">TransformerLike</span><span class="p">],</span>
-        <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">output</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">OneOrMore</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">source</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="nb">input</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span> <span class="o">=</span> <span class="n">make_robust_transformer</span><span class="p">(</span><span class="n">transformer</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">output</span>
-            <span class="ow">or</span> <span class="p">(</span><span class="n">slugify</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="n">source</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">options</span> <span class="ow">or</span> <span class="p">{}</span>
 
-    <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">_init_attr_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">signature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">indent</span> <span class="o">=</span> <span class="mi">4</span>
-        <span class="n">attr_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_attr_list</span>
-        <span class="n">attrs_str</span> <span class="o">=</span> <span class="s1">&#39;,</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-            <span class="s1">&#39;</span><span class="si">{indent}{attr_name}</span><span class="s1">=</span><span class="si">{attr_val!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">indent</span><span class="o">=</span><span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="n">indent</span><span class="p">,</span>
-                <span class="n">attr_name</span><span class="o">=</span><span class="n">attr</span><span class="p">,</span>
-                <span class="n">attr_val</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
-            <span class="p">)</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">attr_list</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{clsname}</span><span class="s1">(</span><span class="se">\n</span><span class="si">{attrs_str}</span><span class="se">\n</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">clsname</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">attrs_str</span><span class="o">=</span><span class="n">attrs_str</span><span class="p">)</span>
-
-<div class="viewcode-block" id="Feature.as_input_transformer_tuple"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.Feature.as_input_transformer_tuple">[docs]</a>    <span class="k">def</span> <span class="nf">as_input_transformer_tuple</span><span class="p">(</span>
-        <span class="bp">self</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">OneOrMore</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">RobustTransformer</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Return an tuple for passing to DataFrameMapper constructor&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;alias&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">}</span></div>
-
-<div class="viewcode-block" id="Feature.as_feature_engineering_pipeline"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.Feature.as_feature_engineering_pipeline">[docs]</a>    <span class="k">def</span> <span class="nf">as_feature_engineering_pipeline</span><span class="p">(</span>
-        <span class="bp">self</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ballet</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">FeatureEngineeringPipeline</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return standalone FeatureEngineeringPipeline with this feature&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ballet</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">FeatureEngineeringPipeline</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">author</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;The author of this feature if it can be inferred from its source</span>
-
-<span class="sd">        The author can be inferred if the module the feature was defined in</span>
-<span class="sd">        follows the pattern</span>
-<span class="sd">        ``package.subpackage.user_username.feature_featurename``. Otherwise,</span>
-<span class="sd">        returns ``None``.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">:</span>
-            <span class="n">pieces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pieces</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="n">user_str</span> <span class="o">=</span> <span class="n">pieces</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
-                <span class="k">if</span> <span class="n">user_str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;user_&#39;</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="n">user_str</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="s1">&#39;user_&#39;</span><span class="p">):]</span>
-
-        <span class="k">return</span> <span class="kc">None</span>
-
-    <span class="n">_pipeline</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">pipeline</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ballet</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">FeatureEngineeringPipeline</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;A feature engineering pipeline containing just this feature&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pipeline</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_pipeline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_feature_engineering_pipeline</span><span class="p">()</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pipeline</span>
-
-<div class="viewcode-block" id="Feature.fit"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.Feature.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Fit feature.pipeline&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Feature.transform"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.Feature.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Transform data using feature.pipeline&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Feature.fit_transform"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.Feature.fit_transform">[docs]</a>    <span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Fit feature.pipeline and then transform data&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span></div></div>
+<div class="viewcode-block" id="make_encode_target"><a class="viewcode-back" href="../../api/ballet.mlprimitives.html#ballet.mlprimitives.make_encode_target">[docs]</a><span class="k">def</span> <span class="nf">make_encode_target</span><span class="p">(</span>
+    <span class="n">package_slug</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">project_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EncoderPipeline</span><span class="p">:</span>
+    <span class="n">project</span> <span class="o">=</span> <span class="n">_get_project</span><span class="p">(</span><span class="n">package_slug</span><span class="p">,</span> <span class="n">project_path</span><span class="p">)</span>
+    <span class="n">encoder</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">encoder</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">make_robust_encoder</span><span class="p">(</span><span class="n">encoder</span><span class="p">,</span> <span class="n">can_skip_transform_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

@@ -214,6 +214,7 @@
 <li class="toctree-l4"><a class="reference internal" href="ballet.eng.html#submodules">Submodules</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.mlprimitives.html">ballet.mlprimitives package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.util.html">ballet.util package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="ballet.util.html#submodules">Submodules</a></li>
 </ul>
@@ -384,13 +385,23 @@
 <span id="ballet-encoder-module"></span><h1>ballet.encoder module<a class="headerlink" href="#module-ballet.encoder" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="ballet.encoder.EncoderPipeline">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.encoder.</span></code><code class="sig-name descname"><span class="pre">EncoderPipeline</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">steps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/encoder.html#EncoderPipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.encoder.EncoderPipeline" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.encoder.</span></code><code class="sig-name descname"><span class="pre">EncoderPipeline</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">can_skip_transform_none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/encoder.html#EncoderPipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.encoder.EncoderPipeline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn_pandas.pipeline.TransformerPipeline</span></code></p>
 <p>Pipeline of target encoder steps</p>
 <p>This wraps sklearn.pipeline.Pipeline. Each step receives a single argument
 <code class="docutils literal notranslate"><span class="pre">y</span></code> to their fit and transform methods. This is needed because some
 consumers like MLBlocks passes arguments by keyword, and we need to pass an
 argument named <code class="docutils literal notranslate"><span class="pre">y</span></code> rather than one named <code class="docutils literal notranslate"><span class="pre">X</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>can_skip_transform_none</strong> – behavior if during the transform stage, the
+input y is None (as would be the case during the <code class="docutils literal notranslate"><span class="pre">predict</span></code> stage
+of an MLPipeline). If false (the default), then we call the
+pipeline’s transform method on y. If true, we skip calling the
+transform method and instead return immediately (returning the
+value <code class="docutils literal notranslate"><span class="pre">None</span></code>).</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt id="ballet.encoder.EncoderPipeline.fit">
 <code class="sig-name descname"><span class="pre">fit</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">fit_params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/encoder.html#EncoderPipeline.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.encoder.EncoderPipeline.fit" title="Permalink to this definition">¶</a></dt>
@@ -414,6 +425,34 @@ each parameter name is prefixed such that parameter <code class="docutils litera
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>Pipeline</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ballet.encoder.EncoderPipeline.fit_transform">
+<code class="sig-name descname"><span class="pre">fit_transform</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">fit_params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/encoder.html#EncoderPipeline.fit_transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.encoder.EncoderPipeline.fit_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit the model and transform with the final estimator</p>
+<p>Fits all the transforms one after the other and transforms the
+data, then uses fit_transform on transformed data with the final
+estimator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>iterable</em>) – Training data. Must fulfill input requirements of first step of the
+pipeline.</p></li>
+<li><p><strong>y</strong> (<em>iterable</em><em>, </em><em>default=None</em>) – Training targets. Must fulfill label requirements for all steps of
+the pipeline.</p></li>
+<li><p><strong>**fit_params</strong> (<em>dict of string -&gt; object</em>) – Parameters passed to the <code class="docutils literal notranslate"><span class="pre">fit</span></code> method of each step, where
+each parameter name is prefixed such that parameter <code class="docutils literal notranslate"><span class="pre">p</span></code> for step
+<code class="docutils literal notranslate"><span class="pre">s</span></code> has key <code class="docutils literal notranslate"><span class="pre">s__p</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>Xt</strong> – Transformed samples</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array-like of shape  (n_samples, n_transformed_features)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -447,12 +486,12 @@ of the pipeline.</p>
 
 <dl class="py function">
 <dt id="ballet.encoder.make_encoder_pipeline">
-<code class="sig-prename descclassname"><span class="pre">ballet.encoder.</span></code><code class="sig-name descname"><span class="pre">make_encoder_pipeline</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">steps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/encoder.html#make_encoder_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.encoder.make_encoder_pipeline" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">ballet.encoder.</span></code><code class="sig-name descname"><span class="pre">make_encoder_pipeline</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">steps</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/encoder.html#make_encoder_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.encoder.make_encoder_pipeline" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt id="ballet.encoder.make_robust_encoder">
-<code class="sig-prename descclassname"><span class="pre">ballet.encoder.</span></code><code class="sig-name descname"><span class="pre">make_robust_encoder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">steps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/encoder.html#make_robust_encoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.encoder.make_robust_encoder" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">ballet.encoder.</span></code><code class="sig-name descname"><span class="pre">make_robust_encoder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">steps</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/encoder.html#make_robust_encoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.encoder.make_robust_encoder" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
