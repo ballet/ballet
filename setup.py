@@ -100,6 +100,10 @@ setup(
         'console_scripts': [
             'ballet=ballet.cli:cli',
         ],
+        'mlblocks': [
+            'primitives=ballet.mlprimitives:PRIMITIVES_PATH',
+            'pipelines=ballet.mlprimitives:PIPELINES_PATH',
+        ],
     },
     extras_require={
         'test': test_requirements,
