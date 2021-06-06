@@ -180,7 +180,7 @@ Start working on a new feature
    Starting new feature...DONE
 
 This will create a new Python module within the project's "contrib"
-directory to hold your feature. It will also try to create and checkeout a new topic branch [#]_ for you to work on your feature.
+directory to hold your feature. It will also try to create and checkout a new topic branch [#]_ for you to work on your feature.
 
 .. [#] The automatic branching requires that you are currently on the default branch and have a clean index.
 

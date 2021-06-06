@@ -14,6 +14,7 @@
    maintainer_guide
    contributor_guide
    feature_engineering_guide
+   consumer_guide
    faq
 
 .. toctree::
@@ -22,6 +23,8 @@
 
    API Reference <api/ballet>
    CLI Reference <cli_reference>
+   MLPrimitives/MLPipelines <mlp_reference>
+
 
 .. toctree::
    :caption: Development Notes
