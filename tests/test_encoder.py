@@ -5,7 +5,6 @@ from ballet.encoder import make_robust_encoder
 from ballet.eng import IdentityTransformer
 from ballet.util.testing import assert_series_equal
 
-
 with_encoder = pytest.mark.parametrize(
     'encoder',
     [
