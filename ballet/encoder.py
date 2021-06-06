@@ -12,6 +12,7 @@ class EncoderPipeline(TransformerPipeline):
     consumers like MLBlocks passes arguments by keyword, and we need to pass an
     argument named ``y`` rather than one named ``X``.
     """
+
     def fit(self, y, **fit_params):
         return super().fit(X=y, **fit_params)
 
