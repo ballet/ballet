@@ -119,7 +119,6 @@
 <li class="toctree-l3"><a class="reference internal" href="maintainer_guide.html#pruning-features">Pruning features</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="maintainer_guide.html#applying-the-feature-engineering-pipeline">Applying the feature engineering pipeline</a></li>
 <li class="toctree-l2"><a class="reference internal" href="maintainer_guide.html#updating-the-framework">Updating the framework</a></li>
 </ul>
 </li>
@@ -411,6 +410,7 @@
   <div class="section" id="consumer-guide">
 <h1>Consumer Guide<a class="headerlink" href="#consumer-guide" title="Permalink to this headline">¶</a></h1>
 <p>Do you want to use the feature engineering pipeline developed by a Ballet project team? This guide is for you. It addresses how to install an existing Ballet project for further use, how to use the project’s API to engineer features, and how to incorporate a project into a larger ML pipeline.</p>
+<p>As a Ballet project repository fills with features, its feature engineering pipeline is always available to engineer features from new data points or datasets. Given the feature testing instituted in the CI/CD for a Ballet project, the latest commit is sure to extract high quality features for your raw data.</p>
 <div class="section" id="install-a-project">
 <h2>Install a project<a class="headerlink" href="#install-a-project" title="Permalink to this headline">¶</a></h2>
 <p>Install a project directly from GitHub with pip using <a class="reference external" href="https://www.python.org/dev/peps/pep-0508/">PEP 508</a> specifiers:</p>
@@ -472,6 +472,14 @@
 </pre></div>
 </div>
 <p>You can now use these <code class="docutils literal notranslate"><span class="pre">X</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> as inputs to your own ML modeling efforts.</p>
+<p>To engineer features as a dataframe rather than an array, manually provide a row and column index for the feature matrix:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="n">pipeline</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_df</span><span class="p">),</span>
+    <span class="n">columns</span><span class="o">=</span><span class="n">pipeline</span><span class="o">.</span><span class="n">transformed_names_</span><span class="p">,</span>
+    <span class="n">index</span><span class="o">=</span><span class="n">X_df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="build-an-ml-pipeline">

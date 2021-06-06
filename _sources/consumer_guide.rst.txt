@@ -4,6 +4,8 @@ Consumer Guide
 
 Do you want to use the feature engineering pipeline developed by a Ballet project team? This guide is for you. It addresses how to install an existing Ballet project for further use, how to use the project's API to engineer features, and how to incorporate a project into a larger ML pipeline.
 
+As a Ballet project repository fills with features, its feature engineering pipeline is always available to engineer features from new data points or datasets. Given the feature testing instituted in the CI/CD for a Ballet project, the latest commit is sure to extract high quality features for your raw data.
+
 Install a project
 -----------------
 
@@ -90,6 +92,17 @@ Encode targets of the test dataset:
    y_te = encoder.transform(y_df_te)
 
 You can now use these ``X`` and ``y`` as inputs to your own ML modeling efforts.
+
+To engineer features as a dataframe rather than an array, manually provide a row and column index for the feature matrix:
+
+.. code-block:: python
+
+   X = pd.DataFrame(
+       pipeline.transform(X_df),
+       columns=pipeline.transformed_names_,
+       index=X_df.index,
+   )
+
 
 Build an ML pipeline
 --------------------

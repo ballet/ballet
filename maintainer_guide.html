@@ -119,7 +119,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#pruning-features">Pruning features</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#applying-the-feature-engineering-pipeline">Applying the feature engineering pipeline</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#updating-the-framework">Updating the framework</a></li>
 </ul>
 </li>
@@ -651,40 +650,6 @@ merge commit that comes from merging an accepted feature.</p></li>
 <li><p>If so, then the set of existing features is pruned to remove redundant features.</p></li>
 <li><p>Pruned features are automatically deleted from your source repository by an automated service.</p></li>
 </ol>
-</div>
-</div>
-<div class="section" id="applying-the-feature-engineering-pipeline">
-<h2>Applying the feature engineering pipeline<a class="headerlink" href="#applying-the-feature-engineering-pipeline" title="Permalink to this headline">¶</a></h2>
-<p>As your repository fills with features, your feature engineering pipeline is always available to
-engineer features from new data points or datasets.</p>
-<p>For interactive usage:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">myproject.api</span> <span class="kn">import</span> <span class="n">api</span>
-
-<span class="c1"># load training data</span>
-<span class="n">X_df_tr</span><span class="p">,</span> <span class="n">y_df_tr</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">load_data</span><span class="p">()</span>
-
-<span class="c1"># fit pipeline to training data</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">engineer_features</span><span class="p">(</span><span class="n">X_df_tr</span><span class="p">,</span> <span class="n">y_df_tr</span><span class="p">)</span>
-<span class="n">pipeline</span><span class="p">,</span> <span class="n">encoder</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">encoder</span>
-
-<span class="c1"># load new data and apply pipeline</span>
-<span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">input_dir</span><span class="o">=</span><span class="s1">&#39;/path/to/new/data&#39;</span><span class="p">)</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_df</span><span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">encoder</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">y_df</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>For command-line usage:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>python -m myproject engineer-features path/to/test/data path/to/features/output
-</pre></div>
-</div>
-<p>To engineer features as a dataframe rather than an array:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_df</span><span class="p">)</span>
-<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-    <span class="n">X</span><span class="p">,</span>
-    <span class="n">columns</span><span class="o">=</span><span class="n">pipeline</span><span class="o">.</span><span class="n">transformed_names_</span><span class="p">,</span>
-    <span class="n">index</span><span class="o">=</span><span class="n">X_df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
-<span class="p">)</span>
-</pre></div>
 </div>
 </div>
 <div class="section" id="updating-the-framework">
