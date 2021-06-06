@@ -164,47 +164,6 @@ contained in the old feature, and more.
 3. If so, then the set of existing features is pruned to remove redundant features.
 4. Pruned features are automatically deleted from your source repository by an automated service.
 
-Applying the feature engineering pipeline
------------------------------------------
-
-As your repository fills with features, your feature engineering pipeline is always available to
-engineer features from new data points or datasets.
-
-For interactive usage:
-
-.. code-block:: python
-
-   from myproject.api import api
-
-   # load training data
-   X_df_tr, y_df_tr = api.load_data()
-
-   # fit pipeline to training data
-   result = api.engineer_features(X_df_tr, y_df_tr)
-   pipeline, encoder = result.pipeline, result.encoder
-
-   # load new data and apply pipeline
-   X_df, y_df = api.load_data(input_dir='/path/to/new/data')
-   X = pipeline.transform(X_df)
-   y = encoder.transform(y_df)
-
-For command-line usage:
-
-.. code-block:: console
-
-   $ python -m myproject engineer-features path/to/test/data path/to/features/output
-
-To engineer features as a dataframe rather than an array:
-
-.. code-block:: python
-
-   X = pipeline.transform(X_df)
-   pd.DataFrame(
-       X,
-       columns=pipeline.transformed_names_,
-       index=X_df.index,
-   )
-
 Updating the framework
 ----------------------
 
