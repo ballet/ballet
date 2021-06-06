@@ -1,5 +1,13 @@
 # History
 
+## 0.18.0 (2021-06-06)
+
+* Added [Consumer Guide](https://ballet.github.io/ballet/consumer_guide.html)
+* Can use Ballet together with MLBlocks to engineer features and then use additional preprocessing and ML components ([#86](https://github.com/ballet/ballet/pull/86))
+* Can wrap the extracted feature matrix in a data frame with named columns derived from ``feature.output`` or ``feature.name``
+* Implemented `ballet.encoder.EncoderPipeline` to (mostly) mirror `ballet.pipeline.FeatureEngineeringPipeline`
+* Can specify the dataset used for fitting the pipeline in the engineer-features CLI via `--train-dir path/to/train/dir`
+
 ## 0.17.0 (2021-05-24)
 
 * Support nested transformers, both with nested features and with input/transformer tuples wrapped with SubsetTransformers ([#82](https://github.com/ballet/ballet/pull/82))
