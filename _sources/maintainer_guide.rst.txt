@@ -194,6 +194,17 @@ For command-line usage:
 
    $ python -m myproject engineer-features path/to/test/data path/to/features/output
 
+To engineer features as a dataframe rather than an array:
+
+.. code-block:: python
+
+   X = pipeline.transform(X_df)
+   pd.DataFrame(
+       X,
+       columns=pipeline.transformed_names_,
+       index=X_df.index,
+   )
+
 Updating the framework
 ----------------------
 

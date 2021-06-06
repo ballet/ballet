@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>ballet.validation.feature_acceptance.validator module &mdash; ballet 0.17.0 documentation</title>
+  <title>ballet.encoder module &mdash; ballet 0.17.0 documentation</title>
   
 
   
@@ -41,8 +41,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="ballet.validation.feature_api package" href="ballet.validation.feature_api.html" />
-    <link rel="prev" title="ballet.validation.feature_acceptance package" href="ballet.validation.feature_acceptance.html" /> 
+    <link rel="next" title="ballet.exc module" href="ballet.exc.html" />
+    <link rel="prev" title="ballet.discovery module" href="ballet.discovery.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -208,7 +208,7 @@
 <p class="caption"><span class="caption-text">Reference</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="ballet.html">API Reference</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="ballet.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ballet.html#subpackages">Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="ballet.eng.html">ballet.eng package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="ballet.eng.html#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ballet.eng.html#submodules">Submodules</a></li>
@@ -218,20 +218,20 @@
 <li class="toctree-l4"><a class="reference internal" href="ballet.util.html#submodules">Submodules</a></li>
 </ul>
 </li>
-<li class="toctree-l3 current"><a class="reference internal" href="ballet.validation.html">ballet.validation package</a><ul class="current">
-<li class="toctree-l4 current"><a class="reference internal" href="ballet.validation.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.validation.html">ballet.validation package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ballet.validation.html#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ballet.validation.html#submodules">Submodules</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="ballet.html#submodules">Submodules</a><ul>
+<li class="toctree-l2 current"><a class="reference internal" href="ballet.html#submodules">Submodules</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="ballet.cli.html">ballet.cli module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.client.html">ballet.client module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.compat.html">ballet.compat module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.contrib.html">ballet.contrib module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.discovery.html">ballet.discovery module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ballet.encoder.html">ballet.encoder module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ballet.encoder module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.exc.html">ballet.exc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.feature.html">ballet.feature module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.pipeline.html">ballet.pipeline module</a></li>
@@ -359,18 +359,14 @@
         
           <li><a href="ballet.html">ballet package</a> &raquo;</li>
         
-          <li><a href="ballet.validation.html">ballet.validation package</a> &raquo;</li>
-        
-          <li><a href="ballet.validation.feature_acceptance.html">ballet.validation.feature_acceptance package</a> &raquo;</li>
-        
-      <li>ballet.validation.feature_acceptance.validator module</li>
+      <li>ballet.encoder module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
             
-              <a href="https://github.com/ballet/ballet/blob/master/docs/api/ballet.validation.feature_acceptance.validator.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/ballet/ballet/blob/master/docs/api/ballet.encoder.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -384,133 +380,80 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-ballet.validation.feature_acceptance.validator">
-<span id="ballet-validation-feature-acceptance-validator-module"></span><h1>ballet.validation.feature_acceptance.validator module<a class="headerlink" href="#module-ballet.validation.feature_acceptance.validator" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-ballet.encoder">
+<span id="ballet-encoder-module"></span><h1>ballet.encoder module<a class="headerlink" href="#module-ballet.encoder" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt id="ballet.validation.feature_acceptance.validator.AlwaysAccepter">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.validation.feature_acceptance.validator.</span></code><code class="sig-name descname"><span class="pre">AlwaysAccepter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_df_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candidate_feature</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_acceptance/validator.html#AlwaysAccepter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.AlwaysAccepter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="ballet.validation.base.html#ballet.validation.base.FeatureAccepter" title="ballet.validation.base.FeatureAccepter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.FeatureAccepter</span></code></a></p>
+<dt id="ballet.encoder.EncoderPipeline">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.encoder.</span></code><code class="sig-name descname"><span class="pre">EncoderPipeline</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">steps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/encoder.html#EncoderPipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.encoder.EncoderPipeline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn_pandas.pipeline.TransformerPipeline</span></code></p>
+<p>Pipeline of target encoder steps</p>
+<p>This wraps sklearn.pipeline.Pipeline. Each step receives a single argument
+<code class="docutils literal notranslate"><span class="pre">y</span></code> to their fit and transform methods. This is needed because some
+consumers like MLBlocks passes arguments by keyword, and we need to pass an
+argument named <code class="docutils literal notranslate"><span class="pre">y</span></code> rather than one named <code class="docutils literal notranslate"><span class="pre">X</span></code>.</p>
 <dl class="py method">
-<dt id="ballet.validation.feature_acceptance.validator.AlwaysAccepter.judge">
-<code class="sig-name descname"><span class="pre">judge</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_acceptance/validator.html#AlwaysAccepter.judge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.AlwaysAccepter.judge" title="Permalink to this definition">¶</a></dt>
-<dd><p>Judge whether feature should be accepted</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="ballet.validation.feature_acceptance.validator.CompoundAccepter">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.validation.feature_acceptance.validator.</span></code><code class="sig-name descname"><span class="pre">CompoundAccepter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">specs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_acceptance/validator.html#CompoundAccepter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.CompoundAccepter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="ballet.validation.base.html#ballet.validation.base.FeatureAccepter" title="ballet.validation.base.FeatureAccepter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.FeatureAccepter</span></code></a></p>
-<p>A compound accepter that runs a list of individual accepters</p>
-<p>An accepter spec is just a simple serialization of a class and its kwargs:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">name</span><span class="p">:</span> <span class="n">ballet</span><span class="o">.</span><span class="n">validation</span><span class="o">.</span><span class="n">feature_acceptance</span><span class="o">.</span><span class="n">validator</span><span class="o">.</span><span class="n">CompoundAccepter</span>
-<span class="n">params</span><span class="p">:</span>
-  <span class="n">agg</span><span class="p">:</span> <span class="nb">any</span>
-  <span class="n">specs</span><span class="p">:</span>
-    <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">ballet</span><span class="o">.</span><span class="n">validation</span><span class="o">.</span><span class="n">feature_acceptance</span><span class="o">.</span><span class="n">validator</span><span class="o">.</span><span class="n">VarianceThresholdAccepter</span>
-      <span class="n">params</span><span class="p">:</span>
-        <span class="n">threshold</span><span class="p">:</span> <span class="mf">0.1</span>
-    <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">ballet</span><span class="o">.</span><span class="n">validation</span><span class="o">.</span><span class="n">feature_acceptance</span><span class="o">.</span><span class="n">validator</span><span class="o">.</span><span class="n">MutualInformationAccepter</span>
-      <span class="n">params</span><span class="p">:</span>
-        <span class="n">threshold</span><span class="p">:</span> <span class="mf">0.1</span>
-</pre></div>
-</div>
+<dt id="ballet.encoder.EncoderPipeline.fit">
+<code class="sig-name descname"><span class="pre">fit</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">fit_params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/encoder.html#EncoderPipeline.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.encoder.EncoderPipeline.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit the model</p>
+<p>Fit all the transforms one after the other and transform the
+data, then fit the transformed data using the final estimator.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>agg</strong> – one of <code class="docutils literal notranslate"><span class="pre">'all'</span></code> or <code class="docutils literal notranslate"><span class="pre">'any'</span></code>; whether to accept if all
-underlying accepters accept or if any accepter accepts.</p></li>
-<li><p><strong>specs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – list of dicts of accepter specs</p></li>
+<li><p><strong>X</strong> (<em>iterable</em>) – Training data. Must fulfill input requirements of first step of the
+pipeline.</p></li>
+<li><p><strong>y</strong> (<em>iterable</em><em>, </em><em>default=None</em>) – Training targets. Must fulfill label requirements for all steps of
+the pipeline.</p></li>
+<li><p><strong>**fit_params</strong> (<em>dict of string -&gt; object</em>) – Parameters passed to the <code class="docutils literal notranslate"><span class="pre">fit</span></code> method of each step, where
+each parameter name is prefixed such that parameter <code class="docutils literal notranslate"><span class="pre">p</span></code> for step
+<code class="docutils literal notranslate"><span class="pre">s</span></code> has key <code class="docutils literal notranslate"><span class="pre">s__p</span></code>.</p></li>
 </ul>
 </dd>
-</dl>
-<dl class="py method">
-<dt id="ballet.validation.feature_acceptance.validator.CompoundAccepter.judge">
-<code class="sig-name descname"><span class="pre">judge</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_acceptance/validator.html#CompoundAccepter.judge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.CompoundAccepter.judge" title="Permalink to this definition">¶</a></dt>
-<dd><p>Judge whether feature should be accepted</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="ballet.validation.feature_acceptance.validator.GFSSFAccepter">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.validation.feature_acceptance.validator.</span></code><code class="sig-name descname"><span class="pre">GFSSFAccepter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lmbda_1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lmbda_2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambda_1_adjustment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambda_2_adjustment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_acceptance/validator.html#GFSSFAccepter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.GFSSFAccepter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="ballet.validation.base.html#ballet.validation.base.FeatureAcceptanceMixin" title="ballet.validation.base.FeatureAcceptanceMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.FeatureAcceptanceMixin</span></code></a>, <a class="reference internal" href="ballet.validation.gfssf.html#ballet.validation.gfssf.GFSSFPerformanceEvaluator" title="ballet.validation.gfssf.GFSSFPerformanceEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.gfssf.GFSSFPerformanceEvaluator</span></code></a></p>
-<dl class="py method">
-<dt id="ballet.validation.feature_acceptance.validator.GFSSFAccepter.judge">
-<code class="sig-name descname"><span class="pre">judge</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_acceptance/validator.html#GFSSFAccepter.judge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.GFSSFAccepter.judge" title="Permalink to this definition">¶</a></dt>
-<dd><p>Judge feature acceptance using GFSSF</p>
-<p>Uses lines 1-8 of agGFSSF where we do not remove accepted but
-redundant features on line 8.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="ballet.validation.feature_acceptance.validator.MutualInformationAccepter">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.validation.feature_acceptance.validator.</span></code><code class="sig-name descname"><span class="pre">MutualInformationAccepter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">handle_nan_targets</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fail'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_acceptance/validator.html#MutualInformationAccepter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.MutualInformationAccepter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="ballet.validation.base.html#ballet.validation.base.FeatureAccepter" title="ballet.validation.base.FeatureAccepter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.FeatureAccepter</span></code></a></p>
-<p>Accept features with mutual information with the target above a threshold</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>threshold</strong> – mutual information threshold</p></li>
-<li><p><strong>handle_nan_targets</strong> – one of <code class="docutils literal notranslate"><span class="pre">'fail'</span></code> or <code class="docutils literal notranslate"><span class="pre">'ignore'</span></code>, whether to
-fail validation if NaN-valued targets are discovered or to drop
-those rows in calculation of the mutual information score</p></li>
-</ul>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>self</strong> – This estimator</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Pipeline</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.encoder.EncoderPipeline.steps">
+<code class="sig-name descname"><span class="pre">steps</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ballet.encoder.EncoderPipeline.steps" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
-<dt id="ballet.validation.feature_acceptance.validator.MutualInformationAccepter.judge">
-<code class="sig-name descname"><span class="pre">judge</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_acceptance/validator.html#MutualInformationAccepter.judge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.MutualInformationAccepter.judge" title="Permalink to this definition">¶</a></dt>
-<dd><p>Judge whether feature should be accepted</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="ballet.validation.feature_acceptance.validator.NeverAccepter">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.validation.feature_acceptance.validator.</span></code><code class="sig-name descname"><span class="pre">NeverAccepter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_df_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candidate_feature</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_acceptance/validator.html#NeverAccepter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.NeverAccepter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="ballet.validation.base.html#ballet.validation.base.FeatureAccepter" title="ballet.validation.base.FeatureAccepter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.FeatureAccepter</span></code></a></p>
-<dl class="py method">
-<dt id="ballet.validation.feature_acceptance.validator.NeverAccepter.judge">
-<code class="sig-name descname"><span class="pre">judge</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_acceptance/validator.html#NeverAccepter.judge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.NeverAccepter.judge" title="Permalink to this definition">¶</a></dt>
-<dd><p>Judge whether feature should be accepted</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="ballet.validation.feature_acceptance.validator.RandomAccepter">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.validation.feature_acceptance.validator.</span></code><code class="sig-name descname"><span class="pre">RandomAccepter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_acceptance/validator.html#RandomAccepter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.RandomAccepter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="ballet.validation.base.html#ballet.validation.base.FeatureAcceptanceMixin" title="ballet.validation.base.FeatureAcceptanceMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.FeatureAcceptanceMixin</span></code></a>, <a class="reference internal" href="ballet.validation.common.html#ballet.validation.common.RandomFeaturePerformanceEvaluator" title="ballet.validation.common.RandomFeaturePerformanceEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.common.RandomFeaturePerformanceEvaluator</span></code></a></p>
-<dl class="py method">
-<dt id="ballet.validation.feature_acceptance.validator.RandomAccepter.judge">
-<code class="sig-name descname"><span class="pre">judge</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_acceptance/validator.html#RandomAccepter.judge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.RandomAccepter.judge" title="Permalink to this definition">¶</a></dt>
-<dd><p>Accept feature with probability p</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="ballet.validation.feature_acceptance.validator.VarianceThresholdAccepter">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.validation.feature_acceptance.validator.</span></code><code class="sig-name descname"><span class="pre">VarianceThresholdAccepter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_acceptance/validator.html#VarianceThresholdAccepter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.VarianceThresholdAccepter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="ballet.validation.base.html#ballet.validation.base.FeatureAccepter" title="ballet.validation.base.FeatureAccepter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ballet.validation.base.FeatureAccepter</span></code></a></p>
-<p>Accept features with variance above a threshold</p>
+<dt id="ballet.encoder.EncoderPipeline.transform">
+<code class="sig-name descname"><span class="pre">transform</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/encoder.html#EncoderPipeline.transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.encoder.EncoderPipeline.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply transforms, and transform with the final estimator</p>
+<p>This also works where final estimator is <code class="docutils literal notranslate"><span class="pre">None</span></code>: all prior
+transformations are applied.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>threshold</strong> – variance threshold</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>iterable</em>) – Data to transform. Must fulfill input requirements of first step
+of the pipeline.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>Xt</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array-like of shape  (n_samples, n_transformed_features)</p>
 </dd>
 </dl>
-<dl class="py method">
-<dt id="ballet.validation.feature_acceptance.validator.VarianceThresholdAccepter.judge">
-<code class="sig-name descname"><span class="pre">judge</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/feature_acceptance/validator.html#VarianceThresholdAccepter.judge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.validation.feature_acceptance.validator.VarianceThresholdAccepter.judge" title="Permalink to this definition">¶</a></dt>
-<dd><p>Judge whether feature should be accepted</p>
 </dd></dl>
 
 </dd></dl>
+
+<dl class="py function">
+<dt id="ballet.encoder.make_encoder_pipeline">
+<code class="sig-prename descclassname"><span class="pre">ballet.encoder.</span></code><code class="sig-name descname"><span class="pre">make_encoder_pipeline</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">steps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/encoder.html#make_encoder_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.encoder.make_encoder_pipeline" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ballet.encoder.make_robust_encoder">
+<code class="sig-prename descclassname"><span class="pre">ballet.encoder.</span></code><code class="sig-name descname"><span class="pre">make_robust_encoder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">steps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/encoder.html#make_robust_encoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.encoder.make_robust_encoder" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 
@@ -520,8 +463,8 @@ those rows in calculation of the mutual information score</p></li>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="ballet.validation.feature_api.html" class="btn btn-neutral float-right" title="ballet.validation.feature_api package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="ballet.validation.feature_acceptance.html" class="btn btn-neutral float-left" title="ballet.validation.feature_acceptance package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ballet.exc.html" class="btn btn-neutral float-right" title="ballet.exc module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="ballet.discovery.html" class="btn btn-neutral float-left" title="ballet.discovery module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

@@ -229,6 +229,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.compat.html">ballet.compat module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.contrib.html">ballet.contrib module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.discovery.html">ballet.discovery module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ballet.encoder.html">ballet.encoder module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.exc.html">ballet.exc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.feature.html">ballet.feature module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/ballet.pipeline.html">ballet.pipeline module</a></li>
@@ -376,7 +377,7 @@
 <span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">redirect_stderr</span><span class="p">,</span> <span class="n">redirect_stdout</span><span class="p">,</span> <span class="n">suppress</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">devnull</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TypeVar</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Sized</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TypeVar</span>
 
 <span class="kn">import</span> <span class="nn">cookiecutter.utils</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -412,7 +413,7 @@
     <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_indent</span> <span class="o">+</span> <span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="make_plural_suffix"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.make_plural_suffix">[docs]</a><span class="k">def</span> <span class="nf">make_plural_suffix</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="make_plural_suffix"><a class="viewcode-back" href="../../api/ballet.util.html#ballet.util.make_plural_suffix">[docs]</a><span class="k">def</span> <span class="nf">make_plural_suffix</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Sized</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">suffix</span>
     <span class="k">else</span><span class="p">:</span>

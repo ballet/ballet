@@ -231,6 +231,7 @@
 <li class="toctree-l3"><a class="reference internal" href="ballet.compat.html">ballet.compat module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.contrib.html">ballet.contrib module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.discovery.html">ballet.discovery module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ballet.encoder.html">ballet.encoder module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.exc.html">ballet.exc module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ballet.feature.html">ballet.feature module</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ballet.pipeline module</a></li>
@@ -405,7 +406,7 @@
 
 <dl class="py attribute">
 <dt id="ballet.pipeline.EngineerFeaturesResult.features">
-<code class="sig-name descname"><span class="pre">features</span></code><em class="property"><span class="pre">:</span> <span class="pre">Collection</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="ballet.feature.html#ballet.feature.Feature" title="ballet.feature.Feature"><span class="pre">ballet.feature.Feature</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ballet.pipeline.EngineerFeaturesResult.features" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">features</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="ballet.feature.html#ballet.feature.Feature" title="ballet.feature.Feature"><span class="pre">ballet.feature.Feature</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ballet.pipeline.EngineerFeaturesResult.features" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 1</p>
 </dd></dl>
 
@@ -436,7 +437,7 @@
 <p>Feature engineering pipeline</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>features</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="ballet.feature.html#ballet.feature.Feature" title="ballet.feature.Feature"><code class="xref py py-class docutils literal notranslate"><span class="pre">Feature</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code>[<a class="reference internal" href="ballet.feature.html#ballet.feature.Feature" title="ballet.feature.Feature"><code class="xref py py-class docutils literal notranslate"><span class="pre">Feature</span></code></a>]]) – feature or list of features</p>
+<dd class="field-odd"><p><strong>features</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="ballet.feature.html#ballet.feature.Feature" title="ballet.feature.Feature"><code class="xref py py-class docutils literal notranslate"><span class="pre">Feature</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="ballet.feature.html#ballet.feature.Feature" title="ballet.feature.Feature"><code class="xref py py-class docutils literal notranslate"><span class="pre">Feature</span></code></a>]]) – feature or list of features</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -444,9 +445,18 @@
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ballet_features</span></code><a class="headerlink" href="#ballet.pipeline.FeatureEngineeringPipeline.ballet_features" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code>[<a class="reference internal" href="ballet.feature.html#ballet.feature.Feature" title="ballet.feature.Feature"><code class="xref py py-class docutils literal notranslate"><span class="pre">Feature</span></code></a>]</p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="ballet.feature.html#ballet.feature.Feature" title="ballet.feature.Feature"><code class="xref py py-class docutils literal notranslate"><span class="pre">Feature</span></code></a>]</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ballet.pipeline.FeatureEngineeringPipeline.get_names">
+<code class="sig-name descname"><span class="pre">get_names</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transformer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/pipeline.html#FeatureEngineeringPipeline.get_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.pipeline.FeatureEngineeringPipeline.get_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return verbose names for the transformed columns.</p>
+<p>This extends the behavior of DataFrameMapper to allow <code class="docutils literal notranslate"><span class="pre">alias</span></code> to
+rename all of the output columns, rather than just providing a common
+base.</p>
 </dd></dl>
 
 </dd></dl>
