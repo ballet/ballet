@@ -6,6 +6,7 @@ from unittest.mock import create_autospec, patch
 import git
 import pytest
 
+from ballet.exc import BalletError
 from ballet.project import Project
 from ballet.util.git import CustomDiffer, Differ
 from ballet.validation.common import ChangeCollector, NewFeatureInfo
@@ -45,6 +46,8 @@ def import_error_code():
 def code_to_module(code: str, modname='modname') -> ModuleType:
     # see https://stackoverflow.com/a/53080237
     spec = importlib.util.spec_from_loader(modname, loader=None)
+    if spec is None:
+        raise BalletError('Error compiling code into module')
     module = importlib.util.module_from_spec(spec)
     exec(code, module.__dict__)
     return module

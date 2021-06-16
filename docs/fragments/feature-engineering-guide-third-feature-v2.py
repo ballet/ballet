@@ -7,4 +7,4 @@ transformer = [
     NullFiller(),
     StandardScaler(),
 ]
-feature = Feature(input=input, transformer=transformer)
+feature = Feature(input, transformer)

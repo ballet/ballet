@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Container, Dict, List, Optional
 
 import funcy as fy
 import numpy as np
@@ -29,7 +29,9 @@ def _summarize_feature(
         'input':
             [feature.input]
             if isinstance(feature.input, str)
-            else feature.input,
+            else feature.input
+            if not callable(feature.input)
+            else [],
         'transformer': feature.transformer,
         'primitives': get_transformer_primitives(feature.transformer),
         'output': feature.output,
@@ -159,7 +161,12 @@ def discover(
         summarize = fy.rpartial(_summarize_feature, None, None)
 
     for feature in features:
-        if input and input not in feature.input and input != feature.input:
+        if (
+            input
+            and isinstance(feature.input, Container)  # avoid callables
+            and input not in feature.input
+            and input != feature.input
+        ):
             continue
         if (
             primitive

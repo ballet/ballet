@@ -6,7 +6,8 @@ from slugify import slugify
 
 import ballet.pipeline
 from ballet.transformer import RobustTransformer, make_robust_transformer
-from ballet.util.typing import OneOrMore, TransformerLike
+from ballet.util.typing import (
+    FeatureInputType, FeatureTransformerType, OneOrMore,)
 
 __all__ = ('Feature', )
 
@@ -22,7 +23,11 @@ class Feature:
 
     Args:
         input: required columns from the input dataframe needed for the
-            transformation
+            transformation. There is also preliminary support for using other
+            pandas indexing, such as selection by callable -- if you pass a
+            callable, the entities data frame will be indexed using the
+            callable. This is not officially supported by the underlying
+            sklearn-pandas library, so please report any issues you experience.
         transformer: transformer, sequence of transformers, or ``None``. A
             "transformer" is an instance of a class that provides a
             fit/transform-style learned transformation. Alternately, a
@@ -41,8 +46,8 @@ class Feature:
 
     def __init__(
         self,
-        input: OneOrMore[str],
-        transformer: OneOrMore[TransformerLike],
+        input: FeatureInputType,
+        transformer: FeatureTransformerType,
         name: Optional[str] = None,
         description: Optional[str] = None,
         output: Optional[OneOrMore[str]] = None,
@@ -79,7 +84,7 @@ class Feature:
 
     def as_input_transformer_tuple(
         self
-    ) -> Tuple[OneOrMore[str], RobustTransformer, dict]:
+    ) -> Tuple[FeatureInputType, RobustTransformer, dict]:
         """Return an tuple for passing to DataFrameMapper constructor"""
         return self.input, self.transformer, {'alias': self.output}
 

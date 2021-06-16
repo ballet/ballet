@@ -6,4 +6,4 @@ transformer = [
     np.log,
     lambda ser: ser.fillna(0),
 ]
-feature = Feature(input=input, transformer=transformer)
+feature = Feature(input, transformer)
