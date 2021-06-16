@@ -40,7 +40,7 @@ def engineer_features(input_dir, output_dir, train_dir):
     # load input data
     X_df, y_df = api.load_data(input_dir=input_dir)
 
-    # transformer entities and targets
+    # transform entities and targets
     X_ft = pipeline.transform(X_df)
     y_ft = encoder.transform(y_df)
 
