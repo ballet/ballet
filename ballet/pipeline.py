@@ -48,11 +48,18 @@ class FeatureEngineeringPipeline(DataFrameMapper):
 
         This extends the behavior of DataFrameMapper to allow ``alias`` to
         rename all of the output columns, rather than just providing a common
-        base.
+        base. It also allows ``columns`` to be a callable that supports
+        selection by callable of the data frame.
         """
         num_cols = x.shape[1] if len(x.shape) > 1 else 1
         if isinstance(alias, list) and len(alias) == num_cols:
             return alias
+
+        # set some default, but it would be better to store the column names
+        # when we see them and then index out using the callable
+        if callable(columns):
+            columns = f'selected_input_{hash(columns)}'
+
         return super().get_names(columns, transformer, x, alias=alias)
 
 

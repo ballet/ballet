@@ -65,7 +65,7 @@ def test_transform(input, transformer):
     df.columns = ['foo', 'bar']
     mapper.fit(df)
     X = mapper.transform(df)
-    assert np.shape(X) == (5, len(input))
+    assert np.shape(X) == (5, 2)
 
 
 @with_input
