@@ -29,7 +29,9 @@ Let's take a look at the simplest possible feature:
 .. code-block:: python
 
    from ballet import Feature
-   feature = Feature(input="Lot Area", transformer=None)
+   input = "Lot Area"
+   transformer = None
+   feature = Feature(input, transformer)
 
 We have to create an instance of :py:class:`~ballet.feature.Feature`. The special value ``None`` will be replaced by Ballet with an object that applies that identity transformation. This feature, when applied to a dataset that contains the column ``Lot Area``, will pass that column through unchanged. It's not super exciting.
 
@@ -67,12 +69,16 @@ The ``input`` field accepts either a key or a collection of keys (usually string
 - if ``input`` is a scalar key, a 1-dimensional pandas Series or numpy array is passed to the transformer
 - if ``input`` is a collection of keys, a 2-dimensional pandas DataFrame or numpy array is passed to the transformer
 
+There is also experimental support for some other ways of indexing data frames, such as `selection by callable <https://pandas.pydata.org/docs/user_guide/indexing.html#selection-by-callable>`__. Here, ``input`` must be a function that accepts one argument that returns valid output for indexing, such as ``lambda df: ['A', 'B']``. This is not officially supported by the underlying sklearn-pandas library, so please report any issues you experience.
+
+.. versionchanged:: 0.19
+
 Transformers
 ^^^^^^^^^^^^
 
-The ``transformer`` field accepts either one or more transformer-like objects.
+The ``transformer`` field accepts one or more transformer steps.
 
-A *transformer-like* is an object that satisfies the scikit-learn `Transformer API`_, having ``fit``, ``transform``, and ``fit_transform`` methods.
+A *transformer step* is a *transformer-like object* that satisfies the scikit-learn `Transformer API`_, having ``fit``, ``transform``, and ``fit_transform`` methods.
 
 In addition, Ballet supports a more concise syntax for expressing common operations. When a feature is created, it replaces this shorthand with explicit transformers. The following syntax is supported:
 
@@ -208,7 +214,7 @@ Let's took a look at another example.
 .. include:: fragments/feature-engineering-guide-third-feature.py
    :code: python
 
-The feature requests three inputs, which are various measures of square footage on the property. The combined transformer is a sequence of two "transformer-like" steps. The first transformer step is a function that will receive as its input a DataFrame with three columns, and it computes the portion of the lot area that is not attributable to the garage or the house footprint. However, there may be missing values after this operation if any of the columns had missing values, so we impute them with the median of the training dataset. Here, the first function is implicitly converted into a :py:class:`~ballet.eng.FunctionTransformer` (other shorthand is also supported for `specifying transformer steps <#transformers>`__).
+The feature requests three inputs, which are various measures of square footage on the property. The combined transformer is a sequence of two transformer steps. The first transformer step is a function that will receive as its input a DataFrame with three columns, and it computes the portion of the lot area that is not attributable to the garage or the house footprint. However, there may be missing values after this operation if any of the columns had missing values, so we impute them with the median of the training dataset. Here, the first function is implicitly converted into a :py:class:`~ballet.eng.FunctionTransformer` (other shorthand is also supported for `specifying transformer steps <#transformers>`__).
 
 .. In this feature, the sum is equivalent to a weighted sum with the weights all equal to 1. But maybe you have the intuition that not all living area is created equal? You might apply custom weights as follows:
 

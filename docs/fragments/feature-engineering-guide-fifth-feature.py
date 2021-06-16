@@ -12,4 +12,4 @@ transformer = [
     OneHotEncoder(),
 ]
 name = "Cleaned and encoded exterior covering"
-feature = Feature(input=input, transformer=transformer, name=name)
+feature = Feature(input, transformer, name=name)

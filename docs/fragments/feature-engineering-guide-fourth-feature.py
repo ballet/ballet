@@ -14,4 +14,4 @@ transformer = [
     MinMaxScaler(),
 ]
 name = "Narrowness of the lot"
-feature = Feature(input=input, transformer=transformer, name=name)
+feature = Feature(input, transformer, name=name)
