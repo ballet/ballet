@@ -411,7 +411,8 @@
 
 <span class="kn">import</span> <span class="nn">ballet.pipeline</span>
 <span class="kn">from</span> <span class="nn">ballet.transformer</span> <span class="kn">import</span> <span class="n">RobustTransformer</span><span class="p">,</span> <span class="n">make_robust_transformer</span>
-<span class="kn">from</span> <span class="nn">ballet.util.typing</span> <span class="kn">import</span> <span class="n">OneOrMore</span><span class="p">,</span> <span class="n">TransformerLike</span>
+<span class="kn">from</span> <span class="nn">ballet.util.typing</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">FeatureInputType</span><span class="p">,</span> <span class="n">FeatureTransformerType</span><span class="p">,</span> <span class="n">OneOrMore</span><span class="p">,)</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Feature&#39;</span><span class="p">,</span> <span class="p">)</span>
 
@@ -427,7 +428,11 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        input: required columns from the input dataframe needed for the</span>
-<span class="sd">            transformation</span>
+<span class="sd">            transformation. There is also preliminary support for using other</span>
+<span class="sd">            pandas indexing, such as selection by callable -- if you pass a</span>
+<span class="sd">            callable, the entities data frame will be indexed using the</span>
+<span class="sd">            callable. This is not officially supported by the underlying</span>
+<span class="sd">            sklearn-pandas library, so please report any issues you experience.</span>
 <span class="sd">        transformer: transformer, sequence of transformers, or ``None``. A</span>
 <span class="sd">            &quot;transformer&quot; is an instance of a class that provides a</span>
 <span class="sd">            fit/transform-style learned transformation. Alternately, a</span>
@@ -446,8 +451,8 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="nb">input</span><span class="p">:</span> <span class="n">OneOrMore</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-        <span class="n">transformer</span><span class="p">:</span> <span class="n">OneOrMore</span><span class="p">[</span><span class="n">TransformerLike</span><span class="p">],</span>
+        <span class="nb">input</span><span class="p">:</span> <span class="n">FeatureInputType</span><span class="p">,</span>
+        <span class="n">transformer</span><span class="p">:</span> <span class="n">FeatureTransformerType</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">output</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">OneOrMore</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -484,7 +489,7 @@
 
 <div class="viewcode-block" id="Feature.as_input_transformer_tuple"><a class="viewcode-back" href="../../api/ballet.feature.html#ballet.Feature.as_input_transformer_tuple">[docs]</a>    <span class="k">def</span> <span class="nf">as_input_transformer_tuple</span><span class="p">(</span>
         <span class="bp">self</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">OneOrMore</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">RobustTransformer</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">FeatureInputType</span><span class="p">,</span> <span class="n">RobustTransformer</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Return an tuple for passing to DataFrameMapper constructor&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;alias&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">}</span></div>
 

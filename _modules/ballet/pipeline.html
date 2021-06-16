@@ -453,11 +453,18 @@
 
 <span class="sd">        This extends the behavior of DataFrameMapper to allow ``alias`` to</span>
 <span class="sd">        rename all of the output columns, rather than just providing a common</span>
-<span class="sd">        base.</span>
+<span class="sd">        base. It also allows ``columns`` to be a callable that supports</span>
+<span class="sd">        selection by callable of the data frame.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">num_cols</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">alias</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">alias</span><span class="p">)</span> <span class="o">==</span> <span class="n">num_cols</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">alias</span>
+
+        <span class="c1"># set some default, but it would be better to store the column names</span>
+        <span class="c1"># when we see them and then index out using the callable</span>
+        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">columns</span><span class="p">):</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;selected_input_</span><span class="si">{</span><span class="nb">hash</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_names</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">transformer</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="n">alias</span><span class="p">)</span></div></div>
 
 

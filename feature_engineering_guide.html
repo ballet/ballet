@@ -430,7 +430,9 @@ entire feature engineering pipeline out of individual feature objects.</p>
 <p>A feature “requests” an input column or a set of input columns. Then it defines a transformation to apply to this input. This <em>transformer</em> may be one step or a list of steps. Each step provides a <em>fit</em> method and a <em>transform</em> method, though Ballet supports more concise syntax for the most common transformations. When features are part of a <em>feature engineering pipeline</em>, their outputs are concatenated together to form a <em>feature matrix</em>.</p>
 <p>Let’s take a look at the simplest possible feature:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ballet</span> <span class="kn">import</span> <span class="n">Feature</span>
-<span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="s2">&quot;Lot Area&quot;</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="nb">input</span> <span class="o">=</span> <span class="s2">&quot;Lot Area&quot;</span>
+<span class="n">transformer</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>We have to create an instance of <a class="reference internal" href="api/ballet.feature.html#ballet.feature.Feature" title="ballet.feature.Feature"><code class="xref py py-class docutils literal notranslate"><span class="pre">Feature</span></code></a>. The special value <code class="docutils literal notranslate"><span class="pre">None</span></code> will be replaced by Ballet with an object that applies that identity transformation. This feature, when applied to a dataset that contains the column <code class="docutils literal notranslate"><span class="pre">Lot</span> <span class="pre">Area</span></code>, will pass that column through unchanged. It’s not super exciting.</p>
@@ -444,7 +446,7 @@ entire feature engineering pipeline out of individual feature objects.</p>
     <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s2">&quot;median&quot;</span><span class="p">),</span>
 <span class="p">]</span>
 <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Yard Area&quot;</span>
-<span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="n">transformer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+<span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This feature requests three input columns and then defines two transformer steps. The first step subtracts the area of a house’s garage and first floor from its lot. The second step fills in missing values with the median of the training dataset. When applied to a dataset that contains the three columns, this feature will compute some measure of “yard area” for a house.</p>
@@ -471,11 +473,15 @@ entire feature engineering pipeline out of individual feature objects.</p>
 <li><p>if <code class="docutils literal notranslate"><span class="pre">input</span></code> is a scalar key, a 1-dimensional pandas Series or numpy array is passed to the transformer</p></li>
 <li><p>if <code class="docutils literal notranslate"><span class="pre">input</span></code> is a collection of keys, a 2-dimensional pandas DataFrame or numpy array is passed to the transformer</p></li>
 </ul>
+<p>There is also experimental support for some other ways of indexing data frames, such as <a class="reference external" href="https://pandas.pydata.org/docs/user_guide/indexing.html#selection-by-callable">selection by callable</a>. Here, <code class="docutils literal notranslate"><span class="pre">input</span></code> must be a function that accepts one argument that returns valid output for indexing, such as <code class="docutils literal notranslate"><span class="pre">lambda</span> <span class="pre">df:</span> <span class="pre">['A',</span> <span class="pre">'B']</span></code>. This is not officially supported by the underlying sklearn-pandas library, so please report any issues you experience.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.19.</span></p>
+</div>
 </div>
 <div class="section" id="transformers">
 <h3>Transformers<a class="headerlink" href="#transformers" title="Permalink to this headline">¶</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">transformer</span></code> field accepts either one or more transformer-like objects.</p>
-<p>A <em>transformer-like</em> is an object that satisfies the scikit-learn <a class="reference external" href="https://scikit-learn.org/stable/glossary.html#term-transformer">Transformer API</a>, having <code class="docutils literal notranslate"><span class="pre">fit</span></code>, <code class="docutils literal notranslate"><span class="pre">transform</span></code>, and <code class="docutils literal notranslate"><span class="pre">fit_transform</span></code> methods.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">transformer</span></code> field accepts one or more transformer steps.</p>
+<p>A <em>transformer step</em> is a <em>transformer-like object</em> that satisfies the scikit-learn <a class="reference external" href="https://scikit-learn.org/stable/glossary.html#term-transformer">Transformer API</a>, having <code class="docutils literal notranslate"><span class="pre">fit</span></code>, <code class="docutils literal notranslate"><span class="pre">transform</span></code>, and <code class="docutils literal notranslate"><span class="pre">fit_transform</span></code> methods.</p>
 <p>In addition, Ballet supports a more concise syntax for expressing common operations. When a feature is created, it replaces this shorthand with explicit transformers. The following syntax is supported:</p>
 <ul class="simple">
 <li><p>a callable that accepts the <code class="docutils literal notranslate"><span class="pre">X</span></code> DataFrame as input and produces an array-like as output. This can be thought of as a transformer that does not have a fit stage. Ballet will convert it into a <code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionTransformer</span></code> object.</p></li>
@@ -621,7 +627,7 @@ the following simplified dataset:</p>
 
 <span class="nb">input</span> <span class="o">=</span> <span class="s2">&quot;Lot Area&quot;</span>
 <span class="n">transformer</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="n">transformer</span><span class="p">)</span>
+<span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This feature requests one input, the <code class="docutils literal notranslate"><span class="pre">Lot</span> <span class="pre">Area</span></code> column of the raw dataset.  It’s transformer is given as <code class="docutils literal notranslate"><span class="pre">None</span></code>, syntactic sugar indicating the identity transformation. When the feature is executed as part of a pipeline, the transformer’s fit and transform methods will be called receiving the one column as input. Here we access the <code class="docutils literal notranslate"><span class="pre">pipeline</span></code> property, which is a convenience to show a feature engineering pipeline containing just the one feature.</p>
@@ -649,7 +655,7 @@ the following simplified dataset:</p>
 <span class="nb">input</span> <span class="o">=</span> <span class="s2">&quot;Lot Frontage&quot;</span>
 <span class="n">transformer</span> <span class="o">=</span> <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">)</span>
 <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Imputed Lot Frontage&quot;</span>
-<span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="n">transformer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+<span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The feature requests one input, the <code class="docutils literal notranslate"><span class="pre">Lot</span> <span class="pre">Frontage</span></code> column. Its transformer is a <a class="reference internal" href="api/ballet.eng.external.html#ballet.eng.external.SimpleImputer" title="ballet.eng.external.SimpleImputer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimpleImputer</span></code></a> instance. It will receive as its input a data frame with this one column. So we get the following behavior when the feature is executed as part of a pipeline:</p>
@@ -672,10 +678,10 @@ the following simplified dataset:</p>
     <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s2">&quot;median&quot;</span><span class="p">),</span>
 <span class="p">]</span>
 <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Yard Area&quot;</span>
-<span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="n">transformer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+<span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The feature requests three inputs, which are various measures of square footage on the property. The combined transformer is a sequence of two “transformer-like” steps. The first transformer step is a function that will receive as its input a DataFrame with three columns, and it computes the portion of the lot area that is not attributable to the garage or the house footprint. However, there may be missing values after this operation if any of the columns had missing values, so we impute them with the median of the training dataset. Here, the first function is implicitly converted into a <code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionTransformer</span></code> (other shorthand is also supported for <a class="reference external" href="#transformers">specifying transformer steps</a>).</p>
+<p>The feature requests three inputs, which are various measures of square footage on the property. The combined transformer is a sequence of two transformer steps. The first transformer step is a function that will receive as its input a DataFrame with three columns, and it computes the portion of the lot area that is not attributable to the garage or the house footprint. However, there may be missing values after this operation if any of the columns had missing values, so we impute them with the median of the training dataset. Here, the first function is implicitly converted into a <code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionTransformer</span></code> (other shorthand is also supported for <a class="reference external" href="#transformers">specifying transformer steps</a>).</p>
 </div>
 <div class="section" id="nested-transformers">
 <h3>Nested transformers<a class="headerlink" href="#nested-transformers" title="Permalink to this headline">¶</a></h3>
@@ -696,7 +702,7 @@ the following simplified dataset:</p>
     <span class="n">MinMaxScaler</span><span class="p">(),</span>
 <span class="p">]</span>
 <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Narrowness of the lot&quot;</span>
-<span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="n">transformer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+<span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The first transformer step shows how to use nested transformers. You can pass a tuple of <code class="docutils literal notranslate"><span class="pre">(input,</span> <span class="pre">transformer)</span></code>, just like the current feature you are developing! Here, we are re-using the same input and transformer from the <code class="docutils literal notranslate"><span class="pre">impute_lot_frontage</span></code> that we <a class="reference external" href="#example-learned-transformation">already developed</a>. Any columns that are not used in the nested transformer will be passed through to the next transformer step unchanged. The next transformer step computes the ratio of depth (area/frontage) to frontage; a value of 1.0 is a square lot, a larger value is a more narrow lot. Since a smaller value is a less narrow lot, for the purpose of this feature we clip these smaller values to 1. There are a lot of squarish lots, so we also take the log of this ratio to address skew. Finally, we scale the measure to a 0-1 range.</p>
@@ -719,7 +725,7 @@ the following simplified dataset:</p>
     <span class="n">OneHotEncoder</span><span class="p">(),</span>
 <span class="p">]</span>
 <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Cleaned and encoded exterior covering&quot;</span>
-<span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="n">transformer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+<span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -821,7 +827,7 @@ the following simplified dataset:</p>
 
 <span class="nb">input</span> <span class="o">=</span> <span class="s2">&quot;Lot Frontage&quot;</span>
 <span class="n">transformer</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">ser</span><span class="p">:</span> <span class="n">ser</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="n">transformer</span><span class="p">)</span>
+<span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="p">)</span>
 </pre></div>
 </div>
 </td>
@@ -835,7 +841,7 @@ the following simplified dataset:</p>
 
 <span class="nb">input</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Lot Frontage&quot;</span><span class="p">,</span> <span class="s2">&quot;Lot Area&quot;</span><span class="p">]</span>
 <span class="n">transformer</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="n">transformer</span><span class="p">)</span>
+<span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="p">)</span>
 </pre></div>
 </div>
 </td>
@@ -850,7 +856,7 @@ the following simplified dataset:</p>
 
 <span class="nb">input</span> <span class="o">=</span> <span class="s2">&quot;Lot Frontage&quot;</span>
 <span class="n">transformer</span> <span class="o">=</span> <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">)</span>
-<span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="n">transformer</span><span class="p">)</span>
+<span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="p">)</span>
 </pre></div>
 </div>
 </td>
@@ -870,7 +876,7 @@ the following simplified dataset:</p>
     <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">,</span>
     <span class="k">lambda</span> <span class="n">ser</span><span class="p">:</span> <span class="n">ser</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
 <span class="p">]</span>
-<span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="o">=</span><span class="n">transformer</span><span class="p">)</span>
+<span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">transformer</span><span class="p">)</span>
 </pre></div>
 </div>
 </td>

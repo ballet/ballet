@@ -403,7 +403,7 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ballet.discovery</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Container</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">funcy</span> <span class="k">as</span> <span class="nn">fy</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -434,7 +434,9 @@
         <span class="s1">&#39;input&#39;</span><span class="p">:</span>
             <span class="p">[</span><span class="n">feature</span><span class="o">.</span><span class="n">input</span><span class="p">]</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
-            <span class="k">else</span> <span class="n">feature</span><span class="o">.</span><span class="n">input</span><span class="p">,</span>
+            <span class="k">else</span> <span class="n">feature</span><span class="o">.</span><span class="n">input</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
+            <span class="k">else</span> <span class="p">[],</span>
         <span class="s1">&#39;transformer&#39;</span><span class="p">:</span> <span class="n">feature</span><span class="o">.</span><span class="n">transformer</span><span class="p">,</span>
         <span class="s1">&#39;primitives&#39;</span><span class="p">:</span> <span class="n">get_transformer_primitives</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">transformer</span><span class="p">),</span>
         <span class="s1">&#39;output&#39;</span><span class="p">:</span> <span class="n">feature</span><span class="o">.</span><span class="n">output</span><span class="p">,</span>
@@ -564,7 +566,12 @@
         <span class="n">summarize</span> <span class="o">=</span> <span class="n">fy</span><span class="o">.</span><span class="n">rpartial</span><span class="p">(</span><span class="n">_summarize_feature</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">input</span> <span class="ow">and</span> <span class="nb">input</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">feature</span><span class="o">.</span><span class="n">input</span> <span class="ow">and</span> <span class="nb">input</span> <span class="o">!=</span> <span class="n">feature</span><span class="o">.</span><span class="n">input</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">input</span>
+            <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="n">Container</span><span class="p">)</span>  <span class="c1"># avoid callables</span>
+            <span class="ow">and</span> <span class="nb">input</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">feature</span><span class="o">.</span><span class="n">input</span>
+            <span class="ow">and</span> <span class="nb">input</span> <span class="o">!=</span> <span class="n">feature</span><span class="o">.</span><span class="n">input</span>
+        <span class="p">):</span>
             <span class="k">continue</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="n">primitive</span>
