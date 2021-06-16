@@ -54,6 +54,11 @@ test_requirements = [
 ]
 
 development_requirements = [
+    # typing
+    'types-pkg_resources',
+    'types-requests',
+    'types-python-slugify',
+
     # general
     'bump2version >= 1',
     'pip >= 9.0.1',
