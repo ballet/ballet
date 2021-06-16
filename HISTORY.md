@@ -1,5 +1,9 @@
 # History
 
+## 0.19.0 (2021-06-16)
+
+* Support callable as feature input ([#88](https://github.com/ballet/ballet/pull/88))
+
 ## 0.18.0 (2021-06-06)
 
 * Added [Consumer Guide](https://ballet.github.io/ballet/consumer_guide.html)
@@ -184,11 +188,11 @@
 * Implement `PullRequestFeatureValidator`
 * Add `util.travis`, `util.modutil`, `util.git` util modules
 
-## 0.2
+## 0.2 (2018-04-11)
 
 * Implement `ArrayLikeEqualityTestingMixin`
 * Implement `collect_contrib_features`
 
-## 0.1
+## 0.1 (2018-04-08)
 
 * First release on PyPI
