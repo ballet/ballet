@@ -90,3 +90,24 @@ def test_df_colnames(input, transformer, output):
         index=entities_df.index,
     )
     assert fy.all(fy.isa(str), feature_frame.columns)
+
+
+def test_gh_87():
+    X_df = pd.DataFrame(
+        data=np.random.rand(5, 4), columns=['A1', 'A2', 'B1', 'B2'])
+
+    def input(df):
+        return [col for col in df.columns if col.startswith('A')]
+
+    transformer = None
+    feature = Feature(input, transformer)
+    X = feature.pipeline.fit_transform(X_df)
+
+    assert X.shape[1] == len(input(X_df))
+
+    X_ft_df = pd.DataFrame(
+        X,
+        columns=feature.pipeline.transformed_names_,
+        index=X_df.index,
+    )
+    assert all(isinstance(col, str) for col in X_ft_df.columns)
