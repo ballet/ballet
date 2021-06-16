@@ -6,9 +6,22 @@ from ballet.feature import Feature
 from ballet.pipeline import FeatureEngineeringPipeline
 
 
-@pytest.fixture
-def inputs():
-    input = 'foo'
+@pytest.fixture(
+    params=[
+        'input',
+        ['input'],
+        lambda df: 'input',
+        lambda df: ['input'],
+    ],
+    ids=[
+        'string',
+        'list of string',
+        'callable to string',
+        'callable to list of string',
+    ]
+)
+def inputs(request):
+    input = request.param
     transformer = IdentityTransformer()
     return input, transformer
 
@@ -55,6 +68,12 @@ def test_feature_init_invalid_transformer_api(inputs):
 
     with pytest.raises(ValueError):
         Feature(input, IdentityTransformer)
+
+
+def test_feature_repr(inputs):
+    input, transformer = inputs
+    feature = Feature(input, transformer)
+    assert isinstance(repr(feature), str)
 
 
 def test_feature_as_input_transformer_tuple(inputs):
