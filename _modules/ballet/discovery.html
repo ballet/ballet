@@ -409,12 +409,15 @@
 <span class="kn">import</span> <span class="nn">funcy</span> <span class="k">as</span> <span class="nn">fy</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
 <span class="kn">import</span> <span class="nn">ballet</span>
 <span class="kn">from</span> <span class="nn">ballet.transformer</span> <span class="kn">import</span> <span class="n">get_transformer_primitives</span>
-<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">asarray2d</span>
+<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">asarray2d</span><span class="p">,</span> <span class="n">dont_log_nonnegative</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.entropy</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">estimate_conditional_information</span><span class="p">,</span> <span class="n">estimate_mutual_information</span><span class="p">,)</span>
+
+<span class="n">EXPENSIVE_STATS_CMI_MAX_COLS_X</span> <span class="o">=</span> <span class="mi">10</span>
 
 
 <div class="viewcode-block" id="countunique"><a class="viewcode-back" href="../../api/ballet.discovery.html#ballet.discovery.countunique">[docs]</a><span class="k">def</span> <span class="nf">countunique</span><span class="p">(</span><span class="n">z</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
@@ -422,11 +425,12 @@
         <span class="k">lambda</span> <span class="n">arr</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">arr</span><span class="p">)),</span> <span class="n">axis</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span></div>
 
 
-<span class="nd">@fy</span><span class="o">.</span><span class="n">memoize</span><span class="p">(</span><span class="n">key_func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">feature</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">id</span><span class="p">(</span><span class="n">feature</span><span class="p">))</span>
+<span class="nd">@fy</span><span class="o">.</span><span class="n">memoize</span><span class="p">(</span><span class="n">key_func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">feature</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">expensive_stats</span><span class="p">:</span> <span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">feature</span><span class="p">),</span> <span class="n">expensive_stats</span><span class="p">))</span>  <span class="c1"># noqa</span>
 <span class="k">def</span> <span class="nf">_summarize_feature</span><span class="p">(</span>
     <span class="n">feature</span><span class="p">:</span> <span class="s1">&#39;ballet.feature.Feature&#39;</span><span class="p">,</span>
     <span class="n">values</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="s1">&#39;ballet.feature.Feature&#39;</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]],</span>
     <span class="n">y</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+    <span class="n">expensive_stats</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Summarize a single feature&quot;&quot;&quot;</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">{</span>
@@ -445,6 +449,7 @@
         <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">feature</span><span class="o">.</span><span class="n">source</span><span class="p">,</span>
         <span class="s1">&#39;mutual_information&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s1">&#39;conditional_mutual_information&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;nvalues&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s1">&#39;std&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s1">&#39;variance&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
@@ -470,8 +475,7 @@
                 <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">))</span>
 
             <span class="n">result</span><span class="p">[</span><span class="s1">&#39;mutual_information&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">estimate_mutual_information</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-            <span class="n">result</span><span class="p">[</span><span class="s1">&#39;conditional_mutual_information&#39;</span><span class="p">]</span> <span class="o">=</span> \
-                <span class="n">estimate_conditional_information</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">result</span><span class="p">[</span><span class="s1">&#39;nvalues&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">result</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>  <span class="c1"># same thing anyway</span>
             <span class="n">result</span><span class="p">[</span><span class="s1">&#39;std&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
             <span class="n">result</span><span class="p">[</span><span class="s1">&#39;variance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
@@ -480,16 +484,22 @@
             <span class="n">result</span><span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
             <span class="n">result</span><span class="p">[</span><span class="s1">&#39;nunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">countunique</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
 
+            <span class="k">if</span> <span class="n">expensive_stats</span> <span class="ow">or</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">EXPENSIVE_STATS_CMI_MAX_COLS_X</span><span class="p">:</span>
+                <span class="n">result</span><span class="p">[</span><span class="s1">&#39;conditional_mutual_information&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                    <span class="n">estimate_conditional_information</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">result</span>
 
 
-<div class="viewcode-block" id="discover"><a class="viewcode-back" href="../../api/ballet.discovery.html#ballet.discovery.discover">[docs]</a><span class="k">def</span> <span class="nf">discover</span><span class="p">(</span>
+<div class="viewcode-block" id="discover"><a class="viewcode-back" href="../../api/ballet.discovery.html#ballet.discovery.discover">[docs]</a><span class="nd">@dont_log_nonnegative</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">discover</span><span class="p">(</span>
     <span class="n">features</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;ballet.feature.Feature&#39;</span><span class="p">],</span>
     <span class="n">X_df</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
     <span class="n">y_df</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
     <span class="n">y</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
     <span class="nb">input</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">primitive</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">primitive</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">expensive_stats</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Discover existing features</span>
 
@@ -514,6 +524,8 @@
 <span class="sd">    - conditional_mutual_information: estimated conditional mutual information</span>
 <span class="sd">        between the feature (or averaged over feature values) and the target</span>
 <span class="sd">        conditional on all other features on the development dataset split</span>
+<span class="sd">    - nvalues: the number of feature values this feature extracts (i.e. 1 for</span>
+<span class="sd">        a scalar-valued feature and &gt;1 for a vector-valued feature)</span>
 <span class="sd">    - mean: mean of the feature on the development dataset split</span>
 <span class="sd">    - std: standard deviation of the feature (or averaged over feature values)</span>
 <span class="sd">        on the development dataset split</span>
@@ -561,12 +573,13 @@
             <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span>
         <span class="p">}</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-        <span class="n">summarize</span> <span class="o">=</span> <span class="n">fy</span><span class="o">.</span><span class="n">rpartial</span><span class="p">(</span><span class="n">_summarize_feature</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">summarize</span> <span class="o">=</span> <span class="n">fy</span><span class="o">.</span><span class="n">rpartial</span><span class="p">(</span><span class="n">_summarize_feature</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">expensive_stats</span><span class="p">)</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">summarize</span> <span class="o">=</span> <span class="n">fy</span><span class="o">.</span><span class="n">rpartial</span><span class="p">(</span><span class="n">_summarize_feature</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">summarize</span> <span class="o">=</span> <span class="n">fy</span><span class="o">.</span><span class="n">rpartial</span><span class="p">(</span>
+            <span class="n">_summarize_feature</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">expensive_stats</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">features</span><span class="p">):</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="nb">input</span>
             <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="n">Container</span><span class="p">)</span>  <span class="c1"># avoid callables</span>

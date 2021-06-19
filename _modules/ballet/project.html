@@ -731,12 +731,22 @@
         <span class="sd">&quot;&quot;&quot;Get the feature engineering pipeline from the existing features&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">FeatureEngineeringPipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
 
-<div class="viewcode-block" id="FeatureEngineeringProject.load_data"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.FeatureEngineeringProject.load_data">[docs]</a>    <span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="FeatureEngineeringProject.load_data"><a class="viewcode-back" href="../../api/ballet.project.html#ballet.project.FeatureEngineeringProject.load_data">[docs]</a>    <span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">DataFrame</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Call the project&#39;s load_data function, caching dataset</span>
 
 <span class="sd">        Dataset is cached for `FeatureEngineeringProject.CACHE_TIMEOUT`</span>
 <span class="sd">        seconds. To invalidate cache and cause data to be re-loaded from</span>
 <span class="sd">        wherever it comes from, pass `cache=False`.</span>
+
+<span class="sd">        Typically, the project&#39;s load_data function has this signature and</span>
+<span class="sd">        description::</span>
+
+<span class="sd">           load_data(split=&#39;train&#39;, input_dir=None)</span>
+
+<span class="sd">           If input dir is not None, then load whatever dataset appears in</span>
+<span class="sd">           `input_dir`. Otherwise, load the data split indicated by `split`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">cache</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_load_data</span><span class="o">.</span><span class="n">invalidate_all</span><span class="p">()</span>
