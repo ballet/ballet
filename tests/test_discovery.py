@@ -21,7 +21,8 @@ def test_countunique(z, expected):
     assert_array_equal(nunique, expected)
 
 
-def test_discover(sample_data):
+@pytest.mark.parametrize('expensive_stats', [True, False])
+def test_discover(sample_data, expensive_stats):
     features = [
         Feature(
             'size', NullFiller(0),
@@ -35,13 +36,13 @@ def test_discover(sample_data):
     X_df, y_df = sample_data.X, sample_data.y
     y = np.asfarray(y_df)
 
-    df = discover(features, X_df, y_df, y)
+    df = discover(features, X_df, y_df, y, expensive_stats=expensive_stats)
 
     expected_cols = {
         'name', 'description', 'input', 'transformer', 'primitives', 'output',
         'author', 'source', 'mutual_information',
-        'conditional_mutual_information', 'mean', 'std', 'variance', 'min',
-        'median', 'max', 'nunique',
+        'conditional_mutual_information', 'nvalues', 'mean', 'std',
+        'variance', 'min', 'median', 'max', 'nunique',
     }
     actual_cols = df.columns
     assert not expected_cols.symmetric_difference(actual_cols)

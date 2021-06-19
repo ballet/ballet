@@ -3,12 +3,15 @@ from typing import Container, Dict, List, Optional
 import funcy as fy
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
 
 import ballet
 from ballet.transformer import get_transformer_primitives
-from ballet.util import asarray2d
+from ballet.util import asarray2d, dont_log_nonnegative
 from ballet.validation.entropy import (
     estimate_conditional_information, estimate_mutual_information,)
+
+EXPENSIVE_STATS_CMI_MAX_COLS_X = 10
 
 
 def countunique(z: np.ndarray, axis=0):
@@ -16,11 +19,12 @@ def countunique(z: np.ndarray, axis=0):
         lambda arr: len(np.unique(arr)), axis, z)
 
 
-@fy.memoize(key_func=lambda feature, values, y: id(feature))
+@fy.memoize(key_func=lambda feature, values, y, expensive_stats: (id(feature), expensive_stats))  # noqa
 def _summarize_feature(
     feature: 'ballet.feature.Feature',
     values: Optional[Dict['ballet.feature.Feature', Optional[np.ndarray]]],
     y: Optional[np.ndarray],
+    expensive_stats: bool,
 ) -> dict:
     """Summarize a single feature"""
     result = {
@@ -39,6 +43,7 @@ def _summarize_feature(
         'source': feature.source,
         'mutual_information': np.nan,
         'conditional_mutual_information': np.nan,
+        'nvalues': np.nan,
         'mean': np.nan,
         'std': np.nan,
         'variance': np.nan,
@@ -64,8 +69,7 @@ def _summarize_feature(
                 x = np.empty((z.shape[0], 0))
 
             result['mutual_information'] = estimate_mutual_information(z, y)
-            result['conditional_mutual_information'] = \
-                estimate_conditional_information(z, y, x)
+            result['nvalues'] = z.shape[1]
             result['mean'] = np.mean(np.mean(z, axis=0))  # same thing anyway
             result['std'] = np.mean(np.std(z, axis=0))
             result['variance'] = np.mean(np.var(z, axis=0))
@@ -74,16 +78,22 @@ def _summarize_feature(
             result['max'] = np.max(z)
             result['nunique'] = np.mean(countunique(z, axis=0))
 
+            if expensive_stats or x.shape[1] < EXPENSIVE_STATS_CMI_MAX_COLS_X:
+                result['conditional_mutual_information'] = \
+                    estimate_conditional_information(z, y, x)
+
     return result
 
 
+@dont_log_nonnegative()
 def discover(
     features: List['ballet.feature.Feature'],
     X_df: Optional[pd.DataFrame],
     y_df: Optional[pd.DataFrame],
     y: Optional[np.ndarray],
     input: Optional[str] = None,
-    primitive: Optional[str] = None
+    primitive: Optional[str] = None,
+    expensive_stats: bool = False,
 ) -> pd.DataFrame:
     """Discover existing features
 
@@ -108,6 +118,8 @@ def discover(
     - conditional_mutual_information: estimated conditional mutual information
         between the feature (or averaged over feature values) and the target
         conditional on all other features on the development dataset split
+    - nvalues: the number of feature values this feature extracts (i.e. 1 for
+        a scalar-valued feature and >1 for a vector-valued feature)
     - mean: mean of the feature on the development dataset split
     - std: standard deviation of the feature (or averaged over feature values)
         on the development dataset split
@@ -155,12 +167,13 @@ def discover(
             for feature in features
         }
         y = asarray2d(y)
-        summarize = fy.rpartial(_summarize_feature, values, y)
+        summarize = fy.rpartial(_summarize_feature, values, y, expensive_stats)
 
     else:
-        summarize = fy.rpartial(_summarize_feature, None, None)
+        summarize = fy.rpartial(
+            _summarize_feature, None, None, expensive_stats)
 
-    for feature in features:
+    for feature in tqdm(features):
         if (
             input
             and isinstance(feature.input, Container)  # avoid callables

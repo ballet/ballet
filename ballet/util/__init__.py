@@ -1,6 +1,7 @@
 import warnings
 from contextlib import redirect_stderr, redirect_stdout, suppress
 from copy import deepcopy
+from logging import Logger, LogRecord
 from os import devnull
 from typing import Optional, Sequence, Sized, Tuple, TypeVar
 
@@ -162,6 +163,17 @@ def nonnegative(call: Call, name: Optional[str] = None):
                     name = 'Result'
             logger.warning(f'{name} should be non-negative.')
     return result
+
+
+@decorator
+def dont_log_nonnegative(call: Call, logger: Logger = logger):
+    def filter(record: LogRecord) -> int:
+        return 0 if 'should be non-negative' in record.msg else 1
+    logger.addFilter(filter)
+    try:
+        return call()
+    finally:
+        logger.removeFilter(filter)
 
 
 # re-export cookiecutter work_in

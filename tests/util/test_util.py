@@ -6,8 +6,9 @@ import pandas as pd
 import pytest
 
 from ballet.util import (
-    DeepcopyMixin, asarray2d, dfilter, falsy, get_arr_desc, has_nans, indent,
-    load_sklearn_df, make_plural_suffix, nonnegative, quiet, truthy,)
+    DeepcopyMixin, asarray2d, dfilter, dont_log_nonnegative, falsy,
+    get_arr_desc, has_nans, indent, load_sklearn_df, make_plural_suffix,
+    nonnegative, quiet, truthy,)
 from ballet.util.log import logger
 from ballet.util.testing import assert_array_equal
 
@@ -239,3 +240,15 @@ def test_nonnegative_negative_introspection(caplog):
         estimate_something()
 
     assert "Something" in caplog.text
+
+
+def test_dont_log_nonnegative(caplog):
+    @dont_log_nonnegative()
+    @nonnegative()
+    def estimate_something():
+        return -1
+
+    with caplog.at_level('WARNING', logger=logger.name):
+        estimate_something
+
+    assert not caplog.text

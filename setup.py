@@ -33,6 +33,7 @@ requirements = [
     'scipy',
     'sklearn_pandas ~= 1.0',
     'stacklog',
+    'tqdm',
 ]
 
 extras = {
