@@ -325,12 +325,22 @@ class FeatureEngineeringProject:
         """Get the feature engineering pipeline from the existing features"""
         return FeatureEngineeringPipeline(self.features)
 
-    def load_data(self, *args, cache=True, **kwargs):
+    def load_data(
+        self, *args, cache=True, **kwargs
+    ) -> Tuple[DataFrame, DataFrame]:
         """Call the project's load_data function, caching dataset
 
         Dataset is cached for `FeatureEngineeringProject.CACHE_TIMEOUT`
         seconds. To invalidate cache and cause data to be re-loaded from
         wherever it comes from, pass `cache=False`.
+
+        Typically, the project's load_data function has this signature and
+        description::
+
+           load_data(split='train', input_dir=None)
+
+           If input dir is not None, then load whatever dataset appears in
+           `input_dir`. Otherwise, load the data split indicated by `split`.
         """
         if not cache:
             self._load_data.invalidate_all()

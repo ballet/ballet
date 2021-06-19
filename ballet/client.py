@@ -97,7 +97,9 @@ class Client:
             accepter_class, feature, result.features, result.X_df,
             result.y_df, result.X_df, result.y, False)
 
-    def discover(self, input=None, primitive=None) -> pd.DataFrame:
+    def discover(
+        self, input=None, primitive=None, expensive_stats=False
+    ) -> pd.DataFrame:
         features = self.api.features
         encoder = self.api.encoder
 
@@ -109,7 +111,8 @@ class Client:
             X_df = y_df = y = None
 
         return _discover(
-            features, X_df, y_df, y, input=input, primitive=primitive)
+            features, X_df, y_df, y, input=input, primitive=primitive,
+            expensive_stats=expensive_stats)
 
     discover.__doc__ = _discover.__doc__
 
