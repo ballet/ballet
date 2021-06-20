@@ -25,7 +25,9 @@ install:
   - pip install invoke
   - invoke install
 
-script:
+before_script:
   - printenv | grep TRAVIS | sort
   - pip freeze
+
+script:
   - ballet validate
