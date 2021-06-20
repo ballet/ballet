@@ -1,5 +1,9 @@
 # History
 
+## 0.19.1 (2021-06-20)
+
+* Defer computation of some expensive summary statistics in `ballet.discovery.discover`
+
 ## 0.19.0 (2021-06-16)
 
 * Support callable as feature input ([#88](https://github.com/ballet/ballet/pull/88))
