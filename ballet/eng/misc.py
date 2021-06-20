@@ -42,7 +42,7 @@ class BoxCoxTransformer(ConditionalTransformer):
         lmbda: power parameter of the Box-Cox transform. Defaults to 0.0
 
     See also:
-        https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.boxcox1p.html
+        https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.special.boxcox1p.html
     """
 
     def __init__(self, threshold: float, lmbda: float = 0.0):
