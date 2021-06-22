@@ -6,12 +6,12 @@ import pytest
 from ballet.util import asarray2d
 from ballet.util.testing import assert_array_equal
 from ballet.validation.entropy import (
-    NEIGHBORS_ALGORITHM, NEIGHBORS_METRIC, _compute_empirical_probability,
-    _compute_epsilon, _compute_n_points_within_radius_i,
-    _compute_volume_unit_ball, _estimate_cont_entropy, _estimate_disc_entropy,
-    _is_column_cont, _is_column_disc, _make_neighbors,
-    estimate_conditional_information, estimate_entropy,
-    estimate_mutual_information,)
+    DISC_COL_UNIQUE_COUNT_THRESH, NEIGHBORS_ALGORITHM, NEIGHBORS_METRIC,
+    _compute_empirical_probability, _compute_epsilon,
+    _compute_n_points_within_radius_i, _compute_volume_unit_ball,
+    _estimate_cont_entropy, _estimate_disc_entropy, _is_column_cont,
+    _is_column_disc, _make_neighbors, estimate_conditional_information,
+    estimate_entropy, estimate_mutual_information,)
 
 
 def test_make_neighbors():
@@ -78,7 +78,7 @@ def test_compute_volume_unit_ball_euclidean():
     volume_upper_bound = 1
     for d in [1, 2, 5, 11]:
         volume = _compute_volume_unit_ball(d, metric=metric)
-        assert volume <= volume_upper_bound
+        assert 0 < volume <= volume_upper_bound
 
 
 def test_compute_epsilon():
@@ -141,16 +141,37 @@ def test_disc_entropy_two_values():
     assert round(abs(expected_h - H_hat), 7) == 0
 
 
-def test_is_column_disc():
-    x = asarray2d(np.arange(50))
+@pytest.mark.parametrize(
+    'x,expected',
+    [
+        (np.arange(10), True),
+        (np.zeros(10), True),
+        (np.arange(10) * 1.0, True),
+        (np.concatenate((
+            np.zeros(DISC_COL_UNIQUE_COUNT_THRESH+1), np.random.rand(10))),
+            True),
+        (np.concatenate((
+            np.zeros(DISC_COL_UNIQUE_COUNT_THRESH), np.random.rand(10))),
+            False),
+        (np.random.rand(10), False),
+    ]
+)
+def test_is_column_disc(x, expected):
+    x = asarray2d(x)
     result = _is_column_disc(x)
-    assert result
+    assert result == expected
 
 
-def test_is_column_cont():
-    x = asarray2d(np.random.rand(50))
+@pytest.mark.parametrize(
+    'x,expected',
+    [
+        (np.random.rand(10), True),
+    ]
+)
+def test_is_column_cont(x, expected):
+    x = asarray2d(x)
     result = _is_column_cont(x)
-    assert result
+    assert result == expected
 
 
 @pytest.mark.skip(reason='skipping')

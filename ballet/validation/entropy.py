@@ -19,7 +19,8 @@ __all__ = (
 N_NEIGHBORS = 3   # hyperparameter k from KSG estimator
 NEIGHBORS_ALGORITHM = 'auto'
 NEIGHBORS_METRIC = 'chebyshev'
-DISC_COL_UNIQUE_VAL_THRESH = 0.05
+DISC_COL_UNIQUE_COUNT_THRESH = 20
+DISC_COL_UNIQUE_FRACTION_THRESH = 0.05
 
 
 # Helpers
@@ -73,9 +74,14 @@ def _is_column_disc(col: np.ndarray) -> bool:
     if np.allclose(rounding_error, np.zeros(col.size)):
         return True
 
+    uniques, counts = np.unique(col, return_counts=True)
+
+    # Columns with many repeated values are discrete
+    if np.max(counts) > DISC_COL_UNIQUE_COUNT_THRESH:
+        return True
+
     # Columns with a small fraction of distinct values are discrete
-    uniques = np.unique(col)
-    if (uniques.size / col.size) < DISC_COL_UNIQUE_VAL_THRESH:
+    if (uniques.size / col.size) < DISC_COL_UNIQUE_FRACTION_THRESH:
         return True
 
     return False
@@ -87,6 +93,10 @@ def _is_column_cont(col: np.ndarray) -> bool:
 
 def _get_disc_columns(x: np.ndarray) -> np.ndarray:
     return np.apply_along_axis(_is_column_disc, 0, x)
+
+
+def _get_cont_columns(x: np.ndarray) -> np.ndarray:
+    return np.apply_along_axis(_is_column_cont, 0, x)
 
 
 # Computing epsilon
@@ -125,6 +135,11 @@ def _compute_epsilon(x: np.ndarray) -> np.ndarray:
     # if the kth neighbor is at distance 0, then we are in trouble
     # but we can try the trick of increasing k if we don't use the old
     # value of k sometime later
+    #
+    # we aim to make this safer by deciding that columns with many repeated
+    # values are discrete, not continuous (see _is_disc_column). we could also
+    # add a small amount of noise to the whole column, or try something else
+    # entirely.
     while not np.all(distances) and k < n:
         distances, _ = nn.kneighbors(n_neighbors=k)
         distances = distances[:, -1]  # distances to k-nearest neighbor
