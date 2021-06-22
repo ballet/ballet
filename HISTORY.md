@@ -1,5 +1,10 @@
 # History
 
+## 0.19.2 (2021-06-21)
+
+* Improve discrete column detection in the case of many repeated values
+* Add `ncontinuous` and `ndiscrete` to summary statistics in `ballet.discovery.discover`
+
 ## 0.19.1 (2021-06-20)
 
 * Defer computation of some expensive summary statistics in `ballet.discovery.discover`
