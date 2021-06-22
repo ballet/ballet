@@ -41,8 +41,9 @@ def test_discover(sample_data, expensive_stats):
     expected_cols = {
         'name', 'description', 'input', 'transformer', 'primitives', 'output',
         'author', 'source', 'mutual_information',
-        'conditional_mutual_information', 'nvalues', 'mean', 'std',
-        'variance', 'min', 'median', 'max', 'nunique',
+        'conditional_mutual_information', 'nvalues', 'ncontinuous',
+        'ndiscrete', 'mean', 'std', 'variance', 'min', 'median', 'max',
+        'nunique',
     }
     actual_cols = df.columns
     assert not expected_cols.symmetric_difference(actual_cols)

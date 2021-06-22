@@ -9,7 +9,8 @@ import ballet
 from ballet.transformer import get_transformer_primitives
 from ballet.util import asarray2d, dont_log_nonnegative
 from ballet.validation.entropy import (
-    estimate_conditional_information, estimate_mutual_information,)
+    _get_cont_columns, _get_disc_columns, estimate_conditional_information,
+    estimate_mutual_information,)
 
 EXPENSIVE_STATS_CMI_MAX_COLS_X = 10
 
@@ -44,6 +45,8 @@ def _summarize_feature(
         'mutual_information': np.nan,
         'conditional_mutual_information': np.nan,
         'nvalues': np.nan,
+        'ncontinuous': np.nan,
+        'ndiscrete': np.nan,
         'mean': np.nan,
         'std': np.nan,
         'variance': np.nan,
@@ -70,6 +73,8 @@ def _summarize_feature(
 
             result['mutual_information'] = estimate_mutual_information(z, y)
             result['nvalues'] = z.shape[1]
+            result['ncontinuous'] = np.sum(_get_cont_columns(z))
+            result['ndiscrete'] = np.sum(_get_disc_columns(z))
             result['mean'] = np.mean(np.mean(z, axis=0))  # same thing anyway
             result['std'] = np.mean(np.std(z, axis=0))
             result['variance'] = np.mean(np.var(z, axis=0))
@@ -120,6 +125,10 @@ def discover(
         conditional on all other features on the development dataset split
     - nvalues: the number of feature values this feature extracts (i.e. 1 for
         a scalar-valued feature and >1 for a vector-valued feature)
+    - ncontinuous: the number of feature values this feature extracts that are
+        continuous-valued
+    - ndiscrete: the number of feature values this feature extracts that are
+        discrete-valued
     - mean: mean of the feature on the development dataset split
     - std: standard deviation of the feature (or averaged over feature values)
         on the development dataset split
