@@ -231,8 +231,9 @@ def skipna(a: np.ndarray, b: np.ndarray, *c: np.ndarray, how: str = 'left'):
 
     a_out = a[~nan_inds]
     b_out = b[~nan_inds]
-    c_out = (
+    c_out = [
         arr[~nan_inds]
         for arr in c
-    )
-    return a_out, b_out, *c_out
+    ]
+    out = (a_out, b_out, *c_out)
+    return out
