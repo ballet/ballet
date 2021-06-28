@@ -178,3 +178,31 @@ def dont_log_nonnegative(call: Call, logger: Logger = logger):
 
 # re-export cookiecutter work_in
 work_in = cookiecutter.utils.work_in
+
+
+def skipna(a: np.ndarray, b: np.ndarray, *c: np.ndarray, how: str = 'left'):
+    """Drop rows of both a and b corresponding to missing values
+
+    The length of a and b along the first dimension must be equal.
+
+    Args:
+        a:
+            first array
+        b:
+            second array
+        *c:
+            any additional arrays
+        how:
+            how to determine the rows to drop, one of 'left', 'any', or 'all'.
+            If left, then any row in which a has a missing value is dropped. If
+            any, then any row in which at least one of a, b, or additional
+            arrays has a missing value is dropped. If all , then any row in
+            which all of a, b, and additional arrays has a missing value is
+            dropped. Defaults to left.
+
+    Returns:
+        tuple of a, b, and any additional arrays where a, b, and any
+        additional arrays are guaranteed to be the same length with missing
+        values removed according to ``how``.
+    """
+    pass
