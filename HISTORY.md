@@ -1,5 +1,10 @@
 # History
 
+## 0.19.3 (2021-06-28)
+
+* Support missing targets in discovery and feature performance evaluation [#89](https://github.com/ballet/ballet/pull/89)
+* Add `ninputs` to summary statistics in `ballet.discovery.discover`
+
 ## 0.19.2 (2021-06-21)
 
 * Improve discrete column detection in the case of many repeated values
