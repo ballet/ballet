@@ -409,7 +409,7 @@
 <span></span><span class="c1"># Authors: Soledad Galli &lt;solegalli@protonmail.com&gt;</span>
 <span class="c1"># License: BSD 3 clause</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
@@ -426,24 +426,43 @@
 <span class="sd">    and grey is 0.5, 0.8 and 0.1 respectively, blue is replaced by 0.5, red by 0.8</span>
 <span class="sd">    and grey by 0.1.</span>
 
-<span class="sd">    The encoder will encode only categorical variables (type &#39;object&#39;). A list</span>
-<span class="sd">    of variables can be passed as an argument. If no variables are passed as</span>
-<span class="sd">    argument, the encoder will find and encode all categorical variables</span>
-<span class="sd">    (object type).</span>
+<span class="sd">    The encoder will encode only categorical variables by default (type &#39;object&#39; or</span>
+<span class="sd">    &#39;categorical&#39;). You can pass a list of variables to encode. Alternatively, the</span>
+<span class="sd">    encoder will find and encode all categorical variables (type &#39;object&#39; or</span>
+<span class="sd">    &#39;categorical&#39;).</span>
+
+<span class="sd">    With `ignore_format=True` you have the option to encode numerical variables as well.</span>
+<span class="sd">    The procedure is identical, you can either enter the list of variables to encode, or</span>
+<span class="sd">    the transformer will automatically select all variables.</span>
 
 <span class="sd">    The encoder first maps the categories to the numbers for each variable (fit). The</span>
-<span class="sd">    encoder then replaces the categories with the mapped numbers (transform).</span>
+<span class="sd">    encoder then replaces the categories with those numbers (transform).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    variables : list, default=None</span>
-<span class="sd">        The list of categorical variables to encode. If None, the encoder will find and</span>
-<span class="sd">        select all object type variables.</span>
+<span class="sd">    variables: list, default=None</span>
+<span class="sd">        The list of categorical variables that will be encoded. If None, the</span>
+<span class="sd">        encoder will find and transform all variables of type object or categorical by</span>
+<span class="sd">        default. You can also make the transformer accept numerical variables, see the</span>
+<span class="sd">        next parameter.</span>
+
+<span class="sd">    ignore_format: bool, default=False</span>
+<span class="sd">        Whether the format in which the categorical variables are cast should be</span>
+<span class="sd">        ignored. If false, the encoder will automatically select variables of type</span>
+<span class="sd">        object or categorical, or check that the variables entered by the user are of</span>
+<span class="sd">        type object or categorical. If True, the encoder will select all variables or</span>
+<span class="sd">        accept all variables entered by the user, including those cast as numeric.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    encoder_dict_ :</span>
+<span class="sd">    encoder_dict_:</span>
 <span class="sd">        Dictionary with the target mean value per category per variable.</span>
+
+<span class="sd">    variables_:</span>
+<span class="sd">        The group of variables that will be transformed.</span>
+
+<span class="sd">    n_features_in_:</span>
+<span class="sd">        The number of features in the train set used in fit.</span>
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
@@ -474,9 +493,16 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">variables</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ignore_format</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ignore_format</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ignore_format takes only booleans True and False&quot;</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_check_input_parameter_variables</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore_format</span> <span class="o">=</span> <span class="n">ignore_format</span>
 
 <div class="viewcode-block" id="MeanEncoder.fit"><a class="viewcode-back" href="../../../api/ballet.eng.external.feature_engine.html#ballet.eng.external.MeanEncoder.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -484,18 +510,18 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">        X: pandas dataframe of shape = [n_samples, n_features]</span>
 <span class="sd">            The training input samples. Can be the entire dataframe, not just the</span>
 <span class="sd">            variables to be encoded.</span>
 
-<span class="sd">        y : pandas series</span>
+<span class="sd">        y: pandas series</span>
 <span class="sd">            The target.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        TypeError</span>
 <span class="sd">            - If the input is not a Pandas DataFrame.</span>
-<span class="sd">            - If any user provided variable is not categorical</span>
+<span class="sd">            - f user enters non-categorical variables (unless ignore_format is True)</span>
 <span class="sd">        ValueError</span>
 <span class="sd">            - If there are no categorical variables in the df or the df is empty</span>
 <span class="sd">            - If the variable(s) contain null values</span>
@@ -507,17 +533,20 @@
 
         <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_fit_input_and_variables</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
         <span class="n">temp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">temp</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">encoder_dict_</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">var</span><span class="p">)[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_encoding_dictionary</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_features_in_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="bp">self</span></div>
 

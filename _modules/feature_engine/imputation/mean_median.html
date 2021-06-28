@@ -409,7 +409,7 @@
 <span></span><span class="c1"># Authors: Soledad Galli &lt;solegalli@protonmail.com&gt;</span>
 <span class="c1"># License: BSD 3 clause</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
@@ -426,7 +426,7 @@
 <span class="sd">    The MeanMedianImputer() replaces missing data by the mean or median value of the</span>
 <span class="sd">    variable. It works only with numerical variables.</span>
 
-<span class="sd">    We can pass a list of variables to be imputed. Alternatively, the</span>
+<span class="sd">    You can pass a list of variables to be imputed. Alternatively, the</span>
 <span class="sd">    MeanMedianImputer() will automatically select all variables of type numeric in the</span>
 <span class="sd">    training set.</span>
 
@@ -438,17 +438,23 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    imputation_method : str, default=median</span>
+<span class="sd">    imputation_method: str, default=median</span>
 <span class="sd">        Desired method of imputation. Can take &#39;mean&#39; or &#39;median&#39;.</span>
 
-<span class="sd">    variables : list, default=None</span>
+<span class="sd">    variables: list, default=None</span>
 <span class="sd">        The list of variables to be imputed. If None, the imputer will select</span>
 <span class="sd">        all variables of type numeric.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    imputer_dict_ :</span>
+<span class="sd">    imputer_dict_:</span>
 <span class="sd">        Dictionary with the mean or median values per variable.</span>
+
+<span class="sd">    variables_:</span>
+<span class="sd">        The group of variables that will be transformed.</span>
+
+<span class="sd">    n_features_in_:</span>
+<span class="sd">        The number of features in the train set used in fit.</span>
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
@@ -478,10 +484,10 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">        X: pandas dataframe of shape = [n_samples, n_features]</span>
 <span class="sd">            The training dataset.</span>
 
-<span class="sd">        y : pandas series or None, default=None</span>
+<span class="sd">        y: pandas series or None, default=None</span>
 <span class="sd">            y is not needed in this imputation. You can pass None or y.</span>
 
 <span class="sd">        Raises</span>
@@ -501,16 +507,16 @@
         <span class="n">X</span> <span class="o">=</span> <span class="n">_is_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 
         <span class="c1"># find or check for numerical variables</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_find_or_check_numerical_variables</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span> <span class="o">=</span> <span class="n">_find_or_check_numerical_variables</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
 
         <span class="c1"># find imputation parameters: mean or median</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">imputation_method</span> <span class="o">==</span> <span class="s2">&quot;mean&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
 
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">imputation_method</span> <span class="o">==</span> <span class="s2">&quot;median&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_features_in_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="bp">self</span></div>
 

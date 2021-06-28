@@ -427,6 +427,11 @@
 <div class="viewcode-block" id="FeaturePerformanceEvaluator"><a class="viewcode-back" href="../../../api/ballet.validation.base.html#ballet.validation.base.FeaturePerformanceEvaluator">[docs]</a><span class="k">class</span> <span class="nc">FeaturePerformanceEvaluator</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Evaluate the performance of features from an ML point-of-view</span>
 
+<span class="sd">    Implementing classes should be clear about their support for missing</span>
+<span class="sd">    targets, i.e. NaN values in ``y_val``. For example, the subclass can raise</span>
+<span class="sd">    an error indicating that it cannot be used for a problem, or it can choose</span>
+<span class="sd">    to skip rows with missing values in the performance evaluation.</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        X_df: entities frame for fitting the features</span>
 <span class="sd">        y_df: targets frame/series for fitting the features</span>

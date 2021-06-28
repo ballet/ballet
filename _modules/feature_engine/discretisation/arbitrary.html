@@ -409,11 +409,18 @@
 <span></span><span class="c1"># Authors: Soledad Galli &lt;solegalli@protonmail.com&gt;</span>
 <span class="c1"># License: BSD 3 clause</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="kn">from</span> <span class="nn">feature_engine.base_transformers</span> <span class="kn">import</span> <span class="n">BaseNumericalTransformer</span>
+<span class="kn">from</span> <span class="nn">feature_engine.dataframe_checks</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">_check_contains_inf</span><span class="p">,</span>
+    <span class="n">_check_contains_na</span><span class="p">,</span>
+    <span class="n">_is_dataframe</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">feature_engine.validation</span> <span class="kn">import</span> <span class="n">_return_tags</span>
+<span class="kn">from</span> <span class="nn">feature_engine.variable_manipulation</span> <span class="kn">import</span> <span class="n">_find_or_check_numerical_variables</span>
 
 
 <div class="viewcode-block" id="ArbitraryDiscretiser"><a class="viewcode-back" href="../../../api/ballet.eng.external.feature_engine.html#ballet.eng.external.ArbitraryDiscretiser">[docs]</a><span class="k">class</span> <span class="nc">ArbitraryDiscretiser</span><span class="p">(</span><span class="n">BaseNumericalTransformer</span><span class="p">):</span>
@@ -421,9 +428,9 @@
 <span class="sd">    The ArbitraryDiscretiser() divides continuous numerical variables into contiguous</span>
 <span class="sd">    intervals which limits are determined arbitrarily by the user.</span>
 
-<span class="sd">    The user needs to enter a dictionary with variable names as keys, and a list of</span>
-<span class="sd">    the limits of the intervals as values. For example {&#39;var1&#39;:[0, 10, 100, 1000],</span>
-<span class="sd">    &#39;var2&#39;:[5, 10, 15, 20]}.</span>
+<span class="sd">    You need to enter a dictionary with variable names as keys, and a list of</span>
+<span class="sd">    the limits of the intervals as values. For example `{&#39;var1&#39;:[0, 10, 100, 1000],</span>
+<span class="sd">    &#39;var2&#39;:[5, 10, 15, 20]}`.</span>
 
 <span class="sd">    ArbitraryDiscretiser() will then sort var1 values into the intervals 0-10, 10-100</span>
 <span class="sd">    100-1000, and var2 into 5-10, 10-15 and 15-20. Similar to `pandas.cut`.</span>
@@ -437,30 +444,35 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    binning_dict : dict</span>
-<span class="sd">        The dictionary with the variable : interval limits pairs, provided by the user.</span>
-<span class="sd">        A valid dictionary looks like this:</span>
+<span class="sd">    binning_dict: dict</span>
+<span class="sd">        The dictionary with the variable to interval limits pairs. A valid dictionary</span>
+<span class="sd">        looks like this:</span>
 
-<span class="sd">        binning_dict = {&#39;var1&#39;:[0, 10, 100, 1000], &#39;var2&#39;:[5, 10, 15, 20]}.</span>
+<span class="sd">        `binning_dict = {&#39;var1&#39;:[0, 10, 100, 1000], &#39;var2&#39;:[5, 10, 15, 20]}`</span>
 
-<span class="sd">    return_object : bool, default=False</span>
-<span class="sd">        Whether the numbers in the discrete variable should be returned as</span>
-<span class="sd">        numeric or as object. The decision is made by the user based on</span>
-<span class="sd">        whether they would like to proceed the engineering of the variable as</span>
-<span class="sd">        if it was numerical or categorical.</span>
+<span class="sd">    return_object: bool, default=False</span>
+<span class="sd">        Whether the the discrete variable should be returned casted as numeric or as</span>
+<span class="sd">        object. If you would like to proceed with the engineering of the variable as if</span>
+<span class="sd">        it was categorical, use True. Alternatively, keep the default to False.</span>
 
 <span class="sd">        Categorical encoders in Feature-engine work only with variables of type object,</span>
 <span class="sd">        thus, if you wish to encode the returned bins, set return_object to True.</span>
 
-<span class="sd">    return_boundaries : bool, default=False</span>
-<span class="sd">        whether the output, that is the bin names / values, should be the interval</span>
+<span class="sd">    return_boundaries: bool, default=False</span>
+<span class="sd">        Whether the output, that is the bin names / values, should be the interval</span>
 <span class="sd">        boundaries. If True, it returns the interval boundaries. If False, it returns</span>
 <span class="sd">        integers.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    binner_dict_ :</span>
+<span class="sd">    binner_dict_:</span>
 <span class="sd">         Dictionary with the interval limits per variable.</span>
+
+<span class="sd">    variables_:</span>
+<span class="sd">         The variables to discretise.</span>
+
+<span class="sd">    n_features_in_:</span>
+<span class="sd">        The number of features in the train set used in fit.</span>
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
@@ -473,14 +485,14 @@
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    pandas.cut :</span>
+<span class="sd">    pandas.cut:</span>
 <span class="sd">        https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.cut.html</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">binning_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">],</span>
+        <span class="n">binning_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]],</span>
         <span class="n">return_object</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">return_boundaries</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -494,7 +506,6 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;return_object must be True or False&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">binning_dict</span> <span class="o">=</span> <span class="n">binning_dict</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">binning_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">return_object</span> <span class="o">=</span> <span class="n">return_object</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">return_boundaries</span> <span class="o">=</span> <span class="n">return_boundaries</span>
 
@@ -507,12 +518,12 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">        X: pandas dataframe of shape = [n_samples, n_features]</span>
 <span class="sd">            The training dataset. Can be the entire dataframe, not just the</span>
 <span class="sd">            variables to be transformed.</span>
 
-<span class="sd">        y : None</span>
-<span class="sd">            y is not needed in this encoder. You can pass y or None.</span>
+<span class="sd">        y: None</span>
+<span class="sd">            y is not needed in this transformer. You can pass y or None.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
@@ -527,20 +538,21 @@
 <span class="sd">        -------</span>
 <span class="sd">        self</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="c1"># check input dataframe</span>
-        <span class="n">X</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">_is_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 
-        <span class="c1"># check that all variables in the dictionary are present in the df</span>
-        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">variable</span> <span class="ow">in</span> <span class="n">X</span><span class="o">.</span><span class="n">columns</span> <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">binner_dict_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">binning_dict</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;There are variables in the provided dictionary which are not present &quot;</span>
-                <span class="s2">&quot;in the train set or not cast as numerical&quot;</span>
-            <span class="p">)</span>
+        <span class="c1"># find or check for numerical variables</span>
+        <span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">binning_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span> <span class="o">=</span> <span class="n">_find_or_check_numerical_variables</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">variables</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+        <span class="c1"># check if dataset contains na or inf</span>
+        <span class="n">_check_contains_na</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">)</span>
+        <span class="n">_check_contains_inf</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">)</span>
+
+        <span class="c1"># for consistency wit the rest of the discretisers, we add this attribute</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">binner_dict_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">binning_dict</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_features_in_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
@@ -549,7 +561,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">        X: pandas dataframe of shape = [n_samples, n_features]</span>
 <span class="sd">            The dataframe to be transformed.</span>
 
 <span class="sd">        Raises</span>
@@ -562,7 +574,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">        X: pandas dataframe of shape = [n_samples, n_features]</span>
 <span class="sd">            The transformed data with the discrete variables.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -571,22 +583,28 @@
 
         <span class="c1"># transform variables</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_boundaries</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
-                <span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span>
-                    <span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">binner_dict_</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span>  <span class="c1"># type: ignore</span>
-                <span class="p">)</span>
+            <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">:</span>
+                <span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">binner_dict_</span><span class="p">[</span><span class="n">feature</span><span class="p">])</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">:</span>
                 <span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span>
-                    <span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">binner_dict_</span><span class="p">[</span><span class="n">feature</span><span class="p">],</span> <span class="n">labels</span><span class="o">=</span><span class="kc">False</span>  <span class="c1"># type: ignore</span>
+                    <span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">binner_dict_</span><span class="p">[</span><span class="n">feature</span><span class="p">],</span> <span class="n">labels</span><span class="o">=</span><span class="kc">False</span>
                 <span class="p">)</span>
 
             <span class="c1"># return object</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_object</span><span class="p">:</span>
-                <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;O&quot;</span><span class="p">)</span>
+                <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;O&quot;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">X</span></div></div>
+        <span class="k">return</span> <span class="n">X</span></div>
+
+    <span class="k">def</span> <span class="nf">_more_tags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">tags_dict</span> <span class="o">=</span> <span class="n">_return_tags</span><span class="p">()</span>
+        <span class="c1"># add additional test that fails</span>
+        <span class="n">tags_dict</span><span class="p">[</span><span class="s2">&quot;_xfail_checks&quot;</span><span class="p">][</span>
+            <span class="s2">&quot;check_parameters_default_constructible&quot;</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;transformer has 1 mandatory parameter&quot;</span>
+        <span class="k">return</span> <span class="n">tags_dict</span></div>
 </pre></div>
 
            </div>

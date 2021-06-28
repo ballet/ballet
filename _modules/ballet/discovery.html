@@ -415,7 +415,7 @@
 
 <span class="kn">import</span> <span class="nn">ballet</span>
 <span class="kn">from</span> <span class="nn">ballet.transformer</span> <span class="kn">import</span> <span class="n">get_transformer_primitives</span>
-<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">asarray2d</span><span class="p">,</span> <span class="n">dont_log_nonnegative</span>
+<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">asarray2d</span><span class="p">,</span> <span class="n">dont_log_nonnegative</span><span class="p">,</span> <span class="n">skipna</span>
 <span class="kn">from</span> <span class="nn">ballet.validation.entropy</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">_get_cont_columns</span><span class="p">,</span> <span class="n">_get_disc_columns</span><span class="p">,</span> <span class="n">estimate_conditional_information</span><span class="p">,</span>
     <span class="n">estimate_mutual_information</span><span class="p">,)</span>
@@ -445,13 +445,14 @@
             <span class="k">else</span> <span class="n">feature</span><span class="o">.</span><span class="n">input</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
             <span class="k">else</span> <span class="p">[],</span>
-        <span class="s1">&#39;transformer&#39;</span><span class="p">:</span> <span class="n">feature</span><span class="o">.</span><span class="n">transformer</span><span class="p">,</span>
+        <span class="s1">&#39;transformer&#39;</span><span class="p">:</span> <span class="nb">repr</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">transformer</span><span class="p">),</span>
         <span class="s1">&#39;primitives&#39;</span><span class="p">:</span> <span class="n">get_transformer_primitives</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">transformer</span><span class="p">),</span>
         <span class="s1">&#39;output&#39;</span><span class="p">:</span> <span class="n">feature</span><span class="o">.</span><span class="n">output</span><span class="p">,</span>
         <span class="s1">&#39;author&#39;</span><span class="p">:</span> <span class="n">feature</span><span class="o">.</span><span class="n">author</span><span class="p">,</span>
         <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">feature</span><span class="o">.</span><span class="n">source</span><span class="p">,</span>
         <span class="s1">&#39;mutual_information&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s1">&#39;conditional_mutual_information&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;ninputs&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s1">&#39;nvalues&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s1">&#39;ncontinuous&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="s1">&#39;ndiscrete&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
@@ -479,7 +480,14 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">))</span>
 
-            <span class="n">result</span><span class="p">[</span><span class="s1">&#39;mutual_information&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">estimate_mutual_information</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="n">_y</span><span class="p">,</span> <span class="n">_z</span> <span class="o">=</span> <span class="n">skipna</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+            <span class="n">result</span><span class="p">[</span><span class="s1">&#39;mutual_information&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">estimate_mutual_information</span><span class="p">(</span><span class="n">_z</span><span class="p">,</span> <span class="n">_y</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">input</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="n">result</span><span class="p">[</span><span class="s1">&#39;ninputs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">result</span><span class="p">[</span><span class="s1">&#39;ninputs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
             <span class="n">result</span><span class="p">[</span><span class="s1">&#39;nvalues&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">result</span><span class="p">[</span><span class="s1">&#39;ncontinuous&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">_get_cont_columns</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
             <span class="n">result</span><span class="p">[</span><span class="s1">&#39;ndiscrete&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">_get_disc_columns</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
@@ -492,8 +500,9 @@
             <span class="n">result</span><span class="p">[</span><span class="s1">&#39;nunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">countunique</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
 
             <span class="k">if</span> <span class="n">expensive_stats</span> <span class="ow">or</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">EXPENSIVE_STATS_CMI_MAX_COLS_X</span><span class="p">:</span>
+                <span class="n">_y</span><span class="p">,</span> <span class="n">_z</span><span class="p">,</span> <span class="n">_x</span> <span class="o">=</span> <span class="n">skipna</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
                 <span class="n">result</span><span class="p">[</span><span class="s1">&#39;conditional_mutual_information&#39;</span><span class="p">]</span> <span class="o">=</span> \
-                    <span class="n">estimate_conditional_information</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+                    <span class="n">estimate_conditional_information</span><span class="p">(</span><span class="n">_z</span><span class="p">,</span> <span class="n">_y</span><span class="p">,</span> <span class="n">_x</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">result</span>
 
@@ -531,6 +540,7 @@
 <span class="sd">    - conditional_mutual_information: estimated conditional mutual information</span>
 <span class="sd">        between the feature (or averaged over feature values) and the target</span>
 <span class="sd">        conditional on all other features on the development dataset split</span>
+<span class="sd">    - ninputs: the number of input columns to the feature</span>
 <span class="sd">    - nvalues: the number of feature values this feature extracts (i.e. 1 for</span>
 <span class="sd">        a scalar-valued feature and &gt;1 for a vector-valued feature)</span>
 <span class="sd">    - ncontinuous: the number of feature values this feature extracts that are</span>

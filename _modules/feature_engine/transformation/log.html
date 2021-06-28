@@ -415,6 +415,7 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="kn">from</span> <span class="nn">feature_engine.base_transformers</span> <span class="kn">import</span> <span class="n">BaseNumericalTransformer</span>
+<span class="kn">from</span> <span class="nn">feature_engine.validation</span> <span class="kn">import</span> <span class="n">_return_tags</span>
 <span class="kn">from</span> <span class="nn">feature_engine.variable_manipulation</span> <span class="kn">import</span> <span class="n">_check_input_parameter_variables</span>
 
 
@@ -431,13 +432,21 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    variables: list, default=None</span>
+<span class="sd">        The list of numerical variables to transform. If None, the transformer</span>
+<span class="sd">        will find and select all numerical variables.</span>
+
 <span class="sd">    base: string, default=&#39;e&#39;</span>
 <span class="sd">        Indicates if the natural or base 10 logarithm should be applied. Can take</span>
 <span class="sd">        values &#39;e&#39; or &#39;10&#39;.</span>
 
-<span class="sd">    variables : list, default=None</span>
-<span class="sd">        The list of numerical variables to be transformed. If None, the transformer</span>
-<span class="sd">        will find and select all numerical variables.</span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    variables_:</span>
+<span class="sd">        The group of variables that will be transformed.</span>
+
+<span class="sd">    n_features_in_:</span>
+<span class="sd">        The number of features in the train set used in fit.</span>
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
@@ -451,8 +460,8 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">base</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;e&quot;</span><span class="p">,</span>
         <span class="n">variables</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">base</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;e&quot;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
         <span class="k">if</span> <span class="n">base</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="s2">&quot;10&quot;</span><span class="p">]:</span>
@@ -471,11 +480,11 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : Pandas DataFrame of shape = [n_samples, n_features].</span>
+<span class="sd">        X: Pandas DataFrame of shape = [n_samples, n_features].</span>
 <span class="sd">            The training input samples. Can be the entire dataframe, not just the</span>
 <span class="sd">            variables to transform.</span>
 
-<span class="sd">        y : pandas Series, default=None</span>
+<span class="sd">        y: pandas Series, default=None</span>
 <span class="sd">            It is not needed in this transformer. You can pass y or None.</span>
 
 <span class="sd">        Raises</span>
@@ -497,12 +506,12 @@
         <span class="n">X</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 
         <span class="c1"># check contains zero or negative values</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;Some variables contain zero or negative values, can&#39;t apply log&quot;</span>
             <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_features_in_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
@@ -512,7 +521,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : Pandas DataFrame of shape = [n_samples, n_features]</span>
+<span class="sd">        X: Pandas DataFrame of shape = [n_samples, n_features]</span>
 <span class="sd">            The data to be transformed.</span>
 
 <span class="sd">        Raises</span>
@@ -520,13 +529,13 @@
 <span class="sd">        TypeError</span>
 <span class="sd">            If the input is not a Pandas DataFrame</span>
 <span class="sd">        ValueError</span>
-<span class="sd">            - If the variable(s) contain null values.</span>
-<span class="sd">            - If the dataframe not of the same size as that used in fit().</span>
-<span class="sd">            - If some variables contains zero or negative values.</span>
+<span class="sd">            - If the variable(s) contain null values</span>
+<span class="sd">            - If the df has different number of features than the df used in fit()</span>
+<span class="sd">            - If some variables contains zero or negative values</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        X : pandas dataframe</span>
+<span class="sd">        X: pandas dataframe</span>
 <span class="sd">            The dataframe with the transformed variables.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -534,18 +543,35 @@
         <span class="n">X</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 
         <span class="c1"># check contains zero or negative values</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;Some variables contain zero or negative values, can&#39;t apply log&quot;</span>
             <span class="p">)</span>
 
         <span class="c1"># transform</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">base</span> <span class="o">==</span> <span class="s2">&quot;e&quot;</span><span class="p">:</span>
-            <span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">])</span>
+            <span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">])</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">base</span> <span class="o">==</span> <span class="s2">&quot;10&quot;</span><span class="p">:</span>
-            <span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">])</span>
+            <span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">])</span>
 
-        <span class="k">return</span> <span class="n">X</span></div></div>
+        <span class="k">return</span> <span class="n">X</span></div>
+
+    <span class="k">def</span> <span class="nf">_more_tags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">tags_dict</span> <span class="o">=</span> <span class="n">_return_tags</span><span class="p">()</span>
+        <span class="c1"># =======  this tests fail because the transformers throw an error</span>
+        <span class="c1"># when the values are 0. Nothing to do with the test itself but</span>
+        <span class="c1"># mostly with the data created and used in the test</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;transformers raise errors when data contains zeroes, thus this check fails&quot;</span>
+        <span class="p">)</span>
+        <span class="n">tags_dict</span><span class="p">[</span><span class="s2">&quot;_xfail_checks&quot;</span><span class="p">][</span><span class="s2">&quot;check_estimators_dtypes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">msg</span>
+        <span class="n">tags_dict</span><span class="p">[</span><span class="s2">&quot;_xfail_checks&quot;</span><span class="p">][</span><span class="s2">&quot;check_estimators_fit_returns_self&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">msg</span>
+        <span class="n">tags_dict</span><span class="p">[</span><span class="s2">&quot;_xfail_checks&quot;</span><span class="p">][</span><span class="s2">&quot;check_pipeline_consistency&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">msg</span>
+        <span class="n">tags_dict</span><span class="p">[</span><span class="s2">&quot;_xfail_checks&quot;</span><span class="p">][</span><span class="s2">&quot;check_estimators_overwrite_params&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">msg</span>
+        <span class="n">tags_dict</span><span class="p">[</span><span class="s2">&quot;_xfail_checks&quot;</span><span class="p">][</span><span class="s2">&quot;check_estimators_pickle&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">msg</span>
+        <span class="n">tags_dict</span><span class="p">[</span><span class="s2">&quot;_xfail_checks&quot;</span><span class="p">][</span><span class="s2">&quot;check_transformer_general&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">msg</span>
+
+        <span class="k">return</span> <span class="n">tags_dict</span></div>
 </pre></div>
 
            </div>

@@ -503,6 +503,10 @@
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.validation.base.</span></code><code class="sig-name descname"><span class="pre">FeaturePerformanceEvaluator</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_df_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candidate_feature</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/validation/base.html#FeaturePerformanceEvaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.validation.base.FeaturePerformanceEvaluator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Evaluate the performance of features from an ML point-of-view</p>
+<p>Implementing classes should be clear about their support for missing
+targets, i.e. NaN values in <code class="docutils literal notranslate"><span class="pre">y_val</span></code>. For example, the subclass can raise
+an error indicating that it cannot be used for a problem, or it can choose
+to skip rows with missing values in the performance evaluation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">

@@ -409,11 +409,12 @@
 <span></span><span class="c1"># Authors: Soledad Galli &lt;solegalli@protonmail.com&gt;</span>
 <span class="c1"># License: BSD 3 clause</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">feature_engine.variable_manipulation</span> <span class="kn">import</span> <span class="n">_check_input_parameter_variables</span>
+
 <span class="kn">from</span> <span class="nn">feature_engine.base_transformers</span> <span class="kn">import</span> <span class="n">BaseNumericalTransformer</span>
+<span class="kn">from</span> <span class="nn">feature_engine.variable_manipulation</span> <span class="kn">import</span> <span class="n">_check_input_parameter_variables</span>
 
 
 <div class="viewcode-block" id="EqualFrequencyDiscretiser"><a class="viewcode-back" href="../../../api/ballet.eng.external.feature_engine.html#ballet.eng.external.EqualFrequencyDiscretiser">[docs]</a><span class="k">class</span> <span class="nc">EqualFrequencyDiscretiser</span><span class="p">(</span><span class="n">BaseNumericalTransformer</span><span class="p">):</span>
@@ -438,28 +439,36 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    q : int, default=10</span>
-<span class="sd">        Desired number of equal frequency intervals / bins. In other words the</span>
-<span class="sd">        number of quantiles in which the variables should be divided.</span>
-
-<span class="sd">    variables : list</span>
+<span class="sd">    variables: list, default=None</span>
 <span class="sd">        The list of numerical variables that will be discretised. If None, the</span>
 <span class="sd">        EqualFrequencyDiscretiser() will select all numerical variables.</span>
 
-<span class="sd">    return_object : bool, default=False</span>
-<span class="sd">        Whether the numbers in the discrete variable should be returned as</span>
-<span class="sd">        numeric or as object. The decision is made by the user based on</span>
-<span class="sd">        whether they would like to proceed the engineering of the variable as</span>
-<span class="sd">        if it was numerical or categorical.</span>
+<span class="sd">    q: int, default=10</span>
+<span class="sd">        Desired number of equal frequency intervals / bins. In other words the</span>
+<span class="sd">        number of quantiles in which the variables should be divided.</span>
 
-<span class="sd">    return_boundaries : bool, default=False</span>
-<span class="sd">        whether the output should be the interval boundaries. If True, it returns</span>
+<span class="sd">    return_object: bool, default=False</span>
+<span class="sd">        Whether the the discrete variable should be returned casted as numeric or as</span>
+<span class="sd">        object. If you would like to proceed with the engineering of the variable as if</span>
+<span class="sd">        it was categorical, use True. Alternatively, keep the default to False.</span>
+
+<span class="sd">        Categorical encoders in Feature-engine work only with variables of type object,</span>
+<span class="sd">        thus, if you wish to encode the returned bins, set return_object to True.</span>
+
+<span class="sd">    return_boundaries: bool, default=False</span>
+<span class="sd">        Whether the output should be the interval boundaries. If True, it returns</span>
 <span class="sd">        the interval boundaries. If False, it returns integers.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    binner_dict_:</span>
 <span class="sd">         Dictionary with the interval limits per variable.</span>
+
+<span class="sd">    variables_:</span>
+<span class="sd">         The variables to discretise.</span>
+
+<span class="sd">    n_features_in_:</span>
+<span class="sd">        The number of features in the train set used in fit.</span>
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
@@ -486,8 +495,8 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">q</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
         <span class="n">variables</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">q</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
         <span class="n">return_object</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">return_boundaries</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -508,15 +517,14 @@
 
 <div class="viewcode-block" id="EqualFrequencyDiscretiser.fit"><a class="viewcode-back" href="../../../api/ballet.eng.external.feature_engine.html#ballet.eng.external.EqualFrequencyDiscretiser.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Learn the limits of the equal frequency intervals, that is the percentiles</span>
-<span class="sd">        for each variable.</span>
+<span class="sd">        Learn the limits of the equal frequency intervals.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">        X: pandas dataframe of shape = [n_samples, n_features]</span>
 <span class="sd">            The training dataset. Can be the entire dataframe, not just the variables</span>
 <span class="sd">            to be transformed.</span>
-<span class="sd">        y : None</span>
+<span class="sd">        y: None</span>
 <span class="sd">            y is not needed in this encoder. You can pass y or None.</span>
 
 <span class="sd">        Raises</span>
@@ -538,7 +546,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">binner_dict_</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">:</span>
             <span class="n">tmp</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">qcut</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">X</span><span class="p">[</span><span class="n">var</span><span class="p">],</span> <span class="n">q</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="p">,</span> <span class="n">retbins</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">duplicates</span><span class="o">=</span><span class="s2">&quot;drop&quot;</span><span class="p">)</span>
 
             <span class="c1"># Prepend/Append infinities to accommodate outliers</span>
@@ -547,7 +555,7 @@
             <span class="n">bins</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">binner_dict_</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">bins</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_features_in_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
@@ -556,7 +564,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">        X: pandas dataframe of shape = [n_samples, n_features]</span>
 <span class="sd">            The data to transform.</span>
 
 <span class="sd">        Raises</span>
@@ -569,7 +577,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">        X: pandas dataframe of shape = [n_samples, n_features]</span>
 <span class="sd">            The transformed data with the discrete variables.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -578,18 +586,18 @@
 
         <span class="c1"># transform variables</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_boundaries</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">:</span>
                 <span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">binner_dict_</span><span class="p">[</span><span class="n">feature</span><span class="p">])</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">:</span>
                 <span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span>
                     <span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">binner_dict_</span><span class="p">[</span><span class="n">feature</span><span class="p">],</span> <span class="n">labels</span><span class="o">=</span><span class="kc">False</span>
                 <span class="p">)</span>
 
             <span class="c1"># return object</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_object</span><span class="p">:</span>
-                <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;O&quot;</span><span class="p">)</span>
+                <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;O&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">X</span></div></div>
 </pre></div>

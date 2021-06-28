@@ -548,6 +548,33 @@ over all axes (py35+) and sometimes does not (py34).</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ballet.util.skipna">
+<code class="sig-prename descclassname"><span class="pre">ballet.util.</span></code><code class="sig-name descname"><span class="pre">skipna</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">how</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'left'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ballet/util.html#skipna"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.util.skipna" title="Permalink to this definition">¶</a></dt>
+<dd><p>Drop rows of both a and b corresponding to missing values</p>
+<p>The length of a and b along the first dimension must be equal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – first array</p></li>
+<li><p><strong>b</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – second array</p></li>
+<li><p><strong>*c</strong> – any additional arrays</p></li>
+<li><p><strong>how</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – how to determine the rows to drop, one of ‘left’, ‘any’, or ‘all’.
+If left, then any row in which a has a missing value is dropped. If
+any, then any row in which at least one of a, b, or additional
+arrays has a missing value is dropped. If all , then any row in
+which all of a, b, and additional arrays has a missing value is
+dropped. Defaults to left.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tuple of a, b, and any additional arrays where a, b, and any
+additional arrays are guaranteed to be the same length with missing
+values removed according to <code class="docutils literal notranslate"><span class="pre">how</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ballet.util.truthy">
 <code class="sig-prename descclassname"><span class="pre">ballet.util.</span></code><code class="sig-name descname"><span class="pre">truthy</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ballet.util.truthy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether o is truthy</p>

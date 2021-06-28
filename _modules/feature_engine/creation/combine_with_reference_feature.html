@@ -413,26 +413,30 @@
 <span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="kn">import</span> <span class="n">check_is_fitted</span>
 
 <span class="kn">from</span> <span class="nn">feature_engine.dataframe_checks</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">_check_contains_inf</span><span class="p">,</span>
     <span class="n">_check_contains_na</span><span class="p">,</span>
     <span class="n">_check_input_matches_training_df</span><span class="p">,</span>
     <span class="n">_is_dataframe</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">feature_engine.validation</span> <span class="kn">import</span> <span class="n">_return_tags</span>
 <span class="kn">from</span> <span class="nn">feature_engine.variable_manipulation</span> <span class="kn">import</span> <span class="n">_find_or_check_numerical_variables</span>
 
 
 <div class="viewcode-block" id="CombineWithReferenceFeature"><a class="viewcode-back" href="../../../api/ballet.eng.external.feature_engine.html#ballet.eng.external.CombineWithReferenceFeature">[docs]</a><span class="k">class</span> <span class="nc">CombineWithReferenceFeature</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    CombineWithReferenceFeature() applies basic mathematical operations between one or</span>
-<span class="sd">    more reference variables and a group of variables, returning one or more additional</span>
-<span class="sd">    features as a result. That is, it sums, multiplies, substracts or divides a group of</span>
-<span class="sd">    features to or by a group of reference variables and returns the result into new</span>
-<span class="sd">    variables.</span>
+<span class="sd">    CombineWithReferenceFeature() applies basic mathematical operations between a group</span>
+<span class="sd">    of variables and one or more reference features. It adds one or more additional</span>
+<span class="sd">    features to the dataframe with the result of the operations.</span>
+
+<span class="sd">    In other words, CombineWithReferenceFeature() sums, multiplies, subtracts or</span>
+<span class="sd">    divides a group of features to / by a group of reference variables, and returns the</span>
+<span class="sd">    result as new variables in the dataframe.</span>
 
 <span class="sd">    For example, if we have the variables **number_payments_first_quarter**,</span>
 <span class="sd">    **number_payments_second_quarter**, **number_payments_third_quarter**,</span>
-<span class="sd">    **number_payments_fourth_quarter**, and **total_payments** we can use</span>
-<span class="sd">    CombineWithReferenceFeature() to determine the percentage of total payments per</span>
-<span class="sd">    month as follows:</span>
+<span class="sd">    **number_payments_fourth_quarter**, and **total_payments**, we can use</span>
+<span class="sd">    CombineWithReferenceFeature() to determine the percentage of payments per</span>
+<span class="sd">    quarter as follows:</span>
 
 <span class="sd">    .. code-block:: python</span>
 
@@ -463,35 +467,31 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-
-<span class="sd">    variables_to_combine : list</span>
+<span class="sd">    variables_to_combine: list</span>
 <span class="sd">        The list of numerical variables to be combined with the reference</span>
 <span class="sd">        variables.</span>
 
-<span class="sd">    reference_variables : list</span>
-<span class="sd">        The list of numerical reference variables that will be added, multiplied,</span>
-<span class="sd">        or substracted from the variables_to_combine, or used as denominator for</span>
+<span class="sd">    reference_variables: list</span>
+<span class="sd">        The list of numerical reference variables that will be added to, multiplied</span>
+<span class="sd">        with, or subtracted from the variables_to_combine, or used as denominator for</span>
 <span class="sd">        division.</span>
 
-<span class="sd">    operations : list, default=[&#39;sub&#39;]</span>
+<span class="sd">    operations: list, default=[&#39;sub&#39;]</span>
 <span class="sd">        The list of basic mathematical operations to be used in transformation.</span>
 
-<span class="sd">        If none, all of [&#39;sub&#39;, &#39;div&#39;,&#39;add&#39;,&#39;mul&#39;] will be performed</span>
-<span class="sd">        over the variables. Alternatively, the user can enter the list of</span>
-<span class="sd">        operations to carry out.</span>
-
-<span class="sd">        Each operation should be a string and must be one of the elements</span>
-<span class="sd">        from the list: [&#39;sub&#39;, &#39;div&#39;,&#39;add&#39;,&#39;mul&#39;]</span>
+<span class="sd">        If None, all of [&#39;sub&#39;, &#39;div&#39;,&#39;add&#39;,&#39;mul&#39;] will be performed. Alternatively,</span>
+<span class="sd">        you can enter a list of operations to carry out. Each operation should</span>
+<span class="sd">        be a string and must be one of the elements in `[&#39;sub&#39;, &#39;div&#39;,&#39;add&#39;, &#39;mul&#39;]`.</span>
 
 <span class="sd">        Each operation will result in a new variable that will be added to the</span>
 <span class="sd">        transformed dataset.</span>
 
-<span class="sd">    new_variables_names : list, default=None</span>
-<span class="sd">        Names of the newly created variables. The user can enter a list with the</span>
-<span class="sd">        names for the newly created features (recommended). The user must enter</span>
-<span class="sd">        as many names as new features created by the transformer. The number of new</span>
-<span class="sd">        features is the number of operations times the number of reference variables</span>
-<span class="sd">        times the number of variables to combine.</span>
+<span class="sd">    new_variables_names: list, default=None</span>
+<span class="sd">        Names of the newly created variables. You can enter a list with the names for</span>
+<span class="sd">        the newly created features (recommended). You must enter as many names as new</span>
+<span class="sd">        features created by the transformer. The number of new features is the number</span>
+<span class="sd">        of operations times the number of reference variables times the number of</span>
+<span class="sd">        variables to combine.</span>
 
 <span class="sd">        Thus, if you want to perform 2 operations, sub and div, combining 4 variables</span>
 <span class="sd">        with 2 reference variables, you should enter 2 X 4 X 2 new variable names.</span>
@@ -500,23 +500,28 @@
 <span class="sd">        in which the  operations are performed by the transformer. The transformer will</span>
 <span class="sd">        first carry out &#39;sub&#39;, then &#39;div&#39;, then &#39;add&#39; and finally &#39;mul&#39;.</span>
 
-<span class="sd">        If new_variable_names=None, the transformer will assign an arbitrary name</span>
+<span class="sd">        If new_variable_names is None, the transformer will assign an arbitrary name</span>
 <span class="sd">        to the newly created features.</span>
 
-<span class="sd">    missing_values : string, default=&#39;ignore&#39;</span>
-<span class="sd">        Indicates if missing values should be ignored or raised. If</span>
-<span class="sd">        missing_values=&#39;ignore&#39;, the transformer will ignore missing data when</span>
-<span class="sd">        transforming the data. If missing_values=&#39;raise&#39; the transformer will return</span>
-<span class="sd">        an error if the training or the datasets to transform contain missing values.</span>
+<span class="sd">    missing_values: string, default=&#39;ignore&#39;</span>
+<span class="sd">        Indicates if missing values should be ignored or raised. If &#39;ignore&#39;, the</span>
+<span class="sd">        transformer will ignore missing data when transforming the data. If &#39;raise&#39; the</span>
+<span class="sd">        transformer will return an error if the training or the datasets to transform</span>
+<span class="sd">        contain missing values.</span>
+
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_features_in_:</span>
+<span class="sd">        The number of features in the train set used in fit.</span>
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
-
-<span class="sd">    fit :</span>
+<span class="sd">    fit:</span>
 <span class="sd">        This transformer does not learn parameters.</span>
-<span class="sd">    transform :</span>
+<span class="sd">    transform:</span>
 <span class="sd">        Combine the variables with the mathematical operations.</span>
-<span class="sd">    fit_transform :</span>
+<span class="sd">    fit_transform:</span>
 <span class="sd">        Fit to the data, then transform it.</span>
 
 <span class="sd">    Notes</span>
@@ -605,17 +610,15 @@
 
 <div class="viewcode-block" id="CombineWithReferenceFeature.fit"><a class="viewcode-back" href="../../../api/ballet.eng.external.feature_engine.html#ballet.eng.external.CombineWithReferenceFeature.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        This transformer does not learn any parameter.</span>
-<span class="sd">        Performs dataframe checks.</span>
+<span class="sd">        This transformer does not learn any parameter. Performs dataframe checks.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
+<span class="sd">        X: pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">            The training input samples. Can be the entire dataframe, not just the</span>
+<span class="sd">            variables to transform.</span>
 
-<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
-<span class="sd">        The training input samples.</span>
-<span class="sd">        Can be the entire dataframe, not just the variables to transform.</span>
-
-<span class="sd">        y : pandas Series, or np.array. Defaults to None.</span>
+<span class="sd">        y: pandas Series, or np.array. Default=None.</span>
 <span class="sd">            It is not needed in this transformer. You can pass y or None.</span>
 
 <span class="sd">        Raises</span>
@@ -650,15 +653,18 @@
             <span class="n">_check_contains_na</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_variables</span><span class="p">)</span>
             <span class="n">_check_contains_na</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables_to_combine</span><span class="p">)</span>
 
+            <span class="n">_check_contains_inf</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_variables</span><span class="p">)</span>
+            <span class="n">_check_contains_inf</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables_to_combine</span><span class="p">)</span>
+
         <span class="c1"># cannot divide by 0, as will result in error</span>
         <span class="k">if</span> <span class="s2">&quot;div&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">operations</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_variables</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Some of the reference variables contain 0 values. Check and &quot;</span>
+                    <span class="s2">&quot;Some of the reference variables contain 0 as values. Check and &quot;</span>
                     <span class="s2">&quot;remove those before using this transformer with div.&quot;</span>
                 <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_features_in_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
@@ -668,15 +674,13 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-
-<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
-<span class="sd">        The data to transform.</span>
+<span class="sd">        X: pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">            The data to transform.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-
-<span class="sd">        X : Pandas dataframe, shape = [n_samples, n_features + n_operations]</span>
-<span class="sd">        The dataframe with the operations results added as columns.</span>
+<span class="sd">        X: Pandas dataframe, shape = [n_samples, n_features + n_operations]</span>
+<span class="sd">            The dataframe with the operations results added as columns.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Check method fit has been called</span>
@@ -685,21 +689,24 @@
         <span class="c1"># check that input is a dataframe</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">_is_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 
+        <span class="c1"># Check if input data contains same number of columns as dataframe used to fit.</span>
+        <span class="n">_check_input_matches_training_df</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_features_in_</span><span class="p">)</span>
+
         <span class="c1"># check if dataset contains na</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">missing_values</span> <span class="o">==</span> <span class="s2">&quot;raise&quot;</span><span class="p">:</span>
             <span class="n">_check_contains_na</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_variables</span><span class="p">)</span>
             <span class="n">_check_contains_na</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables_to_combine</span><span class="p">)</span>
 
+            <span class="n">_check_contains_inf</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_variables</span><span class="p">)</span>
+            <span class="n">_check_contains_inf</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables_to_combine</span><span class="p">)</span>
+
         <span class="c1"># cannot divide by 0, as will result in error</span>
         <span class="k">if</span> <span class="s2">&quot;div&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">operations</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_variables</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Some of the reference variables contain 0 values. Check and &quot;</span>
+                    <span class="s2">&quot;Some of the reference variables contain 0 as values. Check and &quot;</span>
                     <span class="s2">&quot;remove those before using this transformer.&quot;</span>
                 <span class="p">)</span>
-
-        <span class="c1"># Check if input data contains same number of columns as dataframe used to fit.</span>
-        <span class="n">_check_input_matches_training_df</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
         <span class="n">original_col_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">var</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
         <span class="c1"># Add new features and values into de data frame.</span>
@@ -736,7 +743,21 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_variables_names</span><span class="p">:</span>
             <span class="n">X</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">original_col_names</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_variables_names</span>
 
-        <span class="k">return</span> <span class="n">X</span></div></div>
+        <span class="k">return</span> <span class="n">X</span></div>
+
+    <span class="k">def</span> <span class="nf">_more_tags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">tags_dict</span> <span class="o">=</span> <span class="n">_return_tags</span><span class="p">()</span>
+        <span class="c1"># add additional test that fails</span>
+        <span class="n">tags_dict</span><span class="p">[</span><span class="s2">&quot;_xfail_checks&quot;</span><span class="p">][</span><span class="s2">&quot;check_estimators_nan_inf&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;transformer allows NA&quot;</span>
+
+        <span class="n">tags_dict</span><span class="p">[</span><span class="s2">&quot;_xfail_checks&quot;</span><span class="p">][</span>
+            <span class="s2">&quot;check_parameters_default_constructible&quot;</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;transformer has 1 mandatory parameter&quot;</span>
+
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;this transformer works with datasets that contain at least 2 variables. </span><span class="se">\</span>
+<span class="s2">        Otherwise, there is nothing to combine&quot;</span>
+        <span class="n">tags_dict</span><span class="p">[</span><span class="s2">&quot;_xfail_checks&quot;</span><span class="p">][</span><span class="s2">&quot;check_fit2d_1feature&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">msg</span>
+        <span class="k">return</span> <span class="n">tags_dict</span></div>
 </pre></div>
 
            </div>

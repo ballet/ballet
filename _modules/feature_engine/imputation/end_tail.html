@@ -409,7 +409,7 @@
 <span></span><span class="c1"># Authors: Soledad Galli &lt;solegalli@protonmail.com&gt;</span>
 <span class="c1"># License: BSD 3 clause</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
@@ -423,10 +423,10 @@
 
 <div class="viewcode-block" id="EndTailImputer"><a class="viewcode-back" href="../../../api/ballet.eng.external.feature_engine.html#ballet.eng.external.EndTailImputer">[docs]</a><span class="k">class</span> <span class="nc">EndTailImputer</span><span class="p">(</span><span class="n">BaseImputer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The EndTailImputer() transforms features by replacing missing data by a value at</span>
-<span class="sd">    either tail of the distribution. Ti works only with numerical variables.</span>
+<span class="sd">    The EndTailImputer() replaces missing data by a value at either tail of the</span>
+<span class="sd">    distribution. It works only with numerical variables.</span>
 
-<span class="sd">    The user can indicate the variables to be imputed in a list. Alternatively, the</span>
+<span class="sd">    You can indicate the variables to be imputed in a list. Alternatively, the</span>
 <span class="sd">    EndTailImputer() will automatically find and select all variables of type numeric.</span>
 
 <span class="sd">    The imputer first calculates the values at the end of the distribution for each</span>
@@ -434,7 +434,7 @@
 <span class="sd">    the Gaussian limits, the the IQR proximity rule limits, or a factor of the maximum</span>
 <span class="sd">    value:</span>
 
-<span class="sd">    Gaussian limits</span>
+<span class="sd">    Gaussian limits:</span>
 <span class="sd">        - right tail: mean + 3*std</span>
 <span class="sd">        - left tail: mean - 3*std</span>
 
@@ -449,13 +449,13 @@
 <span class="sd">        - left tail: not applicable</span>
 
 <span class="sd">    You can change the factor that multiplies the std, IQR or the maximum value</span>
-<span class="sd">    using the parameter &#39;fold&#39;.</span>
+<span class="sd">    using the parameter &#39;fold&#39; (we used fold=3 in the examples above).</span>
 
 <span class="sd">    The imputer then replaces the missing data with the estimated values (transform).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    imputation_method : str, default=gaussian</span>
+<span class="sd">    imputation_method: str, default=gaussian</span>
 <span class="sd">        Method to be used to find the replacement values. Can take &#39;gaussian&#39;,</span>
 <span class="sd">        &#39;iqr&#39; or &#39;max&#39;.</span>
 
@@ -468,16 +468,16 @@
 <span class="sd">        **max**: the imputer will use the maximum values to replace missing data. Note</span>
 <span class="sd">        that if &#39;max&#39; is passed, the parameter &#39;tail&#39; is ignored.</span>
 
-<span class="sd">    tail : str, default=right</span>
+<span class="sd">    tail: str, default=right</span>
 <span class="sd">        Indicates if the values to replace missing data should be selected from the</span>
 <span class="sd">        right or left tail of the variable distribution. Can take values &#39;left&#39; or</span>
 <span class="sd">        &#39;right&#39;.</span>
 
-<span class="sd">    fold : int, default=3</span>
+<span class="sd">    fold: int, default=3</span>
 <span class="sd">        Factor to multiply the std, the IQR or the Max values. Recommended values</span>
 <span class="sd">        are 2 or 3 for Gaussian, or 1.5 or 3 for IQR.</span>
 
-<span class="sd">    variables : list, default=None</span>
+<span class="sd">    variables: list, default=None</span>
 <span class="sd">        The list of variables to be imputed. If None, the imputer will find and</span>
 <span class="sd">        select all variables of type numeric.</span>
 
@@ -485,6 +485,12 @@
 <span class="sd">    ----------</span>
 <span class="sd">    imputer_dict_:</span>
 <span class="sd">        Dictionary with the values at the end of the distribution per variable.</span>
+
+<span class="sd">    variables_:</span>
+<span class="sd">        The group of variables that will be transformed.</span>
+
+<span class="sd">    n_features_in_:</span>
+<span class="sd">        The number of features in the train set used in fit.</span>
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
@@ -526,10 +532,10 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">        X: pandas dataframe of shape = [n_samples, n_features]</span>
 <span class="sd">            The training dataset.</span>
 
-<span class="sd">        y : pandas Series, default=None</span>
+<span class="sd">        y: pandas Series, default=None</span>
 <span class="sd">            y is not needed in this imputation. You can pass None or y.</span>
 
 <span class="sd">        Raises</span>
@@ -548,34 +554,34 @@
         <span class="n">X</span> <span class="o">=</span> <span class="n">_is_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 
         <span class="c1"># find or check for numerical variables</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_find_or_check_numerical_variables</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span> <span class="o">=</span> <span class="n">_find_or_check_numerical_variables</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
 
         <span class="c1"># estimate imputation values</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">imputation_method</span> <span class="o">==</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span> <span class="o">=</span> <span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">fold</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span> <span class="o">=</span> <span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">fold</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
 
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">imputation_method</span> <span class="o">==</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tail</span> <span class="o">==</span> <span class="s2">&quot;right&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">fold</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+                    <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">fold</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
                 <span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">tail</span> <span class="o">==</span> <span class="s2">&quot;left&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">fold</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+                    <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">fold</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
                 <span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
 
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">imputation_method</span> <span class="o">==</span> <span class="s2">&quot;iqr&quot;</span><span class="p">:</span>
-            <span class="n">IQR</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.75</span><span class="p">)</span> <span class="o">-</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span>
+            <span class="n">IQR</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.75</span><span class="p">)</span> <span class="o">-</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tail</span> <span class="o">==</span> <span class="s2">&quot;right&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.75</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">IQR</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">fold</span><span class="p">)</span>
+                    <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.75</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">IQR</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">fold</span><span class="p">)</span>
                 <span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">tail</span> <span class="o">==</span> <span class="s2">&quot;left&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">IQR</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">fold</span><span class="p">)</span>
+                    <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">IQR</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">fold</span><span class="p">)</span>
                 <span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_features_in_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="bp">self</span></div>
 

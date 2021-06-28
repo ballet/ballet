@@ -409,10 +409,10 @@
 <span></span><span class="c1"># Authors: Soledad Galli &lt;solegalli@protonmail.com&gt;</span>
 <span class="c1"># License: BSD 3 clause</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="kn">from</span> <span class="nn">feature_engine.dataframe_checks</span> <span class="kn">import</span> <span class="n">_is_dataframe</span>
 <span class="kn">from</span> <span class="nn">feature_engine.imputation.base_imputer</span> <span class="kn">import</span> <span class="n">BaseImputer</span>
@@ -421,20 +421,24 @@
 
 <div class="viewcode-block" id="AddMissingIndicator"><a class="viewcode-back" href="../../../api/ballet.eng.external.feature_engine.html#ballet.eng.external.AddMissingIndicator">[docs]</a><span class="k">class</span> <span class="nc">AddMissingIndicator</span><span class="p">(</span><span class="n">BaseImputer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The AddMissingIndicator() adds an additional column or binary variable that</span>
-<span class="sd">    indicates if data is missing.</span>
+<span class="sd">    The AddMissingIndicator() adds additional binary variables that indicate if data is</span>
+<span class="sd">    missing. It will add as many missing indicators as variables indicated by the user.</span>
 
-<span class="sd">    AddMissingIndicator() will add as many missing indicators as variables</span>
-<span class="sd">    indicated by the user, or variables with missing data in the train set.</span>
+<span class="sd">    Binary variables are named with the original variable name plus ‘_na’.</span>
 
-<span class="sd">    The AddMissingIndicator() works for both numerical and categorical variables.</span>
-<span class="sd">    The user can pass a list with the variables for which the missing indicators</span>
-<span class="sd">    should be added as a list. Alternatively, the imputer will select and add missing</span>
-<span class="sd">    indicators to all variables in the training set that show missing data.</span>
+<span class="sd">    The AddMissingIndicator() works for both numerical and categorical variables. You</span>
+<span class="sd">    can pass a list with the variables for which the missing indicators should be</span>
+<span class="sd">    added. Alternatively, the imputer will select and add missing indicators to all</span>
+<span class="sd">    variables in the training set.</span>
+
+<span class="sd">    **Note**</span>
+<span class="sd">    If `how=missing_only`, the imputer will add missing indicators only to those</span>
+<span class="sd">    variables that show missing data in during fit. These may be a subset of the</span>
+<span class="sd">    variables you indicated.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    missing_only : bool, defatult=True</span>
+<span class="sd">    missing_only: bool, default=True</span>
 <span class="sd">        Indicates if missing indicators should be added to variables with missing</span>
 <span class="sd">        data or to all variables.</span>
 
@@ -443,19 +447,18 @@
 
 <span class="sd">        False: indicators will be created for all variables</span>
 
-<span class="sd">    variables : list, default=None</span>
+<span class="sd">    variables: list, default=None</span>
 <span class="sd">        The list of variables to be imputed. If None, the imputer will find and</span>
-<span class="sd">        select all variables with missing data.</span>
+<span class="sd">        select all variables.</span>
 
-<span class="sd">    **Note**</span>
-<span class="sd">    The transformer will first select all variables or all user entered</span>
-<span class="sd">    variables and if how=missing_only, it will re-select from the original group</span>
-<span class="sd">    only those that show missing data in during fit.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    variables_:</span>
 <span class="sd">        List of variables for which the missing indicators will be created.</span>
+
+<span class="sd">    n_features_in_:</span>
+<span class="sd">        The number of features in the train set used in fit.</span>
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
@@ -485,10 +488,10 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">        X: pandas dataframe of shape = [n_samples, n_features]</span>
 <span class="sd">            The training dataset.</span>
 
-<span class="sd">        y : pandas Series, default=None</span>
+<span class="sd">        y: pandas Series, default=None</span>
 <span class="sd">            y is not needed in this imputation. You can pass None or y.</span>
 
 <span class="sd">        Raises</span>
@@ -522,7 +525,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_features_in_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="bp">self</span></div>
 

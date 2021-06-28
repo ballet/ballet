@@ -409,67 +409,82 @@
 <span></span><span class="c1"># Authors: Soledad Galli &lt;solegalli@protonmail.com&gt;</span>
 <span class="c1"># License: BSD 3 clause</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="kn">from</span> <span class="nn">feature_engine.dataframe_checks</span> <span class="kn">import</span> <span class="n">_is_dataframe</span>
 <span class="kn">from</span> <span class="nn">feature_engine.imputation.base_imputer</span> <span class="kn">import</span> <span class="n">BaseImputer</span>
 <span class="kn">from</span> <span class="nn">feature_engine.variable_manipulation</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">_find_or_check_categorical_variables</span><span class="p">,</span>
     <span class="n">_check_input_parameter_variables</span><span class="p">,</span>
+    <span class="n">_find_all_variables</span><span class="p">,</span>
+    <span class="n">_find_or_check_categorical_variables</span><span class="p">,</span>
 <span class="p">)</span>
 
 
 <div class="viewcode-block" id="CategoricalImputer"><a class="viewcode-back" href="../../../api/ballet.eng.external.feature_engine.html#ballet.eng.external.CategoricalImputer">[docs]</a><span class="k">class</span> <span class="nc">CategoricalImputer</span><span class="p">(</span><span class="n">BaseImputer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The CategoricalImputer() replaces missing data in categorical variables</span>
-<span class="sd">    by a string like &#39;Missing&#39; or any other entered by the user. Alternatively, it</span>
-<span class="sd">    replaces missing data by the most frequent category.</span>
+<span class="sd">    The CategoricalImputer() replaces missing data in categorical variables by an</span>
+<span class="sd">    arbitrary value or by the most frequent category.</span>
 
-<span class="sd">    The CategoricalVariableImputer() works only with categorical variables.</span>
+<span class="sd">    The CategoricalVariableImputer() imputes by default only categorical variables</span>
+<span class="sd">    (type &#39;object&#39; or &#39;categorical&#39;). You can pass a list of variables to impute, or</span>
+<span class="sd">    alternatively, the encoder will find and encode all categorical variables.</span>
 
-<span class="sd">    The user can pass a list with the variables to be imputed. Alternatively,</span>
-<span class="sd">    the CategoricalImputer() will automatically find and select all variables of type</span>
-<span class="sd">    object.</span>
+<span class="sd">    If you want to impute numerical variables with this transformer, there are 2 ways</span>
+<span class="sd">    of doing it:</span>
 
-<span class="sd">    **Note**</span>
+<span class="sd">    **Option 1**: Cast your numerical variables as object in the input dataframe, before</span>
+<span class="sd">    passing it to the transformer.</span>
 
-<span class="sd">    If you want to impute numerical variables with this transformer, you first need to</span>
-<span class="sd">    cast them as object. It may well be that after the imputation, they are re-casted</span>
-<span class="sd">    by pandas as numeric. Thus, if planning to do categorical encoding with</span>
-<span class="sd">    feature-engine to this variables after the imputation, make sure to return the</span>
-<span class="sd">    variables as object by setting `return_object=True`.</span>
-
+<span class="sd">    **Option 2**: Set `ignore_format=True`. Note that if you do this and do not pass the</span>
+<span class="sd">    list of variables to impute, the imputer will automatically select and impute all</span>
+<span class="sd">    variables in the dataframe.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    imputation_method : str, default=missing</span>
-<span class="sd">        Desired method of imputation. Can be &#39;frequent&#39; or &#39;missing&#39;.</span>
+<span class="sd">    imputation_method: str, default=&#39;missing&#39;</span>
+<span class="sd">        Desired method of imputation. Can be &#39;frequent&#39; for frequent category imputation</span>
+<span class="sd">        or &#39;missing&#39; to impute with an arbitrary value.</span>
 
-<span class="sd">    fill_value : str, default=&#39;Missing&#39;</span>
-<span class="sd">        Only used when `imputation_method=&#39;missing&#39;`. Can be used to set a</span>
-<span class="sd">        user-defined value to replace the missing data.</span>
+<span class="sd">    fill_value: str, int, float, default=&#39;Missing&#39;</span>
+<span class="sd">        Only used when `imputation_method=&#39;missing&#39;`. User-defined value to replace the</span>
+<span class="sd">        missing data.</span>
 
-<span class="sd">    variables : list, default=None</span>
-<span class="sd">        The list of variables to be imputed. If None, the imputer will find and</span>
-<span class="sd">        select all object type variables.</span>
+<span class="sd">    variables: list, default=None</span>
+<span class="sd">        The list of categorical variables that will be imputed. If None, the</span>
+<span class="sd">        imputer will find and transform all variables of type object or categorical by</span>
+<span class="sd">        default. You can also make the transformer accept numerical variables, see the</span>
+<span class="sd">        parameter ignore_format below.</span>
 
 <span class="sd">    return_object: bool, default=False</span>
 <span class="sd">        If working with numerical variables cast as object, decide</span>
 <span class="sd">        whether to return the variables as numeric or re-cast them as object.</span>
 <span class="sd">        Note that pandas will re-cast them automatically as numeric after the</span>
-<span class="sd">        transformation with the mode.</span>
+<span class="sd">        transformation with the mode or with an arbitrary number.</span>
+
+<span class="sd">    ignore_format: bool, default=False</span>
+<span class="sd">        Whether the format in which the categorical variables are cast should be</span>
+<span class="sd">        ignored. If false, the encoder will automatically select variables of type</span>
+<span class="sd">        object or categorical, or check that the variables entered by the user are of</span>
+<span class="sd">        type object or categorical. If True, the encoder will select all variables or</span>
+<span class="sd">        accept all variables entered by the user, including those cast as numeric.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    imputer_dict_:</span>
-<span class="sd">        Dictionary with most frequent category or string per variable.</span>
+<span class="sd">        Dictionary with most frequent category or arbitrary value per variable.</span>
+
+<span class="sd">    variables_:</span>
+<span class="sd">        The group of variables that will be transformed.</span>
+
+<span class="sd">    n_features_in_:</span>
+<span class="sd">        The number of features in the train set used in fit.</span>
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
 <span class="sd">    fit:</span>
-<span class="sd">        Learn more frequent category, or assign string to variable.</span>
+<span class="sd">        Learn the most frequent category, or assign arbitrary value to variable.</span>
 <span class="sd">    transform:</span>
 <span class="sd">        Impute missing data.</span>
 <span class="sd">    fit_transform:</span>
@@ -479,9 +494,10 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">imputation_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;missing&quot;</span><span class="p">,</span>
-        <span class="n">fill_value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Missing&quot;</span><span class="p">,</span>
+        <span class="n">fill_value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Missing&quot;</span><span class="p">,</span>
         <span class="n">variables</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">return_object</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">ignore_format</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
         <span class="k">if</span> <span class="n">imputation_method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;missing&quot;</span><span class="p">,</span> <span class="s2">&quot;frequent&quot;</span><span class="p">]:</span>
@@ -489,13 +505,14 @@
                 <span class="s2">&quot;imputation_method takes only values &#39;missing&#39; or &#39;frequent&#39;&quot;</span>
             <span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fill_value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;parameter &#39;fill_value&#39; should be string&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ignore_format</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ignore_format takes only booleans True and False&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">imputation_method</span> <span class="o">=</span> <span class="n">imputation_method</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fill_value</span> <span class="o">=</span> <span class="n">fill_value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_check_input_parameter_variables</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">return_object</span> <span class="o">=</span> <span class="n">return_object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore_format</span> <span class="o">=</span> <span class="n">ignore_format</span>
 
 <div class="viewcode-block" id="CategoricalImputer.fit"><a class="viewcode-back" href="../../../api/ballet.eng.external.feature_engine.html#ballet.eng.external.CategoricalImputer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -503,17 +520,17 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">        X: pandas dataframe of shape = [n_samples, n_features]</span>
 <span class="sd">            The training dataset.</span>
 
-<span class="sd">        y : pandas Series, default=None</span>
+<span class="sd">        y: pandas Series, default=None</span>
 <span class="sd">            y is not needed in this imputation. You can pass None or y.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        TypeError</span>
 <span class="sd">            - If the input is not a Pandas DataFrame.</span>
-<span class="sd">            - If any user provided variable is not categorical</span>
+<span class="sd">            - If user enters non-categorical variables (unless ignore_format is True)</span>
 <span class="sd">        ValueError</span>
 <span class="sd">            If there are no categorical variables in the df or the df is empty</span>
 
@@ -525,16 +542,24 @@
         <span class="c1"># check input dataframe</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">_is_dataframe</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 
-        <span class="c1"># find or check for categorical variables</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">_find_or_check_categorical_variables</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+        <span class="c1"># check or select the the right variables</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_format</span><span class="p">:</span>
+            <span class="c1"># find categorical variables or check variables entered by user are</span>
+            <span class="c1"># categorical</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span>
+                <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="n">_find_or_check_categorical_variables</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># select all variables or check variables entered by the user</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span> <span class="o">=</span> <span class="n">_find_all_variables</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">imputation_method</span> <span class="o">==</span> <span class="s2">&quot;missing&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span> <span class="o">=</span> <span class="p">{</span><span class="n">var</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fill_value</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span> <span class="o">=</span> <span class="p">{</span><span class="n">var</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fill_value</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">}</span>
 
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">imputation_method</span> <span class="o">==</span> <span class="s2">&quot;frequent&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span> <span class="o">=</span> <span class="p">{}</span>
 
-            <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">:</span>
                 <span class="n">mode_vals</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">mode</span><span class="p">()</span>
 
                 <span class="c1"># careful: some variables contain multiple modes</span>
@@ -545,17 +570,33 @@
                         <span class="s2">&quot;Variable </span><span class="si">{}</span><span class="s2"> contains multiple frequent categories.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
                     <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_features_in_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="CategoricalImputer.transform"><a class="viewcode-back" href="../../../api/ballet.eng.external.feature_engine.html#ballet.eng.external.CategoricalImputer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-        <span class="c1"># bring functionality from the BaseImputer</span>
-        <span class="n">X</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_transform_input_and_state</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="c1"># replaces missing data with the learned parameters</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">imputation_method</span> <span class="o">==</span> <span class="s2">&quot;frequent&quot;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span><span class="p">:</span>
+                <span class="n">X</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span><span class="p">[</span><span class="n">variable</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_categorical_dtype</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">variable</span><span class="p">]):</span>
+                    <span class="c1"># if variable is of type category, we first need to add the new</span>
+                    <span class="c1"># category, and then fill in the nan</span>
+                    <span class="n">X</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">add_categories</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span><span class="p">[</span><span class="n">variable</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span>
+                    <span class="p">)</span>
+
+                <span class="n">X</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">imputer_dict_</span><span class="p">[</span><span class="n">variable</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># add additional step to return variables cast as object</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_object</span><span class="p">:</span>
-            <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;O&quot;</span><span class="p">)</span>
+            <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;O&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">X</span></div>
 

@@ -409,10 +409,10 @@
 <span></span><span class="c1"># Authors: Soledad Galli &lt;solegalli@protonmail.com&gt;</span>
 <span class="c1"># License: BSD 3 clause</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="kn">from</span> <span class="nn">feature_engine.dataframe_checks</span> <span class="kn">import</span> <span class="n">_is_dataframe</span>
 <span class="kn">from</span> <span class="nn">feature_engine.imputation.base_imputer</span> <span class="kn">import</span> <span class="n">BaseImputer</span>
@@ -437,17 +437,18 @@
 
 <div class="viewcode-block" id="RandomSampleImputer"><a class="viewcode-back" href="../../../api/ballet.eng.external.feature_engine.html#ballet.eng.external.RandomSampleImputer">[docs]</a><span class="k">class</span> <span class="nc">RandomSampleImputer</span><span class="p">(</span><span class="n">BaseImputer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The RandomSampleImputer() replaces missing data in each feature with a random</span>
-<span class="sd">    sample extracted from the variables in the training set.</span>
+<span class="sd">    The RandomSampleImputer() replaces missing data with a random sample extracted from</span>
+<span class="sd">    the variables in the training set.</span>
+
 <span class="sd">    The RandomSampleImputer() works with both numerical and categorical variables.</span>
 
 <span class="sd">    **Note**</span>
 
-<span class="sd">    Random samples will vary from execution to execution. This may affect</span>
-<span class="sd">    the results of your work. Remember to set a seed before running the</span>
-<span class="sd">    RandomSampleImputer().</span>
+<span class="sd">    The Random samples used to replace missing values may vary from execution to</span>
+<span class="sd">    execution. This may affect the results of your work. This, it is advisable to set a</span>
+<span class="sd">    seed.</span>
 
-<span class="sd">    There are 2 ways in which the seed can be set with the RandomSampleImputer():</span>
+<span class="sd">    There are 2 ways in which the seed can be set in the RandomSampleImputer():</span>
 
 <span class="sd">    If seed = &#39;general&#39; then the random_state can be either None or an integer.</span>
 <span class="sd">    The seed will be used as the random_state and all observations will be</span>
@@ -478,15 +479,15 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    random_state : int, str or list, default=None</span>
+<span class="sd">    random_state: int, str or list, default=None</span>
 <span class="sd">        The random_state can take an integer to set the seed when extracting the</span>
 <span class="sd">        random samples. Alternatively, it can take a variable name or a list of</span>
 <span class="sd">        variables, which values will be used to determine the seed observation per</span>
 <span class="sd">        observation.</span>
 
-<span class="sd">    seed : str, default=&#39;general&#39;</span>
+<span class="sd">    seed: str, default=&#39;general&#39;</span>
 <span class="sd">        Indicates whether the seed should be set for each observation with missing</span>
-<span class="sd">        values, or if one seed should be used to impute all variables in one go.</span>
+<span class="sd">        values, or if one seed should be used to impute all observations in one go.</span>
 
 <span class="sd">        **general**: one seed will be used to impute the entire dataframe. This is</span>
 <span class="sd">        equivalent to setting the seed in pandas.sample(random_state).</span>
@@ -495,19 +496,25 @@
 <span class="sd">        of the variables indicated in the random_state for that particular</span>
 <span class="sd">        observation.</span>
 
-<span class="sd">    seeding_method : str, default=&#39;add&#39;</span>
+<span class="sd">    seeding_method: str, default=&#39;add&#39;</span>
 <span class="sd">        If more than one variable are indicated to seed the random sampling per</span>
 <span class="sd">        observation, you can choose to combine those values as an addition or a</span>
 <span class="sd">        multiplication. Can take the values &#39;add&#39; or &#39;multiply&#39;.</span>
 
-<span class="sd">    variables : list, default=None</span>
+<span class="sd">    variables: list, default=None</span>
 <span class="sd">        The list of variables to be imputed. If None, the imputer will select</span>
 <span class="sd">        all variables in the train set.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    X_ :</span>
+<span class="sd">    X_:</span>
 <span class="sd">        Copy of the training dataframe from which to extract the random samples.</span>
+
+<span class="sd">    variables_:</span>
+<span class="sd">        The group of variables that will be transformed.</span>
+
+<span class="sd">    n_features_in_:</span>
+<span class="sd">        The number of features in the train set used in fit.</span>
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
@@ -521,10 +528,10 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">variables</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">random_state</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">seed</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;general&quot;</span><span class="p">,</span>
         <span class="n">seeding_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;add&quot;</span><span class="p">,</span>
+        <span class="n">variables</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
         <span class="k">if</span> <span class="n">seed</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;general&quot;</span><span class="p">,</span> <span class="s2">&quot;observation&quot;</span><span class="p">]:</span>
@@ -559,11 +566,11 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 
-<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">        X: pandas dataframe of shape = [n_samples, n_features]</span>
 <span class="sd">            The training dataset. Only a copy of the indicated variables will be stored</span>
 <span class="sd">            in the transformer.</span>
 
-<span class="sd">        y : None</span>
+<span class="sd">        y: None</span>
 <span class="sd">            y is not needed in this imputation. You can pass None or y.</span>
 
 <span class="sd">        Raises</span>
@@ -581,12 +588,12 @@
 
         <span class="c1"># find variables to impute</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">var</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span> <span class="o">=</span> <span class="p">[</span><span class="n">var</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span>
 
         <span class="c1"># take a copy of the selected variables</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">X_</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">X_</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
         <span class="c1"># check the variables assigned to the random state</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">==</span> <span class="s2">&quot;observation&quot;</span><span class="p">:</span>
@@ -600,7 +607,8 @@
                     <span class="s2">&quot;There are variables assigned as random state which are not part &quot;</span>
                     <span class="s2">&quot;of the training dataframe.&quot;</span>
                 <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">input_shape_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_features_in_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
@@ -611,7 +619,7 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 
-<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">        X: pandas dataframe of shape = [n_samples, n_features]</span>
 <span class="sd">            The dataframe to be transformed.</span>
 
 <span class="sd">        Raises</span>
@@ -621,7 +629,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">        X: pandas dataframe of shape = [n_samples, n_features]</span>
 <span class="sd">            The dataframe without missing values in the transformed variables.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -629,7 +637,7 @@
 
         <span class="c1"># random sampling with a general seed</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">==</span> <span class="s2">&quot;general&quot;</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="c1"># determine number of data points to extract at random</span>
                     <span class="n">n_samples</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
@@ -649,7 +657,7 @@
 
         <span class="c1"># random sampling observation per observation</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">==</span> <span class="s2">&quot;observation&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables_</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">X</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
 
                     <span class="c1"># loop over each observation with missing data</span>

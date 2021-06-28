@@ -422,30 +422,28 @@
 <dt id="ballet.eng.external.AddMissingIndicator">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">AddMissingIndicator</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">missing_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/imputation/missing_indicator.html#AddMissingIndicator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.AddMissingIndicator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">feature_engine.imputation.base_imputer.BaseImputer</span></code></p>
-<p>The AddMissingIndicator() adds an additional column or binary variable that
-indicates if data is missing.</p>
-<p>AddMissingIndicator() will add as many missing indicators as variables
-indicated by the user, or variables with missing data in the train set.</p>
-<p>The AddMissingIndicator() works for both numerical and categorical variables.
-The user can pass a list with the variables for which the missing indicators
-should be added as a list. Alternatively, the imputer will select and add missing
-indicators to all variables in the training set that show missing data.</p>
+<p>The AddMissingIndicator() adds additional binary variables that indicate if data is
+missing. It will add as many missing indicators as variables indicated by the user.</p>
+<p>Binary variables are named with the original variable name plus ‘_na’.</p>
+<p>The AddMissingIndicator() works for both numerical and categorical variables. You
+can pass a list with the variables for which the missing indicators should be
+added. Alternatively, the imputer will select and add missing indicators to all
+variables in the training set.</p>
+<p><strong>Note</strong>
+If <cite>how=missing_only</cite>, the imputer will add missing indicators only to those
+variables that show missing data in during fit. These may be a subset of the
+variables you indicated.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>missing_only</strong> (<em>bool</em><em>, </em><em>defatult=True</em>) – <p>Indicates if missing indicators should be added to variables with missing
+<li><p><strong>missing_only</strong> (<em>bool</em><em>, </em><em>default=True</em>) – <p>Indicates if missing indicators should be added to variables with missing
 data or to all variables.</p>
 <p>True: indicators will be created only for those variables that showed
 missing data during fit.</p>
 <p>False: indicators will be created for all variables</p>
 </p></li>
 <li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of variables to be imputed. If None, the imputer will find and
-select all variables with missing data.</p></li>
-<li><p><strong>**Note**</strong> – </p></li>
-<li><p><strong>transformer will first select all variables</strong><strong> or </strong><strong>all user entered</strong> (<em>The</em>) – </p></li>
-<li><p><strong>and if how=missing_only</strong> (<em>variables</em>) – </p></li>
-<li><p><strong>will re-select from the original group</strong> (<em>it</em>) – </p></li>
-<li><p><strong>those that show missing data in during fit.</strong> (<em>only</em>) – </p></li>
+select all variables.</p></li>
 </ul>
 </dd>
 </dl>
@@ -453,6 +451,12 @@ select all variables with missing data.</p></li>
 <dt id="ballet.eng.external.AddMissingIndicator.variables_">
 <code class="sig-name descname"><span class="pre">variables_</span></code><a class="headerlink" href="#ballet.eng.external.AddMissingIndicator.variables_" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of variables for which the missing indicators will be created.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.AddMissingIndicator.n_features_in_">
+<code class="sig-name descname"><span class="pre">n_features_in_</span></code><a class="headerlink" href="#ballet.eng.external.AddMissingIndicator.n_features_in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of features in the train set used in fit.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -523,9 +527,9 @@ Binary variables are named with the original variable name plus
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">feature_engine.base_transformers.BaseNumericalTransformer</span></code></p>
 <p>The ArbitraryDiscretiser() divides continuous numerical variables into contiguous
 intervals which limits are determined arbitrarily by the user.</p>
-<p>The user needs to enter a dictionary with variable names as keys, and a list of
-the limits of the intervals as values. For example {‘var1’:[0, 10, 100, 1000],
-‘var2’:[5, 10, 15, 20]}.</p>
+<p>You need to enter a dictionary with variable names as keys, and a list of
+the limits of the intervals as values. For example <cite>{‘var1’:[0, 10, 100, 1000],
+‘var2’:[5, 10, 15, 20]}</cite>.</p>
 <p>ArbitraryDiscretiser() will then sort var1 values into the intervals 0-10, 10-100
 100-1000, and var2 into 5-10, 10-15 and 15-20. Similar to <cite>pandas.cut</cite>.</p>
 <p>The  ArbitraryDiscretiser() works only with numerical variables. The discretiser
@@ -536,18 +540,17 @@ transformation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>binning_dict</strong> (<em>dict</em>) – <p>The dictionary with the variable : interval limits pairs, provided by the user.
-A valid dictionary looks like this:</p>
-<p>binning_dict = {‘var1’:[0, 10, 100, 1000], ‘var2’:[5, 10, 15, 20]}.</p>
+<li><p><strong>binning_dict</strong> (<em>dict</em>) – <p>The dictionary with the variable to interval limits pairs. A valid dictionary
+looks like this:</p>
+<p><cite>binning_dict = {‘var1’:[0, 10, 100, 1000], ‘var2’:[5, 10, 15, 20]}</cite></p>
 </p></li>
-<li><p><strong>return_object</strong> (<em>bool</em><em>, </em><em>default=False</em>) – <p>Whether the numbers in the discrete variable should be returned as
-numeric or as object. The decision is made by the user based on
-whether they would like to proceed the engineering of the variable as
-if it was numerical or categorical.</p>
+<li><p><strong>return_object</strong> (<em>bool</em><em>, </em><em>default=False</em>) – <p>Whether the the discrete variable should be returned casted as numeric or as
+object. If you would like to proceed with the engineering of the variable as if
+it was categorical, use True. Alternatively, keep the default to False.</p>
 <p>Categorical encoders in Feature-engine work only with variables of type object,
 thus, if you wish to encode the returned bins, set return_object to True.</p>
 </p></li>
-<li><p><strong>return_boundaries</strong> (<em>bool</em><em>, </em><em>default=False</em>) – whether the output, that is the bin names / values, should be the interval
+<li><p><strong>return_boundaries</strong> (<em>bool</em><em>, </em><em>default=False</em>) – Whether the output, that is the bin names / values, should be the interval
 boundaries. If True, it returns the interval boundaries. If False, it returns
 integers.</p></li>
 </ul>
@@ -557,6 +560,18 @@ integers.</p></li>
 <dt id="ballet.eng.external.ArbitraryDiscretiser.binner_dict_">
 <code class="sig-name descname"><span class="pre">binner_dict_</span></code><a class="headerlink" href="#ballet.eng.external.ArbitraryDiscretiser.binner_dict_" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary with the interval limits per variable.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.ArbitraryDiscretiser.variables_">
+<code class="sig-name descname"><span class="pre">variables_</span></code><a class="headerlink" href="#ballet.eng.external.ArbitraryDiscretiser.variables_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The variables to discretise.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.ArbitraryDiscretiser.n_features_in_">
+<code class="sig-name descname"><span class="pre">n_features_in_</span></code><a class="headerlink" href="#ballet.eng.external.ArbitraryDiscretiser.n_features_in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of features in the train set used in fit.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -596,7 +611,7 @@ the train set and cast as numerical.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training dataset. Can be the entire dataframe, not just the
 variables to be transformed.</p></li>
-<li><p><strong>y</strong> (<em>None</em>) – y is not needed in this encoder. You can pass y or None.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – y is not needed in this transformer. You can pass y or None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -657,11 +672,11 @@ variables to be transformed.</p></li>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">feature_engine.imputation.base_imputer.BaseImputer</span></code></p>
 <p>The ArbitraryNumberImputer() replaces missing data in each variable by an arbitrary
 value determined by the user. It works only with numerical variables.</p>
-<p>We can impute all variables with the same number, in which case we need to define
+<p>You can impute all variables with the same number, in which case you need to define
 the variables to impute in <cite>variables</cite> and the imputation number in
-<cite>arbitrary_number</cite>. Alternatively, we can pass a dictionary of variable and numbers
-to use for their imputation.</p>
-<p>For example, we can impute varA and varB with 99 like this:</p>
+<cite>arbitrary_number</cite>. You can pass a dictionary of variable and numbers to use for
+their imputation.</p>
+<p>For example, you can impute varA and varB with 99 like this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">transformer</span> <span class="o">=</span> <span class="n">ArbitraryNumberImputer</span><span class="p">(</span>
         <span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;varA&#39;</span><span class="p">,</span> <span class="s1">&#39;varB&#39;</span><span class="p">],</span>
         <span class="n">arbitrary_number</span> <span class="o">=</span> <span class="mi">99</span>
@@ -670,7 +685,7 @@ to use for their imputation.</p>
 <span class="n">Xt</span> <span class="o">=</span> <span class="n">transformer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Alternatively, we can impute varA with 1 and varB with 99 like this:</p>
+<p>Alternatively, you can impute varA with 1 and varB with 99 like this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">transformer</span> <span class="o">=</span> <span class="n">ArbitraryNumberImputer</span><span class="p">(</span>
         <span class="n">imputer_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;varA&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;varB&#39;</span><span class="p">:</span> <span class="mi">99</span><span class="p">]</span>
         <span class="p">)</span>
@@ -683,8 +698,8 @@ to use for their imputation.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>arbitrary_number</strong> (<em>int</em><em> or </em><em>float</em><em>, </em><em>default=999</em>) – The number to be used to replace missing data.</p></li>
 <li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of variables to be imputed. If None, the imputer will find and
-select all numerical type variables. This parameter is used only if
-<cite>imputer_dict</cite> is None.</p></li>
+select all numerical variables. This parameter is used only if <cite>imputer_dict</cite>
+is None.</p></li>
 <li><p><strong>imputer_dict</strong> (<em>dict</em><em>, </em><em>default=None</em>) – The dictionary of variables and the arbitrary numbers for their imputation.</p></li>
 </ul>
 </dd>
@@ -693,6 +708,18 @@ select all numerical type variables. This parameter is used only if
 <dt id="ballet.eng.external.ArbitraryNumberImputer.imputer_dict_">
 <code class="sig-name descname"><span class="pre">imputer_dict_</span></code><a class="headerlink" href="#ballet.eng.external.ArbitraryNumberImputer.imputer_dict_" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary with the values to replace NAs in each variable.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.ArbitraryNumberImputer.variables_">
+<code class="sig-name descname"><span class="pre">variables_</span></code><a class="headerlink" href="#ballet.eng.external.ArbitraryNumberImputer.variables_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The group of variables that will be transformed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.ArbitraryNumberImputer.n_features_in_">
+<code class="sig-name descname"><span class="pre">n_features_in_</span></code><a class="headerlink" href="#ballet.eng.external.ArbitraryNumberImputer.n_features_in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of features in the train set used in fit.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -759,7 +786,7 @@ variables, or checks that the variables entered by user are numerical.</p>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>TypeError</strong> – If the input is not a Pandas DataFrame</p></li>
-<li><p><strong>ValueError</strong> – If the dataframe is not of same size as that used in fit()</p></li>
+<li><p><strong>ValueError</strong> – If the dataframe has different number of features than the df used in fit()</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Returns</dt>
@@ -779,8 +806,8 @@ variables, or checks that the variables entered by user are numerical.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">feature_engine.outliers.base_outlier.BaseOutlier</span></code></p>
 <p>The ArbitraryOutlierCapper() caps the maximum or minimum values of a variable
 at an arbitrary value indicated by the user.</p>
-<p>The user must provide the maximum or minimum values that will be used
-to cap each variable in a dictionary {feature:capping value}</p>
+<p>You must provide the maximum or minimum values that will be used to cap each
+variable in a dictionary {feature:capping value}</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -804,6 +831,18 @@ training or the datasets to transform contain missing values.</p></li>
 <dt id="ballet.eng.external.ArbitraryOutlierCapper.left_tail_caps_">
 <code class="sig-name descname"><span class="pre">left_tail_caps_</span></code><a class="headerlink" href="#ballet.eng.external.ArbitraryOutlierCapper.left_tail_caps_" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary with the minimum values at which variables will be capped.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.ArbitraryOutlierCapper.variables_">
+<code class="sig-name descname"><span class="pre">variables_</span></code><a class="headerlink" href="#ballet.eng.external.ArbitraryOutlierCapper.variables_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The group of variables that will be transformed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.ArbitraryOutlierCapper.n_features_in_">
+<code class="sig-name descname"><span class="pre">n_features_in_</span></code><a class="headerlink" href="#ballet.eng.external.ArbitraryOutlierCapper.n_features_in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of features in the train set used in fit.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1469,21 +1508,32 @@ the optimal value for a given variable is selected.</p>
 <p>The BoxCox transformation implemented by this transformer is that of
 SciPy.stats:
 <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.boxcox.html">https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.boxcox.html</a></p>
-<p>The BoxCoxTransformer() works only with numerical positive variables (&gt;=0,
-the transformer also works for zero values).</p>
+<p>The BoxCoxTransformer() works only with numerical positive variables (&gt;=0).</p>
 <p>A list of variables can be passed as an argument. Alternatively, the
 transformer will automatically select and transform all numerical
 variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of numerical variables that will be transformed. If None, the
-transformer will automatically find and select all numerical variables.</p>
+<dd class="field-odd"><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of numerical variables to transform. If None, the transformer will
+automatically find and select all numerical variables.</p>
 </dd>
 </dl>
 <dl class="py attribute">
 <dt id="ballet.eng.external.BoxCoxTransformer.lambda_dict_">
 <code class="sig-name descname"><span class="pre">lambda_dict_</span></code><a class="headerlink" href="#ballet.eng.external.BoxCoxTransformer.lambda_dict_" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary with the best BoxCox exponent per variable.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.BoxCoxTransformer.variables_">
+<code class="sig-name descname"><span class="pre">variables_</span></code><a class="headerlink" href="#ballet.eng.external.BoxCoxTransformer.variables_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The group of variables that will be transformed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.BoxCoxTransformer.n_features_in_">
+<code class="sig-name descname"><span class="pre">n_features_in_</span></code><a class="headerlink" href="#ballet.eng.external.BoxCoxTransformer.n_features_in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of features in the train set used in fit.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1562,9 +1612,9 @@ variables to transform.</p></li>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>TypeError</strong> – If the input is not a Pandas DataFrame</p></li>
 <li><p><strong>ValueError</strong> – <ul>
-<li><p>If the variable(s) contain null values.
-    - If the dataframe not of the same size as that used in fit().
-    - If some variables contain negative values.</p></li>
+<li><p>If the variable(s) contain null values
+    - If the df has different number of features than the df used in fit()
+    - If some variables contain negative values</p></li>
 </ul>
 </p></li>
 </ul>
@@ -1716,46 +1766,65 @@ Note: potentially dropped features are not included!</p>
 
 <dl class="py class">
 <dt id="ballet.eng.external.CategoricalImputer">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">CategoricalImputer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imputation_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'missing'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Missing'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_object</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/imputation/categorical.html#CategoricalImputer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.CategoricalImputer" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">CategoricalImputer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imputation_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'missing'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Missing'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_object</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/imputation/categorical.html#CategoricalImputer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.CategoricalImputer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">feature_engine.imputation.base_imputer.BaseImputer</span></code></p>
-<p>The CategoricalImputer() replaces missing data in categorical variables
-by a string like ‘Missing’ or any other entered by the user. Alternatively, it
-replaces missing data by the most frequent category.</p>
-<p>The CategoricalVariableImputer() works only with categorical variables.</p>
-<p>The user can pass a list with the variables to be imputed. Alternatively,
-the CategoricalImputer() will automatically find and select all variables of type
-object.</p>
-<p><strong>Note</strong></p>
-<p>If you want to impute numerical variables with this transformer, you first need to
-cast them as object. It may well be that after the imputation, they are re-casted
-by pandas as numeric. Thus, if planning to do categorical encoding with
-feature-engine to this variables after the imputation, make sure to return the
-variables as object by setting <cite>return_object=True</cite>.</p>
+<p>The CategoricalImputer() replaces missing data in categorical variables by an
+arbitrary value or by the most frequent category.</p>
+<p>The CategoricalVariableImputer() imputes by default only categorical variables
+(type ‘object’ or ‘categorical’). You can pass a list of variables to impute, or
+alternatively, the encoder will find and encode all categorical variables.</p>
+<p>If you want to impute numerical variables with this transformer, there are 2 ways
+of doing it:</p>
+<p><strong>Option 1</strong>: Cast your numerical variables as object in the input dataframe, before
+passing it to the transformer.</p>
+<p><strong>Option 2</strong>: Set <cite>ignore_format=True</cite>. Note that if you do this and do not pass the
+list of variables to impute, the imputer will automatically select and impute all
+variables in the dataframe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>imputation_method</strong> (<em>str</em><em>, </em><em>default=missing</em>) – Desired method of imputation. Can be ‘frequent’ or ‘missing’.</p></li>
-<li><p><strong>fill_value</strong> (<em>str</em><em>, </em><em>default='Missing'</em>) – Only used when <cite>imputation_method=’missing’</cite>. Can be used to set a
-user-defined value to replace the missing data.</p></li>
-<li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of variables to be imputed. If None, the imputer will find and
-select all object type variables.</p></li>
+<li><p><strong>imputation_method</strong> (<em>str</em><em>, </em><em>default='missing'</em>) – Desired method of imputation. Can be ‘frequent’ for frequent category imputation
+or ‘missing’ to impute with an arbitrary value.</p></li>
+<li><p><strong>fill_value</strong> (<em>str</em><em>, </em><em>int</em><em>, </em><em>float</em><em>, </em><em>default='Missing'</em>) – Only used when <cite>imputation_method=’missing’</cite>. User-defined value to replace the
+missing data.</p></li>
+<li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of categorical variables that will be imputed. If None, the
+imputer will find and transform all variables of type object or categorical by
+default. You can also make the transformer accept numerical variables, see the
+parameter ignore_format below.</p></li>
 <li><p><strong>return_object</strong> (<em>bool</em><em>, </em><em>default=False</em>) – If working with numerical variables cast as object, decide
 whether to return the variables as numeric or re-cast them as object.
 Note that pandas will re-cast them automatically as numeric after the
-transformation with the mode.</p></li>
+transformation with the mode or with an arbitrary number.</p></li>
+<li><p><strong>ignore_format</strong> (<em>bool</em><em>, </em><em>default=False</em>) – Whether the format in which the categorical variables are cast should be
+ignored. If false, the encoder will automatically select variables of type
+object or categorical, or check that the variables entered by the user are of
+type object or categorical. If True, the encoder will select all variables or
+accept all variables entered by the user, including those cast as numeric.</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py attribute">
 <dt id="ballet.eng.external.CategoricalImputer.imputer_dict_">
 <code class="sig-name descname"><span class="pre">imputer_dict_</span></code><a class="headerlink" href="#ballet.eng.external.CategoricalImputer.imputer_dict_" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dictionary with most frequent category or string per variable.</p>
+<dd><p>Dictionary with most frequent category or arbitrary value per variable.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.CategoricalImputer.variables_">
+<code class="sig-name descname"><span class="pre">variables_</span></code><a class="headerlink" href="#ballet.eng.external.CategoricalImputer.variables_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The group of variables that will be transformed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.CategoricalImputer.n_features_in_">
+<code class="sig-name descname"><span class="pre">n_features_in_</span></code><a class="headerlink" href="#ballet.eng.external.CategoricalImputer.n_features_in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of features in the train set used in fit.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt>
 <code class="sig-name descname"><span class="pre">fit:</span></code></dt>
-<dd><p>Learn more frequent category, or assign string to variable.</p>
+<dd><p>Learn the most frequent category, or assign arbitrary value to variable.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1785,7 +1854,7 @@ transformation with the mode.</p></li>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>TypeError</strong> – <ul>
 <li><p>If the input is not a Pandas DataFrame.
-    - If any user provided variable is not categorical</p></li>
+    - If user enters non-categorical variables (unless ignore_format is True)</p></li>
 </ul>
 </p></li>
 <li><p><strong>ValueError</strong> – If there are no categorical variables in the df or the df is empty</p></li>
@@ -1811,7 +1880,7 @@ transformation with the mode.</p></li>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>TypeError</strong> – If the input is not a Pandas DataFrame</p></li>
-<li><p><strong>ValueError</strong> – If the dataframe is not of same size as that used in fit()</p></li>
+<li><p><strong>ValueError</strong> – If the dataframe has different number of features than the df used in fit()</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Returns</dt>
@@ -1829,16 +1898,17 @@ transformation with the mode.</p></li>
 <dt id="ballet.eng.external.CombineWithReferenceFeature">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">CombineWithReferenceFeature</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables_to_combine</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_variables</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['sub']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_variables_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">missing_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ignore'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/creation/combine_with_reference_feature.html#CombineWithReferenceFeature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.CombineWithReferenceFeature" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.TransformerMixin</span></code></p>
-<p>CombineWithReferenceFeature() applies basic mathematical operations between one or
-more reference variables and a group of variables, returning one or more additional
-features as a result. That is, it sums, multiplies, substracts or divides a group of
-features to or by a group of reference variables and returns the result into new
-variables.</p>
+<p>CombineWithReferenceFeature() applies basic mathematical operations between a group
+of variables and one or more reference features. It adds one or more additional
+features to the dataframe with the result of the operations.</p>
+<p>In other words, CombineWithReferenceFeature() sums, multiplies, subtracts or
+divides a group of features to / by a group of reference variables, and returns the
+result as new variables in the dataframe.</p>
 <p>For example, if we have the variables <strong>number_payments_first_quarter</strong>,
 <strong>number_payments_second_quarter</strong>, <strong>number_payments_third_quarter</strong>,
-<strong>number_payments_fourth_quarter</strong>, and <strong>total_payments</strong> we can use
-CombineWithReferenceFeature() to determine the percentage of total payments per
-month as follows:</p>
+<strong>number_payments_fourth_quarter</strong>, and <strong>total_payments</strong>, we can use
+CombineWithReferenceFeature() to determine the percentage of payments per
+quarter as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">transformer</span> <span class="o">=</span> <span class="n">CombineWithReferenceFeature</span><span class="p">(</span>
     <span class="n">variables_to_combine</span><span class="o">=</span><span class="p">[</span>
         <span class="s1">&#39;number_payments_first_quarter&#39;</span><span class="p">,</span>
@@ -1869,53 +1939,57 @@ new_variables_name list plus the original set of variables.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>variables_to_combine</strong> (<em>list</em>) – The list of numerical variables to be combined with the reference
 variables.</p></li>
-<li><p><strong>reference_variables</strong> (<em>list</em>) – The list of numerical reference variables that will be added, multiplied,
-or substracted from the variables_to_combine, or used as denominator for
+<li><p><strong>reference_variables</strong> (<em>list</em>) – The list of numerical reference variables that will be added to, multiplied
+with, or subtracted from the variables_to_combine, or used as denominator for
 division.</p></li>
 <li><p><strong>operations</strong> (<em>list</em><em>, </em><em>default=</em><em>[</em><em>'sub'</em><em>]</em>) – <p>The list of basic mathematical operations to be used in transformation.</p>
-<p>If none, all of [‘sub’, ‘div’,’add’,’mul’] will be performed
-over the variables. Alternatively, the user can enter the list of
-operations to carry out.</p>
-<p>Each operation should be a string and must be one of the elements
-from the list: [‘sub’, ‘div’,’add’,’mul’]</p>
+<p>If None, all of [‘sub’, ‘div’,’add’,’mul’] will be performed. Alternatively,
+you can enter a list of operations to carry out. Each operation should
+be a string and must be one of the elements in <cite>[‘sub’, ‘div’,’add’, ‘mul’]</cite>.</p>
 <p>Each operation will result in a new variable that will be added to the
 transformed dataset.</p>
 </p></li>
-<li><p><strong>new_variables_names</strong> (<em>list</em><em>, </em><em>default=None</em>) – <p>Names of the newly created variables. The user can enter a list with the
-names for the newly created features (recommended). The user must enter
-as many names as new features created by the transformer. The number of new
-features is the number of operations times the number of reference variables
-times the number of variables to combine.</p>
+<li><p><strong>new_variables_names</strong> (<em>list</em><em>, </em><em>default=None</em>) – <p>Names of the newly created variables. You can enter a list with the names for
+the newly created features (recommended). You must enter as many names as new
+features created by the transformer. The number of new features is the number
+of operations times the number of reference variables times the number of
+variables to combine.</p>
 <p>Thus, if you want to perform 2 operations, sub and div, combining 4 variables
 with 2 reference variables, you should enter 2 X 4 X 2 new variable names.</p>
 <p>The name of the variables indicated by the user should coincide with the order
 in which the  operations are performed by the transformer. The transformer will
 first carry out ‘sub’, then ‘div’, then ‘add’ and finally ‘mul’.</p>
-<p>If new_variable_names=None, the transformer will assign an arbitrary name
+<p>If new_variable_names is None, the transformer will assign an arbitrary name
 to the newly created features.</p>
 </p></li>
-<li><p><strong>missing_values</strong> (<em>string</em><em>, </em><em>default='ignore'</em>) – Indicates if missing values should be ignored or raised. If
-missing_values=’ignore’, the transformer will ignore missing data when
-transforming the data. If missing_values=’raise’ the transformer will return
-an error if the training or the datasets to transform contain missing values.</p></li>
+<li><p><strong>missing_values</strong> (<em>string</em><em>, </em><em>default='ignore'</em>) – Indicates if missing values should be ignored or raised. If ‘ignore’, the
+transformer will ignore missing data when transforming the data. If ‘raise’ the
+transformer will return an error if the training or the datasets to transform
+contain missing values.</p></li>
 </ul>
 </dd>
 </dl>
+<dl class="py attribute">
+<dt id="ballet.eng.external.CombineWithReferenceFeature.n_features_in_">
+<code class="sig-name descname"><span class="pre">n_features_in_</span></code><a class="headerlink" href="#ballet.eng.external.CombineWithReferenceFeature.n_features_in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of features in the train set used in fit.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt>
-<code class="sig-name descname"><span class="pre">fit</span> <span class="pre">:</span></code></dt>
+<code class="sig-name descname"><span class="pre">fit:</span></code></dt>
 <dd><p>This transformer does not learn parameters.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt>
-<code class="sig-name descname"><span class="pre">transform</span> <span class="pre">:</span></code></dt>
+<code class="sig-name descname"><span class="pre">transform:</span></code></dt>
 <dd><p>Combine the variables with the mathematical operations.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt>
-<code class="sig-name descname"><span class="pre">fit_transform</span> <span class="pre">:</span></code></dt>
+<code class="sig-name descname"><span class="pre">fit_transform:</span></code></dt>
 <dd><p>Fit to the data, then transform it.</p>
 </dd></dl>
 
@@ -1931,16 +2005,13 @@ financial sector are:</p>
 <dl class="py method">
 <dt id="ballet.eng.external.CombineWithReferenceFeature.fit">
 <code class="sig-name descname"><span class="pre">fit</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/creation/combine_with_reference_feature.html#CombineWithReferenceFeature.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.CombineWithReferenceFeature.fit" title="Permalink to this definition">¶</a></dt>
-<dd><p>This transformer does not learn any parameter.
-Performs dataframe checks.</p>
+<dd><p>This transformer does not learn any parameter. Performs dataframe checks.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – </p></li>
-<li><p><strong>training input samples.</strong> (<em>The</em>) – </p></li>
-<li><p><strong>be the entire dataframe</strong> (<em>Can</em>) – </p></li>
-<li><p><strong>just the variables to transform.</strong> (<em>not</em>) – </p></li>
-<li><p><strong>y</strong> (<em>pandas Series</em><em>, or </em><em>np.array. Defaults to None.</em>) – It is not needed in this transformer. You can pass y or None.</p></li>
+<li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples. Can be the entire dataframe, not just the
+variables to transform.</p></li>
+<li><p><strong>y</strong> (<em>pandas Series</em><em>, or </em><em>np.array. Default=None.</em>) – It is not needed in this transformer. You can pass y or None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -1969,20 +2040,13 @@ Performs dataframe checks.</p>
 <dd><p>Combine the variables with the mathematical operations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – </p></li>
-<li><p><strong>data to transform.</strong> (<em>The</em>) – </p></li>
-</ul>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to transform.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>X</strong> – The dataframe with the operations results added as columns.</p>
 </dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p><strong>X</strong> (<em>Pandas dataframe, shape = [n_samples, n_features + n_operations]</em>)</p></li>
-<li><p><em>The dataframe with the operations results added as columns.</em></p></li>
-</ul>
-</p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Pandas dataframe, shape = [n_samples, n_features + n_operations]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2044,19 +2108,22 @@ and n_features is the number of features.</p></li>
 
 <dl class="py class">
 <dt id="ballet.eng.external.CountFrequencyEncoder">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">CountFrequencyEncoder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">encoding_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'count'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/encoding/count_frequency.html#CountFrequencyEncoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.CountFrequencyEncoder" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">CountFrequencyEncoder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">encoding_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'count'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/encoding/count_frequency.html#CountFrequencyEncoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.CountFrequencyEncoder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">feature_engine.encoding.base_encoder.BaseCategoricalTransformer</span></code></p>
 <p>The CountFrequencyEncoder() replaces categories by either the count or the
 percentage of observations per category.</p>
 <p>For example in the variable colour, if 10 observations are blue, blue will
 be replaced by 10. Alternatively, if 10% of the observations are blue, blue
 will be replaced by 0.1.</p>
-<p>The CountFrequencyEncoder() will encode only categorical variables
-(type ‘object’). A list of variables to encode can be passed as argument.
+<p>The CountFrequencyEncoder() will encode only categorical variables by default
+(type ‘object’ or ‘categorical’). You can pass a list of variables to encode.
 Alternatively, the encoder will find and encode all categorical variables
-(object type).</p>
+(type ‘object’ or ‘categorical’).</p>
+<p>With <cite>ignore_format=True</cite> you have the option to encode numerical variables as well.
+The procedure is identical, you can either enter the list of variables to encode, or
+the transformer will automatically select all variables.</p>
 <p>The encoder first maps the categories to the counts or frequencies for each
-variable (fit). The encoder then replaces the categories by those mapped numbers
+variable (fit). The encoder then replaces the categories with those numbers
 (transform).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2065,15 +2132,34 @@ variable (fit). The encoder then replaces the categories by those mapped numbers
 <p>’count’: number of observations per category</p>
 <p>’frequency’: percentage of observations per category</p>
 </p></li>
-<li><p><strong>variables</strong> (<em>list</em>) – The list of categorical variables that will be encoded. If None, the
-encoder will find and transform all object type variables.</p></li>
+<li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of categorical variables that will be encoded. If None, the
+encoder will find and transform all variables of type object or categorical by
+default. You can also make the transformer accept numerical variables, see the
+next parameter.</p></li>
+<li><p><strong>ignore_format</strong> (<em>bool</em><em>, </em><em>default=False</em>) – Whether the format in which the categorical variables are cast should be
+ignored. If false, the encoder will automatically select variables of type
+object or categorical, or check that the variables entered by the user are of
+type object or categorical. If True, the encoder will select all variables or
+accept all variables entered by the user, including those cast as numeric.</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py attribute">
 <dt id="ballet.eng.external.CountFrequencyEncoder.encoder_dict_">
 <code class="sig-name descname"><span class="pre">encoder_dict_</span></code><a class="headerlink" href="#ballet.eng.external.CountFrequencyEncoder.encoder_dict_" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dictionary with the count or frequency} per category, per variable.</p>
+<dd><p>Dictionary with the count or frequency per category, per variable.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.CountFrequencyEncoder.variables_">
+<code class="sig-name descname"><span class="pre">variables_</span></code><a class="headerlink" href="#ballet.eng.external.CountFrequencyEncoder.variables_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The group of variables that will be transformed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.CountFrequencyEncoder.n_features_in_">
+<code class="sig-name descname"><span class="pre">n_features_in_</span></code><a class="headerlink" href="#ballet.eng.external.CountFrequencyEncoder.n_features_in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of features in the train set used in fit.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2124,7 +2210,7 @@ variables to be transformed.</p></li>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>TypeError</strong> – <ul>
 <li><p>If the input is not a Pandas DataFrame.
-    - If any user provided variable is not categorical</p></li>
+    - f user enters non-categorical variables (unless ignore_format is True)</p></li>
 </ul>
 </p></li>
 <li><p><strong>ValueError</strong> – <ul>
@@ -2153,13 +2239,10 @@ variables to be transformed.</p></li>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>TypeError</strong> – <ul>
-<li><p>If the input is not a Pandas DataFrame</p></li>
-</ul>
-</p></li>
+<li><p><strong>TypeError</strong> – If the input is not a Pandas DataFrame</p></li>
 <li><p><strong>ValueError</strong> – <ul>
 <li><p>If the variable(s) contain null values
-    - If the dataframe is not of same size as that used in fit()</p></li>
+    - If the df has different number of features than the df used in fit()</p></li>
 </ul>
 </p></li>
 </ul>
@@ -2187,7 +2270,7 @@ original values.</p>
 <li><p><strong>TypeError</strong> – If the input is not a Pandas DataFrame</p></li>
 <li><p><strong>ValueError</strong> – <ul>
 <li><p>If the variable(s) contain null values
-    - If dataframe is not of same size as that used in fit()</p></li>
+    - If the df has different number of features than the df used in fit()</p></li>
 </ul>
 </p></li>
 <li><p><strong>Warning</strong> – If after encoding, NAN were introduced.</p></li>
@@ -2259,7 +2342,7 @@ passed it can take one of these forms: (entityset, cutoff_time_dataframe),
 
 <dl class="py class">
 <dt id="ballet.eng.external.DecisionTreeDiscretiser">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">DecisionTreeDiscretiser</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'neg_mean_squared_error'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_grid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/discretisation/decision_tree.html#DecisionTreeDiscretiser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.DecisionTreeDiscretiser" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">DecisionTreeDiscretiser</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'neg_mean_squared_error'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_grid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/discretisation/decision_tree.html#DecisionTreeDiscretiser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.DecisionTreeDiscretiser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">feature_engine.base_transformers.BaseNumericalTransformer</span></code></p>
 <p>The DecisionTreeDiscretiser() replaces continuous numerical variables by discrete,
 finite, values estimated by a decision tree.</p>
@@ -2276,22 +2359,22 @@ tree.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of numerical variables to transform. If None, the discretiser will
+automatically select all numerical variables.</p></li>
 <li><p><strong>cv</strong> (<em>int</em><em>, </em><em>default=3</em>) – Desired number of cross-validation fold to be used to fit the decision
 tree.</p></li>
 <li><p><strong>scoring</strong> (<em>str</em><em>, </em><em>default='neg_mean_squared_error'</em>) – Desired metric to optimise the performance for the tree. Comes from
 sklearn.metrics. See DecisionTreeRegressor or DecisionTreeClassifier
 model evaluation documentation for more options:
 <a class="reference external" href="https://scikit-learn.org/stable/modules/model_evaluation.html">https://scikit-learn.org/stable/modules/model_evaluation.html</a></p></li>
-<li><p><strong>variables</strong> (<em>list</em>) – The list of numerical variables that will be transformed. If None, the
-discretiser will automatically select all numerical variables.</p></li>
-<li><p><strong>regression</strong> (<em>boolean</em><em>, </em><em>default=True</em>) – Indicates whether the discretiser should train a regression or a classification
-decision tree.</p></li>
 <li><p><strong>param_grid</strong> (<em>dictionary</em><em>, </em><em>default=None</em>) – <p>The list of parameters over which the decision tree should be optimised
 during the grid search. The param_grid can contain any of the permitted
 parameters for Scikit-learn’s DecisionTreeRegressor() or
 DecisionTreeClassifier().</p>
 <p>If None, then param_grid = {‘max_depth’: [1, 2, 3, 4]}</p>
 </p></li>
+<li><p><strong>regression</strong> (<em>boolean</em><em>, </em><em>default=True</em>) – Indicates whether the discretiser should train a regression or a classification
+decision tree.</p></li>
 <li><p><strong>random_state</strong> (<em>int</em><em>, </em><em>default=None</em>) – The random_state to initialise the training of the decision tree. It is one
 of the parameters of the Scikit-learn’s DecisionTreeRegressor() or
 DecisionTreeClassifier(). For reproducibility it is recommended to set
@@ -2309,6 +2392,18 @@ the random_state to an integer.</p></li>
 <dt id="ballet.eng.external.DecisionTreeDiscretiser.scores_dict_">
 <code class="sig-name descname"><span class="pre">scores_dict_</span></code><a class="headerlink" href="#ballet.eng.external.DecisionTreeDiscretiser.scores_dict_" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary with the score of the best decision tree, over the train set.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.DecisionTreeDiscretiser.variables_">
+<code class="sig-name descname"><span class="pre">variables_</span></code><a class="headerlink" href="#ballet.eng.external.DecisionTreeDiscretiser.variables_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The variables to discretise.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.DecisionTreeDiscretiser.n_features_in_">
+<code class="sig-name descname"><span class="pre">n_features_in_</span></code><a class="headerlink" href="#ballet.eng.external.DecisionTreeDiscretiser.n_features_in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of features in the train set used in fit.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2408,22 +2503,28 @@ is finite, aka, discrete.</p>
 
 <dl class="py class">
 <dt id="ballet.eng.external.DecisionTreeEncoder">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">DecisionTreeEncoder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">encoding_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'arbitrary'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'neg_mean_squared_error'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_grid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/encoding/decision_tree.html#DecisionTreeEncoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.DecisionTreeEncoder" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">DecisionTreeEncoder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">encoding_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'arbitrary'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'neg_mean_squared_error'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_grid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/encoding/decision_tree.html#DecisionTreeEncoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.DecisionTreeEncoder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">feature_engine.encoding.base_encoder.BaseCategoricalTransformer</span></code></p>
 <p>The DecisionTreeEncoder() encodes categorical variables with predictions
-of a decision tree model.</p>
-<p>Each categorical feature is recoded by training a decision tree, typically of
-limited depth (2, 3 or 4) using that feature alone, and let the tree directly
-predict the target. The probabilistic predictions of this decision tree are used as
-the new values of the original categorical feature, that now is linearly (or at
-least monotonically) correlated with the target.</p>
-<p>In practice, the categorical variable will be first encoded into integers with the
-OrdinalCategoricalEncoder(). The integers can be assigned arbitrarily to the
+of a decision tree.</p>
+<p>The encoder first fits a decision tree using a single feature and the target (fit).
+And  then replaces the values of the original feature by the predictions of the
+tree (transform). The transformer will train a Decision tree per every feature to
+encode.</p>
+<p>The motivation is to try and create monotonic relationships between the categorical
+variables and the target.</p>
+<p>Under the hood, the categorical variable will be first encoded into integers with
+the OrdinalCategoricalEncoder(). The integers can be assigned arbitrarily to the
 categories or following the mean value of the target in each category. Then a
 decision tree will fit the resulting numerical variable to predict the target
 variable. Finally, the original categorical variable values will be replaced by the
 predictions of the decision tree.</p>
-<p>Note that a decision tree is fit per every single categorical variable to encode.</p>
+<p>The DecisionTreeEncoder() will encode only categorical variables by default
+(type ‘object’ or ‘categorical’). You can pass a list of variables to encode or the
+encoder will find and encode all categorical variables. But with
+<cite>ignore_format=True</cite> you have the option to encode numerical variables as well. In
+this case, you can either enter the list of variables to encode, or the transformer
+will automatically select all variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -2439,20 +2540,27 @@ tree.</p></li>
 sklearn.metrics. See the DecisionTreeRegressor or DecisionTreeClassifier
 model evaluation documentation for more options:
 <a class="reference external" href="https://scikit-learn.org/stable/modules/model_evaluation.html">https://scikit-learn.org/stable/modules/model_evaluation.html</a></p></li>
-<li><p><strong>regression</strong> (<em>boolean</em><em>, </em><em>default=True</em>) – Indicates whether the encoder should train a regression or a classification
-decision tree.</p></li>
 <li><p><strong>param_grid</strong> (<em>dictionary</em><em>, </em><em>default=None</em>) – <p>The list of parameters over which the decision tree should be optimised
 during the grid search. The param_grid can contain any of the permitted
 parameters for Scikit-learn’s DecisionTreeRegressor() or
 DecisionTreeClassifier().</p>
 <p>If None, then param_grid = {‘max_depth’: [1, 2, 3, 4]}.</p>
 </p></li>
+<li><p><strong>regression</strong> (<em>boolean</em><em>, </em><em>default=True</em>) – Indicates whether the encoder should train a regression or a classification
+decision tree.</p></li>
 <li><p><strong>random_state</strong> (<em>int</em><em>, </em><em>default=None</em>) – The random_state to initialise the training of the decision tree. It is one
 of the parameters of the Scikit-learn’s DecisionTreeRegressor() or
 DecisionTreeClassifier(). For reproducibility it is recommended to set
 the random_state to an integer.</p></li>
 <li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of categorical variables that will be encoded. If None, the
-encoder will find and select all object type variables.</p></li>
+encoder will find and transform all variables of type object or categorical by
+default. You can also make the transformer accept numerical variables, see the
+next parameter.</p></li>
+<li><p><strong>ignore_format</strong> (<em>bool</em><em>, </em><em>default=False</em>) – Whether the format in which the categorical variables are cast should be
+ignored. If false, the encoder will automatically select variables of type
+object or categorical, or check that the variables entered by the user are of
+type object or categorical. If True, the encoder will select all variables or
+accept all variables entered by the user, including those cast as numeric.</p></li>
 </ul>
 </dd>
 </dl>
@@ -2460,6 +2568,18 @@ encoder will find and select all object type variables.</p></li>
 <dt id="ballet.eng.external.DecisionTreeEncoder.encoder_">
 <code class="sig-name descname"><span class="pre">encoder_</span></code><a class="headerlink" href="#ballet.eng.external.DecisionTreeEncoder.encoder_" title="Permalink to this definition">¶</a></dt>
 <dd><p>sklearn Pipeline containing the ordinal encoder and the decision tree.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.DecisionTreeEncoder.variables_">
+<code class="sig-name descname"><span class="pre">variables_</span></code><a class="headerlink" href="#ballet.eng.external.DecisionTreeEncoder.variables_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The group of variables that will be transformed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.DecisionTreeEncoder.n_features_in_">
+<code class="sig-name descname"><span class="pre">n_features_in_</span></code><a class="headerlink" href="#ballet.eng.external.DecisionTreeEncoder.n_features_in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of features in the train set used in fit.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2489,7 +2609,7 @@ dataset. If this happens, try grouping infrequent categories using the
 RareLabelEncoder().</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">sklearn.ensemble.DecisionTreeRegressor</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">sklearn.ensemble.DecisionTreeClassifier</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">feature_engine.discretisation.DecisionTreeDiscretiser</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">feature_engine.encoding.RareLabelEncoder</span></code></p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">sklearn.ensemble.DecisionTreeRegressor</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">sklearn.ensemble.DecisionTreeClassifier</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">feature_engine.discretisation.DecisionTreeDiscretiser</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">feature_engine.encoding.RareLabelEncoder</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">feature_engine.encoding.OrdinalEncoder</span></code></p>
 </div>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
@@ -2516,7 +2636,7 @@ ordered ordinal encoding.</p></li>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>TypeError</strong> – <ul>
 <li><p>If the input is not a Pandas DataFrame.
-    - If any user provided variable is not categorical</p></li>
+    - f user enters non-categorical variables (unless ignore_format is True)</p></li>
 </ul>
 </p></li>
 <li><p><strong>ValueError</strong> – <ul>
@@ -2538,7 +2658,7 @@ ordered ordinal encoding.</p></li>
 <dl class="py method">
 <dt id="ballet.eng.external.DecisionTreeEncoder.inverse_transform">
 <code class="sig-name descname"><span class="pre">inverse_transform</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/encoding/decision_tree.html#DecisionTreeEncoder.inverse_transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.DecisionTreeEncoder.inverse_transform" title="Permalink to this definition">¶</a></dt>
-<dd><p>inverse_transform is not implemented for this transformer yet.</p>
+<dd><p>inverse_transform is not implemented for this transformer.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2601,26 +2721,23 @@ ordered ordinal encoding.</p></li>
 <dt id="ballet.eng.external.DropMissingData">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">DropMissingData</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">missing_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/imputation/drop_missing_data.html#DropMissingData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.DropMissingData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">feature_engine.imputation.base_imputer.BaseImputer</span></code></p>
-<p>works for both numerical and categorical variables. DropMissingData can
-automatically select all the variables, or alternatively, all the variables with
-missing data in the train set. Then the observations with NA will be dropped for
-these variable groups.</p>
-<p>The user has the option to indicate for which variables the observations with NA
-should be removed.</p>
+<p>The DropMissingData() will delete rows containing missing values. It provides
+similar functionality to pandas.drop_na().</p>
+<p>It works for both numerical and categorical variables. You can enter the list of
+variables for which missing values should be removed from the dataframe.
+Alternatively, the imputer will automatically select all variables in the dataframe.</p>
+<p><strong>Note</strong>
+The transformer will first select all variables or all user entered
+variables and if <cite>missing_only=True</cite>, it will re-select from the original group
+only those that show missing data in during fit, that is in the train set.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>missing_only</strong> (<em>bool</em><em>, </em><em>default=True</em>) – If true, missing observations will be dropped only for the variables that were
-seen to have NA in the train set, during fit. If False, observations with NA
-will be dropped from all variables.</p></li>
+<li><p><strong>missing_only</strong> (<em>bool</em><em>, </em><em>default=True</em>) – If true, missing observations will be dropped only for the variables that have
+missing data in the train set, during fit. If False, observations with NA
+will be dropped from all variables indicated by the user.</p></li>
 <li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of variables to be imputed. If None, the imputer will find and
-select all variables with missing data.</p></li>
-<li><p><strong>**Note**</strong> – </p></li>
-<li><p><strong>transformer will first select all variables</strong><strong> or </strong><strong>all user entered</strong> (<em>The</em>) – </p></li>
-<li><p><strong>and if missing_only=True</strong> (<em>variables</em>) – </p></li>
-<li><p><strong>will re-select from the original group</strong> (<em>it</em>) – </p></li>
-<li><p><strong>those that show missing data in during fit</strong> (<em>only</em>) – </p></li>
-<li><p><strong>is in the train set.</strong> (<em>that</em>) – </p></li>
+select all variables in the dataframe.</p></li>
 </ul>
 </dd>
 </dl>
@@ -2628,6 +2745,12 @@ select all variables with missing data.</p></li>
 <dt id="ballet.eng.external.DropMissingData.variables_">
 <code class="sig-name descname"><span class="pre">variables_</span></code><a class="headerlink" href="#ballet.eng.external.DropMissingData.variables_" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of variables for which the rows with NA will be deleted.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.DropMissingData.n_features_in_">
+<code class="sig-name descname"><span class="pre">n_features_in_</span></code><a class="headerlink" href="#ballet.eng.external.DropMissingData.n_features_in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of features in the train set used in fit.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2685,13 +2808,13 @@ This method could be useful in production, in case we want to store the
 observations that will not be fed into the model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The dataset to from which rows containing NA should be retained.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The dataframe to be transformed.</p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><strong>TypeError</strong> – If the input is not a Pandas DataFrame</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>X</strong> – The cdataframe portion that contains only the rows with missing values.</p>
+<dd class="field-odd"><p><strong>X</strong> – The dataframe containing only the rows with missing values.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>pandas dataframe of shape = [obs_with_na, features]</p>
@@ -2723,16 +2846,16 @@ observations that will not be fed into the model.</p>
 <dt id="ballet.eng.external.EndTailImputer">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">EndTailImputer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imputation_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gaussian'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tail</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'right'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/imputation/end_tail.html#EndTailImputer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.EndTailImputer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">feature_engine.imputation.base_imputer.BaseImputer</span></code></p>
-<p>The EndTailImputer() transforms features by replacing missing data by a value at
-either tail of the distribution. Ti works only with numerical variables.</p>
-<p>The user can indicate the variables to be imputed in a list. Alternatively, the
+<p>The EndTailImputer() replaces missing data by a value at either tail of the
+distribution. It works only with numerical variables.</p>
+<p>You can indicate the variables to be imputed in a list. Alternatively, the
 EndTailImputer() will automatically find and select all variables of type numeric.</p>
 <p>The imputer first calculates the values at the end of the distribution for each
 variable (fit). The values at the end of the distribution are determined using
 the Gaussian limits, the the IQR proximity rule limits, or a factor of the maximum
 value:</p>
 <dl class="simple">
-<dt>Gaussian limits</dt><dd><ul class="simple">
+<dt>Gaussian limits:</dt><dd><ul class="simple">
 <li><p>right tail: mean + 3*std</p></li>
 <li><p>left tail: mean - 3*std</p></li>
 </ul>
@@ -2752,7 +2875,7 @@ value:</p>
 </dd>
 </dl>
 <p>You can change the factor that multiplies the std, IQR or the maximum value
-using the parameter ‘fold’.</p>
+using the parameter ‘fold’ (we used fold=3 in the examples above).</p>
 <p>The imputer then replaces the missing data with the estimated values (transform).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2780,6 +2903,18 @@ select all variables of type numeric.</p></li>
 <dt id="ballet.eng.external.EndTailImputer.imputer_dict_">
 <code class="sig-name descname"><span class="pre">imputer_dict_</span></code><a class="headerlink" href="#ballet.eng.external.EndTailImputer.imputer_dict_" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary with the values at the end of the distribution per variable.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.EndTailImputer.variables_">
+<code class="sig-name descname"><span class="pre">variables_</span></code><a class="headerlink" href="#ballet.eng.external.EndTailImputer.variables_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The group of variables that will be transformed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.EndTailImputer.n_features_in_">
+<code class="sig-name descname"><span class="pre">n_features_in_</span></code><a class="headerlink" href="#ballet.eng.external.EndTailImputer.n_features_in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of features in the train set used in fit.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2841,7 +2976,7 @@ select all variables of type numeric.</p></li>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>TypeError</strong> – If the input is not a Pandas DataFrame</p></li>
-<li><p><strong>ValueError</strong> – If the dataframe is not of same size as that used in fit()</p></li>
+<li><p><strong>ValueError</strong> – If the dataframe has different number of features than the df used in fit()</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Returns</dt>
@@ -2857,7 +2992,7 @@ select all variables of type numeric.</p></li>
 
 <dl class="py class">
 <dt id="ballet.eng.external.EqualFrequencyDiscretiser">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">EqualFrequencyDiscretiser</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_object</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_boundaries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/discretisation/equal_frequency.html#EqualFrequencyDiscretiser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.EqualFrequencyDiscretiser" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">EqualFrequencyDiscretiser</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_object</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_boundaries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/discretisation/equal_frequency.html#EqualFrequencyDiscretiser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.EqualFrequencyDiscretiser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">feature_engine.base_transformers.BaseNumericalTransformer</span></code></p>
 <p>The EqualFrequencyDiscretiser() divides continuous numerical variables
 into contiguous equal frequency intervals, that is, intervals that contain
@@ -2875,15 +3010,17 @@ quantiles for each variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of numerical variables that will be discretised. If None, the
+EqualFrequencyDiscretiser() will select all numerical variables.</p></li>
 <li><p><strong>q</strong> (<em>int</em><em>, </em><em>default=10</em>) – Desired number of equal frequency intervals / bins. In other words the
 number of quantiles in which the variables should be divided.</p></li>
-<li><p><strong>variables</strong> (<em>list</em>) – The list of numerical variables that will be discretised. If None, the
-EqualFrequencyDiscretiser() will select all numerical variables.</p></li>
-<li><p><strong>return_object</strong> (<em>bool</em><em>, </em><em>default=False</em>) – Whether the numbers in the discrete variable should be returned as
-numeric or as object. The decision is made by the user based on
-whether they would like to proceed the engineering of the variable as
-if it was numerical or categorical.</p></li>
-<li><p><strong>return_boundaries</strong> (<em>bool</em><em>, </em><em>default=False</em>) – whether the output should be the interval boundaries. If True, it returns
+<li><p><strong>return_object</strong> (<em>bool</em><em>, </em><em>default=False</em>) – <p>Whether the the discrete variable should be returned casted as numeric or as
+object. If you would like to proceed with the engineering of the variable as if
+it was categorical, use True. Alternatively, keep the default to False.</p>
+<p>Categorical encoders in Feature-engine work only with variables of type object,
+thus, if you wish to encode the returned bins, set return_object to True.</p>
+</p></li>
+<li><p><strong>return_boundaries</strong> (<em>bool</em><em>, </em><em>default=False</em>) – Whether the output should be the interval boundaries. If True, it returns
 the interval boundaries. If False, it returns integers.</p></li>
 </ul>
 </dd>
@@ -2892,6 +3029,18 @@ the interval boundaries. If False, it returns integers.</p></li>
 <dt id="ballet.eng.external.EqualFrequencyDiscretiser.binner_dict_">
 <code class="sig-name descname"><span class="pre">binner_dict_</span></code><a class="headerlink" href="#ballet.eng.external.EqualFrequencyDiscretiser.binner_dict_" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary with the interval limits per variable.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.EqualFrequencyDiscretiser.variables_">
+<code class="sig-name descname"><span class="pre">variables_</span></code><a class="headerlink" href="#ballet.eng.external.EqualFrequencyDiscretiser.variables_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The variables to discretise.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.EqualFrequencyDiscretiser.n_features_in_">
+<code class="sig-name descname"><span class="pre">n_features_in_</span></code><a class="headerlink" href="#ballet.eng.external.EqualFrequencyDiscretiser.n_features_in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of features in the train set used in fit.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2934,8 +3083,7 @@ International Journal of Computer Science,  vol. 1, pp. 111 117, 2006.</p>
 <dl class="py method">
 <dt id="ballet.eng.external.EqualFrequencyDiscretiser.fit">
 <code class="sig-name descname"><span class="pre">fit</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/discretisation/equal_frequency.html#EqualFrequencyDiscretiser.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.EqualFrequencyDiscretiser.fit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Learn the limits of the equal frequency intervals, that is the percentiles
-for each variable.</p>
+<dd><p>Learn the limits of the equal frequency intervals.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -2998,7 +3146,7 @@ to be transformed.</p></li>
 
 <dl class="py class">
 <dt id="ballet.eng.external.EqualWidthDiscretiser">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">EqualWidthDiscretiser</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_object</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_boundaries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/discretisation/equal_width.html#EqualWidthDiscretiser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.EqualWidthDiscretiser" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">EqualWidthDiscretiser</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_object</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_boundaries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/discretisation/equal_width.html#EqualWidthDiscretiser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.EqualWidthDiscretiser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">feature_engine.base_transformers.BaseNumericalTransformer</span></code></p>
 <p>The EqualWidthDiscretiser() divides continuous numerical variables into
 intervals of the same width, that is, equidistant intervals. Note that the
@@ -3018,14 +3166,16 @@ the intervals.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>bins</strong> (<em>int</em><em>, </em><em>default=10</em>) – Desired number of equal width intervals / bins.</p></li>
-<li><p><strong>variables</strong> (<em>list</em>) – The list of numerical variables to transform. If None, the
+<li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of numerical variables to transform. If None, the
 discretiser will automatically select all numerical type variables.</p></li>
-<li><p><strong>return_object</strong> (<em>bool</em><em>, </em><em>default=False</em>) – Whether the numbers in the discrete variable should be returned as
-numeric or as object. The decision should be made by the user based on
-whether they would like to proceed the engineering of the variable as
-if it was numerical or categorical.</p></li>
-<li><p><strong>return_boundaries</strong> (<em>bool</em><em>, </em><em>default=False</em>) – whether the output should be the interval boundaries. If True, it returns
+<li><p><strong>bins</strong> (<em>int</em><em>, </em><em>default=10</em>) – Desired number of equal width intervals / bins.</p></li>
+<li><p><strong>return_object</strong> (<em>bool</em><em>, </em><em>default=False</em>) – <p>Whether the the discrete variable should be returned casted as numeric or as
+object. If you would like to proceed with the engineering of the variable as if
+it was categorical, use True. Alternatively, keep the default to False.</p>
+<p>Categorical encoders in Feature-engine work only with variables of type object,
+thus, if you wish to encode the returned bins, set return_object to True.</p>
+</p></li>
+<li><p><strong>return_boundaries</strong> (<em>bool</em><em>, </em><em>default=False</em>) – Whether the output should be the interval boundaries. If True, it returns
 the interval boundaries. If False, it returns integers.</p></li>
 </ul>
 </dd>
@@ -3034,6 +3184,18 @@ the interval boundaries. If False, it returns integers.</p></li>
 <dt id="ballet.eng.external.EqualWidthDiscretiser.binner_dict_">
 <code class="sig-name descname"><span class="pre">binner_dict_</span></code><a class="headerlink" href="#ballet.eng.external.EqualWidthDiscretiser.binner_dict_" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary with the interval limits per variable.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.EqualWidthDiscretiser.variables_">
+<code class="sig-name descname"><span class="pre">variables_</span></code><a class="headerlink" href="#ballet.eng.external.EqualWidthDiscretiser.variables_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The variables to be discretised.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.EqualWidthDiscretiser.n_features_in_">
+<code class="sig-name descname"><span class="pre">n_features_in_</span></code><a class="headerlink" href="#ballet.eng.external.EqualWidthDiscretiser.n_features_in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of features in the train set used in fit.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -4753,12 +4915,12 @@ Note: potentially dropped features are not included!</p>
 
 <dl class="py class">
 <dt id="ballet.eng.external.MathematicalCombination">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">MathematicalCombination</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables_to_combine</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">math_operations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_variables_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/creation/mathematical_combination.html#MathematicalCombination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.MathematicalCombination" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">MathematicalCombination</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables_to_combine</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">math_operations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_variables_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">missing_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/creation/mathematical_combination.html#MathematicalCombination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.MathematicalCombination" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.TransformerMixin</span></code></p>
 <p>MathematicalCombination() applies basic mathematical operations to multiple
 features, returning one or more additional features as a result. That is, it sums,
 multiplies, takes the average, maximum, minimum or standard deviation of a group
-of variables and returns the result into new variables.</p>
+of variables, and returns the result into new variables.</p>
 <p>For example, if we have the variables <strong>number_payments_first_quarter</strong>,
 <strong>number_payments_second_quarter</strong>, <strong>number_payments_third_quarter</strong> and
 <strong>number_payments_fourth_quarter</strong>, we can use MathematicalCombination() to
@@ -4786,21 +4948,25 @@ calculate the total number of payments and mean number of payments as follows:</
 <p>The transformed X, Xt, will contain the additional features
 <strong>total_number_payments</strong> and <strong>mean_number_payments</strong>, plus the original set of
 variables.</p>
+<p>Attention, if some of the variables to combine have missing data and
+<cite>missing_values = ‘ignore’</cite>, the value will be ignored in the computation. To be
+clear, if variables A, B and C, have values 10, 20 and NA, and we perform the sum,
+the result will be A + B = 30.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>variables_to_combine</strong> (<em>list</em>) – The list of numerical variables to be combined.</p></li>
 <li><p><strong>math_operations</strong> (<em>list</em><em>, </em><em>default=None</em>) – <p>The list of basic math operations to be used to create the new features.</p>
 <p>If None, all of [‘sum’, ‘prod’, ‘mean’, ‘std’, ‘max’, ‘min’] will be performed
-over the <cite>variables_to_combine</cite>. Alternatively, the user can enter the list of
+over the <cite>variables_to_combine</cite>. Alternatively, you can enter the list of
 operations to carry out.</p>
 <p>Each operation should be a string and must be one of the elements
-from the list: [‘sum’, ‘prod’, ‘mean’, ‘std’, ‘max’, ‘min’]</p>
+in <cite>[‘sum’, ‘prod’, ‘mean’, ‘std’, ‘max’, ‘min’]</cite>.</p>
 <p>Each operation will result in a new variable that will be added to the
 transformed dataset.</p>
 </p></li>
-<li><p><strong>new_variables_names</strong> (<em>list</em><em>, </em><em>default=None</em>) – <p>Names of the newly created variables. The user can enter a name or a list
-of names for the newly created features (recommended). The user must enter
+<li><p><strong>new_variables_names</strong> (<em>list</em><em>, </em><em>default=None</em>) – <p>Names of the newly created variables. You can enter a name or a list
+of names for the newly created features (recommended). You must enter
 one name for each mathematical transformation indicated in the <cite>math_operations</cite>
 parameter. That is, if you want to perform mean and sum of features, you
 should enter 2 new variable names. If you perform only mean of features,
@@ -4815,13 +4981,17 @@ to the product of the variables.</p>
 to the newly created features starting by the name of the mathematical
 operation, followed by the variables combined separated by -.</p>
 </p></li>
+<li><p><strong>missing_values</strong> (<em>string</em><em>, </em><em>default='raise'</em>) – Indicates if missing values should be ignored or raised. If ‘raise’ the
+transformer will return an error if the the datasets to fit or transform
+contain missing values. If ‘ignore’, missing data will be ignored when
+performing the calculations.</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py attribute">
 <dt id="ballet.eng.external.MathematicalCombination.combination_dict_">
 <code class="sig-name descname"><span class="pre">combination_dict_</span></code><a class="headerlink" href="#ballet.eng.external.MathematicalCombination.combination_dict_" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dictionary containing the mathematical operation to column name pairs</p>
+<dd><p>Dictionary containing the mathematical operation to new variable name pairs.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -4829,6 +4999,12 @@ operation, followed by the variables combined separated by -.</p>
 <code class="sig-name descname"><span class="pre">math_operations_</span></code><a class="headerlink" href="#ballet.eng.external.MathematicalCombination.math_operations_" title="Permalink to this definition">¶</a></dt>
 <dd><p>List with the mathematical operations to be applied to the
 <cite>variables_to_combine</cite>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.MathematicalCombination.n_features_in_">
+<code class="sig-name descname"><span class="pre">n_features_in_</span></code><a class="headerlink" href="#ballet.eng.external.MathematicalCombination.n_features_in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of features in the train set used in fit.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -4882,7 +5058,7 @@ variables to transform.</p></li>
     - If any user provided variables in variables_to_combine are not numerical</p></li>
 </ul>
 </p></li>
-<li><p><strong>ValueError</strong> – If the variable(s) contain null values</p></li>
+<li><p><strong>ValueError</strong> – If the variable(s) contain null values when missing_values = raise</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Returns</dt>
@@ -4906,7 +5082,7 @@ variables to transform.</p></li>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>TypeError</strong> – If the input is not a Pandas DataFrame</p></li>
 <li><p><strong>ValueError</strong> – <ul>
-<li><p>If the variable(s) contain null values
+<li><p>If the variable(s) contain null values when missing_values = raise
     - If the dataframe is not of the same size as that used in fit()</p></li>
 </ul>
 </p></li>
@@ -5088,29 +5264,53 @@ used for later scaling along the features axis.</p></li>
 
 <dl class="py class">
 <dt id="ballet.eng.external.MeanEncoder">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">MeanEncoder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/encoding/mean_encoding.html#MeanEncoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.MeanEncoder" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">MeanEncoder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/encoding/mean_encoding.html#MeanEncoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.MeanEncoder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">feature_engine.encoding.base_encoder.BaseCategoricalTransformer</span></code></p>
 <p>The MeanEncoder() replaces categories by the mean value of the target for each
 category.</p>
 <p>For example in the variable colour, if the mean of the target for blue, red
 and grey is 0.5, 0.8 and 0.1 respectively, blue is replaced by 0.5, red by 0.8
 and grey by 0.1.</p>
-<p>The encoder will encode only categorical variables (type ‘object’). A list
-of variables can be passed as an argument. If no variables are passed as
-argument, the encoder will find and encode all categorical variables
-(object type).</p>
+<p>The encoder will encode only categorical variables by default (type ‘object’ or
+‘categorical’). You can pass a list of variables to encode. Alternatively, the
+encoder will find and encode all categorical variables (type ‘object’ or
+‘categorical’).</p>
+<p>With <cite>ignore_format=True</cite> you have the option to encode numerical variables as well.
+The procedure is identical, you can either enter the list of variables to encode, or
+the transformer will automatically select all variables.</p>
 <p>The encoder first maps the categories to the numbers for each variable (fit). The
-encoder then replaces the categories with the mapped numbers (transform).</p>
+encoder then replaces the categories with those numbers (transform).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of categorical variables to encode. If None, the encoder will find and
-select all object type variables.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of categorical variables that will be encoded. If None, the
+encoder will find and transform all variables of type object or categorical by
+default. You can also make the transformer accept numerical variables, see the
+next parameter.</p></li>
+<li><p><strong>ignore_format</strong> (<em>bool</em><em>, </em><em>default=False</em>) – Whether the format in which the categorical variables are cast should be
+ignored. If false, the encoder will automatically select variables of type
+object or categorical, or check that the variables entered by the user are of
+type object or categorical. If True, the encoder will select all variables or
+accept all variables entered by the user, including those cast as numeric.</p></li>
+</ul>
 </dd>
 </dl>
 <dl class="py attribute">
 <dt id="ballet.eng.external.MeanEncoder.encoder_dict_">
 <code class="sig-name descname"><span class="pre">encoder_dict_</span></code><a class="headerlink" href="#ballet.eng.external.MeanEncoder.encoder_dict_" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary with the target mean value per category per variable.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.MeanEncoder.variables_">
+<code class="sig-name descname"><span class="pre">variables_</span></code><a class="headerlink" href="#ballet.eng.external.MeanEncoder.variables_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The group of variables that will be transformed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.MeanEncoder.n_features_in_">
+<code class="sig-name descname"><span class="pre">n_features_in_</span></code><a class="headerlink" href="#ballet.eng.external.MeanEncoder.n_features_in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of features in the train set used in fit.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -5169,7 +5369,7 @@ variables to be encoded.</p></li>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>TypeError</strong> – <ul>
 <li><p>If the input is not a Pandas DataFrame.
-    - If any user provided variable is not categorical</p></li>
+    - f user enters non-categorical variables (unless ignore_format is True)</p></li>
 </ul>
 </p></li>
 <li><p><strong>ValueError</strong> – <ul>
@@ -5198,13 +5398,10 @@ variables to be encoded.</p></li>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>TypeError</strong> – <ul>
-<li><p>If the input is not a Pandas DataFrame</p></li>
-</ul>
-</p></li>
+<li><p><strong>TypeError</strong> – If the input is not a Pandas DataFrame</p></li>
 <li><p><strong>ValueError</strong> – <ul>
 <li><p>If the variable(s) contain null values
-    - If the dataframe is not of same size as that used in fit()</p></li>
+    - If the df has different number of features than the df used in fit()</p></li>
 </ul>
 </p></li>
 </ul>
@@ -5232,7 +5429,7 @@ original values.</p>
 <li><p><strong>TypeError</strong> – If the input is not a Pandas DataFrame</p></li>
 <li><p><strong>ValueError</strong> – <ul>
 <li><p>If the variable(s) contain null values
-    - If dataframe is not of same size as that used in fit()</p></li>
+    - If the df has different number of features than the df used in fit()</p></li>
 </ul>
 </p></li>
 <li><p><strong>Warning</strong> – If after encoding, NAN were introduced.</p></li>
@@ -5255,7 +5452,7 @@ original values.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">feature_engine.imputation.base_imputer.BaseImputer</span></code></p>
 <p>The MeanMedianImputer() replaces missing data by the mean or median value of the
 variable. It works only with numerical variables.</p>
-<p>We can pass a list of variables to be imputed. Alternatively, the
+<p>You can pass a list of variables to be imputed. Alternatively, the
 MeanMedianImputer() will automatically select all variables of type numeric in the
 training set.</p>
 <p>The imputer:</p>
@@ -5276,6 +5473,18 @@ all variables of type numeric.</p></li>
 <dt id="ballet.eng.external.MeanMedianImputer.imputer_dict_">
 <code class="sig-name descname"><span class="pre">imputer_dict_</span></code><a class="headerlink" href="#ballet.eng.external.MeanMedianImputer.imputer_dict_" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary with the mean or median values per variable.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.MeanMedianImputer.variables_">
+<code class="sig-name descname"><span class="pre">variables_</span></code><a class="headerlink" href="#ballet.eng.external.MeanMedianImputer.variables_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The group of variables that will be transformed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.MeanMedianImputer.n_features_in_">
+<code class="sig-name descname"><span class="pre">n_features_in_</span></code><a class="headerlink" href="#ballet.eng.external.MeanMedianImputer.n_features_in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of features in the train set used in fit.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -5337,7 +5546,7 @@ all variables of type numeric.</p></li>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>TypeError</strong> – If the input is not a Pandas DataFrame</p></li>
-<li><p><strong>ValueError</strong> – If the dataframe is not of same size as that used in fit()</p></li>
+<li><p><strong>ValueError</strong> – If the dataframe has different number of features than the df used in fit()</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Returns</dt>
@@ -6289,13 +6498,25 @@ an error if the training or the datasets to transform contain missing values.</p
 <dl class="py attribute">
 <dt id="ballet.eng.external.OutlierTrimmer.right_tail_caps_">
 <code class="sig-name descname"><span class="pre">right_tail_caps_</span></code><a class="headerlink" href="#ballet.eng.external.OutlierTrimmer.right_tail_caps_" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dictionary with the maximum values above which values will be removed</p>
+<dd><p>Dictionary with the maximum values above which values will be removed.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="ballet.eng.external.OutlierTrimmer.left_tail_caps_">
 <code class="sig-name descname"><span class="pre">left_tail_caps_</span></code><a class="headerlink" href="#ballet.eng.external.OutlierTrimmer.left_tail_caps_" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dictionary with the minimum values below which values will be removed</p>
+<dd><p>Dictionary with the minimum values below which values will be removed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.OutlierTrimmer.variables_">
+<code class="sig-name descname"><span class="pre">variables_</span></code><a class="headerlink" href="#ballet.eng.external.OutlierTrimmer.variables_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The group of variables that will be transformed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.OutlierTrimmer.n_features_in_">
+<code class="sig-name descname"><span class="pre">n_features_in_</span></code><a class="headerlink" href="#ballet.eng.external.OutlierTrimmer.n_features_in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of features in the train set used in fit.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -6343,7 +6564,7 @@ an error if the training or the datasets to transform contain missing values.</p
 
 <dl class="py class">
 <dt id="ballet.eng.external.PRatioEncoder">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">PRatioEncoder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">encoding_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ratio'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/encoding/probability_ratio.html#PRatioEncoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.PRatioEncoder" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">PRatioEncoder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">encoding_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ratio'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/encoding/probability_ratio.html#PRatioEncoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.PRatioEncoder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">feature_engine.encoding.base_encoder.BaseCategoricalTransformer</span></code></p>
 <p>The PRatioEncoder() replaces categories by the ratio of the probability of the
 target = 1 and the probability of the target = 0.</p>
@@ -6362,20 +6583,31 @@ is selected.</p>
 <p>Note: the division by 0 is not defined and the log(0) is not defined.
 Thus, if p(0) = 0 for the ratio encoder, or either p(0) = 0 or p(1) = 0 for
 log_ratio, in any of the variables, the encoder will return an error.</p>
-<p>The encoder will encode only categorical variables (type ‘object’). A list
-of variables can be passed as an argument. If no variables are passed the encoder
-will find and encode all categorical variables (object type).</p>
+<p>The encoder will encode only categorical variables by default (type ‘object’ or
+‘categorical’). You can pass a list of variables to encode. Alternatively, the
+encoder will find and encode all categorical variables (type ‘object’ or
+‘categorical’).</p>
+<p>With <cite>ignore_format=True</cite> you have the option to encode numerical variables as well.
+The procedure is identical, you can either enter the list of variables to encode, or
+the transformer will automatically select all variables.</p>
 <p>The encoder first maps the categories to the numbers for each variable (fit). The
 encoder then transforms the categories into the mapped numbers (transform).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>encoding_method</strong> (<em>str</em><em>, </em><em>default=woe</em>) – <p>Desired method of encoding.</p>
+<li><p><strong>encoding_method</strong> (<em>str</em><em>, </em><em>default='ratio'</em>) – <p>Desired method of encoding.</p>
 <p>’ratio’ : probability ratio</p>
 <p>’log_ratio’ : log probability ratio</p>
 </p></li>
-<li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of categorical variables to encode. If None, the encoder will find and
-select all object type variables.</p></li>
+<li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of categorical variables that will be encoded. If None, the
+encoder will find and transform all variables of type object or categorical by
+default. You can also make the transformer accept numerical variables, see the
+next parameter.</p></li>
+<li><p><strong>ignore_format</strong> (<em>bool</em><em>, </em><em>default=False</em>) – Whether the format in which the categorical variables are cast should be
+ignored. If false, the encoder will automatically select variables of type
+object or categorical, or check that the variables entered by the user are of
+type object or categorical. If True, the encoder will select all variables or
+accept all variables entered by the user, including those cast as numeric.</p></li>
 </ul>
 </dd>
 </dl>
@@ -6383,6 +6615,18 @@ select all object type variables.</p></li>
 <dt id="ballet.eng.external.PRatioEncoder.encoder_dict_">
 <code class="sig-name descname"><span class="pre">encoder_dict_</span></code><a class="headerlink" href="#ballet.eng.external.PRatioEncoder.encoder_dict_" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary with the probability ratio per category per variable.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.PRatioEncoder.variables_">
+<code class="sig-name descname"><span class="pre">variables_</span></code><a class="headerlink" href="#ballet.eng.external.PRatioEncoder.variables_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The group of variables that will be transformed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.PRatioEncoder.n_features_in_">
+<code class="sig-name descname"><span class="pre">n_features_in_</span></code><a class="headerlink" href="#ballet.eng.external.PRatioEncoder.n_features_in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of features in the train set used in fit.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -6427,14 +6671,14 @@ variable. That is the ratio of probability.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples. Can be the entire dataframe, not just the
 categorical variables.</p></li>
-<li><p><strong>y</strong> (<em>pandas series.</em>) – Target, must be binary [0,1].</p></li>
+<li><p><strong>y</strong> (<em>pandas series.</em>) – Target, must be binary.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>TypeError</strong> – <ul>
 <li><p>If the input is not the Pandas DataFrame.
-    - If any user provided variables are not categorical.</p></li>
+    - If user enters non-categorical variables (unless ignore_format is True)</p></li>
 </ul>
 </p></li>
 <li><p><strong>ValueError</strong> – <ul>
@@ -6465,13 +6709,10 @@ categorical variables.</p></li>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>TypeError</strong> – <ul>
-<li><p>If the input is not a Pandas DataFrame</p></li>
-</ul>
-</p></li>
+<li><p><strong>TypeError</strong> – If the input is not a Pandas DataFrame</p></li>
 <li><p><strong>ValueError</strong> – <ul>
 <li><p>If the variable(s) contain null values
-    - If the dataframe is not of same size as that used in fit()</p></li>
+    - If the df has different number of features than the df used in fit()</p></li>
 </ul>
 </p></li>
 </ul>
@@ -6499,7 +6740,7 @@ original values.</p>
 <li><p><strong>TypeError</strong> – If the input is not a Pandas DataFrame</p></li>
 <li><p><strong>ValueError</strong> – <ul>
 <li><p>If the variable(s) contain null values
-    - If dataframe is not of same size as that used in fit()</p></li>
+    - If the df has different number of features than the df used in fit()</p></li>
 </ul>
 </p></li>
 <li><p><strong>Warning</strong> – If after encoding, NAN were introduced.</p></li>
@@ -7183,16 +7424,16 @@ nonnegative if <cite>ignore_implicit_zeros</cite> is False.</p>
 
 <dl class="py class">
 <dt id="ballet.eng.external.RandomSampleImputer">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">RandomSampleImputer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seeding_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'add'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/imputation/random_sample.html#RandomSampleImputer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.RandomSampleImputer" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">RandomSampleImputer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seeding_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'add'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/imputation/random_sample.html#RandomSampleImputer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.RandomSampleImputer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">feature_engine.imputation.base_imputer.BaseImputer</span></code></p>
-<p>The RandomSampleImputer() replaces missing data in each feature with a random
-sample extracted from the variables in the training set.
-The RandomSampleImputer() works with both numerical and categorical variables.</p>
+<p>The RandomSampleImputer() replaces missing data with a random sample extracted from
+the variables in the training set.</p>
+<p>The RandomSampleImputer() works with both numerical and categorical variables.</p>
 <p><strong>Note</strong></p>
-<p>Random samples will vary from execution to execution. This may affect
-the results of your work. Remember to set a seed before running the
-RandomSampleImputer().</p>
-<p>There are 2 ways in which the seed can be set with the RandomSampleImputer():</p>
+<p>The Random samples used to replace missing values may vary from execution to
+execution. This may affect the results of your work. This, it is advisable to set a
+seed.</p>
+<p>There are 2 ways in which the seed can be set in the RandomSampleImputer():</p>
 <p>If seed = ‘general’ then the random_state can be either None or an integer.
 The seed will be used as the random_state and all observations will be
 imputed in one go. This is equivalent to <cite>pandas.sample(n, random_state=seed)</cite>
@@ -7223,7 +7464,7 @@ random samples. Alternatively, it can take a variable name or a list of
 variables, which values will be used to determine the seed observation per
 observation.</p></li>
 <li><p><strong>seed</strong> (<em>str</em><em>, </em><em>default='general'</em>) – <p>Indicates whether the seed should be set for each observation with missing
-values, or if one seed should be used to impute all variables in one go.</p>
+values, or if one seed should be used to impute all observations in one go.</p>
 <p><strong>general</strong>: one seed will be used to impute the entire dataframe. This is
 equivalent to setting the seed in pandas.sample(random_state).</p>
 <p><strong>observation</strong>: the seed will be set for each observation using the values
@@ -7242,6 +7483,18 @@ all variables in the train set.</p></li>
 <dt id="ballet.eng.external.RandomSampleImputer.X_">
 <code class="sig-name descname"><span class="pre">X_</span></code><a class="headerlink" href="#ballet.eng.external.RandomSampleImputer.X_" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copy of the training dataframe from which to extract the random samples.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.RandomSampleImputer.variables_">
+<code class="sig-name descname"><span class="pre">variables_</span></code><a class="headerlink" href="#ballet.eng.external.RandomSampleImputer.variables_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The group of variables that will be transformed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.RandomSampleImputer.n_features_in_">
+<code class="sig-name descname"><span class="pre">n_features_in_</span></code><a class="headerlink" href="#ballet.eng.external.RandomSampleImputer.n_features_in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of features in the train set used in fit.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -7312,7 +7565,7 @@ in the transformer.</p></li>
 
 <dl class="py class">
 <dt id="ballet.eng.external.RareLabelEncoder">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">RareLabelEncoder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_categories</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_n_categories</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_with</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Rare'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/encoding/rare_label.html#RareLabelEncoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.RareLabelEncoder" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">RareLabelEncoder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_categories</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_n_categories</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_with</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Rare'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/encoding/rare_label.html#RareLabelEncoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.RareLabelEncoder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">feature_engine.encoding.base_encoder.BaseCategoricalTransformer</span></code></p>
 <p>The RareLabelCategoricalEncoder() groups rare / infrequent categories in
 a new category called “Rare”, or any other name entered by the user.</p>
@@ -7323,10 +7576,13 @@ categories will be replaced by the new label “Rare”.</p>
 <p>Infrequent labels can also be grouped under a user defined name, for
 example ‘Other’. The name to replace infrequent categories is defined
 with the parameter <cite>replace_with</cite>.</p>
-<p>The encoder will encode only categorical variables (type ‘object’). A list
-of variables can be passed as an argument. If no variables are passed as
-argument, the encoder will find and encode all categorical variables
-(object type).</p>
+<p>The encoder will encode only categorical variables by default (type ‘object’ or
+‘categorical’). You can pass a list of variables to encode.Alternatively, the
+encoder will find and encode all categorical variables (type ‘object’ or
+‘categorical’).</p>
+<p>With <cite>ignore_format=True</cite> you have the option to encode numerical variables as well.
+The procedure is identical, you can either enter the list of variables to encode, or
+the transformer will automatically select all variables.</p>
 <p>The encoder first finds the frequent labels for each variable (fit). The encoder
 then groups the infrequent labels under the new label ‘Rare’ or by another user
 defined string (transform).</p>
@@ -7340,18 +7596,38 @@ to find frequent labels. If the variable contains less categories, all
 of them will be considered frequent.</p></li>
 <li><p><strong>max_n_categories</strong> (<em>int</em><em>, </em><em>default=None</em>) – The maximum number of categories that should be considered frequent.
 If None, all categories with frequency above the tolerance (tol) will be
-considered frequent.</p></li>
-<li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of categorical variables to encode. If None, the encoder will
-find and select all object type variables.</p></li>
-<li><p><strong>replace_with</strong> (<em>string</em><em>, </em><em>default='Rare'</em>) – The category name that will be used to replace infrequent categories.</p></li>
+considered frequent. If you enter 5, only the 5 most frequent categories will
+be retained and the rest grouped.</p></li>
+<li><p><strong>replace_with</strong> (<em>string</em><em>, </em><em>intege</em><em> or </em><em>float</em><em>, </em><em>default='Rare'</em>) – The value that will be used to replace infrequent categories.</p></li>
+<li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of categorical variables that will be encoded. If None, the
+encoder will find and transform all variables of type object or categorical by
+default. You can also make the transformer accept numerical variables, see the
+next parameter.</p></li>
+<li><p><strong>ignore_format</strong> (<em>bool</em><em>, </em><em>default=False</em>) – Whether the format in which the categorical variables are cast should be
+ignored. If false, the encoder will automatically select variables of type
+object or categorical, or check that the variables entered by the user are of
+type object or categorical. If True, the encoder will select all variables or
+accept all variables entered by the user, including those cast as numeric.</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py attribute">
 <dt id="ballet.eng.external.RareLabelEncoder.encoder_dict_">
 <code class="sig-name descname"><span class="pre">encoder_dict_</span></code><a class="headerlink" href="#ballet.eng.external.RareLabelEncoder.encoder_dict_" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dictionary with the frequent categories, i.e.., those that will be
-kept, per variable.</p>
+<dd><p>Dictionary with the frequent categories, i.e., those that will be kept, per
+variable.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.RareLabelEncoder.variables_">
+<code class="sig-name descname"><span class="pre">variables_</span></code><a class="headerlink" href="#ballet.eng.external.RareLabelEncoder.variables_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The variables that will be transformed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.RareLabelEncoder.n_features_in_">
+<code class="sig-name descname"><span class="pre">n_features_in_</span></code><a class="headerlink" href="#ballet.eng.external.RareLabelEncoder.n_features_in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of features in the train set used in fit.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -7388,7 +7664,7 @@ variables</p></li>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>TypeError</strong> – <ul>
 <li><p>If the input is not a Pandas DataFrame.
-    - If any user provided variable is not categorical</p></li>
+    - If user enters non-categorical variables (unless ignore_format is True)</p></li>
 </ul>
 </p></li>
 <li><p><strong>ValueError</strong> – <ul>
@@ -7429,7 +7705,7 @@ or any other name provided by the user.</p>
 <li><p><strong>TypeError</strong> – If the input is not a Pandas DataFrame</p></li>
 <li><p><strong>ValueError</strong> – <ul>
 <li><p>If the variable(s) contain null values
-    - If dataframe is not of same size as that used in fit()</p></li>
+    - If user enters non-categorical variables (unless ignore_format is True)</p></li>
 </ul>
 </p></li>
 </ul>
@@ -7458,10 +7734,22 @@ transformer will automatically select and transform all numerical
 variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of numerical variables that will be transformed. If None, the
-transformer will automatically find and select all numerical variables.</p>
+<dd class="field-odd"><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of numerical variables to transform. If None, the transformer will
+automatically find and select all numerical variables.</p>
 </dd>
 </dl>
+<dl class="py attribute">
+<dt id="ballet.eng.external.ReciprocalTransformer.variables_">
+<code class="sig-name descname"><span class="pre">variables_</span></code><a class="headerlink" href="#ballet.eng.external.ReciprocalTransformer.variables_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The group of variables that will be transformed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.ReciprocalTransformer.n_features_in_">
+<code class="sig-name descname"><span class="pre">n_features_in_</span></code><a class="headerlink" href="#ballet.eng.external.ReciprocalTransformer.n_features_in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of features in the train set used in fit.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt>
 <code class="sig-name descname"><span class="pre">fit:</span></code></dt>
@@ -7528,9 +7816,9 @@ variables to transform.</p></li>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>TypeError</strong> – If the input is not a Pandas DataFrame</p></li>
 <li><p><strong>ValueError</strong> – <ul>
-<li><p>If the variable(s) contain null values.
-    - If the dataframe not of the same size as that used in fit().
-    - If some variables contain zero values.</p></li>
+<li><p>If the variable(s) contain null values
+    - If the df has different number of features than the df used in fit()
+    - If some variables contain zero values</p></li>
 </ul>
 </p></li>
 </ul>
@@ -8778,6 +9066,18 @@ an error if the training or the datasets to transform contain missing values.</p
 <dd><p>Dictionary with the minimum values at which variables will be capped.</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt id="ballet.eng.external.Winsorizer.variables_">
+<code class="sig-name descname"><span class="pre">variables_</span></code><a class="headerlink" href="#ballet.eng.external.Winsorizer.variables_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The group of variables that will be transformed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.Winsorizer.n_features_in_">
+<code class="sig-name descname"><span class="pre">n_features_in_</span></code><a class="headerlink" href="#ballet.eng.external.Winsorizer.n_features_in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of features in the train set used in fit.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt>
 <code class="sig-name descname"><span class="pre">fit:</span></code></dt>
@@ -8846,14 +9146,18 @@ an error if the training or the datasets to transform contain missing values.</p
 
 <dl class="py class">
 <dt id="ballet.eng.external.WoEEncoder">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">WoEEncoder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/encoding/woe.html#WoEEncoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.WoEEncoder" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ballet.eng.external.</span></code><code class="sig-name descname"><span class="pre">WoEEncoder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/encoding/woe.html#WoEEncoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.WoEEncoder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">feature_engine.encoding.base_encoder.BaseCategoricalTransformer</span></code></p>
 <p>The WoERatioCategoricalEncoder() replaces categories by the weight of evidence
 (WoE). The WoE was used primarily in the financial sector to create credit risk
 scorecards.</p>
-<p>The encoder will encode only categorical variables (type ‘object’). A list
-of variables can be passed as an argument. If no variables are passed the encoder
-will find and encode all categorical variables (object type).</p>
+<p>The encoder will encode only categorical variables by default
+(type ‘object’ or ‘categorical’). You can pass a list of variables to encode.
+Alternatively, the encoder will find and encode all categorical variables
+(type ‘object’ or ‘categorical’).</p>
+<p>With <cite>ignore_format=True</cite> you have the option to encode numerical variables as well.
+The procedure is identical, you can either enter the list of variables to encode, or
+the transformer will automatically select all variables.</p>
 <p>The encoder first maps the categories to the weight of evidence for each variable
 (fit). The encoder then transforms the categories into the mapped numbers
 (transform).</p>
@@ -8888,14 +9192,35 @@ terms in the WoE equation are 0 for a given category, the encoder will return an
 error. If this happens, try grouping less frequent categories.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of categorical variables that will be encoded. If None, the
-encoder will find and select all object type variables.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of categorical variables that will be encoded. If None, the
+encoder will find and transform all variables of type object or categorical by
+default. You can also make the transformer accept numerical variables, see the
+next parameter.</p></li>
+<li><p><strong>ignore_format</strong> (<em>bool</em><em>, </em><em>default=False</em>) – Whether the format in which the categorical variables are cast should be
+ignored. If false, the encoder will automatically select variables of type
+object or categorical, or check that the variables entered by the user are of
+type object or categorical. If True, the encoder will select all variables or
+accept all variables entered by the user, including those cast as numeric.</p></li>
+</ul>
 </dd>
 </dl>
 <dl class="py attribute">
 <dt id="ballet.eng.external.WoEEncoder.encoder_dict_">
 <code class="sig-name descname"><span class="pre">encoder_dict_</span></code><a class="headerlink" href="#ballet.eng.external.WoEEncoder.encoder_dict_" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary with the WoE per variable.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.WoEEncoder.variables_">
+<code class="sig-name descname"><span class="pre">variables_</span></code><a class="headerlink" href="#ballet.eng.external.WoEEncoder.variables_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The group of variables that will be transformed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.WoEEncoder.n_features_in_">
+<code class="sig-name descname"><span class="pre">n_features_in_</span></code><a class="headerlink" href="#ballet.eng.external.WoEEncoder.n_features_in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of features in the train set used in fit.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -8940,20 +9265,20 @@ RareLabelEncoder().</p>
 <dl class="py method">
 <dt id="ballet.eng.external.WoEEncoder.fit">
 <code class="sig-name descname"><span class="pre">fit</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/feature_engine/encoding/woe.html#WoEEncoder.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ballet.eng.external.WoEEncoder.fit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Learn the the WoE.</p>
+<dd><p>Learn the WoE.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.
 Can be the entire dataframe, not just the categorical variables.</p></li>
-<li><p><strong>y</strong> (<em>pandas series.</em>) – Target, must be binary [0,1].</p></li>
+<li><p><strong>y</strong> (<em>pandas series.</em>) – Target, must be binary.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>TypeError</strong> – <ul>
 <li><p>If the input is not the Pandas DataFrame.
-    - If any user provided variables are not categorical.</p></li>
+    - If user enters non-categorical variables (unless ignore_format is True)</p></li>
 </ul>
 </p></li>
 <li><p><strong>ValueError</strong> – <ul>
@@ -8984,13 +9309,10 @@ Can be the entire dataframe, not just the categorical variables.</p></li>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>TypeError</strong> – <ul>
-<li><p>If the input is not a Pandas DataFrame</p></li>
-</ul>
-</p></li>
+<li><p><strong>TypeError</strong> – If the input is not a Pandas DataFrame</p></li>
 <li><p><strong>ValueError</strong> – <ul>
 <li><p>If the variable(s) contain null values
-    - If the dataframe is not of same size as that used in fit()</p></li>
+    - If the df has different number of features than the df used in fit()</p></li>
 </ul>
 </p></li>
 </ul>
@@ -9018,7 +9340,7 @@ original values.</p>
 <li><p><strong>TypeError</strong> – If the input is not a Pandas DataFrame</p></li>
 <li><p><strong>ValueError</strong> – <ul>
 <li><p>If the variable(s) contain null values
-    - If dataframe is not of same size as that used in fit()</p></li>
+    - If the df has different number of features than the df used in fit()</p></li>
 </ul>
 </p></li>
 <li><p><strong>Warning</strong> – If after encoding, NAN were introduced.</p></li>
@@ -9050,14 +9372,26 @@ transformer will automatically select and transform all numerical
 variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of numerical variables that will be transformed. If None, the
-transformer will automatically find and select all numerical variables.</p>
+<dd class="field-odd"><p><strong>variables</strong> (<em>list</em><em>, </em><em>default=None</em>) – The list of numerical variables to transform. If None, the transformer will
+automatically find and select all numerical variables.</p>
 </dd>
 </dl>
 <dl class="py attribute">
 <dt id="ballet.eng.external.YeoJohnsonTransformer.lambda_dict_">
 <code class="sig-name descname"><span class="pre">lambda_dict_</span></code><a class="headerlink" href="#ballet.eng.external.YeoJohnsonTransformer.lambda_dict_" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary containing the best lambda for the Yeo-Johnson per variable.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.YeoJohnsonTransformer.variables_">
+<code class="sig-name descname"><span class="pre">variables_</span></code><a class="headerlink" href="#ballet.eng.external.YeoJohnsonTransformer.variables_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The group of variables that will be transformed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ballet.eng.external.YeoJohnsonTransformer.n_features_in_">
+<code class="sig-name descname"><span class="pre">n_features_in_</span></code><a class="headerlink" href="#ballet.eng.external.YeoJohnsonTransformer.n_features_in_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of features in the train set used in fit.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -9134,8 +9468,8 @@ variables to transform.</p></li>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>TypeError</strong> – If the input is not a Pandas DataFrame</p></li>
 <li><p><strong>ValueError</strong> – <ul>
-<li><p>If the variable(s) contain null values.
-    - If the dataframe not of the same size as that used in fit().</p></li>
+<li><p>If the variable(s) contain null values
+    - If the df has different number of features than the df used in fit()</p></li>
 </ul>
 </p></li>
 </ul>
