@@ -41,7 +41,7 @@ def test_discover(sample_data, expensive_stats):
     expected_cols = {
         'name', 'description', 'input', 'transformer', 'primitives', 'output',
         'author', 'source', 'mutual_information',
-        'conditional_mutual_information', 'nvalues', 'ncontinuous',
+        'conditional_mutual_information', 'ninputs', 'nvalues', 'ncontinuous',
         'ndiscrete', 'mean', 'std', 'variance', 'min', 'median', 'max',
         'nunique',
     }
@@ -52,8 +52,8 @@ def test_discover(sample_data, expensive_stats):
 
     # test filter
     input = 'size'
-    df = discover(features, X_df, y_df, y, input=input)
-    assert df.shape[0] == len([
+    discovery_df = discover(features, X_df, y_df, y, input=input)
+    assert discovery_df.shape[0] == len([
         feature
         for feature in features
         if feature.input == input or input in feature.input
@@ -62,11 +62,11 @@ def test_discover(sample_data, expensive_stats):
     # test no data available
     # have to clear cache, as values on data already known
     ballet.discovery._summarize_feature.memory.clear()
-    df = discover(features, None, None, None)
-    assert df.shape[0] == len(features)
-    actual_cols = df.columns
+    discovery_df = discover(features, None, None, None)
+    assert discovery_df.shape[0] == len(features)
+    actual_cols = discovery_df.columns
     assert not expected_cols.symmetric_difference(actual_cols)
-    assert np.isnan(df['mean'].at[0])
+    assert np.isnan(discovery_df['mean'].at[0])
 
 
 def test_discover_feature_error(sample_data):
@@ -76,7 +76,23 @@ def test_discover_feature_error(sample_data):
     X_df, y_df = sample_data.X, sample_data.y
     y = np.asfarray(y_df)
 
-    df = discover(features, X_df, y_df, y)
+    discovery_df = discover(features, X_df, y_df, y)
 
-    assert df.shape[0] == len(features)
-    assert np.isnan(df['mean'].at[0])
+    assert discovery_df.shape[0] == len(features)
+    assert np.isnan(discovery_df['mean'].at[0])
+
+
+def test_discover_target_nans(sample_data):
+    features = [
+        Feature('size', NullFiller(0)),
+    ]
+    X_df, y_df = sample_data.X, sample_data.y
+    y = np.asfarray(y_df)
+
+    # introduce nan to target
+    y[0] = np.nan
+
+    discovery_df = discover(features, X_df, y_df, y)
+
+    # stats with target should still be computed
+    assert not np.isnan(discovery_df['mutual_information']).any()

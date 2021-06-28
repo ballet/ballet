@@ -19,6 +19,11 @@ class BaseValidator(metaclass=ABCMeta):
 class FeaturePerformanceEvaluator(metaclass=ABCMeta):
     """Evaluate the performance of features from an ML point-of-view
 
+    Implementing classes should be clear about their support for missing
+    targets, i.e. NaN values in ``y_val``. For example, the subclass can raise
+    an error indicating that it cannot be used for a problem, or it can choose
+    to skip rows with missing values in the performance evaluation.
+
     Args:
         X_df: entities frame for fitting the features
         y_df: targets frame/series for fitting the features

@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 import ballet
 from ballet.transformer import get_transformer_primitives
-from ballet.util import asarray2d, dont_log_nonnegative
+from ballet.util import asarray2d, dont_log_nonnegative, skipna
 from ballet.validation.entropy import (
     _get_cont_columns, _get_disc_columns, estimate_conditional_information,
     estimate_mutual_information,)
@@ -37,13 +37,14 @@ def _summarize_feature(
             else feature.input
             if not callable(feature.input)
             else [],
-        'transformer': feature.transformer,
+        'transformer': repr(feature.transformer),
         'primitives': get_transformer_primitives(feature.transformer),
         'output': feature.output,
         'author': feature.author,
         'source': feature.source,
         'mutual_information': np.nan,
         'conditional_mutual_information': np.nan,
+        'ninputs': np.nan,
         'nvalues': np.nan,
         'ncontinuous': np.nan,
         'ndiscrete': np.nan,
@@ -71,7 +72,14 @@ def _summarize_feature(
             else:
                 x = np.empty((z.shape[0], 0))
 
-            result['mutual_information'] = estimate_mutual_information(z, y)
+            _y, _z = skipna(y, z, how='left')
+            result['mutual_information'] = estimate_mutual_information(_z, _y)
+
+            if not callable(feature.input):
+                if isinstance(feature.input, str):
+                    result['ninputs'] = 1
+                else:
+                    result['ninputs'] = len(feature.input)
             result['nvalues'] = z.shape[1]
             result['ncontinuous'] = np.sum(_get_cont_columns(z))
             result['ndiscrete'] = np.sum(_get_disc_columns(z))
@@ -84,8 +92,9 @@ def _summarize_feature(
             result['nunique'] = np.mean(countunique(z, axis=0))
 
             if expensive_stats or x.shape[1] < EXPENSIVE_STATS_CMI_MAX_COLS_X:
+                _y, _z, _x = skipna(y, z, x, how='left')
                 result['conditional_mutual_information'] = \
-                    estimate_conditional_information(z, y, x)
+                    estimate_conditional_information(_z, _y, _x)
 
     return result
 
@@ -123,6 +132,7 @@ def discover(
     - conditional_mutual_information: estimated conditional mutual information
         between the feature (or averaged over feature values) and the target
         conditional on all other features on the development dataset split
+    - ninputs: the number of input columns to the feature
     - nvalues: the number of feature values this feature extracts (i.e. 1 for
         a scalar-valued feature and >1 for a vector-valued feature)
     - ncontinuous: the number of feature values this feature extracts that are

@@ -178,3 +178,62 @@ def dont_log_nonnegative(call: Call, logger: Logger = logger):
 
 # re-export cookiecutter work_in
 work_in = cookiecutter.utils.work_in
+
+
+def skipna(a: np.ndarray, b: np.ndarray, *c: np.ndarray, how: str = 'left'):
+    """Drop rows of both a and b corresponding to missing values
+
+    The length of a and b along the first dimension must be equal.
+
+    Args:
+        a:
+            first array
+        b:
+            second array
+        *c:
+            any additional arrays
+        how:
+            how to determine the rows to drop, one of 'left', 'any', or 'all'.
+            If left, then any row in which a has a missing value is dropped. If
+            any, then any row in which at least one of a, b, or additional
+            arrays has a missing value is dropped. If all , then any row in
+            which all of a, b, and additional arrays has a missing value is
+            dropped. Defaults to left.
+
+    Returns:
+        tuple of a, b, and any additional arrays where a, b, and any
+        additional arrays are guaranteed to be the same length with missing
+        values removed according to ``how``.
+    """
+    if how not in ('left', 'any', 'all'):
+        raise ValueError(f'Invalid value for how: {how}')
+
+    def find_nan_inds(arr):
+        nan_inds = np.isnan(arr)
+        if arr.ndim > 1:
+            nan_inds = nan_inds.any(axis=1)
+        nan_inds = nan_inds.squeeze()
+        assert nan_inds.shape == (arr.shape[0],)
+        return nan_inds
+
+    if how == 'left':
+        nan_inds = find_nan_inds(a)
+    elif how == 'any':
+        arr = np.concatenate(
+            (asarray2d(a), asarray2d(b), *(asarray2d(c0) for c0 in c)),
+            axis=1
+        )
+        nan_inds = find_nan_inds(arr)
+    elif how == 'all':
+        nan_inds = find_nan_inds(a)
+        for arr in [b, *c]:
+            nan_inds &= find_nan_inds(arr)
+
+    a_out = a[~nan_inds]
+    b_out = b[~nan_inds]
+    c_out = [
+        arr[~nan_inds]
+        for arr in c
+    ]
+    out = (a_out, b_out, *c_out)
+    return out

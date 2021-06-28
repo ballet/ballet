@@ -1,5 +1,7 @@
 import random
 
+import numpy as np
+
 from ballet.util.log import logger
 from ballet.util.testing import seeded
 from ballet.validation.base import FeaturePruner, FeaturePruningMixin
@@ -36,6 +38,10 @@ class GFSSFPruner(FeaturePruningMixin, GFSSFPerformanceEvaluator):
 
         Uses lines 12-13 of agGFSSF
         """
+        if np.isnan(self.y_val).any():
+            raise ValueError(
+                f'{self.__class__.__name__} does not support missing targets,'
+                ' please use a different evaluator.')
 
         logger.info(f'Pruning features using {self}')
 

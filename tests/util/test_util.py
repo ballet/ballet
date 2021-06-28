@@ -8,7 +8,7 @@ import pytest
 from ballet.util import (
     DeepcopyMixin, asarray2d, dfilter, dont_log_nonnegative, falsy,
     get_arr_desc, has_nans, indent, load_sklearn_df, make_plural_suffix,
-    nonnegative, quiet, truthy,)
+    nonnegative, quiet, skipna, truthy,)
 from ballet.util.log import logger
 from ballet.util.testing import assert_array_equal
 
@@ -252,3 +252,60 @@ def test_dont_log_nonnegative(caplog):
         estimate_something
 
     assert not caplog.text
+
+
+@pytest.mark.parametrize('how', ['left', 'any', 'all'])
+@pytest.mark.parametrize(
+    'a,b,c',
+    [
+        (np.ones(10), np.ones(10), None),
+        (np.ones(10), np.ones(10), np.ones(10)),
+        (np.ones((10, 2)), np.ones(10), None),
+        (np.ones(10), np.ones((10, 2)), None),
+        (np.concatenate([np.ones(5), np.full(5, np.nan)]), np.ones(10), None),
+        (np.ones(10), np.concatenate([np.ones(5), np.full(5, np.nan)]), None),
+        (
+            np.concatenate([np.ones(10), np.full(5, np.nan)]),
+            np.concatenate([np.ones(5), np.full(5, np.nan), np.ones(5)]),
+            None,
+        ),
+        (
+            np.ones(10),
+            np.concatenate([np.ones(5), np.full(5, np.nan)]),
+            np.concatenate([np.full(2, np.nan), np.ones(8)]),
+        ),
+    ]
+)
+def test_skipna(a, b, c, how):
+    if c is not None:
+        a1, b1, c1 = skipna(a, b, c, how=how)
+    else:
+        a1, b1 = skipna(a, b, how=how)
+        c1 = None
+
+    assert a1.shape[0] == b1.shape[0]
+    assert a1.shape[1:] == a.shape[1:]
+    assert b1.shape[1:] == b.shape[1:]
+    if c is not None:
+        assert c1.shape[0] == a1.shape[0]
+        assert c1.shape[1:] == c.shape[1:]
+
+    if how == 'left' or how == 'any':
+        assert not np.isnan(a1).any()
+    if how == 'any':
+        assert not np.isnan(b1).any()
+    if how == 'all':
+        left_nans = np.isnan(a1)
+        if left_nans.ndim > 1:
+            left_nans = left_nans.any(axis=1)
+        right_nans = np.isnan(b1)
+        if right_nans.ndim > 1:
+            right_nans = right_nans.any(axis=1)
+        assert not (left_nans & right_nans).any()
+
+    # symmetry of b and c
+    if c is not None:
+        _, b2, c2 = skipna(a, b, c, how=how)
+        _, c3, b3 = skipna(a, c, b, how=how)
+        assert_array_equal(b2, b3)
+        assert_array_equal(c2, c3)

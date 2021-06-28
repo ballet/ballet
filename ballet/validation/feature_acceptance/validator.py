@@ -3,7 +3,7 @@ from typing import List
 
 import numpy as np
 
-from ballet.util import asarray2d
+from ballet.util import asarray2d, skipna
 from ballet.util.log import logger
 from ballet.util.testing import seeded
 from ballet.validation.base import FeatureAcceptanceMixin, FeatureAccepter
@@ -47,6 +47,10 @@ class GFSSFAccepter(FeatureAcceptanceMixin, GFSSFPerformanceEvaluator):
         Uses lines 1-8 of agGFSSF where we do not remove accepted but
         redundant features on line 8.
         """
+        if np.isnan(self.y_val).any():
+            raise ValueError(
+                f'{self.__class__.__name__} does not support missing targets,'
+                ' please use a different evaluator.')
 
         logger.info(f'Judging feature using {self}')
 
@@ -198,13 +202,11 @@ class MutualInformationAccepter(FeatureAccepter):
         return outcome
 
     def _handle_nans(self, z, y):
-        nans = np.any(np.isnan(y), 1)  # whether there are any nans in this row
-        if np.any(nans):
+        if np.isnan(y).any():
             if self.handle_nan_targets == 'fail':
                 return None, None  # hack
             elif self.handle_nan_targets == 'ignore':
-                z = z[~nans, :]
-                y = y[~nans, :]
+                y, z = skipna(y, z, how='left')
             else:
                 raise ValueError(
                     'Invalid value for handle_nan_targets: '
