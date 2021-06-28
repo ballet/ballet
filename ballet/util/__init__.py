@@ -205,4 +205,34 @@ def skipna(a: np.ndarray, b: np.ndarray, *c: np.ndarray, how: str = 'left'):
         additional arrays are guaranteed to be the same length with missing
         values removed according to ``how``.
     """
-    pass
+    if how not in ('left', 'any', 'all'):
+        raise ValueError(f'Invalid value for how: {how}')
+
+    def find_nan_inds(arr):
+        nan_inds = np.isnan(arr)
+        if arr.ndim > 1:
+            nan_inds = nan_inds.any(axis=1)
+        nan_inds = nan_inds.squeeze()
+        assert nan_inds.shape == (arr.shape[0],)
+        return nan_inds
+
+    if how == 'left':
+        nan_inds = find_nan_inds(a)
+    elif how == 'any':
+        arr = np.concatenate(
+            (asarray2d(a), asarray2d(b), *(asarray2d(c0) for c0 in c)),
+            axis=1
+        )
+        nan_inds = find_nan_inds(arr)
+    elif how == 'all':
+        nan_inds = find_nan_inds(a)
+        for arr in [b, *c]:
+            nan_inds &= find_nan_inds(arr)
+
+    a_out = a[~nan_inds]
+    b_out = b[~nan_inds]
+    c_out = (
+        arr[~nan_inds]
+        for arr in c
+    )
+    return a_out, b_out, *c_out
