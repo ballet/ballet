@@ -324,7 +324,7 @@ Recall that we will be working with the simplified table ``X_df`` `from above <#
 
 The first two examples are pretty simple.
 
-In example 3, we can see where Ballet's :py:class:``~ballet.feature.Feature`` can be helpful compared to vanilla pandas for machine learning: we can easily incorporate a transformer from scikit-learn that learns the column mean on the training data and applies it on unseen test data.
+In example 3, we can see where Ballet's :py:class:`~ballet.feature.Feature` can be helpful compared to vanilla pandas for machine learning: we can easily incorporate a transformer from scikit-learn that learns the column mean on the training data and applies it on unseen test data.
 
 In example 4, we see how multiple transformers can be chained together in a list.
 
@@ -368,7 +368,7 @@ As you come up with more creative features, you may find that you need to create
 
       def __init__(self, **kwargs)
 
-   This method is optional if your transformer does not have any hyperparameters. Following the scikit-learn convention, the init method should take keyword arguments only and do nothing more then set them on ``self``. Each keyword argument is a hyperparameter of the transformer.
+   This method is optional if your transformer does not have any hyperparameters. Following the scikit-learn convention, the init method should take keyword arguments only and do nothing more then set them on ``self``. Each keyword argument is a hyperparameter of the transformer. While the signature above uses ``**kwargs``, you should actually spell out the hyperparameters in the signature (so that they can be listed via introspection).
 
 #. (Optional) Implement the ``fit`` method::
 
@@ -385,7 +385,7 @@ As you come up with more creative features, you may find that you need to create
 
    Here you can assume the learned parameters, if any, are available.
 
-You can also read the `scikit-learn documentation on a similar topic <https://scikit-learn.org/stable/developers/develop.html#rolling-your-own-estimator>`__. (Note that this documentation page is likely overkill for the types of transformers you may be implementing.
+You can also read the `scikit-learn documentation on a similar topic <https://scikit-learn.org/stable/developers/develop.html#rolling-your-own-estimator>`__. (Note that this documentation page is likely overkill for the types of transformers you may be implementing.)
 
 Example
 ^^^^^^^

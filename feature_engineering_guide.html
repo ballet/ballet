@@ -807,7 +807,7 @@ the following simplified dataset:</p>
 <p>It may be helpful to see a lot of examples of pandas-style code with the associated Ballet feature implementations, especially if you are more familiar with writing “imperative” pandas code.</p>
 <p>Recall that we will be working with the simplified table <code class="docutils literal notranslate"><span class="pre">X_df</span></code> <a class="reference external" href="#writing-features-x-df">from above</a>.</p>
 <p>The first two examples are pretty simple.</p>
-<p>In example 3, we can see where Ballet’s :py:class:<code class="docutils literal notranslate"><span class="pre">~ballet.feature.Feature</span></code> can be helpful compared to vanilla pandas for machine learning: we can easily incorporate a transformer from scikit-learn that learns the column mean on the training data and applies it on unseen test data.</p>
+<p>In example 3, we can see where Ballet’s <a class="reference internal" href="api/ballet.feature.html#ballet.feature.Feature" title="ballet.feature.Feature"><code class="xref py py-class docutils literal notranslate"><span class="pre">Feature</span></code></a> can be helpful compared to vanilla pandas for machine learning: we can easily incorporate a transformer from scikit-learn that learns the column mean on the training data and applies it on unseen test data.</p>
 <p>In example 4, we see how multiple transformers can be chained together in a list.</p>
 <table class="docutils align-default" style="width: 100%">
 <colgroup>
@@ -897,7 +897,7 @@ the following simplified dataset:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This method is optional if your transformer does not have any hyperparameters. Following the scikit-learn convention, the init method should take keyword arguments only and do nothing more then set them on <code class="docutils literal notranslate"><span class="pre">self</span></code>. Each keyword argument is a hyperparameter of the transformer.</p>
+<p>This method is optional if your transformer does not have any hyperparameters. Following the scikit-learn convention, the init method should take keyword arguments only and do nothing more then set them on <code class="docutils literal notranslate"><span class="pre">self</span></code>. Each keyword argument is a hyperparameter of the transformer. While the signature above uses <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code>, you should actually spell out the hyperparameters in the signature (so that they can be listed via introspection).</p>
 </li>
 <li><p>(Optional) Implement the <code class="docutils literal notranslate"><span class="pre">fit</span></code> method:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
@@ -916,7 +916,7 @@ the following simplified dataset:</p>
 <p>Here you can assume the learned parameters, if any, are available.</p>
 </li>
 </ol>
-<p>You can also read the <a class="reference external" href="https://scikit-learn.org/stable/developers/develop.html#rolling-your-own-estimator">scikit-learn documentation on a similar topic</a>. (Note that this documentation page is likely overkill for the types of transformers you may be implementing.</p>
+<p>You can also read the <a class="reference external" href="https://scikit-learn.org/stable/developers/develop.html#rolling-your-own-estimator">scikit-learn documentation on a similar topic</a>. (Note that this documentation page is likely overkill for the types of transformers you may be implementing.)</p>
 <div class="section" id="example">
 <h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
 <p>Let’s create a feature that captures whether a string variable is the longest value observed in the data. This is a silly feature for a number of reasons, so don’t take it too seriously, but it demonstrates the steps required to roll your own transformer.</p>
