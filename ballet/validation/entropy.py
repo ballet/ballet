@@ -46,7 +46,7 @@ def _compute_empirical_probability(
             length m and there are K unique events
     """
     x = asarray2d(x)
-    n, _ = x.shape
+    n = x.shape[0]
     events, counts = np.unique(x, axis=0, return_counts=True)
     pk = counts * 1.0 / n
     return pk, events
@@ -141,8 +141,8 @@ def _compute_epsilon(x: np.ndarray) -> np.ndarray:
     # add a small amount of noise to the whole column, or try something else
     # entirely.
     while not np.all(distances) and k < n:
-        distances, _ = nn.kneighbors(n_neighbors=k)
-        distances = distances[:, -1]  # distances to k-nearest neighbor
+        # distances to k-nearest neighbor
+        distances = nn.kneighbors(n_neighbors=k)[0][:, -1]
         k += 1
 
     return asarray2d(2. * distances)
@@ -456,8 +456,15 @@ def estimate_mutual_information(x: np.ndarray, y: np.ndarray) -> float:
       information". Phys. Rev. E 69, 2004.
     """
     xy = np.concatenate((x, y), axis=1)
+
     epsilon = _compute_epsilon(xy)
+
     H_x = _estimate_entropy(x, epsilon)
     H_y = _estimate_entropy(y, epsilon)
     H_xy = _estimate_entropy(xy, epsilon)
+
+    logger.debug('H(X): %s', H_x)
+    logger.debug('H(Y): %s', H_y)
+    logger.debug('H(X,Y): %s', H_xy)
+
     return H_x + H_y - H_xy
