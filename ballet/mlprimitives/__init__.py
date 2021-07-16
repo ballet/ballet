@@ -2,7 +2,10 @@ import pathlib
 from copy import deepcopy
 from typing import Optional
 
+import numpy as np
+
 from ballet.encoder import EncoderPipeline, make_robust_encoder
+from ballet.eng import BaseTransformer
 from ballet.pipeline import FeatureEngineeringPipeline
 from ballet.project import Project
 from ballet.util.mod import import_module_from_modname
@@ -65,3 +68,18 @@ def make_encode_target(
     project = _get_project(package_slug, project_path)
     encoder = deepcopy(project.api.encoder)
     return make_robust_encoder(encoder, can_skip_transform_none=True)
+
+
+class DropMissingTargets(BaseTransformer):
+
+    def fit(self, X, y, **fit_kwargs):
+        self.inds_ = ~np.isnan(y)
+
+    def transform(self, X, y):
+        if y is not None:
+            if hasattr(X, 'loc'):
+                return X.loc(axis=0)[self.inds_], y[self.inds_]
+            else:
+                return X[self.inds_, :], y[self.inds_]
+        else:
+            return X, y
