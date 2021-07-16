@@ -209,12 +209,22 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../faq.html">FAQ</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#how-can-i-check-the-performance-of-a-feature">How can I check the performance of a feature?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#there-was-an-error-submitting-my-feature-using-assemble-in-jupyter-lab">There was an error submitting my feature using Assemblé in Jupyter Lab.</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#my-feature-has-a-valid-api-locally-why-was-it-rejected">My feature has a valid API locally, why was it rejected?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#why-did-my-feature-fail-the-feature-acceptance-validation">Why did my feature fail the feature acceptance validation?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#my-feature-relies-on-a-new-library-how-can-i-add-it-to-the-project">My feature relies on a new library, how can I add it to the project?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#how-can-i-learn-to-write-better-features">How can I learn to write better features?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#general">General</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../faq.html#how-can-i-check-the-performance-of-a-feature">How can I check the performance of a feature?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../faq.html#there-was-an-error-submitting-my-feature-using-assemble-in-jupyter-lab">There was an error submitting my feature using Assemblé in Jupyter Lab.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../faq.html#my-feature-has-a-valid-api-locally-why-was-it-rejected">My feature has a valid API locally, why was it rejected?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../faq.html#why-did-my-feature-fail-the-feature-acceptance-validation">Why did my feature fail the feature acceptance validation?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../faq.html#are-there-any-differences-between-local-validation-and-ci-validation">Are there any differences between local validation and CI validation?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../faq.html#my-feature-relies-on-a-new-library-how-can-i-add-it-to-the-project">My feature relies on a new library, how can I add it to the project?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../faq.html#how-do-i-delete-an-already-accepted-feature">How do I delete an already-accepted feature?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../faq.html#how-do-i-edit-a-feature-definition-that-has-been-rejected">How do I edit a feature definition that has been rejected?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#developing-features">Developing features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../faq.html#how-can-i-learn-to-write-better-features">How can I learn to write better features?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../faq.html#how-do-i-debug-a-failing-cantransformonerowcheck">How do I debug a failing <code class="docutils literal notranslate"><span class="pre">CanTransformOneRowCheck</span></code>?</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -268,6 +278,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../mlp_reference.html#primitives">primitives</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../mlp_reference.html#ballet-engineer-features">ballet.engineer_features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../mlp_reference.html#ballet-encode-target">ballet.encode_target</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../mlp_reference.html#ballet-drop-missing-targets">ballet.drop_missing_targets</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../mlp_reference.html#pipelines">pipelines</a><ul>
@@ -455,7 +466,7 @@
 <span class="sd">            length m and there are K unique events</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">asarray2d</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">n</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">events</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">pk</span> <span class="o">=</span> <span class="n">counts</span> <span class="o">*</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">n</span>
     <span class="k">return</span> <span class="n">pk</span><span class="p">,</span> <span class="n">events</span>
@@ -550,8 +561,8 @@
     <span class="c1"># add a small amount of noise to the whole column, or try something else</span>
     <span class="c1"># entirely.</span>
     <span class="k">while</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span> <span class="ow">and</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
-        <span class="n">distances</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">kneighbors</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
-        <span class="n">distances</span> <span class="o">=</span> <span class="n">distances</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># distances to k-nearest neighbor</span>
+        <span class="c1"># distances to k-nearest neighbor</span>
+        <span class="n">distances</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">kneighbors</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="n">k</span><span class="p">)[</span><span class="mi">0</span><span class="p">][:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
 
     <span class="k">return</span> <span class="n">asarray2d</span><span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">distances</span><span class="p">)</span>
@@ -865,10 +876,17 @@
 <span class="sd">      information&quot;. Phys. Rev. E 69, 2004.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">xy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
     <span class="n">epsilon</span> <span class="o">=</span> <span class="n">_compute_epsilon</span><span class="p">(</span><span class="n">xy</span><span class="p">)</span>
+
     <span class="n">H_x</span> <span class="o">=</span> <span class="n">_estimate_entropy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
     <span class="n">H_y</span> <span class="o">=</span> <span class="n">_estimate_entropy</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
     <span class="n">H_xy</span> <span class="o">=</span> <span class="n">_estimate_entropy</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;H(X): </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">H_x</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;H(Y): </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">H_y</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;H(X,Y): </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">H_xy</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">H_x</span> <span class="o">+</span> <span class="n">H_y</span> <span class="o">-</span> <span class="n">H_xy</span></div>
 </pre></div>
 

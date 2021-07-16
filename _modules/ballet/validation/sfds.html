@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>ballet.util.fs &mdash; ballet 0.19.3 documentation</title>
+  <title>ballet.validation.sfds &mdash; ballet 0.19.3 documentation</title>
   
 
   
@@ -402,9 +402,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-          <li><a href="../util.html">ballet.util</a> &raquo;</li>
-        
-      <li>ballet.util.fs</li>
+      <li>ballet.validation.sfds</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -419,156 +417,97 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for ballet.util.fs</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">os.path</span>
-<span class="kn">import</span> <span class="nn">pathlib</span>
-<span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">copyfile</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+  <h1>Source code for ballet.validation.sfds</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">sfds.py</span>
 
-<span class="kn">from</span> <span class="nn">funcy</span> <span class="kn">import</span> <span class="n">partial</span><span class="p">,</span> <span class="n">suppress</span>
+<span class="sd">This module contains a short, unoptimized, human-readable implementation of</span>
+<span class="sd">the SFDS algorithm.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">ballet.exc</span> <span class="kn">import</span> <span class="n">BalletError</span>
-<span class="kn">from</span> <span class="nn">ballet.util.log</span> <span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">ballet.util.typing</span> <span class="kn">import</span> <span class="n">Pathy</span>
-
-
-<div class="viewcode-block" id="spliceext"><a class="viewcode-back" href="../../../api/ballet.util.fs.html#ballet.util.fs.spliceext">[docs]</a><span class="k">def</span> <span class="nf">spliceext</span><span class="p">(</span><span class="n">filepath</span><span class="p">:</span> <span class="n">Pathy</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Add s into filepath before the extension&quot;&quot;&quot;</span>
-    <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">root</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="n">ext</span></div>
+<span class="kn">from</span> <span class="nn">ballet.util</span> <span class="kn">import</span> <span class="n">asarray2d</span>
+<span class="kn">from</span> <span class="nn">ballet.validation.entropy</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">estimate_conditional_information</span><span class="p">,</span> <span class="n">estimate_entropy</span><span class="p">,</span>
+    <span class="n">estimate_mutual_information</span><span class="p">,)</span>
 
 
-<div class="viewcode-block" id="replaceext"><a class="viewcode-back" href="../../../api/ballet.util.fs.html#ballet.util.fs.replaceext">[docs]</a><span class="k">def</span> <span class="nf">replaceext</span><span class="p">(</span><span class="n">filepath</span><span class="p">:</span> <span class="n">Pathy</span><span class="p">,</span> <span class="n">new_ext</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Replace any existing file extension with a new one</span>
-
-<span class="sd">    If the new extension is the empty string, all existing extensions will</span>
-<span class="sd">    be removed.</span>
-
-<span class="sd">    Example::</span>
-
-<span class="sd">        &gt;&gt;&gt; replaceext(&#39;/foo/bar.txt&#39;, &#39;py&#39;)</span>
-<span class="sd">        &#39;/foo/bar.py&#39;</span>
-<span class="sd">        &gt;&gt;&gt; replaceext(&#39;/foo/bar.txt&#39;, &#39;.doc&#39;)</span>
-<span class="sd">        &#39;/foo/bar.doc&#39;</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        filepath: file path</span>
-<span class="sd">        new_ext: new file extension; if a leading dot is not included, it will</span>
-<span class="sd">            be added.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">new_ext</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">new_ext</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
-        <span class="n">new_ext</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">new_ext</span>
-    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="n">new_ext</span><span class="p">))</span></div>
-
-
-<div class="viewcode-block" id="splitext2"><a class="viewcode-back" href="../../../api/ballet.util.fs.html#ballet.util.fs.splitext2">[docs]</a><span class="k">def</span> <span class="nf">splitext2</span><span class="p">(</span><span class="n">filepath</span><span class="p">:</span> <span class="n">Pathy</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Split filepath into root, filename, ext&quot;&quot;&quot;</span>
-    <span class="n">root</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
-    <span class="n">filename</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">root</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">ext</span></div>
-
-
-<div class="viewcode-block" id="isemptyfile"><a class="viewcode-back" href="../../../api/ballet.util.fs.html#ballet.util.fs.isemptyfile">[docs]</a><span class="k">def</span> <span class="nf">isemptyfile</span><span class="p">(</span><span class="n">filepath</span><span class="p">:</span> <span class="n">Pathy</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Determine if the file both exists and isempty&quot;&quot;&quot;</span>
-    <span class="n">exists</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">exists</span><span class="p">:</span>
-        <span class="n">filesize</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">filesize</span> <span class="o">==</span> <span class="mi">0</span>
+<div class="viewcode-block" id="concat"><a class="viewcode-back" href="../../../api/ballet.validation.sfds.html#ballet.validation.sfds.concat">[docs]</a><span class="k">def</span> <span class="nf">concat</span><span class="p">(</span><span class="n">F</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">F</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">False</span></div>
+        <span class="c1"># will end up calling estimate_mutual_information</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="synctree"><a class="viewcode-back" href="../../../api/ballet.util.fs.html#ballet.util.fs.synctree">[docs]</a><span class="k">def</span> <span class="nf">synctree</span><span class="p">(</span>
-    <span class="n">src</span><span class="p">:</span> <span class="n">Pathy</span><span class="p">,</span>
-    <span class="n">dst</span><span class="p">:</span> <span class="n">Pathy</span><span class="p">,</span>
-    <span class="n">onexist</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;Recursively sync files at directory src to dst</span>
-
-<span class="sd">    This is more or less equivalent to::</span>
-
-<span class="sd">       cp -n -R ${src}/ ${dst}/</span>
-
-<span class="sd">    If a file at the same path exists in src and dst, it is NOT overwritten</span>
-<span class="sd">    in dst. Pass ``onexist`` in order to raise an error on such conditions.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        src: source directory</span>
-<span class="sd">        dst: destination directory, does not need to exist</span>
-<span class="sd">        onexist: function to call if file exists at destination,</span>
-<span class="sd">            takes the full path to destination file as only argument</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        changes made by synctree, list of tuples of the form</span>
-<span class="sd">        (&quot;/absolute/path/to/file&quot;, &quot;&lt;kind&gt;&quot;) where the change kind is one of</span>
-<span class="sd">        &quot;dir&quot; (new directory was created) or &quot;file&quot; (new file was created).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">src</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">src</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
-    <span class="n">dst</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">dst</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">src</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span>
-
-    <span class="k">if</span> <span class="n">dst</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">dst</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span>
-
-    <span class="k">if</span> <span class="n">onexist</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">_onexist</span><span class="p">(</span><span class="n">path</span><span class="p">):</span> <span class="k">pass</span>
-        <span class="n">onexist</span> <span class="o">=</span> <span class="n">_onexist</span>
-
-    <span class="k">return</span> <span class="n">_synctree</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">onexist</span><span class="p">)</span></div>
+<div class="viewcode-block" id="H"><a class="viewcode-back" href="../../../api/ballet.validation.sfds.html#ballet.validation.sfds.H">[docs]</a><span class="k">def</span> <span class="nf">H</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>  <span class="c1"># noqa</span>
+    <span class="k">return</span> <span class="n">estimate_entropy</span><span class="p">(</span><span class="n">asarray2d</span><span class="p">(</span><span class="n">a</span><span class="p">))</span></div>
 
 
-<span class="k">def</span> <span class="nf">_synctree</span><span class="p">(</span>
-    <span class="n">src</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
-    <span class="n">dst</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
-    <span class="n">onexist</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">cleanup</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">_root</span><span class="p">,</span> <span class="n">dirnames</span><span class="p">,</span> <span class="n">filenames</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">src</span><span class="p">):</span>
-            <span class="n">root</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">_root</span><span class="p">)</span>
-            <span class="n">relative_dir</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
-
-            <span class="k">for</span> <span class="n">dirname</span> <span class="ow">in</span> <span class="n">dirnames</span><span class="p">:</span>
-                <span class="n">dstdir</span> <span class="o">=</span> <span class="n">dst</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">relative_dir</span><span class="p">,</span> <span class="n">dirname</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">dstdir</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">dstdir</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
-                        <span class="k">raise</span> <span class="n">BalletError</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Making directory: </span><span class="si">{</span><span class="n">dstdir</span><span class="si">!s}</span><span class="s1">&#39;</span><span class="p">)</span>
-                    <span class="n">dstdir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">()</span>
-                    <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">dstdir</span><span class="p">,</span> <span class="s1">&#39;dir&#39;</span><span class="p">))</span>
-                    <span class="n">cleanup</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">rmdir</span><span class="p">,</span> <span class="n">dstdir</span><span class="p">))</span>
-
-            <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
-                <span class="n">srcfile</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-                <span class="n">dstfile</span> <span class="o">=</span> <span class="n">dst</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">relative_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">dstfile</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-                    <span class="n">onexist</span><span class="p">(</span><span class="n">dstfile</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Copying file to destination: </span><span class="si">{</span><span class="n">dstfile</span><span class="si">!s}</span><span class="s1">&#39;</span><span class="p">)</span>
-                    <span class="n">copyfile</span><span class="p">(</span><span class="n">srcfile</span><span class="p">,</span> <span class="n">dstfile</span><span class="p">)</span>
-                    <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">dstfile</span><span class="p">,</span> <span class="s1">&#39;file&#39;</span><span class="p">))</span>
-                    <span class="n">cleanup</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">,</span> <span class="n">dstfile</span><span class="p">))</span>
-
-    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">cleanup</span><span class="p">):</span>
-                <span class="n">f</span><span class="p">()</span>
-        <span class="k">raise</span>
-
-    <span class="k">return</span> <span class="n">result</span>
+<div class="viewcode-block" id="I"><a class="viewcode-back" href="../../../api/ballet.validation.sfds.html#ballet.validation.sfds.I">[docs]</a><span class="k">def</span> <span class="nf">I</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa</span>
+    <span class="k">if</span> <span class="n">c</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">estimate_mutual_information</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">estimate_conditional_information</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="pwalk"><a class="viewcode-back" href="../../../api/ballet.util.fs.html#ballet.util.fs.pwalk">[docs]</a><span class="k">def</span> <span class="nf">pwalk</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="n">Pathy</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Similar to os.walk but with pathlib.Path objects&quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">_dirpath</span><span class="p">,</span> <span class="n">dirnames</span><span class="p">,</span> <span class="n">filenames</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">dirpath</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">_dirpath</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">dirnames</span> <span class="o">+</span> <span class="n">filenames</span><span class="p">:</span>
-            <span class="k">yield</span> <span class="n">dirpath</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">p</span><span class="p">)</span></div>
+<div class="viewcode-block" id="adjust_λ"><a class="viewcode-back" href="../../../api/ballet.validation.sfds.html#ballet.validation.sfds.adjust_λ">[docs]</a><span class="k">def</span> <span class="nf">adjust_λ</span><span class="p">(</span><span class="n">λ1</span><span class="p">,</span> <span class="n">λ2</span><span class="p">,</span> <span class="n">F</span><span class="p">):</span>
+    <span class="c1"># see ballet.validation.gfssf._compute_lmbdas</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">F</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">λ1</span><span class="p">,</span> <span class="n">λ2</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">n_features</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+        <span class="n">n_feature_cols</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">F</span><span class="p">)</span>
+        <span class="n">λ1</span> <span class="o">=</span> <span class="n">λ1</span><span class="o">/</span><span class="n">n_features</span>
+        <span class="n">λ2</span> <span class="o">=</span> <span class="n">λ2</span><span class="o">/</span><span class="n">n_feature_cols</span>
+        <span class="k">return</span> <span class="n">λ1</span><span class="p">,</span> <span class="n">λ2</span></div>
+
+
+<div class="viewcode-block" id="sfds"><a class="viewcode-back" href="../../../api/ballet.validation.sfds.html#ballet.validation.sfds.sfds">[docs]</a><span class="k">def</span> <span class="nf">sfds</span><span class="p">(</span><span class="n">Γ</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">λ1</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">λ2</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">λ_adj</span><span class="o">=</span><span class="mf">64.</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">λ1</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">λ2</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">Hy</span> <span class="o">=</span> <span class="n">H</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">λ1</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">λ1</span> <span class="o">=</span> <span class="n">Hy</span> <span class="o">/</span> <span class="n">λ_adj</span>
+        <span class="k">if</span> <span class="n">λ2</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">λ2</span> <span class="o">=</span> <span class="n">Hy</span> <span class="o">/</span> <span class="n">λ_adj</span>
+
+    <span class="n">F</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">Γ</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">accept</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">λ1</span><span class="p">,</span> <span class="n">λ2</span><span class="p">):</span>
+            <span class="n">F</span> <span class="o">=</span> <span class="n">prune</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">λ1</span><span class="p">,</span> <span class="n">λ2</span><span class="p">)</span>
+            <span class="n">F</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">F</span></div>
+
+
+<div class="viewcode-block" id="accept"><a class="viewcode-back" href="../../../api/ballet.validation.sfds.html#ballet.validation.sfds.accept">[docs]</a><span class="k">def</span> <span class="nf">accept</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">λ1</span><span class="p">,</span> <span class="n">λ2</span><span class="p">):</span>
+    <span class="n">qf</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">λ1</span><span class="p">,</span> <span class="n">λ2</span> <span class="o">=</span> <span class="n">adjust_λ</span><span class="p">(</span><span class="n">λ1</span><span class="p">,</span> <span class="n">λ2</span><span class="p">,</span> <span class="n">F</span><span class="p">)</span>
+
+    <span class="n">z</span> <span class="o">=</span> <span class="n">concat</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">I</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">λ1</span> <span class="o">+</span> <span class="n">λ2</span> <span class="o">*</span> <span class="n">qf</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">F</span><span class="p">):</span>
+        <span class="n">qg</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">concat</span><span class="p">(</span><span class="n">F</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">F</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">if</span> <span class="n">I</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="o">-</span> <span class="n">I</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">λ1</span> <span class="o">+</span> <span class="n">λ2</span> <span class="o">*</span> <span class="p">(</span><span class="n">qf</span> <span class="o">-</span> <span class="n">qg</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="prune"><a class="viewcode-back" href="../../../api/ballet.validation.sfds.html#ballet.validation.sfds.prune">[docs]</a><span class="k">def</span> <span class="nf">prune</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">λ1</span><span class="p">,</span> <span class="n">λ2</span><span class="p">):</span>
+    <span class="n">pruned</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">F</span><span class="p">):</span>
+        <span class="n">qg</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">concat</span><span class="p">(</span><span class="n">F</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">F</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="p">[</span><span class="n">f</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">I</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">λ1</span> <span class="o">+</span> <span class="n">λ2</span> <span class="o">*</span> <span class="n">qg</span><span class="p">:</span>
+            <span class="n">pruned</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">g</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pruned</span>
+    <span class="p">]</span></div>
 </pre></div>
 
            </div>

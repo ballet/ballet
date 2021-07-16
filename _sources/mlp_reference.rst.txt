@@ -19,6 +19,12 @@ ballet.encode_target
 .. literalinclude:: ../ballet/mlprimitives/primitives/ballet.encode_target.json
    :language: json
 
+ballet.drop_missing_targets
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. literalinclude:: ../ballet/mlprimitives/primitives/ballet.drop_missing_targets.json
+   :language: json
+
 pipelines
 ---------
 
