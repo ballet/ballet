@@ -56,7 +56,7 @@ In this example, the user relies on ``np`` but it does not exist in their featur
 
    input = ['A', 'B']
    transformer = lambda df: df.apply(np.sum, axis=1)  # np is not available here!
-   feature = Feature(input=input, transformer=transformer)
+   feature = Feature(input, transformer)
 
 See also: :ref:`contributor_guide:Understanding Validation Results`
 

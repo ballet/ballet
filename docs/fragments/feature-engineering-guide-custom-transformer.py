@@ -14,4 +14,4 @@ class LongestStringValue(BaseTransformer):
 
 
 transformer = LongestStringValue()
-feature = Feature(input=input, transformer=transformer)
+feature = Feature(input, transformer)
