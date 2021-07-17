@@ -1,8 +1,13 @@
 # History
 
+## 0.19.4 (2021-07-17)
+
+* Fix bug with deepcopying `ballet.eng.base.SubsetTransformer` ([#90](https://github.com/ballet/ballet/issues/90))
+* Add `ballet.drop_missing_targets` primitive
+
 ## 0.19.3 (2021-06-28)
 
-* Support missing targets in discovery and feature performance evaluation [#89](https://github.com/ballet/ballet/pull/89)
+* Support missing targets in discovery and feature performance evaluation ([#89](https://github.com/ballet/ballet/pull/89))
 * Add `ninputs` to summary statistics in `ballet.discovery.discover`
 
 ## 0.19.2 (2021-06-21)
