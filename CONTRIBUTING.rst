@@ -123,9 +123,9 @@ A reminder for the maintainers on how to deploy. This is a simplified release wo
 
    $ git add HISTORY.md
 
-#. Create and tag a new release::
+#. Create and tag a new release (commits all staged changes)::
 
-   $ bumpversion --allow-dirty minor  # i.e. 0.1.1 -> 0.2.0
+   $ bumpversion minor  # i.e. 0.1.1 -> 0.2.0
 
 #. Push changes::
 
