@@ -8,6 +8,7 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import FunctionTransformer
 from sklearn.utils.validation import check_is_fitted
 from sklearn_pandas import DataFrameMapper
+from sklearn_pandas import __version__ as sklearn_pandas_version
 
 import ballet.transformer  # avoid circular import
 from ballet.exc import BalletError
@@ -349,3 +350,12 @@ class SubsetTransformer(DataFrameMapper):
             input_df=True,
             df_out=True,
         )
+
+    if sklearn_pandas_version.startswith('1'):
+        def __setstate__(self, state):
+            # FIXME bug with sklearn-pandas 1.x that is fixed on 2.x (can
+            # delete after upgrade)
+            # horrible hack - DataFrameMapper does not call super.__setstate__
+            # in 1.x, but we happen to know that its parent is BaseEstimator
+            BaseEstimator.__setstate__(self, state)
+            DataFrameMapper.__setstate__(self, state)

@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -336,3 +338,11 @@ def test_subset_transformer_mutate(sample_data):
     complement = [col for col in X_tr.columns if col != input]
     assert_frame_equal(result_tr[complement], X_tr[complement])
     assert_frame_equal(result_te[complement], X_te[complement])
+
+
+def test_subset_transformer_deepcopy():
+    t = ballet.eng.SubsetTransformer('size', lambda x: x + 1)
+    assert hasattr(t, 'alias')
+    t1 = deepcopy(t)
+    assert hasattr(t1, 'alias')
+    assert t.alias == t1.alias

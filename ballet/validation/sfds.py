@@ -38,8 +38,8 @@ def adjust_λ(λ1, λ2, F):
     else:
         n_features = len(F)
         n_feature_cols = sum(f.shape[1] for f in F)
-        λ1 = λ1/n_features
-        λ2 = λ2/n_feature_cols
+        λ1 = λ1 / n_features
+        λ2 = λ2 / n_feature_cols
         return λ1, λ2
 
 
@@ -69,7 +69,7 @@ def accept(F, f, y, λ1, λ2):
 
     for i, g in enumerate(F):
         qg = g.shape[1]
-        z = concat(F[:i] + F[i+1:])
+        z = concat(F[:i] + F[i + 1:])
         if I(f, y, z) - I(g, y, z) > λ1 + λ2 * (qf - qg):
             return True
 
@@ -80,7 +80,7 @@ def prune(F, f, y, λ1, λ2):
     pruned = []
     for i, g in enumerate(F):
         qg = g.shape[1]
-        z = concat(F[:i] + F[i+1:] + [f])
+        z = concat(F[:i] + F[i + 1:] + [f])
         if I(g, y, z) < λ1 + λ2 * qg:
             pruned.append(i)
     return [

@@ -148,7 +148,7 @@ def test_disc_entropy_two_values():
         (np.zeros(10), True),
         (np.arange(10) * 1.0, True),
         (np.concatenate((
-            np.zeros(DISC_COL_UNIQUE_COUNT_THRESH+1), np.random.rand(10))),
+            np.zeros(DISC_COL_UNIQUE_COUNT_THRESH + 1), np.random.rand(10))),
             True),
         (np.concatenate((
             np.zeros(DISC_COL_UNIQUE_COUNT_THRESH), np.random.rand(10))),
