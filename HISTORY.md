@@ -1,5 +1,9 @@
 # History
 
+## 0.19.5 (2021-07-17)
+
+* Fix bug with deepcopying `ballet.pipeline.FeatureEngineeringPipeline`
+
 ## 0.19.4 (2021-07-17)
 
 * Fix bug with deepcopying `ballet.eng.base.SubsetTransformer` ([#90](https://github.com/ballet/ballet/issues/90))
