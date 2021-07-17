@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 import funcy as fy
 import numpy as np
 import pandas as pd
@@ -111,3 +113,12 @@ def test_gh_87():
         index=X_df.index,
     )
     assert all(isinstance(col, str) for col in X_ft_df.columns)
+
+
+def test_can_deepcopy():
+    # see GH 90
+    feature = Feature('size', IdentityTransformer())
+    pipeline = FeatureEngineeringPipeline(feature)
+    assert hasattr(pipeline, '_ballet_features')
+    pipeline2 = deepcopy(pipeline)
+    assert hasattr(pipeline2, '_ballet_features')

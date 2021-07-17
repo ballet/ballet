@@ -2,7 +2,9 @@ from typing import Callable, List, NamedTuple, Tuple
 
 import numpy as np
 import pandas as pd
+from sklearn.base import BaseEstimator
 from sklearn_pandas import DataFrameMapper
+from sklearn_pandas import __version__ as sklearn_pandas_version
 from stacklog import stacklog
 
 # n.b. cannot import Feature here bc of circular import
@@ -61,6 +63,12 @@ class FeatureEngineeringPipeline(DataFrameMapper):
             columns = f'selected_input_{hash(columns)}'
 
         return super().get_names(columns, transformer, x, alias=alias)
+
+    if sklearn_pandas_version.startswith('1'):
+        def __setstate__(self, state):
+            # FIXME see SubsetTransformer.__setstate__
+            BaseEstimator.__setstate__(self, state)
+            DataFrameMapper.__setstate__(self, state)
 
 
 class EngineerFeaturesResult(NamedTuple):
