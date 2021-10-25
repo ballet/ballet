@@ -22,25 +22,40 @@ See also: :ref:`contributor_guide:Test your feature (local)`.
 There was an error submitting my feature using Assemblé in Jupyter Lab.
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Here are common situations:
+There are several common situations.
 
-1. Problem: You selected a cell in your notebook that did not contain the feature. It may have contained descriptive text or other Python code.
+Selected cell did not contain the feature definition.
+=====================================================
 
-   .. image:: _static/assemble_error_not_valid_python_code.png
+Problem: You selected a cell in your notebook that did not contain the feature. It may have contained descriptive text or other Python code.
 
-   Solution: Select the code cell that contains the feature and try again. Make sure the feature you want to previewed in the "Submit Feature?" dialog.
+.. image:: _static/assemble_error_not_valid_python_code.png
 
-2. Problem: The submission fails with some other cryptic message that appears to be a Python exception.
+Solution: Select the code cell that contains the feature and try again. Make sure the feature you want to previewed in the "Submit Feature?" dialog.
 
-   Solution: Please report this error -- thanks for your help!
+Upstream or forked repository was moved.
+========================================
 
-   1. `Open a new issue on the ballet-assemble project <https://github.com/ballet/ballet-assemble/issues/new>`__
+Problem: The error message mentions something like "fatal: repository not found" and shows the traceback of a git command (like ``git clone``) that failed.
 
-   2. Open the web console. (See `Open the web console on Firefox <https://developer.mozilla.org/en-US/docs/Tools/Web_Console#opening_the_web_console>`__ or `Open the web console on Chrome <https://developer.chrome.com/docs/devtools/open/#console>`__.)
+Solution: This can occur if you have an existing fork of the shared repository under a different name. (If, for example, either the shared repository was renamed/moved or your own fork was renamed.) The best solution is to delete your own fork entirely. Assemblé will create a new fork for you the next time you attempt to submit a feature definition. A much inferior solution is to rename your own fork, update the project configuration in ``ballet.yml`` (to match the ``project`` and ``github`` sections of the shared repository), and commit the changes to your fork.
 
-   3. Scroll to the bottom of the console log. Copy the detailed error information. It should be an object that has as its ``message`` field the same message you just saw in the popup.
+See also: `ballet/ballet-assemble#30 <https://github.com/ballet/ballet-assemble/issues/30>`__
 
-   4. Paste the detailed error message in the indicated location in the new issue. Then link to the Ballet project on GitHub you are working on, and provide any more description that could be helpful.
+Some other error.
+=================
+
+Problem: The submission fails with some other cryptic message that appears to be a Python exception.
+
+Solution: Please report this error -- thanks for your help!
+
+1. `Open a new issue on the ballet-assemble project <https://github.com/ballet/ballet-assemble/issues/new>`__
+
+2. Open the web console. (See `Open the web console on Firefox <https://developer.mozilla.org/en-US/docs/Tools/Web_Console#opening_the_web_console>`__ or `Open the web console on Chrome <https://developer.chrome.com/docs/devtools/open/#console>`__.)
+
+3. Scroll to the bottom of the console log. Copy the detailed error information. It should be an object that has as its ``message`` field the same message you just saw in the popup.
+
+4. Paste the detailed error message in the indicated location in the new issue. Then link to the Ballet project on GitHub you are working on, and provide any more description that could be helpful.
 
 My feature has a valid API locally, why was it rejected?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

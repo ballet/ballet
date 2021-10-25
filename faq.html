@@ -174,7 +174,12 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">FAQ</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#general">General</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#how-can-i-check-the-performance-of-a-feature">How can I check the performance of a feature?</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#there-was-an-error-submitting-my-feature-using-assemble-in-jupyter-lab">There was an error submitting my feature using Assemblé in Jupyter Lab.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#there-was-an-error-submitting-my-feature-using-assemble-in-jupyter-lab">There was an error submitting my feature using Assemblé in Jupyter Lab.</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#selected-cell-did-not-contain-the-feature-definition">Selected cell did not contain the feature definition.</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#upstream-or-forked-repository-was-moved">Upstream or forked repository was moved.</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#some-other-error">Some other error.</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#my-feature-has-a-valid-api-locally-why-was-it-rejected">My feature has a valid API locally, why was it rejected?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#why-did-my-feature-fail-the-feature-acceptance-validation">Why did my feature fail the feature acceptance validation?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#are-there-any-differences-between-local-validation-and-ci-validation">Are there any differences between local validation and CI validation?</a></li>
@@ -361,13 +366,22 @@
 </div>
 <div class="section" id="there-was-an-error-submitting-my-feature-using-assemble-in-jupyter-lab">
 <h3>There was an error submitting my feature using Assemblé in Jupyter Lab.<a class="headerlink" href="#there-was-an-error-submitting-my-feature-using-assemble-in-jupyter-lab" title="Permalink to this headline">¶</a></h3>
-<p>Here are common situations:</p>
-<ol class="arabic">
-<li><p>Problem: You selected a cell in your notebook that did not contain the feature. It may have contained descriptive text or other Python code.</p>
+<p>There are several common situations.</p>
+<div class="section" id="selected-cell-did-not-contain-the-feature-definition">
+<h4>Selected cell did not contain the feature definition.<a class="headerlink" href="#selected-cell-did-not-contain-the-feature-definition" title="Permalink to this headline">¶</a></h4>
+<p>Problem: You selected a cell in your notebook that did not contain the feature. It may have contained descriptive text or other Python code.</p>
 <img alt="_images/assemble_error_not_valid_python_code.png" src="_images/assemble_error_not_valid_python_code.png" />
 <p>Solution: Select the code cell that contains the feature and try again. Make sure the feature you want to previewed in the “Submit Feature?” dialog.</p>
-</li>
-<li><p>Problem: The submission fails with some other cryptic message that appears to be a Python exception.</p>
+</div>
+<div class="section" id="upstream-or-forked-repository-was-moved">
+<h4>Upstream or forked repository was moved.<a class="headerlink" href="#upstream-or-forked-repository-was-moved" title="Permalink to this headline">¶</a></h4>
+<p>Problem: The error message mentions something like “fatal: repository not found” and shows the traceback of a git command (like <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span></code>) that failed.</p>
+<p>Solution: This can occur if you have an existing fork of the shared repository under a different name. (If, for example, either the shared repository was renamed/moved or your own fork was renamed.) The best solution is to delete your own fork entirely. Assemblé will create a new fork for you the next time you attempt to submit a feature definition. A much inferior solution is to rename your own fork, update the project configuration in <code class="docutils literal notranslate"><span class="pre">ballet.yml</span></code> (to match the <code class="docutils literal notranslate"><span class="pre">project</span></code> and <code class="docutils literal notranslate"><span class="pre">github</span></code> sections of the shared repository), and commit the changes to your fork.</p>
+<p>See also: <a class="reference external" href="https://github.com/ballet/ballet-assemble/issues/30">ballet/ballet-assemble#30</a></p>
+</div>
+<div class="section" id="some-other-error">
+<h4>Some other error.<a class="headerlink" href="#some-other-error" title="Permalink to this headline">¶</a></h4>
+<p>Problem: The submission fails with some other cryptic message that appears to be a Python exception.</p>
 <p>Solution: Please report this error – thanks for your help!</p>
 <ol class="arabic simple">
 <li><p><a class="reference external" href="https://github.com/ballet/ballet-assemble/issues/new">Open a new issue on the ballet-assemble project</a></p></li>
@@ -375,8 +389,7 @@
 <li><p>Scroll to the bottom of the console log. Copy the detailed error information. It should be an object that has as its <code class="docutils literal notranslate"><span class="pre">message</span></code> field the same message you just saw in the popup.</p></li>
 <li><p>Paste the detailed error message in the indicated location in the new issue. Then link to the Ballet project on GitHub you are working on, and provide any more description that could be helpful.</p></li>
 </ol>
-</li>
-</ol>
+</div>
 </div>
 <div class="section" id="my-feature-has-a-valid-api-locally-why-was-it-rejected">
 <h3>My feature has a valid API locally, why was it rejected?<a class="headerlink" href="#my-feature-has-a-valid-api-locally-why-was-it-rejected" title="Permalink to this headline">¶</a></h3>
