@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sklearn.preprocessing._polynomial &mdash; ballet 0.19.5 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> ballet
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../readme.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../readme.html#the-ballet-framework">The Ballet framework</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../readme.html#next-steps">Next steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../readme.html#learn-more-about-ballet">Learn more about Ballet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../readme.html#join-a-ballet-collaboration">Join a Ballet collaboration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../readme.html#citing-ballet">Citing Ballet</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#stable-release">Stable release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#from-source">From source</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../maintainer_guide.html">Maintainer Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../maintainer_guide.html#creating-a-ballet-project">Creating a Ballet project</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#project-instantiation">Project instantiation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#project-installation">Project installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#collaboration-via-git-and-github">Collaboration via git and GitHub</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../maintainer_guide.html#automatic-repository-creation">Automatic repository creation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../maintainer_guide.html#manual-repository-creation">Manual repository creation</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#enabling-continuous-integration">Enabling continuous integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#installing-bots">Installing bots</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../maintainer_guide.html#configuring-the-project">Configuring the project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../maintainer_guide.html#developing-new-features">Developing new features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#validating-features">Validating features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../maintainer_guide.html#pruning-features">Pruning features</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../maintainer_guide.html#updating-the-framework">Updating the framework</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributor_guide.html">Contributor Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#cloud-feature-development-workflow">Cloud Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#launch-assemble">Launch Assemblé</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#work-in-a-notebook">Work in a notebook</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#authenticate-with-github">Authenticate with GitHub</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#develop-a-new-feature">Develop a new feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#test-your-feature">Test your feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#submit-your-feature">Submit your feature</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#local-feature-development-workflow">Local Feature Development Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#setup-your-development-environment">Setup your development environment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#fork-the-project">Fork the project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#clone-your-fork">Clone your fork</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#create-a-virtualenv">Create a virtualenv</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#contributor-guide-develop-a-new-feature-local">Develop a new feature</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#update-and-install-the-project">Update and install the project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#start-working-on-a-new-feature">Start working on a new feature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#write-your-feature">Write your feature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#contributor-guide-test-your-feature-local">Test your feature</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributor_guide.html#submit-the-feature">Submit the feature</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#option-1-git-workflow">Option 1: Git workflow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../contributor_guide.html#option-2-in-lab-workflow">Option 2: In-Lab Workflow</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#understanding-validation-results">Understanding Validation Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributor_guide.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../feature_engineering_guide.html">Feature Engineering Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#feature-engineering-in-90-seconds">Feature engineering in 90 seconds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#writing-features">Writing features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#feature-definitions">Feature definitions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#input-types">Input types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#transformers">Transformers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#automatic-data-conversions">Automatic data conversions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#feature-engineering-pipelines">Feature engineering pipelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#okay-but-why">Okay, but why?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#learn-by-example">Learn by example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#a-simple-feature">A simple feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#learned-transformations">Learned transformations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#multi-column-inputs-and-transformer-lists">Multi-column inputs and transformer lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#nested-transformers">Nested transformers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#complex-features">Complex features</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#feature-engineering-primitives">Feature engineering primitives</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#operating-on-groups">Operating on groups</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#logic-to-avoid-leakage">Logic to avoid leakage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#data-cleaning">Data cleaning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#operating-on-time-series-data">Operating on time series data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#utilities">Utilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#other-primitives">Other primitives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#external-libraries">External libraries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#differences-from-pandas">Differences from Pandas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#rolling-your-own-transformers">Rolling your own transformers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../feature_engineering_guide.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../feature_engineering_guide.html#further-reading">Further reading</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../consumer_guide.html">Consumer Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../consumer_guide.html#install-a-project">Install a project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../consumer_guide.html#engineer-features">Engineer features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../consumer_guide.html#using-the-command-line">Using the command line</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../consumer_guide.html#using-the-library">Using the library</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../consumer_guide.html#build-an-ml-pipeline">Build an ML pipeline</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../consumer_guide.html#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../consumer_guide.html#ml-pipeline-usage">ML pipeline usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../consumer_guide.html#ballet-project-detection">Ballet project detection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../consumer_guide.html#primitive-and-pipeline-discovery">Primitive and pipeline discovery</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">FAQ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#general">General</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../faq.html#how-can-i-check-the-performance-of-a-feature">How can I check the performance of a feature?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../faq.html#there-was-an-error-submitting-my-feature-using-assemble-in-jupyter-lab">There was an error submitting my feature using Assemblé in Jupyter Lab.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../faq.html#my-feature-has-a-valid-api-locally-why-was-it-rejected">My feature has a valid API locally, why was it rejected?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../faq.html#why-did-my-feature-fail-the-feature-acceptance-validation">Why did my feature fail the feature acceptance validation?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../faq.html#are-there-any-differences-between-local-validation-and-ci-validation">Are there any differences between local validation and CI validation?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../faq.html#my-feature-relies-on-a-new-library-how-can-i-add-it-to-the-project">My feature relies on a new library, how can I add it to the project?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../faq.html#how-do-i-delete-an-already-accepted-feature">How do I delete an already-accepted feature?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../faq.html#how-do-i-edit-a-feature-definition-that-has-been-rejected">How do I edit a feature definition that has been rejected?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../faq.html#developing-features">Developing features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../faq.html#how-can-i-learn-to-write-better-features">How can I learn to write better features?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../faq.html#how-do-i-debug-a-failing-cantransformonerowcheck">How do I debug a failing <code class="docutils literal notranslate"><span class="pre">CanTransformOneRowCheck</span></code>?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ballet.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/ballet.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.eng.html">ballet.eng package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.eng.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.eng.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.mlprimitives.html">ballet.mlprimitives package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.util.html">ballet.util package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.util.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.validation.html">ballet.validation package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.validation.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/ballet.validation.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/ballet.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.cli.html">ballet.cli module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.client.html">ballet.client module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.compat.html">ballet.compat module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.contrib.html">ballet.contrib module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.discovery.html">ballet.discovery module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.encoder.html">ballet.encoder module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.exc.html">ballet.exc module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.feature.html">ballet.feature module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.pipeline.html">ballet.pipeline module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.project.html">ballet.project module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.templating.html">ballet.templating module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.transformer.html">ballet.transformer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/ballet.update.html">ballet.update module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cli_reference.html">CLI Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../cli_reference.html#ballet-quickstart">quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cli_reference.html#ballet-start-new-feature">start-new-feature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cli_reference.html#ballet-update-project-template">update-project-template</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cli_reference.html#ballet-validate">validate</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../mlp_reference.html">MLPrimitives/MLPipelines</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../mlp_reference.html#primitives">primitives</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../mlp_reference.html#ballet-engineer-features">ballet.engineer_features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../mlp_reference.html#ballet-encode-target">ballet.encode_target</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../mlp_reference.html#ballet-drop-missing-targets">ballet.drop_missing_targets</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../mlp_reference.html#pipelines">pipelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../mlp_reference.html#ballet-rf-classifier">ballet_rf_classifier</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../mlp_reference.html#ballet-rf-regressor">ballet_rf_regressor</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Development Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#types-of-contributions">Types of Contributions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributing.html#report-bugs">Report Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributing.html#fix-bugs">Fix Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributing.html#implement-features">Implement Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributing.html#write-documentation">Write Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../contributing.html#submit-feedback">Submit Feedback</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#get-started">Get Started!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#pull-request-guidelines">Pull Request Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#tips">Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#deploying">Deploying</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#source-code-organization">Source code organization</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Credits</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../authors.html#development-lead">Development Lead</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../authors.html#contributors">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id1">0.19.5 (2021-07-17)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id2">0.19.4 (2021-07-17)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id4">0.19.3 (2021-06-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id6">0.19.2 (2021-06-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id7">0.19.1 (2021-06-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id8">0.19.0 (2021-06-16)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id10">0.18.0 (2021-06-06)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id12">0.17.0 (2021-05-24)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id14">0.16.0 (2021-05-22)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id16">0.15.2 (2021-05-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id17">0.15.1 (2021-05-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id18">0.15.0 (2021-05-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id20">0.14.0 (2021-05-11)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id24">0.13.1 (2021-04-02)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id25">0.13.0 (2021-03-30)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id26">0.12.0 (2021-03-10)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id27">0.11.0 (2021-03-04)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id28">0.10.0 (2021-02-23)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id29">0.9.0 (2021-02-16)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id30">0.8.2 (2021-02-16)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id31">0.8.1 (2021-02-16)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id32">0.8.0 (2021-02-02)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id33">0.7.11 (2020-09-16)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id34">0.7.10 (2020-09-08)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id35">0.7.9 (2020-08-15)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id36">0.7.8 (2020-08-13)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id37">0.7.7 (2020-08-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id38">0.7.6 (2020-08-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id39">0.7.5 (2020-08-03)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id40">0.7.4 (2020-07-22)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id41">0.7.3 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id42">0.7.2 (2020-07-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id43">0.7.1 (2020-07-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id44">0.7 (2020-07-17)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id45">0.6 (2019-11-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id46">0.5 (2018-10-14)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id47">0.4 (2018-09-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id48">0.3 (2018-04-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id49">0.2 (2018-04-11)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../history.html#id50">0.1 (2018-04-08)</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ballet</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>sklearn.preprocessing._polynomial</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sklearn.preprocessing._polynomial</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This file contains preprocessing tools based on polynomials.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">numbers</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span><span class="p">,</span> <span class="n">combinations</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations_with_replacement</span> <span class="k">as</span> <span class="n">combinations_w_r</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">sparse</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">BSpline</span>
+<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">comb</span>
+
+<span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">check_array</span>
+<span class="kn">from</span> <span class="nn">..utils.deprecation</span> <span class="kn">import</span> <span class="n">deprecated</span>
+<span class="kn">from</span> <span class="nn">..utils.fixes</span> <span class="kn">import</span> <span class="n">linspace</span>
+<span class="kn">from</span> <span class="nn">..utils.validation</span> <span class="kn">import</span> <span class="n">check_is_fitted</span><span class="p">,</span> <span class="n">FLOAT_DTYPES</span><span class="p">,</span> <span class="n">_check_sample_weight</span>
+<span class="kn">from</span> <span class="nn">..utils.validation</span> <span class="kn">import</span> <span class="n">_check_feature_names_in</span>
+<span class="kn">from</span> <span class="nn">..utils.stats</span> <span class="kn">import</span> <span class="n">_weighted_percentile</span>
+
+<span class="kn">from</span> <span class="nn">._csr_polynomial_expansion</span> <span class="kn">import</span> <span class="n">_csr_polynomial_expansion</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;PolynomialFeatures&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SplineTransformer&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="PolynomialFeatures"><a class="viewcode-back" href="../../../api/ballet.eng.external.sklearn.html#ballet.eng.external.PolynomialFeatures">[docs]</a><span class="k">class</span> <span class="nc">PolynomialFeatures</span><span class="p">(</span><span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate polynomial and interaction features.</span>
+
+<span class="sd">    Generate a new feature matrix consisting of all polynomial combinations</span>
+<span class="sd">    of the features with degree less than or equal to the specified degree.</span>
+<span class="sd">    For example, if an input sample is two dimensional and of the form</span>
+<span class="sd">    [a, b], the degree-2 polynomial features are [1, a, b, a^2, ab, b^2].</span>
+
+<span class="sd">    Read more in the :ref:`User Guide &lt;polynomial_features&gt;`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    degree : int or tuple (min_degree, max_degree), default=2</span>
+<span class="sd">        If a single int is given, it specifies the maximal degree of the</span>
+<span class="sd">        polynomial features. If a tuple ``(min_degree, max_degree)`` is</span>
+<span class="sd">        passed, then ``min_degree`` is the minimum and ``max_degree`` is the</span>
+<span class="sd">        maximum polynomial degree of the generated features. Note that</span>
+<span class="sd">        min_degree=0 and 1 are equivalent as outputting the degree zero term</span>
+<span class="sd">        is determined by ``include_bias``.</span>
+
+<span class="sd">    interaction_only : bool, default=False</span>
+<span class="sd">        If true, only interaction features are produced: features that are</span>
+<span class="sd">        products of at most ``degree`` *distinct* input features, i.e. terms</span>
+<span class="sd">        with power of 2 or higher of the same input feature are excluded:</span>
+
+<span class="sd">            - included: ``x[0]``, `x[1]`, ``x[0] * x[1]``, etc.</span>
+<span class="sd">            - excluded: ``x[0] ** 2``, ``x[0] ** 2 * x[1]``, etc.</span>
+
+<span class="sd">    include_bias : bool, default=True</span>
+<span class="sd">        If True (default), then include a bias column, the feature in which</span>
+<span class="sd">        all polynomial powers are zero (i.e. a column of ones - acts as an</span>
+<span class="sd">        intercept term in a linear model).</span>
+
+<span class="sd">    order : {&#39;C&#39;, &#39;F&#39;}, default=&#39;C&#39;</span>
+<span class="sd">        Order of output array in the dense case. &#39;F&#39; order is faster to</span>
+<span class="sd">        compute, but may slow down subsequent estimators.</span>
+
+<span class="sd">        .. versionadded:: 0.21</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    powers_ : ndarray of shape (`n_output_features_`, `n_features_in_`)</span>
+<span class="sd">        powers_[i, j] is the exponent of the jth input in the ith output.</span>
+
+<span class="sd">    n_input_features_ : int</span>
+<span class="sd">        The total number of input features.</span>
+
+<span class="sd">        .. deprecated:: 1.0</span>
+<span class="sd">            This attribute is deprecated in 1.0 and will be removed in 1.2.</span>
+<span class="sd">            Refer to `n_features_in_` instead.</span>
+
+<span class="sd">    n_features_in_ : int</span>
+<span class="sd">        Number of features seen during :term:`fit`.</span>
+
+<span class="sd">        .. versionadded:: 0.24</span>
+
+<span class="sd">    feature_names_in_ : ndarray of shape (`n_features_in_`,)</span>
+<span class="sd">        Names of features seen during :term:`fit`. Defined only when `X`</span>
+<span class="sd">        has feature names that are all strings.</span>
+
+<span class="sd">        .. versionadded:: 1.0</span>
+
+<span class="sd">    n_output_features_ : int</span>
+<span class="sd">        The total number of polynomial output features. The number of output</span>
+<span class="sd">        features is computed by iterating over all suitably sized combinations</span>
+<span class="sd">        of input features.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    SplineTransformer : Transformer that generates univariate B-spline bases</span>
+<span class="sd">        for features</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Be aware that the number of features in the output array scales</span>
+<span class="sd">    polynomially in the number of features of the input array, and</span>
+<span class="sd">    exponentially in the degree. High degrees can cause overfitting.</span>
+
+<span class="sd">    See :ref:`examples/linear_model/plot_polynomial_interpolation.py</span>
+<span class="sd">    &lt;sphx_glr_auto_examples_linear_model_plot_polynomial_interpolation.py&gt;`</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from sklearn.preprocessing import PolynomialFeatures</span>
+<span class="sd">    &gt;&gt;&gt; X = np.arange(6).reshape(3, 2)</span>
+<span class="sd">    &gt;&gt;&gt; X</span>
+<span class="sd">    array([[0, 1],</span>
+<span class="sd">           [2, 3],</span>
+<span class="sd">           [4, 5]])</span>
+<span class="sd">    &gt;&gt;&gt; poly = PolynomialFeatures(2)</span>
+<span class="sd">    &gt;&gt;&gt; poly.fit_transform(X)</span>
+<span class="sd">    array([[ 1.,  0.,  1.,  0.,  0.,  1.],</span>
+<span class="sd">           [ 1.,  2.,  3.,  4.,  6.,  9.],</span>
+<span class="sd">           [ 1.,  4.,  5., 16., 20., 25.]])</span>
+<span class="sd">    &gt;&gt;&gt; poly = PolynomialFeatures(interaction_only=True)</span>
+<span class="sd">    &gt;&gt;&gt; poly.fit_transform(X)</span>
+<span class="sd">    array([[ 1.,  0.,  1.,  0.],</span>
+<span class="sd">           [ 1.,  2.,  3.,  6.],</span>
+<span class="sd">           [ 1.,  4.,  5., 20.]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">interaction_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">=</span> <span class="n">degree</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interaction_only</span> <span class="o">=</span> <span class="n">interaction_only</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">include_bias</span> <span class="o">=</span> <span class="n">include_bias</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">order</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_combinations</span><span class="p">(</span>
+        <span class="n">n_features</span><span class="p">,</span> <span class="n">min_degree</span><span class="p">,</span> <span class="n">max_degree</span><span class="p">,</span> <span class="n">interaction_only</span><span class="p">,</span> <span class="n">include_bias</span>
+    <span class="p">):</span>
+        <span class="n">comb</span> <span class="o">=</span> <span class="n">combinations</span> <span class="k">if</span> <span class="n">interaction_only</span> <span class="k">else</span> <span class="n">combinations_w_r</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_degree</span><span class="p">)</span>
+        <span class="nb">iter</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span>
+            <span class="n">comb</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_features</span><span class="p">),</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">max_degree</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">include_bias</span><span class="p">:</span>
+            <span class="nb">iter</span> <span class="o">=</span> <span class="n">chain</span><span class="p">(</span><span class="n">comb</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_features</span><span class="p">),</span> <span class="mi">0</span><span class="p">),</span> <span class="nb">iter</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">iter</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_num_combinations</span><span class="p">(</span>
+        <span class="n">n_features</span><span class="p">,</span> <span class="n">min_degree</span><span class="p">,</span> <span class="n">max_degree</span><span class="p">,</span> <span class="n">interaction_only</span><span class="p">,</span> <span class="n">include_bias</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate number of terms in polynomial expansion</span>
+
+<span class="sd">        This should be equivalent to counting the number of terms returned by</span>
+<span class="sd">        _combinations(...) but much faster.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">interaction_only</span><span class="p">:</span>
+            <span class="n">combinations</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">comb</span><span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">exact</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_degree</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">max_degree</span><span class="p">,</span> <span class="n">n_features</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">combinations</span> <span class="o">=</span> <span class="n">comb</span><span class="p">(</span><span class="n">n_features</span> <span class="o">+</span> <span class="n">max_degree</span><span class="p">,</span> <span class="n">max_degree</span><span class="p">,</span> <span class="n">exact</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">min_degree</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">min_degree</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="n">combinations</span> <span class="o">-=</span> <span class="n">comb</span><span class="p">(</span><span class="n">n_features</span> <span class="o">+</span> <span class="n">d</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">exact</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">include_bias</span><span class="p">:</span>
+            <span class="n">combinations</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">combinations</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">powers_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">combinations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_combinations</span><span class="p">(</span>
+            <span class="n">n_features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features_in_</span><span class="p">,</span>
+            <span class="n">min_degree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_min_degree</span><span class="p">,</span>
+            <span class="n">max_degree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_degree</span><span class="p">,</span>
+            <span class="n">interaction_only</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">interaction_only</span><span class="p">,</span>
+            <span class="n">include_bias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">include_bias</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">minlength</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features_in_</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">]</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="PolynomialFeatures.get_feature_names"><a class="viewcode-back" href="../../../api/ballet.eng.external.sklearn.html#ballet.eng.external.PolynomialFeatures.get_feature_names">[docs]</a>    <span class="nd">@deprecated</span><span class="p">(</span>
+        <span class="s2">&quot;get_feature_names is deprecated in 1.0 and will be removed &quot;</span>
+        <span class="s2">&quot;in 1.2. Please use get_feature_names_out instead.&quot;</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_feature_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_features</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return feature names for output features</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        input_features : list of str of shape (n_features,), default=None</span>
+<span class="sd">            String names for input features if available. By default,</span>
+<span class="sd">            &quot;x0&quot;, &quot;x1&quot;, ... &quot;xn_features&quot; is used.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output_feature_names : list of str of shape (n_output_features,)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">powers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">powers_</span>
+        <span class="k">if</span> <span class="n">input_features</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">input_features</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;x</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">powers</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+        <span class="n">feature_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">powers</span><span class="p">:</span>
+            <span class="n">inds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">row</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">inds</span><span class="p">):</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">^</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">input_features</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">exp</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">exp</span> <span class="o">!=</span> <span class="mi">1</span>
+                    <span class="k">else</span> <span class="n">input_features</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">exp</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">inds</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="n">inds</span><span class="p">])</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;1&quot;</span>
+            <span class="n">feature_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">feature_names</span></div>
+
+<div class="viewcode-block" id="PolynomialFeatures.get_feature_names_out"><a class="viewcode-back" href="../../../api/ballet.eng.external.sklearn.html#ballet.eng.external.PolynomialFeatures.get_feature_names_out">[docs]</a>    <span class="k">def</span> <span class="nf">get_feature_names_out</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_features</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get output feature names for transformation.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        input_features : array-like of str or None, default=None</span>
+<span class="sd">            Input features.</span>
+
+<span class="sd">            - If `input_features` is `None`, then `feature_names_in_` is</span>
+<span class="sd">              used as feature names in. If `feature_names_in_` is not defined,</span>
+<span class="sd">              then names are generated: `[x0, x1, ..., x(n_features_in_)]`.</span>
+<span class="sd">            - If `input_features` is an array-like, then `input_features` must</span>
+<span class="sd">              match `feature_names_in_` if `feature_names_in_` is defined.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        feature_names_out : ndarray of str objects</span>
+<span class="sd">            Transformed feature names.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">powers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">powers_</span>
+        <span class="n">input_features</span> <span class="o">=</span> <span class="n">_check_feature_names_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_features</span><span class="p">)</span>
+        <span class="n">feature_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">powers</span><span class="p">:</span>
+            <span class="n">inds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">row</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">inds</span><span class="p">):</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">^</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">input_features</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">exp</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">exp</span> <span class="o">!=</span> <span class="mi">1</span>
+                    <span class="k">else</span> <span class="n">input_features</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">exp</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">inds</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="n">inds</span><span class="p">])</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;1&quot;</span>
+            <span class="n">feature_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">feature_names</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PolynomialFeatures.fit"><a class="viewcode-back" href="../../../api/ballet.eng.external.sklearn.html#ballet.eng.external.PolynomialFeatures.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute number of output features.</span>
+
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : {array-like, sparse matrix} of shape (n_samples, n_features)</span>
+<span class="sd">            The data.</span>
+
+<span class="sd">        y : None</span>
+<span class="sd">            Ignored.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : object</span>
+<span class="sd">            Fitted transformer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_data</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">accept_sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;degree must be a non-negative integer, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_min_degree</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_max_degree</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span>
+        <span class="k">elif</span> <span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_min_degree</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_degree</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_min_degree</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_degree</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_degree</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_degree</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_degree</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;degree=(min_degree, max_degree) must &quot;</span>
+                    <span class="s2">&quot;be non-negative integers that fulfil &quot;</span>
+                    <span class="s2">&quot;min_degree &lt;= max_degree, got &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;degree must be a non-negative int or tuple &quot;</span>
+                <span class="s2">&quot;(min_degree, max_degree), got &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_output_features_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_combinations</span><span class="p">(</span>
+            <span class="n">n_features</span><span class="o">=</span><span class="n">n_features</span><span class="p">,</span>
+            <span class="n">min_degree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_min_degree</span><span class="p">,</span>
+            <span class="n">max_degree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_degree</span><span class="p">,</span>
+            <span class="n">interaction_only</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">interaction_only</span><span class="p">,</span>
+            <span class="n">include_bias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">include_bias</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="c1"># We also record the number of output features for</span>
+        <span class="c1"># _max_degree = 0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_out_full</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_combinations</span><span class="p">(</span>
+            <span class="n">n_features</span><span class="o">=</span><span class="n">n_features</span><span class="p">,</span>
+            <span class="n">min_degree</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">max_degree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_degree</span><span class="p">,</span>
+            <span class="n">interaction_only</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">interaction_only</span><span class="p">,</span>
+            <span class="n">include_bias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">include_bias</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="PolynomialFeatures.transform"><a class="viewcode-back" href="../../../api/ballet.eng.external.sklearn.html#ballet.eng.external.PolynomialFeatures.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Transform data to polynomial features.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : {array-like, sparse matrix} of shape (n_samples, n_features)</span>
+<span class="sd">            The data to transform, row by row.</span>
+
+<span class="sd">            Prefer CSR over CSC for sparse input (for speed), but CSC is</span>
+<span class="sd">            required if the degree is 4 or higher. If the degree is less than</span>
+<span class="sd">            4 and the input format is CSC, it will be converted to CSR, have</span>
+<span class="sd">            its polynomial features generated, then converted back to CSC.</span>
+
+<span class="sd">            If the degree is 2 or 3, the method described in &quot;Leveraging</span>
+<span class="sd">            Sparsity to Speed Up Polynomial Feature Expansions of CSR Matrices</span>
+<span class="sd">            Using K-Simplex Numbers&quot; by Andrew Nystrom and John Hughes is</span>
+<span class="sd">            used, which is much faster than the method used on CSC input. For</span>
+<span class="sd">            this reason, a CSC input will be converted to CSR, and the output</span>
+<span class="sd">            will be converted back to CSC prior to being returned, hence the</span>
+<span class="sd">            preference of CSR.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        XP : {ndarray, sparse matrix} of shape (n_samples, NP)</span>
+<span class="sd">            The matrix of features, where NP is the number of polynomial</span>
+<span class="sd">            features generated from the combination of inputs. If a sparse</span>
+<span class="sd">            matrix is provided, it will be converted into a sparse</span>
+<span class="sd">            ``csr_matrix``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_data</span><span class="p">(</span>
+            <span class="n">X</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">FLOAT_DTYPES</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">accept_sparse</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span> <span class="s2">&quot;csc&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="k">if</span> <span class="n">sparse</span><span class="o">.</span><span class="n">isspmatrix_csr</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_degree</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">tocsc</span><span class="p">())</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
+            <span class="n">to_stack</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">include_bias</span><span class="p">:</span>
+                <span class="n">to_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_degree</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">to_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">deg</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_degree</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_degree</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">Xp_next</span> <span class="o">=</span> <span class="n">_csr_polynomial_expansion</span><span class="p">(</span>
+                    <span class="n">X</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">indptr</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">interaction_only</span><span class="p">,</span> <span class="n">deg</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">Xp_next</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="n">to_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Xp_next</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">to_stack</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># edge case: deal with empty matrix</span>
+                <span class="n">XP</span> <span class="o">=</span> <span class="n">sparse</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">((</span><span class="n">n_samples</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">XP</span> <span class="o">=</span> <span class="n">sparse</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">to_stack</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">sparse</span><span class="o">.</span><span class="n">isspmatrix_csc</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_degree</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">tocsr</span><span class="p">())</span><span class="o">.</span><span class="n">tocsc</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">sparse</span><span class="o">.</span><span class="n">isspmatrix</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+            <span class="n">combinations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_combinations</span><span class="p">(</span>
+                <span class="n">n_features</span><span class="o">=</span><span class="n">n_features</span><span class="p">,</span>
+                <span class="n">min_degree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_min_degree</span><span class="p">,</span>
+                <span class="n">max_degree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_degree</span><span class="p">,</span>
+                <span class="n">interaction_only</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">interaction_only</span><span class="p">,</span>
+                <span class="n">include_bias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">include_bias</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">combi</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">combi</span><span class="p">:</span>
+                    <span class="n">out_col</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="k">for</span> <span class="n">col_idx</span> <span class="ow">in</span> <span class="n">combi</span><span class="p">:</span>
+                        <span class="n">out_col</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="n">col_idx</span><span class="p">]</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">out_col</span><span class="p">)</span>
+                    <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">out_col</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">bias</span> <span class="o">=</span> <span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)))</span>
+                    <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bias</span><span class="p">)</span>
+            <span class="n">XP</span> <span class="o">=</span> <span class="n">sparse</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">tocsc</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Do as if _min_degree = 0 and cut down array after the</span>
+            <span class="c1"># computation, i.e. use _n_out_full instead of n_output_features_.</span>
+            <span class="n">XP</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span>
+                <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_out_full</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span>
+            <span class="p">)</span>
+
+            <span class="c1"># What follows is a faster implementation of:</span>
+            <span class="c1"># for i, comb in enumerate(combinations):</span>
+            <span class="c1">#     XP[:, i] = X[:, comb].prod(1)</span>
+            <span class="c1"># This implementation uses two optimisations.</span>
+            <span class="c1"># First one is broadcasting,</span>
+            <span class="c1"># multiply ([X1, ..., Xn], X1) -&gt; [X1 X1, ..., Xn X1]</span>
+            <span class="c1"># multiply ([X2, ..., Xn], X2) -&gt; [X2 X2, ..., Xn X2]</span>
+            <span class="c1"># ...</span>
+            <span class="c1"># multiply ([X[:, start:end], X[:, start]) -&gt; ...</span>
+            <span class="c1"># Second optimisation happens for degrees &gt;= 3.</span>
+            <span class="c1"># Xi^3 is computed reusing previous computation:</span>
+            <span class="c1"># Xi^3 = Xi^2 * Xi.</span>
+
+            <span class="c1"># degree 0 term</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">include_bias</span><span class="p">:</span>
+                <span class="n">XP</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">current_col</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">current_col</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="c1"># degree 1 term</span>
+            <span class="n">XP</span><span class="p">[:,</span> <span class="n">current_col</span> <span class="p">:</span> <span class="n">current_col</span> <span class="o">+</span> <span class="n">n_features</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">current_col</span><span class="p">,</span> <span class="n">current_col</span> <span class="o">+</span> <span class="n">n_features</span><span class="p">))</span>
+            <span class="n">current_col</span> <span class="o">+=</span> <span class="n">n_features</span>
+            <span class="n">index</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_col</span><span class="p">)</span>
+
+            <span class="c1"># loop over degree &gt;= 2 terms</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_degree</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">new_index</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">feature_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_features</span><span class="p">):</span>
+                    <span class="n">start</span> <span class="o">=</span> <span class="n">index</span><span class="p">[</span><span class="n">feature_idx</span><span class="p">]</span>
+                    <span class="n">new_index</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_col</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">interaction_only</span><span class="p">:</span>
+                        <span class="n">start</span> <span class="o">+=</span> <span class="n">index</span><span class="p">[</span><span class="n">feature_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">index</span><span class="p">[</span><span class="n">feature_idx</span><span class="p">]</span>
+                    <span class="n">next_col</span> <span class="o">=</span> <span class="n">current_col</span> <span class="o">+</span> <span class="n">end</span> <span class="o">-</span> <span class="n">start</span>
+                    <span class="k">if</span> <span class="n">next_col</span> <span class="o">&lt;=</span> <span class="n">current_col</span><span class="p">:</span>
+                        <span class="k">break</span>
+                    <span class="c1"># XP[:, start:end] are terms of degree d - 1</span>
+                    <span class="c1"># that exclude feature #feature_idx.</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span>
+                        <span class="n">XP</span><span class="p">[:,</span> <span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">],</span>
+                        <span class="n">X</span><span class="p">[:,</span> <span class="n">feature_idx</span> <span class="p">:</span> <span class="n">feature_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
+                        <span class="n">out</span><span class="o">=</span><span class="n">XP</span><span class="p">[:,</span> <span class="n">current_col</span><span class="p">:</span><span class="n">next_col</span><span class="p">],</span>
+                        <span class="n">casting</span><span class="o">=</span><span class="s2">&quot;no&quot;</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">current_col</span> <span class="o">=</span> <span class="n">next_col</span>
+
+                <span class="n">new_index</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_col</span><span class="p">)</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">new_index</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_degree</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">n_XP</span><span class="p">,</span> <span class="n">n_Xout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_out_full</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_output_features_</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">include_bias</span><span class="p">:</span>
+                    <span class="n">Xout</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span>
+                        <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_Xout</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">XP</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span>
+                    <span class="p">)</span>
+                    <span class="n">Xout</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="n">Xout</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">XP</span><span class="p">[:,</span> <span class="n">n_XP</span> <span class="o">-</span> <span class="n">n_Xout</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">Xout</span> <span class="o">=</span> <span class="n">XP</span><span class="p">[:,</span> <span class="n">n_XP</span> <span class="o">-</span> <span class="n">n_Xout</span> <span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">XP</span> <span class="o">=</span> <span class="n">Xout</span>
+        <span class="k">return</span> <span class="n">XP</span></div>
+
+    <span class="c1"># TODO: Remove in 1.2</span>
+    <span class="c1"># mypy error: Decorated property not supported</span>
+    <span class="nd">@deprecated</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
+        <span class="s2">&quot;The attribute `n_input_features_` was &quot;</span>
+        <span class="s2">&quot;deprecated in version 1.0 and will be removed in 1.2.&quot;</span>
+    <span class="p">)</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n_input_features_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_features_in_</span></div>
+
+
+<span class="c1"># TODO:</span>
+<span class="c1"># - sparse support (either scipy or own cython solution)?</span>
+<span class="k">class</span> <span class="nc">SplineTransformer</span><span class="p">(</span><span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate univariate B-spline bases for features.</span>
+
+<span class="sd">    Generate a new feature matrix consisting of</span>
+<span class="sd">    `n_splines=n_knots + degree - 1` (`n_knots - 1` for</span>
+<span class="sd">    `extrapolation=&quot;periodic&quot;`) spline basis functions</span>
+<span class="sd">    (B-splines) of polynomial order=`degree` for each feature.</span>
+
+<span class="sd">    Read more in the :ref:`User Guide &lt;spline_transformer&gt;`.</span>
+
+<span class="sd">    .. versionadded:: 1.0</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_knots : int, default=5</span>
+<span class="sd">        Number of knots of the splines if `knots` equals one of</span>
+<span class="sd">        {&#39;uniform&#39;, &#39;quantile&#39;}. Must be larger or equal 2. Ignored if `knots`</span>
+<span class="sd">        is array-like.</span>
+
+<span class="sd">    degree : int, default=3</span>
+<span class="sd">        The polynomial degree of the spline basis. Must be a non-negative</span>
+<span class="sd">        integer.</span>
+
+<span class="sd">    knots : {&#39;uniform&#39;, &#39;quantile&#39;} or array-like of shape \</span>
+<span class="sd">        (n_knots, n_features), default=&#39;uniform&#39;</span>
+<span class="sd">        Set knot positions such that first knot &lt;= features &lt;= last knot.</span>
+
+<span class="sd">        - If &#39;uniform&#39;, `n_knots` number of knots are distributed uniformly</span>
+<span class="sd">          from min to max values of the features.</span>
+<span class="sd">        - If &#39;quantile&#39;, they are distributed uniformly along the quantiles of</span>
+<span class="sd">          the features.</span>
+<span class="sd">        - If an array-like is given, it directly specifies the sorted knot</span>
+<span class="sd">          positions including the boundary knots. Note that, internally,</span>
+<span class="sd">          `degree` number of knots are added before the first knot, the same</span>
+<span class="sd">          after the last knot.</span>
+
+<span class="sd">    extrapolation : {&#39;error&#39;, &#39;constant&#39;, &#39;linear&#39;, &#39;continue&#39;, &#39;periodic&#39;}, \</span>
+<span class="sd">        default=&#39;constant&#39;</span>
+<span class="sd">        If &#39;error&#39;, values outside the min and max values of the training</span>
+<span class="sd">        features raises a `ValueError`. If &#39;constant&#39;, the value of the</span>
+<span class="sd">        splines at minimum and maximum value of the features is used as</span>
+<span class="sd">        constant extrapolation. If &#39;linear&#39;, a linear extrapolation is used.</span>
+<span class="sd">        If &#39;continue&#39;, the splines are extrapolated as is, i.e. option</span>
+<span class="sd">        `extrapolate=True` in :class:`scipy.interpolate.BSpline`. If</span>
+<span class="sd">        &#39;periodic&#39;, periodic splines with a periodicity equal to the distance</span>
+<span class="sd">        between the first and last knot are used. Periodic splines enforce</span>
+<span class="sd">        equal function values and derivatives at the first and last knot.</span>
+<span class="sd">        For example, this makes it possible to avoid introducing an arbitrary</span>
+<span class="sd">        jump between Dec 31st and Jan 1st in spline features derived from a</span>
+<span class="sd">        naturally periodic &quot;day-of-year&quot; input feature. In this case it is</span>
+<span class="sd">        recommended to manually set the knot values to control the period.</span>
+
+<span class="sd">    include_bias : bool, default=True</span>
+<span class="sd">        If True (default), then the last spline element inside the data range</span>
+<span class="sd">        of a feature is dropped. As B-splines sum to one over the spline basis</span>
+<span class="sd">        functions for each data point, they implicitly include a bias term,</span>
+<span class="sd">        i.e. a column of ones. It acts as an intercept term in a linear models.</span>
+
+<span class="sd">    order : {&#39;C&#39;, &#39;F&#39;}, default=&#39;C&#39;</span>
+<span class="sd">        Order of output array. &#39;F&#39; order is faster to compute, but may slow</span>
+<span class="sd">        down subsequent estimators.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bsplines_ : list of shape (n_features,)</span>
+<span class="sd">        List of BSplines objects, one for each feature.</span>
+
+<span class="sd">    n_features_in_ : int</span>
+<span class="sd">        The total number of input features.</span>
+
+<span class="sd">    feature_names_in_ : ndarray of shape (`n_features_in_`,)</span>
+<span class="sd">        Names of features seen during :term:`fit`. Defined only when `X`</span>
+<span class="sd">        has feature names that are all strings.</span>
+
+<span class="sd">        .. versionadded:: 1.0</span>
+
+<span class="sd">    n_features_out_ : int</span>
+<span class="sd">        The total number of output features, which is computed as</span>
+<span class="sd">        `n_features * n_splines`, where `n_splines` is</span>
+<span class="sd">        the number of bases elements of the B-splines,</span>
+<span class="sd">        `n_knots + degree - 1` for non-periodic splines and</span>
+<span class="sd">        `n_knots - 1` for periodic ones.</span>
+<span class="sd">        If `include_bias=False`, then it is only</span>
+<span class="sd">        `n_features * (n_splines - 1)`.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    KBinsDiscretizer : Transformer that bins continuous data into intervals.</span>
+
+<span class="sd">    PolynomialFeatures : Transformer that generates polynomial and interaction</span>
+<span class="sd">        features.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    High degrees and a high number of knots can cause overfitting.</span>
+
+<span class="sd">    See :ref:`examples/linear_model/plot_polynomial_interpolation.py</span>
+<span class="sd">    &lt;sphx_glr_auto_examples_linear_model_plot_polynomial_interpolation.py&gt;`.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from sklearn.preprocessing import SplineTransformer</span>
+<span class="sd">    &gt;&gt;&gt; X = np.arange(6).reshape(6, 1)</span>
+<span class="sd">    &gt;&gt;&gt; spline = SplineTransformer(degree=2, n_knots=3)</span>
+<span class="sd">    &gt;&gt;&gt; spline.fit_transform(X)</span>
+<span class="sd">    array([[0.5 , 0.5 , 0.  , 0.  ],</span>
+<span class="sd">           [0.18, 0.74, 0.08, 0.  ],</span>
+<span class="sd">           [0.02, 0.66, 0.32, 0.  ],</span>
+<span class="sd">           [0.  , 0.32, 0.66, 0.02],</span>
+<span class="sd">           [0.  , 0.08, 0.74, 0.18],</span>
+<span class="sd">           [0.  , 0.  , 0.5 , 0.5 ]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">n_knots</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+        <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">knots</span><span class="o">=</span><span class="s2">&quot;uniform&quot;</span><span class="p">,</span>
+        <span class="n">extrapolation</span><span class="o">=</span><span class="s2">&quot;constant&quot;</span><span class="p">,</span>
+        <span class="n">include_bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_knots</span> <span class="o">=</span> <span class="n">n_knots</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">=</span> <span class="n">degree</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">knots</span> <span class="o">=</span> <span class="n">knots</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extrapolation</span> <span class="o">=</span> <span class="n">extrapolation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">include_bias</span> <span class="o">=</span> <span class="n">include_bias</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">order</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_base_knot_positions</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">n_knots</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">knots</span><span class="o">=</span><span class="s2">&quot;uniform&quot;</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate base knot positions.</span>
+
+<span class="sd">        Base knots such that first knot &lt;= feature &lt;= last knot. For the</span>
+<span class="sd">        B-spline construction with scipy.interpolate.BSpline, 2*degree knots</span>
+<span class="sd">        beyond the base interval are added.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        knots : ndarray of shape (n_knots, n_features), dtype=np.float64</span>
+<span class="sd">            Knot positions (points) of base interval.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">knots</span> <span class="o">==</span> <span class="s2">&quot;quantile&quot;</span><span class="p">:</span>
+            <span class="n">percentiles</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span>
+                <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">n_knots</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">sample_weight</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">knots</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">percentiles</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">knots</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="n">_weighted_percentile</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">sample_weight</span><span class="p">,</span> <span class="n">percentile</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">percentile</span> <span class="ow">in</span> <span class="n">percentiles</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># knots == &#39;uniform&#39;:</span>
+            <span class="c1"># Note that the variable `knots` has already been validated and</span>
+            <span class="c1"># `else` is therefore safe.</span>
+            <span class="c1"># Disregard observations with zero weight.</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">sample_weight</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">sample_weight</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="n">x_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">x_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="n">knots</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span>
+                <span class="n">start</span><span class="o">=</span><span class="n">x_min</span><span class="p">,</span>
+                <span class="n">stop</span><span class="o">=</span><span class="n">x_max</span><span class="p">,</span>
+                <span class="n">num</span><span class="o">=</span><span class="n">n_knots</span><span class="p">,</span>
+                <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">knots</span>
+
+    <span class="nd">@deprecated</span><span class="p">(</span>
+        <span class="s2">&quot;get_feature_names is deprecated in 1.0 and will be removed &quot;</span>
+        <span class="s2">&quot;in 1.2. Please use get_feature_names_out instead.&quot;</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_feature_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_features</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return feature names for output features.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        input_features : list of str of shape (n_features,), default=None</span>
+<span class="sd">            String names for input features if available. By default,</span>
+<span class="sd">            &quot;x0&quot;, &quot;x1&quot;, ... &quot;xn_features&quot; is used.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output_feature_names : list of str of shape (n_output_features,)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n_splines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bsplines_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">input_features</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">input_features</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;x</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features_in_</span><span class="p">)]</span>
+        <span class="n">feature_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features_in_</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_splines</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">include_bias</span><span class="p">):</span>
+                <span class="n">feature_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">input_features</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">_sp_</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">feature_names</span>
+
+    <span class="k">def</span> <span class="nf">get_feature_names_out</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_features</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get output feature names for transformation.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        input_features : array-like of str or None, default=None</span>
+<span class="sd">            Input features.</span>
+
+<span class="sd">            - If `input_features` is `None`, then `feature_names_in_` is</span>
+<span class="sd">              used as feature names in. If `feature_names_in_` is not defined,</span>
+<span class="sd">              then names are generated: `[x0, x1, ..., x(n_features_in_)]`.</span>
+<span class="sd">            - If `input_features` is an array-like, then `input_features` must</span>
+<span class="sd">              match `feature_names_in_` if `feature_names_in_` is defined.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        feature_names_out : ndarray of str objects</span>
+<span class="sd">            Transformed feature names.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n_splines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bsplines_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">input_features</span> <span class="o">=</span> <span class="n">_check_feature_names_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_features</span><span class="p">)</span>
+        <span class="n">feature_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features_in_</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_splines</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">include_bias</span><span class="p">):</span>
+                <span class="n">feature_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">input_features</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">_sp_</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">feature_names</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute knot positions of splines.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : array-like of shape (n_samples, n_features)</span>
+<span class="sd">            The data.</span>
+
+<span class="sd">        y : None</span>
+<span class="sd">            Ignored.</span>
+
+<span class="sd">        sample_weight : array-like of shape (n_samples,), default = None</span>
+<span class="sd">            Individual weights for each sample. Used to calculate quantiles if</span>
+<span class="sd">            `knots=&quot;quantile&quot;`. For `knots=&quot;uniform&quot;`, zero weighted</span>
+<span class="sd">            observations are ignored for finding the min and max of `X`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : object</span>
+<span class="sd">            Fitted transformer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_data</span><span class="p">(</span>
+            <span class="n">X</span><span class="p">,</span>
+            <span class="n">reset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">accept_sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">ensure_min_samples</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">ensure_2d</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">sample_weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sample_weight</span> <span class="o">=</span> <span class="n">_check_sample_weight</span><span class="p">(</span><span class="n">sample_weight</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+        <span class="n">_</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;degree must be a non-negative integer, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">knots</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">knots</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="s2">&quot;uniform&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;quantile&quot;</span><span class="p">,</span>
+        <span class="p">]:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_knots</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_knots</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;n_knots must be a positive integer &gt;= 2, got: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_knots</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+            <span class="n">base_knots</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_base_knot_positions</span><span class="p">(</span>
+                <span class="n">X</span><span class="p">,</span> <span class="n">n_knots</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_knots</span><span class="p">,</span> <span class="n">knots</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">knots</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="n">sample_weight</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">base_knots</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">knots</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">base_knots</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Number of knots, knots.shape[0], must be &gt;= 2.&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">base_knots</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">n_features</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;knots.shape[1] == n_features is violated.&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">base_knots</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;knots must be sorted without duplicates.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">extrapolation</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="s2">&quot;error&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;constant&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;linear&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;continue&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;periodic&quot;</span><span class="p">,</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;extrapolation must be one of &#39;error&#39;, &quot;</span>
+                <span class="s2">&quot;&#39;constant&#39;, &#39;linear&#39;, &#39;continue&#39; or &#39;periodic&#39;.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">include_bias</span><span class="p">,</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;include_bias must be bool.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># number of knots for base interval</span>
+        <span class="n">n_knots</span> <span class="o">=</span> <span class="n">base_knots</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">extrapolation</span> <span class="o">==</span> <span class="s2">&quot;periodic&quot;</span> <span class="ow">and</span> <span class="n">n_knots</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Periodic splines require degree &lt; n_knots. Got n_knots=&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n_knots</span><span class="si">}</span><span class="s2"> and degree=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># number of splines basis functions</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">extrapolation</span> <span class="o">!=</span> <span class="s2">&quot;periodic&quot;</span><span class="p">:</span>
+            <span class="n">n_splines</span> <span class="o">=</span> <span class="n">n_knots</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># periodic splines have self.degree less degrees of freedom</span>
+            <span class="n">n_splines</span> <span class="o">=</span> <span class="n">n_knots</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="n">degree</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span>
+        <span class="n">n_out</span> <span class="o">=</span> <span class="n">n_features</span> <span class="o">*</span> <span class="n">n_splines</span>
+        <span class="c1"># We have to add degree number of knots below, and degree number knots</span>
+        <span class="c1"># above the base knots in order to make the spline basis complete.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">extrapolation</span> <span class="o">==</span> <span class="s2">&quot;periodic&quot;</span><span class="p">:</span>
+            <span class="c1"># For periodic splines the spacing of the first / last degree knots</span>
+            <span class="c1"># needs to be a continuation of the spacing of the last / first</span>
+            <span class="c1"># base knots.</span>
+            <span class="n">period</span> <span class="o">=</span> <span class="n">base_knots</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">base_knots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">knots</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span>
+                <span class="n">base_knots</span><span class="p">[</span><span class="o">-</span><span class="p">(</span><span class="n">degree</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">period</span><span class="p">,</span>
+                <span class="n">base_knots</span><span class="p">,</span>
+                <span class="n">base_knots</span><span class="p">[</span><span class="mi">1</span> <span class="p">:</span> <span class="p">(</span><span class="n">degree</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">+</span> <span class="n">period</span><span class="p">,</span>
+            <span class="p">]</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Eilers &amp; Marx in &quot;Flexible smoothing with B-splines and</span>
+            <span class="c1"># penalties&quot; https://doi.org/10.1214/ss/1038425655 advice</span>
+            <span class="c1"># against repeating first and last knot several times, which</span>
+            <span class="c1"># would have inferior behaviour at boundaries if combined with</span>
+            <span class="c1"># a penalty (hence P-Spline). We follow this advice even if our</span>
+            <span class="c1"># splines are unpenalized. Meaning we do not:</span>
+            <span class="c1"># knots = np.r_[</span>
+            <span class="c1">#     np.tile(base_knots.min(axis=0), reps=[degree, 1]),</span>
+            <span class="c1">#     base_knots,</span>
+            <span class="c1">#     np.tile(base_knots.max(axis=0), reps=[degree, 1])</span>
+            <span class="c1"># ]</span>
+            <span class="c1"># Instead, we reuse the distance of the 2 fist/last knots.</span>
+            <span class="n">dist_min</span> <span class="o">=</span> <span class="n">base_knots</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">base_knots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">dist_max</span> <span class="o">=</span> <span class="n">base_knots</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">base_knots</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+
+            <span class="n">knots</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span>
+                <span class="n">linspace</span><span class="p">(</span>
+                    <span class="n">base_knots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">degree</span> <span class="o">*</span> <span class="n">dist_min</span><span class="p">,</span>
+                    <span class="n">base_knots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">dist_min</span><span class="p">,</span>
+                    <span class="n">num</span><span class="o">=</span><span class="n">degree</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="n">base_knots</span><span class="p">,</span>
+                <span class="n">linspace</span><span class="p">(</span>
+                    <span class="n">base_knots</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">dist_max</span><span class="p">,</span>
+                    <span class="n">base_knots</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">degree</span> <span class="o">*</span> <span class="n">dist_max</span><span class="p">,</span>
+                    <span class="n">num</span><span class="o">=</span><span class="n">degree</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">]</span>
+
+        <span class="c1"># With a diagonal coefficient matrix, we get back the spline basis</span>
+        <span class="c1"># elements, i.e. the design matrix of the spline.</span>
+        <span class="c1"># Note, BSpline appreciates C-contiguous float64 arrays as c=coef.</span>
+        <span class="n">coef</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">n_splines</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">extrapolation</span> <span class="o">==</span> <span class="s2">&quot;periodic&quot;</span><span class="p">:</span>
+            <span class="n">coef</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">coef</span><span class="p">,</span> <span class="n">coef</span><span class="p">[:</span><span class="n">degree</span><span class="p">,</span> <span class="p">:]))</span>
+
+        <span class="n">extrapolate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extrapolation</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;periodic&quot;</span><span class="p">,</span> <span class="s2">&quot;continue&quot;</span><span class="p">]</span>
+
+        <span class="n">bsplines</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">BSpline</span><span class="o">.</span><span class="n">construct_fast</span><span class="p">(</span>
+                <span class="n">knots</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">coef</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="p">,</span> <span class="n">extrapolate</span><span class="o">=</span><span class="n">extrapolate</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_features</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bsplines_</span> <span class="o">=</span> <span class="n">bsplines</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_features_out_</span> <span class="o">=</span> <span class="n">n_out</span> <span class="o">-</span> <span class="n">n_features</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">include_bias</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Transform each feature data to B-splines.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : array-like of shape (n_samples, n_features)</span>
+<span class="sd">            The data to transform.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        XBS : ndarray of shape (n_samples, n_features * n_splines)</span>
+<span class="sd">            The matrix of features, where n_splines is the number of bases</span>
+<span class="sd">            elements of the B-splines, n_knots + degree - 1.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_data</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">accept_sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ensure_2d</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">n_splines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bsplines_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">degree</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span>
+
+        <span class="c1"># Note that scipy BSpline returns float64 arrays and converts input</span>
+        <span class="c1"># x=X[:, i] to c-contiguous float64.</span>
+        <span class="n">n_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_features_out_</span> <span class="o">+</span> <span class="n">n_features</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">include_bias</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">X</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="n">FLOAT_DTYPES</span><span class="p">:</span>
+            <span class="n">dtype</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">dtype</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span>
+        <span class="n">XBS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_out</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_features</span><span class="p">):</span>
+            <span class="n">spl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bsplines_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">extrapolation</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;continue&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="s2">&quot;periodic&quot;</span><span class="p">):</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">extrapolation</span> <span class="o">==</span> <span class="s2">&quot;periodic&quot;</span><span class="p">:</span>
+                    <span class="c1"># With periodic extrapolation we map x to the segment</span>
+                    <span class="c1"># [spl.t[k], spl.t[n]].</span>
+                    <span class="c1"># This is equivalent to BSpline(.., extrapolate=&quot;periodic&quot;)</span>
+                    <span class="c1"># for scipy&gt;=1.0.0.</span>
+                    <span class="n">n</span> <span class="o">=</span> <span class="n">spl</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="n">spl</span><span class="o">.</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span>
+                    <span class="c1"># Assign to new array to avoid inplace operation</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">spl</span><span class="o">.</span><span class="n">t</span><span class="p">[</span><span class="n">spl</span><span class="o">.</span><span class="n">k</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">spl</span><span class="o">.</span><span class="n">t</span><span class="p">[</span><span class="n">spl</span><span class="o">.</span><span class="n">k</span><span class="p">])</span> <span class="o">%</span> <span class="p">(</span>
+                        <span class="n">spl</span><span class="o">.</span><span class="n">t</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">-</span> <span class="n">spl</span><span class="o">.</span><span class="n">t</span><span class="p">[</span><span class="n">spl</span><span class="o">.</span><span class="n">k</span><span class="p">]</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span>
+
+                <span class="n">XBS</span><span class="p">[:,</span> <span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">n_splines</span><span class="p">)</span> <span class="p">:</span> <span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_splines</span><span class="p">)]</span> <span class="o">=</span> <span class="n">spl</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">xmin</span> <span class="o">=</span> <span class="n">spl</span><span class="o">.</span><span class="n">t</span><span class="p">[</span><span class="n">degree</span><span class="p">]</span>
+                <span class="n">xmax</span> <span class="o">=</span> <span class="n">spl</span><span class="o">.</span><span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="n">degree</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">xmin</span> <span class="o">&lt;=</span> <span class="n">X</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">xmax</span><span class="p">)</span>
+                <span class="n">XBS</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">n_splines</span><span class="p">)</span> <span class="p">:</span> <span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_splines</span><span class="p">)]</span> <span class="o">=</span> <span class="n">spl</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="n">i</span><span class="p">])</span>
+
+            <span class="c1"># Note for extrapolation:</span>
+            <span class="c1"># &#39;continue&#39; is already returned as is by scipy BSplines</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">extrapolation</span> <span class="o">==</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span>
+                <span class="c1"># BSpline with extrapolate=False does not raise an error, but</span>
+                <span class="c1"># output np.nan.</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">XBS</span><span class="p">[:,</span> <span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">n_splines</span><span class="p">)</span> <span class="p">:</span> <span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_splines</span><span class="p">)])):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;X contains values beyond the limits of the knots.&quot;</span>
+                    <span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">extrapolation</span> <span class="o">==</span> <span class="s2">&quot;constant&quot;</span><span class="p">:</span>
+                <span class="c1"># Set all values beyond xmin and xmax to the value of the</span>
+                <span class="c1"># spline basis functions at those two positions.</span>
+                <span class="c1"># Only the first degree and last degree number of splines</span>
+                <span class="c1"># have non-zero values at the boundaries.</span>
+
+                <span class="c1"># spline values at boundaries</span>
+                <span class="n">f_min</span> <span class="o">=</span> <span class="n">spl</span><span class="p">(</span><span class="n">xmin</span><span class="p">)</span>
+                <span class="n">f_max</span> <span class="o">=</span> <span class="n">spl</span><span class="p">(</span><span class="n">xmax</span><span class="p">)</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">xmin</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask</span><span class="p">):</span>
+                    <span class="n">XBS</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">n_splines</span><span class="p">)</span> <span class="p">:</span> <span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">n_splines</span> <span class="o">+</span> <span class="n">degree</span><span class="p">)]</span> <span class="o">=</span> <span class="n">f_min</span><span class="p">[</span>
+                        <span class="p">:</span><span class="n">degree</span>
+                    <span class="p">]</span>
+
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">xmax</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask</span><span class="p">):</span>
+                    <span class="n">XBS</span><span class="p">[</span>
+                        <span class="n">mask</span><span class="p">,</span>
+                        <span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_splines</span> <span class="o">-</span> <span class="n">degree</span><span class="p">)</span> <span class="p">:</span> <span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_splines</span><span class="p">),</span>
+                    <span class="p">]</span> <span class="o">=</span> <span class="n">f_max</span><span class="p">[</span><span class="o">-</span><span class="n">degree</span><span class="p">:]</span>
+
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">extrapolation</span> <span class="o">==</span> <span class="s2">&quot;linear&quot;</span><span class="p">:</span>
+                <span class="c1"># Continue the degree first and degree last spline bases</span>
+                <span class="c1"># linearly beyond the boundaries, with slope = derivative at</span>
+                <span class="c1"># the boundary.</span>
+                <span class="c1"># Note that all others have derivative = value = 0 at the</span>
+                <span class="c1"># boundaries.</span>
+
+                <span class="c1"># spline values at boundaries</span>
+                <span class="n">f_min</span><span class="p">,</span> <span class="n">f_max</span> <span class="o">=</span> <span class="n">spl</span><span class="p">(</span><span class="n">xmin</span><span class="p">),</span> <span class="n">spl</span><span class="p">(</span><span class="n">xmax</span><span class="p">)</span>
+                <span class="c1"># spline derivatives = slopes at boundaries</span>
+                <span class="n">fp_min</span><span class="p">,</span> <span class="n">fp_max</span> <span class="o">=</span> <span class="n">spl</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">nu</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">spl</span><span class="p">(</span><span class="n">xmax</span><span class="p">,</span> <span class="n">nu</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="c1"># Compute the linear continuation.</span>
+                <span class="k">if</span> <span class="n">degree</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="c1"># For degree=1, the derivative of 2nd spline is not zero at</span>
+                    <span class="c1"># boundary. For degree=0 it is the same as &#39;constant&#39;.</span>
+                    <span class="n">degree</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">degree</span><span class="p">):</span>
+                    <span class="n">mask</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">xmin</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask</span><span class="p">):</span>
+                        <span class="n">XBS</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="n">n_splines</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="n">f_min</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">xmin</span><span class="p">)</span> <span class="o">*</span> <span class="n">fp_min</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                        <span class="p">)</span>
+
+                    <span class="n">mask</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">xmax</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask</span><span class="p">):</span>
+                        <span class="n">k</span> <span class="o">=</span> <span class="n">n_splines</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">j</span>
+                        <span class="n">XBS</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="n">n_splines</span> <span class="o">+</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="n">f_max</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">xmax</span><span class="p">)</span> <span class="o">*</span> <span class="n">fp_max</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">include_bias</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">XBS</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># We throw away one spline basis per feature.</span>
+            <span class="c1"># We chose the last one.</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">j</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">XBS</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">if</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">n_splines</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">XBS</span><span class="p">[:,</span> <span class="n">indices</span><span class="p">]</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2018, Micah Smith.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
