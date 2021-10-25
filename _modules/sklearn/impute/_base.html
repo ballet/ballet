@@ -954,7 +954,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    missing_values : int, float, string, np.nan or None, default=np.nan</span>
+<span class="sd">    missing_values : int, float, str, np.nan or None, default=np.nan</span>
 <span class="sd">        The placeholder for the missing values. All occurrences of</span>
 <span class="sd">        `missing_values` will be imputed. For pandas&#39; dataframes with</span>
 <span class="sd">        nullable integer dtypes with missing values, `missing_values`</span>
@@ -964,29 +964,29 @@
 <span class="sd">        Whether the imputer mask should represent all or a subset of</span>
 <span class="sd">        features.</span>
 
-<span class="sd">        - If &#39;missing-only&#39; (default), the imputer mask will only represent</span>
+<span class="sd">        - If `&#39;missing-only&#39;` (default), the imputer mask will only represent</span>
 <span class="sd">          features containing missing values during fit time.</span>
-<span class="sd">        - If &#39;all&#39;, the imputer mask will represent all features.</span>
+<span class="sd">        - If `&#39;all&#39;`, the imputer mask will represent all features.</span>
 
 <span class="sd">    sparse : bool or &#39;auto&#39;, default=&#39;auto&#39;</span>
 <span class="sd">        Whether the imputer mask format should be sparse or dense.</span>
 
-<span class="sd">        - If &#39;auto&#39; (default), the imputer mask will be of same type as</span>
+<span class="sd">        - If `&#39;auto&#39;` (default), the imputer mask will be of same type as</span>
 <span class="sd">          input.</span>
-<span class="sd">        - If True, the imputer mask will be a sparse matrix.</span>
-<span class="sd">        - If False, the imputer mask will be a numpy array.</span>
+<span class="sd">        - If `True`, the imputer mask will be a sparse matrix.</span>
+<span class="sd">        - If `False`, the imputer mask will be a numpy array.</span>
 
 <span class="sd">    error_on_new : bool, default=True</span>
-<span class="sd">        If True, transform will raise an error when there are features with</span>
-<span class="sd">        missing values in transform that have no missing values in fit. This is</span>
-<span class="sd">        applicable only when `features=&#39;missing-only&#39;`.</span>
+<span class="sd">        If `True`, :meth:`transform` will raise an error when there are</span>
+<span class="sd">        features with missing values that have no missing values in</span>
+<span class="sd">        :meth:`fit`. This is applicable only when `features=&#39;missing-only&#39;`.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    features_ : ndarray, shape (n_missing_features,) or (n_features,)</span>
-<span class="sd">        The features indices which will be returned when calling ``transform``.</span>
-<span class="sd">        They are computed during ``fit``. For ``features=&#39;all&#39;``, it is</span>
-<span class="sd">        to ``range(n_features)``.</span>
+<span class="sd">    features_ : ndarray of shape (n_missing_features,) or (n_features,)</span>
+<span class="sd">        The features indices which will be returned when calling</span>
+<span class="sd">        :meth:`transform`. They are computed during :meth:`fit`. If</span>
+<span class="sd">        `features=&#39;all&#39;`, `features_` is equal to `range(n_features)`.</span>
 
 <span class="sd">    n_features_in_ : int</span>
 <span class="sd">        Number of features seen during :term:`fit`.</span>
@@ -998,6 +998,11 @@
 <span class="sd">        has feature names that are all strings.</span>
 
 <span class="sd">        .. versionadded:: 1.0</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    SimpleImputer : Univariate imputation of missing values.</span>
+<span class="sd">    IterativeImputer : Multivariate imputation of missing values.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1017,7 +1022,6 @@
 <span class="sd">    array([[False,  True],</span>
 <span class="sd">           [ True, False],</span>
 <span class="sd">           [False, False]])</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -1039,19 +1043,19 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : {ndarray or sparse matrix}, shape (n_samples, n_features)</span>
-<span class="sd">            The input data with missing values. Note that ``X`` has been</span>
-<span class="sd">            checked in ``fit`` and ``transform`` before to call this function.</span>
+<span class="sd">        X : {ndarray, sparse matrix} of shape (n_samples, n_features)</span>
+<span class="sd">            The input data with missing values. Note that `X` has been</span>
+<span class="sd">            checked in :meth:`fit` and :meth:`transform` before to call this</span>
+<span class="sd">            function.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        imputer_mask : {ndarray or sparse matrix}, shape \</span>
+<span class="sd">        imputer_mask : {ndarray, sparse matrix} of shape \</span>
 <span class="sd">        (n_samples, n_features)</span>
 <span class="sd">            The imputer mask of the original data.</span>
 
-<span class="sd">        features_with_missing : ndarray, shape (n_features_with_missing)</span>
+<span class="sd">        features_with_missing : ndarray of shape (n_features_with_missing)</span>
 <span class="sd">            The features containing missing values.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_precomputed</span><span class="p">:</span>
             <span class="n">imputer_mask</span> <span class="o">=</span> <span class="n">_get_mask</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">missing_values</span><span class="p">)</span>
@@ -1122,25 +1126,23 @@
         <span class="k">return</span> <span class="n">X</span>
 
     <span class="k">def</span> <span class="nf">_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">precomputed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Fit the transformer on X.</span>
+        <span class="sd">&quot;&quot;&quot;Fit the transformer on `X`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : {array-like, sparse matrix}, shape (n_samples, n_features)</span>
-<span class="sd">            Input data, where ``n_samples`` is the number of samples and</span>
-<span class="sd">            ``n_features`` is the number of features.</span>
-<span class="sd">            If `precomputed` is True, then `X` is a mask of the</span>
-<span class="sd">            input data.</span>
+<span class="sd">        X : {array-like, sparse matrix} of shape (n_samples, n_features)</span>
+<span class="sd">            Input data, where `n_samples` is the number of samples and</span>
+<span class="sd">            `n_features` is the number of features.</span>
+<span class="sd">            If `precomputed=True`, then `X` is a mask of the input data.</span>
 
 <span class="sd">        precomputed : bool</span>
 <span class="sd">            Whether the input data is a mask.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        imputer_mask : {ndarray or sparse matrix}, shape (n_samples, \</span>
+<span class="sd">        imputer_mask : {ndarray, sparse matrix} of shape (n_samples, \</span>
 <span class="sd">        n_features)</span>
 <span class="sd">            The imputer mask of the original data.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">precomputed</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="s2">&quot;dtype&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">X</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;b&quot;</span><span class="p">):</span>
@@ -1178,38 +1180,40 @@
         <span class="k">return</span> <span class="n">missing_features_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 <div class="viewcode-block" id="MissingIndicator.fit"><a class="viewcode-back" href="../../../api/ballet.eng.external.sklearn.html#ballet.eng.external.MissingIndicator.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Fit the transformer on X.</span>
+        <span class="sd">&quot;&quot;&quot;Fit the transformer on `X`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : {array-like, sparse matrix}, shape (n_samples, n_features)</span>
-<span class="sd">            Input data, where ``n_samples`` is the number of samples and</span>
-<span class="sd">            ``n_features`` is the number of features.</span>
+<span class="sd">        X : {array-like, sparse matrix} of shape (n_samples, n_features)</span>
+<span class="sd">            Input data, where `n_samples` is the number of samples and</span>
+<span class="sd">            `n_features` is the number of features.</span>
+
+<span class="sd">        y : Ignored</span>
+<span class="sd">            Not used, present for API consistency by convention.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        self : object</span>
-<span class="sd">            Returns self.</span>
+<span class="sd">            Fitted estimator.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="MissingIndicator.transform"><a class="viewcode-back" href="../../../api/ballet.eng.external.sklearn.html#ballet.eng.external.MissingIndicator.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generate missing values indicator for X.</span>
+        <span class="sd">&quot;&quot;&quot;Generate missing values indicator for `X`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : {array-like, sparse matrix}, shape (n_samples, n_features)</span>
+<span class="sd">        X : {array-like, sparse matrix} of shape (n_samples, n_features)</span>
 <span class="sd">            The input data to complete.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Xt : {ndarray or sparse matrix}, shape (n_samples, n_features) \</span>
+<span class="sd">        Xt : {ndarray, sparse matrix} of shape (n_samples, n_features) \</span>
 <span class="sd">        or (n_samples, n_features_with_missing)</span>
-<span class="sd">            The missing indicator for input data. The data type of ``Xt``</span>
+<span class="sd">            The missing indicator for input data. The data type of `Xt`</span>
 <span class="sd">            will be boolean.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
@@ -1238,20 +1242,22 @@
         <span class="k">return</span> <span class="n">imputer_mask</span></div>
 
 <div class="viewcode-block" id="MissingIndicator.fit_transform"><a class="viewcode-back" href="../../../api/ballet.eng.external.sklearn.html#ballet.eng.external.MissingIndicator.fit_transform">[docs]</a>    <span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generate missing values indicator for X.</span>
+        <span class="sd">&quot;&quot;&quot;Generate missing values indicator for `X`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : {array-like, sparse matrix}, shape (n_samples, n_features)</span>
+<span class="sd">        X : {array-like, sparse matrix} of shape (n_samples, n_features)</span>
 <span class="sd">            The input data to complete.</span>
+
+<span class="sd">        y : Ignored</span>
+<span class="sd">            Not used, present for API consistency by convention.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Xt : {ndarray or sparse matrix}, shape (n_samples, n_features) \</span>
+<span class="sd">        Xt : {ndarray, sparse matrix} of shape (n_samples, n_features) \</span>
 <span class="sd">        or (n_samples, n_features_with_missing)</span>
-<span class="sd">            The missing indicator for input data. The data type of ``Xt``</span>
+<span class="sd">            The missing indicator for input data. The data type of `Xt`</span>
 <span class="sd">            will be boolean.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">imputer_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 

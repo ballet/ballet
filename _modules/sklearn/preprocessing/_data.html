@@ -1696,7 +1696,7 @@
 <span class="sd">    Centering and scaling happen independently on each feature by</span>
 <span class="sd">    computing the relevant statistics on the samples in the training</span>
 <span class="sd">    set. Median and interquartile range are then stored to be used on</span>
-<span class="sd">    later data using the ``transform`` method.</span>
+<span class="sd">    later data using the :meth:`transform` method.</span>
 
 <span class="sd">    Standardization of a dataset is a common requirement for many</span>
 <span class="sd">    machine learning estimators. Typically this is done by removing the mean</span>
@@ -1711,31 +1711,33 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    with_centering : bool, default=True</span>
-<span class="sd">        If True, center the data before scaling.</span>
-<span class="sd">        This will cause ``transform`` to raise an exception when attempted on</span>
-<span class="sd">        sparse matrices, because centering them entails building a dense</span>
+<span class="sd">        If `True`, center the data before scaling.</span>
+<span class="sd">        This will cause :meth:`transform` to raise an exception when attempted</span>
+<span class="sd">        on sparse matrices, because centering them entails building a dense</span>
 <span class="sd">        matrix which in common use cases is likely to be too large to fit in</span>
 <span class="sd">        memory.</span>
 
 <span class="sd">    with_scaling : bool, default=True</span>
-<span class="sd">        If True, scale the data to interquartile range.</span>
+<span class="sd">        If `True`, scale the data to interquartile range.</span>
 
 <span class="sd">    quantile_range : tuple (q_min, q_max), 0.0 &lt; q_min &lt; q_max &lt; 100.0, \</span>
-<span class="sd">        default=(25.0, 75.0), == (1st quantile, 3rd quantile), == IQR</span>
-<span class="sd">        Quantile range used to calculate ``scale_``.</span>
+<span class="sd">        default=(25.0, 75.0)</span>
+<span class="sd">        Quantile range used to calculate `scale_`. By default this is equal to</span>
+<span class="sd">        the IQR, i.e., `q_min` is the first quantile and `q_max` is the third</span>
+<span class="sd">        quantile.</span>
 
 <span class="sd">        .. versionadded:: 0.18</span>
 
 <span class="sd">    copy : bool, default=True</span>
-<span class="sd">        If False, try to avoid a copy and do inplace scaling instead.</span>
+<span class="sd">        If `False`, try to avoid a copy and do inplace scaling instead.</span>
 <span class="sd">        This is not guaranteed to always work inplace; e.g. if the data is</span>
 <span class="sd">        not a NumPy array or scipy.sparse CSR matrix, a copy may still be</span>
 <span class="sd">        returned.</span>
 
 <span class="sd">    unit_variance : bool, default=False</span>
-<span class="sd">        If True, scale data so that normally distributed features have a</span>
+<span class="sd">        If `True`, scale data so that normally distributed features have a</span>
 <span class="sd">        variance of 1. In general, if the difference between the x-values of</span>
-<span class="sd">        ``q_max`` and ``q_min`` for a standard normal distribution is greater</span>
+<span class="sd">        `q_max` and `q_min` for a standard normal distribution is greater</span>
 <span class="sd">        than 1, the dataset will be scaled down. If less than 1, the dataset</span>
 <span class="sd">        will be scaled up.</span>
 
@@ -1763,6 +1765,21 @@
 
 <span class="sd">        .. versionadded:: 1.0</span>
 
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    robust_scale : Equivalent function without the estimator API.</span>
+<span class="sd">    sklearn.decomposition.PCA : Further removes the linear correlation across</span>
+<span class="sd">        features with &#39;whiten=True&#39;.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    For a comparison of the different scalers, transformers, and normalizers,</span>
+<span class="sd">    see :ref:`examples/preprocessing/plot_all_scaling.py</span>
+<span class="sd">    &lt;sphx_glr_auto_examples_preprocessing_plot_all_scaling.py&gt;`.</span>
+
+<span class="sd">    https://en.wikipedia.org/wiki/Median</span>
+<span class="sd">    https://en.wikipedia.org/wiki/Interquartile_range</span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; from sklearn.preprocessing import RobustScaler</span>
@@ -1776,23 +1793,6 @@
 <span class="sd">    array([[ 0. , -2. ,  0. ],</span>
 <span class="sd">           [-1. ,  0. ,  0.4],</span>
 <span class="sd">           [ 1. ,  0. , -1.6]])</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    robust_scale : Equivalent function without the estimator API.</span>
-
-<span class="sd">    :class:`~sklearn.decomposition.PCA`</span>
-<span class="sd">        Further removes the linear correlation across features with</span>
-<span class="sd">        &#39;whiten=True&#39;.</span>
-
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    For a comparison of the different scalers, transformers, and normalizers,</span>
-<span class="sd">    see :ref:`examples/preprocessing/plot_all_scaling.py</span>
-<span class="sd">    &lt;sphx_glr_auto_examples_preprocessing_plot_all_scaling.py&gt;`.</span>
-
-<span class="sd">    https://en.wikipedia.org/wiki/Median</span>
-<span class="sd">    https://en.wikipedia.org/wiki/Interquartile_range</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -1819,8 +1819,8 @@
 <span class="sd">            The data used to compute the median and quantiles</span>
 <span class="sd">            used for later scaling along the features axis.</span>
 
-<span class="sd">        y : None</span>
-<span class="sd">            Ignored.</span>
+<span class="sd">        y : Ignored</span>
+<span class="sd">            Not used, present here for API consistency by convention.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1971,32 +1971,34 @@
 <span class="sd">        The data to center and scale.</span>
 
 <span class="sd">    axis : int, default=0</span>
-<span class="sd">        axis used to compute the medians and IQR along. If 0,</span>
+<span class="sd">        Axis used to compute the medians and IQR along. If 0,</span>
 <span class="sd">        independently scale each feature, otherwise (if 1) scale</span>
 <span class="sd">        each sample.</span>
 
 <span class="sd">    with_centering : bool, default=True</span>
-<span class="sd">        If True, center the data before scaling.</span>
+<span class="sd">        If `True`, center the data before scaling.</span>
 
 <span class="sd">    with_scaling : bool, default=True</span>
-<span class="sd">        If True, scale the data to unit variance (or equivalently,</span>
+<span class="sd">        If `True`, scale the data to unit variance (or equivalently,</span>
 <span class="sd">        unit standard deviation).</span>
 
-<span class="sd">    quantile_range : tuple (q_min, q_max), 0.0 &lt; q_min &lt; q_max &lt; 100.0</span>
-<span class="sd">        default=(25.0, 75.0), == (1st quantile, 3rd quantile), == IQR</span>
-<span class="sd">        Quantile range used to calculate ``scale_``.</span>
+<span class="sd">    quantile_range : tuple (q_min, q_max), 0.0 &lt; q_min &lt; q_max &lt; 100.0,\</span>
+<span class="sd">        default=(25.0, 75.0)</span>
+<span class="sd">        Quantile range used to calculate `scale_`. By default this is equal to</span>
+<span class="sd">        the IQR, i.e., `q_min` is the first quantile and `q_max` is the third</span>
+<span class="sd">        quantile.</span>
 
 <span class="sd">        .. versionadded:: 0.18</span>
 
 <span class="sd">    copy : bool, default=True</span>
-<span class="sd">        set to False to perform inplace row normalization and avoid a</span>
+<span class="sd">        Set to `False` to perform inplace row normalization and avoid a</span>
 <span class="sd">        copy (if the input is already a numpy array or a scipy.sparse</span>
 <span class="sd">        CSR matrix and if axis is 1).</span>
 
 <span class="sd">    unit_variance : bool, default=False</span>
-<span class="sd">        If True, scale data so that normally distributed features have a</span>
+<span class="sd">        If `True`, scale data so that normally distributed features have a</span>
 <span class="sd">        variance of 1. In general, if the difference between the x-values of</span>
-<span class="sd">        ``q_max`` and ``q_min`` for a standard normal distribution is greater</span>
+<span class="sd">        `q_max` and `q_min` for a standard normal distribution is greater</span>
 <span class="sd">        than 1, the dataset will be scaled down. If less than 1, the dataset</span>
 <span class="sd">        will be scaled up.</span>
 

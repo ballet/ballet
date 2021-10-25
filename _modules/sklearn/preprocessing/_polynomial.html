@@ -386,27 +386,27 @@
 <span class="sd">    ----------</span>
 <span class="sd">    degree : int or tuple (min_degree, max_degree), default=2</span>
 <span class="sd">        If a single int is given, it specifies the maximal degree of the</span>
-<span class="sd">        polynomial features. If a tuple ``(min_degree, max_degree)`` is</span>
-<span class="sd">        passed, then ``min_degree`` is the minimum and ``max_degree`` is the</span>
-<span class="sd">        maximum polynomial degree of the generated features. Note that</span>
-<span class="sd">        min_degree=0 and 1 are equivalent as outputting the degree zero term</span>
-<span class="sd">        is determined by ``include_bias``.</span>
+<span class="sd">        polynomial features. If a tuple `(min_degree, max_degree)` is passed,</span>
+<span class="sd">        then `min_degree` is the minimum and `max_degree` is the maximum</span>
+<span class="sd">        polynomial degree of the generated features. Note that `min_degree=0`</span>
+<span class="sd">        and `min_degree=1` are equivalent as outputting the degree zero term is</span>
+<span class="sd">        determined by `include_bias`.</span>
 
 <span class="sd">    interaction_only : bool, default=False</span>
-<span class="sd">        If true, only interaction features are produced: features that are</span>
-<span class="sd">        products of at most ``degree`` *distinct* input features, i.e. terms</span>
-<span class="sd">        with power of 2 or higher of the same input feature are excluded:</span>
+<span class="sd">        If `True`, only interaction features are produced: features that are</span>
+<span class="sd">        products of at most `degree` *distinct* input features, i.e. terms with</span>
+<span class="sd">        power of 2 or higher of the same input feature are excluded:</span>
 
-<span class="sd">            - included: ``x[0]``, `x[1]`, ``x[0] * x[1]``, etc.</span>
-<span class="sd">            - excluded: ``x[0] ** 2``, ``x[0] ** 2 * x[1]``, etc.</span>
+<span class="sd">            - included: `x[0]`, `x[1]`, `x[0] * x[1]`, etc.</span>
+<span class="sd">            - excluded: `x[0] ** 2`, `x[0] ** 2 * x[1]`, etc.</span>
 
 <span class="sd">    include_bias : bool, default=True</span>
-<span class="sd">        If True (default), then include a bias column, the feature in which</span>
+<span class="sd">        If `True` (default), then include a bias column, the feature in which</span>
 <span class="sd">        all polynomial powers are zero (i.e. a column of ones - acts as an</span>
 <span class="sd">        intercept term in a linear model).</span>
 
 <span class="sd">    order : {&#39;C&#39;, &#39;F&#39;}, default=&#39;C&#39;</span>
-<span class="sd">        Order of output array in the dense case. &#39;F&#39; order is faster to</span>
+<span class="sd">        Order of output array in the dense case. `&#39;F&#39;` order is faster to</span>
 <span class="sd">        compute, but may slow down subsequent estimators.</span>
 
 <span class="sd">        .. versionadded:: 0.21</span>
@@ -414,7 +414,7 @@
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    powers_ : ndarray of shape (`n_output_features_`, `n_features_in_`)</span>
-<span class="sd">        powers_[i, j] is the exponent of the jth input in the ith output.</span>
+<span class="sd">        `powers_[i, j]` is the exponent of the jth input in the ith output.</span>
 
 <span class="sd">    n_input_features_ : int</span>
 <span class="sd">        The total number of input features.</span>
@@ -442,7 +442,7 @@
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    SplineTransformer : Transformer that generates univariate B-spline bases</span>
-<span class="sd">        for features</span>
+<span class="sd">        for features.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -525,6 +525,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">powers_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Exponent for each of the inputs in the output.&quot;&quot;&quot;</span>
         <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
         <span class="n">combinations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_combinations</span><span class="p">(</span>
@@ -543,8 +544,7 @@
         <span class="s2">&quot;in 1.2. Please use get_feature_names_out instead.&quot;</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="nf">get_feature_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_features</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return feature names for output features</span>
+        <span class="sd">&quot;&quot;&quot;Return feature names for output features.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -555,6 +555,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        output_feature_names : list of str of shape (n_output_features,)</span>
+<span class="sd">            Transformed feature names.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">powers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">powers_</span>
         <span class="k">if</span> <span class="n">input_features</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -582,7 +583,7 @@
 <span class="sd">        input_features : array-like of str or None, default=None</span>
 <span class="sd">            Input features.</span>
 
-<span class="sd">            - If `input_features` is `None`, then `feature_names_in_` is</span>
+<span class="sd">            - If `input_features is None`, then `feature_names_in_` is</span>
 <span class="sd">              used as feature names in. If `feature_names_in_` is not defined,</span>
 <span class="sd">              then names are generated: `[x0, x1, ..., x(n_features_in_)]`.</span>
 <span class="sd">            - If `input_features` is an array-like, then `input_features` must</span>
@@ -614,14 +615,13 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute number of output features.</span>
 
-
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        X : {array-like, sparse matrix} of shape (n_samples, n_features)</span>
 <span class="sd">            The data.</span>
 
-<span class="sd">        y : None</span>
-<span class="sd">            Ignored.</span>
+<span class="sd">        y : Ignored</span>
+<span class="sd">            Not used, present here for API consistency by convention.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -703,10 +703,10 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        XP : {ndarray, sparse matrix} of shape (n_samples, NP)</span>
-<span class="sd">            The matrix of features, where NP is the number of polynomial</span>
+<span class="sd">            The matrix of features, where `NP` is the number of polynomial</span>
 <span class="sd">            features generated from the combination of inputs. If a sparse</span>
 <span class="sd">            matrix is provided, it will be converted into a sparse</span>
-<span class="sd">            ``csr_matrix``.</span>
+<span class="sd">            `csr_matrix`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
@@ -1037,6 +1037,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        output_feature_names : list of str of shape (n_output_features,)</span>
+<span class="sd">            Transformed feature names.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">n_splines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bsplines_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">input_features</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
