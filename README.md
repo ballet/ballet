@@ -10,51 +10,38 @@ projects through **feat**ure engineering.
 
 - Free software: MIT license
 - Documentation: https://ballet.github.io/ballet
-- Homepage: https://github.com/ballet/ballet
+- Repo: https://github.com/ballet/ballet
+- Project homepage: https://ballet.github.io
 
 ## Overview
 
-Do you develop machine learning models? Do you work by yourself or on a team?
-Do you share notebooks or are you committing code to a shared repository? In
-contrast to successful, massively collaborative, open-source projects like
-the Linux kernel, the Rails framework, Firefox, GNU, or Tensorflow, most
-data science projects are developed by just a handful of people. But think if
-the open-source community could leverage its ingenuity and determination to
-collaboratively develop data science projects to predict the incidence of
-disease in a population, to predict whether vulnerable children will be evicted
-from their homes, or to predict whether learners will drop out of online
-courses.
+While the open-source model for software development has led to successful, large-scale collaborations in building software applications, chess engines, and scientific analyses, data science has not benefited from this development paradigm. In part, this is due to the divide between the development processes used by software engineers and those used by data scientists.
 
-Our vision is to make collaborative data science possible by making it more
-like open-source software development. Our approach is based on decomposing the
-data science process into modular patches
-that can then be intelligently combined, representing objects like "feature definition",
-"labeling function", or "prediction task definition". Collaborators work in
-parallel to write patches and submit them to a repo. The core Ballet framework
-provides the underlying functionality to merge high-quality contributions,
-collect modules from the file system, and compose the accepted contributions
-into a single product. It also provides [Assemblé](https://github.com/ballet/ballet-assemble), a familiar notebook-based development
-experience that is friendly to data scientists and other inexperienced
-open-source contributors. We don't require any computing infrastructure beyond
-that which is commonly used in open-source software development.
+Ballet tries to address this disparity. It is a lightweight software framework that supports collaborative data science development by composing a data science pipeline from a collection of modular patches that can be written in parallel. Ballet provides the underlying functionality to support interactive development, test and merge high-quality contributions, and compose the accepted contributions into a single product.
 
-Currently, Ballet focuses on supporting collaboratively developing
-*feature engineering pipelines*, an important part of many data science
-projects. Individual feature definitions are represented as separate Python modules,
-declaring the subset of a dataframe that they operate on and a
-scikit-learn-style learned transformer that extracts feature values from the
-raw data. Ballet collects individual feature definitions and composes them into a
-feature engineering pipeline. At any point, a project built on Ballet can be
-installed for end-to-end feature engineering on new data instances for the
-same problem. How do we ensure the feature engineering pipeline is always
-useful? Ballet thoroughly validates proposed feature definitions for correctness and
-machine learning performance, using an extensive test suite and a novel
-streaming feature definition selection algorithm. Accepted feature definitions can be
-automatically merged by the [Ballet Bot](https://github.com/ballet/ballet-bot) into projects.
+We have deployed Ballet for feature engineering collaborations on tabular survey datasets of public interest. For example, [predict-census-income](https://github.com/ballet/predict-census-income) is a large real-world collaborative project to engineer features from raw individual survey responses to the U.S. Census American Community Survey (ACS) and predict personal income. The resulting project is one of the largest data science collaborations GitHub, and outperforms state-of-the-art tabular AutoML systems and independent data science experts.
 
-<img src="./docs/_static/feature_lifecycle.png" alt="Ballet Feature Lifecycle" width="400" />
+### The Ballet framework
+
+Ballet includes several different pieces for enabling collaborative data science.
+
+* The Ballet framework core is developed in this repository and includes:
+    * the *feature definition* abstraction, a tuple of input variables and transformer steps (`ballet.feature`)
+    * the *feature engineering pipeline* abstraction, a data flow graph over feature functions (`ballet.pipeline`)
+    * the *transformer step* abstraction and a library of transformer steps that can be used in feature engineering (`ballet.tranformer`, `ballet.eng`)
+    * a comprehensive feature validation library, that includes test suites and statistical methods for validating the machine learning performance and software quality of proposed feature definitions (`ballet.validation`)
+    * functionality for programmatically collecting submitted feature definitions from file systems (`ballet.contrib`)
+    * a project template  for individual Ballet projects that can be automatically updated with upstream template improvements (`ballet/templates/project_template`, `ballet.update`)
+    * a command line tool for maintaining and developing Ballet projects (`ballet.cli`)
+    * an interface to interact with Ballet projects following the project template (`ballet.project`)
+    * an interactive client for users during development (`ballet.client`)
+* [Assemblé](https://github.com/ballet/ballet-assemble): A development environment for Ballet collaborations on top of Jupyter Lab
+* [Ballet Bot](https://github.com/ballet/ballet-bot): A bot to help manage Ballet projects on GitHub
+
 
 ## Next steps
+
+### Learn more about Ballet
 
 *Are you a data owner or project maintainer that wants to organize a
 collaboration?*
@@ -65,39 +52,38 @@ collaboration?*
 
 👉 Check out the [Ballet Contributor Guide](https://ballet.github.io/ballet/contributor_guide.html)
 
-*Want to learn about how Ballet enables Better Feature Engineering™️?*
+*Do you want to learn about how Ballet enables Better Feature Engineering™️?*
 
 👉 Check out the [Feature Engineering Guide](https://ballet.github.io/ballet/feature_engineering_guide.html)
 
-*Want to see a demo collaboration in progress and maybe even participate yourself?*
+You can also read our research paper about the Ballet framework and our case study analysis, which appeared at ACM CSCW 2021:
 
-👉 Check out the [ballet-predict-house-prices](https://github.com/HDI-Project/ballet-predict-house-prices) project
+👉 [Enabling Collaborative Data Science Development with the Ballet Framework](https://dl.acm.org/doi/10.1145/3479575)
 
-## Source code organization
+### Join a Ballet collaboration
 
-This is a quick overview to the Ballet core source code organization. For more information about contributing to Ballet core itself, see [here](https://ballet.github.io/ballet/contributing.html).
+The Ballet GitHub organization hosts several ongoing Ballet collaborations:
 
-| path | description |
-| ---- | ----------- |
-| [`cli.py`](ballet/cli.py) | the `ballet` command line utility |
-| [`client.py`](ballet/client.py) | the interactive client for users |
-| [`contrib.py`](ballet/contrib.py) | collecting feature definitions from individual modules in source files in the file system |
-| [`eng/base.py`](ballet/eng/base.py) | abstractions for transformers used in feature definitions, such as `BaseTransformer` |
-| [`eng/{misc,missing,ts}.py`](ballet/eng/) | custom transformers for missing data, time series problems, and more |
-| [`eng/external.py`](ballet/eng/external.py) | re-export of transformers from external libraries such as scikit-learn and feature_engine |
-| [`feature.py`](ballet/feature.py) | the `Feature` abstraction |
-| [`pipeline.py`](ballet/pipeline.py) | the `FeatureEngineeringPipeline` abstraction |
-| [`project.py`](ballet/project.py) | the interface between a specific Ballet project and the core Ballet library, such as utilities to load project-specific information and the `Project` abstraction |
-| [`templates/`](ballet/templates/) | cookiecutter templates for creating a new Ballet project or creating a new feature definition |
-| [`templating.py`](ballet/templating.py) | user-facing functionality on top of the templates |
-| [`transformer.py`](ballet/transformer.py) | wrappers for transformers that make them play nicely together in a pipeline |
-| [`update.py`](ballet/update.py) | functionality to update the project template from a new upstream release |
-| [`util/`](ballet/util/) | various utilities |
-| [`validation/main.py`](ballet/validation/main.py) | entry point for all validation routines |
-| [`validation/base.py`](ballet/validation/base.py) | abstractions used in validation such as the `FeaturePerformanceEvaluator` |
-| [`validation/common.py`](ballet/validation/common.py) | common functionality used in validation, such as the ability to collect relevant changes between a current environment and a reference environment (such as a pull request vs a default branch) |
-| [`validation/entropy.py`](ballet/validation/entropy.py) | statistical estimation routines used in feature definition selection algorithms, such as estimators for entropy, mutual information, and conditional mutual information |
-| [`validation/feature_acceptance/`](ballet/validation/feature_acceptance/) | validation routines for feature acceptance
-| [`validation/feature_pruning/`](ballet/validation/feature_pruning/) | validation routines for feature pruning |
-| [`validation/feature_api/`](ballet/validation/feature_api/) | validation routines for feature APIs |
-| [`validation/project_structure/`](ballet/validation/project_structure/) | validation routines for project structure |
+* [ballet/predict-house-prices](https://github.com/ballet/predict-house-prices): This is a sandbox collaboration that showcases Ballet. All submissions that pass the feature API validation will be automatically accepted.
+* [ballet/predict-census-income](https://github.com/ballet/predict-census-income): This is a collaboration as part of a past research case study to better understand collaborative data science in action.
+* [ballet/predict-life-outcomes](https://github.com/ballet/predict-life-outcomes): This is an ongoing collaboration to predict life outcomes for disadvantaged children and their families, inspired by the recent [Fragile Families Challenge](https://www.fragilefamilieschallenge.org/).
+
+## Citing Ballet
+
+If you use Ballet in your work, please consider citing the following paper:
+
+```bibtex
+@article{smith2021enabling,
+    author = {Smith, Micah J. and Cito, J{\"u}rgen and Lu, Kelvin and Veeramachaneni, Kalyan},
+    title = "Enabling Collaborative Data Science Development with the {Ballet} Framework",
+    year = "2021",
+    month = "October",
+    volume = "5",
+    pages = "1--39",
+    doi = "10.1145/3479575",
+    journal = "Proceedings of the {ACM} on Human-Computer Interaction",
+    publisher = "{ACM}",
+    language = "en",
+    number = "CSCW2"
+}
+```

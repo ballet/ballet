@@ -67,7 +67,7 @@ Ready to contribute? Here's how to set up `ballet` for local development.
 3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development::
 
     $ mkvirtualenv ballet
-    $ cd ballet/
+    $ cd https://github.com/ballet/ballet/blob/master/ballet/
     $ make install-develop
 
 4. Create a branch for local development::
@@ -132,3 +132,59 @@ A reminder for the maintainers on how to deploy. This is a simplified release wo
    $ git push --tags origin master
 
 GitHub Actions will then deploy to PyPI if tests pass.
+
+Source code organization
+------------------------
+
+This is a quick overview to the Ballet core source code organization.
+
+.. list-table::
+   :width: 100%
+   :header-rows: 1
+
+   * - path
+     - description
+   * - `cli.py <https://github.com/ballet/ballet/blob/master/ballet/cli.py>`__
+     - the `ballet` command line utility
+   * - `client.py <https://github.com/ballet/ballet/blob/master/ballet/client.py>`__
+     - the interactive client for users
+   * - `contrib.py <https://github.com/ballet/ballet/blob/master/ballet/contrib.py>`__
+     - collecting feature definitions from individual modules in source files in the file system
+   * - `eng/base.py <https://github.com/ballet/ballet/blob/master/ballet/eng/base.py>`__
+     - abstractions for transformers used in feature definitions, such as      as ``BaseTransformer``
+   * - `eng/{misc,missing,ts}.py <https://github.com/ballet/ballet/blob/master/ballet/eng/>`__
+     - custom transformers for missing data, time series problems, and more
+   * - `eng/external.py <https://github.com/ballet/ballet/blob/master/ballet/eng/external>`__
+     - re-export of transformers from external libraries such as      scikit-learn and feature_engine
+   * - `feature.py <https://github.com/ballet/ballet/blob/master/ballet/feature.py>`__
+     -  the ``Feature`` abstraction
+   * - `pipeline.py <https://github.com/ballet/ballet/blob/master/ballet/pipeline.py>`__
+     - the `FeatureEngineeringPipeline` abstraction
+   * - `project.py <https://github.com/ballet/ballet/blob/master/ballet/project.py>`__
+     - the interface between a specific Ballet project and the core Ballet library, such as utilities to load project-specific information and the `Project` abstraction
+   * - `templates/ <https://github.com/ballet/ballet/blob/master/ballet/templates/>`__
+     - cookiecutter templates for creating a new Ballet project or creating a new feature definition
+   * - `templating.py <https://github.com/ballet/ballet/blob/master/ballet/templating.py>`__
+     - user-facing functionality on top of the templates
+   * - `transformer.py <https://github.com/ballet/ballet/blob/master/ballet/transformer.py>`__
+     - wrappers for transformers that make them play nicely together in a pipeline
+   * - `update.py <https://github.com/ballet/ballet/blob/master/ballet/update.py>`__
+     - functionality to update the project template from a new upstream release
+   * - `util/ <https://github.com/ballet/ballet/blob/master/ballet/util/>`__
+     - various utilities
+   * - `validation/main.py <https://github.com/ballet/ballet/blob/master/ballet/validation/main.py>`__
+     - entry point for all validation routines
+   * - `validation/base.py <https://github.com/ballet/ballet/blob/master/ballet/validation/base.py>`__
+     - abstractions used in validation such as the `FeaturePerformanceEvaluator`
+   * - `validation/common.py <https://github.com/ballet/ballet/blob/master/ballet/validation/common.py>`__
+     - common functionality used in validation, such as the ability to collect relevant changes between a current environment and a reference environment (such as a pull request vs a default branch)
+   * - `validation/entropy.py <https://github.com/ballet/ballet/blob/master/ballet/validation/entropy.py>`__
+     - statistical estimation routines used in feature definition selection algorithms, such as estimators for entropy, mutual information, and conditional mutual information
+   * - `validation/feature_acceptance/ <https://github.com/ballet/ballet/blob/master/ballet/validation/feature_acceptance/>`__
+     - validation routines for feature acceptance
+   * - `validation/feature_pruning/ <https://github.com/ballet/ballet/blob/master/ballet/validation/feature_pruning/>`__
+     - validation routines for feature pruning
+   * - `validation/feature_api/ <https://github.com/ballet/ballet/blob/master/ballet/validation/feature_api/>`__
+     - validation routines for feature APIs
+   * - `validation/project_structure/ <https://github.com/ballet/ballet/blob/master/ballet/validation/project_structure/>`__
+     - validation routines for project structure
