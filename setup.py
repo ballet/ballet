@@ -19,7 +19,7 @@ requirements = [
     'dill',
     'dynaconf ~= 3.0',
     'funcy >= 1.14',
-    'gitpython',
+    'gitpython < 3.1.19',  # wait for git.types to stabilize
     'h5py',
     'numpy',
     'packaging',
